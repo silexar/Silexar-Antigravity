@@ -1,0 +1,19 @@
+# Staging Environment Configuration
+project_id   = "silexar-pulse-staging"
+region       = "us-central1"
+environment  = "staging"
+
+# GKE Configuration
+gke_num_nodes    = 2
+gke_min_nodes    = 1
+gke_max_nodes    = 5
+gke_machine_type = "n2-standard-2"  # 2 vCPUs, 8 GB RAM
+
+# Cloud SQL Configuration
+db_tier      = "db-custom-2-8192"   # 2 vCPUs, 8 GB RAM
+db_disk_size = 50                    # GB
+db_username  = "silexar_admin"
+db_password  = "CHANGE_THIS_PASSWORD"  # ⚠️ CAMBIAR ESTO
+
+# Redis Configuration
+redis_memory_size = 2  # GB

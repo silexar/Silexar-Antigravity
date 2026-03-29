@@ -1,0 +1,60 @@
+# === ENVIRONMENT VARIABLES (CRITICAL — NEVER COMMIT) ===
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+.env*.local
+backend/.env
+
+# === LOGS ===
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === DEPENDENCIES ===
+node_modules
+dist
+dist-ssr
+
+# === BUILD OUTPUT ===
+.next
+.swc
+coverage
+*.tsbuildinfo
+
+# === TEMPORARY/AUDIT FILES ===
+*.local
+compilation-errors*.txt
+frontend-errors*.txt
+frontend-compilation-errors*.txt
+backend-errors*.txt
+backend-compilation-errors*.txt
+lint-check-*.txt
+typecheck-output.txt
+tsc_output.txt
+error-*.txt
+duplicate-files-check.txt
+eslint_errors.json
+performance-report-*.json
+compile_errors*.log
+compile_final*.log
+build_log.txt
+tsc_log*.txt
+new-errors.txt
+compilation-check-*.txt
+
+# === Editor directories and files ===
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

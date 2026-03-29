@@ -1,0 +1,82 @@
+{
+  "projectId": "silexar-pulse-quantum-tier0",
+  "buildScriptName": "build-storybook",
+  "storybookBaseDir": ".storybook",
+  "storybookConfigDir": ".storybook",
+  "exitZeroOnChanges": true,
+  "exitOnceUploaded": false,
+  "autoAcceptChanges": false,
+  "allowConsoleErrors": false,
+  "ignoreLastBuildOnBranch": false,
+  "onlyChanged": false,
+  "externals": ["public/**"],
+  "skip": "dependabot/**",
+  "untraced": [
+    "**/*.md",
+    "**/*.txt",
+    "**/*.log",
+    "docs/**",
+    ".github/**"
+  ],
+  "traceChanged": "expanded",
+  "diffThreshold": 0.2,
+  "delay": 1000,
+  "diffIncludeAntiAliasing": true,
+  "viewport": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "name": "enterprise-desktop"
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "name": "enterprise-tablet"
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "name": "mobile-pro"
+    }
+  ],
+  "darkMode": true,
+  "lightMode": true,
+  "forcedColors": "active",
+  "prefersReducedMotion": "reduce",
+  "highContrast": true,
+  "rtl": true,
+  "lrt": true,
+  "language": "en",
+  "locales": ["en", "es", "fr", "de", "ja", "zh"],
+  "accessibility": {
+    "wcag2a": true,
+    "wcag2aa": true,
+    "wcag21aa": true,
+    "section508": true,
+    "best-practices": true,
+    "experimental": true
+  },
+  "performance": {
+    "firstContentfulPaint": 1000,
+    "largestContentfulPaint": 2500,
+    "firstMeaningfulPaint": 1200,
+    "speedIndex": 1500,
+    "interactive": 2000,
+    "totalBlockingTime": 300,
+    "cumulativeLayoutShift": 0.1
+  },
+  "coverage": {
+    "minimum": 95,
+    "threshold": 90,
+    "strategy": "all"
+  },
+  "security": {
+    "csp": "strict",
+    "sri": true,
+    "https": true,
+    "hsts": true,
+    "x-frame-options": "DENY",
+    "x-content-type-options": "nosniff",
+    "x-xss-protection": "1; mode=block"
+  }
+}

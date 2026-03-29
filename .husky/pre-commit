@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔒 Pre-commit: running security & quality checks..."
+
+# 1. ESLint + TypeScript lint
+echo "→ Linting..."
+npm run lint --silent
+if [ $? -ne 0 ]; then
+  echo "❌ Lint failed. Fix errors before committing."
+  exit 1
+fi
+
+# 2. npm audit (block on high/critical CVEs)
+echo "→ Security audit..."
+npm audit --audit-level=high --silent 2>/dev/null
+if [ $? -ne 0 ]; then
+  echo "❌ npm audit found HIGH/CRITICAL vulnerabilities. Run 'npm audit fix' or review manually."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed."

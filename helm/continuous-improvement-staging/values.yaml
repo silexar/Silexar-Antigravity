@@ -1,0 +1,225 @@
+# TIER 0 Helm Values for Continuous Improvement Staging
+# Consciousness-level configuration with quantum enhancement
+
+# TIER 0: Global Configuration
+global:
+  tier: "0"
+  environment: staging
+  consciousness:
+    level: 0.998
+    quantum_optimized: true
+  security:
+    level: "pentagon-plus"
+    encryption_enabled: true
+
+# TIER 0: Application Configuration
+app:
+  name: continuous-improvement-staging
+  version: "2040.1.0"
+  
+  # TIER 0: Image Configuration
+  image:
+    repository: silexar/continuous-improvement-staging
+    tag: "latest"
+    pullPolicy: Always
+    
+  # TIER 0: Replica Configuration
+  replicaCount: 3
+  
+  # TIER 0: Resource Configuration
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+      
+  # TIER 0: Environment Variables
+  env:
+    NODE_ENV: staging
+    CONSCIOUSNESS_LEVEL: "0.998"
+    QUANTUM_OPTIMIZED: "true"
+    
+  # TIER 0: Health Checks
+  healthCheck:
+    enabled: true
+    path: /api/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    
+  readinessProbe:
+    enabled: true
+    path: /api/ready
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# TIER 0: Service Configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
+
+# TIER 0: Ingress Configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+  hosts:
+    - host: staging-ci.silexar.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: staging-ci-tls
+      hosts:
+        - staging-ci.silexar.com
+
+# TIER 0: PostgreSQL Configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: ""  # Set via secret
+    username: staging_user
+    password: ""  # Set via secret
+    database: continuous_improvement_staging
+  primary:
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: "gp3"
+
+# TIER 0: Redis Configuration
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: ""  # Set via secret
+  master:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: "gp3"
+
+# TIER 0: Monitoring Configuration
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+      path: /api/metrics
+  grafana:
+    enabled: true
+    dashboards:
+      enabled: true
+  alerts:
+    enabled: true
+    cpu_threshold: 80
+    memory_threshold: 85
+    response_time_threshold: 1000
+
+# TIER 0: Security Configuration
+security:
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  networkPolicy:
+    enabled: true
+    ingress:
+      enabled: true
+    egress:
+      enabled: true
+
+# TIER 0: Autoscaling Configuration
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# TIER 0: Persistence Configuration
+persistence:
+  enabled: true
+  storageClass: "gp3"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  annotations: {}
+
+# TIER 0: ServiceAccount Configuration
+serviceAccount:
+  create: true
+  annotations: {}
+  name: continuous-improvement-staging
+
+# TIER 0: RBAC Configuration
+rbac:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["pods", "services", "configmaps", "secrets"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["apps"]
+      resources: ["deployments", "replicasets"]
+      verbs: ["get", "list", "watch"]
+
+# TIER 0: Node Selection
+nodeSelector:
+  kubernetes.io/arch: amd64
+
+# TIER 0: Tolerations
+tolerations:
+  - key: "staging"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# TIER 0: Affinity Rules
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - continuous-improvement
+          topologyKey: kubernetes.io/hostname

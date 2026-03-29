@@ -1,0 +1,64 @@
+###############################################################################
+# docker-compose.yml — Silexar Pulse · Entorno de Desarrollo Local
+#
+# Levanta los servicios mínimos necesarios para desarrollar:
+#   postgres, redis
+#
+# Uso:
+#   docker compose up -d          # levantar
+#   docker compose down           # bajar
+#   docker compose logs -f app    # ver logs del app
+#
+# Producción: ver docker-compose.prod.yml
+# Monitoring: ver docker-compose.monitoring.yml
+###############################################################################
+
+version: '3.9'
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: silexar_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME:-silexar}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-silexar_dev_pass}
+      POSTGRES_DB: ${DATABASE_NAME:-silexar_pulse}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command:
+      - postgres
+      - -c
+      - max_connections=100
+      - -c
+      - shared_buffers=128MB
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME:-silexar} -d ${DATABASE_NAME:-silexar_pulse}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: silexar_redis_dev
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

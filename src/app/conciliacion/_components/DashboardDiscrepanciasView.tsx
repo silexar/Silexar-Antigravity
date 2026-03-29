@@ -1,0 +1,337 @@
+"use client";
+
+import React, { useState } from 'react';
+
+interface SelectedSpot {
+  id: string;
+  ejecutivo: string;
+}
+
+// Mock Component for Dashboard de Discrepancias
+export default function DashboardDiscrepanciasView() {
+  const [filter, setFilter] = useState('Todas');
+  const [showSalesModal, setShowSalesModal] = useState(false);
+  const [selectedSpot, setSelectedSpot] = useState<SelectedSpot | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+  
+  const handleConsultSales = (spot: SelectedSpot) => {
+    setSelectedSpot(spot);
+    setShowSalesModal(true);
+  };
+
+
+  return (
+    <div className="space-y-6 animate-in fade-in">
+      <div className="flex justify-between items-center mb-6">
+         <h2 className="text-xl font-bold text-slate-200">❌ Análisis de Discrepancias (Control de Tráfico)</h2>
+         <div className="flex gap-2">
+           {['Todas', 'Críticas', 'En Consulta Ventas', 'Resueltas'].map(f => (
+             <button 
+               key={f}
+               onClick={() => setFilter(f)}
+               className={`px-3 py-1.5 rounded-lg text-sm transition-all ${filter === f ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
+             >
+               {f}
+             </button>
+           ))}
+         </div>
+      </div>
+
+      <div className="neo-card p-0 bg-slate-800/80 border border-slate-700 rounded-2xl shadow-xl overflow-hidden">
+         {/* ITEM CRÍTICO - PENDIENTE TRAFICO */}
+         <div className="p-5 border-b border-white/5 hover:bg-slate-700/30 transition-colors flex gap-4 items-start">
+            <input 
+              type="checkbox" 
+              checked={selectedIds.includes('SP123456')} 
+              onChange={() => toggleSelect('SP123456')}
+              className="mt-4 w-5 h-5 rounded border-slate-600 bg-slate-900 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+            />
+            <div className="flex-1 flex justify-between items-start">
+               <div className="flex gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-red-500/20 border border-red-500/30 flex justify-center items-center text-red-500 text-xl">
+                   🚫
+                 </div>
+                 <div>
+                   <div className="flex items-center gap-2 mb-1">
+                     <span className="font-bold text-slate-200 text-lg">SP123456</span>
+                     <span className="px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 text-xs">Banco Chile</span>
+                     <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-medium">CRÍTICA</span>
+                   </div>
+                   <div className="text-sm text-slate-400">
+                     📻 Radio Corazón • Programado: 06:15:30 • Ejecutivo: 👤 Juan Pérez (Ventas)
+                   </div>
+                   <div className="mt-2 text-sm text-slate-300 bg-slate-900/50 p-2 rounded-lg border border-slate-700 flex justify-between items-center">
+                      <div>
+                        <span className="text-red-400 font-medium">Motivo:</span> NO EMITIDO (Falla técnica en bloque)
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
+                         <span className="text-emerald-500 text-[10px] font-bold">QC PASS</span>
+                         <span className="text-[10px] text-slate-400">Audio OK</span>
+                      </div>
+                   </div>
+                   <div className="mt-2 flex items-center gap-2">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Estado Decision:</span>
+                      <span className="text-[10px] bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20 font-bold">PENDIENTE TRAFICO</span>
+                   </div>
+                 </div>
+               </div>
+               <div className="flex flex-col gap-2 items-end">
+                  <div className="text-right">
+                    <div className="text-sm text-slate-400">Valor Comercial</div>
+                    <div className="text-lg font-bold text-emerald-400">$85,000</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleConsultSales({id: 'SP123456', ejecutivo: 'Juan Pérez'})}
+                      className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors border border-white/10"
+                    >
+                      📧 Consultar a Ventas
+                    </button>
+                    <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-emerald-600/20">
+                      ⚡ Recuperar Ahora
+                    </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* ITEM EN CONSULTA - ESPERANDO VENTAS */}
+         <div className="p-5 border-b border-white/5 hover:bg-slate-700/30 transition-colors bg-indigo-500/5 flex gap-4 items-start">
+            <input 
+              type="checkbox" 
+              checked={selectedIds.includes('SP998877')} 
+              onChange={() => toggleSelect('SP998877')}
+              className="mt-4 w-5 h-5 rounded border-slate-600 bg-slate-900 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+            />
+            <div className="flex-1 flex justify-between items-start">
+               <div className="flex gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex justify-center items-center text-indigo-500 text-xl">
+                   ⏳
+                 </div>
+                 <div>
+                   <div className="flex items-center gap-2 mb-1">
+                     <span className="font-bold text-slate-200 text-lg">SP998877</span>
+                     <span className="px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 text-xs">Entel Verano</span>
+                     <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-xs font-medium">ALTA</span>
+                   </div>
+                   <div className="text-sm text-slate-400">
+                     📻 Play FM • Ejecutivo: 👤 María García (Ventas)
+                   </div>
+                   <div className="mt-2 flex items-center gap-2">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Estado Decision:</span>
+                      <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 font-bold animate-pulse">ESPERANDO RESPUESTA DE VENTAS</span>
+                   </div>
+                   <div className="mt-2 text-[10px] bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-1 rounded inline-flex items-center gap-1">
+                      <span>⚠️ MATERIAL NO ENCONTRADO</span>
+                   </div>
+                 </div>
+               </div>
+               <div className="flex flex-col gap-2 items-end justify-center">
+                  <button className="px-4 py-2 bg-slate-800 text-slate-400 rounded-lg text-sm font-medium border border-white/5 cursor-not-allowed">
+                    En Proceso...
+                  </button>
+               </div>
+            </div>
+         </div>
+
+         {/* ITEM RECUPERADO AUTOMÁTICO */}
+         <div className="p-5 border-b border-white/5 hover:bg-slate-700/30 transition-colors opacity-90">
+            <div className="flex justify-between items-start">
+               <div className="flex gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex justify-center items-center text-emerald-500 text-xl">
+                   🔄
+                 </div>
+                 <div>
+                   <div className="flex items-center gap-2 mb-1">
+                     <span className="font-bold text-slate-200 text-lg">SP789012</span>
+                     <span className="px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 text-xs">Coca Cola</span>
+                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-medium">RECUPERADO</span>
+                   </div>
+                   <div className="text-sm text-slate-400">
+                     📻 Play FM • Programado Original: 08:22:15
+                   </div>
+                   <div className="mt-2 text-sm text-slate-300 bg-emerald-900/10 p-2 rounded-lg border border-emerald-500/20">
+                     <span className="text-emerald-400 mr-2">🤖 Acción IA:</span> 
+                     Re-programado automáticamente para 19:30:00 (Prime Vespertino)
+                   </div>
+                 </div>
+               </div>
+               <div className="flex flex-col justify-end items-end h-full">
+                  <button className="px-4 py-2 mt-auto bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm font-medium transition-colors border border-white/5">
+                    Ver Trazabilidad
+                  </button>
+               </div>
+            </div>
+         </div>
+         
+         {/* ITEM MENOR */}
+         <div className="p-5 hover:bg-slate-700/30 transition-colors opacity-80">
+            <div className="flex justify-between items-center">
+               <div className="flex items-center gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex justify-center items-center text-amber-500 text-lg">
+                   ⏱️
+                 </div>
+                 <div>
+                   <div className="font-medium text-slate-200">SP345678 - Entel</div>
+                   <div className="text-xs text-slate-400 mt-1">Error de timing leve: Emitido 15s después. No requiere acción.</div>
+                 </div>
+               </div>
+               <span className="text-xs text-slate-500">Resuelto automáticamente</span>
+            </div>
+         </div>
+      </div>
+
+
+      {/* MODAL PUENTE TRAFICO-VENTAS */}
+      {showSalesModal && selectedSpot && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+           <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                 <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                   <span className="text-xl">📧</span> Consultar a Ventas
+                 </h3>
+                 <button onClick={() => setShowSalesModal(false)} className="text-slate-400 hover:text-white text-2xl">×</button>
+              </div>
+              
+              <div className="p-6 space-y-4">
+                 <div className="bg-slate-800/50 p-3 rounded-xl border border-white/5">
+                    <div className="text-xs text-slate-500 uppercase font-bold mb-1">Ficha de Discrepancia</div>
+                    <div className="text-sm font-medium text-slate-200">{selectedSpot.id} - Banco Chile</div>
+                    <div className="text-[10px] text-slate-400 mt-1 italic">Este aviso no se emitió por falla técnica.</div>
+                 </div>
+
+                 <div>
+                    <label className="text-xs text-slate-400 font-bold uppercase mb-2 block">Enviar a Ejecutivo</label>
+                    <div className="flex items-center gap-3 p-3 bg-slate-800 rounded-xl border border-indigo-500/30 shadow-inner">
+                       <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-lg">👤</div>
+                       <div>
+                          <div className="text-sm font-bold text-slate-200">{selectedSpot.ejecutivo}</div>
+                          <div className="text-[10px] text-slate-400">Ejecutivo de Ventas Responsable</div>
+                       </div>
+                    </div>
+                 </div>
+
+               <div>
+                    <label className="text-xs text-slate-400 font-bold uppercase mb-2 block">Nota para Ejecutivo</label>
+                    <textarea 
+                      placeholder="Ej: Hola Juan, el aviso de Banco Chile falló. ¿Aún tenemos tiempo de recuperarlo en el bloque de las 19:00 o la campaña ya cerró?"
+                      className="w-full bg-slate-800 border border-white/5 rounded-xl px-4 py-3 text-sm text-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none min-h-[100px] resize-none"
+                    ></textarea>
+                 </div>
+              </div>
+
+              <div className="p-6 bg-slate-800/30 border-t border-white/5 flex gap-3">
+                 <button 
+                   onClick={() => setShowSalesModal(false)}
+                   className="flex-1 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium transition-colors"
+                 >
+                   Cancelar
+                 </button>
+                 <button 
+                   onClick={async () => {
+                     try {
+                        const response = await fetch('/api/conciliacion', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'x-user-role': 'TRAFFIC'
+                            },
+                            body: JSON.stringify({
+                                action: 'consultar-ventas',
+                                spotId: selectedSpot?.id,
+                                ejecutivoId: 'exec_id_123',
+                                mensaje: 'Consulta enviada desde el dashboard de conciliación.'
+                            })
+                        });
+                        if (response.ok) {
+                            setShowSalesModal(false);
+                            alert('Información enviada al ejecutivo de ventas. Se ha registrado en la bitácora de tráfico.');
+                        }
+                     } catch {
+                         alert('Error conectando con el servidor');
+                     }
+                   }}
+                   className="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold transition-colors shadow-lg shadow-indigo-600/20"
+                 >
+                   Enviar Consulta
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
+      {/* BARRA DE ACCIONES MASIVAS */}
+      {selectedIds.length > 0 && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] animate-in slide-in-from-bottom-10 fade-in duration-300">
+          <div className="bg-indigo-600 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-indigo-600/40 flex items-center gap-6 border border-white/20 backdrop-blur-md bg-opacity-90">
+             <div className="flex items-center gap-2 border-r border-white/20 pr-6">
+                <span className="bg-white text-indigo-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">
+                  {selectedIds.length}
+                </span>
+                <span className="font-bold text-sm">Seleccionados</span>
+             </div>
+             
+             <div className="flex gap-3">
+                <button 
+                  onClick={async () => {
+                    const res = await fetch('/api/conciliacion', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-user-role': 'TRAFFIC' },
+                        body: JSON.stringify({
+                            action: 'accion-masiva',
+                            spotIds: selectedIds,
+                            tipoAccion: 'CONSULTAR_VENTAS',
+                            mensajeComun: 'Consulta masiva generada por Tráfico'
+                        })
+                    });
+                    if (res.ok) {
+                        alert(`Consulta enviada para ${selectedIds.length} spots`);
+                        setSelectedIds([]);
+                    }
+                  }}
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all border border-white/10"
+                >
+                  📧 Consultar Ventas (Múltiple)
+                </button>
+                <button 
+                   onClick={async () => {
+                     const res = await fetch('/api/conciliacion', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json', 'x-user-role': 'TRAFFIC' },
+                         body: JSON.stringify({
+                             action: 'accion-masiva',
+                             spotIds: selectedIds,
+                             tipoAccion: 'RECUPERAR_AHORA'
+                         })
+                     });
+                     if (res.ok) {
+                         alert(`Recuperación masiva exitosa para ${selectedIds.length} spots`);
+                         setSelectedIds([]);
+                     }
+                   }}
+                   className="px-4 py-2 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 rounded-xl text-xs font-black transition-all shadow-lg"
+                >
+                  ⚡ RECUPERAR MASIVO
+                </button>
+                <button 
+                  onClick={() => setSelectedIds([])}
+                  className="px-4 py-2 text-white/70 hover:text-white text-xs font-medium"
+                >
+                  Cancelar
+                </button>
+             </div>
+
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
