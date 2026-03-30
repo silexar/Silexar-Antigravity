@@ -1,0 +1,58 @@
+# VS Code REST Client – Campañas (Líneas y Confirmaciones)
+# Requisitos: instalar la extensión "REST Client" (humao.rest-client)
+# Server: ejecutar en terminal de VS Code -> `npm run dev`
+
+@baseUrl = http://localhost:3000
+# Puedes dejar este campaignId aleatorio o reemplazarlo
+@campaignId = {{$guid}}
+
+# JWT con rol TM_SENIOR/EJECUTIVO/PROGRAMADOR
+# Generar en terminal: node -e "console.log(require('jsonwebtoken').sign({ sub:'u1', role:'TM_SENIOR', email:'tm@acme.io' }, 'quantum-secret-key'))"
+@jwt = REEMPLAZAR_CON_TU_JWT
+
+### Preview PDF on-the-fly (no requiere DB ni JWT)
+GET {{baseUrl}}/api/campanas/{{campaignId}}/confirmaciones/preview.pdf?template=default&notas=Preview%20desde%20VSCode&metricas=1
+
+### Crear línea (RBAC)
+POST {{baseUrl}}/api/campanas/{{campaignId}}/lineas
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "lineNumber": 1,
+  "blockType": "REPARTIDO",
+  "startTime": "06:00",
+  "endTime": "22:00",
+  "spots": 10
+}
+
+### Listar líneas
+GET {{baseUrl}}/api/campanas/{{campaignId}}/lineas
+
+### @name generarConfirmacion
+POST {{baseUrl}}/api/campanas/{{campaignId}}/confirmaciones/generar
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "template": "default",
+  "notasTecnicas": "Confirmación generada desde REST Client",
+  "incluirMetricas": true
+}
+
+### Listar confirmaciones
+GET {{baseUrl}}/api/campanas/{{campaignId}}/confirmaciones
+
+### Descargar PDF de la última confirmación generada
+# Consejo: en el panel de respuesta, usa "Save Response" para guardar el PDF y ábrelo en VS Code.
+GET {{baseUrl}}/api/campanas/{{campaignId}}/confirmaciones/{{generarConfirmacion.response.body.$.id}}.pdf
+
+### Enviar confirmación por email (requiere SMTP_* en .env.local)
+POST {{baseUrl}}/api/campanas/{{campaignId}}/confirmaciones/{{generarConfirmacion.response.body.$.id}}/enviar
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "destinatarios": ["cliente@acme.io"]
+}
+

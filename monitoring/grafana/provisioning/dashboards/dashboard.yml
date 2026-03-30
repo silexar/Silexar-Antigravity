@@ -1,0 +1,18 @@
+# 📊 Grafana Dashboard Provisioning
+# Auto-provisioning configuration for Silexar dashboards
+# 
+# @author SILEXAR AI Team
+# @version 2040.1.0
+
+apiVersion: 1
+
+providers:
+  - name: 'Silexar Dashboards'
+    orgId: 1
+    folder: 'Silexar Pulse Quantum'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

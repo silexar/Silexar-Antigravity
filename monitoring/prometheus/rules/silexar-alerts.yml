@@ -1,0 +1,157 @@
+# 🚨 Silexar Pulse Quantum - Alert Rules
+# Enterprise alerting rules for production monitoring
+# 
+# @author SILEXAR AI Team
+# @version 2040.1.0
+
+groups:
+  - name: silexar.application
+    rules:
+      # High Response Time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 2m
+        labels:
+          severity: warning
+          service: silexar-app
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for {{ $labels.instance }}"
+
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 1m
+        labels:
+          severity: critical
+          service: silexar-app
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.instance }}"
+
+      # Application Down
+      - alert: ApplicationDown
+        expr: up{job="silexar-app"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: silexar-app
+        annotations:
+          summary: "Silexar application is down"
+          description: "Application {{ $labels.instance }} has been down for more than 30 seconds"
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # Low Disk Space
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is {{ $value | humanizePercentage }} available on {{ $labels.instance }}"
+
+  - name: silexar.performance
+    rules:
+      # Performance Degradation
+      - alert: PerformanceDegradation
+        expr: increase(http_request_duration_seconds_sum[10m]) / increase(http_request_duration_seconds_count[10m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: silexar-app
+        annotations:
+          summary: "Performance degradation detected"
+          description: "Average response time increased to {{ $value }}s"
+
+      # Low Throughput
+      - alert: LowThroughput
+        expr: rate(http_requests_total[5m]) < 10
+        for: 5m
+        labels:
+          severity: warning
+          service: silexar-app
+        annotations:
+          summary: "Low throughput detected"
+          description: "Request rate is {{ $value }} req/s, below threshold"
+
+  - name: silexar.redis
+    rules:
+      # Redis Down
+      - alert: RedisDown
+        expr: up{job="redis-exporter"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis instance {{ $labels.instance }} is down"
+
+      # High Redis Memory Usage
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: redis
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+
+  - name: silexar.containers
+    rules:
+      # Container High CPU
+      - alert: ContainerHighCPU
+        expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: docker
+        annotations:
+          summary: "Container high CPU usage"
+          description: "Container {{ $labels.name }} CPU usage is {{ $value | humanizePercentage }}"
+
+      # Container High Memory
+      - alert: ContainerHighMemory
+        expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: docker
+        annotations:
+          summary: "Container high memory usage"
+          description: "Container {{ $labels.name }} memory usage is {{ $value | humanizePercentage }}"
+
+      # Container Restart
+      - alert: ContainerRestart
+        expr: increase(container_start_time_seconds[10m]) > 0
+        for: 0s
+        labels:
+          severity: info
+          service: docker
+        annotations:
+          summary: "Container restarted"
+          description: "Container {{ $labels.name }} has restarted"

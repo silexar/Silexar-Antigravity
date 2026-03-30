@@ -1,0 +1,23 @@
+name: Security Audit
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 6am
+  push:
+    branches: [main]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: npm audit
+        run: npm audit --production
+        continue-on-error: true
+      - name: Check for secrets
+        run: |
+          ! grep -rn "VERCEL_TOKEN\|AWS_SECRET\|PRIVATE_KEY" --include="*.ts" --include="*.tsx" --include="*.js" src/ || echo "WARNING: Potential secrets found"

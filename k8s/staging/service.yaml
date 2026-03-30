@@ -1,0 +1,70 @@
+# TIER 0 Kubernetes Service for Continuous Improvement Staging
+# Quantum-enhanced service discovery with consciousness-level networking
+apiVersion: v1
+kind: Service
+metadata:
+  name: continuous-improvement-staging-service
+  namespace: continuous-improvement-staging
+  labels:
+    app: continuous-improvement
+    tier: "0"
+    environment: staging
+    component: service
+    consciousness.level: "0.998"
+    quantum.optimized: "true"
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: 3000
+    protocol: TCP
+  selector:
+    app: continuous-improvement
+    environment: staging
+  sessionAffinity: None
+---
+# TIER 0 Ingress for External Access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: continuous-improvement-staging-ingress
+  namespace: continuous-improvement-staging
+  labels:
+    app: continuous-improvement
+    tier: "0"
+    environment: staging
+    component: ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+  - hosts:
+    - staging-ci.silexar.com
+    secretName: staging-ci-tls
+  rules:
+  - host: staging-ci.silexar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: continuous-improvement-staging-service
+            port:
+              number: 80
