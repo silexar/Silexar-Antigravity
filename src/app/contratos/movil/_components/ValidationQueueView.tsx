@@ -1,0 +1,230 @@
+/**
+ * 📋 MOBILE: Validation Queue View
+ * 
+ * Cola de borradores auto-generados por IA para revisión y aprobación.
+ * Un supervisor puede ver todos los borradores, su confianza,
+ * y aprobar/rechazar en lotes.
+ * 
+ * @tier TIER_0_ENTERPRISE
+ * @platform MOBILE
+ */
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import {
+  CheckCircle2, XCircle, Clock, Sparkles, RefreshCw,
+  Mic, MessageSquare, Mail, Zap, Camera, FileText,
+  ChevronRight, TrendingUp
+} from 'lucide-react';
+import { useValidationQueue } from '../../_shared/useSmartCapture';
+import type { BorradorEnCola } from '../../_shared/useSmartCapture';
+import { formatCurrency } from '../../_shared/useContratos';
+
+// ═══════════════════════════════════════════════════════════════
+// MOCK QUEUE DATA
+// ═══════════════════════════════════════════════════════════════
+
+const MOCK_QUEUE: BorradorEnCola[] = [
+  { id: 'draft-001', cliente: 'Banco Chile', valor: 85000000, metodo: 'voice', confianza: 92, requiereValidacion: false, timestamp: new Date().toISOString(), lineasPauta: 3 },
+  { id: 'draft-002', cliente: 'TechCorp', valor: 95000000, metodo: 'whatsapp', confianza: 78, requiereValidacion: true, timestamp: new Date(Date.now() - 3600000).toISOString(), lineasPauta: 2 },
+  { id: 'draft-003', cliente: 'SuperMax', valor: 35000000, metodo: 'quick', confianza: 95, requiereValidacion: false, timestamp: new Date(Date.now() - 7200000).toISOString(), lineasPauta: 2 },
+  { id: 'draft-004', cliente: 'Nuevo Cliente XY', valor: 0, metodo: 'text', confianza: 42, requiereValidacion: true, timestamp: new Date(Date.now() - 10800000).toISOString(), lineasPauta: 0 },
+  { id: 'draft-005', cliente: 'Falabella', valor: 120000000, metodo: 'email', confianza: 88, requiereValidacion: false, timestamp: new Date(Date.now() - 14400000).toISOString(), lineasPauta: 4 },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// COMPONENTE PRINCIPAL
+// ═══════════════════════════════════════════════════════════════
+
+export function ValidationQueueView() {
+  const { loading, refresh } = useValidationQueue();
+  const [queue, setQueue] = useState<BorradorEnCola[]>(MOCK_QUEUE);
+  const [filter, setFilter] = useState<'todos' | 'pendientes' | 'listos'>('todos');
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  const filteredQueue = queue.filter(b => {
+    if (filter === 'pendientes') return b.requiereValidacion;
+    if (filter === 'listos') return !b.requiereValidacion;
+    return true;
+  });
+
+  const stats = {
+    total: queue.length,
+    listos: queue.filter(b => !b.requiereValidacion).length,
+    pendientes: queue.filter(b => b.requiereValidacion).length,
+    valorTotal: queue.reduce((s, b) => s + b.valor, 0),
+  };
+
+  const aprobarBorrador = (id: string) => {
+    setQueue(prev => prev.filter(b => b.id !== id));
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* STATS */}
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white shadow-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-400" /> Cola de Borradores IA
+          </h3>
+          <button onClick={refresh} className="p-1.5 rounded-lg bg-slate-700 active:scale-90">
+            <RefreshCw className={`w-3.5 h-3.5 text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white/10 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black">{stats.total}</p>
+            <p className="text-[10px] text-slate-400 font-bold">Total</p>
+          </div>
+          <div className="bg-emerald-500/20 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-emerald-300">{stats.listos}</p>
+            <p className="text-[10px] text-emerald-400 font-bold">Listos</p>
+          </div>
+          <div className="bg-amber-500/20 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-amber-300">{stats.pendientes}</p>
+            <p className="text-[10px] text-amber-400 font-bold">Revisar</p>
+          </div>
+        </div>
+      </div>
+
+      {/* FILTER CHIPS */}
+      <div className="flex gap-2">
+        {[
+          { id: 'todos' as const, label: 'Todos', count: stats.total },
+          { id: 'listos' as const, label: 'Listos', count: stats.listos },
+          { id: 'pendientes' as const, label: 'Pendientes', count: stats.pendientes },
+        ].map(f => (
+          <button
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 ${
+              filter === f.id
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
+                : 'bg-white text-slate-500 border border-slate-200'
+            }`}
+          >
+            {f.label} ({f.count})
+          </button>
+        ))}
+      </div>
+
+      {/* QUEUE LIST */}
+      {filteredQueue.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16">
+          <CheckCircle2 className="w-16 h-16 text-emerald-200 mb-3" />
+          <p className="font-bold text-slate-500">Cola vacía</p>
+          <p className="text-xs text-slate-400 mt-1">Todos los borradores han sido procesados</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredQueue.map(borrador => (
+            <BorradorCard
+              key={borrador.id}
+              borrador={borrador}
+              onAprobar={() => aprobarBorrador(borrador.id)}
+              onRechazar={() => aprobarBorrador(borrador.id)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* BATCH ACTION */}
+      {stats.listos > 0 && (
+        <button
+          onClick={() => setQueue(prev => prev.filter(b => b.requiereValidacion))}
+          className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-200 active:scale-95"
+        >
+          <CheckCircle2 className="w-5 h-5" /> Aprobar {stats.listos} Listos
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SUB-COMPONENTS
+// ═══════════════════════════════════════════════════════════════
+
+function BorradorCard({ borrador, onAprobar, onRechazar }: {
+  borrador: BorradorEnCola;
+  onAprobar: () => void;
+  onRechazar: () => void;
+}) {
+  const metodoIcon: Record<string, React.ReactNode> = {
+    voice: <Mic className="w-4 h-4" />,
+    text: <FileText className="w-4 h-4" />,
+    whatsapp: <MessageSquare className="w-4 h-4" />,
+    email: <Mail className="w-4 h-4" />,
+    quick: <Zap className="w-4 h-4" />,
+    photo: <Camera className="w-4 h-4" />,
+  };
+
+  const metodoColor: Record<string, string> = {
+    voice: 'bg-red-100 text-red-600',
+    text: 'bg-blue-100 text-blue-600',
+    whatsapp: 'bg-green-100 text-green-600',
+    email: 'bg-purple-100 text-purple-600',
+    quick: 'bg-amber-100 text-amber-600',
+    photo: 'bg-slate-100 text-slate-600',
+  };
+
+  const timeAgo = (() => {
+    const ms = Date.now() - new Date(borrador.timestamp).getTime();
+    const mins = Math.floor(ms / 60000);
+    if (mins < 60) return `${mins}m`;
+    return `${Math.floor(mins / 60)}h`;
+  })();
+
+  return (
+    <div className={`bg-white rounded-xl border overflow-hidden ${
+      borrador.requiereValidacion ? 'border-amber-200' : 'border-slate-100'
+    }`}>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${metodoColor[borrador.metodo] || 'bg-slate-100 text-slate-600'}`}>
+              {metodoIcon[borrador.metodo]}
+            </div>
+            <div>
+              <p className="font-bold text-slate-800 text-sm">{borrador.cliente}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] text-slate-400">{borrador.metodo.toUpperCase()}</span>
+                <span className="text-[10px] text-slate-300">·</span>
+                <span className="text-[10px] text-slate-400 flex items-center gap-0.5">
+                  <Clock className="w-3 h-3" /> {timeAgo}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-bold text-slate-700">{borrador.valor > 0 ? formatCurrency(borrador.valor) : '—'}</p>
+            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5 ml-auto w-fit ${
+              borrador.confianza >= 85 ? 'bg-emerald-100 text-emerald-700' :
+              borrador.confianza >= 60 ? 'bg-amber-100 text-amber-700' :
+              'bg-red-100 text-red-700'
+            }`}>
+              <TrendingUp className="w-2.5 h-2.5" /> {borrador.confianza}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="flex border-t border-slate-100">
+        <button onClick={onRechazar} className="flex-1 py-2.5 text-xs font-bold text-red-600 flex items-center justify-center gap-1 active:bg-red-50">
+          <XCircle className="w-4 h-4" /> Rechazar
+        </button>
+        <div className="w-px bg-slate-100" />
+        <button className="flex-1 py-2.5 text-xs font-bold text-blue-600 flex items-center justify-center gap-1 active:bg-blue-50">
+          <ChevronRight className="w-4 h-4" /> Revisar
+        </button>
+        <div className="w-px bg-slate-100" />
+        <button onClick={onAprobar} className="flex-1 py-2.5 text-xs font-bold text-emerald-600 flex items-center justify-center gap-1 active:bg-emerald-50">
+          <CheckCircle2 className="w-4 h-4" /> Aprobar
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,21 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/observability';
+import { auditLogger } from '@/lib/security/audit-logger'
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json().catch(() => ({}))
+    await auditLogger.security('CSP violation event', {
+      event: 'CSP_VIOLATION',
+      report: body,
+      userAgent: request.headers.get('user-agent') || 'unknown',
+      referrer: request.headers.get('referer') || undefined,
+      timestamp: new Date().toISOString(),
+    })
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    await auditLogger.error('Failed to process CSP violation', error as Error, {})
+    return NextResponse.json({ success: false }, { status: 500 })
+  }
+}
+

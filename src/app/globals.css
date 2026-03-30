@@ -1,0 +1,224 @@
+/* stylelint-disable at-rule-no-unknown */
+/* postcss-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* postcss-enable */
+
+/* Light Neuromorphic OS Tier 0 palette */
+:root {
+  /* Backgrounds and surfaces: #F0EDE8 is HSL 36 17% 93% */
+  --background: 36 17% 93%;
+  --foreground: 217 33% 14%; /* deep slate text */
+  --card: 36 17% 93%; /* match background for true neumorphism */
+  --card-foreground: 217 33% 14%;
+  --popover: 36 17% 93%;
+  --popover-foreground: 217 33% 14%;
+
+  /* Brand primary (indigo/sky) */
+  --primary: 226 100% 64%; /* indigo-500 equivalent */
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary and muted */
+  --secondary: 36 17% 88%; /* slightly darker for pressed states */
+  --secondary-foreground: 217 33% 14%;
+  --muted: 36 17% 88%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 226 100% 64%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Status */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Borders, inputs, focus ring */
+  --border: 36 17% 85%;
+  --input: 36 17% 90%;
+  --ring: 226 100% 64%;
+
+  --radius: 1rem;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+/* Neumorphism helpers for soft, elegant surfaces */
+.neo-surface {
+  background: hsl(var(--background));
+  box-shadow: 9px 9px 18px rgba(0, 0, 0, 0.06),
+    -9px -9px 18px rgba(255, 255, 255, 0.8);
+}
+
+.neo-card {
+  background: hsl(var(--card));
+  box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.04),
+    -12px -12px 24px rgba(255, 255, 255, 0.9);
+  border: 1px solid hsl(var(--border));
+}
+
+.neo-pressable {
+  background: hsl(var(--card));
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.06),
+    -6px -6px 12px rgba(255, 255, 255, 0.9);
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+.neo-pressable:active {
+  transform: translateY(1px);
+  box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.06),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+}
+
+.neo-input {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.03),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   🎨 NEUROMORPHIC MOBILE ENTERPRISE 2050
+   ======================================== */
+
+/* Mobile Header Neuromorphic */
+.neo-mobile-header {
+  background: linear-gradient(
+    135deg,
+    hsl(217 91% 60%) 0%,
+    hsl(244 75% 60%) 50%,
+    hsl(217 91% 55%) 100%
+  );
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Card Neuromorphic */
+.neo-mobile-card {
+  background: hsl(var(--card));
+  border-radius: 1rem;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.05),
+    -8px -8px 16px rgba(255, 255, 255, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border: 1px solid hsl(var(--border) / 0.5);
+  transition: all 0.3s ease;
+}
+
+.neo-mobile-card:active {
+  transform: scale(0.98);
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.05),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.6);
+}
+
+/* Mobile Button Neuromorphic */
+.neo-mobile-btn {
+  background: linear-gradient(
+    145deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--background)) 100%
+  );
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05),
+    -4px -4px 8px rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+}
+
+.neo-mobile-btn:active {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* Mobile Bottom Nav Neuromorphic */
+.neo-mobile-nav {
+  background: hsl(var(--card));
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-top: 1px solid hsl(var(--border) / 0.3);
+}
+
+.neo-mobile-nav-item {
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.neo-mobile-nav-item.active {
+  background: linear-gradient(
+    145deg,
+    hsl(199 89% 95%) 0%,
+    hsl(199 89% 90%) 100%
+  );
+  box-shadow: inset 2px 2px 4px rgba(59, 130, 246, 0.1),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Mobile Stats Neuromorphic */
+.neo-mobile-stat {
+  background: linear-gradient(
+    145deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--card)) 100%
+  );
+  border-radius: 0.75rem;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.03),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  border: 1px solid hsl(var(--border) / 0.3);
+}
+
+/* Glow Effects */
+.neo-glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.neo-glow-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.neo-glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.neo-glow-yellow {
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+}
+
+/* Dark Mode is Disabled - Forced Light Neumorphic */
+@media (prefers-color-scheme: dark) {
+  /* Overrides to keep it on #F0EDE8 to strictly follow Tier 0 skill */
+  :root {
+    --background: 36 17% 93%;
+    --foreground: 217 33% 14%;
+  }
+}
+
+/* Animations */
+@keyframes neo-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.neo-pulse {
+  animation: neo-pulse 2s infinite;
+}
+
+/* Mobile Typography */
+.neo-text-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(199 89% 48%) 0%,
+    hsl(244 75% 60%) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

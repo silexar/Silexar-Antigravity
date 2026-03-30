@@ -1,0 +1,254 @@
+/**
+ * POST /api/auth/login — User authentication
+ * Validates credentials against database, returns signed JWT
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
+import { z } from 'zod'
+import { eq, and } from 'drizzle-orm'
+import { signToken, signRefreshToken } from '@/lib/api/jwt'
+import { apiSuccess, apiError, apiServerError, apiValidationError } from '@/lib/api/response'
+import { isDatabaseConnected, getDB } from '@/lib/db'
+import { users, tenants } from '@/lib/db/users-schema'
+import { auditLogger } from '@/lib/security/audit-logger'
+import { AuditEventType } from '@/lib/security/audit-types'
+import { authRateLimiter } from '@/lib/security/rate-limiter'
+import { sessionStore } from '@/lib/security/session-store'
+import { logger } from '@/lib/observability';
+
+// ─── Validation ─────────────────────────────────────────────
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email format').max(255).trim().toLowerCase(),
+  password: z.string().min(1, 'Password is required').max(128),
+})
+
+// ─── Brute-force protection (in-memory, per-instance) ───────
+
+const loginAttempts = new Map<string, { count: number; lockedUntil: number }>()
+const MAX_ATTEMPTS = 5
+const LOCKOUT_MS = 15 * 60_000 // 15 minutes
+
+function checkBruteForce(email: string): { allowed: boolean; retryAfterMs?: number } {
+  const key = email.toLowerCase()
+  const entry = loginAttempts.get(key)
+  const now = Date.now()
+
+  if (!entry) return { allowed: true }
+
+  if (entry.lockedUntil > now) {
+    return { allowed: false, retryAfterMs: entry.lockedUntil - now }
+  }
+
+  // Reset if lockout expired
+  if (entry.lockedUntil > 0 && entry.lockedUntil <= now) {
+    loginAttempts.delete(key)
+    return { allowed: true }
+  }
+
+  return { allowed: true }
+}
+
+function recordFailedAttempt(email: string): void {
+  const key = email.toLowerCase()
+  const entry = loginAttempts.get(key) || { count: 0, lockedUntil: 0 }
+  entry.count++
+
+  if (entry.count >= MAX_ATTEMPTS) {
+    entry.lockedUntil = Date.now() + LOCKOUT_MS
+  }
+
+  loginAttempts.set(key, entry)
+}
+
+function clearAttempts(email: string): void {
+  loginAttempts.delete(email.toLowerCase())
+}
+
+// ─── Handler ────────────────────────────────────────────────
+
+export async function POST(request: NextRequest) {
+  const startTime = performance.now()
+
+  try {
+    // 0. IP-based rate limit (Redis sliding window, falls back to in-memory)
+    const rlResult = await authRateLimiter.checkRateLimit(request)
+    if (!rlResult.success) {
+      return new Response(
+        JSON.stringify({ success: false, error: { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many login attempts. Please try again later.' } }),
+        { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': String(rlResult.retryAfter ?? 60) } }
+      )
+    }
+
+    // 1. Parse body
+    let body: unknown
+    try {
+      body = await request.json()
+    } catch {
+      return apiError('INVALID_JSON', 'Request body must be valid JSON', 400)
+    }
+
+    // 2. Validate
+    const parsed = loginSchema.safeParse(body)
+    if (!parsed.success) {
+      return apiValidationError(parsed.error.flatten().fieldErrors)
+    }
+
+    const { email, password } = parsed.data
+
+    // 3. Brute-force check
+    const bruteCheck = checkBruteForce(email)
+    if (!bruteCheck.allowed) {
+      await auditLogger.log({
+        type: AuditEventType.ACCOUNT_LOCKED,
+        message: `Login blocked: account locked after ${MAX_ATTEMPTS} failed attempts`,
+        metadata: { email: email.substring(0, 10) + '***' },
+      })
+      return apiError(
+        'ACCOUNT_LOCKED',
+        'Account temporarily locked. Try again later.',
+        423,
+        { retryAfterMs: bruteCheck.retryAfterMs }
+      )
+    }
+
+    // 4. Query database
+    if (!isDatabaseConnected()) {
+      return apiServerError('Database not available')
+    }
+
+    const db = getDB()
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.email, email)))
+      .limit(1)
+
+    // 5. Verify user exists — use constant-time compare to prevent timing attacks
+    if (!user) {
+      // Still hash to prevent timing-based user enumeration
+      await bcrypt.hash('dummy-password', 12)
+      recordFailedAttempt(email)
+      return apiError('INVALID_CREDENTIALS', 'Invalid email or password', 401)
+    }
+
+    // 6. Verify password
+    const passwordValid = await bcrypt.compare(password, user.passwordHash)
+    if (!passwordValid) {
+      recordFailedAttempt(email)
+      await auditLogger.log({
+        type: AuditEventType.LOGIN_FAILURE,
+        userId: user.id,
+        message: 'Failed login: invalid password',
+        metadata: { email: email.substring(0, 10) + '***' },
+      })
+      return apiError('INVALID_CREDENTIALS', 'Invalid email or password', 401)
+    }
+
+    // 7. Check account status
+    if (user.status !== 'active') {
+      return apiError('ACCOUNT_DISABLED', 'Account is disabled', 403)
+    }
+
+    // 8. Get tenant info
+    const [tenant] = user.tenantId
+      ? await db.select().from(tenants).where(eq(tenants.id, user.tenantId)).limit(1)
+      : [null]
+
+    // 9. Generate tokens with jose (cryptographically signed)
+    const sessionId = crypto.randomUUID()
+    const accessToken = await signToken({
+      userId: user.id,
+      email: user.email,
+      role: user.category || 'vendedor',
+      tenantId: user.tenantId || '',
+      tenantSlug: tenant?.slug || '',
+      sessionId,
+    })
+
+    const refreshToken = await signRefreshToken(user.id, sessionId)
+
+    // 10. Register session in server-side store (enables revocation on logout)
+    await sessionStore.create(sessionId, {
+      userId: user.id,
+      tenantId: user.tenantId || '',
+      role: user.category || 'vendedor',
+    })
+
+    // 11. Clear brute-force tracking
+    clearAttempts(email)
+
+    // 11. Audit log success
+    await auditLogger.log({
+      type: AuditEventType.LOGIN_SUCCESS,
+      userId: user.id,
+      message: 'Successful login',
+      metadata: {
+        tenantId: user.tenantId,
+        role: user.category,
+        sessionId,
+      },
+    })
+
+    // 12. Build response — set httpOnly cookies + return tokens in body
+    const processingTime = Math.round(performance.now() - startTime)
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    const response = NextResponse.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          category: user.category,
+          tenantId: user.tenantId,
+          tenantSlug: tenant?.slug || null,
+        },
+        accessToken,
+        expiresIn: 86400, // 24 hours in seconds
+      },
+      meta: { processingTimeMs: processingTime, sessionId },
+    })
+
+    // silexar_session — access token read by Edge middleware (cookie path)
+    response.cookies.set('silexar_session', accessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 86400,         // 24 hours
+      path: '/',
+    })
+
+    // silexar_refresh — httpOnly, sent automatically on POST /api/auth/refresh
+    response.cookies.set('silexar_refresh', refreshToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 3600, // 7 days
+      path: '/api/auth/refresh', // scoped — only sent to the refresh endpoint
+    })
+
+    return response
+  } catch (error) {
+    logger.error('Error in auth login', error instanceof Error ? error : undefined, { module: 'auth', action: 'login' })
+    await auditLogger.log({
+      type: AuditEventType.SECURITY_VIOLATION,
+      message: 'Login endpoint error',
+      metadata: { error: (error as Error).message },
+    })
+    return apiServerError('Authentication service error')
+  }
+}
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  })
+}
