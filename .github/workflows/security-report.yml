@@ -1,0 +1,85 @@
+name: 📊 Security Report
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  generate-report:
+    name: 📊 Generate Security Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+      security-events: read
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🔍 NPM Security Audit
+        id: npm_audit
+        run: |
+          npm audit --json > security-report.json || true
+          CRITICAL=$(cat security-report.json | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(cat security-report.json | jq -r '.metadata.vulnerabilities.high // 0')
+          MODERATE=$(cat security-report.json | jq -r '.metadata.vulnerabilities.moderate // 0')
+          LOW=$(cat security-report.json | jq -r '.metadata.vulnerabilities.low // 0')
+          INFO=$(cat security-report.json | jq -r '.metadata.vulnerabilities.info // 0')
+          TOTAL_DEPS=$(cat security-report.json | jq -r '.metadata.totalDependencies // 0')
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+          echo "low=$LOW" >> $GITHUB_OUTPUT
+          echo "info=$INFO" >> $GITHUB_OUTPUT
+          echo "total_deps=$TOTAL_DEPS" >> $GITHUB_OUTPUT
+
+      - name: 🧮 Calculate Security Score
+        id: calculate_score
+        run: |
+          CRITICAL=${{ steps.npm_audit.outputs.critical }}
+          HIGH=${{ steps.npm_audit.outputs.high }}
+          MODERATE=${{ steps.npm_audit.outputs.moderate }}
+          LOW=${{ steps.npm_audit.outputs.low }}
+          SCORE=$(echo "scale=2; 10 - ($CRITICAL * 2) - ($HIGH * 1) - ($MODERATE * 0.5) - ($LOW * 0.1)" | bc)
+          if (( $(echo "$SCORE < 0" | bc -l) )); then SCORE="0.00"; fi
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "Security Score: $SCORE/10"
+
+      - name: 📤 Upload Report Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: |
+            security-report.json
+          retention-days: 90
+          overwrite: true
+
+      - name: 📝 Create Issue for New Vulnerabilities
+        if: steps.npm_audit.outputs.critical > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const score = '${{ steps.calculate_score.outputs.score }}';
+            const critical = '${{ steps.npm_audit.outputs.critical }}';
+            const high = '${{ steps.npm_audit.outputs.high }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔒 Security Alert - ${critical} Critical Vulnerabilities (${new Date().toISOString().split('T')[0]})`,
+              body: `## 🚨 Security Alert\\n\\n| Metric | Value |\\n|--------|-------|\\n| Security Score | ${score}/10 |\\n| Critical | ${critical} |\\n| High | ${high} |\\n\\n[View Report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+              labels: ['security', 'automated', 'high-priority']
+            });

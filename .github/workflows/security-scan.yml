@@ -1,0 +1,91 @@
+name: 🔒 Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  npm-audit:
+    name: 📦 NPM Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🔍 NPM Security Audit
+        id: npm_audit
+        run: |
+          npm audit --audit-level=moderate --json > npm-audit-report.json || EXIT_CODE=$?
+          CRITICAL_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.high // 0')
+          MODERATE_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.moderate // 0')
+          echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          echo "high_count=$HIGH_COUNT" >> $GITHUB_OUTPUT
+          echo "moderate_count=$MODERATE_COUNT" >> $GITHUB_OUTPUT
+          echo "📊 Vulnerabilities: Critical=$CRITICAL_COUNT High=$HIGH_COUNT Moderate=$MODERATE_COUNT"
+          npm audit --audit-level=moderate || true
+
+      - name: 📤 Upload NPM Audit Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: npm-audit-report
+          path: npm-audit-report.json
+          retention-days: 30
+
+      - name: 🚫 Block on Critical Vulnerabilities
+        if: steps.npm_audit.outputs.critical_count > 0
+        run: |
+          echo "❌ CRITICAL vulnerabilities found: ${{ steps.npm_audit.outputs.critical_count }}"
+          exit 1
+
+  codeql-analysis:
+    name: 🧪 CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🧪 Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🏗️ Build Application
+        run: npm run build || true
+
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
