@@ -111,7 +111,6 @@ const DISPOSITIVOS: { id: TipoDispositivo; icono: React.ElementType; label: stri
   { id: 'smart_speaker', icono: Speaker, label: 'Smart Speaker' }
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _SISTEMAS_OPERATIVOS = [
   { id: 'ios', label: 'iOS', color: 'bg-gray-100' },
   { id: 'android', label: 'Android', color: 'bg-green-100' },
@@ -273,7 +272,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
       const resultado = await estimarAlcance(targeting);
       setAlcanceEstimado(resultado);
     } catch {
-      // /* console.error('Error estimando alcance') */;
+      // /* */;
     } finally {
       setEstimandoAlcance(false);
     }
@@ -453,6 +452,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
               <div className="flex gap-2">
                 <Input
                   placeholder="Agregar interés..."
+                  aria-label="Agregar interés"
                   value={nuevoInteres}
                   onChange={(e) => setNuevoInteres(e.target.value)}
                   onKeyDown={(e) => {
@@ -478,8 +478,8 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                     <SelectValue placeholder="Sugeridos" />
                   </SelectTrigger>
                   <SelectContent>
-                    {INTERESES_SUGERIDOS.filter(i => !demografico.intereses.includes(i)).map(i => (
-                      <SelectItem key={i} value={i}>{i}</SelectItem>
+                    {INTERESES_SUGERIDOS.filter(interes => !demografico.intereses.includes(interes)).map(interes => (
+                      <SelectItem key={interes} value={interes}>{interes}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -569,6 +569,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                 <Label className="text-xs">Radio por defecto:</Label>
                 <Input
                   type="number"
+                  aria-label="Radio por defecto"
                   value={geografico.radioDefaultKm}
                   onChange={(e) => updateGeografico({
                     radioDefaultKm: parseInt(e.target.value) || 5
@@ -626,6 +627,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
               <div className="flex items-center gap-2">
                 <Input
                   type="time"
+                  aria-label="Hora de inicio permitida"
                   value={contextual.horasPermitidas[0]?.inicio || '00:00'}
                   onChange={(e) => updateContextual({
                     horasPermitidas: [{
@@ -638,6 +640,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                 <span className="text-gray-500">a</span>
                 <Input
                   type="time"
+                  aria-label="Hora de fin permitida"
                   value={contextual.horasPermitidas[0]?.fin || '23:59'}
                   onChange={(e) => updateContextual({
                     horasPermitidas: [{
@@ -832,6 +835,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                   <Label className="text-xs text-gray-600">Máx por usuario</Label>
                   <Input
                     type="number"
+                    aria-label="Máx impresiones por usuario"
                     value={comportamental.maxImpresionesUsuario}
                     onChange={(e) => updateComportamental({
                       maxImpresionesUsuario: parseInt(e.target.value) || 10
@@ -843,6 +847,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                   <Label className="text-xs text-gray-600">Máx por día</Label>
                   <Input
                     type="number"
+                    aria-label="Máx impresiones por día"
                     value={comportamental.maxImpresionesUsuarioPorDia}
                     onChange={(e) => updateComportamental({
                       maxImpresionesUsuarioPorDia: parseInt(e.target.value) || 3
@@ -854,6 +859,7 @@ export const PanelTargetingAvanzado: React.FC<PanelTargetingProps> = ({
                   <Label className="text-xs text-gray-600">Separación (min)</Label>
                   <Input
                     type="number"
+                    aria-label="Separación en minutos entre impresiones"
                     value={comportamental.separacionMinutosEntreImpresiones}
                     onChange={(e) => updateComportamental({
                       separacionMinutosEntreImpresiones: parseInt(e.target.value) || 30

@@ -240,8 +240,8 @@ export default function ContratosDashboard() {
       <div className="max-w-[1600px] mx-auto px-6 py-8">
         {/* Métricas */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {metricas.map((metrica, idx) => (
-            <MetricaCard key={idx} {...metrica} />
+          {metricas.map((metrica) => (
+            <MetricaCard key={metrica.titulo} {...metrica} />
           ))}
         </div>
 
@@ -253,9 +253,9 @@ export default function ContratosDashboard() {
               <h2 className="text-lg font-semibold text-slate-800">Accesos Rápidos</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              {accesosRapidos.map((acceso, idx) => (
+              {accesosRapidos.map((acceso) => (
                 <AccesoRapidoCard
-                  key={idx}
+                  key={acceso.titulo}
                   {...acceso}
                   onClick={() => router.push(acceso.href)}
                 />
@@ -294,8 +294,8 @@ export default function ContratosDashboard() {
                   { accion: 'Contrato creado', detalle: 'CON-2024-00152', tiempo: 'Hace 5 min', icono: Plus },
                   { accion: 'Aprobación recibida', detalle: 'CON-2024-00145', tiempo: 'Hace 15 min', icono: CheckCircle2 },
                   { accion: 'Firma completada', detalle: 'CON-2024-00138', tiempo: 'Hace 1 hora', icono: FileText }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
+                ].map((item) => (
+                  <div key={item.detalle} className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-slate-100">
                       <item.icono className="w-4 h-4 text-slate-600" />
                     </div>
@@ -320,8 +320,8 @@ export default function ContratosDashboard() {
                   { cliente: 'Banco Nacional', dias: 45, valor: '$180M' },
                   { cliente: 'SuperMax', dias: 60, valor: '$65M' },
                   { cliente: 'TechCorp', dias: 90, valor: '$25M' }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white/70">
+                ].map((item) => (
+                  <div key={item.cliente} className="flex items-center justify-between p-3 rounded-lg bg-white/70">
                     <div>
                       <p className="font-medium text-slate-700">{item.cliente}</p>
                       <p className="text-xs text-amber-600">{item.dias} días</p>

@@ -183,7 +183,7 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
               </div>
               <div className="bg-slate-800/50 rounded-lg p-4 max-h-64 overflow-y-auto">
                 {CURRENT_TERMS.sections.map((section, i) => (
-                  <div key={i} className="mb-4">
+                  <div key={`${section}-${i}`} className="mb-4">
                     <h4 className="text-white font-medium mb-2">{section.title}</h4>
                     <p className="text-slate-400 text-sm">{section.content}</p>
                   </div>

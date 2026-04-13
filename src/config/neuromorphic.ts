@@ -96,8 +96,29 @@ export const defaultConfig = {
     topics: kafkaTopics
   },
   security: {
-    jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-    encryptionKey: process.env.ENCRYPTION_KEY || 'your-encryption-key-32-chars-long',
+    // SECURITY FIX: Removed hardcoded fallbacks - now validates at runtime
+    get jwtSecret() {
+      const secret = process.env.JWT_SECRET
+      if (!secret || secret.length < 32) {
+        throw new Error(
+          'SECURITY ERROR: JWT_SECRET must be configured with at least 32 characters. ' +
+          'This is required for secure JWT signing. ' +
+          'Set JWT_SECRET environment variable before starting the application.'
+        )
+      }
+      return secret
+    },
+    get encryptionKey() {
+      const key = process.env.ENCRYPTION_KEY
+      if (!key || key.length < 32) {
+        throw new Error(
+          'SECURITY ERROR: ENCRYPTION_KEY must be configured with at least 32 characters. ' +
+          'This is required for secure data encryption. ' +
+          'Set ENCRYPTION_KEY environment variable before starting the application.'
+        )
+      }
+      return key
+    },
     maxRequestsPerMinute: 60,
     maxRequestsPerHour: 1000
   },

@@ -291,6 +291,7 @@ export const CopiarExtenderCampana: React.FC<CopiarExtenderCampanaProps> = ({
                   <Label>Nueva fecha inicio</Label>
                   <Input
                     type="date"
+                    aria-label="Nueva fecha inicio"
                     value={nuevaFechaInicio}
                     onChange={(e) => setNuevaFechaInicio(e.target.value)}
                   />
@@ -299,6 +300,7 @@ export const CopiarExtenderCampana: React.FC<CopiarExtenderCampanaProps> = ({
                   <Label>Nueva fecha fin</Label>
                   <Input
                     type="date"
+                    aria-label="Nueva fecha fin"
                     value={nuevaFechaFin}
                     onChange={(e) => setNuevaFechaFin(e.target.value)}
                   />
@@ -369,6 +371,7 @@ export const CopiarExtenderCampana: React.FC<CopiarExtenderCampanaProps> = ({
                   <Label>Nueva fecha de finalización</Label>
                   <Input
                     type="date"
+                    aria-label="Nueva fecha de finalización"
                     value={nuevaFechaFinExtension}
                     onChange={(e) => setNuevaFechaFinExtension(e.target.value)}
                     min={campanaOrigen.fechaFin}
@@ -423,6 +426,7 @@ export const CopiarExtenderCampana: React.FC<CopiarExtenderCampanaProps> = ({
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
+                        aria-label="Ajuste de tarifa en porcentaje"
                         value={ajusteTarifa}
                         onChange={(e) => setAjusteTarifa(parseFloat(e.target.value) || 0)}
                         className="w-24"

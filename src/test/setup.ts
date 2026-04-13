@@ -51,6 +51,12 @@ export const createMockStore = (initialState = {}) => {
   }
 }
 
+// Mock de URL.createObjectURL
+if (isJsdom) {
+  global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+  global.URL.revokeObjectURL = vi.fn()
+}
+
 // Mock de fecha consistente para tests
 export const mockDate = (date: string) => {
   const mockedDate = new Date(date)

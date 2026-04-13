@@ -1,13 +1,16 @@
 /**
- * 🤝 SILEXAR PULSE - API CRM
+ * 🤝 SILEXAR PULSE - API CRM TIER 0
+ * 
+ * Gestión de leads y oportunidades comerciales
  * 
  * @version 2025.1.0
+ * @tier TIER_0_FORTUNE_10
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // Mock leads
@@ -24,129 +27,148 @@ const oportunidades = [
   { id: 'op-003', nombre: 'Patrocinio Tech', leadId: 'lead-001', valor: 35000000, probabilidad: 45, etapa: 'negociacion', vendedor: 'Carlos M.', fechaCierreEstimada: '2025-12-22' }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const tipo = searchParams.get('tipo') || 'leads'; // leads | oportunidades | pipeline
-    const etapa = searchParams.get('etapa');
-    
-    if (tipo === 'leads') {
-      let resultado = leads;
-      if (etapa) resultado = resultado.filter(l => l.etapa === etapa);
-      
-      return NextResponse.json({
-        success: true,
-        data: {
-          leads: resultado,
-          stats: {
-            total: resultado.length,
-            nuevos: resultado.filter(l => l.etapa === 'nuevo').length,
-            contactados: resultado.filter(l => l.etapa === 'contactado').length,
-            scorePromedio: Math.round(resultado.reduce((sum, l) => sum + l.scoreIA, 0) / resultado.length)
-          }
-        }
-      });
-    }
-    
-    if (tipo === 'oportunidades') {
-      let resultado = oportunidades;
-      if (etapa) resultado = resultado.filter(o => o.etapa === etapa);
-      
-      const valorTotal = resultado.reduce((sum, o) => sum + o.valor, 0);
-      const valorPonderado = resultado.reduce((sum, o) => sum + (o.valor * o.probabilidad / 100), 0);
-      
-      return NextResponse.json({
-        success: true,
-        data: {
-          oportunidades: resultado,
-          stats: {
-            total: resultado.length,
-            valorTotal,
-            valorPonderado
-          }
-        }
-      });
-    }
-    
-    if (tipo === 'pipeline') {
-      const etapas = ['nuevo', 'contactado', 'calificado', 'propuesta', 'negociacion'];
-      const pipeline = etapas.map(e => {
-        const ops = oportunidades.filter(o => o.etapa === e);
-        return {
-          etapa: e,
-          cantidad: ops.length,
-          valor: ops.reduce((sum, o) => sum + o.valor, 0)
-        };
-      });
-      
-      return NextResponse.json({
-        success: true,
-        data: { pipeline }
-      });
-    }
-    
-    return NextResponse.json({ success: false, error: 'Tipo no válido' }, { status: 400 });
-    
-  } catch (error) {
-    logger.error('[API/CRM] Error GET:', error instanceof Error ? error : undefined, { module: 'crm', action: 'GET' });
-    return apiServerError()
-  }
-}
+/**
+ * GET - Obtener leads, oportunidades y pipeline
+ * Requiere: equipos-ventas:read
+ */
+export const GET = withApiRoute(
+  { resource: 'equipos-ventas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const tipo = searchParams.get('tipo') || 'leads'; // leads | oportunidades | pipeline
+      const etapa = searchParams.get('etapa');
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { accion } = body;
-    
-    if (accion === 'crear_lead') {
-      const nuevoLead = {
-        id: `lead-${Date.now()}`,
-        ...body.data,
-        scoreIA: calcularScore(body.data),
-        etapa: 'nuevo',
-        fechaCreacion: new Date()
-      };
-      
-      return NextResponse.json({
-        success: true,
-        data: nuevoLead,
-        mensaje: 'Lead creado exitosamente'
+      return await withTenantContext(ctx.tenantId, async () => {
+        if (tipo === 'leads') {
+          let resultado = leads;
+          if (etapa) resultado = resultado.filter(l => l.etapa === etapa);
+          
+          return apiSuccess({
+            leads: resultado,
+            stats: {
+              total: resultado.length,
+              nuevos: resultado.filter(l => l.etapa === 'nuevo').length,
+              contactados: resultado.filter(l => l.etapa === 'contactado').length,
+              scorePromedio: Math.round(resultado.reduce((sum, l) => sum + (l.scoreIA || 0), 0) / resultado.length)
+            }
+          });
+        }
+        
+        if (tipo === 'oportunidades') {
+          let resultado = oportunidades;
+          if (etapa) resultado = resultado.filter(o => o.etapa === etapa);
+          
+          const valorTotal = resultado.reduce((sum, o) => sum + o.valor, 0);
+          const valorPonderado = resultado.reduce((sum, o) => sum + (o.valor * o.probabilidad / 100), 0);
+          
+          return apiSuccess({
+            oportunidades: resultado,
+            stats: {
+              total: resultado.length,
+              valorTotal,
+              valorPonderado
+            }
+          });
+        }
+        
+        if (tipo === 'pipeline') {
+          const etapas = ['nuevo', 'contactado', 'calificado', 'propuesta', 'negociacion'];
+          const pipeline = etapas.map(e => {
+            const ops = oportunidades.filter(o => o.etapa === e);
+            return {
+              etapa: e,
+              cantidad: ops.length,
+              valor: ops.reduce((sum, o) => sum + o.valor, 0)
+            };
+          });
+          
+          return apiSuccess({ pipeline });
+        }
+        
+        return apiError('INVALID_TYPE', 'Tipo no válido', 400);
       });
-    }
-    
-    if (accion === 'actualizar_etapa') {
-      const { leadId, nuevaEtapa } = body;
-      return NextResponse.json({
-        success: true,
-        mensaje: `Lead ${leadId} movido a ${nuevaEtapa}`
+    } catch (error) {
+      logger.error('[API/CRM] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'crm', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
       });
+      return apiServerError();
     }
-    
-    if (accion === 'convertir_a_oportunidad') {
-      const { leadId, valor, fechaCierre } = body;
-      const nuevaOportunidad = {
-        id: `op-${Date.now()}`,
-        leadId,
-        valor,
-        fechaCierreEstimada: fechaCierre,
-        probabilidad: 50,
-        etapa: 'calificado'
-      };
-      
-      return NextResponse.json({
-        success: true,
-        data: nuevaOportunidad,
-        mensaje: 'Oportunidad creada desde lead'
-      });
-    }
-    
-    return NextResponse.json({ success: false, error: 'Acción no válida' }, { status: 400 });
-    
-  } catch (error) {
-    logger.error('[API/CRM] Error POST:', error instanceof Error ? error : undefined, { module: 'crm', action: 'POST' });
-    return apiServerError()
   }
-}
+);
+
+/**
+ * POST - Crear lead, actualizar etapa, convertir a oportunidad
+ * Requiere: equipos-ventas:create
+ */
+export const POST = withApiRoute(
+  { resource: 'equipos-ventas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { accion } = body;
+
+      return await withTenantContext(ctx.tenantId, async () => {
+        if (accion === 'crear_lead') {
+          const nuevoLead = {
+            id: `lead-${Date.now()}`,
+            ...body.data,
+            scoreIA: calcularScore(body.data),
+            etapa: 'nuevo',
+            fechaCreacion: new Date(),
+            creadoPor: ctx.userId
+          };
+          
+          return apiSuccess({
+            data: nuevoLead,
+            mensaje: 'Lead creado exitosamente'
+          }, 201);
+        }
+        
+        if (accion === 'actualizar_etapa') {
+          const { leadId, nuevaEtapa } = body;
+          return apiSuccess({
+            mensaje: `Lead ${leadId} movido a ${nuevaEtapa}`,
+            actualizadoPor: ctx.userId,
+            fechaActualizacion: new Date().toISOString()
+          });
+        }
+        
+        if (accion === 'convertir_a_oportunidad') {
+          const { leadId, valor, fechaCierre } = body;
+          const nuevaOportunidad = {
+            id: `op-${Date.now()}`,
+            leadId,
+            valor,
+            fechaCierreEstimada: fechaCierre,
+            probabilidad: 50,
+            etapa: 'calificado',
+            creadoPor: ctx.userId,
+            fechaCreacion: new Date().toISOString()
+          };
+          
+          return apiSuccess({
+            data: nuevaOportunidad,
+            mensaje: 'Oportunidad creada desde lead'
+          }, 201);
+        }
+        
+        return apiError('INVALID_ACTION', 'Acción no válida', 400);
+      });
+    } catch (error) {
+      logger.error('[API/CRM] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'crm', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
+  }
+);
 
 function calcularScore(lead: { presupuestoEstimado?: number; origen?: string; cargo?: string }): number {
   let score = 50;

@@ -90,7 +90,7 @@ export default function DashboardConciliacionView({ onStartConciliacion }: Dashb
                   <div className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mb-1">Cortex Sync Engine</div>
                   <div className="flex items-center gap-2">
                      <div className="flex gap-0.5">
-                        {[1,2,3,4,5].map(i => <div key={i} className="w-1 h-3 bg-emerald-500 rounded-full animate-pulse" style={{ animationDelay: `${i*150}ms` }}></div>)}
+                        {[1,2,3,4,5].map(i => <div key={`dot-${i}`} className="w-1 h-3 bg-emerald-500 rounded-full animate-pulse" style={{ animationDelay: `${i*150}ms` }}></div>)}
                      </div>
                      <span className="text-[10px] font-black text-emerald-600 font-mono tracking-tighter">LIVE SYNC &lt;30s</span>
                   </div>
@@ -139,8 +139,9 @@ export default function DashboardConciliacionView({ onStartConciliacion }: Dashb
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between mb-6">
           <div className="relative w-full md:max-w-xl group">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">🔍</span>
-            <input 
-              type="text" 
+            <input
+              type="text"
+              aria-label="Buscar en conciliación"
               placeholder="'SP123456', 'Banco Chile', 'no emitido', 'recuperado'..."
               className="w-full bg-white/80 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 shadow-sm"
             />

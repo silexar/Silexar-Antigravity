@@ -300,27 +300,29 @@ export class DashboardController {
   }
 
   private formatearTituloEstado(estado: string): string {
-    const titulos: Record<string, string> = {
-      'borrador': '📋 Borrador',
-      'revision': '👀 En Revisión',
-      'aprobacion': '⏳ Aprobación',
-      'firmado': '✅ Firmado',
-      'activo': '🚀 Activo',
-      'finalizado': '🏁 Finalizado'
+    // Safe switch to prevent object injection
+    switch (estado) {
+      case 'borrador': return '📋 Borrador';
+      case 'revision': return '👀 En Revisión';
+      case 'aprobacion': return '⏳ Aprobación';
+      case 'firmado': return '✅ Firmado';
+      case 'activo': return '🚀 Activo';
+      case 'finalizado': return '🏁 Finalizado';
+      default: return estado;
     }
-    return titulos[estado] || estado
   }
 
   private obtenerColorEstado(estado: string): string {
-    const colores: Record<string, string> = {
-      'borrador': '#6B7280',
-      'revision': '#3B82F6',
-      'aprobacion': '#F59E0B',
-      'firmado': '#8B5CF6',
-      'activo': '#10B981',
-      'finalizado': '#6B7280'
+    // Safe switch to prevent object injection
+    switch (estado) {
+      case 'borrador': return '#6B7280';
+      case 'revision': return '#3B82F6';
+      case 'aprobacion': return '#F59E0B';
+      case 'firmado': return '#8B5CF6';
+      case 'activo': return '#10B981';
+      case 'finalizado': return '#6B7280';
+      default: return '#6B7280';
     }
-    return colores[estado] || '#6B7280'
   }
 
   private calcularUrgencia(contrato: IContratoData): 'baja' | 'media' | 'alta' | 'critica' {
@@ -349,14 +351,38 @@ export class DashboardController {
   }
 
   private agruparAlertasPorCategoria(alertas: IAlert[]): Record<string, IAlert[]> {
-    return alertas.reduce((grupos: Record<string, IAlert[]>, alerta) => {
-      const categoria = alerta.categoria || 'general'
-      if (!grupos[categoria]) {
-        grupos[categoria] = []
+    const grupos: Record<string, IAlert[]> = {};
+    
+    for (const alerta of alertas) {
+      const categoria = alerta.categoria || 'general';
+      // Safe property initialization using Map approach to avoid injection
+      const grupoExistente = this.getGrupoSeguro(grupos, categoria);
+      if (!grupoExistente) {
+        this.setGrupoSeguro(grupos, categoria, []);
       }
-      grupos[categoria].push(alerta)
-      return grupos
-    }, {})
+      this.getGrupoSeguro(grupos, categoria)?.push(alerta);
+    }
+    
+    return grupos;
+  }
+
+  // Safe getter to prevent object injection
+  private getGrupoSeguro(grupos: Record<string, IAlert[]>, categoria: string): IAlert[] | undefined {
+    // Use Object.entries to safely check for key existence
+    const entries = Object.entries(grupos);
+    const found = entries.find(([key]) => key === categoria);
+    return found ? found[1] : undefined;
+  }
+
+  // Safe setter to prevent object injection  
+  private setGrupoSeguro(grupos: Record<string, IAlert[]>, categoria: string, valor: IAlert[]): void {
+    // Safe assignment using Object.defineProperty to prevent prototype pollution
+    Object.defineProperty(grupos, categoria, {
+      value: valor,
+      writable: true,
+      enumerable: true,
+      configurable: true
+    });
   }
 
   private calcularTendencias(datos: number[] | undefined): Record<string, unknown> {

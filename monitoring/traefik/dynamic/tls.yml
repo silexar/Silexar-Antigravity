@@ -24,6 +24,7 @@ tls:
 
 http:
   middlewares:
+    # Security headers middleware — applied to ALL routes
     security-headers:
       headers:
         accessControlAllowMethods:
@@ -32,31 +33,65 @@ http:
           - PUT
           - POST
           - DELETE
-        accessControlMaxAge: 100
+          - PATCH
+        accessControlMaxAge: 600
         hostsProxyHeaders:
           - "X-Forwarded-Host"
-        referrerPolicy: "same-origin"
+        # strict-origin-when-cross-origin: sends origin on same-origin, only origin (no path) cross-origin
+        referrerPolicy: "strict-origin-when-cross-origin"
         sslRedirect: true
-        stsSeconds: 31536000
+        stsSeconds: 63072000          # 2 years — HSTS preload requirement
         stsIncludeSubdomains: true
         stsPreload: true
         forceSTSHeader: true
-        frameDeny: true
-        contentTypeNosniff: true
-        browserXssFilter: true
+        frameDeny: true               # X-Frame-Options: DENY
+        contentTypeNosniff: true      # X-Content-Type-Options: nosniff
+        browserXssFilter: true        # Legacy X-XSS-Protection (belt + suspenders)
+        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'strict-dynamic' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://api.anthropic.com wss:; frame-src 'none'; object-src 'none'; form-action 'self'; base-uri 'self'; upgrade-insecure-requests"
         customRequestHeaders:
           X-Forwarded-Proto: "https"
         customResponseHeaders:
           X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()"
           server: ""
           X-Powered-By: ""
-    
+          X-DNS-Prefetch-Control: "off"
+
+    # General API rate limit — 100 req/min, burst 150
     rate-limit:
       rateLimit:
         average: 100
         period: 1m
-        burst: 200
-    
+        burst: 150
+
+    # Auth route rate limit — 5 req/min, burst 10 (brute force protection)
+    rate-limit-auth:
+      rateLimit:
+        average: 5
+        period: 1m
+        burst: 10
+
+    # AI/Cortex route rate limit — 50 req/min
+    rate-limit-cortex:
+      rateLimit:
+        average: 50
+        period: 1m
+        burst: 60
+
+    # Chain: security headers + general rate limit (default for all app routes)
+    default-chain:
+      chain:
+        middlewares:
+          - security-headers
+          - rate-limit
+
+    # Chain: security headers + auth rate limit (for /api/auth/* routes)
+    auth-chain:
+      chain:
+        middlewares:
+          - security-headers
+          - rate-limit-auth
+
     compress:
       compress:
         excludedContentTypes:

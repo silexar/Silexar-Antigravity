@@ -613,6 +613,7 @@ export default function CentroComandoPage() {
                 onChange={(e) => setBusqueda(e.target.value)}
                 onFocus={() => setShowSugerencias(true)}
                 onBlur={() => setTimeout(() => setShowSugerencias(false), 200)}
+                aria-label="Buscar contratos"
                 placeholder="🔍 CON-2025-0123, SuperMax, '$50K-100K', 'aprobación pendiente'..."
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50 text-sm"
               />
@@ -625,9 +626,9 @@ export default function CentroComandoPage() {
                     className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-slate-200 shadow-xl z-20 p-2"
                   >
                     <p className="text-xs text-slate-500 px-3 py-1">Sugerencias predictivas:</p>
-                    {sugerenciasBusqueda.map((sug, idx) => (
+                    {sugerenciasBusqueda.map((sug) => (
                       <button
-                        key={idx}
+                        key={sug}
                         onClick={() => setBusqueda(sug)}
                         className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm text-slate-700 flex items-center gap-2"
                       >

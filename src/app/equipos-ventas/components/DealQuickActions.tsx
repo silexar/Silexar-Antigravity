@@ -60,7 +60,7 @@ export const DealQuickActions = ({ dealName, contactName, contactPhone, contactE
   return (
     <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden w-80 animate-in zoom-in-95 duration-200">
       {/* Header */}
-      <div className="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
+      <div className="bg-[#F0EDE8] text-white px-4 py-3 flex justify-between items-center">
         <div>
           <p className="text-sm font-bold">{dealName}</p>
           <p className="text-[10px] text-slate-400">{contactName}</p>

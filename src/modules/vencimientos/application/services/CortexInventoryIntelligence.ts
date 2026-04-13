@@ -55,7 +55,7 @@ export class CortexInventoryIntelligence {
    * SMART RENEWALS & CHURN PREVENTION
    * Evalúa qué clientes están próximos a vencer y su probabilidad de abandono.
    */
-  public async preventChurn(activeContracts: Array<{ daysToExpiration: number; clientId: string }>): Promise<ChurnRisk[]> {
+  public async preventChurn(activeContracts: Array<{ daysToExpiration: number; clientId: string; id?: string; currentValue?: number }>): Promise<ChurnRisk[]> {
     const risks: ChurnRisk[] = [];
 
     for (const contract of activeContracts) {
@@ -66,10 +66,10 @@ export class CortexInventoryIntelligence {
         
         risks.push({
           clientId: contract.clientId,
-          contractId: contract.id,
+          contractId: contract.id ?? '',
           daysToExpiration: contract.daysToExpiration,
           churnProbability: riskProb,
-          smartRenewalOffer: contract.currentValue * 0.9 // Offer 10% discount for renewal
+          smartRenewalOffer: (contract.currentValue ?? 0) * 0.9 // Offer 10% discount for renewal
         });
       }
     }

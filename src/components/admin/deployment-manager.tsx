@@ -327,7 +327,7 @@ export function DeploymentManager() {
               <span className="text-slate-500 text-sm">Changelog</span>
               <ul className="mt-1 space-y-1">
                 {selectedDeployment.changelog.map((item, i) => (
-                  <li key={i} className="text-slate-300 text-sm flex items-center gap-2">
+                  <li key={item} className="text-slate-300 text-sm flex items-center gap-2">
                     <CheckCircle className="w-3 h-3 text-green-400" />
                     {item}
                   </li>

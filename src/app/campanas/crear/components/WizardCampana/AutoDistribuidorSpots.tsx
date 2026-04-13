@@ -439,8 +439,8 @@ export const AutoDistribuidorSpots: React.FC<AutoDistribuidorProps> = ({
                 {/* Alertas */}
                 {preview.alertas.length > 0 && (
                   <div className="space-y-2">
-                    {preview.alertas.map((alerta, i) => (
-                      <div key={i} className="flex items-center gap-2 p-2 bg-amber-50 rounded-lg border border-amber-200">
+                    {preview.alertas.map((alerta) => (
+                      <div key={alerta} className="flex items-center gap-2 p-2 bg-amber-50 rounded-lg border border-amber-200">
                         <AlertTriangle className="w-4 h-4 text-amber-600" />
                         <span className="text-xs text-amber-700">{alerta}</span>
                       </div>

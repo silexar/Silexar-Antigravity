@@ -212,7 +212,7 @@ export function MobileAnalyticsView() {
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">🏆 Top Clientes</h3>
         <div className="space-y-3">
           {data.topClientes.map((cliente, i) => (
-            <div key={i} className="flex items-center justify-between">
+            <div key={`${cliente}-${i}`} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
                   i === 0 ? 'bg-amber-100 text-amber-600' :
@@ -238,7 +238,7 @@ export function MobileAnalyticsView() {
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">🔬 Métodos de Verificación</h3>
         <div className="space-y-3">
           {data.distribucionMetodos.map((m, i) => (
-            <div key={i}>
+            <div key={`${m}-${i}`}>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-600">{m.metodo}</span>
                 <span className="text-xs text-slate-400">{m.count} ({m.pct}%)</span>

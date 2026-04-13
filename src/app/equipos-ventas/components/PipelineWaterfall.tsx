@@ -73,7 +73,7 @@ export const PipelineWaterfall = () => {
                   <div className={`w-full rounded-t-xl ${stage.color} transition-all duration-700 relative group cursor-pointer hover:opacity-90`} style={{ height: `${height}px` }}>
                     {/* Tooltip on hover */}
                     <div className="absolute -top-16 inset-x-0 hidden group-hover:flex flex-col items-center">
-                      <div className="bg-slate-900 text-white text-[10px] rounded-lg px-2 py-1 whitespace-nowrap">
+                      <div className="bg-[#F0EDE8] text-white text-[10px] rounded-lg px-2 py-1 whitespace-nowrap">
                         {stage.avgDays > 0 ? `${stage.avgDays}d avg` : 'Closed'} • {stage.conversion}% conv
                       </div>
                     </div>

@@ -572,7 +572,6 @@ export class QualityLogger {
         console.debug(logMessage, logEntry.metadata);
         break;
       case 'INFO':
-        console.info(logMessage, logEntry.metadata);
         break;
       case 'WARN':
         logger.warn(String(logMessage), { metadata: logEntry.metadata });

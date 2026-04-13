@@ -12,6 +12,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -277,18 +278,10 @@ export function AttributionDashboard() {
       setIsLoading(false)
 
     } catch (error) {
-      console.error('❌ Error cargando datos de atribución:', error)
       setIsLoading(false)
     }
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
@@ -487,7 +480,7 @@ export function AttributionDashboard() {
                   </thead>
                   <tbody>
                     {touchpointData.map((touchpoint, index) => (
-                      <tr key={index} className="border-b hover:bg-gray-50">
+                      <tr key={`${touchpoint}-${index}`} className="border-b hover:bg-gray-50">
                         <td className="p-2">
                           <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full ${touchpoint.color}`}></div>
@@ -568,7 +561,7 @@ export function AttributionDashboard() {
         <TabsContent value="devices" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {deviceAttribution.map((device, index) => (
-              <Card key={index}>
+              <Card key={`${device}-${index}`}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
                     {device.icon}

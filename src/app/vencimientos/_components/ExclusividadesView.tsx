@@ -36,7 +36,7 @@ export default function ExclusividadesView() {
             </tr></thead>
             <tbody>
               {EXCLUSIVIDADES_MOCK.map((ex, i) => (
-                <tr key={i} className="border-b border-gray-200/50 hover:bg-white/90 transition-colors">
+                <tr key={`${ex}-${i}`} className="border-b border-gray-200/50 hover:bg-white/90 transition-colors">
                   <td className="py-3 px-3 font-semibold text-gray-800">{ex.rubro}</td>
                   <td className="py-3 px-3 text-center">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ex.politica === 'exclusivo' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
@@ -63,7 +63,7 @@ export default function ExclusividadesView() {
         <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4">🗺️ Dashboard de Competencia por Rubro (Mejora 6)</h3>
         <div className="space-y-4">
           {MAPA_COMPETENCIA.map((prog, i) => (
-            <div key={i} className="rounded-xl border border-gray-200/50 bg-white/3 p-4">
+            <div key={`${prog}-${i}`} className="rounded-xl border border-gray-200/50 bg-white/3 p-4">
               <h4 className="font-semibold text-gray-800 mb-3">{prog.programa}</h4>
               <div className="flex flex-wrap gap-2">
                 {prog.rubros.map((r, j) => (

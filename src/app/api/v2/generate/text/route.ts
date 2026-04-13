@@ -210,7 +210,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
-  return NextResponse.json({
+  try {
+    return NextResponse.json({
     endpoint: 'POST /api/v2/generate/text',
     description: 'Generate advertising copy using AI (Gemini Pro)',
     authentication: 'Bearer token required',
@@ -267,4 +268,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       callToAction: 'Solicita tu pre-aprobación hoy',
     },
   });
+  } catch (error) {
+    logger.error('[API/V2/Generate/Text] Error:', error instanceof Error ? error : undefined);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
+  }
 }

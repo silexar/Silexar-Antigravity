@@ -135,8 +135,8 @@ export default function ERPIntegrationPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {erpSystems.map((system, index) => (
-              <div key={index} className="p-6 border rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
+            {erpSystems.map((system) => (
+              <div key={system.name} className="p-6 border rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 text-green-600" />

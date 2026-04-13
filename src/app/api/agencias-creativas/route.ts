@@ -9,8 +9,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // ═══════════════════════════════════════════════════════════════
@@ -36,7 +36,6 @@ const mockAgencias = [
     emailContacto: 'cvera@bluewave.cl',
     estado: 'activa', 
     activa: true,
-    // Métricas calculadas
     campañasActivas: 12,
     facturacionMensual: 45000000,
     scoreRendimiento: 92,
@@ -97,179 +96,231 @@ const mockAgencias = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// HANDLERS
+// GET - Listar agencias
+// Requiere: anunciantes:read
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const tipo = searchParams.get('tipo') || '';
-    const estado = searchParams.get('estado') || '';
-    const search = searchParams.get('search') || '';
+export const GET = withApiRoute(
+  { resource: 'anunciantes', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const tipo = searchParams.get('tipo') || '';
+        const estado = searchParams.get('estado') || '';
+        const search = searchParams.get('search') || '';
 
-    let filtered = [...mockAgencias];
+        let filtered = [...mockAgencias];
 
-    if (tipo) {
-      filtered = filtered.filter(a => a.tipoAgencia === tipo);
+        if (tipo) {
+          filtered = filtered.filter(a => a.tipoAgencia === tipo);
+        }
+
+        if (estado === 'activa') {
+          filtered = filtered.filter(a => a.activa);
+        } else if (estado === 'inactiva') {
+          filtered = filtered.filter(a => !a.activa);
+        }
+
+        if (search) {
+          const searchLower = search.toLowerCase();
+          filtered = filtered.filter(a => 
+            a.razonSocial.toLowerCase().includes(searchLower) ||
+            a.nombreFantasia?.toLowerCase().includes(searchLower) ||
+            a.codigo.toLowerCase().includes(searchLower)
+          );
+        }
+
+        // Calcular stats
+        const stats = {
+          total: mockAgencias.length,
+          activas: mockAgencias.filter(a => a.activa).length,
+          facturacionMes: mockAgencias.reduce((sum, a) => sum + a.facturacionMensual, 0),
+          comisionPromedio: Math.round(mockAgencias.reduce((sum, a) => sum + a.porcentajeComision, 0) / mockAgencias.length),
+          porTipo: {
+            digital: mockAgencias.filter(a => a.tipoAgencia === 'digital').length,
+            medios: mockAgencias.filter(a => a.tipoAgencia === 'medios').length,
+            btl: mockAgencias.filter(a => a.tipoAgencia === 'btl').length,
+            publicidad: mockAgencias.filter(a => a.tipoAgencia === 'publicidad').length,
+            integral: mockAgencias.filter(a => a.tipoAgencia === 'integral').length
+          }
+        };
+
+        return NextResponse.json({
+          success: true,
+          data: filtered,
+          stats,
+          total: filtered.length,
+          consultadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'agencias-creativas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    if (estado === 'activa') {
-      filtered = filtered.filter(a => a.activa);
-    } else if (estado === 'inactiva') {
-      filtered = filtered.filter(a => !a.activa);
-    }
-
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(a => 
-        a.razonSocial.toLowerCase().includes(searchLower) ||
-        a.nombreFantasia?.toLowerCase().includes(searchLower) ||
-        a.codigo.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Calcular stats
-    const stats = {
-      total: mockAgencias.length,
-      activas: mockAgencias.filter(a => a.activa).length,
-      facturacionMes: mockAgencias.reduce((sum, a) => sum + a.facturacionMensual, 0),
-      comisionPromedio: Math.round(mockAgencias.reduce((sum, a) => sum + a.porcentajeComision, 0) / mockAgencias.length),
-      porTipo: {
-        digital: mockAgencias.filter(a => a.tipoAgencia === 'digital').length,
-        medios: mockAgencias.filter(a => a.tipoAgencia === 'medios').length,
-        btl: mockAgencias.filter(a => a.tipoAgencia === 'btl').length,
-        publicidad: mockAgencias.filter(a => a.tipoAgencia === 'publicidad').length,
-        integral: mockAgencias.filter(a => a.tipoAgencia === 'integral').length
-      }
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      stats,
-      total: filtered.length
-    });
-
-  } catch (error) {
-    logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { module: 'agencias-creativas' });
-    return NextResponse.json({ success: false, error: 'Error al obtener agencias' }, { status: 500 });
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    const { razonSocial, tipoAgencia, porcentajeComision } = body;
+// ═══════════════════════════════════════════════════════════════
+// POST - Crear agencia
+// Requiere: anunciantes:create
+// ═══════════════════════════════════════════════════════════════
 
-    if (!razonSocial) {
-      return NextResponse.json({ success: false, error: 'Razón social es requerida' }, { status: 400 });
+export const POST = withApiRoute(
+  { resource: 'anunciantes', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const body = await req.json();
+
+        const { razonSocial, tipoAgencia, porcentajeComision } = body;
+
+        if (!razonSocial) {
+          return NextResponse.json({ success: false, error: 'Razón social es requerida' }, { status: 400 });
+        }
+
+        const newAgencia = {
+          id: `agc-${Date.now()}`,
+          codigo: `AGC-${(mockAgencias.length + 1).toString().padStart(3, '0')}`,
+          rut: body.rut || null,
+          razonSocial,
+          nombreFantasia: body.nombreFantasia || null,
+          tipoAgencia: tipoAgencia || 'publicidad',
+          porcentajeComision: porcentajeComision ?? 15,
+          emailGeneral: body.emailGeneral || null,
+          telefonoGeneral: body.telefonoGeneral || null,
+          paginaWeb: body.paginaWeb || null,
+          direccion: body.direccion || null,
+          ciudad: body.ciudad || 'Santiago',
+          nombreContacto: body.nombreContacto || null,
+          cargoContacto: body.cargoContacto || null,
+          emailContacto: body.emailContacto || null,
+          estado: 'activa',
+          activa: true,
+          campañasActivas: 0,
+          facturacionMensual: 0,
+          scoreRendimiento: 50,
+          clientesGestionados: 0,
+          fechaCreacion: new Date().toISOString().split('T')[0],
+          tenantId: ctx.tenantId,
+          creadoPor: ctx.userId
+        };
+
+        mockAgencias.push(newAgencia);
+
+        return NextResponse.json({ 
+          success: true, 
+          data: newAgencia,
+          message: 'Agencia creada exitosamente' 
+        }, { status: 201 });
+      });
+    } catch (error) {
+      logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'agencias-creativas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    const newAgencia = {
-      id: `agc-${Date.now()}`,
-      codigo: `AGC-${(mockAgencias.length + 1).toString().padStart(3, '0')}`,
-      rut: body.rut || null,
-      razonSocial,
-      nombreFantasia: body.nombreFantasia || null,
-      tipoAgencia: tipoAgencia || 'publicidad',
-      porcentajeComision: porcentajeComision ?? 15,
-      emailGeneral: body.emailGeneral || null,
-      telefonoGeneral: body.telefonoGeneral || null,
-      paginaWeb: body.paginaWeb || null,
-      direccion: body.direccion || null,
-      ciudad: body.ciudad || 'Santiago',
-      nombreContacto: body.nombreContacto || null,
-      cargoContacto: body.cargoContacto || null,
-      emailContacto: body.emailContacto || null,
-      estado: 'activa',
-      activa: true,
-      campañasActivas: 0,
-      facturacionMensual: 0,
-      scoreRendimiento: 50,
-      clientesGestionados: 0,
-      fechaCreacion: new Date().toISOString().split('T')[0],
-      tenantId: 'tenant-001'
-    };
-
-    mockAgencias.push(newAgencia);
-
-    return NextResponse.json({ 
-      success: true, 
-      data: newAgencia,
-      message: 'Agencia creada exitosamente' 
-    }, { status: 201 });
-
-  } catch (error) {
-    logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { module: 'agencias-creativas' });
-    return NextResponse.json({ success: false, error: 'Error al crear agencia' }, { status: 500 });
   }
-}
+);
 
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.id) {
-      return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
+// ═══════════════════════════════════════════════════════════════
+// PUT - Actualizar agencia
+// Requiere: anunciantes:update
+// ═══════════════════════════════════════════════════════════════
+
+export const PUT = withApiRoute(
+  { resource: 'anunciantes', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const body = await req.json();
+
+        if (!body.id) {
+          return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
+        }
+
+        const index = mockAgencias.findIndex(a => a.id === body.id);
+        if (index === -1) {
+          return NextResponse.json({ success: false, error: 'Agencia no encontrada' }, { status: 404 });
+        }
+
+        // Actualizar campos
+        const agencia = mockAgencias[index];
+        if (body.razonSocial) agencia.razonSocial = body.razonSocial;
+        if (body.nombreFantasia !== undefined) agencia.nombreFantasia = body.nombreFantasia;
+        if (body.tipoAgencia) agencia.tipoAgencia = body.tipoAgencia;
+        if (body.porcentajeComision !== undefined) agencia.porcentajeComision = body.porcentajeComision;
+        if (body.emailGeneral !== undefined) agencia.emailGeneral = body.emailGeneral;
+        if (body.telefonoGeneral !== undefined) agencia.telefonoGeneral = body.telefonoGeneral;
+        if (body.paginaWeb !== undefined) agencia.paginaWeb = body.paginaWeb;
+        if (body.nombreContacto !== undefined) agencia.nombreContacto = body.nombreContacto;
+        if (body.emailContacto !== undefined) agencia.emailContacto = body.emailContacto;
+        if (typeof body.activa === 'boolean') {
+          agencia.activa = body.activa;
+          agencia.estado = body.activa ? 'activa' : 'inactiva';
+        }
+
+        return NextResponse.json({ 
+          success: true, 
+          data: agencia,
+          message: 'Agencia actualizada',
+          actualizadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'agencias-creativas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    const index = mockAgencias.findIndex(a => a.id === body.id);
-    if (index === -1) {
-      return NextResponse.json({ success: false, error: 'Agencia no encontrada' }, { status: 404 });
-    }
-
-    // Actualizar campos
-    const agencia = mockAgencias[index];
-    if (body.razonSocial) agencia.razonSocial = body.razonSocial;
-    if (body.nombreFantasia !== undefined) agencia.nombreFantasia = body.nombreFantasia;
-    if (body.tipoAgencia) agencia.tipoAgencia = body.tipoAgencia;
-    if (body.porcentajeComision !== undefined) agencia.porcentajeComision = body.porcentajeComision;
-    if (body.emailGeneral !== undefined) agencia.emailGeneral = body.emailGeneral;
-    if (body.telefonoGeneral !== undefined) agencia.telefonoGeneral = body.telefonoGeneral;
-    if (body.paginaWeb !== undefined) agencia.paginaWeb = body.paginaWeb;
-    if (body.nombreContacto !== undefined) agencia.nombreContacto = body.nombreContacto;
-    if (body.emailContacto !== undefined) agencia.emailContacto = body.emailContacto;
-    if (typeof body.activa === 'boolean') {
-      agencia.activa = body.activa;
-      agencia.estado = body.activa ? 'activa' : 'inactiva';
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      data: agencia,
-      message: 'Agencia actualizada' 
-    });
-
-  } catch (error) {
-    logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { module: 'agencias-creativas' });
-    return NextResponse.json({ success: false, error: 'Error al actualizar' }, { status: 500 });
   }
-}
+);
 
-export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+// ═══════════════════════════════════════════════════════════════
+// DELETE - Eliminar agencia
+// Requiere: anunciantes:delete
+// ═══════════════════════════════════════════════════════════════
 
-    if (!id) {
-      return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
+export const DELETE = withApiRoute(
+  { resource: 'anunciantes', action: 'delete' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+          return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
+        }
+
+        const index = mockAgencias.findIndex(a => a.id === id);
+        if (index === -1) {
+          return NextResponse.json({ success: false, error: 'Agencia no encontrada' }, { status: 404 });
+        }
+
+        mockAgencias.splice(index, 1);
+
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Agencia eliminada',
+          eliminadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'agencias-creativas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    const index = mockAgencias.findIndex(a => a.id === id);
-    if (index === -1) {
-      return NextResponse.json({ success: false, error: 'Agencia no encontrada' }, { status: 404 });
-    }
-
-    mockAgencias.splice(index, 1);
-
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Agencia eliminada' 
-    });
-
-  } catch (error) {
-    logger.error('[API/AgenciasCreativas] Error:', error instanceof Error ? error : undefined, { module: 'agencias-creativas' });
-    return NextResponse.json({ success: false, error: 'Error al eliminar' }, { status: 500 });
   }
-}
+);

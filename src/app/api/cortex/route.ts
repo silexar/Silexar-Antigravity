@@ -1,12 +1,17 @@
+/**
+ * SILEXAR PULSE - API Cortex AI TIER 0
+ * 
+ * @version 2050.1.0
+ * @tier TIER_0_FORTUNE_10
+ */
+
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
-import { AuditEventType, AuditSeverity } from '@/lib/security/audit-types';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
-import { checkPermission } from '@/lib/security/rbac';
-import { cortexRateLimiter } from '@/lib/security/rate-limiter';
+import { AuditEventType, AuditSeverity } from '@/lib/security/audit-types';
 
 // Zod schema for POST body
 const CortexCommandSchema = z.object({
@@ -15,77 +20,68 @@ const CortexCommandSchema = z.object({
   payload: z.record(z.string(), z.unknown()).optional(),
 });
 
-export async function GET(request: NextRequest) {
-  // 1. Rate limit check (cortex: 50/min)
-  const rl = await cortexRateLimiter.checkRateLimit(request);
-  if (!rl.success) return apiError('RATE_LIMIT', 'Too many requests', 429);
-
-  // 2. Extract auth context
-  const ctx = getUserContext(request);
-  if (!ctx.userId) return apiUnauthorized();
-
-  // 3. Check permissions — dashboard read to view cortex status
-  if (!checkPermission(ctx, 'dashboard', 'read')) return apiForbidden();
-
-  try {
-    const result = await withTenantContext(ctx.tenantId, async () => {
-      return {
-        status: 'ACTIVE',
-        engines: ['creative', 'audience', 'sense'],
-        tenantId: ctx.tenantId,
-      };
-    });
-
-    return apiSuccess(result);
-  } catch (error) {
-    logger.error('[API/Cortex] Error GET:', error instanceof Error ? error : undefined, { module: 'cortex' });
-    return apiServerError();
+/**
+ * GET - Estado de Cortex
+ * Requiere: dashboard:read
+ */
+export const GET = withApiRoute(
+  { resource: 'dashboard', action: 'read', skipCsrf: true, rateLimit: 'cortex' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        return apiSuccess({
+          status: 'ACTIVE',
+          engines: ['creative', 'audience', 'sense'],
+          tenantId: ctx.tenantId,
+          consultadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Cortex] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'cortex',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  // 1. Rate limit check (cortex: 50/min)
-  const rl = await cortexRateLimiter.checkRateLimit(request);
-  if (!rl.success) return apiError('RATE_LIMIT', 'Too many requests', 429);
+/**
+ * POST - Ejecutar comando Cortex
+ * Requiere: configuracion:admin
+ */
+export const POST = withApiRoute(
+  { resource: 'configuracion', action: 'admin', rateLimit: 'cortex' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        // Validate input with Zod
+        let body: unknown;
+        try { body = await req.json(); } catch { 
+          return apiSuccess({ error: 'Invalid JSON' }, 400);
+        }
+        const parsed = CortexCommandSchema.safeParse(body);
+        if (!parsed.success) {
+          return apiSuccess({ error: 'Invalid input', details: parsed.error.flatten() }, 422);
+        }
 
-  // 2. Extract auth context
-  const ctx = getUserContext(request);
-  if (!ctx.userId) return apiUnauthorized();
-
-  // 3. Validate input with Zod
-  let body: unknown;
-  try { body = await request.json(); } catch { return apiError('INVALID_JSON', 'Invalid JSON', 400); }
-  const parsed = CortexCommandSchema.safeParse(body);
-  if (!parsed.success) return apiError('VALIDATION_ERROR', 'Invalid input', 422, parsed.error.flatten());
-
-  // 4. Check permissions — admin-level to issue cortex commands
-  if (!checkPermission(ctx, 'configuracion', 'admin')) return apiForbidden();
-
-  try {
-    const result = await withTenantContext(ctx.tenantId, async () => {
-      return {
-        processed: true,
-        engine: parsed.data.engine,
-        action: parsed.data.action,
-        tenantId: ctx.tenantId,
-      };
-    });
-
-    // 5. Audit log
-    auditLogger.logEvent({
-      eventType: AuditEventType.ADMIN_ACTION,
-      severity: AuditSeverity.MEDIUM,
-      userId: ctx.userId,
-      userRole: ctx.role,
-      resource: 'cortex',
-      action: 'cortex_command',
-      details: { engine: parsed.data.engine, action: parsed.data.action, tenantId: ctx.tenantId },
-      success: true,
-    });
-
-    return apiSuccess(result);
-  } catch (error) {
-    logger.error('[API/Cortex] Error POST:', error instanceof Error ? error : undefined, { module: 'cortex' });
-    return apiServerError();
+        return apiSuccess({
+          processed: true,
+          engine: parsed.data.engine,
+          action: parsed.data.action,
+          tenantId: ctx.tenantId,
+          ejecutadoPor: ctx.userId,
+          timestamp: new Date().toISOString()
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Cortex] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'cortex',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);

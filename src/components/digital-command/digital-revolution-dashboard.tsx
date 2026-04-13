@@ -17,6 +17,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -169,8 +170,7 @@ export function DigitalRevolutionDashboard() {
       setLastUpdate(new Date().toISOString())
 
     } catch (error) {
-      console.error('Error inicializando dashboard:', error)
-    } finally {
+      } finally {
       setIsLoading(false)
     }
   }
@@ -303,17 +303,9 @@ export function DigitalRevolutionDashboard() {
       await loadRevolutionMetrics()
       setLastUpdate(new Date().toISOString())
     } catch (error) {
-      console.error('Error refreshing metrics:', error)
-    }
+      }
   }, [])
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {

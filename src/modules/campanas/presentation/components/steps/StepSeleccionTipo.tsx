@@ -125,7 +125,7 @@ export const StepSeleccionTipo: React.FC<StepProps> = ({ data, updateData }) => 
                             }}
                         >
                             <div className="flex items-center gap-2 w-full">
-                                <Badge className="bg-slate-900 text-white">{pkg.specs.tipo}</Badge>
+                                <Badge className="bg-[#F0EDE8] text-white">{pkg.specs.tipo}</Badge>
                                 <span className="text-xs font-mono text-slate-400 ml-auto flex items-center gap-1 group-hover:text-violet-600">
                                     <Zap className="w-3 h-3" /> Auto-Fill
                                 </span>

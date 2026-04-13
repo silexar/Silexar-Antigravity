@@ -169,7 +169,7 @@ export const CoachingSystem = () => {
               </div>
               <div className="space-y-2">
                 {phase.items.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                  <div key={`${item}-${i}`} className="flex items-start gap-2">
                     <span className="text-sm flex-shrink-0">{item.emoji}</span>
                     <p className="text-sm text-slate-700">{item.text}</p>
                   </div>
@@ -182,7 +182,7 @@ export const CoachingSystem = () => {
         {/* Progress Timeline */}
         <div className="flex items-center justify-center gap-1 mt-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <React.Fragment key={i}>
+            <React.Fragment key={`${_}-${i}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 ${
                 i < 2 ? 'bg-blue-100 border-blue-400 text-blue-700' :
                 i < 4 ? 'bg-amber-100 border-amber-400 text-amber-700' :

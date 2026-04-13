@@ -425,6 +425,7 @@ export default function StepInformacionFundamental({
               value={busquedaAnunciante}
               onChange={(e) => setBusquedaAnunciante(e.target.value)}
               placeholder="Buscar por nombre o RUT..."
+              aria-label="Buscar anunciante por nombre o RUT"
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50"
             />
           </div>

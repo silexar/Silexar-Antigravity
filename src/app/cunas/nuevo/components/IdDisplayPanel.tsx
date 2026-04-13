@@ -78,7 +78,7 @@ export default function IdDisplayPanel({
         setError(result.error || 'Error al reservar ID');
       }
     } catch (err) {
-      /* console.error('Error reservando ID:', err) */;
+      /* */;
       setError('Error de conexión al reservar ID');
     } finally {
       setLoading(false);

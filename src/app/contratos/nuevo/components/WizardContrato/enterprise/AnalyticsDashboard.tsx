@@ -257,8 +257,8 @@ const PrediccionRenovacionCard: React.FC<{
       
       {prediccion.factoresPositivos.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1">
-          {prediccion.factoresPositivos.slice(0, 2).map((factor, i) => (
-            <span key={i} className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs">
+          {prediccion.factoresPositivos.slice(0, 2).map((factor) => (
+            <span key={factor} className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs">
               {factor}
             </span>
           ))}
@@ -267,8 +267,8 @@ const PrediccionRenovacionCard: React.FC<{
       
       {prediccion.factoresNegativos.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {prediccion.factoresNegativos.slice(0, 2).map((factor, i) => (
-            <span key={i} className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs">
+          {prediccion.factoresNegativos.slice(0, 2).map((factor) => (
+            <span key={factor} className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs">
               {factor}
             </span>
           ))}
@@ -291,7 +291,7 @@ const MiniChart: React.FC<{
   return (
     <div className="flex items-end gap-1 h-20">
       {data.map((item, index) => (
-        <div key={index} className="flex-1 flex flex-col items-center gap-1">
+        <div key={item.mes} className="flex-1 flex flex-col items-center gap-1">
           <motion.div
             className="w-full bg-gradient-to-t from-indigo-500 to-purple-500 rounded-t-sm"
             style={{ height: `${(item.ingresos / maxValue) * 100}%` }}

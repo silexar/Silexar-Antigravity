@@ -82,8 +82,8 @@ export function AICommandBar({ onExecute }: AICommandBarProps) {
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                placeholder="Pregunta a Silexar AI... (Ej: Verificar Coca-Cola)"
                 aria-label="Pregunta a Silexar AI"
+                placeholder="Pregunta a Silexar AI... (Ej: Verificar Coca-Cola)"
                 className="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400 text-lg h-12"
             />
             {/* Ghost Text Suggestion */}

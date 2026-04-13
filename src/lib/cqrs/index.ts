@@ -10,8 +10,7 @@ export interface ICommand {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IQuery<TResult = unknown> {
   // Phantom property — never instantiated, used only for type inference.
-  // Declared with `declare` so it produces no runtime value.
-  declare readonly _result?: TResult;
+  readonly _result?: TResult;
 }
 
 export interface ICommandHandler<TCommand extends ICommand, TResult = void> {

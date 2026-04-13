@@ -268,6 +268,7 @@ export default function SmartCalculator({
               </label>
               <input
                 type="number"
+                aria-label="Valor Bruto"
                 value={datos.valorBruto}
                 onChange={e => setDatos({ ...datos, valorBruto: Number(e.target.value) })}
                 className={`${neuro.input} w-full text-xl`}
@@ -297,6 +298,7 @@ export default function SmartCalculator({
                 type="range"
                 min="0"
                 max="50"
+                aria-label="Descuento en porcentaje"
                 value={datos.descuentoPorcentaje}
                 onChange={e => setDatos({ ...datos, descuentoPorcentaje: Number(e.target.value) })}
                 className={neuro.slider}
@@ -323,6 +325,7 @@ export default function SmartCalculator({
                 type="range"
                 min="0"
                 max="30"
+                aria-label="Comisión agencia en porcentaje"
                 value={datos.comisionAgenciaPorcentaje}
                 onChange={e => setDatos({ ...datos, comisionAgenciaPorcentaje: Number(e.target.value) })}
                 className={neuro.slider}
@@ -351,6 +354,7 @@ export default function SmartCalculator({
               </label>
               <input
                 type="number"
+                aria-label="Costo Operacional"
                 value={datos.costoOperacional || ''}
                 onChange={e => setDatos({ ...datos, costoOperacional: Number(e.target.value) || 0 })}
                 placeholder="Para calcular margen real"

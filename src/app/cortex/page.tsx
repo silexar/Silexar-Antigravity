@@ -1,14 +1,21 @@
+'use client';
+
 /**
  * Quantum Cortex AI Engines - Main Page
  * TIER 0 Military-Grade Cortex Engine Center
- * 
+ *
  * @version 2040.1.0
  * @classification TIER_0_SUPREMACY
  */
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Metadata } from 'next';
-import QuantumCortexDashboard from '@/components/cortex/quantum-cortex-dashboard';
+import dynamic from 'next/dynamic';
+
+const QuantumCortexDashboard = dynamic(
+  () => import('@/components/cortex/quantum-cortex-dashboard'),
+  { loading: () => <div className="h-64 animate-pulse bg-[#E8E5E0] rounded-2xl" />, ssr: false }
+);
 import { 
   Brain, 
   Zap, 
@@ -315,7 +322,9 @@ export default function QuantumCortexPage() {
             </p>
           </div>
 
-          <QuantumCortexDashboard />
+          <Suspense fallback={<div className="h-64 animate-pulse bg-[#E8E5E0] rounded-2xl" />}>
+            <QuantumCortexDashboard />
+          </Suspense>
         </div>
       </div>
 

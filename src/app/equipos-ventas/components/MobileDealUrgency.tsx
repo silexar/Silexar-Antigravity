@@ -24,7 +24,9 @@ export function MobileDealUrgency() {
     fetch('/api/equipos-ventas/deals?tipo=deals')
       .then(r => r.json())
       .then(d => { if (d.success) setDeals([...d.data].sort((a: UD, b: UD) => b.urgenciaScore - a.urgenciaScore)); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MobileDealUrgency] Failed to load deals:', error);
+      });
   }, []);
 
   return (

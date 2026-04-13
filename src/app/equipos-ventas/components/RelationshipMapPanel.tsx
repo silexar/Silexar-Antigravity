@@ -71,13 +71,13 @@ const TIPO_ICONS: Record<string, { icon: React.ElementType; color: string; label
   DECISION_MAKER: { icon: Gavel, color: 'text-blue-400', label: 'Decision Maker' },
   ECONOMIC_BUYER: { icon: DollarSign, color: 'text-amber-400', label: 'Economic Buyer' },
   INFLUENCER: { icon: Users, color: 'text-violet-400', label: 'Influencer' },
-  END_USER: { icon: User, color: 'text-slate-400', label: 'End User' },
+  END_USER: { icon: User, color: 'text-[#888780]', label: 'End User' },
   BLOCKER: { icon: UserX, color: 'text-red-400', label: 'Blocker' },
 };
 
 const SENTIMIENTO_BADGE: Record<string, { icon: React.ElementType; color: string }> = {
   POSITIVO: { icon: CheckCircle, color: 'text-emerald-400' },
-  NEUTRAL: { icon: MinusIcon, color: 'text-slate-400' },
+  NEUTRAL: { icon: MinusIcon, color: 'text-[#888780]' },
   NEGATIVO: { icon: XCircle, color: 'text-red-400' },
   DESCONOCIDO: { icon: Eye, color: 'text-slate-600' },
 };
@@ -91,9 +91,9 @@ export function RelationshipMapPanel() {
   const acc = ACCOUNTS_DATA[selectedAccountKey];
 
   return (
-    <div className="bg-slate-800/40 rounded-xl border border-slate-700/50 p-5">
+    <div className="bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-5">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+        <h3 className="text-sm font-bold text-[#5F5E5A] uppercase tracking-wider flex items-center gap-2">
           <Users size={16} className="text-violet-400" /> Relationship Intelligence
         </h3>
         <div className="flex gap-1">
@@ -104,7 +104,7 @@ export function RelationshipMapPanel() {
               className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-colors ${
                 selectedAccountKey === key
                   ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
-                  : 'text-slate-500 hover:text-white hover:bg-slate-700/50'
+                  : 'text-[#888780] hover:text-[#2C2C2A] hover:bg-[#D4D1CC]/50'
               }`}
             >
               {ACCOUNTS_DATA[key].nombre}
@@ -115,12 +115,12 @@ export function RelationshipMapPanel() {
 
       {/* Coverage & Strength */}
       <div className="grid grid-cols-2 gap-4 mb-5">
-        <div className="bg-slate-900/50 rounded-lg p-3">
+        <div className="bg-[#F0EDE8]/50 rounded-lg p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] text-slate-500 uppercase">Buying Committee Coverage</span>
-            <span className="text-sm font-black text-white">{acc.cobertura}%</span>
+            <span className="text-[10px] text-[#888780] uppercase">Buying Committee Coverage</span>
+            <span className="text-sm font-black text-[#2C2C2A]">{acc.cobertura}%</span>
           </div>
-          <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[#D4D1CC] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ${
                 acc.cobertura >= 80 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
@@ -131,12 +131,12 @@ export function RelationshipMapPanel() {
             />
           </div>
         </div>
-        <div className="bg-slate-900/50 rounded-lg p-3">
+        <div className="bg-[#F0EDE8]/50 rounded-lg p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] text-slate-500 uppercase">Champion Strength</span>
-            <span className="text-sm font-black text-white">{acc.championStrength}%</span>
+            <span className="text-[10px] text-[#888780] uppercase">Champion Strength</span>
+            <span className="text-sm font-black text-[#2C2C2A]">{acc.championStrength}%</span>
           </div>
-          <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[#D4D1CC] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ${
                 acc.championStrength >= 80 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
@@ -158,18 +158,18 @@ export function RelationshipMapPanel() {
           const isExpanded = expandedStakeholder === sh.id;
 
           return (
-            <div key={sh.id} className="bg-slate-900/40 rounded-lg border border-slate-700/30">
+            <div key={sh.id} className="bg-[#F0EDE8]/40 rounded-lg border border-[#D4D1CC]/30">
               <button
                 onClick={() => setExpandedStakeholder(isExpanded ? null : sh.id)}
                 className="w-full p-3 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center ${tipoInfo.color}`}>
+                  <div className={`w-8 h-8 rounded-lg bg-[#E8E5E0] flex items-center justify-center ${tipoInfo.color}`}>
                     <TipoIcon size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-white">{sh.nombre}</p>
-                    <p className="text-[10px] text-slate-500">{sh.cargo} &middot; {sh.departamento}</p>
+                    <p className="text-xs font-bold text-[#2C2C2A]">{sh.nombre}</p>
+                    <p className="text-[10px] text-[#888780]">{sh.cargo} &middot; {sh.departamento}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -177,24 +177,24 @@ export function RelationshipMapPanel() {
                   <SentIcon size={14} className={sentInfo.color} />
                   <div className="flex gap-0.5">
                     {Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i} className={`w-1 h-3 rounded-full ${i < sh.influencia ? 'bg-violet-400' : 'bg-slate-700'}`} />
+                      <div key={`${_}-${i}`} className={`w-1 h-3 rounded-full ${i < sh.influencia ? 'bg-violet-400' : 'bg-[#D4D1CC]'}`} />
                     ))}
                   </div>
-                  {isExpanded ? <ChevronUp size={14} className="text-slate-500" /> : <ChevronDown size={14} className="text-slate-500" />}
+                  {isExpanded ? <ChevronUp size={14} className="text-[#888780]" /> : <ChevronDown size={14} className="text-[#888780]" />}
                 </div>
               </button>
               {isExpanded && (
-                <div className="px-3 pb-3 border-t border-slate-700/30 pt-2 grid grid-cols-3 gap-3 text-[10px] animate-in slide-in-from-top-1 duration-200">
+                <div className="px-3 pb-3 border-t border-[#D4D1CC]/30 pt-2 grid grid-cols-3 gap-3 text-[10px] animate-in slide-in-from-top-1 duration-200">
                   <div>
-                    <span className="text-slate-500">Last Contact</span>
-                    <p className="text-white font-medium mt-0.5">{sh.ultimoContacto}</p>
+                    <span className="text-[#888780]">Last Contact</span>
+                    <p className="text-[#2C2C2A] font-medium mt-0.5">{sh.ultimoContacto}</p>
                   </div>
                   <div>
-                    <span className="text-slate-500">Influence</span>
-                    <p className="text-white font-medium mt-0.5">{sh.influencia}/10</p>
+                    <span className="text-[#888780]">Influence</span>
+                    <p className="text-[#2C2C2A] font-medium mt-0.5">{sh.influencia}/10</p>
                   </div>
                   <div>
-                    <span className="text-slate-500">Sentiment</span>
+                    <span className="text-[#888780]">Sentiment</span>
                     <p className={`font-medium mt-0.5 ${sentInfo.color}`}>{sh.sentimiento}</p>
                   </div>
                 </div>
@@ -214,12 +214,12 @@ export function RelationshipMapPanel() {
             </h4>
             <div className="space-y-1.5">
               {acc.threats.map((t, i) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <span className="text-slate-300">{t.competidor}</span>
+                <div key={`${t}-${i}`} className="flex items-center justify-between text-xs">
+                  <span className="text-[#5F5E5A]">{t.competidor}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-500">{t.tipo.replace('_', ' ')}</span>
+                    <span className="text-[10px] text-[#888780]">{t.tipo.replace('_', ' ')}</span>
                     <span className={`text-[10px] font-bold ${
-                      t.severidad === 'HIGH' ? 'text-red-400' : t.severidad === 'MEDIUM' ? 'text-amber-400' : 'text-slate-400'
+                      t.severidad === 'HIGH' ? 'text-red-400' : t.severidad === 'MEDIUM' ? 'text-amber-400' : 'text-[#888780]'
                     }`}>{t.severidad}</span>
                   </div>
                 </div>
@@ -235,7 +235,7 @@ export function RelationshipMapPanel() {
             </h4>
             <ul className="space-y-1">
               {acc.brechas.map((b, i) => (
-                <li key={i} className="text-[10px] text-slate-300 flex items-start gap-1.5">
+                <li key={`${b}-${i}`} className="text-[10px] text-[#5F5E5A] flex items-start gap-1.5">
                   <TrendingUp size={10} className="text-amber-500 mt-0.5 flex-shrink-0" />
                   {b}
                 </li>

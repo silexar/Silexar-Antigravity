@@ -503,7 +503,7 @@ export default function MiDashboardPage() {
 
               <div className="space-y-3">
                 {ranking.top.map((usuario, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
+                  <div key={usuario.nombre} className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
                       idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' :
                       idx === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400' :

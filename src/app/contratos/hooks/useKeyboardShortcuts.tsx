@@ -319,7 +319,7 @@ export function ShortcutsHelpPanel({
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-[#F0EDE8]/60 backdrop-blur-md flex items-center justify-center"
       onClick={onClose}
     >
       <div 
@@ -330,7 +330,7 @@ export function ShortcutsHelpPanel({
           <h2 className="text-xl font-bold text-slate-800">⌨️ Atajos de Teclado</h2>
           <button 
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-100 text-slate-400"
+            className="p-2 rounded-xl hover:bg-slate-100 text-[#888780]"
           >
             ✕
           </button>
@@ -362,7 +362,7 @@ export function ShortcutsHelpPanel({
           })}
         </div>
 
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 text-center text-sm text-slate-500">
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 text-center text-sm text-[#888780]">
           Presiona <kbd className="px-2 py-0.5 bg-white rounded shadow-sm font-mono">?</kbd> para mostrar este panel
         </div>
       </div>

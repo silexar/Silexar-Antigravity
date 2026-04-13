@@ -358,7 +358,7 @@ export const OfflineExperience: React.FC = () => {
 
                   {cachedPages.slice(0, 6).map((page, index) => (
                     <Button
-                      key={index}
+                      key={`${page}-${index}`}
                       variant="outline"
                       className="justify-start"
                       onClick={() => navigateToCachedPage(page)}

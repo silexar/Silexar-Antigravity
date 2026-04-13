@@ -262,7 +262,7 @@ export function ClientAPIAccess() {
               </div>
 
               <div className="flex items-center gap-2 mb-3">
-                <code className="flex-1 px-3 py-2 bg-slate-900 rounded font-mono text-sm text-slate-300">
+                <code className="flex-1 px-3 py-2 bg-[#F0EDE8] rounded font-mono text-sm text-slate-300">
                   {visibleKeys.has(apiKey.id) ? apiKey.key : `${apiKey.prefix}_${'•'.repeat(32)}`}
                 </code>
                 <button

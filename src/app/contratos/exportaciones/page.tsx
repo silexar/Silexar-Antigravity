@@ -385,8 +385,8 @@ export default function ExportsPage() {
                           Ver {trabajo.totalDocumentos} documentos incluidos
                         </summary>
                         <div className="mt-2 max-h-32 overflow-y-auto grid grid-cols-2 gap-1">
-                          {trabajo.documentos.map((doc, i) => (
-                            <span key={i} className="text-xs text-slate-500 truncate">
+                          {trabajo.documentos.map((doc) => (
+                            <span key={doc.titulo} className="text-xs text-slate-500 truncate">
                               • {doc.titulo}
                             </span>
                           ))}

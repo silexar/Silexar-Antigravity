@@ -1,6 +1,5 @@
 import { ICupoComercialRepository } from '../../domain/repositories/ICupoComercialRepository';
 import { logger } from '@/lib/observability';
-import { DomainEvent } from '../../domain/events/DomainEvent';
 
 export interface ActivarAuspicioDTO {
   cupoId: string;

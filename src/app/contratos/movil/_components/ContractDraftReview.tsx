@@ -186,8 +186,8 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
       {contratoSugerido.medios.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-100 p-4">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Desglose por Medio</p>
-          {contratoSugerido.medios.map((medio, i) => (
-            <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+          {contratoSugerido.medios.map((medio) => (
+            <div key={medio.tipo} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
               <div className="flex items-center gap-2">
                 <Radio className="w-4 h-4 text-indigo-500" />
                 <span className="text-sm font-medium text-slate-700">{medio.tipo}</span>

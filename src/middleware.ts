@@ -4,11 +4,11 @@
  * Single source of truth for edge request processing.
  * Runs at the Edge (Vercel/CDN) before every request.
  *
- * Responsibilities per CLAUDE.md:
+ * Responsibilities:
  *   1. Fast path — skip static assets
  *   2. Rate limiting — per IP (20 req/min general, 10 req/min auth)
  *   3. CSRF protection — origin/host check on mutations
- *   4. JWT verification — validates silexar_session cookie (with dev fallback)
+ *   4. JWT verification — validates silexar_session cookie
  *   5. Coarse RBAC — super-admin route guard
  *   6. Tenant isolation — slug-based cross-tenant block + impersonation audit
  *   7. Auth context headers — inject User-Id, Role, Tenant-Id, JTI for downstream
@@ -16,10 +16,6 @@
  *   9. Role-based redirect — landing page on post-login
  *
  * Runtime: Edge (no Node.js APIs — jose only, no ioredis)
- *
- * Note on JTI revocation:
- *   The Edge runtime cannot use ioredis. JTI is forwarded via X-Silexar-JTI
- *   so that API routes can check the Redis blacklist in the Node.js runtime.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -30,7 +26,6 @@ import { edgeRateLimiter } from '@/lib/security/edge-rate-limiter'
 
 const COOKIE_NAME = 'silexar_session'
 
-/** Routes that are publicly accessible without auth */
 const PUBLIC_PATHS = [
   '/login',
   '/registro',
@@ -47,46 +42,24 @@ const PUBLIC_PATHS = [
   '/sw.js',
   '/icons',
   '/images',
+  '/_vercel',
+  '/api/webhooks',
 ]
 
-/** Auth routes that have tighter rate limits */
 const AUTH_PATHS = ['/api/auth/login', '/api/auth/register', '/api/mobile/auth']
 
-/** Allowed CORS origins for mutation verification */
 const ALLOWED_ORIGINS = [
   process.env.NEXT_PUBLIC_APP_URL ?? '',
   'https://app.silexar.com',
   'https://silexar.com',
-  'http://localhost:3000',
-  'http://localhost:3001',
+  ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000', 'http://localhost:3001'] : []),
 ].filter(Boolean)
 
-/**
- * Routes that bypass CSRF origin check because they use API-key authentication
- * instead of cookie-based sessions. Each route in this list MUST enforce its
- * own authentication — currently via the X-Silexar-Api-Key header checked below.
- */
 const API_KEY_ROUTES = [
   '/api/v2/events/fl-update',
   '/api/webhooks/',
 ]
 
-// ─── JWT payload interface ────────────────────────────────────
-
-interface SilexarJWT extends JWTPayload {
-  userId?: string
-  email?: string
-  role?: string
-  tenantId?: string
-  tenantSlug?: string
-  sessionId?: string
-}
-
-/**
- * Path prefixes that are known system routes — not tenant slugs.
- * Tenant routes look like /<slug>/... so we need to distinguish them
- * from built-in system routes.
- */
 const SYSTEM_PREFIXES = new Set([
   'admin', 'super-admin', 'login', 'registro', 'api', 'dashboard', 'settings',
   '_next', 'static', 'favicon.ico', 'monitoring', 'command-center', 'security',
@@ -98,29 +71,48 @@ const SYSTEM_PREFIXES = new Set([
   'admin-cliente', 'plataformas-digitales', 'ecosistema-digital', 'sistemas-playout',
 ])
 
-// ─── Role → Landing Page ──────────────────────────────────────
-
 const ROLE_REDIRECT: Record<string, string> = {
-  SUPER_CEO:      '/super-admin',
-  ADMIN:          '/super-admin',
-  CLIENT_ADMIN:   '/admin-cliente',
-  GERENTE_VENTAS: '/dashboard',
-  EJECUTIVO_VENTAS: '/dashboard',
-  EJECUTIVO:      '/dashboard',
-  TM_SENIOR:      '/dashboard',
-  FINANCIERO:     '/dashboard',
-  PROGRAMADOR:    '/dashboard',
-  OPERADOR_EMISION: '/dashboard',
-  AGENCIA:        '/dashboard',
-  ANUNCIANTE:     '/dashboard',
-  VIEWER:         '/dashboard',
-  USER:           '/dashboard',
+  SUPER_CEO:          '/super-admin',
+  ADMIN:              '/super-admin',
+  CLIENT_ADMIN:       '/admin-cliente',
+  GERENTE_VENTAS:     '/dashboard',
+  EJECUTIVO_VENTAS:   '/dashboard',
+  EJECUTIVO:          '/dashboard',
+  TM_SENIOR:          '/dashboard',
+  FINANCIERO:         '/dashboard',
+  PROGRAMADOR:        '/dashboard',
+  OPERADOR_EMISION:   '/dashboard',
+  AGENCIA:            '/dashboard',
+  ANUNCIANTE:         '/dashboard',
+  VIEWER:             '/dashboard',
+  USER:               '/dashboard',
 }
+
+// ─── JWT Payload ──────────────────────────────────────────────
+
+interface SilexarJWT {
+  userId?: string
+  email?: string
+  role?: string
+  tenantId?: string
+  tenantSlug?: string
+  sessionId?: string
+  jti?: string
+  sub?: string
+  exp?: number
+  mfaVerified?: boolean
+}
+
+// Routes that require MFA verification in the JWT
+const MFA_REQUIRED_PREFIXES = ['/super-admin', '/admin', '/api/super-admin', '/api/admin']
+const MFA_REQUIRED_ROLES = new Set(['SUPER_CEO', 'ADMIN', 'CLIENT_ADMIN'])
 
 // ─── Helpers ──────────────────────────────────────────────────
 
 function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p))
+  return PUBLIC_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p)
+  )
 }
 
 function isAuthPath(pathname: string): boolean {
@@ -139,12 +131,24 @@ function getIP(request: NextRequest): string {
   )
 }
 
-function buildCSP(): string {
-  const nonce = crypto.randomUUID().replace(/-/g, '')
+/**
+ * Genera un nonce criptográficamente seguro para CSP
+ */
+function generateNonce(): string {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Construye el header CSP con nonce para scripts y estilos
+ * El nonce se genera por request para prevenir ataques XSS
+ */
+function buildCSP(nonce: string): string {
   return [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}'`,
-    `style-src 'self' 'unsafe-inline'`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:`,
+    `style-src 'self' 'nonce-${nonce}'`,
     `img-src 'self' data: https: blob:`,
     `font-src 'self' data:`,
     `connect-src 'self' https://*.supabase.co https://api.anthropic.com wss:`,
@@ -156,38 +160,38 @@ function buildCSP(): string {
   ].join('; ')
 }
 
+/**
+ * Añade headers de seguridad con CSP nonce-based
+ * El nonce se inyecta en el header para ser usado por el cliente
+ */
 function addSecurityHeaders(response: NextResponse): NextResponse {
+  const nonce = generateNonce();
   const headers = response.headers
-  headers.set('Content-Security-Policy', buildCSP())
+  
+  // CSP con nonce para scripts y estilos
+  headers.set('Content-Security-Policy', buildCSP(nonce))
+  
+  // Headers de seguridad estándar
   headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
   headers.set('X-Frame-Options', 'DENY')
   headers.set('X-Content-Type-Options', 'nosniff')
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
+  
+  // Headers anti-fingerprinting
   headers.delete('X-Powered-By')
   headers.delete('Server')
+  
+  // Exponer el nonce al cliente mediante header (para uso en meta tags)
+  headers.set('X-CSP-Nonce', nonce)
+  
   return response
-}
-
-// ─── JWT Helpers ──────────────────────────────────────────────
-
-interface SilexarJWT {
-  userId?: string
-  email?: string
-  role?: string
-  tenantId?: string
-  tenantSlug?: string
-  sessionId?: string
-  jti?: string
-  sub?: string
-  exp?: number
 }
 
 async function verifyJwt(token: string): Promise<SilexarJWT | null> {
   const secret = process.env.JWT_SECRET
   if (!secret || secret.length < 32) {
-    if (process.env.NODE_ENV === 'production') return null
-    return decodeDevelopmentToken(token)
+    return null
   }
   try {
     const key = new TextEncoder().encode(secret)
@@ -204,37 +208,29 @@ async function verifyJwt(token: string): Promise<SilexarJWT | null> {
   }
 }
 
-/** Dev-only: decode JWT payload without signature verification */
-function decodeDevelopmentToken(token: string): SilexarJWT | null {
-  try {
-    const parts = token.split('.')
-    if (parts.length !== 3) return null
-    const p = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'))
-    if (!p.userId && !p.sub) return null
-    if (p.exp && p.exp * 1000 < Date.now()) return null
-    return { userId: p.userId || p.sub, email: p.email || '', role: p.role || 'USER',
-      tenantId: p.tenantId || '', tenantSlug: p.tenantSlug || '',
-      sessionId: p.sessionId || '', jti: p.jti }
-  } catch { return null }
-}
+// ─── Main Proxy ───────────────────────────────────────────────
 
-// ─── Main Middleware ──────────────────────────────────────────
-
-export async function middleware(request: NextRequest): Promise<NextResponse> {
+export default async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl
   const method = request.method
   const ip = getIP(request)
 
   // 1. Fast path — skip static assets
-  if (pathname.startsWith('/_next/') || pathname.startsWith('/static/') ||
-      /\.(ico|svg|png|jpg|webp|woff2?|ttf)$/.test(pathname)) {
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/static/') ||
+    /\.(ico|svg|png|jpg|webp|woff2?|ttf)$/.test(pathname)
+  ) {
     return NextResponse.next()
   }
 
   // 2. Rate limit — auth: 10/min, general: 20/min
   const isAuth = isAuthPath(pathname)
   const rlResult = await edgeRateLimiter.checkRateLimit(
-    `${isAuth ? 'auth' : 'edge'}:${ip}`, isAuth ? 10 : 20, 60_000, request
+    `${isAuth ? 'auth' : 'edge'}:${ip}`,
+    isAuth ? 10 : 20,
+    60_000,
+    request
   )
   if (!rlResult.success) {
     const res = NextResponse.json(
@@ -261,10 +257,12 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       const providedKey = request.headers.get('x-silexar-api-key')
       const expectedKey = process.env.SILEXAR_WEBHOOK_SECRET ?? ''
       if (!expectedKey || providedKey !== expectedKey) {
-        return addSecurityHeaders(NextResponse.json(
-          { success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid API key' } },
-          { status: 401 }
-        ))
+        return addSecurityHeaders(
+          NextResponse.json(
+            { success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid API key' } },
+            { status: 401 }
+          )
+        )
       }
     } else {
       const origin = request.headers.get('origin')
@@ -273,16 +271,20 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
         try {
           const originHost = new URL(origin).host
           if (originHost !== host && !ALLOWED_ORIGINS.includes(origin)) {
-            return addSecurityHeaders(NextResponse.json(
-              { success: false, error: { code: 'CSRF_DETECTED', message: 'Invalid origin' } },
-              { status: 403 }
-            ))
+            return addSecurityHeaders(
+              NextResponse.json(
+                { success: false, error: { code: 'CSRF_DETECTED', message: 'Invalid origin' } },
+                { status: 403 }
+              )
+            )
           }
         } catch {
-          return addSecurityHeaders(NextResponse.json(
-            { success: false, error: { code: 'CSRF_DETECTED', message: 'Malformed origin' } },
-            { status: 403 }
-          ))
+          return addSecurityHeaders(
+            NextResponse.json(
+              { success: false, error: { code: 'CSRF_DETECTED', message: 'Malformed origin' } },
+              { status: 403 }
+            )
+          )
         }
       }
     }
@@ -295,10 +297,12 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   if (!token) {
     if (pathname.startsWith('/api/')) {
-      return addSecurityHeaders(NextResponse.json(
-        { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
-        { status: 401 }
-      ))
+      return addSecurityHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
+          { status: 401 }
+        )
+      )
     }
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('callbackUrl', pathname)
@@ -308,10 +312,12 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const user = await verifyJwt(token)
   if (!user) {
     if (pathname.startsWith('/api/')) {
-      return addSecurityHeaders(NextResponse.json(
-        { success: false, error: { code: 'TOKEN_INVALID', message: 'Invalid or expired token' } },
-        { status: 401 }
-      ))
+      return addSecurityHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'TOKEN_INVALID', message: 'Invalid or expired token' } },
+          { status: 401 }
+        )
+      )
     }
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('callbackUrl', pathname)
@@ -322,15 +328,38 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   const isSuperUser = user.role === 'SUPER_CEO' || user.role === 'ADMIN'
 
-  // 6. Coarse RBAC — super-admin route guard
+  // 6a. MFA enforcement — super-admin, admin routes require mfaVerified in JWT
+  const requiresMfa = MFA_REQUIRED_PREFIXES.some((p) => pathname.startsWith(p))
+  if (requiresMfa && MFA_REQUIRED_ROLES.has(user.role ?? '')) {
+    if (!user.mfaVerified) {
+      if (pathname.startsWith('/api/')) {
+        return addSecurityHeaders(
+          NextResponse.json(
+            { success: false, error: { code: 'MFA_REQUIRED', message: 'Multi-factor authentication required for this resource' } },
+            { status: 403 }
+          )
+        )
+      }
+      const mfaUrl = new URL('/login', request.url)
+      mfaUrl.searchParams.set('mfa', 'required')
+      mfaUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(mfaUrl)
+    }
+  }
+
+  // 6b. Coarse RBAC — super-admin route guard
   if (pathname.startsWith('/super-admin') && !isSuperUser) {
     if (pathname.startsWith('/api/')) {
-      return addSecurityHeaders(NextResponse.json(
-        { success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } },
-        { status: 403 }
-      ))
+      return addSecurityHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } },
+          { status: 403 }
+        )
+      )
     }
-    return NextResponse.redirect(new URL(user.tenantSlug ? `/${user.tenantSlug}` : '/login', request.url))
+    return NextResponse.redirect(
+      new URL(user.tenantSlug ? `/${user.tenantSlug}` : '/login', request.url)
+    )
   }
 
   // 7. Tenant isolation — block cross-tenant access
@@ -339,10 +368,12 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (potentialSlug && !SYSTEM_PREFIXES.has(potentialSlug)) {
     if (!isSuperUser && user.tenantSlug && user.tenantSlug !== pathParts[0]) {
       if (pathname.startsWith('/api/')) {
-        return addSecurityHeaders(NextResponse.json(
-          { success: false, error: { code: 'TENANT_MISMATCH', message: 'Access denied to this tenant' } },
-          { status: 403 }
-        ))
+        return addSecurityHeaders(
+          NextResponse.json(
+            { success: false, error: { code: 'TENANT_MISMATCH', message: 'Access denied to this tenant' } },
+            { status: 403 }
+          )
+        )
       }
       return NextResponse.redirect(new URL(`/${user.tenantSlug}`, request.url))
     }
@@ -356,18 +387,22 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   // 9. Inject auth context headers for downstream handlers
   const res = NextResponse.next()
-  res.headers.set('X-Silexar-User-Id',    user.userId     ?? '')
-  res.headers.set('X-Silexar-User-Role',  user.role       ?? '')
-  res.headers.set('X-Silexar-Tenant-Id',  user.tenantId   ?? '')
-  res.headers.set('X-Silexar-Tenant-Slug',user.tenantSlug ?? '')
-  res.headers.set('X-Silexar-Session-Id', user.sessionId  ?? '')
+  res.headers.set('X-Silexar-User-Id', user.userId ?? '')
+  res.headers.set('X-Silexar-User-Role', user.role ?? '')
+  res.headers.set('X-Silexar-Tenant-Id', user.tenantId ?? '')
+  res.headers.set('X-Silexar-Tenant-Slug', user.tenantSlug ?? '')
+  res.headers.set('X-Silexar-Session-Id', user.sessionId ?? '')
   if (user.jti) res.headers.set('X-Silexar-JTI', user.jti)
   res.headers.set('X-Request-Id', crypto.randomUUID())
   res.headers.set('X-RateLimit-Remaining', String(rlResult.remaining))
 
-  // Super-admin impersonation audit trail (CLAUDE.md requirement)
-  if (isSuperUser && potentialSlug && !SYSTEM_PREFIXES.has(potentialSlug) &&
-      user.tenantSlug !== potentialSlug) {
+  // Super-admin impersonation audit trail
+  if (
+    isSuperUser &&
+    potentialSlug &&
+    !SYSTEM_PREFIXES.has(potentialSlug) &&
+    user.tenantSlug !== potentialSlug
+  ) {
     res.headers.set('X-Silexar-Impersonation', 'true')
     res.headers.set('X-Silexar-Original-User', user.userId ?? '')
   }
@@ -375,16 +410,8 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   return addSecurityHeaders(res)
 }
 
-// ─── Matcher ──────────────────────────────────────────────────
-
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * - Static files (_next/static, _next/image)
-     * - Favicon
-     * - Public assets
-     */
     '/((?!_next/static|_next/image|favicon.ico|icons/|images/|sw.js|manifest.json).*)',
   ],
 }

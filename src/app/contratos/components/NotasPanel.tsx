@@ -325,9 +325,9 @@ const NotaCard: React.FC<{
       {/* Attachments */}
       {nota.tieneAdjuntos && nota.adjuntos && (
         <div className="mt-3 flex flex-wrap gap-2">
-          {nota.adjuntos.map((adj, idx) => (
+          {nota.adjuntos.map((adj) => (
             <a
-              key={idx}
+              key={adj.nombre}
               href={adj.url}
               className={`${neuro.btnSecondary} px-3 py-1.5 text-xs flex items-center gap-2`}
             >
@@ -473,6 +473,7 @@ export default function NotasPanel({
               <input
                 type="text"
                 placeholder="Buscar..."
+                aria-label="Buscar notas"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
                 className="bg-transparent text-sm focus:outline-none w-32"

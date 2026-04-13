@@ -123,7 +123,7 @@ export default function AdvertiserSearchSelect({
         setResults([]);
       }
     } catch (err) {
-      /* console.error('Error buscando anunciantes:', err) */;
+      /* */;
       setResults([]);
     } finally {
       setLoading(false);

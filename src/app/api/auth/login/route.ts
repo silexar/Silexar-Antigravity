@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
+import * as argon2 from 'argon2'
 import { z } from 'zod'
 import { eq, and } from 'drizzle-orm'
 import { signToken, signRefreshToken } from '@/lib/api/jwt'
@@ -15,6 +15,7 @@ import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types'
 import { authRateLimiter } from '@/lib/security/rate-limiter'
 import { sessionStore } from '@/lib/security/session-store'
+import { PasswordSecurityManager } from '@/lib/security/password-security'
 import { logger } from '@/lib/observability';
 
 // ─── Validation ─────────────────────────────────────────────
@@ -125,16 +126,16 @@ export async function POST(request: NextRequest) {
       .where(and(eq(users.email, email)))
       .limit(1)
 
-    // 5. Verify user exists — use constant-time compare to prevent timing attacks
+    // 5. Verify user exists — use constant-time argon2 hash to prevent timing attacks
     if (!user) {
       // Still hash to prevent timing-based user enumeration
-      await bcrypt.hash('dummy-password', 12)
+      await argon2.hash('dummy-password')
       recordFailedAttempt(email)
       return apiError('INVALID_CREDENTIALS', 'Invalid email or password', 401)
     }
 
-    // 6. Verify password
-    const passwordValid = await bcrypt.compare(password, user.passwordHash)
+    // 6. Verify password with Argon2id
+    const passwordValid = await argon2.verify(user.passwordHash, password)
     if (!passwordValid) {
       recordFailedAttempt(email)
       await auditLogger.log({
@@ -151,12 +152,24 @@ export async function POST(request: NextRequest) {
       return apiError('ACCOUNT_DISABLED', 'Account is disabled', 403)
     }
 
-    // 8. Get tenant info
+    // 8. Check if password appears in known data breaches (non-blocking — warn in response)
+    let passwordBreached = false
+    try {
+      const breachResult = await PasswordSecurityManager.checkBreached(password)
+      passwordBreached = breachResult.breached
+      if (breachResult.breached) {
+        logger.warn('[Login] Breached password used', { userId: user.id, breachCount: breachResult.count })
+      }
+    } catch {
+      // Never block login on HIBP failure — fail open here (availability > strict security)
+    }
+
+    // 9. Get tenant info
     const [tenant] = user.tenantId
       ? await db.select().from(tenants).where(eq(tenants.id, user.tenantId)).limit(1)
       : [null]
 
-    // 9. Generate tokens with jose (cryptographically signed)
+    // 10. Generate tokens with jose (cryptographically signed)
     const sessionId = crypto.randomUUID()
     const accessToken = await signToken({
       userId: user.id,
@@ -207,7 +220,14 @@ export async function POST(request: NextRequest) {
           tenantSlug: tenant?.slug || null,
         },
         accessToken,
-        expiresIn: 86400, // 24 hours in seconds
+        expiresIn: 3600, // 1 hour in seconds
+        // Warn client to prompt password change — login still succeeds
+        ...(passwordBreached && {
+          warning: 'PASSWORD_BREACHED',
+          warningMessage:
+            'Tu contraseña aparece en filtraciones de datos conocidas. ' +
+            'Te recomendamos cambiarla inmediatamente.',
+        }),
       },
       meta: { processingTimeMs: processingTime, sessionId },
     })
@@ -217,7 +237,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
-      maxAge: 86400,         // 24 hours
+      maxAge: 3600,          // 1 hour
       path: '/',
     })
 

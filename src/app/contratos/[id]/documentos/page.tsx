@@ -587,6 +587,7 @@ export default function VisorDocumentosContrato({
                 <input
                   type="text"
                   placeholder="Buscar por nombre, usuario..."
+                  aria-label="Buscar por nombre o usuario"
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   className="bg-transparent flex-1 focus:outline-none text-sm"

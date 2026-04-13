@@ -383,7 +383,7 @@ export const Tier0AccessibilityDashboard: React.FC = () => {
           <CardContent>
             <div className="space-y-2">
               {quantumInsights.slice(0, 5).map((insight: string, index: number) => (
-                <Alert key={index}>
+                <Alert key={`insight-${index}`}>
                   <Brain className="h-4 w-4" />
                   <AlertDescription>{insight}</AlertDescription>
                 </Alert>
@@ -408,7 +408,7 @@ export const Tier0AccessibilityDashboard: React.FC = () => {
           <CardContent>
             <div className="space-y-2">
               {recommendations.slice(0, 5).map((recommendation: string, index: number) => (
-                <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
+                <div key={`rec-${index}`} className="flex items-start gap-3 p-3 border rounded-lg">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                   <p className="text-sm">{recommendation}</p>
                 </div>

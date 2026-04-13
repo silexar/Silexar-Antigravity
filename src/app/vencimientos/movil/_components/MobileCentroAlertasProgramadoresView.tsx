@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function MobileCentroAlertasProgramadoresView() {
   const [showModal, setShowModal] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragY, setDragY] = useState(0);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = (_e: React.TouchEvent) => {
     setIsDragging(true);
   };
   

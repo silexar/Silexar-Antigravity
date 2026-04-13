@@ -277,7 +277,7 @@ export function WizardExpressContainer({ resultado, onBack, onClose }: WizardExp
               </div>
               <div className="divide-y divide-slate-50 max-h-48 overflow-y-auto">
                 {datos.camposDetectados.map((c, i) => (
-                  <div key={i} className="px-4 py-2 flex items-center gap-2 text-xs">
+                  <div key={`${c}-${i}`} className="px-4 py-2 flex items-center gap-2 text-xs">
                     <span className="text-slate-500 w-20">{c.campo}</span>
                     <span className="font-bold text-slate-800 flex-1 truncate">{String(c.valor)}</span>
                     <span className={`font-bold ${c.confianza >= 85 ? 'text-emerald-500' : 'text-amber-500'}`}>{c.confianza}%</span>

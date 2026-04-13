@@ -272,7 +272,6 @@ export default function ObservabilityCenter() {
       setIsLoading(false);
 
     } catch (error) {
-      console.error('Failed to load observability data:', error);
       setIsLoading(false);
     }
   };
@@ -414,7 +413,7 @@ export default function ObservabilityCenter() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as any)}
+                onClick={() => setViewMode(mode.id as unknown)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
                     ? 'bg-white text-blue-600 shadow-sm'
@@ -573,7 +572,7 @@ export default function ObservabilityCenter() {
           </div>
           <div className="divide-y divide-gray-200">
             {metrics.map((metric, index) => (
-              <div key={index} className="p-6">
+              <div key={`${metric}-${index}`} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <BarChart3 className="w-5 h-5 text-blue-500" />
@@ -687,7 +686,7 @@ export default function ObservabilityCenter() {
 
       {/* Trace Detail Modal */}
       {selectedTrace && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-[#F0EDE8] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">

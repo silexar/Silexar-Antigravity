@@ -57,7 +57,7 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         {/* Backdrop */}
         <div 
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+            className="absolute inset-0 bg-[#F0EDE8]/60 backdrop-blur-sm transition-opacity" 
             onClick={onClose}
         />
 
@@ -65,7 +65,7 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
         <div className="relative w-full max-w-2xl bg-[#e0e5ec] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/40">
             
             {/* Header */}
-            <div className="bg-red-500 text-white p-6 flex justify-between items-start">
+            <div className="bg-red-500 text-[#2C2C2A] p-6 flex justify-between items-start">
                 <div>
                     <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
                         <AlertTriangle className="w-6 h-6" /> MATERIAL NO ENCONTRADO
@@ -84,7 +84,7 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
                 
                 {/* 1. DETAILS PANEL */}
                 <div className="bg-white rounded-xl p-5 shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff] mb-6 border border-slate-100">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">📋 Detalles del Problema</h3>
+                    <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-4">📋 Detalles del Problema</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <DetailItem icon={Radio} label="Material" value={material.nombreMaterial} />
                         <DetailItem icon={Calendar} label="Fecha Programada" value={new Date().toLocaleDateString()} />
@@ -129,7 +129,7 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
 
                 {/* 4. STAFF SELECTOR */}
                 <div className="mb-8">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">👥 Destinatarios Sugeridos</h3>
+                    <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3">👥 Destinatarios Sugeridos</h3>
                     <div className="space-y-2">
                         {PROGRAMMERS_MOCK.map(prog => (
                             <div 
@@ -139,14 +139,14 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="relative">
-                                        <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-slate-500 font-bold text-xs">
+                                        <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-[#888780] font-bold text-xs">
                                             {prog.name.substring(0,2)}
                                         </div>
                                         <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#e0e5ec] ${prog.online ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                                     </div>
                                     <div>
-                                        <p className={`text-sm font-bold ${selectedProgrammers.includes(prog.id) ? 'text-slate-800' : 'text-slate-500'}`}>{prog.name}</p>
-                                        <p className="text-[10px] text-slate-400 uppercase">{prog.role}</p>
+                                        <p className={`text-sm font-bold ${selectedProgrammers.includes(prog.id) ? 'text-slate-800' : 'text-[#888780]'}`}>{prog.name}</p>
+                                        <p className="text-[10px] text-[#888780] uppercase">{prog.role}</p>
                                     </div>
                                 </div>
                                 {selectedProgrammers.includes(prog.id) && <CheckCircle2 className="w-5 h-5 text-teal-500" />}
@@ -159,15 +159,15 @@ export function AlertDetailsModal({ isOpen, onClose, material, onSendSuccess }: 
                 <div className="flex gap-4">
                     <button 
                         onClick={onClose}
-                        className="flex-1 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-200/50 transition-colors"
+                        className="flex-1 py-3 rounded-xl font-bold text-[#888780] hover:bg-slate-200/50 transition-colors"
                     >
                         Cancelar
                     </button>
                     <button 
                         onClick={handleSend}
                         disabled={step !== 'analysis'}
-                        className={`flex-1 py-3 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${
-                            step === 'sent' ? 'bg-emerald-500' : 'bg-slate-800 hover:bg-slate-700 active:scale-95'
+                        className={`flex-1 py-3 rounded-xl font-bold text-[#2C2C2A] shadow-lg flex items-center justify-center gap-2 transition-all ${
+                            step === 'sent' ? 'bg-emerald-500' : 'bg-[#E8E5E0] hover:bg-[#D4D1CC] active:scale-95'
                         }`}
                     >
                         {step === 'analysis' && <><Send className="w-4 h-4" /> Enviar Alerta</>}
@@ -192,9 +192,9 @@ interface DetailItemProps { icon: React.ElementType; label: string; value: strin
 function DetailItem({ icon: Icon, label, value }: DetailItemProps) {
     return (
         <div className="flex items-start gap-3 overflow-hidden">
-            <Icon className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+            <Icon className="w-4 h-4 text-[#888780] mt-0.5 shrink-0" />
             <div className="min-w-0">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">{label}</p>
+                <p className="text-[10px] font-bold text-[#888780] uppercase">{label}</p>
                 <p className="font-semibold text-slate-700 truncate" title={value}>{value}</p>
             </div>
         </div>

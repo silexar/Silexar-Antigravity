@@ -32,7 +32,9 @@ export function MeetingPrepAI() {
     fetch('/api/equipos-ventas/deals?tipo=reuniones')
       .then(r => r.json())
       .then(d => { if (d.success) { setReuniones(d.data); setSelected(d.data[0]); } })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MeetingPrepAI] Failed to load reuniones:', error);
+      });
   }, []);
 
   const r = selected;
@@ -96,7 +98,7 @@ export function MeetingPrepAI() {
           <p className="text-xs font-bold text-slate-400 flex items-center gap-1 mb-2"><Clock className="w-3 h-3" /> Historial de Interacciones</p>
           <div className="space-y-1.5">
             {r.historial.map((h, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+              <div key={`${h}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
                 <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" /> {h}
               </div>
             ))}
@@ -109,7 +111,7 @@ export function MeetingPrepAI() {
             <p className="text-xs font-bold text-slate-400 flex items-center gap-1 mb-2"><AlertTriangle className="w-3 h-3 text-amber-500" /> Objeciones Conocidas</p>
             <div className="space-y-1.5">
               {r.objeciones.map((o, i) => (
-                <p key={i} className="text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2 border border-amber-100">{o}</p>
+                <p key={`${o}-${i}`} className="text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2 border border-amber-100">{o}</p>
               ))}
             </div>
           </div>
@@ -119,7 +121,7 @@ export function MeetingPrepAI() {
         <div className="p-4 bg-gradient-to-r from-violet-50 to-fuchsia-50 rounded-xl border border-violet-100">
           <p className="text-xs font-bold text-violet-700 flex items-center gap-1 mb-2"><Sparkles className="w-3 h-3" /> Talking Points Sugeridos por IA</p>
           {r.talkingPoints.map((tp, i) => (
-            <p key={i} className="text-sm text-violet-600 mt-1.5 flex items-start gap-1.5">
+            <p key={`${tp}-${i}`} className="text-sm text-violet-600 mt-1.5 flex items-start gap-1.5">
               <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" /> {tp}
             </p>
           ))}
@@ -130,7 +132,7 @@ export function MeetingPrepAI() {
           <p className="text-xs font-bold text-slate-400 flex items-center gap-1 mb-2"><FileText className="w-3 h-3" /> Documentos Relevantes</p>
           <div className="flex gap-2 flex-wrap">
             {r.docs.map((doc, i) => (
-              <button key={i} className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-xs font-bold text-slate-600 rounded-lg hover:bg-slate-200">
+              <button key={`${doc}-${i}`} className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-xs font-bold text-slate-600 rounded-lg hover:bg-slate-200">
                 <FileText className="w-3 h-3" /> {doc}
               </button>
             ))}

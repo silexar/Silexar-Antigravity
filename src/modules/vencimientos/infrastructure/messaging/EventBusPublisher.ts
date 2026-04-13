@@ -1,20 +1,27 @@
-// Publicador de Eventos (Event Bus Mock) TIER 0
-import { DomainEvent } from '../../domain/events/DomainEvent';
-import { logger } from '@/lib/observability';
+import { DomainEvent } from '../../domain/events/DomainEvent'
+import { domainEventBus } from '@/lib/events/DomainEventBus'
 
 export interface IEventPublisher {
-  publish(event: DomainEvent): Promise<void>;
-  publishAll(events: DomainEvent[]): Promise<void>;
+  publish(event: DomainEvent): Promise<void>
+  publishAll(events: DomainEvent[]): Promise<void>
 }
 
 export class EventBusPublisher implements IEventPublisher {
   async publish(event: DomainEvent): Promise<void> {
-    logger.info(`[EventBus] Publicando evento interno: ${event.constructor.name} - ${event.ocurredOn.toISOString()}`);
+    await domainEventBus.publish({
+      eventName: event.eventName ?? event.constructor.name,
+      occurredAt: event.occurredAt.toISOString(),
+      data: event as unknown as Record<string, unknown>,
+    })
   }
 
   async publishAll(events: DomainEvent[]): Promise<void> {
-    for (const event of events) {
-      await this.publish(event);
-    }
+    await domainEventBus.publishAll(
+      events.map((e) => ({
+        eventName: e.eventName ?? e.constructor.name,
+        occurredAt: e.occurredAt.toISOString(),
+        data: e as unknown as Record<string, unknown>,
+      }))
+    )
   }
 }

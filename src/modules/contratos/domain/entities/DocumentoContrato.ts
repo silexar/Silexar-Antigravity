@@ -4,8 +4,6 @@
  * Nivel Fortune 10 - Gestión Empresarial Avanzada
  */
 
-import { EstadoPlanPagos, EstadoPlanPagosEnum } from '../value-objects/EstadoPlanPagos';
-
 export enum TipoDocumento {
   CONTRATO_PRINCIPAL = 'contrato_principal',
   ANEXO = 'anexo',
@@ -186,10 +184,11 @@ export class DocumentoContrato {
   generarContenido(variables: Record<string, unknown>): void {
     let contenidoGenerado = this._contenido;
 
-    // Reemplazar variables en el contenido
+    // Reemplazar variables en el contenido - safe literal replacement
     Object.entries(variables).forEach(([clave, valor]) => {
-      const regex = new RegExp(`{{${clave}}}`, 'g');
-      contenidoGenerado = contenidoGenerado.replace(regex, String(valor));
+      // Use split/join instead of replaceAll for broader compatibility
+      const placeholder = `{{${clave}}}`;
+      contenidoGenerado = contenidoGenerado.split(placeholder).join(String(valor));
     });
 
     // Agregar metadatos de generación
@@ -405,30 +404,35 @@ export class DocumentoContrato {
     nuevaFecha.setDate(nuevaFecha.getDate() + diasExtension);
 
     this._fechaVencimiento = nuevaFecha;
-    this._metadatos.extensionesVencimiento = this._metadatos.extensionesVencimiento || [];
-    this._metadatos.extensionesVencimiento.push({
+    const extensiones = (this._metadatos.extensionesVencimiento || []) as Array<{
+      fecha: string;
+      diasExtendidos: number;
+      motivo: string;
+      nuevaFechaVencimiento: string;
+    }>;
+    extensiones.push({
       fecha: new Date().toISOString(),
       diasExtendidos: diasExtension,
       motivo,
       nuevaFechaVencimiento: nuevaFecha.toISOString()
     });
+    this._metadatos.extensionesVencimiento = extensiones;
   }
 
   /**
    * Métodos privados de utilidad
    */
   private async simularEnvioServicioFirma(
-    servicio: string,
-    configuracion?: Record<string, unknown>
+    _servicio: string,
+    _configuracion?: Record<string, unknown>
   ): Promise<string> {
     // Simular delay de API
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const baseUrl = (configuracion?.baseUrl as string | undefined) || 'https://firma-service.com';
-    return `${baseUrl}/documento/${this._id}/firmar`;
+    return `https://firma-service.com/documento/${this._id}/firmar`;
   }
 
-  private async simularGeneracionPDF(configuracion?: { incluirFirmas?: boolean; incluirMetadatos?: boolean; watermark?: string; protegido?: boolean; password?: string }): Promise<string> {
+  private async simularGeneracionPDF(_configuracion?: { incluirFirmas?: boolean; incluirMetadatos?: boolean; watermark?: string; protegido?: boolean; password?: string }): Promise<string> {
     // Simular delay de generación
     await new Promise(resolve => setTimeout(resolve, 2000));
     

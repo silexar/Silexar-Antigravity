@@ -129,9 +129,10 @@ export default function MobileEjecutivoDashboard() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#ECEFF8]/90 backdrop-blur-xl border-t border-gray-200 z-50">
          <div className="flex gap-2 mb-3">
             <div className="relative flex-1">
-               <input 
-                  type="text" 
+               <input
+                  type="text"
                   placeholder="Ej: TechStart SpA..."
+                  aria-label="Buscar cliente"
                   className="w-full bg-white/80 border border-gray-200 rounded-lg pl-3 pr-10 py-3 text-xs text-gray-800 focus:outline-none focus:border-indigo-500/50 transition-colors"
                />
                <button className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-800">

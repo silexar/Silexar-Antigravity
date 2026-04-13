@@ -308,9 +308,12 @@ export function createRateLimitMiddleware(configName: string = 'api-general') {
   return async (req: Record<string, unknown>, res: Record<string, unknown> & { setHeader: (name: string, value: string | number) => void; status: (code: number) => { json: (body: Record<string, unknown>) => void } }, next: () => void) => {
     try {
       // Get identifier (IP address or user ID)
-      const identifier = req.ip || 
-                        req.connection?.remoteAddress || 
-                        req.headers['x-forwarded-for']?.split(',')[0] || 
+      const connection = req.connection as Record<string, unknown> | undefined
+      const headers = req.headers as Record<string, unknown> | undefined
+      const forwarded = headers?.['x-forwarded-for'] as string | undefined
+      const identifier = (req.ip as string) ||
+                        (connection?.remoteAddress as string) ||
+                        forwarded?.split(',')[0] ||
                         'unknown';
 
       const status = await rateLimiter.checkRateLimit(identifier, configName);

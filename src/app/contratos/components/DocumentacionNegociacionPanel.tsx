@@ -24,20 +24,16 @@ import {
   File,
   Image,
   Paperclip,
-  X,
   Check,
   AlertCircle,
   Loader2,
   Copy,
   Smartphone,
-  Monitor,
   Sparkles,
-  ChevronDown,
   Eye,
   Trash2,
   Download,
   RefreshCw,
-  Send,
   QrCode
 } from 'lucide-react';
 import { 
@@ -118,21 +114,22 @@ const getTipoIcon = (tipo: TipoDocumento) => {
   }
 };
 
-const getTipoLabel = (tipo: TipoDocumento) => {
-  const labels: Record<TipoDocumento, string> = {
-    EMAIL: 'Email',
-    ADJUNTO: 'Adjunto',
-    COTIZACION: 'Cotización',
-    ORDEN_COMPRA: 'Orden de Compra',
-    VOUCHER: 'Voucher',
-    BRIEF: 'Brief',
-    PROPUESTA: 'Propuesta',
-    CONTRATO_ANTERIOR: 'Contrato Anterior',
-    ACTA_REUNION: 'Acta Reunión',
-    MENSAJE_CHAT: 'Mensaje Chat',
-    OTRO: 'Otro'
-  };
-  return labels[tipo] || tipo;
+const getTipoLabel = (tipo: TipoDocumento): string => {
+  // Safe switch statement to prevent object injection
+  switch (tipo) {
+    case 'EMAIL': return 'Email';
+    case 'ADJUNTO': return 'Adjunto';
+    case 'COTIZACION': return 'Cotización';
+    case 'ORDEN_COMPRA': return 'Orden de Compra';
+    case 'VOUCHER': return 'Voucher';
+    case 'BRIEF': return 'Brief';
+    case 'PROPUESTA': return 'Propuesta';
+    case 'CONTRATO_ANTERIOR': return 'Contrato Anterior';
+    case 'ACTA_REUNION': return 'Acta Reunión';
+    case 'MENSAJE_CHAT': return 'Mensaje Chat';
+    case 'OTRO': return 'Otro';
+    default: return tipo;
+  }
 };
 
 const formatSize = (bytes: number) => {
@@ -332,7 +329,7 @@ export default function DocumentacionNegociacionPanel({
                     {/* Instrucciones */}
                     <div className="text-sm text-slate-600 space-y-1">
                       {instrucciones.instrucciones.map((inst, idx) => (
-                        <p key={idx} className="flex items-start gap-2">
+                        <p key={`inst-${idx}`} className="flex items-start gap-2">
                           <span className="text-indigo-500">•</span>
                           <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(inst.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')) }} />
                         </p>

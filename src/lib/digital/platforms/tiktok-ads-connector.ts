@@ -381,13 +381,13 @@ export class TikTokAdsConnector {
         payload.special_industries = validatedCampaign.specialIndustries
       }
 
-      const response = await this.makeApiRequest('campaign/create/', 'POST', payload)
+      const response = await this.makeApiRequest('campaign/create/', 'POST', payload as unknown as Record<string, unknown>)
 
       if (response.code !== 0) {
         throw new Error(`TikTok API Error: ${response.message}`)
       }
 
-      const campaignId = response.data.campaign_id
+      const campaignId = (response.data?.campaign_id ?? "")
       logger.info(`✅ Campaña TikTok creada: ${campaignId}`)
       return campaignId
       
@@ -450,13 +450,13 @@ export class TikTokAdsConnector {
         }))
       }
 
-      const response = await this.makeApiRequest('adgroup/create/', 'POST', payload)
+      const response = await this.makeApiRequest('adgroup/create/', 'POST', payload as unknown as Record<string, unknown>)
 
       if (response.code !== 0) {
         throw new Error(`TikTok API Error: ${response.message}`)
       }
 
-      const adGroupId = response.data.adgroup_id
+      const adGroupId = (response.data?.adgroup_id ?? "")
       logger.info(`✅ Ad Group TikTok creado: ${adGroupId}`)
       return adGroupId
       
@@ -532,13 +532,13 @@ export class TikTokAdsConnector {
         }
       }
 
-      const response = await this.makeApiRequest('ad/create/', 'POST', payload)
+      const response = await this.makeApiRequest('ad/create/', 'POST', payload as unknown as Record<string, unknown>)
 
       if (response.code !== 0) {
         throw new Error(`TikTok API Error: ${response.message}`)
       }
 
-      const adId = response.data.ad_id
+      const adId = (response.data?.ad_id ?? "")
       logger.info(`✅ Anuncio TikTok creado: ${adId}`)
       return adId
       
@@ -587,7 +587,7 @@ export class TikTokAdsConnector {
         throw new Error(`TikTok API Error: ${response.message}`)
       }
 
-      return this.parseReports(response.data.list, level)
+      return this.parseReports((response.data?.list ?? []) as Record<string, unknown>[], level)
       
     } catch (error) {
       logger.error('Error obteniendo reportes TikTok:', error instanceof Error ? error : undefined)
@@ -621,7 +621,7 @@ export class TikTokAdsConnector {
         throw new Error(`TikTok API Error: ${response.message}`)
       }
 
-      const audienceId = response.data.custom_audience_id
+      const audienceId = (response.data?.custom_audience_id ?? "")
       logger.info(`✅ Audiencia personalizada TikTok creada: ${audienceId}`)
       return audienceId
       
@@ -766,14 +766,15 @@ export class TikTokAdsConnector {
         throw new Error(`Failed to get advertiser info: ${response.message}`)
       }
 
-      logger.info(`📊 Advertiser info: ${response.data.list[0].name}`)
+      const firstItem = response.data?.list?.[0] as Record<string, unknown> | undefined
+      logger.info(`📊 Advertiser info: ${firstItem?.name ?? 'unknown'}`)
     } catch (error) {
       throw new Error(`Advertiser info retrieval failed: ${error}`)
     }
   }
 
   // External API boundary — TikTok API response is dynamically shaped
-  private async makeApiRequest(endpoint: string, method: string, data?: Record<string, unknown>): Promise<Record<string, unknown>> {
+  private async makeApiRequest(endpoint: string, method: string, data?: Record<string, unknown>): Promise<TikTokApiResponse> {
     const url = `${this.apiBaseUrl}/${endpoint}`
     
     const headers: Record<string, string> = {
@@ -790,7 +791,7 @@ export class TikTokAdsConnector {
         if (Array.isArray(data[key])) {
           params.append(key, JSON.stringify(data[key]))
         } else {
-          params.append(key, data[key])
+          params.append(key, String(data[key]))
         }
       })
       requestUrl = `${url}?${params.toString()}`
@@ -905,36 +906,36 @@ export class TikTokAdsConnector {
 
   private parseReports(data: Array<Record<string, unknown>>, level: string): TikTokReport[] {
     return data.map(item => ({
-      campaignId: item.campaign_id,
-      campaignName: item.campaign_name,
-      adgroupId: item.adgroup_id,
-      adgroupName: item.adgroup_name,
-      adId: item.ad_id,
-      adName: item.ad_name,
+      campaignId: String(item.campaign_id ?? ''),
+      campaignName: String(item.campaign_name ?? ''),
+      adgroupId: String(item.adgroup_id ?? ''),
+      adgroupName: String(item.adgroup_name ?? ''),
+      adId: String(item.ad_id ?? ''),
+      adName: String(item.ad_name ?? ''),
       metrics: {
-        impressions: parseInt(item.impressions) || 0,
-        clicks: parseInt(item.clicks) || 0,
-        spend: parseFloat(item.spend) || 0,
-        reach: parseInt(item.reach) || 0,
-        ctr: parseFloat(item.ctr) || 0,
-        cpm: parseFloat(item.cpm) || 0,
-        cpc: parseFloat(item.cpc) || 0,
-        conversions: parseInt(item.conversion) || 0,
-        conversionRate: parseFloat(item.conversion_rate) || 0,
-        costPerConversion: parseFloat(item.cost_per_conversion) || 0,
-        videoViews: parseInt(item.video_play_actions) || 0,
-        videoViewRate: parseFloat(item.video_view_rate) || 0,
-        videoWatchedP25: parseInt(item.video_watched_p25) || 0,
-        videoWatchedP50: parseInt(item.video_watched_p50) || 0,
-        videoWatchedP75: parseInt(item.video_watched_p75) || 0,
-        videoWatchedP100: parseInt(item.video_watched_p100) || 0,
-        engagements: parseInt(item.engagement) || 0,
-        shares: parseInt(item.shares) || 0,
-        comments: parseInt(item.comments) || 0,
-        likes: parseInt(item.likes) || 0,
-        profileVisits: parseInt(item.profile_visits) || 0,
-        follows: parseInt(item.follows) || 0,
-        date: item.stat_time_day
+        impressions: parseInt(String(item.impressions)) || 0,
+        clicks: parseInt(String(item.clicks)) || 0,
+        spend: parseFloat(String(item.spend)) || 0,
+        reach: parseInt(String(item.reach)) || 0,
+        ctr: parseFloat(String(item.ctr ?? 0)) || 0,
+        cpm: parseFloat(String(item.cpm ?? 0)) || 0,
+        cpc: parseFloat(String(item.cpc ?? 0)) || 0,
+        conversions: parseInt(String(item.conversion ?? 0)) || 0,
+        conversionRate: parseFloat(String(item.conversion_rate ?? 0)) || 0,
+        costPerConversion: parseFloat(String(item.cost_per_conversion ?? 0)) || 0,
+        videoViews: parseInt(String(item.video_play_actions ?? 0)) || 0,
+        videoViewRate: parseFloat(String(item.video_view_rate ?? 0)) || 0,
+        videoWatchedP25: parseInt(String(item.video_watched_p25 ?? 0)) || 0,
+        videoWatchedP50: parseInt(String(item.video_watched_p50 ?? 0)) || 0,
+        videoWatchedP75: parseInt(String(item.video_watched_p75 ?? 0)) || 0,
+        videoWatchedP100: parseInt(String(item.video_watched_p100 ?? 0)) || 0,
+        engagements: parseInt(String(item.engagement ?? 0)) || 0,
+        shares: parseInt(String(item.shares ?? 0)) || 0,
+        comments: parseInt(String(item.comments ?? 0)) || 0,
+        likes: parseInt(String(item.likes ?? 0)) || 0,
+        profileVisits: parseInt(String(item.profile_visits ?? 0)) || 0,
+        follows: parseInt(String(item.follows ?? 0)) || 0,
+        date: String(item.stat_time_day ?? '')
       }
     }))
   }

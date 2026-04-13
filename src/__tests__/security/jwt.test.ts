@@ -12,6 +12,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { decodeJwt } from 'jose'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -121,13 +122,13 @@ describe('signToken()', () => {
     expect(decoded?.iat).toBeLessThanOrEqual(after + 1)
   })
 
-  it('sets exp (expiration) approximately 24h from now by default', async () => {
+  it('sets exp (expiration) approximately 1h from now by default', async () => {
     const { signToken, verifyTokenServer } = await import('@/lib/api/jwt')
     const now = Math.floor(Date.now() / 1000)
     const token = await signToken(SAMPLE_PAYLOAD)
     const decoded = await verifyTokenServer(token)
-    // 24h = 86400s — allow ±10s for test execution time
-    const expectedExp = now + 86400
+    // Access tokens: 1h = 3600s per CLAUDE.md spec — allow ±10s for test execution time
+    const expectedExp = now + 3600
     expect(decoded?.exp).toBeGreaterThanOrEqual(expectedExp - 10)
     expect(decoded?.exp).toBeLessThanOrEqual(expectedExp + 10)
   })
@@ -179,40 +180,42 @@ describe('signRefreshToken()', () => {
   })
 
   it('encodes userId correctly', async () => {
-    const { signRefreshToken, verifyTokenServer } = await import('@/lib/api/jwt')
+    // Refresh tokens usan audience 'silexar-pulse-refresh', no 'silexar-pulse-app'
+    // Por eso usamos decodeJwt (sin verificación de audience) para inspeccionar el payload
+    const { signRefreshToken } = await import('@/lib/api/jwt')
     const token = await signRefreshToken('user-abc', 'sess-abc')
-    const decoded = await verifyTokenServer(token)
+    const decoded = decodeJwt(token)
     expect(decoded?.userId).toBe('user-abc')
   })
 
   it('encodes sessionId correctly', async () => {
-    const { signRefreshToken, verifyTokenServer } = await import('@/lib/api/jwt')
+    const { signRefreshToken } = await import('@/lib/api/jwt')
     const token = await signRefreshToken('user-abc', 'sess-xyz')
-    const decoded = await verifyTokenServer(token)
+    const decoded = decodeJwt(token)
     expect(decoded?.sessionId).toBe('sess-xyz')
   })
 
   it('sets type = "refresh" in payload', async () => {
-    const { signRefreshToken, verifyTokenServer } = await import('@/lib/api/jwt')
+    const { signRefreshToken } = await import('@/lib/api/jwt')
     const token = await signRefreshToken('user-001', 'sess-001')
-    const decoded = await verifyTokenServer(token)
+    const decoded = decodeJwt(token)
     expect((decoded as Record<string, unknown>)?.type).toBe('refresh')
   })
 
   it('expires in approximately 7 days', async () => {
-    const { signRefreshToken, verifyTokenServer } = await import('@/lib/api/jwt')
+    const { signRefreshToken } = await import('@/lib/api/jwt')
     const now = Math.floor(Date.now() / 1000)
     const token = await signRefreshToken('user-001', 'sess-001')
-    const decoded = await verifyTokenServer(token)
+    const decoded = decodeJwt(token)
     const sevenDays = 7 * 24 * 60 * 60
     expect(decoded?.exp).toBeGreaterThanOrEqual(now + sevenDays - 10)
     expect(decoded?.exp).toBeLessThanOrEqual(now + sevenDays + 10)
   })
 
   it('uses silexar-pulse issuer', async () => {
-    const { signRefreshToken, verifyTokenServer } = await import('@/lib/api/jwt')
+    const { signRefreshToken } = await import('@/lib/api/jwt')
     const token = await signRefreshToken('user-001', 'sess-001')
-    const decoded = await verifyTokenServer(token)
+    const decoded = decodeJwt(token)
     expect(decoded?.iss).toBe('silexar-pulse')
   })
 })

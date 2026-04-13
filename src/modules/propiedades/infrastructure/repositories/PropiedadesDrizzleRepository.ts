@@ -44,7 +44,7 @@ function toTipoPropiedad(row: TipoPropiedadRow): TipoPropiedad {
     aplicacion: (row.aplicacion as string[]) as TipoClasificacion[],
     tipoValidacion: row.tipoValidacion as TipoValidacion,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    configuracionValidacion: (row.configuracionValidacion ?? {}) as any,
+    configuracionValidacion: (row.configuracionValidacion ?? {}) as unknown,
     creadoEn: row.createdAt,
     actualizadoEn: row.updatedAt,
   })
@@ -111,7 +111,7 @@ export class TipoPropiedadDrizzleRepository implements ITipoPropiedadRepository 
 
         if (filtros?.estado) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          conditions.push(eq(tiposPropiedad.estado, filtros.estado as any))
+          conditions.push(eq(tiposPropiedad.estado, filtros.estado as unknown))
         }
         if (filtros?.busqueda) {
           conditions.push(like(tiposPropiedad.nombre, `%${filtros.busqueda}%`))
@@ -149,10 +149,10 @@ export class TipoPropiedadDrizzleRepository implements ITipoPropiedadRepository 
           nombre: tipo.nombre,
           descripcion: tipo.descripcion ?? undefined,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          estado: tipo.estado as any,
+          estado: tipo.estado as unknown,
           aplicacion: tipo.aplicacion,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          tipoValidacion: tipo.tipoValidacion as any,
+          tipoValidacion: tipo.tipoValidacion as unknown,
           configuracionValidacion: tipo.configuracionValidacion,
           createdAt: tipo.creadoEn,
           updatedAt: tipo.actualizadoEn,
@@ -173,10 +173,10 @@ export class TipoPropiedadDrizzleRepository implements ITipoPropiedadRepository 
             nombre: tipo.nombre,
             descripcion: tipo.descripcion ?? undefined,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            estado: tipo.estado as any,
+            estado: tipo.estado as unknown,
             aplicacion: tipo.aplicacion,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            tipoValidacion: tipo.tipoValidacion as any,
+            tipoValidacion: tipo.tipoValidacion as unknown,
             configuracionValidacion: tipo.configuracionValidacion,
             updatedAt: new Date(),
           })
@@ -251,7 +251,7 @@ export class ValorPropiedadDrizzleRepository implements IValorPropiedadRepositor
           eq(valoresPropiedad.tenantId, this.tenantId),
         ]
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (filtros?.estado) conditions.push(eq(valoresPropiedad.estado, filtros.estado as any))
+        if (filtros?.estado) conditions.push(eq(valoresPropiedad.estado, filtros.estado as unknown))
         if (filtros?.busqueda) conditions.push(like(valoresPropiedad.descripcion, `%${filtros.busqueda}%`))
 
         const rows = await db
@@ -274,7 +274,7 @@ export class ValorPropiedadDrizzleRepository implements IValorPropiedadRepositor
       return await withTenantContext(this.tenantId, async () => {
         const conditions: SQL[] = [eq(valoresPropiedad.tenantId, this.tenantId)]
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (filtros?.estado) conditions.push(eq(valoresPropiedad.estado, filtros.estado as any))
+        if (filtros?.estado) conditions.push(eq(valoresPropiedad.estado, filtros.estado as unknown))
         if (filtros?.tipoPropiedadId) conditions.push(eq(valoresPropiedad.tipoPropiedadId, filtros.tipoPropiedadId))
         if (filtros?.busqueda) conditions.push(like(valoresPropiedad.descripcion, `%${filtros.busqueda}%`))
 
@@ -305,7 +305,7 @@ export class ValorPropiedadDrizzleRepository implements IValorPropiedadRepositor
           descripcionLarga: valor.descripcionLarga ?? undefined,
           obligatorio: valor.obligatorio,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          estado: valor.estado as any,
+          estado: valor.estado as unknown,
           orden: String(valor.orden),
           createdAt: valor.creadoEn,
           updatedAt: valor.actualizadoEn,
@@ -327,7 +327,7 @@ export class ValorPropiedadDrizzleRepository implements IValorPropiedadRepositor
             descripcionLarga: valor.descripcionLarga ?? undefined,
             obligatorio: valor.obligatorio,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            estado: valor.estado as any,
+            estado: valor.estado as unknown,
             orden: String(valor.orden),
             updatedAt: new Date(),
           })

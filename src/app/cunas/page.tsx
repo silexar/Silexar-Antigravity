@@ -11,12 +11,13 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
 import { 
-  Music, Search, Plus, Eye, Edit3, Play, Pause, Upload, Clock, RefreshCw,
-  CheckCircle, AlertCircle, Volume2, Mail, Download,
+  Music, Search, Plus, Upload, Clock, RefreshCw,
+  AlertCircle, Volume2, Mail, Download,
   Calendar, TrendingUp, BarChart2,
-  Send, Copy, MoreVertical, Bell, Sparkles,
+  Sparkles,
   Target, Activity, ExternalLink,
   ShieldAlert, CheckSquare, Square
 } from 'lucide-react';
@@ -26,351 +27,12 @@ import useAtajosTeclado from '@/app/campanas/crear/components/WizardCampana/hook
 import type { Cuna, MetricasOperativas, AlertaOperativa } from './_lib/types';
 import {
   NeuromorphicCard, NeuromorphicButton,
-  EstadoBadge, UrgenciaBadge, TipoBadge,
-  TiempoRestanteBadge, EmisoraChip, ProximaEmisionInfo,
   MetricaCard
 } from './_lib/components';
+import { AlertasPanel } from './_lib/AlertasPanel';
+import { CunaRow } from './_lib/CunaRow';
 
-// ═══════════════════════════════════════════════════════════════
-// PANEL DE ALERTAS OPERATIVAS MEJORADO
-// ═══════════════════════════════════════════════════════════════
-
-interface AlertaGrupo {
-  titulo: string;
-  emoji: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
-  alertas: AlertaOperativa[];
-}
-
-const AlertasPanel = ({ 
-  alertas, 
-  onResolve,
-  onRefresh,
-  loading = false
-}: { 
-  alertas: AlertaOperativa[]; 
-  onResolve: (id: string) => void;
-  onRefresh?: () => void;
-  loading?: boolean;
-}) => {
-  // Agrupar alertas por tipo
-  const grupos: AlertaGrupo[] = [
-    {
-      titulo: 'VENCEN HOY',
-      emoji: '⏰',
-      color: 'text-red-700',
-      bgColor: 'bg-red-50',
-      borderColor: 'border-red-200',
-      alertas: alertas.filter(a => a.tipo === 'vencimiento')
-    },
-    {
-      titulo: 'SIN VALIDAR',
-      emoji: '⚠️',
-      color: 'text-amber-700',
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200',
-      alertas: alertas.filter(a => a.tipo === 'validacion')
-    },
-    {
-      titulo: 'PENDIENTES ENVÍO',
-      emoji: '📤',
-      color: 'text-blue-700',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      alertas: alertas.filter(a => a.tipo === 'distribucion')
-    },
-    {
-      titulo: 'EMISIÓN',
-      emoji: '📻',
-      color: 'text-purple-700',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-      alertas: alertas.filter(a => a.tipo === 'emision')
-    }
-  ].filter(g => g.alertas.length > 0);
-
-  const totalCriticas = alertas.filter(a => a.prioridad === 'critica').length;
-
-  return (
-    <NeuromorphicCard className="h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 shadow-md">
-            <Bell className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-800">🚨 ALERTAS DE OPERACIÓN</h3>
-            <p className="text-xs text-slate-500">{alertas.length} activas</p>
-          </div>
-        </div>
-        {totalCriticas > 0 && (
-          <span className="px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-bold animate-pulse">
-            {totalCriticas} críticas
-          </span>
-        )}
-      </div>
-
-      {/* Grupos de alertas */}
-      <div className="flex-1 overflow-y-auto space-y-4 pr-1">
-        {grupos.length === 0 ? (
-          <div className="text-center py-8 text-slate-400">
-            <CheckCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p className="font-medium">Sin alertas pendientes</p>
-            <p className="text-xs mt-1">¡Todo está bajo control!</p>
-          </div>
-        ) : (
-          grupos.map((grupo) => (
-            <div key={grupo.titulo} className={`rounded-xl border ${grupo.borderColor} ${grupo.bgColor} overflow-hidden`}>
-              {/* Header del grupo */}
-              <div className={`px-3 py-2 font-semibold text-sm flex items-center justify-between ${grupo.color}`}>
-                <span className="flex items-center gap-2">
-                  <span>{grupo.emoji}</span>
-                  <span>{grupo.titulo}</span>
-                </span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${grupo.bgColor} ${grupo.color} border ${grupo.borderColor}`}>
-                  {grupo.alertas.length}
-                </span>
-              </div>
-              
-              {/* Lista de alertas del grupo */}
-              <div className="divide-y divide-slate-100">
-                {grupo.alertas.map((alerta) => (
-                  <div 
-                    key={alerta.id}
-                    className="px-3 py-2 bg-white/70 hover:bg-white transition-colors"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          {alerta.prioridad === 'critica' && (
-                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
-                          )}
-                          <p className="text-sm font-medium text-slate-700 truncate">
-                            {alerta.mensaje}
-                          </p>
-                        </div>
-                        {alerta.cunaCodigo && (
-                          <p className="text-xs text-slate-500 mt-0.5 font-mono flex items-center gap-1">
-                            <Music className="w-3 h-3" />
-                            {alerta.cunaCodigo}
-                          </p>
-                        )}
-                      </div>
-                      <button 
-                        onClick={() => onResolve(alerta.id)}
-                        className={`px-2 py-1 text-xs rounded-lg shadow-sm hover:shadow-md transition-all font-medium flex-shrink-0
-                          ${alerta.prioridad === 'critica' 
-                            ? 'bg-red-500 text-white hover:bg-red-600' 
-                            : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-                          }
-                        `}
-                      >
-                        {alerta.accion}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* Footer con acciones */}
-      <div className="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2">
-        <button 
-          onClick={onRefresh}
-          disabled={loading}
-          className="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-medium text-slate-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Actualizar
-        </button>
-        <a 
-          href="/cunas/alertas"
-          className="flex-1 py-2 px-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-sm font-medium text-white transition-colors flex items-center justify-center gap-2"
-        >
-          📋 Ver Todo
-        </a>
-      </div>
-    </NeuromorphicCard>
-  );
-};
-
-// ═══════════════════════════════════════════════════════════════
-// TABLA DE CUÑAS
-// ═══════════════════════════════════════════════════════════════
-
-interface CunaRowProps {
-  cuna: Cuna;
-  onPlay: (id: string) => void;
-  onView: (id: string) => void;
-  onEdit: (id: string) => void;
-  onActions: (id: string, action: string) => void;
-  isPlaying: boolean;
-}
-
-const CunaRow = ({ cuna, onPlay, onView, onEdit, onActions, isPlaying }: CunaRowProps) => (
-  <div className={`
-    flex items-center justify-between p-4 rounded-xl border backdrop-blur-xl transition-all duration-200
-    ${cuna.esCritica ? 'bg-red-50/60 border-red-200 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'bg-white/60 border-slate-200/60'}
-    hover:bg-white/90 hover:shadow-md hover:border-emerald-200 group
-  `}>
-    {/* Play Button & Info */}
-    <div className="flex items-center gap-4 flex-1">
-      <button
-        onClick={() => onPlay(cuna.id)}
-        className={`
-          p-3 rounded-full transition-all duration-200
-          ${isPlaying 
-            ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-lg scale-110' 
-            : 'bg-gradient-to-br from-slate-200 to-slate-300 hover:from-emerald-400 hover:to-emerald-500'
-          }
-        `}
-      >
-        {isPlaying ? (
-          <Pause className="w-5 h-5 text-white" />
-        ) : (
-          <Play className="w-5 h-5 text-slate-600" />
-        )}
-      </button>
-      
-      <div className="min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-sm text-emerald-600 font-semibold">{cuna.spxCodigo}</span>
-          <TipoBadge tipo={cuna.tipo} />
-          <UrgenciaBadge urgencia={cuna.urgencia} />
-        </div>
-        <h3 className="font-medium text-slate-800 truncate mt-1">{cuna.nombre}</h3>
-        <p className="text-sm text-slate-500 truncate">
-          {cuna.anuncianteNombre}
-          {cuna.producto && <span className="text-slate-300"> • </span>}
-          {cuna.producto}
-        </p>
-      </div>
-    </div>
-
-    {/* Duración */}
-    <div className="hidden lg:flex flex-col items-center px-4 min-w-[80px]">
-      <div className="flex items-center gap-1 text-slate-700">
-        <Clock className="w-4 h-4" />
-        <span className="font-mono font-bold">{cuna.duracionFormateada}</span>
-      </div>
-      <p className="text-xs text-slate-400">{cuna.duracionSegundos}s</p>
-    </div>
-
-    {/* Scores */}
-    <div className="hidden xl:flex gap-3 px-4">
-      <div className="text-center">
-        <div className={`text-lg font-bold ${
-          cuna.scoreTecnico >= 80 ? 'text-emerald-600' : 
-          cuna.scoreTecnico >= 60 ? 'text-amber-600' : 'text-red-600'
-        }`}>
-          {cuna.scoreTecnico}%
-        </div>
-        <p className="text-xs text-slate-400">Técnico</p>
-      </div>
-      <div className="text-center">
-        <div className={`text-lg font-bold ${
-          cuna.scoreBrandSafety >= 80 ? 'text-emerald-600' : 
-          cuna.scoreBrandSafety >= 60 ? 'text-amber-600' : 'text-red-600'
-        }`}>
-          {cuna.scoreBrandSafety}%
-        </div>
-        <p className="text-xs text-slate-400">Brand</p>
-      </div>
-    </div>
-
-    {/* Vigencia */}
-    <div className="hidden md:flex flex-col items-center px-4 min-w-[100px]">
-      <div className={`text-sm font-medium ${
-        cuna.diasRestantes <= 1 ? 'text-red-600' :
-        cuna.diasRestantes <= 7 ? 'text-amber-600' : 'text-slate-600'
-      }`}>
-        {cuna.diasRestantes <= 0 ? 'Vencida' : `${cuna.diasRestantes} días`}
-      </div>
-      <p className="text-xs text-slate-400">Vigencia</p>
-    </div>
-
-    {/* Emisiones */}
-    <div className="hidden lg:flex flex-col items-center px-4 min-w-[80px]">
-      <p className="text-lg font-bold text-slate-800">{cuna.totalEmisiones}</p>
-      <p className="text-xs text-slate-400">emisiones</p>
-    </div>
-
-    {/* NUEVA: Emisora y Próxima Emisión */}
-    {cuna.programacion && (
-      <div className="hidden xl:flex flex-col gap-2 px-4 min-w-[180px]">
-        <EmisoraChip 
-          nombre={cuna.programacion.emisoraNombre} 
-          logo={cuna.programacion.emisoraLogo} 
-        />
-        <div className="flex items-center gap-2">
-          <TiempoRestanteBadge proximaEmision={cuna.programacion.proximaEmision} />
-          <span className="text-xs text-slate-500">{cuna.programacion.horarioBloque}</span>
-        </div>
-      </div>
-    )}
-
-    {/* NUEVA: Info de Programación Detallada (pantallas grandes) */}
-    {cuna.programacion && (
-      <div className="hidden 2xl:block px-3">
-        <ProximaEmisionInfo 
-          horarioBloque={cuna.programacion.horarioBloque}
-          frecuencia={cuna.programacion.frecuencia}
-          totalEmisoras={cuna.programacion.totalEmisorasHoy}
-        />
-      </div>
-    )}
-
-    {/* Estado */}
-    <div className="px-4">
-      <EstadoBadge estado={cuna.estado} />
-    </div>
-
-    {/* Acciones */}
-    <div className="flex items-center gap-1">
-      <button 
-        onClick={() => onView(cuna.id)} 
-        className="p-2 rounded-lg hover:bg-emerald-50 text-emerald-600 transition-colors"
-        title="Ver detalle"
-      >
-        <Eye className="w-5 h-5" />
-      </button>
-      <button 
-        onClick={() => onEdit(cuna.id)} 
-        className="p-2 rounded-lg hover:bg-amber-50 text-amber-600 transition-colors"
-        title="Editar"
-      >
-        <Edit3 className="w-5 h-5" />
-      </button>
-      <button 
-        onClick={() => onActions(cuna.id, 'distribute')} 
-        className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
-        title="Distribuir"
-      >
-        <Send className="w-5 h-5" />
-      </button>
-      <button 
-        onClick={() => onActions(cuna.id, 'copy')} 
-        className="p-2 rounded-lg hover:bg-purple-50 text-purple-600 transition-colors"
-        title="Copiar"
-      >
-        <Copy className="w-5 h-5" />
-      </button>
-      <button 
-        onClick={() => onActions(cuna.id, 'more')} 
-        className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"
-        title="Más acciones"
-      >
-        <MoreVertical className="w-5 h-5" />
-      </button>
-    </div>
-  </div>
-);
+// AlertasPanel and CunaRow extracted to ./_lib/AlertasPanel.tsx and ./_lib/CunaRow.tsx
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -383,6 +45,7 @@ export default function CunasOperacionesPage() {
   const [cunas, setCunas] = useState<Cuna[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [filterTipo, setFilterTipo] = useState<string>('');
   const [filterEstado, setFilterEstado] = useState<string>('');
   const [filterUrgencia, setFilterUrgencia] = useState<string>('');
@@ -408,8 +71,8 @@ export default function CunasOperacionesPage() {
   useAtajosTeclado({
     habilitado: true,
     onPlay: () => {
-      // Reproducir el seleccionado o el primero
-      const cuna = cunas[selectedIndex];
+      // Safe array access using at() method
+      const cuna = cunas.at(selectedIndex);
       if (cuna) handlePlay(cuna.id);
     },
     onSeleccionarTodo: () => {
@@ -503,8 +166,7 @@ export default function CunasOperacionesPage() {
         // Toast o notificación (usando alert por ahora si no hay toast configurado)
         // alert(`Acción ${action} completada en ${selectedIds.size} elementos.`);
 
-    } catch (err) {
-        /* console.error('Bulk Action Failed:', err) */;
+    } catch (_err) {
         alert('Error al ejecutar acción masiva. Reversando cambios...');
         setCunas(prevCunas); // Rollback
     }
@@ -512,7 +174,6 @@ export default function CunasOperacionesPage() {
 
   const handlePanicSwitch = async () => {
     if (confirm('🚨 ¿ACTIVAR KILL SWITCH? \n\nEsto detendrá INMEDIATAMENTE todas las emisiones en Aire (FM) y Digital.\n\n¿Estás seguro?')) {
-      ;
       try {
           const res = await fetch('/api/system/panic', {
               method: 'POST',
@@ -528,8 +189,7 @@ export default function CunasOperacionesPage() {
           alert('🛑 SISTEMA DETENIDO. Todas las pautas han sido canceladas y los streams silenciados.');
           setPanicMode(false);
           // Opcional: Recargar página o deshabilitar interfaz
-      } catch (e) {
-          /* console.error('PANIC FAILED:', e) */;
+      } catch (_e) {
           alert('CRITICAL ERROR: No se pudo detener el sistema automáticamente. Contacte a soporte de emergencia.');
       }
     }
@@ -641,8 +301,8 @@ export default function CunasOperacionesPage() {
         { id: 'a3', tipo: 'distribucion', prioridad: 'media', mensaje: '2 confirmaciones pendientes', cunaId: 'cun-002', cunaCodigo: 'SPX000002', accion: 'Ver' }
       ]);
       
-    } catch (error) {
-      /* console.error('Error:', error) */;
+    } catch (_error) {
+      // Error silenciado - manejo en UI
     } finally {
       setLoading(false);
     }
@@ -656,10 +316,10 @@ export default function CunasOperacionesPage() {
 
   const cunasFiltradas = useMemo(() => {
     return cunas.filter(cuna => {
-      const matchSearch = !search || 
-        cuna.nombre.toLowerCase().includes(search.toLowerCase()) ||
-        cuna.spxCodigo.toLowerCase().includes(search.toLowerCase()) ||
-        cuna.anuncianteNombre.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = !debouncedSearch ||
+        cuna.nombre.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        cuna.spxCodigo.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        cuna.anuncianteNombre.toLowerCase().includes(debouncedSearch.toLowerCase());
       
       const matchTipo = !filterTipo || cuna.tipo === filterTipo;
       const matchEstado = !filterEstado || cuna.estado === filterEstado;
@@ -667,7 +327,7 @@ export default function CunasOperacionesPage() {
       
       return matchSearch && matchTipo && matchEstado && matchUrgencia;
     });
-  }, [cunas, search, filterTipo, filterEstado, filterUrgencia]);
+  }, [cunas, debouncedSearch, filterTipo, filterEstado, filterUrgencia]);
 
   // ─────────────────────────────────────────────────────────────
   // HANDLERS
@@ -685,8 +345,7 @@ export default function CunasOperacionesPage() {
     router.push(`/cunas/${id}/editar`);
   };
 
-  const handleActions = (id: string, action: string) => {
-    ;
+  const handleActions = (_id: string, _action: string) => {
     // Implementar acciones
   };
 
@@ -902,6 +561,7 @@ export default function CunasOperacionesPage() {
                   <input
                     type="text"
                     placeholder="Buscar cuñas por código, nombre o anunciante..."
+                    aria-label="Buscar cuñas"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-full rounded-xl py-3 pl-12 pr-4 bg-white/80 border border-slate-200 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 text-slate-800 font-medium shadow-sm transition-all placeholder:text-slate-400"
@@ -972,8 +632,17 @@ export default function CunasOperacionesPage() {
             {/* Lista de cuñas */}
             <NeuromorphicCard className="p-4">
               {loading ? (
-                <div className="flex items-center justify-center py-16">
-                  <RefreshCw className="w-10 h-10 animate-spin text-emerald-500" />
+                <div className="space-y-3">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={`skeleton-${i}`} className="flex items-center gap-4 p-4 rounded-xl bg-[#F5F2EE] shadow-[inset_3px_3px_8px_#D4D1CC,inset_-3px_-3px_8px_#FFFFFF]">
+                      <div className="w-10 h-10 rounded-lg animate-pulse bg-[#E8E5E0]" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-2/5" />
+                        <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-1/3" />
+                      </div>
+                      <div className="h-6 w-16 animate-pulse bg-[#E8E5E0] rounded-full" />
+                    </div>
+                  ))}
                 </div>
               ) : cunasFiltradas.length === 0 ? (
                 <div className="text-center py-16">

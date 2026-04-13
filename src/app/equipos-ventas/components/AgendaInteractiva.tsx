@@ -233,7 +233,7 @@ export const AgendaInteractiva = () => {
                             const isDone = completedPrep[event.id]?.[i];
                             return (
                               <button
-                                key={i}
+                                key={`${item}-${i}`}
                                 onClick={() => togglePrep(event.id, i)}
                                 className="flex items-center gap-2 text-left w-full hover:bg-amber-100/50 rounded-lg px-1 py-0.5 transition-colors"
                               >

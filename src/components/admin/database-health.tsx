@@ -224,7 +224,7 @@ export function DatabaseHealth() {
           </h4>
           <div className="space-y-2">
             {slowQueries.map((sq, i) => (
-              <div key={i} className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <div key={sq.query} className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                 <div className="flex items-center justify-between mb-1">
                   <code className="text-sm text-yellow-300 truncate max-w-[70%]">{sq.query}</code>
                   <span className="text-red-400 font-bold">{sq.duration}ms</span>

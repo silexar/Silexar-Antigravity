@@ -387,11 +387,11 @@ export class AdaptiveUIEngine {
 
     const learningEvent: LearningEvent = {
       timestamp: new Date(),
-      type: interaction.type,
-      element: interaction.element,
+      type: interaction.type as string,
+      element: interaction.element as string,
       value: interaction.value,
       context: interaction.context,
-      satisfaction: interaction.satisfaction || 0.5
+      satisfaction: (interaction.satisfaction as number) || 0.5
     };
 
     profile.learningHistory.push(learningEvent);
@@ -409,18 +409,18 @@ export class AdaptiveUIEngine {
     // Update click patterns
     if (interaction.type === 'click') {
       const pattern: ClickPattern = {
-        element: interaction.element,
+        element: interaction.element as string,
         timestamp: new Date(),
-        coordinates: interaction.coordinates,
-        context: interaction.context
+        coordinates: interaction.coordinates as { x: number; y: number },
+        context: interaction.context as string
       };
       profile.behavior.clickPatterns.push(pattern);
     }
 
     // Update time spent
     if (interaction.type === 'pageView') {
-      const page = interaction.page;
-      profile.behavior.timeSpent[page] = (profile.behavior.timeSpent[page] || 0) + interaction.duration;
+      const page = interaction.page as string;
+      profile.behavior.timeSpent[page] = (profile.behavior.timeSpent[page] || 0) + (interaction.duration as number);
     }
   }
 

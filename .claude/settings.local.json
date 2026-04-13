@@ -54,7 +54,63 @@
       "Bash(mkdir -p .husky)",
       "Bash(.husky/pre-commit:*)",
       "Bash(chmod +x .husky/pre-commit)",
-      "Bash(wc -l \"c:/Users/Jhonson/Desktop/Silexar Pulse Antygravity/src/__tests__/security/\"*.ts)"
+      "Bash(wc -l \"c:/Users/Jhonson/Desktop/Silexar Pulse Antygravity/src/__tests__/security/\"*.ts)",
+      "Bash(grep -v \"aria-label\\\\|import\\\\|//\")",
+      "Bash(sed -n '323,340p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '355,375p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '430,440p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '530,540p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '563,575p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '661,675p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '758,770p' src/app/vencimientos/_components/CotizadorInteractivoView.tsx)",
+      "Bash(sed -n '48,58p' src/app/vencimientos/_components/WizardCrearPrograma.tsx)",
+      "Bash(sed -n '65,80p' src/app/vencimientos/_components/WizardCrearPrograma.tsx)",
+      "Bash(sed -n '118,140p' src/app/vencimientos/_components/WizardCrearPrograma.tsx)",
+      "Bash(sed -n '368,410p' src/app/contratos/cuenta-corriente/page.tsx)",
+      "Bash(sed -n '663,675p' src/app/contratos/cuenta-corriente/page.tsx)",
+      "Bash(grep -v \"import\\\\|//\")",
+      "Bash(sed -n '305,315p' src/app/contratos/nuevo/components/WizardContrato/steps/StepEspecificaciones.tsx)",
+      "Bash(sed -n '361,375p' src/app/contratos/nuevo/components/WizardContrato/steps/StepEspecificaciones.tsx)",
+      "Bash(sed -n '215,225p' src/app/conciliacion/movil/_components/MobileConciliacionView.tsx)",
+      "Bash(sed -n '444,455p' src/app/conciliacion/movil/_components/MobileConciliacionView.tsx)",
+      "Bash(sed -n '522,535p' src/app/conciliacion/movil/_components/MobileConciliacionView.tsx)",
+      "Bash(node -e ':*)",
+      "Bash(node scan_aria.js)",
+      "Bash(mv scan_aria.js scan_aria.cjs)",
+      "Bash(node scan_aria.cjs)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"var d='';process.stdin.on('data',function(c){d+=c;});process.stdin.on('end',function(){try{var e=JSON.parse(d);var fp=(e.tool_input&&(e.tool_input.file_path||e.tool_input.path))||'';if(!fp){return;}var skills=[];var isTs=/[.](ts)$/.test(fp);var isTsx=/[.](tsx)$/.test(fp);var isTest=/[.](test|spec)[.](ts|tsx)$/.test(fp);var isE2e=fp.includes('/e2e/');var isApi=fp.includes('/api/')&&!isTest;var isDb=fp.includes('/lib/db/');var isAuth=fp.includes('/auth/')||fp.includes('/two-factor/');var isComp=isTsx&&!isApi&&!isTest;var isPure=isTs&&!isTest&&!isApi&&!isDb&&!isAuth;if(isDb)skills.push('drizzle-orm','supabase-postgres-best-practices');if(isAuth&&fp.includes('two-factor'))skills.push('two-factor-authentication-best-practices');else if(isAuth)skills.push('better-auth-best-practices');if(isTest&&!isE2e)skills.push('vitest');if(isE2e)skills.push('playwright-best-practices');if(isApi)skills.push('nodejs-backend-patterns');if(isComp){skills.push('vercel-react-best-practices','tailwind-css-patterns','accessibility','frontend-design');skills.push('simplify');}if(isPure)skills.push('typescript-advanced-types');if(skills.length>0){console.log('[SKILLS] For '+fp.split('/').pop()+' invoke: '+skills.map(function(s){return '/'+s;}).join(', '));}}catch(ex){}});\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"var d='';process.stdin.on('data',function(c){d+=c;});process.stdin.on('end',function(){try{var e=JSON.parse(d);var isErr=e.tool_response&&(e.tool_response.isError===true);var out=String((e.tool_response&&e.tool_response.stdout)||'')+' '+String((e.tool_response&&e.tool_response.stderr)||'');var hasTsErr=out.indexOf('error TS')!==-1;var hasModErr=out.indexOf('Cannot find module')!==-1;if(!isErr&&!hasTsErr&&!hasModErr){return;}var cmd=String((e.tool_input&&e.tool_input.command)||'unknown').slice(0,60);var patterns=[];var m1=out.match(/error TS[0-9]+:[^]{0,100}/g);if(m1)patterns=patterns.concat(m1.slice(0,2));var m2=out.match(/Cannot find module[^]{0,80}/g);if(m2)patterns=patterns.concat(m2.slice(0,1));if(patterns.length===0){patterns=['(error detected)'];}var fs=require('fs');var mf='c:/Users/Jhonson/.claude/projects/c--Users-Jhonson-Desktop-Silexar-Pulse-Antygravity/memory/feedback_errors.md';var ts=new Date().toISOString().slice(0,10);var entry='- ['+ts+'] '+cmd+' => '+patterns.join(' | ')+String.fromCharCode(10);if(fs.existsSync(mf)){fs.appendFileSync(mf,entry);}console.log('[ERROR-LEARNED] '+entry.trim());}catch(ex){}});\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"var d='';process.stdin.on('data',function(c){d+=c;});process.stdin.on('end',function(){try{var e=JSON.parse(d);var fp=(e.tool_input&&(e.tool_input.file_path||e.tool_input.path))||'';if(!fp||!/[.](ts|tsx)$/.test(fp)){return;}var root='c:/Users/Jhonson/Desktop/Silexar Pulse Antygravity';var rel=fp.startsWith(root)?fp.slice(root.length+1):fp;var ex=require('child_process').execSync;try{var r=ex('node_modules/.bin/eslint --fix '+JSON.stringify(rel),{cwd:root,timeout:8000,encoding:'utf8',stdio:['pipe','pipe','pipe']});if(r&&r.trim()){console.log('[ESLint] '+r.trim().slice(0,300));}else{console.log('[ESLint] '+rel+': OK');}}catch(le){var msg=String(le.stdout||le.stderr||le.message).trim().slice(0,400);console.log('[ESLint errors in '+rel+'] '+msg);}}catch(ex2){}});\""
+          }
+        ]
+      }
     ]
   }
 }

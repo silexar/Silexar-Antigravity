@@ -20,6 +20,7 @@
  */
 
 import { filterInput } from '@/lib/ai/input-filter'
+import { validateOutput } from '@/lib/ai/output-validator'
 import { judgeInput, shouldInvokeJudge } from '@/lib/ai/judge'
 import { conversationAnomalyDetector } from '@/lib/ai/anomaly-detector'
 import { actionProxy, type AgentAction } from '@/lib/cortex/action-proxy'
@@ -229,7 +230,7 @@ export class WILEngineImpl {
     if (l2Result.isBlocked) {
       logger.warn(`WIL: input blocked by L2 filter — sessionId:${sessionId} userId:${userId} tenantId:${tenantId} riskScore:${l2Result.riskScore} reason:${l2Result.reason}`)
       // Record the high-risk message for L7 tracking
-      conversationAnomalyDetector.recordMessage({
+      await conversationAnomalyDetector.recordMessage({
         sessionId, userId, tenantId,
         riskScore: l2Result.riskScore,
         flagged: true,
@@ -250,7 +251,7 @@ export class WILEngineImpl {
 
       if (verdict.decision === 'block') {
         logger.warn(`WIL: input blocked by L5 AI Judge — sessionId:${sessionId} userId:${userId} tenantId:${tenantId} riskScore:${verdict.riskScore} detectedIntent:${verdict.detectedIntent} reasoning:${verdict.reasoning}`)
-        conversationAnomalyDetector.recordMessage({
+        await conversationAnomalyDetector.recordMessage({
           sessionId, userId, tenantId,
           riskScore: verdict.riskScore,
           flagged: true,
@@ -263,7 +264,7 @@ export class WILEngineImpl {
     }
 
     // ── L7: Record final authoritative risk score ────────────────────────────
-    conversationAnomalyDetector.recordMessage({
+    await conversationAnomalyDetector.recordMessage({
       sessionId, userId, tenantId,
       riskScore: finalRiskScore,
       flagged: finalRiskScore > 30,
@@ -273,7 +274,23 @@ export class WILEngineImpl {
     this.addToHistory(context, 'user', input)
 
     const { intent, entities, confidence } = this.detectIntent(input)
-    const responseText = this.generateResponse(intent, entities, context)
+    let responseText = this.generateResponse(intent, entities, context)
+
+    // ── L6: Output validation + DLP ─────────────────────────────────────────
+    const validationResult = validateOutput(responseText)
+    if (validationResult.isBlocked) {
+      logger.warn('AI output blocked by L6 validator', { reason: validationResult.violationType })
+      await conversationAnomalyDetector.recordMessage({
+        sessionId, userId, tenantId,
+        riskScore: 100,
+        flagged: true,
+      })
+      return BLOCK_RESPONSE
+    }
+    if (validationResult.redactionsApplied > 0) {
+      logger.warn(`L6 output redactions applied: ${validationResult.redactionsApplied} redactions`, { violationType: validationResult.violationType })
+      responseText = validationResult.output
+    }
 
     this.addToHistory(context, 'assistant', responseText, intent)
 
@@ -501,10 +518,10 @@ export class WILEngineImpl {
 
   // ─── Session management ────────────────────────────────────────────────────
 
-  clearSession(userId: string): boolean {
+  async clearSession(userId: string): Promise<boolean> {
     const ctx = this.contexts.get(userId)
     if (ctx?.sessionId) {
-      conversationAnomalyDetector.clearSession(ctx.sessionId)
+      await conversationAnomalyDetector.clearSession(ctx.sessionId)
     }
     return this.contexts.delete(userId)
   }

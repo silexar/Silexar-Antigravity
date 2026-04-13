@@ -35,7 +35,9 @@ export function DealRoom() {
     fetch('/api/equipos-ventas/deals?tipo=deals')
       .then(r => r.json())
       .then(d => { if (d.success) { setDeals(d.data); setSelected(d.data[0]); } })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[DealRoom] Failed to load deals:', error);
+      });
   }, []);
 
   const dl = selected;
@@ -112,7 +114,7 @@ export function DealRoom() {
         {tab === 'timeline' && (
           <div className="space-y-3">
             {dl.actividades.map((a, i) => (
-              <div key={i} className="flex items-start gap-3">
+              <div key={`${a}-${i}`} className="flex items-start gap-3">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   a.tipo === 'llamada' ? 'bg-blue-100' : a.tipo === 'email' ? 'bg-purple-100' : 'bg-emerald-100'
                 }`}>
@@ -133,7 +135,7 @@ export function DealRoom() {
         {tab === 'stakeholders' && (
           <div className="space-y-3">
             {dl.stakeholders.map((s, i) => (
-              <div key={i} className="neo-card rounded-xl p-4 flex items-center gap-4">
+              <div key={`${s}-${i}`} className="neo-card rounded-xl p-4 flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
                   {s.nombre.split(' ').map(n => n[0]).join('')}
                 </div>
@@ -167,7 +169,7 @@ export function DealRoom() {
             <div className="p-4 bg-gradient-to-r from-violet-50 to-fuchsia-50 rounded-xl border border-violet-100">
               <p className="text-xs font-bold text-violet-700 flex items-center gap-1 mb-2"><Sparkles className="w-3 h-3" /> Próximos Pasos Sugeridos</p>
               {['Agendar reunión cierre con CTO', 'Enviar comparativo vs CompetitorX a CFO', 'Preparar prueba de concepto técnica'].map((p, i) => (
-                <p key={i} className="text-xs text-violet-600 mt-1 flex items-start gap-1"><ArrowRight className="w-3 h-3 mt-0.5 shrink-0" /> {p}</p>
+                <p key={`${p}-${i}`} className="text-xs text-violet-600 mt-1 flex items-start gap-1"><ArrowRight className="w-3 h-3 mt-0.5 shrink-0" /> {p}</p>
               ))}
             </div>
             <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">

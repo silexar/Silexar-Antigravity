@@ -483,7 +483,10 @@ export class WILKnowledgeBase {
         if (!this.searchIndex.has(word)) {
           this.searchIndex.set(word, new Set())
         }
-        this.searchIndex.get(word)!.add(entry.id)
+        const wordSet = this.searchIndex.get(word)
+        if (wordSet) {
+          wordSet.add(entry.id)
+        }
       }
     }
   }

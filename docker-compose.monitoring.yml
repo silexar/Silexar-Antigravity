@@ -26,7 +26,7 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=30d'
       - '--web.enable-lifecycle'
-      - '--web.enable-admin-api'
+      # Removed --web.enable-admin-api for security
     networks:
       - monitoring
     labels:
@@ -41,7 +41,7 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:?GRAFANA_PASSWORD environment variable is required}
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
     volumes:
@@ -119,14 +119,18 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /:/rootfs:ro
+      - /:/rootfs:ro,rslave
       - /var/run:/var/run:ro
       - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/lib/docker/:/var/lib/docker:ro,rslave
       - /dev/disk/:/dev/disk:ro
-    privileged: true
+    # Removed privileged: true for security
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RAWIO
+      - SYS_PTRACE
     devices:
-      - /dev/kmsg
+      - /dev/kmsg:/dev/kmsg:ro
     networks:
       - monitoring
 
@@ -135,8 +139,9 @@ services:
     image: redis:7-alpine
     container_name: silexar-redis
     restart: unless-stopped
+    # Security: bind to localhost only — not exposed to external network
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
       - ./monitoring/redis/redis.conf:/usr/local/etc/redis/redis.conf

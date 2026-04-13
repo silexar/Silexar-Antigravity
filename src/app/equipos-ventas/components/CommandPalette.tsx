@@ -152,7 +152,7 @@ export const CommandPalette = ({ isOpen, onClose, onSelect }: CommandPaletteProp
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Palette */}
-      <div className="relative w-full max-w-xl mx-4 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-in zoom-in-95 fade-in duration-150">
+      <div className="relative w-full max-w-xl mx-4 bg-white dark:bg-[#F0EDE8] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-in zoom-in-95 fade-in duration-150">
         {/* Search Input */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
           <Search size={18} className="text-slate-400" />

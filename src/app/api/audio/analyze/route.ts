@@ -9,10 +9,22 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
+import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, apiValidationError, getUserContext } from '@/lib/api/response';
+import { checkPermission } from '@/lib/security/rbac';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+
+// ═══════════════════════════════════════════════════════════════
+// ZOD SCHEMA — validación de entrada
+// ═══════════════════════════════════════════════════════════════
+
+const AnalyzeAudioSchema = z.object({
+  fileName: z.string().min(1).max(255).regex(/\.(mp3|wav|m4a|flac|aac|ogg)$/i, 'Formato no soportado'),
+  fileSize: z.number().int().positive().max(50 * 1024 * 1024, 'Archivo máximo 50MB'),
+  duration: z.number().positive().optional(),
+});
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -289,24 +301,21 @@ function generateRecommendations(analysis: Partial<AudioAnalysis>): string[] {
 // ═══════════════════════════════════════════════════════════════
 
 export async function POST(request: NextRequest) {
+  // Auth + RBAC — cunas:read permission required for audio analysis
+  const ctx = getUserContext(request);
+  if (!ctx.userId) return apiUnauthorized();
+  const perm = checkPermission(ctx, 'cunas', 'read');
+  if (!perm) return apiForbidden();
+
   try {
-    const body = await request.json();
-    
-    const {
-      fileName,
-      fileSize,
-      duration // Si ya se conoce la duración (ej: desde <audio> element)
-    } = body;
-    
-    if (!fileName || !fileSize) {
-      return NextResponse.json(
-        { success: false, error: 'fileName y fileSize son requeridos' },
-        { status: 400 }
-      );
-    }
-    
+    const rawBody: unknown = await request.json();
+    const parsed = AnalyzeAudioSchema.safeParse(rawBody);
+    if (!parsed.success) return apiValidationError(parsed.error);
+
+    const { fileName, fileSize, duration } = parsed.data;
+
     // Simular análisis - en producción esto usaría ffprobe o similar
-    const estimatedDuration = duration || Math.max(15, Math.floor(fileSize / 20000)); // Estimación básica
+    const estimatedDuration = duration ?? Math.max(15, Math.floor(fileSize / 20000)); // Estimación básica
     const estimatedBitrate = estimateBitrate(fileSize, estimatedDuration);
     
     // Valores simulados realistas basados en el tipo de archivo
@@ -373,7 +382,8 @@ export async function POST(request: NextRequest) {
 // ═══════════════════════════════════════════════════════════════
 
 export async function GET() {
-  return NextResponse.json({
+  try {
+    return NextResponse.json({
     success: true,
     data: {
       formatosAceptados: ['mp3', 'wav', 'm4a', 'flac', 'aac', 'ogg'],
@@ -399,4 +409,8 @@ export async function GET() {
       }
     }
   });
+  } catch (error) {
+    logger.error('[API/Audio/Analyze] Error:', error instanceof Error ? error : undefined);
+    return NextResponse.json({ success: false, error: 'Error al obtener requisitos' }, { status: 500 });
+  }
 }

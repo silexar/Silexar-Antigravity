@@ -57,12 +57,11 @@ export const GET = secureHandler(
     }
     if (query.data.buscar) {
       const term = `%${query.data.buscar}%`
-      conditions.push(
-        or(
-          ilike(reglasCompetencia.anuncianteA, term),
-          ilike(reglasCompetencia.anuncianteB, term),
-        )!
-      )
+      const buscarCond = or(
+        ilike(reglasCompetencia.anuncianteA, term),
+        ilike(reglasCompetencia.anuncianteB, term),
+      );
+      if (buscarCond) conditions.push(buscarCond);
     }
 
     const rows = await db
@@ -108,7 +107,7 @@ export const POST = secureHandler(
               eq(reglasCompetencia.anuncianteA, parsed.data.anuncianteB),
               eq(reglasCompetencia.anuncianteB, parsed.data.anuncianteA),
             ),
-          )!,
+          ),
         )
       )
       .limit(1)

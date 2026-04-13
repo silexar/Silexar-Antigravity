@@ -9,7 +9,7 @@
  */
 
 import { encryptAtRest, decryptAtRest, verifyIntegrity } from './encryption-at-rest';
-import { createHash, randomBytes, timingSafeEqual } from 'crypto';
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'crypto';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -60,7 +60,7 @@ export function hashSHA256(value: string): string {
  */
 export function hashHMAC(value: string, salt?: string): string {
   const actualSalt = salt || process.env.ENCRYPTION_MASTER_KEY || 'default-salt';
-  return createHash('sha256').update(actualSalt + value).digest('hex');
+  return createHmac('sha256', actualSalt).update(value).digest('hex');
 }
 
 /**

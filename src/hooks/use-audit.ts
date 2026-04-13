@@ -169,7 +169,7 @@ export function useAudit(options: UseAuditOptions = {}): AuditLogger {
         result,
         details: details || {},
         severity,
-        category: category as any,
+        category: category as unknown,
         complianceFlags: [],
       });
     },

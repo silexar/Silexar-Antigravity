@@ -9,11 +9,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Brain, 
-  Sparkles, 
-  Zap, 
-  Eye, 
+import dynamic from 'next/dynamic';
+import {
+  Brain,
+  Sparkles,
+  Zap,
+  Eye,
   Target,
   TrendingUp,
   Activity,
@@ -28,8 +29,15 @@ import {
   Shield,
   Gauge
 } from 'lucide-react';
-import AdaptiveUI from '@/components/ai/adaptive-ui';
-import SmartForms from '@/components/ai/smart-forms';
+
+const AdaptiveUI = dynamic(() => import('@/components/ai/adaptive-ui'), {
+  loading: () => <div className="h-64 animate-pulse bg-[#E8E5E0] rounded-2xl" />,
+  ssr: false,
+});
+const SmartForms = dynamic(() => import('@/components/ai/smart-forms'), {
+  loading: () => <div className="h-64 animate-pulse bg-[#E8E5E0] rounded-2xl" />,
+  ssr: false,
+});
 
 export default function AIUXPage() {
   const [activeDemo, setActiveDemo] = useState<'adaptive' | 'forms' | 'both'>('both');
@@ -136,8 +144,8 @@ export default function AIUXPage() {
 
         {/* Features Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+          {features.map((feature) => (
+            <div key={feature.title} className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
               <div className="flex items-center mb-4">
                 <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
                   {feature.icon}
@@ -246,7 +254,7 @@ export default function AIUXPage() {
             <div className="p-6">
               <div className="space-y-4">
                 {formSubmissions.map((submission, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                  <div key={`submission-${index}`} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-gray-900">Submission #{index + 1}</span>
                       <span className="text-sm text-gray-500">

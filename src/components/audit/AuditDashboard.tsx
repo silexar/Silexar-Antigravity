@@ -73,7 +73,7 @@ const statusColors = {
   compliant: 'bg-green-100 text-green-800',
   'non-compliant': 'bg-red-100 text-red-800',
   partial: 'bg-yellow-100 text-yellow-800',
-  pending: 'bg-gray-100 text-gray-800',
+  pending: 'bg-[#F0EDE8] text-gray-800',
 };
 
 const resultIcons = {
@@ -107,7 +107,6 @@ export default function AuditDashboard({ className }: AuditDashboardProps) {
       setAuditSummary(summary);
       setComplianceReport(compliance);
     } catch (error) {
-      console.error('Failed to load audit data:', error);
       toast({
         title: 'Failed to load audit data',
         description: 'Could not retrieve audit and compliance information',
@@ -433,7 +432,7 @@ export default function AuditDashboard({ className }: AuditDashboardProps) {
                 auditEvents.map((event) => (
                   <div
                     key={event.id}
-                    className="flex items-center justify-between rounded-lg border p-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between rounded-lg border p-3 hover:bg-[#F0EDE8] dark:hover:bg-gray-800"
                   >
                     <div className="flex items-center gap-3">
                       {resultIcons[event.result]}

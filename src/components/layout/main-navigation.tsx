@@ -344,7 +344,7 @@ export function MainNavigation() {
       id: 'admin',
       name: 'Administración',
       icon: Settings,
-      color: 'text-slate-400',
+      color: 'text-[#888780]',
       items: [
         {
           id: 'configuracion',
@@ -400,18 +400,18 @@ export function MainNavigation() {
   }
 
   return (
-    <nav className="w-80 bg-slate-900/95 backdrop-blur-sm border-r border-slate-700 h-screen overflow-y-auto">
+    <nav className="w-80 bg-[#F0EDE8]/95 backdrop-blur-sm border-r border-[#D4D1CC] h-screen overflow-y-auto">
       {/* Header de Navegación */}
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-6 border-b border-[#D4D1CC]">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-            <Rocket className="h-6 w-6 text-white" />
+            <Rocket className="h-6 w-6 text-[#2C2C2A]" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-white">
+            <h1 className="text-xl font-bold text-[#2C2C2A]">
               Silexar Pulse
             </h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#888780]">
               TIER 0 Supremacy Platform
             </p>
           </div>
@@ -440,18 +440,18 @@ export function MainNavigation() {
               <Button
                 variant="ghost"
                 onClick={() => toggleSection(section.id)}
-                className="w-full justify-between text-left p-3 h-auto hover:bg-slate-800/50"
+                className="w-full justify-between text-left p-3 h-auto hover:bg-[#E8E5E0]/50"
               >
                 <div className="flex items-center space-x-3">
                   <SectionIcon className={`h-5 w-5 ${section.color}`} />
-                  <span className="text-slate-200 font-medium">
+                  <span className="text-[#2C2C2A] font-medium">
                     {section.name}
                   </span>
                 </div>
                 {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 text-slate-400" />
+                  <ChevronDown className="h-4 w-4 text-[#888780]" />
                 ) : (
-                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                  <ChevronRight className="h-4 w-4 text-[#888780]" />
                 )}
               </Button>
 
@@ -470,25 +470,25 @@ export function MainNavigation() {
                           flex items-center justify-between p-3 rounded-lg transition-colors group
                           ${active 
                             ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300' 
-                            : 'hover:bg-slate-800/50 text-slate-300 hover:text-white'
+                            : 'hover:bg-[#E8E5E0]/50 text-[#5F5E5A] hover:text-[#2C2C2A]'
                           }
                         `}
                       >
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
-                          <ItemIcon className={`h-4 w-4 flex-shrink-0 ${active ? 'text-blue-400' : 'text-slate-400'}`} />
+                          <ItemIcon className={`h-4 w-4 flex-shrink-0 ${active ? 'text-blue-400' : 'text-[#888780]'}`} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                               <span className="text-sm font-medium truncate">
                                 {item.name}
                               </span>
                               {item.isNew && (
-                                <Badge className="bg-green-600 text-white text-xs px-1.5 py-0.5">
+                                <Badge className="bg-green-600 text-[#2C2C2A] text-xs px-1.5 py-0.5">
                                   NEW
                                 </Badge>
                               )}
                             </div>
                             {item.description && (
-                              <p className="text-xs text-slate-500 truncate mt-0.5">
+                              <p className="text-xs text-[#888780] truncate mt-0.5">
                                 {item.description}
                               </p>
                             )}
@@ -498,7 +498,7 @@ export function MainNavigation() {
                         {/* Badge del Item */}
                         {item.badge && (
                           <Badge 
-                            className={`${item.badgeColor || 'bg-slate-600'} text-white text-xs ml-2 flex-shrink-0`}
+                            className={`${item.badgeColor || 'bg-slate-600'} text-[#2C2C2A] text-xs ml-2 flex-shrink-0`}
                           >
                             {item.badge}
                           </Badge>
@@ -514,18 +514,18 @@ export function MainNavigation() {
       </div>
 
       {/* Footer de Navegación */}
-      <div className="p-4 border-t border-slate-700 mt-auto">
+      <div className="p-4 border-t border-[#D4D1CC] mt-auto">
         <div className="space-y-2">
           <Link
             href="/ayuda"
-            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-800/50 text-slate-400 hover:text-white transition-colors"
+            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-[#E8E5E0]/50 text-[#888780] hover:text-[#2C2C2A] transition-colors"
           >
             <HelpCircle className="h-4 w-4" />
             <span className="text-sm">Ayuda y Soporte</span>
           </Link>
           
-          <div className="pt-2 border-t border-slate-700">
-            <div className="text-xs text-slate-500 space-y-1">
+          <div className="pt-2 border-t border-[#D4D1CC]">
+            <div className="text-xs text-[#888780] space-y-1">
               <p>🚀 SILEXAR PULSE QUANTUM</p>
               <p>Version 2040.5.0 - TIER 0</p>
               <p>Pentagon++ Security Active</p>

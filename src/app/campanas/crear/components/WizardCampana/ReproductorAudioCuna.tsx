@@ -271,7 +271,7 @@ export const ReproductorAudioCuna: React.FC<ReproductorAudioProps> = ({
             const isPlayed = i < (progress / 100) * waveformData.current.length;
             return (
               <div
-                key={i}
+                key={`${height}-${i}`}
                 className={`w-1 rounded-t transition-all ${
                   isPlayed ? 'bg-purple-600' : 'bg-gray-300'
                 }`}

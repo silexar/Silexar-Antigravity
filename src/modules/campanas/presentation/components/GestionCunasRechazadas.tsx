@@ -110,7 +110,7 @@ export const GestionCunasRechazadas: React.FC<GestionCunasRechazadasProps> = ({
         eficienciaIA: 85
       });
     } catch (error) {
-      /* console.error('Error cargando cuñas rechazadas:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -133,7 +133,7 @@ export const GestionCunasRechazadas: React.FC<GestionCunasRechazadasProps> = ({
       
       onCunaReubicada?.(cunaId, { horario: '14:30', bloque: 'A1' });
     } catch (error) {
-      /* console.error('Error procesando con IA:', error) */;
+      /* */;
     } finally {
       setProcesamientoIA(false);
     }
@@ -274,7 +274,7 @@ export const GestionCunasRechazadas: React.FC<GestionCunasRechazadasProps> = ({
                         </h4>
                         <div className="space-y-2">
                           {cuna.sugerenciasIA.map((sugerencia, index) => (
-                            <div key={index} className="flex items-center justify-between p-2 bg-blue-50 rounded">
+                            <div key={`${sugerencia}-${index}`} className="flex items-center justify-between p-2 bg-blue-50 rounded">
                               <span className="text-sm">{sugerencia}</span>
                               <Button
                                 size="sm"

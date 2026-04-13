@@ -9,7 +9,21 @@ import { eq, and, gte, lte, ilike, sql, count } from 'drizzle-orm';
 import { db as _db } from '@/lib/db';
 // DATABASE_URL is required at startup; non-null assertion is safe in server context
 const db = _db!;
-import { campanas as campanasTable } from '@/lib/db/campanas-schema';
+import { campanas as campanasTable, campanasCunas, campanasEmisoras } from '@/lib/db/campanas-schema';
+
+// ─── Types for related records ──────────────────────────────────
+export interface CampanaCunaInput {
+  cunaId: string
+  pesoRotacion?: number
+  prioridad?: number
+}
+
+export interface CampanaEmisoraInput {
+  emisoraId: string
+  spotsContratados: number
+  costoTotal?: number
+  notas?: string
+}
 import { Campana } from '../../domain/entities/Campana';
 import type { ICampanaRepository, CampanaFilters, CampanaPaginada } from '../../domain/repositories/ICampanaRepository';
 import type { EstadoCampanaValue } from '../../domain/value-objects/EstadoCampana';
@@ -113,24 +127,147 @@ export class DrizzleCampanaRepository implements ICampanaRepository {
   }
 
   async guardar(campana: Campana): Promise<void> {
-    await db.insert(campanasTable).values(this._toRow(campana));
+    // WHY: transaction wrapper ensures atomicity even as side-effects are added later
+    await db.transaction(async (tx) => {
+      await tx.insert(campanasTable).values(this._toRow(campana))
+    })
+  }
+
+  /**
+   * Atomic save of campana + its cunas + emisoras.
+   * WHY: campana, cunas assignment, and emisoras form a single business operation.
+   * If any part fails, the whole operation rolls back — no partial data.
+   */
+  async guardarConRelaciones(
+    campana: Campana,
+    cunas: CampanaCunaInput[],
+    emisoras: CampanaEmisoraInput[],
+  ): Promise<void> {
+    await db.transaction(async (tx) => {
+      // 1. Insert main campana record
+      await tx.insert(campanasTable).values(this._toRow(campana))
+
+      // 2. Insert cunas assignments
+      if (cunas.length > 0) {
+        await tx.insert(campanasCunas).values(
+          cunas.map((c) => ({
+            tenantId: campana.tenantId,
+            campanaId: campana.id,
+            cunaId: c.cunaId,
+            pesoRotacion: c.pesoRotacion ?? 1,
+            prioridad: c.prioridad ?? 0,
+            activo: true,
+          })),
+        )
+      }
+
+      // 3. Insert emisoras assignments
+      if (emisoras.length > 0) {
+        await tx.insert(campanasEmisoras).values(
+          emisoras.map((e) => ({
+            tenantId: campana.tenantId,
+            campanaId: campana.id,
+            emisoraId: e.emisoraId,
+            spotsContratados: e.spotsContratados,
+            costoTotal: e.costoTotal != null ? String(e.costoTotal) : null,
+            notas: e.notas ?? null,
+            activo: true,
+          })),
+        )
+      }
+    })
   }
 
   async actualizar(campana: Campana): Promise<void> {
-    await db
-      .update(campanasTable)
-      .set({
-        nombre: campana.nombre,
-        estado: DOMAIN_TO_DB_ESTADO[campana.estado.valor] as never,
-        presupuestoTotal: String(campana.presupuesto.monto),
-        moneda: campana.presupuesto.moneda,
-        notas: campana.observaciones ?? null,
-        fechaModificacion: campana.actualizadoEn,
-      })
-      .where(and(
-        eq(campanasTable.id, campana.id),
-        eq(campanasTable.tenantId, campana.tenantId),
-      ));
+    // WHY: transaction wrapper ensures atomicity even as side-effects are added later
+    await db.transaction(async (tx) => {
+      await tx
+        .update(campanasTable)
+        .set({
+          nombre: campana.nombre,
+          estado: DOMAIN_TO_DB_ESTADO[campana.estado.valor] as never,
+          presupuestoTotal: String(campana.presupuesto.monto),
+          moneda: campana.presupuesto.moneda,
+          notas: campana.observaciones ?? null,
+          fechaModificacion: campana.actualizadoEn,
+        })
+        .where(and(
+          eq(campanasTable.id, campana.id),
+          eq(campanasTable.tenantId, campana.tenantId),
+        ))
+    })
+  }
+
+  /**
+   * Atomic update of campana + full replacement of its cunas and emisoras.
+   * WHY: updating a campaign's media plan (cunas + emisoras) must be atomic —
+   * reading a half-updated plan would produce incorrect emission scheduling.
+   */
+  async actualizarConRelaciones(
+    campana: Campana,
+    cunas: CampanaCunaInput[],
+    emisoras: CampanaEmisoraInput[],
+  ): Promise<void> {
+    await db.transaction(async (tx) => {
+      // 1. Update main campana record
+      await tx
+        .update(campanasTable)
+        .set({
+          nombre: campana.nombre,
+          estado: DOMAIN_TO_DB_ESTADO[campana.estado.valor] as never,
+          presupuestoTotal: String(campana.presupuesto.monto),
+          moneda: campana.presupuesto.moneda,
+          notas: campana.observaciones ?? null,
+          fechaModificacion: campana.actualizadoEn,
+        })
+        .where(and(
+          eq(campanasTable.id, campana.id),
+          eq(campanasTable.tenantId, campana.tenantId),
+        ))
+
+      // 2. Replace cunas: deactivate all, then insert new set
+      if (cunas.length > 0) {
+        await tx
+          .update(campanasCunas)
+          .set({ activo: false })
+          .where(and(
+            eq(campanasCunas.campanaId, campana.id),
+            eq(campanasCunas.tenantId, campana.tenantId),
+          ))
+        await tx.insert(campanasCunas).values(
+          cunas.map((c) => ({
+            tenantId: campana.tenantId,
+            campanaId: campana.id,
+            cunaId: c.cunaId,
+            pesoRotacion: c.pesoRotacion ?? 1,
+            prioridad: c.prioridad ?? 0,
+            activo: true,
+          })),
+        )
+      }
+
+      // 3. Replace emisoras: deactivate all, then insert new set
+      if (emisoras.length > 0) {
+        await tx
+          .update(campanasEmisoras)
+          .set({ activo: false })
+          .where(and(
+            eq(campanasEmisoras.campanaId, campana.id),
+            eq(campanasEmisoras.tenantId, campana.tenantId),
+          ))
+        await tx.insert(campanasEmisoras).values(
+          emisoras.map((e) => ({
+            tenantId: campana.tenantId,
+            campanaId: campana.id,
+            emisoraId: e.emisoraId,
+            spotsContratados: e.spotsContratados,
+            costoTotal: e.costoTotal != null ? String(e.costoTotal) : null,
+            notas: e.notas ?? null,
+            activo: true,
+          })),
+        )
+      }
+    })
   }
 
   async existePorNumero(numero: string, tenantId: string): Promise<boolean> {

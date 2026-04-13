@@ -162,13 +162,16 @@ export class AnalisisPredictivo {
     
     const recomendaciones = this.generarRecomendacionesRenovacion(factores, probabilidad);
 
+    // Safe type conversion for montoActual
+    const montoActual = typeof datosCliente.montoActual === 'number' ? datosCliente.montoActual : 0;
+
     return {
       tipo: TipoPrediccion.RENOVACION,
       probabilidad,
       nivelConfianza,
       factoresInfluyentes: factores,
       recomendaciones,
-      valorEstimado: datosCliente.montoActual * (probabilidad / 100),
+      valorEstimado: montoActual * (probabilidad / 100),
       fechaPrediccion: new Date(),
       validoHasta: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 días
     };
@@ -180,52 +183,66 @@ export class AnalisisPredictivo {
   async identificarFactoresRiesgo(datosContrato: Record<string, unknown>): Promise<FactorRiesgoProps[]> {
     const factores: FactorRiesgoProps[] = [];
 
+    // Helper function to safely get number value
+    const getNumberValue = (value: unknown): number | null => {
+      if (typeof value === 'number') return value;
+      if (typeof value === 'string') {
+        const parsed = parseFloat(value);
+        return isNaN(parsed) ? null : parsed;
+      }
+      return null;
+    };
+
     // Factor: Satisfacción del cliente
-    if (datosContrato.nps !== undefined) {
+    const nps = getNumberValue(datosContrato.nps);
+    if (nps !== null) {
       factores.push({
         factor: 'satisfaccion_cliente',
         peso: AnalisisPredictivo.PESOS_FACTORES['satisfaccion_cliente'],
-        valor: datosContrato.nps / 100,
-        impacto: datosContrato.nps > 70 ? 'positivo' : 'negativo',
-        descripcion: `NPS del cliente: ${datosContrato.nps}`,
-        recomendacion: datosContrato.nps < 70 ? 'Implementar plan de mejora de satisfacción' : undefined
+        valor: nps / 100,
+        impacto: nps > 70 ? 'positivo' : 'negativo',
+        descripcion: `NPS del cliente: ${nps}`,
+        recomendacion: nps < 70 ? 'Implementar plan de mejora de satisfacción' : undefined
       });
     }
 
     // Factor: Performance de campaña
-    if (datosContrato.roi !== undefined) {
+    const roi = getNumberValue(datosContrato.roi);
+    if (roi !== null) {
       factores.push({
         factor: 'performance_campana',
         peso: AnalisisPredictivo.PESOS_FACTORES['performance_campana'],
-        valor: Math.min(1, datosContrato.roi / 300), // Normalizar ROI a 0-1
-        impacto: datosContrato.roi > 200 ? 'positivo' : 'negativo',
-        descripcion: `ROI obtenido: ${datosContrato.roi}%`,
-        recomendacion: datosContrato.roi < 200 ? 'Optimizar estrategia de medios' : undefined
+        valor: Math.min(1, roi / 300), // Normalizar ROI a 0-1
+        impacto: roi > 200 ? 'positivo' : 'negativo',
+        descripcion: `ROI obtenido: ${roi}%`,
+        recomendacion: roi < 200 ? 'Optimizar estrategia de medios' : undefined
       });
     }
 
     // Factor: Frecuencia de contacto
-    if (datosContrato.contactosMes !== undefined) {
-      const contactosOptimos = datosContrato.contactosMes >= 4 && datosContrato.contactosMes <= 8;
+    const contactosMes = getNumberValue(datosContrato.contactosMes);
+    if (contactosMes !== null) {
+      const contactosOptimos = contactosMes >= 4 && contactosMes <= 8;
       factores.push({
         factor: 'frecuencia_contacto',
         peso: AnalisisPredictivo.PESOS_FACTORES['frecuencia_contacto'],
         valor: contactosOptimos ? 1 : 0.5,
         impacto: contactosOptimos ? 'positivo' : 'negativo',
-        descripcion: `Contactos por mes: ${datosContrato.contactosMes}`,
+        descripcion: `Contactos por mes: ${contactosMes}`,
         recomendacion: !contactosOptimos ? 'Ajustar frecuencia de contacto a 4-8 por mes' : undefined
       });
     }
 
     // Factor: Tiempo de respuesta
-    if (datosContrato.tiempoRespuestaHoras !== undefined) {
-      const respuestaRapida = datosContrato.tiempoRespuestaHoras <= 24;
+    const tiempoRespuestaHoras = getNumberValue(datosContrato.tiempoRespuestaHoras);
+    if (tiempoRespuestaHoras !== null) {
+      const respuestaRapida = tiempoRespuestaHoras <= 24;
       factores.push({
         factor: 'tiempo_respuesta',
         peso: AnalisisPredictivo.PESOS_FACTORES['tiempo_respuesta'],
-        valor: respuestaRapida ? 1 : Math.max(0, 1 - (datosContrato.tiempoRespuestaHoras / 72)),
+        valor: respuestaRapida ? 1 : Math.max(0, 1 - (tiempoRespuestaHoras / 72)),
         impacto: respuestaRapida ? 'positivo' : 'negativo',
-        descripcion: `Tiempo promedio de respuesta: ${datosContrato.tiempoRespuestaHoras}h`,
+        descripcion: `Tiempo promedio de respuesta: ${tiempoRespuestaHoras}h`,
         recomendacion: !respuestaRapida ? 'Mejorar tiempo de respuesta a menos de 24h' : undefined
       });
     }
@@ -275,11 +292,14 @@ export class AnalisisPredictivo {
     // Simular integración con Cortex-Flow
     const prediccionAvanzada = await this.simularCortexFlow(datosEntrada);
     
+    // Type guard for cortex flow result
+    type CortexFlowResult = { confianza: number; modelo: string };
+    const cortexResult = prediccionAvanzada as CortexFlowResult;
     this._metadatos.cortexFlowIntegration = {
       fecha: new Date().toISOString(),
       version: '2.1.0',
-      confianza: prediccionAvanzada.confianza,
-      modeloUtilizado: prediccionAvanzada.modelo
+      confianza: cortexResult.confianza,
+      modeloUtilizado: cortexResult.modelo
     };
 
     return prediccionAvanzada;
@@ -320,7 +340,8 @@ export class AnalisisPredictivo {
     this._predicciones.push(prediccionUpselling);
 
     // 4. Obtener benchmarks de industria
-    await this.implementarBenchmarkingAutomatico(datosHistoricos.sector || 'general');
+    const sectorValue = typeof datosHistoricos.sector === 'string' ? datosHistoricos.sector : 'general';
+    await this.implementarBenchmarkingAutomatico(sectorValue);
 
     // 5. Calcular score general
     this._scoreGeneral = this.calcularScoreGeneral();
@@ -407,13 +428,16 @@ export class AnalisisPredictivo {
 
     const probabilidadUpselling = Math.max(0, Math.min(100, scoreUpselling * 80));
 
+    // Safe type conversion for montoActual
+    const montoActual = typeof datosHistoricos.montoActual === 'number' ? datosHistoricos.montoActual : 0;
+
     return {
       tipo: TipoPrediccion.UPSELLING,
       probabilidad: probabilidadUpselling,
       nivelConfianza: this.determinarNivelConfianza(probabilidadUpselling, factoresPositivos.length),
       factoresInfluyentes: factoresPositivos,
       recomendaciones: probabilidadUpselling > 60 ? ['Preparar propuesta de upselling'] : [],
-      valorEstimado: datosHistoricos.montoActual * 0.3, // 30% de incremento estimado
+      valorEstimado: montoActual * 0.3, // 30% de incremento estimado
       fechaPrediccion: new Date(),
       validoHasta: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
     };
@@ -433,8 +457,30 @@ export class AnalisisPredictivo {
       }
     };
 
-    const sectorData = benchmarksSimulados[sector] || benchmarksSimulados['retail'];
-    const metricaData = sectorData[metrica] || { promedio: 50, p25: 35, p75: 65, p90: 80 };
+    // Safe lookup with type guards
+    const getSectorData = (s: string): Record<string, { promedio: number; p25: number; p75: number; p90: number }> => {
+      switch (s) {
+        case 'retail': return benchmarksSimulados['retail'] as Record<string, { promedio: number; p25: number; p75: number; p90: number }>;
+        case 'tecnologia': return benchmarksSimulados['tecnologia'] as Record<string, { promedio: number; p25: number; p75: number; p90: number }>;
+        default: return benchmarksSimulados['retail'] as Record<string, { promedio: number; p25: number; p75: number; p90: number }>;
+      }
+    };
+
+    const sectorData = getSectorData(sector);
+    
+    // Safe metric lookup
+    const getMetricData = (m: string): { promedio: number; p25: number; p75: number; p90: number } => {
+      const defaultValue = { promedio: 50, p25: 35, p75: 65, p90: 80 };
+      switch (m) {
+        case 'nps': return sectorData['nps'] || defaultValue;
+        case 'roi': return sectorData['roi'] || defaultValue;
+        case 'retention_rate': return sectorData['retention_rate'] || defaultValue;
+        case 'customer_lifetime_value': return sectorData['customer_lifetime_value'] || defaultValue;
+        default: return defaultValue;
+      }
+    };
+
+    const metricaData = getMetricData(metrica);
 
     return {
       sector,
@@ -492,7 +538,7 @@ export class AnalisisPredictivo {
     return alertas;
   }
 
-  private async simularCortexFlow(datosEntrada: Record<string, unknown>): Promise<unknown> {
+  private async simularCortexFlow(_datosEntrada: Record<string, unknown>): Promise<{ confianza: number; modelo: string; predicciones: Record<string, number> }> {
     // Simular integración con Cortex-Flow
     await new Promise(resolve => setTimeout(resolve, 1000));
 

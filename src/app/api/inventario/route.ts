@@ -12,6 +12,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // Mock de datos
 const mockCupos = [
@@ -30,62 +31,68 @@ const mockVencimientos = [
   { id: 'ven-005', cupoId: 'cup-005', fecha: '2025-02-17', estado: 'bloqueado', anuncianteNombre: null, precio: 350000 }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
-    const emisora = searchParams.get('emisora') || '';
+export const GET = withApiRoute(
+  { resource: 'inventario', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
+      const emisora = searchParams.get('emisora') || '';
 
-    let filtered = [...mockCupos];
+      let filtered = [...mockCupos];
 
-    if (emisora) {
-      filtered = filtered.filter(c => c.emisoraNombre.toLowerCase().includes(emisora.toLowerCase()));
+      if (emisora) {
+        filtered = filtered.filter(c => c.emisoraNombre.toLowerCase().includes(emisora.toLowerCase()));
+      }
+
+      // Stats
+      const stats = {
+        totalCupos: mockCupos.length,
+        totalDisponibles: mockCupos.reduce((sum, c) => sum + c.disponibles, 0),
+        totalVendidos: mockCupos.reduce((sum, c) => sum + c.vendidos, 0),
+        ocupacion: Math.round((mockCupos.reduce((sum, c) => sum + c.vendidos, 0) / mockCupos.reduce((sum, c) => sum + c.disponibles + c.vendidos, 0)) * 100),
+        ingresosPotenciales: mockCupos.reduce((sum, c) => sum + (c.tarifaBase * c.disponibles), 0)
+      };
+
+      return NextResponse.json({
+        success: true,
+        data: filtered,
+        vencimientos: mockVencimientos.filter(v => v.fecha === fecha),
+        stats,
+        fecha
+      });
+    } catch (error) {
+      logger.error('[API/Inventario] Error GET:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'GET' });
+      return apiServerError()
     }
-
-    // Stats
-    const stats = {
-      totalCupos: mockCupos.length,
-      totalDisponibles: mockCupos.reduce((sum, c) => sum + c.disponibles, 0),
-      totalVendidos: mockCupos.reduce((sum, c) => sum + c.vendidos, 0),
-      ocupacion: Math.round((mockCupos.reduce((sum, c) => sum + c.vendidos, 0) / mockCupos.reduce((sum, c) => sum + c.disponibles + c.vendidos, 0)) * 100),
-      ingresosPotenciales: mockCupos.reduce((sum, c) => sum + (c.tarifaBase * c.disponibles), 0)
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      vencimientos: mockVencimientos.filter(v => v.fecha === fecha),
-      stats,
-      fecha
-    });
-  } catch (error) {
-    logger.error('[API/Inventario] Error GET:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'GET' });
-    return apiServerError()
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.cupoId || !body.fecha) {
-      return NextResponse.json({ success: false, error: 'Cupo y fecha requeridos' }, { status: 400 });
+export const POST = withApiRoute(
+  { resource: 'inventario', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      if (!body.cupoId || !body.fecha) {
+        return NextResponse.json({ success: false, error: 'Cupo y fecha requeridos' }, { status: 400 });
+      }
+
+      const newVencimiento = {
+        id: `ven-${Date.now()}`,
+        cupoId: body.cupoId,
+        fecha: body.fecha,
+        estado: body.estado || 'reservado',
+        anuncianteNombre: body.anuncianteNombre || null,
+        precio: body.precio || 0
+      };
+
+      mockVencimientos.push(newVencimiento);
+
+      return NextResponse.json({ success: true, data: newVencimiento, message: 'Cupo reservado' }, { status: 201 });
+    } catch (error) {
+      logger.error('[API/Inventario] Error POST:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'POST' });
+      return apiServerError()
     }
-
-    const newVencimiento = {
-      id: `ven-${Date.now()}`,
-      cupoId: body.cupoId,
-      fecha: body.fecha,
-      estado: body.estado || 'reservado',
-      anuncianteNombre: body.anuncianteNombre || null,
-      precio: body.precio || 0
-    };
-
-    mockVencimientos.push(newVencimiento);
-
-    return NextResponse.json({ success: true, data: newVencimiento, message: 'Cupo reservado' }, { status: 201 });
-  } catch (error) {
-    logger.error('[API/Inventario] Error POST:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'POST' });
-    return apiServerError()
   }
-}
+);

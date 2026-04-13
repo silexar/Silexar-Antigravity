@@ -25,7 +25,7 @@ export const SkeletonLoader = ({ lines = 3, type = 'card' }: SkeletonProps) => {
         <div className="h-4 bg-slate-200 rounded w-1/3 mb-6" />
         <div className="space-y-4">
           {Array.from({ length: lines }).map((_, i) => (
-            <div key={i} className="flex gap-4">
+            <div key={`${_}-${i}`} className="flex gap-4">
               <div className="h-3 bg-slate-100 rounded flex-1" />
               <div className="h-3 bg-slate-100 rounded w-20" />
               <div className="h-3 bg-slate-100 rounded w-16" />
@@ -43,7 +43,7 @@ export const SkeletonLoader = ({ lines = 3, type = 'card' }: SkeletonProps) => {
         <div className="h-4 bg-slate-200 rounded w-1/4 mb-6" />
         <div className="flex items-end gap-3 h-40">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex-1 bg-slate-100 rounded-t-lg" style={{ height: `${30 + Math.random() * 70}%` }} />
+            <div key={`${_}-${i}`} className="flex-1 bg-slate-100 rounded-t-lg" style={{ height: `${30 + Math.random() * 70}%` }} />
           ))}
         </div>
       </div>
@@ -54,7 +54,7 @@ export const SkeletonLoader = ({ lines = 3, type = 'card' }: SkeletonProps) => {
     return (
       <div className="space-y-3 animate-pulse">
         {Array.from({ length: lines }).map((_, i) => (
-          <div key={i} className="bg-white rounded-xl p-4 border border-slate-100 flex items-center gap-3">
+          <div key={`${_}-${i}`} className="bg-white rounded-xl p-4 border border-slate-100 flex items-center gap-3">
             <div className="w-10 h-10 bg-slate-100 rounded-full" />
             <div className="flex-1 space-y-2">
               <div className="h-3 bg-slate-200 rounded w-2/3" />
@@ -73,7 +73,7 @@ export const SkeletonLoader = ({ lines = 3, type = 'card' }: SkeletonProps) => {
       <div className="h-4 bg-slate-200 rounded w-1/3 mb-4" />
       <div className="space-y-3">
         {Array.from({ length: lines }).map((_, i) => (
-          <div key={i} className="h-3 bg-slate-100 rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
+          <div key={`${_}-${i}`} className="h-3 bg-slate-100 rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
         ))}
       </div>
     </div>

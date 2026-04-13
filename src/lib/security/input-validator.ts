@@ -331,6 +331,20 @@ class EnterpriseInputValidator {
       }
     }
 
+    // Reject emails with consecutive dots in local part
+    const localPart = normalizedEmail.split('@')[0]
+    if (localPart.includes('..')) {
+      return {
+        success: false,
+        errors: [{
+          field: 'email',
+          code: 'INVALID_EMAIL',
+          message: 'Email cannot contain consecutive dots',
+          value: email
+        }]
+      }
+    }
+
     return {
       success: true,
       data: normalizedEmail,
@@ -552,8 +566,8 @@ class EnterpriseInputValidator {
 
     return {
       success: true,
-      data: parsed,
-      sanitized: parsed
+      data: parsed as T,
+      sanitized: parsed as T
     }
   }
 

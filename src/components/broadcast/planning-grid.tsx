@@ -15,6 +15,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -194,13 +195,6 @@ export function PlanningGrid({ selectedDate, onDateChange }: PlanningGridProps) 
     return Math.round((totalDuration / (slot.duration * 60)) * 100)
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const newDate = new Date(selectedDate)

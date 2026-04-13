@@ -284,6 +284,7 @@ export const QuickCampaignMode: React.FC<QuickCampaignModeProps> = ({
               </Label>
               <Input
                 type="date"
+                aria-label="Fecha Inicio"
                 value={data.fechaInicio}
                 onChange={(e) => updateField('fechaInicio', e.target.value)}
               />
@@ -296,6 +297,7 @@ export const QuickCampaignMode: React.FC<QuickCampaignModeProps> = ({
               </Label>
               <Input
                 type="date"
+                aria-label="Fecha Fin"
                 value={data.fechaFin}
                 onChange={(e) => updateField('fechaFin', e.target.value)}
               />

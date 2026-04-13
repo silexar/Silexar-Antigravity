@@ -115,6 +115,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
           <label className="text-xs text-slate-500 block mb-1">Fecha Inicio</label>
           <input
             type="date"
+            aria-label="Fecha Inicio"
             value={linea.fechaInicio ? new Date(linea.fechaInicio).toISOString().split('T')[0] : ''}
             onChange={(e) => onUpdate({ fechaInicio: new Date(e.target.value) })}
             className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
@@ -124,6 +125,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
           <label className="text-xs text-slate-500 block mb-1">Fecha Fin</label>
           <input
             type="date"
+            aria-label="Fecha Fin"
             value={linea.fechaFin ? new Date(linea.fechaFin).toISOString().split('T')[0] : ''}
             onChange={(e) => onUpdate({ fechaFin: new Date(e.target.value) })}
             className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
@@ -134,6 +136,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
           <input
             type="number"
             min={1}
+            aria-label="Cantidad"
             value={linea.cantidad}
             onChange={(e) => {
               const cantidad = parseInt(e.target.value) || 1;
@@ -147,6 +150,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
           <label className="text-xs text-slate-500 block mb-1">Descuento %</label>
           <input
             type="number"
+            aria-label="Descuento en porcentaje"
             min={0}
             max={50}
             value={linea.descuento || 0}
@@ -203,7 +207,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
         <div className="mt-3 p-3 rounded-lg bg-red-50 border border-red-100">
           <p className="text-sm font-medium text-red-700 mb-1">Conflictos detectados:</p>
           {validacion.conflictos.map((conflicto, i) => (
-            <p key={i} className="text-xs text-red-600">• {conflicto.descripcion}</p>
+            <p key={`${conflicto}-${i}`} className="text-xs text-red-600">• {conflicto.descripcion}</p>
           ))}
         </div>
       )}
@@ -214,7 +218,7 @@ const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
           <p className="text-sm font-medium text-indigo-700 mb-1">💡 Horarios alternativos:</p>
           <div className="flex flex-wrap gap-2">
             {validacion.horariosSugeridos.map((h, i) => (
-              <span key={i} className="px-2 py-1 text-xs bg-white rounded border border-indigo-200 text-indigo-600">
+              <span key={`${h}-${i}`} className="px-2 py-1 text-xs bg-white rounded border border-indigo-200 text-indigo-600">
                 {h.inicio} - {h.fin} ({h.disponibilidad}%)
               </span>
             ))}
@@ -365,6 +369,7 @@ const AgregarLineaModal: React.FC<AgregarLineaModalProps> = ({
                 <input
                   type="number"
                   min={1}
+                  aria-label="Cantidad de unidades"
                   value={cantidad}
                   onChange={(e) => setCantidad(parseInt(e.target.value) || 1)}
                   className="w-32 px-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:border-indigo-300 outline-none text-center font-medium"
@@ -549,7 +554,7 @@ export const StepEspecificaciones: React.FC<StepEspecificacionesProps> = ({
               </p>
               <div className="flex flex-wrap gap-2">
                 {state.materialesPendientes.map((mat, i) => (
-                  <span key={i} className="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 text-sm">
+                  <span key={`${mat}-${i}`} className="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 text-sm">
                     {mat}
                   </span>
                 ))}

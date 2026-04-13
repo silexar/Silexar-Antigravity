@@ -1,9 +1,41 @@
 /**
  * 🪟 COMPONENTE DIALOG - TIER 0
+ * Drag-enabled modals: useDraggable hook gives every dialog OS-native drag.
  */
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+
+function useDraggable() {
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
+  const dragging = React.useRef(false);
+  const origin = React.useRef({ mx: 0, my: 0, px: 0, py: 0 });
+
+  const onMouseDown = React.useCallback((e: React.MouseEvent) => {
+    dragging.current = true;
+    origin.current = { mx: e.clientX, my: e.clientY, px: pos.x, py: pos.y };
+    e.preventDefault();
+  }, [pos]);
+
+  React.useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!dragging.current) return;
+      setPos({
+        x: origin.current.px + e.clientX - origin.current.mx,
+        y: origin.current.py + e.clientY - origin.current.my,
+      });
+    };
+    const onUp = () => { dragging.current = false; };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, []);
+
+  return { pos, onMouseDown };
+}
 
 interface DialogProps {
   children: React.ReactNode;
@@ -70,18 +102,22 @@ const DialogTrigger = ({ asChild, children, onClick }: DialogTriggerProps) => {
   const { setOpen } = React.useContext(DialogContext);
 
   return (
-    <div onClick={(e) => {
-      setOpen(true);
-      onClick?.();
-    }}>
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={() => { setOpen(true); onClick?.(); }}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setOpen(true); onClick?.(); } }}
+      style={{ display: 'contents' }}
+    >
       {children}
-    </div>
+    </span>
   );
 };
 
 const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className, children, ...props }, ref) => {
     const { open, setOpen } = React.useContext(DialogContext);
+    const { pos, onMouseDown } = useDraggable();
 
     if (!open) return null;
 
@@ -90,12 +126,19 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setOpen(false)} />
         <div
           ref={ref}
+          style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
           className={cn(
             "relative z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg neo-card animate-in fade-in-0 zoom-in-95",
             className
           )}
           {...props}
         >
+          {/* Drag handle — invisible strip at top so user can grab and move */}
+          <div
+            onMouseDown={onMouseDown}
+            className="absolute top-0 left-0 right-0 h-6 cursor-move rounded-t-lg"
+            aria-hidden="true"
+          />
           {children}
         </div>
       </div>

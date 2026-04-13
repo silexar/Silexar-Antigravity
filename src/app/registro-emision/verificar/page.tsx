@@ -370,7 +370,7 @@ export default function VerificadorPage() {
       />
 
       {/* SECURITY DEMO OVERLAY */}
-      <div className="fixed top-24 right-6 z-[100] bg-slate-900 text-white p-3 rounded-lg shadow-2xl opacity-90 hover:opacity-100 transition-opacity scale-90 origin-top-right group">
+      <div className="fixed top-24 right-6 z-[100] bg-[#F0EDE8] text-white p-3 rounded-lg shadow-2xl opacity-90 hover:opacity-100 transition-opacity scale-90 origin-top-right group">
         <div className="text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400 group-hover:text-emerald-400">Security / RBAC Simulator</div>
         <select 
           value={currentRole} 
@@ -565,7 +565,7 @@ const ShortcutRow = ({ keys, desc }: { keys: string[], desc: string }) => (
     <div className="flex items-center justify-between py-1">
         <div className="flex gap-1">
             {keys.map((k, i) => (
-                <span key={i} className="px-1.5 py-0.5 bg-slate-200 rounded text-[10px] font-mono font-bold text-slate-600">{k}</span>
+                <span key={`${k}-${i}`} className="px-1.5 py-0.5 bg-slate-200 rounded text-[10px] font-mono font-bold text-slate-600">{k}</span>
             ))}
         </div>
         <span className="text-slate-500 text-xs">{desc}</span>

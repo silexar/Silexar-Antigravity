@@ -285,7 +285,6 @@ export default function MicroservicesMonitor() {
       setIsLoading(false);
 
     } catch (error) {
-      console.error('Failed to load services data:', error);
       setIsLoading(false);
     }
   };
@@ -400,7 +399,7 @@ export default function MicroservicesMonitor() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as any)}
+                onClick={() => setViewMode(mode.id as unknown)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
                     ? 'bg-white text-blue-600 shadow-sm'
@@ -541,7 +540,7 @@ export default function MicroservicesMonitor() {
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
               {dependencies.map((dep, index) => (
-                <div key={index} className="text-center">
+                <div key={`${dep}-${index}`} className="text-center">
                   <div className={`w-3 h-3 rounded-full mx-auto mb-2 ${
                     dep.status === 'HEALTHY' ? 'bg-green-500' :
                     dep.status === 'DEGRADED' ? 'bg-yellow-500' : 'bg-red-500'
@@ -615,7 +614,7 @@ export default function MicroservicesMonitor() {
 
       {/* Service Detail Modal */}
       {selectedService && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-[#F0EDE8] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">

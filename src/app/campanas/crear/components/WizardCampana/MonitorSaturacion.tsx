@@ -214,7 +214,7 @@ export const MonitorSaturacion: React.FC<MonitorSaturacionProps> = ({
           <div className="flex mb-2">
             <div className="w-36 shrink-0" />
             {Array.from({ length: 24 }, (_, i) => (
-              <div key={i} className="w-8 text-center text-xs text-gray-400 shrink-0">
+              <div key={`hour-${i}`} className="w-8 text-center text-xs text-gray-400 shrink-0">
                 {i.toString().padStart(2, '0')}
               </div>
             ))}

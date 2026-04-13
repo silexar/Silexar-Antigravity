@@ -218,8 +218,7 @@ export function useRealtimePrediction(
         })
         setLatestPrediction(result)
       } catch (error) {
-        console.error('Prediction error:', error)
-      }
+        }
     }
     
     // Fetch initial prediction

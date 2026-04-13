@@ -298,7 +298,7 @@ export function ErrorTracking() {
             <Code className="w-4 h-4 text-red-400" />
             Stack Trace
           </h4>
-          <pre className="bg-slate-900 p-4 rounded text-xs text-slate-300 overflow-x-auto">
+          <pre className="bg-[#F0EDE8] p-4 rounded text-xs text-slate-300 overflow-x-auto">
             {selectedError.stack}
           </pre>
         </NeuromorphicCard>

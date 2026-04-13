@@ -71,7 +71,7 @@ interface LineaData {
 }
 
 interface StepLineasProps extends WizardStepProps {
-  data: { lineas?: LineaData[]; valorBruto?: number; valorNeto?: number };
+  data: Record<string, unknown>;
   onUpdate: (data: Record<string, unknown>) => void;
 }
 
@@ -144,14 +144,13 @@ const defaultBonificadas: DistribucionSemanal = {
 // ═══════════════════════════════════════════════════════════════
 
 export const StepLineasCampana: React.FC<StepLineasProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isActive,
+  isActive: _isActive,
   onComplete,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onBack,
-  data,
+  onBack: _onBack,
+  data: rawData,
   onUpdate
 }) => {
+  const data = rawData as { lineas?: LineaData[]; valorBruto?: number; valorNeto?: number };
   // ═════════════════════════════════════════════════════════════
   // ESTADO
   // ═════════════════════════════════════════════════════════════
@@ -227,8 +226,7 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
     const total = calcularTotal(newLinea);
     const dist = newLinea.distribucion || defaultDistribucion;
     const dias = Object.entries(dist)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .filter(([_key, v]) => v > 0)
+      .filter(([_k, v]) => v > 0)
       .map(([k]) => k.toUpperCase().substring(0, 3));
 
     const linea: LineaData = {
@@ -420,8 +418,9 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <Label>Hora inicio:</Label>
-                          <Input 
-                            type="time" 
+                          <Input
+                            type="time"
+                            aria-label="Hora inicio"
                             value={newLinea.horaInicio || '07:00'}
                             onChange={(e) => setNewLinea({ ...newLinea, horaInicio: e.target.value })}
                             className="mt-1"
@@ -429,8 +428,9 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                         </div>
                         <div>
                           <Label>Hora fin:</Label>
-                          <Input 
-                            type="time" 
+                          <Input
+                            type="time"
+                            aria-label="Hora fin"
                             value={newLinea.horaFin || '09:30'}
                             onChange={(e) => setNewLinea({ ...newLinea, horaFin: e.target.value })}
                             className="mt-1"
@@ -498,8 +498,9 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                         <Label>Valor por unidad:</Label>
                         <div className="relative mt-1">
                           <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <Input 
+                          <Input
                             type="number"
+                            aria-label="Valor por unidad"
                             value={newLinea.valorUnitario || 85000}
                             onChange={(e) => setNewLinea({ ...newLinea, valorUnitario: parseInt(e.target.value) })}
                             className="pl-9"
@@ -674,16 +675,17 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                     <div className="grid grid-cols-4 gap-4">
                       <div>
                         <Label>Fecha inicio:</Label>
-                        <Input type="date" defaultValue="2025-08-11" className="mt-1" />
+                        <Input type="date" aria-label="Fecha inicio" defaultValue="2025-08-11" className="mt-1" />
                       </div>
                       <div>
                         <Label>Fecha término:</Label>
-                        <Input type="date" defaultValue="2025-08-26" className="mt-1" />
+                        <Input type="date" aria-label="Fecha término" defaultValue="2025-08-26" className="mt-1" />
                       </div>
                       <div>
                         <Label>Hora inicio:</Label>
-                        <Input 
-                          type="time" 
+                        <Input
+                          type="time"
+                          aria-label="Hora inicio"
                           value={newLinea.horaInicio || '00:00'}
                           onChange={(e) => setNewLinea({ ...newLinea, horaInicio: e.target.value })}
                           className="mt-1"
@@ -691,8 +693,9 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                       </div>
                       <div>
                         <Label>Hora fin:</Label>
-                        <Input 
-                          type="time" 
+                        <Input
+                          type="time"
+                          aria-label="Hora fin"
                           value={newLinea.horaFin || '23:59'}
                           onChange={(e) => setNewLinea({ ...newLinea, horaFin: e.target.value })}
                           className="mt-1"
@@ -896,16 +899,18 @@ export const StepLineasCampana: React.FC<StepLineasProps> = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
+                        aria-label="Ver detalle"
                         className="h-8 w-8 text-slate-400 hover:text-blue-500"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Eliminar"
                         onClick={() => removeLinea(linea.id)}
                         className="h-8 w-8 text-slate-400 hover:text-red-500 hover:bg-red-50"
                       >

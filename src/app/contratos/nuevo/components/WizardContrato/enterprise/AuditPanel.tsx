@@ -282,8 +282,8 @@ const EventoRow: React.FC<{
                 <div className="col-span-2">
                   <p className="text-xs text-slate-500 mb-1">Campos Modificados</p>
                   <div className="flex flex-wrap gap-1">
-                    {evento.camposModificados.map((campo, idx) => (
-                      <span key={idx} className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-xs">
+                    {evento.camposModificados.map((campo) => (
+                      <span key={campo} className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-xs">
                         {campo}
                       </span>
                     ))}
@@ -479,6 +479,7 @@ export const AuditPanel: React.FC<AuditPanelProps> = ({
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar por usuario, descripción..."
+              aria-label="Buscar por usuario o descripción"
               className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50"
             />
           </div>

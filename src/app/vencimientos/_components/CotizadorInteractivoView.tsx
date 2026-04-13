@@ -323,8 +323,9 @@ export default function CotizadorInteractivoView() {
           <div className="flex items-center gap-4 bg-white/80 p-4 rounded-2xl shadow-[inset_5px_5px_10px_#0e121b,_inset_-5px_-5px_10px_#1e263d]">
             <div className="flex-1">
               <label className="text-[10px] font-bold text-gray-500 block mb-1 uppercase tracking-wider">Duración (1-90s)</label>
-              <input 
+              <input
                 type="number" min="1" max="90"
+                aria-label="Duración en segundos"
                 value={spotSegundos}
                 onChange={e => setSpotSegundos(Number(e.target.value))}
                 className="w-full bg-transparent text-emerald-600 font-mono text-2xl outline-none drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]"
@@ -355,9 +356,10 @@ export default function CotizadorInteractivoView() {
       <div className="flex-1 flex flex-col bg-white/80">
         <div className="p-6 border-b border-slate-800 flex justify-between items-center">
           <div>
-            <input 
-              type="text" 
-              placeholder="Nombre del Cliente (Ej: Coca-Cola)" 
+            <input
+              type="text"
+              placeholder="Nombre del Cliente (Ej: Coca-Cola)"
+              aria-label="Nombre del cliente"
               value={cliente}
               onChange={e => setCliente(e.target.value)}
               className="bg-transparent text-xl font-bold text-gray-800 outline-none placeholder:text-slate-600 w-full"
@@ -431,9 +433,10 @@ export default function CotizadorInteractivoView() {
             <div className="w-1/3">
               <label className="text-xs font-black text-gray-500 mb-3 block uppercase tracking-widest">Descuento (%)</label>
               <div className="relative bg-white/80 rounded-2xl shadow-[inset_5px_5px_10px_#0e121b,_inset_-5px_-5px_10px_#1e263d] p-1">
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   min="0" max="100"
+                  aria-label="Descuento en porcentaje"
                   value={descuento}
                   onChange={e => setDescuento(Number(e.target.value))}
                   className={`w-full bg-transparent text-center font-black ${descuentoExcedido ? 'text-red-600 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-gray-600'} px-4 py-4 outline-none text-2xl transition-all`}
@@ -530,9 +533,10 @@ export default function CotizadorInteractivoView() {
                  <label className="text-[11px] uppercase tracking-widest font-black text-gray-500 mb-2 block">1. Presupuesto Exacto a Invertir</label>
                  <div className="relative">
                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 font-black text-2xl">$</span>
-                   <input 
+                   <input
                       type="number"
                       autoFocus
+                      aria-label="Presupuesto a invertir"
                       value={presupuestoDeseado}
                       onChange={e => setPresupuestoDeseado(Number(e.target.value))}
                       className="w-full bg-[#ECEFF8] pl-10 p-4 rounded-xl text-3xl font-black text-emerald-600 outline-none shadow-inner border border-slate-800 focus:border-emerald-500/50 transition-colors"
@@ -564,9 +568,10 @@ export default function CotizadorInteractivoView() {
 
                <div>
                  <label className="text-[11px] uppercase tracking-widest font-black text-gray-500 mb-2 block">3. Demographic Target</label>
-                 <input 
+                 <input
                     type="text"
                     placeholder="Ej. Mujeres 18-35..."
+                    aria-label="Demographic Target"
                     value={pbEdades}
                     onChange={e => setPbEdades(e.target.value)}
                     className="w-full bg-[#ECEFF8] px-4 py-3 rounded-xl text-sm font-bold text-gray-800 outline-none shadow-inner border border-slate-800 focus:border-indigo-500/50"
@@ -591,11 +596,11 @@ export default function CotizadorInteractivoView() {
                  <div className="flex gap-4">
                    <div className="flex-1 bg-[#ECEFF8] border border-slate-800 rounded-xl px-4 py-2 flex items-center justify-between">
                      <span className="text-xs text-gray-500 font-bold uppercase">Inicio</span>
-                     <input type="date" value={pbFechaInicio} onChange={e => setPbFechaInicio(e.target.value)} className="bg-transparent text-gray-800 font-bold text-sm outline-none w-32 [color-scheme:dark]" />
+                     <input type="date" value={pbFechaInicio} onChange={e => setPbFechaInicio(e.target.value)} aria-label="Fecha de inicio" className="bg-transparent text-gray-800 font-bold text-sm outline-none w-32 [color-scheme:dark]" />
                    </div>
                    <div className="flex-1 bg-[#ECEFF8] border border-slate-800 rounded-xl px-4 py-2 flex items-center justify-between">
                      <span className="text-xs text-gray-500 font-bold uppercase">Fin</span>
-                     <input type="date" value={pbFechaFin} onChange={e => setPbFechaFin(e.target.value)} className="bg-transparent text-gray-800 font-bold text-sm outline-none w-32 [color-scheme:dark]" />
+                     <input type="date" value={pbFechaFin} onChange={e => setPbFechaFin(e.target.value)} aria-label="Fecha de fin" className="bg-transparent text-gray-800 font-bold text-sm outline-none w-32 [color-scheme:dark]" />
                    </div>
                  </div>
                </div>
@@ -662,9 +667,10 @@ export default function CotizadorInteractivoView() {
                 </div>
                 {esAgencia && (
                   <div className="mt-3">
-                    <input 
-                      type="text" 
-                      placeholder="🔍 Buscar Agencia (Ej: Carat, OMD...)" 
+                    <input
+                      type="text"
+                      placeholder="🔍 Buscar Agencia (Ej: Carat, OMD...)"
+                      aria-label="Buscar agencia"
                       value={agenciaNombre}
                       onChange={e => setAgenciaNombre(e.target.value)}
                       className="w-full bg-white/80 border border-indigo-500/50 rounded-lg px-3 py-2 text-sm text-gray-800 outline-none focus:border-indigo-400 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.15)]"
@@ -759,10 +765,11 @@ export default function CotizadorInteractivoView() {
                <p className="text-amber-600 text-[10px] font-bold mt-1 uppercase tracking-wide">Descuento {descuento}% excede límite ({LIMITE_RESCATE}%)</p>
              </div>
              <div className="p-6">
-               <input 
+               <input
                   type="password"
                   autoFocus
                   placeholder="****"
+                  aria-label="PIN de autorización"
                   value={mfaPin}
                   onChange={e => setMfaPin(e.target.value)}
                   className="w-full bg-white border border-gray-200 p-4 rounded-xl text-3xl text-center tracking-[1em] font-black text-amber-600 outline-none shadow-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-100"

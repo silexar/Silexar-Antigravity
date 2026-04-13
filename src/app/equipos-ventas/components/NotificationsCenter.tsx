@@ -106,9 +106,9 @@ export const NotificationsCenter = () => {
 
             {/* Filters */}
             <div className="px-4 py-2 border-b border-slate-50 flex gap-1 overflow-x-auto">
-              <button onClick={() => setFilter(null)} className={`text-[10px] px-2 py-1 rounded-full font-semibold transition-colors ${!filter ? 'bg-slate-900 text-white' : 'text-slate-400 hover:bg-slate-50'}`}>All</button>
+              <button onClick={() => setFilter(null)} className={`text-[10px] px-2 py-1 rounded-full font-semibold transition-colors ${!filter ? 'bg-[#F0EDE8] text-white' : 'text-slate-400 hover:bg-slate-50'}`}>All</button>
               {Object.entries(TYPE_ICONS).map(([key]) => (
-                <button key={key} onClick={() => setFilter(key)} className={`text-[10px] px-2 py-1 rounded-full font-semibold capitalize transition-colors ${filter === key ? 'bg-slate-900 text-white' : 'text-slate-400 hover:bg-slate-50'}`}>
+                <button key={key} onClick={() => setFilter(key)} className={`text-[10px] px-2 py-1 rounded-full font-semibold capitalize transition-colors ${filter === key ? 'bg-[#F0EDE8] text-white' : 'text-slate-400 hover:bg-slate-50'}`}>
                   {key.replace('-', ' ')}
                 </button>
               ))}

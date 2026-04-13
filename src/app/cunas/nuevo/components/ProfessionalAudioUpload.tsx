@@ -215,7 +215,7 @@ export const ProfessionalAudioUpload: React.FC<ProfessionalAudioUploadProps> = (
       }
       
     } catch (error) {
-      /* console.error('Error analyzing file:', error) */;
+      /* */;
       setProgress({ 
         status: 'error', 
         percent: 0, 

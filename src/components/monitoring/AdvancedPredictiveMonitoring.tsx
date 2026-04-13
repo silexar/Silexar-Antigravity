@@ -598,7 +598,7 @@ export default function AdvancedPredictiveMonitoring() {
             <h4 className="font-medium mb-2">Detected Patterns:</h4>
             <div className="flex flex-wrap gap-2">
               {metrics.anomalyDetection.patterns.slice(0, 3).map((pattern, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
+                <Badge key={`${pattern}-${index}`} variant="outline" className="text-xs">
                   {pattern}
                 </Badge>
               ))}

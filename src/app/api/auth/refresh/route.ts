@@ -15,6 +15,7 @@ import {
 } from '@/lib/api/jwt'
 import { apiError, apiServerError } from '@/lib/api/response'
 import { logger } from '@/lib/observability';
+import { revokeToken } from '@/lib/security/session-blacklist'
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,6 +35,13 @@ export async function POST(request: NextRequest) {
     // Ensure this is a refresh token (type claim set by signRefreshToken)
     if ((payload as SilexarTokenPayload & { type?: string }).type !== 'refresh') {
       return apiError('TOKEN_INVALID', 'Token is not a refresh token', 401)
+    }
+
+    // Revoke the old refresh token before issuing a new one
+    const oldJti = (payload as SilexarTokenPayload & { jti?: string }).jti
+    const expiresAt = (payload as SilexarTokenPayload & { exp?: number }).exp
+    if (oldJti && expiresAt) {
+      await revokeToken(oldJti, payload.userId, expiresAt)
     }
 
     // Issue new token pair

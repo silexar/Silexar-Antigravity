@@ -156,7 +156,7 @@ export function ValueMetricsDashboard() {
     return {
       campaign_id: campaignId,
       campaign_name: campaign?.name || 'Campaña Desconocida',
-      billing_model: campaign?.model as any || 'CPVI',
+      billing_model: campaign?.model as unknown || 'CPVI',
       period: {
         start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         end_date: new Date().toISOString().split('T')[0]
@@ -472,8 +472,8 @@ export function ValueMetricsDashboard() {
               </div>
               <div className="flex items-center justify-center gap-1 mb-2">
                 {Array.from({ length: 5 }, (_, i) => (
-                  <Star 
-                    key={i} 
+                  <Star
+                    key={`star-${i}`}
                     className={`h-4 w-4 ${
                       i < Math.floor((valueMetrics?.interaction_metrics.satisfaction_score || 0) / 20) 
                         ? 'text-yellow-400 fill-current' 
@@ -616,7 +616,7 @@ export function ValueMetricsDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {interactionBreakdown.map((interaction, index) => (
-                  <div key={index} className="border rounded-lg p-4">
+                  <div key={`${interaction}-${index}`} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="font-medium">{interaction.interaction_type}</h4>
                       <Badge variant="outline">{interaction.count.toLocaleString()} interacciones</Badge>
@@ -684,7 +684,7 @@ export function ValueMetricsDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {billingComparison.map((model, index) => (
-                  <Card key={index} className="relative">
+                  <Card key={`${model}-${index}`} className="relative">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-bold">{model.model}</h4>

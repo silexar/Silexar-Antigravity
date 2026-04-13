@@ -14,6 +14,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // Zod schemas for input validation
 const updateAnuncianteSchema = z.object({
@@ -96,214 +97,220 @@ const mockAnunciantes: AnuncianteDTO[] = [
   }
 ];
 
-interface RouteParams {
-  params: Promise<{ id: string }>;
-}
-
 /**
  * GET /api/anunciantes/[id]
  * Obtiene el detalle de un anunciante
  */
-export async function GET(
-  _request: NextRequest,
-  { params }: RouteParams
-) {
-  try {
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
+export const GET = withApiRoute(
+  { resource: 'anunciantes', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      // Extraer ID de la URL
+      const url = new URL(req.url);
+      const pathParts = url.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
 
-    const anunciante = mockAnunciantes.find(a => a.id === id);
+      const anunciante = mockAnunciantes.find(a => a.id === id);
 
-    if (!anunciante) {
+      if (!anunciante) {
+        return NextResponse.json(
+          { success: false, error: `No se encontró el anunciante con ID ${id}` },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: anunciante
+      });
+    } catch (error) {
+      logger.error('[API/Anunciantes/:id] Error en GET:', error instanceof Error ? error : undefined, { module: '[id]' });
       return NextResponse.json(
-        { success: false, error: `No se encontró el anunciante con ID ${id}` },
-        { status: 404 }
+        { success: false, error: 'Error al obtener anunciante' },
+        { status: 500 }
       );
     }
-
-    return NextResponse.json({
-      success: true,
-      data: anunciante
-    });
-  } catch (error) {
-    logger.error('[API/Anunciantes/:id] Error en GET:', error instanceof Error ? error : undefined, { module: '[id]' });
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener anunciante' },
-      { status: 500 }
-    );
   }
-}
+);
 
 /**
  * PUT /api/anunciantes/[id]
  * Actualiza un anunciante existente
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: RouteParams
-) {
-  try {
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
-    const body = await request.json();
+export const PUT = withApiRoute(
+  { resource: 'anunciantes', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      // Extraer ID de la URL
+      const url = new URL(req.url);
+      const pathParts = url.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
+      
+      const body = await req.json();
 
-    // Validate input with Zod
-    const parsed = updateAnuncianteSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
-        { status: 422 }
-      );
-    }
-
-    const index = mockAnunciantes.findIndex(a => a.id === id);
-
-    if (index === -1) {
-      return NextResponse.json(
-        { success: false, error: `No se encontró el anunciante con ID ${id}` },
-        { status: 404 }
-      );
-    }
-
-    // Validar RUT único (excluyendo el actual)
-    if (parsed.data.rut) {
-      const rutLimpio = parsed.data.rut.replace(/[.-]/g, '');
-      const rutExists = mockAnunciantes.some(
-        a => a.id !== id && a.rut?.replace(/[.-]/g, '') === rutLimpio
-      );
-      if (rutExists) {
+      // Validate input with Zod
+      const parsed = updateAnuncianteSchema.safeParse(body);
+      if (!parsed.success) {
         return NextResponse.json(
-          { success: false, error: `Ya existe un anunciante con el RUT ${parsed.data.rut}` },
-          { status: 400 }
+          { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
+          { status: 422 }
         );
       }
+
+      const index = mockAnunciantes.findIndex(a => a.id === id);
+
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: `No se encontró el anunciante con ID ${id}` },
+          { status: 404 }
+        );
+      }
+
+      // Validar RUT único (excluyendo el actual)
+      if (parsed.data.rut) {
+        const rutLimpio = parsed.data.rut.replace(/[.-]/g, '');
+        const rutExists = mockAnunciantes.some(
+          a => a.id !== id && a.rut?.replace(/[.-]/g, '') === rutLimpio
+        );
+        if (rutExists) {
+          return NextResponse.json(
+            { success: false, error: `Ya existe un anunciante con el RUT ${parsed.data.rut}` },
+            { status: 400 }
+          );
+        }
+      }
+
+      // Actualizar anunciante
+      const updated: AnuncianteDTO = {
+        ...mockAnunciantes[index],
+        ...parsed.data,
+        fechaModificacion: new Date().toISOString()
+      };
+
+      mockAnunciantes[index] = updated;
+
+      return NextResponse.json({
+        success: true,
+        data: updated,
+        message: 'Anunciante actualizado exitosamente'
+      });
+    } catch (error) {
+      logger.error('[API/Anunciantes/:id] Error en PUT:', error instanceof Error ? error : undefined, { module: '[id]' });
+      return NextResponse.json(
+        { success: false, error: 'Error al actualizar anunciante' },
+        { status: 500 }
+      );
     }
-
-    // Actualizar anunciante
-    const updated: AnuncianteDTO = {
-      ...mockAnunciantes[index],
-      ...parsed.data,
-      fechaModificacion: new Date().toISOString()
-    };
-
-    mockAnunciantes[index] = updated;
-
-    return NextResponse.json({
-      success: true,
-      data: updated,
-      message: 'Anunciante actualizado exitosamente'
-    });
-  } catch (error) {
-    logger.error('[API/Anunciantes/:id] Error en PUT:', error instanceof Error ? error : undefined, { module: '[id]' });
-    return NextResponse.json(
-      { success: false, error: 'Error al actualizar anunciante' },
-      { status: 500 }
-    );
   }
-}
+);
 
 /**
  * DELETE /api/anunciantes/[id]
  * Elimina un anunciante (soft delete)
  */
-export async function DELETE(
-  _request: NextRequest,
-  { params }: RouteParams
-) {
-  try {
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
+export const DELETE = withApiRoute(
+  { resource: 'anunciantes', action: 'delete' },
+  async ({ ctx, req }) => {
+    try {
+      // Extraer ID de la URL
+      const url = new URL(req.url);
+      const pathParts = url.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
 
-    const index = mockAnunciantes.findIndex(a => a.id === id);
+      const index = mockAnunciantes.findIndex(a => a.id === id);
 
-    if (index === -1) {
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: `No se encontró el anunciante con ID ${id}` },
+          { status: 404 }
+        );
+      }
+
+      // En producción: soft delete con fecha y usuario
+      // Aquí simplemente removemos del array mock
+      mockAnunciantes.splice(index, 1);
+
+      return NextResponse.json({
+        success: true,
+        message: 'Anunciante eliminado exitosamente'
+      });
+    } catch (error) {
+      logger.error('[API/Anunciantes/:id] Error en DELETE:', error instanceof Error ? error : undefined, { module: '[id]' });
       return NextResponse.json(
-        { success: false, error: `No se encontró el anunciante con ID ${id}` },
-        { status: 404 }
+        { success: false, error: 'Error al eliminar anunciante' },
+        { status: 500 }
       );
     }
-
-    // En producción: soft delete con fecha y usuario
-    // Aquí simplemente removemos del array mock
-    mockAnunciantes.splice(index, 1);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Anunciante eliminado exitosamente'
-    });
-  } catch (error) {
-    logger.error('[API/Anunciantes/:id] Error en DELETE:', error instanceof Error ? error : undefined, { module: '[id]' });
-    return NextResponse.json(
-      { success: false, error: 'Error al eliminar anunciante' },
-      { status: 500 }
-    );
   }
-}
+);
 
 /**
  * PATCH /api/anunciantes/[id]
  * Actualización parcial (toggle activo/inactivo)
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: RouteParams
-) {
-  try {
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
-    const body = await request.json();
+export const PATCH = withApiRoute(
+  { resource: 'anunciantes', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      // Extraer ID de la URL
+      const url = new URL(req.url);
+      const pathParts = url.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
+      
+      const body = await req.json();
 
-    // Validate input with Zod
-    const parsed = patchAnuncianteSchema.safeParse(body);
-    if (!parsed.success) {
+      // Validate input with Zod
+      const parsed = patchAnuncianteSchema.safeParse(body);
+      if (!parsed.success) {
+        return NextResponse.json(
+          { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
+          { status: 422 }
+        );
+      }
+
+      const index = mockAnunciantes.findIndex(a => a.id === id);
+
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: `No se encontró el anunciante con ID ${id}` },
+          { status: 404 }
+        );
+      }
+
+      // Toggle de estado
+      if (parsed.data.action === 'toggle_activo') {
+        mockAnunciantes[index] = {
+          ...mockAnunciantes[index],
+          activo: !mockAnunciantes[index].activo,
+          estado: mockAnunciantes[index].activo ? 'inactivo' : 'activo',
+          fechaModificacion: new Date().toISOString()
+        };
+      }
+
+      // Suspender
+      if (parsed.data.action === 'suspender') {
+        mockAnunciantes[index] = {
+          ...mockAnunciantes[index],
+          activo: false,
+          estado: 'suspendido',
+          notas: parsed.data.motivo
+            ? `SUSPENDIDO: ${parsed.data.motivo}\n\n${mockAnunciantes[index].notas || ''}`
+            : mockAnunciantes[index].notas,
+          fechaModificacion: new Date().toISOString()
+        };
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: mockAnunciantes[index],
+        message: 'Anunciante actualizado exitosamente'
+      });
+    } catch (error) {
+      logger.error('[API/Anunciantes/:id] Error en PATCH:', error instanceof Error ? error : undefined, { module: '[id]' });
       return NextResponse.json(
-        { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
-        { status: 422 }
+        { success: false, error: 'Error al actualizar anunciante' },
+        { status: 500 }
       );
     }
-
-    const index = mockAnunciantes.findIndex(a => a.id === id);
-
-    if (index === -1) {
-      return NextResponse.json(
-        { success: false, error: `No se encontró el anunciante con ID ${id}` },
-        { status: 404 }
-      );
-    }
-
-    // Toggle de estado
-    if (parsed.data.action === 'toggle_activo') {
-      mockAnunciantes[index] = {
-        ...mockAnunciantes[index],
-        activo: !mockAnunciantes[index].activo,
-        estado: mockAnunciantes[index].activo ? 'inactivo' : 'activo',
-        fechaModificacion: new Date().toISOString()
-      };
-    }
-
-    // Suspender
-    if (parsed.data.action === 'suspender') {
-      mockAnunciantes[index] = {
-        ...mockAnunciantes[index],
-        activo: false,
-        estado: 'suspendido',
-        notas: parsed.data.motivo
-          ? `SUSPENDIDO: ${parsed.data.motivo}\n\n${mockAnunciantes[index].notas || ''}`
-          : mockAnunciantes[index].notas,
-        fechaModificacion: new Date().toISOString()
-      };
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: mockAnunciantes[index],
-      message: 'Anunciante actualizado exitosamente'
-    });
-  } catch (error) {
-    logger.error('[API/Anunciantes/:id] Error en PATCH:', error instanceof Error ? error : undefined, { module: '[id]' });
-    return NextResponse.json(
-      { success: false, error: 'Error al actualizar anunciante' },
-      { status: 500 }
-    );
   }
-}
+);

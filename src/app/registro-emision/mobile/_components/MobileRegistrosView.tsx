@@ -78,7 +78,7 @@ export function MobileRegistrosView() {
           { label: 'Pend.', value: stats.pendientes, color: 'text-amber-600', bg: 'bg-amber-50' },
           { label: 'No Emit.', value: stats.noEmitidos, color: 'text-red-600', bg: 'bg-red-50' },
         ].map((s, i) => (
-          <div key={i} className={`${s.bg} rounded-xl p-3 text-center`}>
+          <div key={`${s}-${i}`} className={`${s.bg} rounded-xl p-3 text-center`}>
             <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
             <p className="text-[9px] font-bold text-slate-400 uppercase">{s.label}</p>
           </div>

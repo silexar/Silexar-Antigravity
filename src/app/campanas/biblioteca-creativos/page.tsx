@@ -12,6 +12,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -49,7 +50,7 @@ import {
   Copy,
   Plus,
   ChevronRight,
-  Image
+  Image as ImageIcon
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════
@@ -326,7 +327,7 @@ export default function BibliotecaCreativos() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
-            <Image className="w-7 h-7 text-white" />
+            <ImageIcon className="w-7 h-7 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">🎨 Biblioteca de Creativos</h1>
@@ -479,9 +480,15 @@ export default function BibliotecaCreativos() {
                   onClick={() => abrirDetalle(creativo)}
                 >
                   {/* Thumbnail */}
-                  <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                  <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
                     {creativo.tipo === 'banner' && creativo.thumbnailUrl ? (
-                      <img src={creativo.thumbnailUrl} alt={creativo.nombre} className="object-cover" />
+                      <Image
+                        src={creativo.thumbnailUrl}
+                        alt={creativo.nombre}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, 300px"
+                      />
                     ) : (
                       getIconoTipo(creativo.tipo)
                     )}

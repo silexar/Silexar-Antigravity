@@ -40,7 +40,7 @@ export default function DashboardDisponibilidadInteligente() {
                         {n: '5. Clínica Alemana', v: '01-Ene a 31-Dic', p: '$51M/año', e: 'Ana García', s: '🟢 Activo', d: 'Vence en: 334 días'},
                         {n: '6. Entel', v: '15-Ene a 15-Jul', p: '$27M/6meses', e: 'Ana García', s: '🟢 Activo', d: 'Vence en: 165 días'}
                      ].map((item, i) => (
-                        <div key={i} className="bg-[#ECEFF8]/40 border border-gray-200/50 rounded-xl p-3 hover:border-gray-200 transition-colors">
+                        <div key={`${item}-${i}`} className="bg-[#ECEFF8]/40 border border-gray-200/50 rounded-xl p-3 hover:border-gray-200 transition-colors">
                            <div className="flex justify-between items-start mb-1">
                               <p className="text-xs font-black text-gray-800">{item.n}</p>
                               <p className="text-[10px] text-gray-500">{item.s}</p>

@@ -259,7 +259,7 @@ export class CortexSense {
       const fingerprint = await this.generateSingleFingerprint(audioUrl)
 
       // Comparar con fingerprint esperado
-      const match = await this.compareFingerprints(fingerprint, expectedSpot.audioFingerprint)
+      const match = await this.compareFingerprints(fingerprint, expectedSpot.audioFingerprint ?? '')
 
       // Transcripción si se solicita
       let transcription
@@ -322,7 +322,7 @@ export class CortexSense {
       const allAlerts = segmentResults.flatMap(result => result.alerts)
 
       // Generar resumen
-      const summary = await this.generateDailySummary(allSpots, stationId, date)
+      const summary = await this.generateDailySummary(allSpots, stationId, date) as Record<string, unknown>
 
       return {
         totalSpots: allSpots.length,
@@ -401,7 +401,7 @@ export class CortexSense {
       confidence: 0.9 + Math.random() * 0.08,
       words: this.generateMockWords(spot.transcription),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sentiment: ['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as any
+      sentiment: ['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as unknown
     }))
 
     return {

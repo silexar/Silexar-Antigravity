@@ -153,7 +153,6 @@ export function BusinessIntelligenceDashboard() {
       if ((error as Error).name === 'AbortError') {
         
       } else {
-        console.error('Error fetching dashboard data:', error);
         recordError('Error fetching dashboard data', error as Error | undefined);
       }
     } finally {
@@ -215,26 +214,26 @@ export function BusinessIntelligenceDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Ingresos Totales"
-          value={metrics?.totalRevenue}
+          value={metrics?.totalRevenue ?? 0}
           icon={DollarSign}
           trend={metrics?.revenueGrowth}
           prefix="$"
         />
         <MetricCard
           title="Interacciones Totales"
-          value={metrics?.totalInteractions}
+          value={metrics?.totalInteractions ?? 0}
           icon={Users}
           trend={metrics?.interactionGrowth}
         />
         <MetricCard
           title="Tiempo de Atención Promedio"
-          value={metrics?.avgAttentionTime}
+          value={metrics?.avgAttentionTime ?? 0}
           icon={Clock}
           suffix="s"
         />
         <MetricCard
           title="Tasa de Conversión"
-          value={metrics?.conversionRate}
+          value={metrics?.conversionRate ?? 0}
           icon={Target}
           suffix="%"
         />

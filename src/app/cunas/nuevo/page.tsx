@@ -119,6 +119,7 @@ const NeuromorphicInput = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      aria-label={label}
       disabled={disabled}
       className={`
         w-full rounded-xl py-3 px-4 bg-slate-50 
@@ -737,7 +738,7 @@ function CrearCunaPageContent() {
                         setShowAudioEditor(true);
                         
                       } catch (error) {
-                        /* console.error('Error generando audio:', error) */;
+                        /* */;
                         // Aquí idealmente mostraríamos un toast de error
                       }
                     }}

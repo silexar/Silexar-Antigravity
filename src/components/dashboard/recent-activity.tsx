@@ -200,8 +200,7 @@ export const RecentActivity = memo<RecentActivityProps>(({
         })
 
       } catch (error) {
-        console.error('Error generating new activity:', error)
-      }
+        }
     }, refreshInterval)
 
     return () => clearInterval(interval)

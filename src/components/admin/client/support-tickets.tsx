@@ -783,7 +783,7 @@ export function SupportTickets() {
                 <div className="flex flex-wrap gap-2">
                   {aiSuggestions.map((s, i) => (
                     <button
-                      key={i}
+                      key={s}
                       onClick={() => setNewTicket({ ...newTicket, description: newTicket.description + '\n\n' + s })}
                       className="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded hover:bg-purple-500/30"
                     >

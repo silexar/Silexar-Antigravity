@@ -24,7 +24,7 @@ export const DistributionPanel: React.FC<DistributionPanelProps> = ({
 
   const loadGroups = useCallback(async () => {
     setLoading(true);
-    const detected = await DistributionManager.autoDetectRecipients(metadata);
+    const detected = await DistributionManager.autoDetectRecipients(metadata ?? {});
     setGroups(detected);
     setLoading(false);
   }, [metadata]);
@@ -55,9 +55,11 @@ export const DistributionPanel: React.FC<DistributionPanelProps> = ({
     setExporting(true);
     try {
        const results = await BroadcastExportService.exportToAllSystems({
-          nombre: metadata?.spxId || 'Cuña Sin ID',
+          nombre: (metadata?.spxId as string) || 'Cuña Sin ID',
+          anuncianteNombre: (metadata?.anuncianteNombre as string) || '',
+          tipo: (metadata?.tipo as string) || 'standard',
           ...metadata
-       });
+       } as Parameters<typeof BroadcastExportService.exportToAllSystems>[0]);
        alert(`📡 Exportación Completada:\n${results.map(r => `${r.status === 'success' ? '✅' : '❌'} ${r.station} (${r.system})`).join('\n')}`);
     } catch {
        alert('Error en exportación a sistemas de emisión.');
@@ -146,7 +148,7 @@ export const DistributionPanel: React.FC<DistributionPanelProps> = ({
         )}
       </div>
 
-       <div className="bg-slate-900 mx-4 mb-4 p-4 rounded-xl text-slate-300 flex justify-between items-center shadow-inner border border-slate-800">
+       <div className="bg-[#F0EDE8] mx-4 mb-4 p-4 rounded-xl text-slate-300 flex justify-between items-center shadow-inner border border-slate-800">
           <div>
              <h4 className="font-bold text-white text-sm flex items-center gap-2">
                 <Server className="w-4 h-4 text-emerald-400" /> Sistemas de Emisión (Automati.)
@@ -173,7 +175,7 @@ export const DistributionPanel: React.FC<DistributionPanelProps> = ({
             </button>
             <button 
               onClick={() => onSend(getAllSelectedEmails())}
-              className="px-4 py-1.5 bg-slate-900 text-white rounded-lg text-sm font-bold shadow hover:bg-slate-800 flex items-center gap-2"
+              className="px-4 py-1.5 bg-[#F0EDE8] text-white rounded-lg text-sm font-bold shadow hover:bg-slate-800 flex items-center gap-2"
             >
               Enviar Ya <Send className="w-3 h-3" />
             </button>

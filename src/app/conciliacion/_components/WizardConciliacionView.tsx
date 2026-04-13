@@ -8,11 +8,11 @@ interface WizardConciliacionViewProps {
 
 export default function WizardConciliacionView({ onCancel }: WizardConciliacionViewProps) {
   const [step, setStep] = useState<number>(1);
-  const [isProcessing, setIsProcessing] = useState<boolean>(true);
-  
+  const [_isProcessing, setIsProcessing] = useState<boolean>(true);
+
   // Drag and Drop State
   const [pendingSpots, setPendingSpots] = useState<number[]>([1, 2, 3, 4, 5]);
-  const [placedSpots, setPlacedSpots] = useState<Record<string, number | null>>({});
+  const [_placedSpots, setPlacedSpots] = useState<Record<string, number | null>>({});
   const [draggedSpot, setDraggedSpot] = useState<number | null>(null);
 
   const handleAbort = (targetStep: number) => {
@@ -25,7 +25,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
     e.dataTransfer.setData('text/plain', id.toString());
   };
 
-  const handleDrop = (e: React.DragEvent, targetId: string) => {
+  const _handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
     if (draggedSpot !== null) {
        setPlacedSpots(prev => ({ ...prev, [targetId]: draggedSpot }));
@@ -34,7 +34,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const _handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
@@ -44,11 +44,11 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
       <div className="bg-white/80 p-6 border-b border-slate-200 flex items-center justify-between shadow-sm">
         <div>
            <h2 className="text-xl font-bold text-slate-800">🤖 Setup Conciliación Inteligente</h2>
-           <p className="text-sm text-slate-500 mt-1 font-medium">Configura los parámetros para la ingesta y recuperación TIER 0</p>
+           <p className="text-sm text-[#888780] mt-1 font-medium">Configura los parámetros para la ingesta y recuperación TIER 0</p>
         </div>
         <div className="flex gap-2">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-                <span key={i} className={`w-3 h-3 rounded-full transition-all ${step >= i ? 'bg-gradient-to-r from-indigo-500 to-blue-500 shadow-[0_0_8px_rgba(99,102,241,0.4)] scale-110' : 'bg-slate-200'}`}></span>
+                <span key={`step-${i}`} className={`w-3 h-3 rounded-full transition-all ${step >= i ? 'bg-gradient-to-r from-indigo-500 to-blue-500 shadow-[0_0_8px_rgba(99,102,241,0.4)] scale-110' : 'bg-slate-200'}`}></span>
             ))}
         </div>
       </div>
@@ -71,16 +71,16 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                {/* FECHA TARGET */}
                <div className="flex items-center gap-4 bg-white/80 p-4 rounded-2xl border border-slate-200 shadow-sm">
                  <span className="text-sm font-bold text-slate-600">📅 Fecha objetivo:</span>
-                 <input type="date" defaultValue="2025-08-20" className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono font-medium shadow-inner" />
+                 <input type="date" defaultValue="2025-08-20" aria-label="Fecha objetivo" className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono font-medium shadow-inner" />
                  <div className="flex gap-2 ml-auto">
-                    <button className="px-3 py-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-[10px] font-bold rounded shadow-md shadow-indigo-200 transition-all hover:-translate-y-0.5">HOY</button>
-                    <button className="px-3 py-1 bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:bg-slate-50 text-[10px] font-bold rounded transition-colors shadow-sm">AYER</button>
+                    <button className="px-3 py-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-[#2C2C2A] text-[10px] font-bold rounded shadow-md shadow-indigo-200 transition-all hover:-translate-y-0.5">HOY</button>
+                    <button className="px-3 py-1 bg-white border border-slate-200 text-[#888780] hover:text-indigo-600 hover:bg-slate-50 text-[10px] font-bold rounded transition-colors shadow-sm">AYER</button>
                  </div>
                </div>
 
                {/* EMISORAS Y RUTAS (TABLA DETALLADA) */}
                <div className="space-y-3">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">📻 Emisoras y Rutas Dalet Galaxy:</label>
+                 <label className="text-xs font-black text-[#888780] uppercase tracking-widest">📻 Emisoras y Rutas Dalet Galaxy:</label>
                  <div className="grid grid-cols-1 gap-3">
                     {/* Radio Corazon */}
                     <div className="bg-white border border-emerald-100 rounded-2xl p-4 flex justify-between items-start group hover:border-emerald-300 transition-all shadow-sm hover:shadow-md">
@@ -91,12 +91,12 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                              <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 rounded-md font-bold border border-emerald-100">FOUND</span>
                           </div>
                           <div className="space-y-1 pl-4">
-                             <div className="text-[10px] text-slate-500 font-mono font-medium">📁 Ruta: \\dalet\exports\radio_corazon\</div>
-                             <div className="text-[10px] text-slate-500 font-mono font-medium">📄 Patrón: radio_corazon_YYYYMMDD.csv</div>
+                             <div className="text-[10px] text-[#888780] font-mono font-medium">📁 Ruta: \\dalet\exports\radio_corazon\</div>
+                             <div className="text-[10px] text-[#888780] font-mono font-medium">📄 Patrón: radio_corazon_YYYYMMDD.csv</div>
                              <div className="text-[10px] text-indigo-600 font-bold italic">🕐 Última sync: 14:20 (hace 3 min)</div>
                           </div>
                        </div>
-                       <button className="text-[10px] text-slate-400 hover:text-indigo-600 transition-colors font-bold">⚙️ EDITAR</button>
+                       <button className="text-[10px] text-[#888780] hover:text-indigo-600 transition-colors font-bold">⚙️ EDITAR</button>
                     </div>
 
                     {/* Play FM */}
@@ -108,12 +108,12 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                              <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 rounded-md font-bold border border-emerald-100">FOUND</span>
                           </div>
                           <div className="space-y-1 pl-4">
-                             <div className="text-[10px] text-slate-500 font-mono font-medium">📁 Ruta: \\dalet\exports\play_fm\</div>
-                             <div className="text-[10px] text-slate-500 font-mono font-medium">📄 Patrón: playfm_YYYYMMDD.csv</div>
+                             <div className="text-[10px] text-[#888780] font-mono font-medium">📁 Ruta: \\dalet\exports\play_fm\</div>
+                             <div className="text-[10px] text-[#888780] font-mono font-medium">📄 Patrón: playfm_YYYYMMDD.csv</div>
                              <div className="text-[10px] text-indigo-600 font-bold italic">🕐 Última sync: 14:18 (hace 5 min)</div>
                           </div>
                        </div>
-                       <button className="text-[10px] text-slate-400 hover:text-indigo-600 transition-colors font-bold">⚙️ EDITAR</button>
+                       <button className="text-[10px] text-[#888780] hover:text-indigo-600 transition-colors font-bold">⚙️ EDITAR</button>
                     </div>
 
                     {/* Sonar FM */}
@@ -178,7 +178,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
             <div className="space-y-6">
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
                     <div className="flex justify-between items-end mb-4">
-                        <span className="text-xs font-black text-slate-500 uppercase tracking-widest">📊 PROGRESO COMPARACIÓN:</span>
+                        <span className="text-xs font-black text-[#888780] uppercase tracking-widest">📊 PROGRESO COMPARACIÓN:</span>
                         <span className="text-sm font-black text-indigo-600">89% Completado</span>
                     </div>
                     <div className="w-full h-4 bg-slate-100 rounded-full border border-slate-200 p-1 overflow-hidden shadow-inner">
@@ -188,16 +188,16 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
 
                 <div className="grid grid-cols-3 gap-4">
                     <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                        <div className="text-[10px] text-slate-500 font-black uppercase mb-2">Radio Corazón</div>
-                        <div className="text-xl font-black text-emerald-600">189/195 <span className="text-xs text-slate-400 font-bold">(96.9%)</span></div>
+                        <div className="text-[10px] text-[#888780] font-black uppercase mb-2">Radio Corazón</div>
+                        <div className="text-xl font-black text-emerald-600">189/195 <span className="text-xs text-[#888780] font-bold">(96.9%)</span></div>
                     </div>
                     <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                        <div className="text-[10px] text-slate-500 font-black uppercase mb-2">Play FM</div>
-                        <div className="text-xl font-black text-emerald-600">147/152 <span className="text-xs text-slate-400 font-bold">(96.7%)</span></div>
+                        <div className="text-[10px] text-[#888780] font-black uppercase mb-2">Play FM</div>
+                        <div className="text-xl font-black text-emerald-600">147/152 <span className="text-xs text-[#888780] font-bold">(96.7%)</span></div>
                     </div>
                     <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                        <div className="text-[10px] text-slate-500 font-black uppercase mb-2">Sonar FM</div>
-                        <div className="text-xl font-black text-amber-500">89/94 <span className="text-xs text-slate-400 font-bold">(94.7%)</span></div>
+                        <div className="text-[10px] text-[#888780] font-black uppercase mb-2">Sonar FM</div>
+                        <div className="text-xl font-black text-amber-500">89/94 <span className="text-xs text-[#888780] font-bold">(94.7%)</span></div>
                     </div>
                 </div>
 
@@ -212,13 +212,13 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                             <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <h5 className="text-sm font-black text-slate-800">SP123456 - Banco Chile</h5>
-                                    <p className="text-[10px] text-slate-500 font-mono mt-1 font-medium">📻 Radio Corazón • 🕐 Programado: 06:15:30</p>
+                                    <p className="text-[10px] text-[#888780] font-mono mt-1 font-medium">📻 Radio Corazón • 🕐 Programado: 06:15:30</p>
                                 </div>
                                 <span className="px-2 py-1 bg-rose-50 text-rose-600 border border-rose-100 text-[10px] font-black rounded-md shadow-sm">NO EMITIDO</span>
                             </div>
                             <div className="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 mb-4">
-                                <div><span className="text-[10px] text-slate-500 block uppercase font-black">Valor</span><span className="text-emerald-600 font-black text-xs">$85,000</span></div>
-                                <div><span className="text-[10px] text-slate-500 block uppercase font-black">Duración</span><span className="text-slate-700 font-black text-xs">20s</span></div>
+                                <div><span className="text-[10px] text-[#888780] block uppercase font-black">Valor</span><span className="text-emerald-600 font-black text-xs">$85,000</span></div>
+                                <div><span className="text-[10px] text-[#888780] block uppercase font-black">Duración</span><span className="text-slate-700 font-black text-xs">20s</span></div>
                             </div>
                             <div className="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
                                 <div className="text-[9px] font-black text-indigo-600 uppercase mb-1">🤖 IA recomienda:</div>
@@ -231,13 +231,13 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                             <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <h5 className="text-sm font-black text-slate-800">SP789012 - Coca Cola</h5>
-                                    <p className="text-[10px] text-slate-500 font-mono mt-1 font-medium">📻 Play FM • 🕐 Programado: 08:22:15</p>
+                                    <p className="text-[10px] text-[#888780] font-mono mt-1 font-medium">📻 Play FM • 🕐 Programado: 08:22:15</p>
                                 </div>
                                 <span className="px-2 py-1 bg-rose-50 text-rose-600 border border-rose-100 text-[10px] font-black rounded-md shadow-sm">NO EMITIDO</span>
                             </div>
                             <div className="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 mb-4">
-                                <div><span className="text-[10px] text-slate-500 block uppercase font-black">Valor</span><span className="text-emerald-600 font-black text-xs">$120,000</span></div>
-                                <div><span className="text-[10px] text-slate-500 block uppercase font-black">Duración</span><span className="text-slate-700 font-black text-xs">30s</span></div>
+                                <div><span className="text-[10px] text-[#888780] block uppercase font-black">Valor</span><span className="text-emerald-600 font-black text-xs">$120,000</span></div>
+                                <div><span className="text-[10px] text-[#888780] block uppercase font-black">Duración</span><span className="text-slate-700 font-black text-xs">30s</span></div>
                             </div>
                             <div className="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
                                 <div className="text-[9px] font-black text-indigo-600 uppercase mb-1">🤖 IA recomienda:</div>
@@ -252,11 +252,11 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                     <div className="space-y-2">
                         <div className="flex items-center justify-between text-[11px] text-slate-600 italic">
                             <span className="font-medium">• SP345678: Emitido 15 segundos después (timing menor)</span>
-                            <span className="text-slate-500 font-mono font-bold bg-white px-1.5 rounded border border-slate-200 shadow-sm">ID_LOG_882</span>
+                            <span className="text-[#888780] font-mono font-bold bg-white px-1.5 rounded border border-slate-200 shadow-sm">ID_LOG_882</span>
                         </div>
                         <div className="flex items-center justify-between text-[11px] text-slate-600 italic">
                             <span className="font-medium">• SP901234: Duración real 32s vs programado 30s</span>
-                            <span className="text-slate-500 font-mono font-bold bg-white px-1.5 rounded border border-slate-200 shadow-sm">ID_LOG_901</span>
+                            <span className="text-[#888780] font-mono font-bold bg-white px-1.5 rounded border border-slate-200 shadow-sm">ID_LOG_901</span>
                         </div>
                     </div>
                 </div>
@@ -295,7 +295,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* LISTA DE RECUPERACIÓN */}
                 <div className="md:col-span-1 space-y-4">
-                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Pendientes de Re-Ingesta:</h4>
+                   <h4 className="text-[10px] font-black text-[#888780] uppercase tracking-widest">Pendientes de Re-Ingesta:</h4>
                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                       {pendingSpots.length === 0 && (
                           <div className="text-center p-4 text-emerald-700 font-black text-xs uppercase bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm">
@@ -303,15 +303,15 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                           </div>
                       )}
                       {pendingSpots.map((i) => (
-                        <div 
-                           key={i} 
+                        <div
+                           key={`spot-${i}`}
                            draggable
                            onDragStart={(e) => handleDragStart(e, i)}
                            className="bg-white border border-slate-200 p-3 rounded-xl flex justify-between items-center group hover:border-indigo-300 transition-all cursor-grab active:cursor-grabbing hover:shadow-md shadow-sm"
                         >
                            <div className="space-y-1">
                               <div className="text-xs font-bold text-slate-800 pointer-events-none">Campana Nike #{i}</div>
-                              <div className="text-[9px] text-slate-500 font-mono font-medium pointer-events-none">CODE: SP9988{i} • 20s</div>
+                              <div className="text-[9px] text-[#888780] font-mono font-medium pointer-events-none">CODE: SP9988{i} • 20s</div>
                            </div>
                            <div className="bg-indigo-50 w-8 h-8 rounded-lg flex items-center justify-center text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-indigo-100">
                               ✋
@@ -324,7 +324,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                 {/* VISOR DE HUECOS IA */}
                 <div className="md:col-span-2 bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4 relative overflow-hidden shadow-inner">
                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100/50 rounded-full blur-[80px] -mr-32 -mt-16"></div>
-                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-2 relative z-10">📊 MAPA DE HUECOS COMERCIALES (RADIO CORAZÓN)</h4>
+                   <h4 className="text-[10px] font-black text-[#888780] uppercase tracking-widest border-b border-slate-200 pb-2 relative z-10">📊 MAPA DE HUECOS COMERCIALES (RADIO CORAZÓN)</h4>
                    
                    <div className="space-y-4 relative z-10">
                       {['Franja Mañana', 'Franja Tarde', 'Franja Noche'].map((franja, fIdx) => (
@@ -361,7 +361,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
 
         {step === 4 && (
           <div className="space-y-6 animate-in slide-in-from-right-4">
-             <div className="flex justify-between items-center border-b border-white/5 pb-4 mb-4 text-slate-100">
+             <div className="flex justify-between items-center border-b border-white/5 pb-4 mb-4 text-[#2C2C2A]">
                 <h3 className="text-lg font-black uppercase tracking-widest flex items-center gap-2">
                   <span className="w-1.5 h-6 bg-indigo-600 rounded-full"></span>
                   🤖 Paso 4: "DECISIÓN DE RECUPERACIÓN" - MODO INTELIGENTE
@@ -377,54 +377,54 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                              <span className="text-xl">⚫</span>
                              <h4 className="text-sm font-black text-indigo-100 uppercase tracking-widest">AUTOMÁTICO INTELIGENTE</h4>
                          </div>
-                         <p className="text-[11px] text-slate-400 pl-8">🤖 IA redistribuye optimalmente sin intervención manual. Proceso inmediato ⚡</p>
+                         <p className="text-[11px] text-[#888780] pl-8">🤖 IA redistribuye optimalmente sin intervención manual. Proceso inmediato ⚡</p>
                      </div>
 
-                     <div className="bg-slate-900 border border-white/5 rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all opacity-60">
+                     <div className="bg-[#F0EDE8] border border-white/5 rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all opacity-60">
                          <div className="flex items-center gap-3 mb-2">
                              <span className="text-xl">⚪</span>
-                             <h4 className="text-sm font-black text-slate-300 uppercase tracking-widest">SEMI-AUTOMÁTICO</h4>
+                             <h4 className="text-sm font-black text-[#5F5E5A] uppercase tracking-widest">SEMI-AUTOMÁTICO</h4>
                          </div>
-                         <p className="text-[11px] text-slate-500 pl-8">🤖 IA sugiere + 👤 Usuario aprueba cada bloque. Revisión manual previa.</p>
+                         <p className="text-[11px] text-[#888780] pl-8">🤖 IA sugiere + 👤 Usuario aprueba cada bloque. Revisión manual previa.</p>
                      </div>
 
-                     <div className="bg-slate-900 border border-white/5 rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all opacity-60">
+                     <div className="bg-[#F0EDE8] border border-white/5 rounded-2xl p-4 cursor-pointer hover:border-white/20 transition-all opacity-60">
                          <div className="flex items-center gap-3 mb-2">
                              <span className="text-xl">⚪</span>
-                             <h4 className="text-sm font-black text-slate-300 uppercase tracking-widest">MANUAL COMPLETO</h4>
+                             <h4 className="text-sm font-black text-[#5F5E5A] uppercase tracking-widest">MANUAL COMPLETO</h4>
                          </div>
-                         <p className="text-[11px] text-slate-500 pl-8">👤 Control total del proceso. Usuario programa cada spot manualmente.</p>
+                         <p className="text-[11px] text-[#888780] pl-8">👤 Control total del proceso. Usuario programa cada spot manualmente.</p>
                      </div>
                  </div>
 
                  {/* CONFIGURACIÓN AUTOMÁTICO */}
-                 <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6 space-y-4">
-                     <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">🎯 CONFIGURACIÓN AUTOMÁTICO</h4>
+                 <div className="bg-[#F0EDE8]/50 border border-white/5 rounded-2xl p-6 space-y-4">
+                     <h4 className="text-[10px] font-black text-[#888780] uppercase tracking-widest border-b border-white/5 pb-2">🎯 CONFIGURACIÓN AUTOMÁTICO</h4>
                      
                      <div className="grid grid-cols-2 gap-4">
                          <div className="space-y-1">
-                             <label className="text-[10px] text-slate-500 uppercase font-black">Distribución</label>
-                             <select className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 outline-none focus:border-indigo-500"><option>Repartido</option><option>Prime Only</option></select>
+                             <label className="text-[10px] text-[#888780] uppercase font-black">Distribución</label>
+                             <select className="w-full bg-[#F0EDE8] border border-[#D4D1CC] rounded-lg px-3 py-2 text-xs text-[#2C2C2A] outline-none focus:border-indigo-500"><option>Repartido</option><option>Prime Only</option></select>
                          </div>
                          <div className="space-y-1">
-                             <label className="text-[10px] text-slate-500 uppercase font-black">Espaciado Mín</label>
-                             <select className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 outline-none focus:border-indigo-500"><option>15 minutos</option><option>30 minutos</option></select>
+                             <label className="text-[10px] text-[#888780] uppercase font-black">Espaciado Mín</label>
+                             <select className="w-full bg-[#F0EDE8] border border-[#D4D1CC] rounded-lg px-3 py-2 text-xs text-[#2C2C2A] outline-none focus:border-indigo-500"><option>15 minutos</option><option>30 minutos</option></select>
                          </div>
                          <div className="space-y-1">
-                             <label className="text-[10px] text-slate-500 uppercase font-black">Horario Inicio</label>
-                             <input type="time" defaultValue="16:00" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 outline-none focus:border-indigo-500" />
+                             <label className="text-[10px] text-[#888780] uppercase font-black">Horario Inicio</label>
+                             <input type="time" defaultValue="16:00" aria-label="Horario Inicio" className="w-full bg-[#F0EDE8] border border-[#D4D1CC] rounded-lg px-3 py-2 text-xs text-[#2C2C2A] outline-none focus:border-indigo-500" />
                          </div>
                          <div className="space-y-1">
-                             <label className="text-[10px] text-slate-500 uppercase font-black">Horario Fin</label>
-                             <input type="time" defaultValue="22:00" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 outline-none focus:border-indigo-500" />
+                             <label className="text-[10px] text-[#888780] uppercase font-black">Horario Fin</label>
+                             <input type="time" defaultValue="22:00" aria-label="Horario Fin" className="w-full bg-[#F0EDE8] border border-[#D4D1CC] rounded-lg px-3 py-2 text-xs text-[#2C2C2A] outline-none focus:border-indigo-500" />
                          </div>
                      </div>
 
                      <div className="pt-4 space-y-3">
-                         <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">🔔 NOTIFICACIONES</h5>
+                         <h5 className="text-[10px] font-black text-[#888780] uppercase tracking-widest">🔔 NOTIFICACIONES</h5>
                          <div className="space-y-2">
-                             <label className="flex items-center gap-3 text-xs text-slate-400 group cursor-pointer"><div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-white">✓</div> Email ejecutivos responsables</label>
-                             <label className="flex items-center gap-3 text-xs text-slate-400 group cursor-pointer"><div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-white">✓</div> Slack canal #traffic</label>
+                             <label className="flex items-center gap-3 text-xs text-[#888780] group cursor-pointer"><div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-[#2C2C2A]">✓</div> Email ejecutivos responsables</label>
+                             <label className="flex items-center gap-3 text-xs text-[#888780] group cursor-pointer"><div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-[#2C2C2A]">✓</div> Slack canal #traffic</label>
                          </div>
                      </div>
                  </div>
@@ -464,12 +464,12 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <div className="space-y-3">
-                             <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1">📻 RADIO CORAZÓN - Recuperando 6 spots</h5>
+                             <h5 className="text-[10px] font-black text-[#888780] uppercase tracking-widest border-b border-slate-200 pb-1">📻 RADIO CORAZÓN - Recuperando 6 spots</h5>
                              <div className="space-y-2">
                                  <div className="bg-white p-3 rounded-xl border border-emerald-200 flex justify-between items-center shadow-sm">
                                      <div className="text-[11px]">
                                          <div className="font-black text-slate-800">✅ SP123456 - Banco Chile</div>
-                                         <div className="text-slate-500 font-mono mt-1 font-medium">Nuevo horario: 16:45:30 (Repartido)</div>
+                                         <div className="text-[#888780] font-mono mt-1 font-medium">Nuevo horario: 16:45:30 (Repartido)</div>
                                      </div>
                                      <span className="text-[8px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded font-black shadow-sm">PROGRAMADO</span>
                                  </div>
@@ -477,7 +477,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                          </div>
 
                          <div className="space-y-3">
-                             <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1">⚠️ CASOS REQUIEREN ATENCIÓN MANUAL</h5>
+                             <h5 className="text-[10px] font-black text-[#888780] uppercase tracking-widest border-b border-slate-200 pb-1">⚠️ CASOS REQUIEREN ATENCIÓN MANUAL</h5>
                              <div className="space-y-2">
                                  <div className="bg-rose-50 p-3 rounded-xl border border-rose-200 flex justify-between items-center shadow-sm">
                                      <div className="text-[11px]">
@@ -492,12 +492,12 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
 
                  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-6 flex justify-around items-center shadow-inner">
                      <div className="text-center">
-                         <div className="text-[10px] text-slate-500 font-black uppercase mb-1">Recuperados</div>
+                         <div className="text-[10px] text-[#888780] font-black uppercase mb-1">Recuperados</div>
                          <div className="text-3xl font-black text-emerald-600">20/23</div>
                      </div>
                      <div className="w-px h-12 bg-slate-200"></div>
                      <div className="text-center">
-                         <div className="text-[10px] text-slate-500 font-black uppercase mb-1">Valor Recuperado</div>
+                         <div className="text-[10px] text-[#888780] font-black uppercase mb-1">Valor Recuperado</div>
                          <div className="text-3xl font-black text-emerald-600">$1.8M</div>
                      </div>
                  </div>
@@ -516,28 +516,28 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
-                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-2">📊 RESUMEN EJECUTIVO</h4>
+                    <h4 className="text-xs font-black text-[#888780] uppercase tracking-widest border-b border-slate-200 pb-2">📊 RESUMEN EJECUTIVO</h4>
                     <div className="space-y-2 text-xs">
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">• Total spots verificados:</span> <span className="text-slate-800 font-black">441</span></div>
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">• Spots emitidos correctly:</span> <span className="text-emerald-600 font-bold">418</span></div>
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">• Spots no emitidos:</span> <span className="text-rose-600 font-bold">23</span></div>
-                        <div className="flex justify-between pl-4 text-slate-500"><span className="italic">└ Recuperados:</span> <span className="text-indigo-600 font-bold">20</span></div>
-                        <div className="flex justify-between pl-4 text-slate-500"><span className="italic">└ Pendientes manual:</span> <span className="text-amber-600 font-bold">3</span></div>
+                        <div className="flex justify-between pl-4 text-[#888780]"><span className="italic">└ Recuperados:</span> <span className="text-indigo-600 font-bold">20</span></div>
+                        <div className="flex justify-between pl-4 text-[#888780]"><span className="italic">└ Pendientes manual:</span> <span className="text-amber-600 font-bold">3</span></div>
                         <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cumplimiento Final</span>
+                            <span className="text-[10px] font-black text-[#888780] uppercase tracking-widest">Cumplimiento Final</span>
                             <span className="text-3xl font-black text-emerald-600 bg-emerald-50 px-2 rounded-lg border border-emerald-100 shadow-sm">99.3%</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
-                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-2">💰 IMPACTO COMERCIAL</h4>
+                    <h4 className="text-xs font-black text-[#888780] uppercase tracking-widest border-b border-slate-200 pb-2">💰 IMPACTO COMERCIAL</h4>
                     <div className="space-y-3 text-xs">
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">Valor total verificado:</span> <span className="text-slate-800 font-black">$12.8M</span></div>
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">Valor recuperado:</span> <span className="text-emerald-600 font-black text-lg bg-emerald-50 px-1 border border-emerald-100 rounded shadow-sm">$1.8M</span></div>
                         <div className="flex justify-between"><span className="text-slate-600 font-medium">Pendiente recuperación:</span> <span className="text-rose-600 font-bold">$300K</span></div>
                         <div className="mt-4 bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
-                            <div className="text-[9px] font-black text-slate-500 uppercase mb-2">📧 NOTIFICACIONES ENVIADAS</div>
+                            <div className="text-[9px] font-black text-[#888780] uppercase mb-2">📧 NOTIFICACIONES ENVIADAS</div>
                             <div className="grid grid-cols-2 gap-2 text-[10px]">
                                 <div className="text-emerald-700 font-bold flex items-center gap-1"><span>✅</span> Ejecutivos (8)</div>
                                 <div className="text-emerald-700 font-bold flex items-center gap-1"><span>✅</span> Slack #traffic</div>
@@ -555,9 +555,9 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                     <p className="text-[10px] text-slate-600 font-medium">ID Proceso: <span className="text-slate-700 font-mono font-bold bg-white px-1.5 rounded shadow-sm border border-slate-200">CONC-20250820-001</span></p>
                 </div>
                 <div className="flex gap-4">
-                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-slate-500 font-black tracking-widest uppercase">BACKUP</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
-                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-slate-500 font-black tracking-widest uppercase">LOGS</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
-                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-slate-500 font-black tracking-widest uppercase">TRAZA</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
+                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-[#888780] font-black tracking-widest uppercase">BACKUP</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
+                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-[#888780] font-black tracking-widest uppercase">LOGS</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
+                    <div className="text-center px-4 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-default"><div className="text-[8px] text-[#888780] font-black tracking-widest uppercase">TRAZA</div><div className="text-[10px] text-emerald-600 font-bold">✅ OK</div></div>
                 </div>
              </div>
           </div>
@@ -578,7 +578,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                {step === 1 && <button className="px-6 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-600 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-xs font-bold shadow-sm active:scale-95">⚙️ CONFIG RUTAS</button>}
                <button 
                   onClick={() => setStep(step + 1)}
-                  className="px-8 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-indigo-200 transition-all text-sm font-black tracking-widest uppercase hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                  className="px-8 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-[#2C2C2A] shadow-md shadow-indigo-200 transition-all text-sm font-black tracking-widest uppercase hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                >
                   {step === 2 ? '🚀 INICIAR COMPARACIÓN →' : step === 3 ? '🤖 SELECCIONAR MODO →' : step === 4 ? '🚀 EJECUTAR RECUPERACIÓN' : 'SIGUIENTE PASO →'}
                </button>
@@ -586,7 +586,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
         ) : step === 5 ? (
             <button 
                 onClick={() => setStep(6)}
-                className="px-12 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white shadow-lg shadow-emerald-200 transition-all flex items-center gap-3 font-black tracking-[0.2em] uppercase text-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                className="px-12 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-[#2C2C2A] shadow-lg shadow-emerald-200 transition-all flex items-center gap-3 font-black tracking-[0.2em] uppercase text-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
             >
                 🏁 FINALIZAR Y AUDITAR
             </button>
@@ -595,7 +595,7 @@ export default function WizardConciliacionView({ onCancel }: WizardConciliacionV
                 <button className="px-6 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-600 text-xs font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-colors active:scale-95">👁️ Ver Reporte</button>
                 <button className="px-6 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-600 text-xs font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-colors active:scale-95">📧 Enviar</button>
                 <button onClick={() => setStep(1)} className="px-6 py-2.5 rounded-xl bg-white text-indigo-600 text-xs font-black uppercase tracking-widest shadow-sm border border-indigo-200 hover:bg-indigo-50 transition-colors active:scale-95">🔄 Nueva</button>
-                <button onClick={onCancel} className="px-8 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase tracking-widest shadow-md shadow-emerald-200 transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-95">🏠 Dashboard</button>
+                <button onClick={onCancel} className="px-8 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-[#2C2C2A] text-xs font-black uppercase tracking-widest shadow-md shadow-emerald-200 transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-95">🏠 Dashboard</button>
             </div>
         )}
       </div>

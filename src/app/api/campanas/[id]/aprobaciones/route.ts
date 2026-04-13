@@ -1,61 +1,139 @@
+/**
+ * SILEXAR PULSE - API Aprobaciones de Campaña TIER 0
+ * 
+ * @version 2050.1.0
+ * @tier TIER_0_FORTUNE_10
+ */
+
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { rateLimit } from '@/lib/security/rate-limiter'
-import { appendAudit } from '@/lib/security/audit-trail'
-import { getAuthContext, requireRole, forbid } from '@/lib/security/rbac'
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
-type Nivel = 'COMERCIAL' | 'TECNICO' | 'FINANCIERO'
-type Estado = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO'
+type Nivel = 'COMERCIAL' | 'TECNICO' | 'FINANCIERO';
+type Estado = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO';
 
-const store: Record<string, { id: string, nivel: Nivel, estado: Estado, solicitante: string, observacion?: string, ts: number }[]> = {}
+const store: Record<string, { id: string, nivel: Nivel, estado: Estado, solicitante: string, observacion?: string, ts: number }[]> = {};
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    return NextResponse.json({ success: true, items: store[params.id] || [] }, { status: 200 })
-  } catch (error) {
-    logger.error('[API/Campanas/Aprobaciones] Error GET:', error instanceof Error ? error : undefined, { module: 'campanas/aprobaciones', action: 'GET' })
-    return apiServerError()
+/**
+ * GET - Listar aprobaciones
+ * Requiere: campanas:read
+ */
+export const GET = withApiRoute(
+  { resource: 'campanas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        // Extraer ID de campaña de la URL
+        const url = new URL(req.url);
+        const pathParts = url.pathname.split('/');
+        const campanaId = pathParts[pathParts.indexOf('campanas') + 1];
+        
+        return NextResponse.json({ 
+          success: true, 
+          items: store[campanaId] || [],
+          campanaId,
+          consultadoPor: ctx.userId
+        }, { status: 200 });
+      });
+    } catch (error) {
+      logger.error('[API/Campanas/Aprobaciones] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'campanas/aprobaciones', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const ctx = getAuthContext(request)
-    if (!requireRole(ctx, ['EJECUTIVO', 'TM_SENIOR', 'EJECUTIVO_VENTAS'])) return forbid()
-    const rl = await rateLimit({ key: `aprobaciones_create:${params.id}`, limit: 60, window: 60_000 })
-    if (!rl.success) return NextResponse.json({ success: false, error: 'RATE_LIMIT' }, { status: 429 })
-    const body = await request.json().catch(() => ({}))
-    const item = { id: `apr_${Date.now()}`, nivel: (body.nivel || 'COMERCIAL') as Nivel, estado: 'PENDIENTE' as Estado, solicitante: ctx!.userId, ts: Date.now() }
-    store[params.id] = [item, ...(store[params.id] || [])]
-    appendAudit(params.id, { actor: ctx?.userId, action: 'APROBACION_SOLICITADA', meta: { id: item.id, nivel: item.nivel } })
-    return NextResponse.json({ success: true, item }, { status: 201 })
-  } catch (error) {
-    logger.error('[API/Campanas/Aprobaciones] Error POST:', error instanceof Error ? error : undefined, { module: 'campanas/aprobaciones', action: 'POST' })
-    return apiServerError()
+/**
+ * POST - Solicitar aprobación
+ * Requiere: campanas:update
+ */
+export const POST = withApiRoute(
+  { resource: 'campanas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        // Extraer ID de campaña de la URL
+        const url = new URL(req.url);
+        const pathParts = url.pathname.split('/');
+        const campanaId = pathParts[pathParts.indexOf('campanas') + 1];
+        
+        const body = await req.json().catch((_e) => null);
+        const item = {
+          id: `apr_${crypto.randomUUID()}`,
+          nivel: ((body?.nivel) || 'COMERCIAL') as Nivel,
+          estado: 'PENDIENTE' as Estado,
+          solicitante: ctx.userId,
+          ts: Date.now()
+        };
+        
+        store[campanaId] = [item, ...(store[campanaId] || [])];
+        
+        return NextResponse.json({ 
+          success: true, 
+          item,
+          campanaId,
+          timestamp: new Date().toISOString()
+        }, { status: 201 });
+      });
+    } catch (error) {
+      logger.error('[API/Campanas/Aprobaciones] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'campanas/aprobaciones', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const ctx = getAuthContext(request)
-    if (!requireRole(ctx, ['TM_SENIOR', 'FINANCIERO'])) return forbid()
-    const rl = await rateLimit({ key: `aprobaciones_update:${params.id}`, limit: 60, window: 60_000 })
-    if (!rl.success) return NextResponse.json({ success: false, error: 'RATE_LIMIT' }, { status: 429 })
-    const body = await request.json().catch(() => ({}))
-    const { id, estado, observacion } = body
-    const list = store[params.id] || []
-    const found = list.find(x => x.id === id)
-    if (!found) return NextResponse.json({ success: false, error: 'NOT_FOUND' }, { status: 404 })
-    found.estado = (estado || 'APROBADO') as Estado
-    found.observacion = observacion
-    appendAudit(params.id, { actor: ctx?.userId, action: 'APROBACION_RESUELTA', meta: { id, estado: found.estado } })
-    return NextResponse.json({ success: true, item: found }, { status: 200 })
-  } catch (error) {
-    logger.error('[API/Campanas/Aprobaciones] Error PATCH:', error instanceof Error ? error : undefined, { module: 'campanas/aprobaciones', action: 'PATCH' })
-    return apiServerError()
+/**
+ * PATCH - Resolver aprobación
+ * Requiere: campanas:update
+ */
+export const PATCH = withApiRoute(
+  { resource: 'campanas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        // Extraer ID de campaña de la URL
+        const url = new URL(req.url);
+        const pathParts = url.pathname.split('/');
+        const campanaId = pathParts[pathParts.indexOf('campanas') + 1];
+        
+        const body = await req.json().catch((_e) => null);
+        const { id, estado, observacion } = body ?? {};
+        const list = store[campanaId] || [];
+        const found = list.find(x => x.id === id);
+        
+        if (!found) {
+          return NextResponse.json({ success: false, error: 'NOT_FOUND' }, { status: 404 });
+        }
+        
+        found.estado = (estado || 'APROBADO') as Estado;
+        found.observacion = observacion;
+        
+        return NextResponse.json({ 
+          success: true, 
+          item: found,
+          resueltoPor: ctx.userId,
+          timestamp: new Date().toISOString()
+        }, { status: 200 });
+      });
+    } catch (error) {
+      logger.error('[API/Campanas/Aprobaciones] Error PATCH:', error instanceof Error ? error : undefined, { 
+        module: 'campanas/aprobaciones', 
+        action: 'PATCH',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
-
+);

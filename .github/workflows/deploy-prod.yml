@@ -1,0 +1,360 @@
+name: Deploy to Production
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (tag)"
+        required: true
+        type: string
+      environment:
+        description: "Target environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - production-blue
+          - production-green
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  PROD_NAMESPACE: silexar-pulse-quantum
+
+jobs:
+  # ── Pre-deployment Checks ────────────────────────────────────────────────
+  pre-checks:
+    name: Pre-deployment Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version || github.event.release.tag_name }}
+
+      - name: Verify tag exists
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.release.tag_name }}"
+          if [ -z "$VERSION" ]; then
+            echo "❌ No version specified"
+            exit 1
+          fi
+          echo "✅ Deploying version: $VERSION"
+
+      - name: Check image exists
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.release.tag_name }}"
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION"
+
+          # Check if image exists in registry
+          docker manifest inspect $IMAGE || {
+            echo "❌ Image $IMAGE not found in registry"
+            exit 1
+          }
+          echo "✅ Image found: $IMAGE"
+
+      - name: Run Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.version || github.event.release.tag_name }}"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+          exit-code: "1"
+
+      - name: Upload security scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
+
+  # ── Approval Gate ────────────────────────────────────────────────────────
+  approval:
+    name: Deployment Approval
+    runs-on: ubuntu-latest
+    needs: pre-checks
+    environment:
+      name: production
+      url: https://silexar.io
+    steps:
+      - name: Approval checkpoint
+        run: |
+          echo "✅ Deployment approved for production"
+          echo "Version: ${{ github.event.inputs.version || github.event.release.tag_name }}"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+
+  # ── Deploy to Production ─────────────────────────────────────────────────
+  deploy:
+    name: Deploy to Production (Zero-Downtime)
+    runs-on: ubuntu-latest
+    needs: approval
+    strategy:
+      matrix:
+        region: [primary]
+      max-parallel: 1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.28.0"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME_PROD }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Deploy with Zero-Downtime
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.release.tag_name }}"
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION"
+
+          echo "🚀 Starting zero-downtime deployment..."
+          echo "Image: $IMAGE"
+
+          # Get current deployment info
+          kubectl get deployment silexar-pulse-quantum -n ${{ env.PROD_NAMESPACE }} -o yaml > current-deployment.yaml
+
+          # Update deployment with new image
+          kubectl set image deployment/silexar-pulse-quantum \
+            silexar-app=$IMAGE \
+            -n ${{ env.PROD_NAMESPACE }} --record
+
+          # Set version label
+          kubectl label deployment/silexar-pulse-quantum \
+            version="$VERSION" \
+            -n ${{ env.PROD_NAMESPACE }} --overwrite
+
+          # Wait for rollout with progress deadline
+          echo "⏳ Waiting for rollout to complete..."
+          kubectl rollout status deployment/silexar-pulse-quantum \
+            -n ${{ env.PROD_NAMESPACE }} --timeout=600s
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Rollout completed successfully"
+          else
+            echo "❌ Rollout failed - initiating rollback"
+            kubectl rollout undo deployment/silexar-pulse-quantum -n ${{ env.PROD_NAMESPACE }}
+            exit 1
+          fi
+
+      - name: Verify Deployment Health
+        run: |
+          echo "🏥 Running health checks..."
+
+          # Check pod status
+          kubectl get pods -n ${{ env.PROD_NAMESPACE }} -l app=silexar-pulse-quantum
+
+          # Wait for pods to be ready
+          kubectl wait --for=condition=ready pod \
+            -l app=silexar-pulse-quantum \
+            -n ${{ env.PROD_NAMESPACE }} \
+            --timeout=300s
+
+          # Check HPA status
+          kubectl get hpa -n ${{ env.PROD_NAMESPACE }}
+
+          echo "✅ Health checks passed"
+
+      - name: Smoke Tests
+        run: |
+          echo "🧪 Running smoke tests..."
+
+          # Wait for external LB to update
+          sleep 60
+
+          MAX_RETRIES=5
+          RETRY=0
+
+          while [ $RETRY -lt $MAX_RETRIES ]; do
+            echo "Attempt $((RETRY+1))/$MAX_RETRIES"
+            
+            # Health check
+            if curl -sf https://silexar.io/api/health; then
+              echo "✅ Health check passed"
+            else
+              echo "⚠️  Health check failed, retrying..."
+              RETRY=$((RETRY+1))
+              sleep 30
+              continue
+            fi
+            
+            # Ready check
+            if curl -sf https://silexar.io/api/health/ready; then
+              echo "✅ Readiness check passed"
+            else
+              echo "⚠️  Readiness check failed, retrying..."
+              RETRY=$((RETRY+1))
+              sleep 30
+              continue
+            fi
+            
+            # API check
+            if curl -sf https://silexar.io/api/v1/status; then
+              echo "✅ API status check passed"
+              break
+            else
+              echo "⚠️  API status check failed, retrying..."
+              RETRY=$((RETRY+1))
+              sleep 30
+            fi
+          done
+
+          if [ $RETRY -eq $MAX_RETRIES ]; then
+            echo "❌ Smoke tests failed after $MAX_RETRIES attempts"
+            exit 1
+          fi
+
+          echo "✅ All smoke tests passed"
+
+      - name: Update Deployment Status
+        if: success()
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.release.tag_name }}"
+
+          # Annotate deployment with deployment info
+          kubectl annotate deployment/silexar-pulse-quantum \
+            -n ${{ env.PROD_NAMESPACE }} \
+            deployment.kubernetes.io/revision="$(date +%s)" \
+            silexar.io/deployed-by="${{ github.actor }}" \
+            silexar.io/deployed-at="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            silexar.io/version="$VERSION" \
+            --overwrite
+
+  # ── Post-deployment Verification ─────────────────────────────────────────
+  verify:
+    name: Post-deployment Verification
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.28.0"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME_PROD }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Run Verification Tests
+        run: |
+          echo "🔍 Running verification tests..."
+
+          # Check deployment status
+          kubectl get deployment silexar-pulse-quantum -n ${{ env.PROD_NAMESPACE }}
+
+          # Check pod resources
+          kubectl top pods -n ${{ env.PROD_NAMESPACE }} -l app=silexar-pulse-quantum || echo "Metrics not available"
+
+          # Check service endpoints
+          kubectl get endpoints -n ${{ env.PROD_NAMESPACE }}
+
+          echo "✅ Verification complete"
+
+      - name: Notify Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: "#deployments"
+          text: |
+            🎉 *Production Deployment Successful*
+
+            Version: `${{ github.event.inputs.version || github.event.release.tag_name }}`
+            Environment: `${{ github.event.inputs.environment || 'production' }}`
+            Deployed by: `${{ github.actor }}`
+
+            URLs:
+            • Production: https://silexar.io
+            • Health: https://silexar.io/api/health
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: "#alerts"
+          text: |
+            🚨 *Production Deployment Failed*
+
+            Version: `${{ github.event.inputs.version || github.event.release.tag_name }}`
+            Environment: `${{ github.event.inputs.environment || 'production' }}`
+            Failed by: `${{ github.actor }}`
+
+            Check the workflow run for details.
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # ── Rollback on Failure ──────────────────────────────────────────────────
+  rollback:
+    name: Rollback (if needed)
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: failure()
+    steps:
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.28.0"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME_PROD }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Rollback Deployment
+        run: |
+          echo "⚠️  Initiating rollback..."
+
+          # Undo rollout
+          kubectl rollout undo deployment/silexar-pulse-quantum -n ${{ env.PROD_NAMESPACE }}
+
+          # Wait for rollback
+          kubectl rollout status deployment/silexar-pulse-quantum \
+            -n ${{ env.PROD_NAMESPACE }} --timeout=300s
+
+          echo "✅ Rollback completed"
+
+      - name: Notify Rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: "#alerts"
+          text: |
+            ⚠️ *Production Deployment Rolled Back*
+
+            The deployment failed and was automatically rolled back to the previous version.
+
+            Version attempted: `${{ github.event.inputs.version || github.event.release.tag_name }}`
+            Rolled back by: `${{ github.actor }}`
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

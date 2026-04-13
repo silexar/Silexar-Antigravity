@@ -12,6 +12,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -168,13 +169,6 @@ export function DigitalKPIDashboard({ metrics }: DigitalKPIDashboardProps) {
     setTimeSeriesData(data)
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
@@ -278,7 +272,7 @@ export function DigitalKPIDashboard({ metrics }: DigitalKPIDashboardProps) {
           <CardContent>
             <div className="space-y-4">
               {platformPerformance.map((platform, index) => (
-                <div key={index} className="flex items-center justify-between">
+                <div key={`${platform}-${index}`} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${platform.color}`}></div>
                     <span className="font-medium">{platform.platform}</span>
@@ -310,7 +304,7 @@ export function DigitalKPIDashboard({ metrics }: DigitalKPIDashboardProps) {
               {platformPerformance
                 .sort((a, b) => b.roas - a.roas)
                 .map((platform, index) => (
-                <div key={index} className="flex items-center justify-between">
+                <div key={`${platform}-${index}`} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${platform.color}`}></div>
                     <span className="font-medium">{platform.platform}</span>
@@ -356,7 +350,7 @@ export function DigitalKPIDashboard({ metrics }: DigitalKPIDashboardProps) {
               </thead>
               <tbody>
                 {platformPerformance.map((platform, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
+                  <tr key={`${platform}-${index}`} className="border-b hover:bg-gray-50">
                     <td className="p-2">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${platform.color}`}></div>

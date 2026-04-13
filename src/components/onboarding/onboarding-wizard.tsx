@@ -74,7 +74,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
               { icon: <Megaphone className="w-6 h-6" />, label: 'Campañas' },
               { icon: <BarChart3 className="w-6 h-6" />, label: 'Analytics' }
             ].map((feature, i) => (
-              <div key={i} className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div key={`${feature}-${i}`} className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
                 <div className="text-orange-400 mb-2">{feature.icon}</div>
                 <p className="text-white text-sm">{feature.label}</p>
               </div>
@@ -102,7 +102,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
               { name: 'Crear Campañas', enabled: userCategory !== 'vendedor' },
               { name: 'Configuración', enabled: userCategory === 'admin' }
             ].map((perm, i) => (
-              <div key={i} className={`p-3 rounded-lg flex items-center gap-3 ${
+              <div key={`${perm}-${i}`} className={`p-3 rounded-lg flex items-center gap-3 ${
                 perm.enabled 
                   ? 'bg-green-500/10 border border-green-500/30' 
                   : 'bg-slate-800/50 border border-slate-700'
@@ -199,7 +199,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
             { icon: <Smartphone className="w-5 h-5" />, tip: 'Activa 2FA para mayor seguridad', color: 'green' },
             { icon: <Globe className="w-5 h-5" />, tip: 'Usa los atajos de teclado para ser más productivo', color: 'purple' }
           ].map((item, i) => (
-            <div key={i} className={`p-4 bg-${item.color}-500/10 rounded-xl border border-${item.color}-500/30 flex items-center gap-3`}>
+            <div key={`${item}-${i}`} className={`p-4 bg-${item.color}-500/10 rounded-xl border border-${item.color}-500/30 flex items-center gap-3`}>
               <div className={`text-${item.color}-400`}>{item.icon}</div>
               <p className="text-white">{item.tip}</p>
             </div>

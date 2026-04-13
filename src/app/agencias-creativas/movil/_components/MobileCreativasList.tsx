@@ -38,6 +38,7 @@ export const MobileCreativasList: React.FC<ListProps> = ({
           </div>
           <input
             type="text"
+            aria-label="Buscar agencia creativa"
             className="block w-full pl-11 pr-4 py-3.5 bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl shadow-sm focus:border-pink-500 focus:ring-2 focus:ring-pink-200 text-slate-800 placeholder-slate-400 font-medium transition-all"
             placeholder="Buscar agencia creativa..."
             value={searchTerm}

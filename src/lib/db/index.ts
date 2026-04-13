@@ -1,13 +1,11 @@
 /**
- * 🗃️ SILEXAR PULSE - Conexión a Base de Datos
- * 
- * @description Cliente Drizzle configurado para PostgreSQL
- * 
- * @version 2025.1.0
+ * SILEXAR PULSE - Database Connection
+ *
+ * Drizzle ORM client configured for PostgreSQL.
+ * Requires DATABASE_URL environment variable — throws if not set.
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { logger } from '@/lib/observability';
 import postgres from 'postgres';
 
 // Schemas
@@ -29,29 +27,29 @@ import * as cunasDigitalSchema from './cunas-digital-schema';
 import * as auditLogsSchema from './audit-logs-schema';
 
 // ═══════════════════════════════════════════════════════════════
-// CONEXIÓN
+// CONNECTION
 // ═══════════════════════════════════════════════════════════════
 
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  logger.warn('⚠️ DATABASE_URL no definida - usando modo mock');
+  throw new Error(
+    'DATABASE_URL is required. Set it in your .env.local file.\n' +
+    'Example: postgres://user:password@localhost:5432/silexar_pulse'
+  );
 }
 
-// Cliente PostgreSQL
 const DB_POOL_MAX = parseInt(process.env.DB_POOL_MAX || '20', 10);
 
-const client = connectionString
-  ? postgres(connectionString, {
-      max: DB_POOL_MAX,
-      idle_timeout: 300,
-      connect_timeout: 30,
-    })
-  : null;
+const client = postgres(connectionString, {
+  max: DB_POOL_MAX,
+  idle_timeout: 300,
+  connect_timeout: 30,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
+});
 
-// Instancia Drizzle con todos los schemas
-export const db = client 
-  ? drizzle(client, {
+// Drizzle instance with all schemas
+export const db = drizzle(client, {
       schema: {
         ...usersSchema,
         ...anunciantesSchema,
@@ -69,28 +67,25 @@ export const db = client
         ...materialesSchema,
         ...cunasDigitalSchema,
         ...auditLogsSchema,
-      }
-    })
-  : null;
+      },
+    });
 
 // ═══════════════════════════════════════════════════════════════
-// UTILIDADES
+// UTILITIES
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Verifica si la conexión a BD está activa
+ * Database is always connected — throws on startup if DATABASE_URL is missing.
+ * This function exists for backwards compatibility.
  */
 export function isDatabaseConnected(): boolean {
-  return db !== null;
+  return true;
 }
 
 /**
- * Obtiene la instancia de DB o lanza error
+ * Returns the Drizzle database instance.
  */
 export function getDB() {
-  if (!db) {
-    throw new Error('Base de datos no configurada. Verifica DATABASE_URL en .env.local');
-  }
   return db;
 }
 

@@ -14,6 +14,7 @@
  */
 
 import { logger } from '@/lib/observability'
+import { globalCache } from '@/lib/cache/redis-cache'
 import {
   AnomalyDetection,
   DetectedAnomaly,
@@ -57,9 +58,6 @@ export interface AnomalyResult {
 // ─── L7: ConversationAnomalyDetector ─────────────────────────────────────────
 
 export class ConversationAnomalyDetector {
-  /** In-memory store (production: use Redis with TTL per session) */
-  private sessions: Map<string, ConversationRecord> = new Map()
-
   /** Window for rate/flood analysis */
   private readonly WINDOW_MS = 10 * 60 * 1000 // 10 minutes
 
@@ -74,13 +72,13 @@ export class ConversationAnomalyDetector {
 
   // ── Internal helpers ──────────────────────────────────────────────────────
 
-  private getOrCreateRecord(
+  private async getOrCreateRecord(
     sessionId: string,
     userId: string,
     tenantId: string,
-  ): ConversationRecord {
-    const existing = this.sessions.get(sessionId)
-    if (existing) return existing
+  ): Promise<ConversationRecord> {
+    const raw = await globalCache.get<ConversationRecord>(`anomaly:session:${sessionId}`)
+    if (raw) return raw
 
     const record: ConversationRecord = {
       sessionId,
@@ -91,8 +89,12 @@ export class ConversationAnomalyDetector {
       avgRiskScore: 0,
       lastUpdated: Date.now(),
     }
-    this.sessions.set(sessionId, record)
+    await globalCache.set(`anomaly:session:${sessionId}`, record, 600_000) // 10 min TTL
     return record
+  }
+
+  private async saveRecord(record: ConversationRecord): Promise<void> {
+    await globalCache.set(`anomaly:session:${record.sessionId}`, record, 600_000)
   }
 
   private recalcStats(record: ConversationRecord): void {
@@ -210,7 +212,7 @@ export class ConversationAnomalyDetector {
     const { sessionId, userId, tenantId, messageRiskScore } = params
     const ts = params.timestamp ?? Date.now()
 
-    const record = this.getOrCreateRecord(sessionId, userId, tenantId)
+    const record = await this.getOrCreateRecord(sessionId, userId, tenantId)
 
     // Add a provisional entry for the incoming message so that escalation
     // detection can evaluate the full sequence including this message.
@@ -256,6 +258,7 @@ export class ConversationAnomalyDetector {
     // the L2/L5 pipeline has produced a final authoritative riskScore.
     record.messages.pop()
     this.recalcStats(record)
+    await this.saveRecord(record)
 
     // Determine blocking/suspension actions
     const shouldBlock = threatLevel === 'medium' || threatLevel === 'high' || threatLevel === 'critical'
@@ -286,15 +289,15 @@ export class ConversationAnomalyDetector {
    * @param params.flagged - true when riskScore > 30 (set by the caller based on
    *                         the combined L2 + L5 scoring output)
    */
-  recordMessage(params: {
+  async recordMessage(params: {
     sessionId: string
     userId: string
     tenantId: string
     riskScore: number
     flagged: boolean
-  }): void {
+  }): Promise<void> {
     const { sessionId, userId, tenantId, riskScore, flagged } = params
-    const record = this.getOrCreateRecord(sessionId, userId, tenantId)
+    const record = await this.getOrCreateRecord(sessionId, userId, tenantId)
 
     record.messages.push({
       role: 'user',
@@ -304,22 +307,23 @@ export class ConversationAnomalyDetector {
     })
 
     this.recalcStats(record)
+    await this.saveRecord(record)
   }
 
   /**
    * Clear all session data on logout or session end.
    * Prevents stale state accumulating in long-running server processes.
    */
-  clearSession(sessionId: string): void {
-    this.sessions.delete(sessionId)
+  async clearSession(sessionId: string): Promise<void> {
+    await globalCache.delete(`anomaly:session:${sessionId}`)
   }
 
   /**
    * Return the current tracking state for a session (for admin review / dashboards).
    * Returns null if no session data exists.
    */
-  getSessionState(sessionId: string): ConversationRecord | null {
-    return this.sessions.get(sessionId) ?? null
+  async getSessionState(sessionId: string): Promise<ConversationRecord | null> {
+    return await globalCache.get<ConversationRecord>(`anomaly:session:${sessionId}`)
   }
 }
 
@@ -415,38 +419,62 @@ export class QuantumAnomalyDetector {
     return detection
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async collectSystemData(): Promise<Record<string, any>> {
+  /**
+   * Collect real system metrics.
+   * - CPU and memory: Node.js os module (real)
+   * - Failed logins: globalCache counter (incremented by auth route on each failure)
+   * - Cache hit rate: globalCache.getStats() (real)
+   * - Business/infra zeros: require Prometheus/APM integration (documented TODOs)
+   */
+  private async collectSystemData(): Promise<Record<string, unknown>> {
+    const os = await import('os')
+    const cpuUsage = os.loadavg()
+    const totalMem = os.totalmem()
+    const freeMem = os.freemem()
+    const memUsage = ((totalMem - freeMem) / totalMem) * 100
+
+    // Real failed login count — auth route writes to globalCache key `security:failed_logins:1min`
+    const failedLogins = (await globalCache.get<number>('security:failed_logins:1min')) ?? 0
+
+    // Real suspicious IP count — rate limiter stores blocked IPs in globalCache
+    const suspiciousIPs = (await globalCache.get<number>('security:blocked_ips:count')) ?? 0
+
+    // Real cache stats from in-memory store
+    const cacheStats = await globalCache.getStats()
+    const cacheHitRate = Math.round(cacheStats.hitRate * 100) / 100
+
+    const cpuNormalized = Math.round((cpuUsage[0] / os.cpus().length) * 100 * 100) / 100
+
     return {
       performance: {
-        cpu: 45 + Math.random() * 40,
-        memory: 60 + Math.random() * 30,
-        disk: 30 + Math.random() * 50,
-        network: 20 + Math.random() * 60,
-        latency: 10 + Math.random() * 40,
-        throughput: 30_000 + Math.random() * 40_000,
-        errorRate: Math.random() * 0.05,
+        cpu: cpuNormalized,
+        memory: Math.round(memUsage * 100) / 100,
+        disk: 0,        // TODO: integrate fs.statfs when Node 22+ is available
+        network: 0,     // TODO: integrate with Prometheus network metrics
+        latency: 0,     // TODO: integrate with OpenTelemetry APM
+        throughput: 0,
+        errorRate: 0,   // TODO: integrate with Sentry error rate API
       },
       security: {
-        failedLogins: Math.floor(Math.random() * 20),
-        suspiciousIPs: Math.floor(Math.random() * 10),
-        malwareDetections: Math.floor(Math.random() * 5),
-        vulnerabilityScore: Math.random() * 100,
-        complianceScore: 80 + Math.random() * 20,
+        failedLogins,
+        suspiciousIPs,
+        malwareDetections: 0,
+        vulnerabilityScore: 0,  // TODO: integrate with Snyk API
+        complianceScore: 100,
       },
       business: {
-        activeUsers: 15_000 + Math.random() * 10_000,
-        sessionDuration: 8 + Math.random() * 12,
-        conversionRate: 0.02 + Math.random() * 0.08,
-        revenue: 100_000 + Math.random() * 50_000,
-        churnRate: Math.random() * 0.1,
+        activeUsers: 0,        // TODO: integrate with session store count
+        sessionDuration: 0,
+        conversionRate: 0,
+        revenue: 0,
+        churnRate: 0,
       },
       infrastructure: {
-        serverHealth: 85 + Math.random() * 15,
-        databaseConnections: 100 + Math.random() * 400,
-        queueLength: Math.random() * 1_000,
-        cacheHitRate: 0.8 + Math.random() * 0.2,
-        storageUsage: 40 + Math.random() * 50,
+        serverHealth: Math.max(0, Math.min(100, 100 - (cpuNormalized * 0.5))),
+        databaseConnections: 0, // TODO: integrate with QuantumDatabaseManager pool stats
+        queueLength: 0,
+        cacheHitRate,
+        storageUsage: 0,
       },
     }
   }
@@ -466,18 +494,18 @@ export class QuantumAnomalyDetector {
         detectionTime: timestamp,
         confidence: 0.95,
         historicalContext: {
-          firstSeen: new Date(timestamp.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1_000),
-          frequency: Math.floor(Math.random() * 10) + 1,
-          previousOccurrences: Math.floor(Math.random() * 20) + 1,
+          firstSeen: timestamp,
+          frequency: 1,
+          previousOccurrences: 0,
         },
         impact: {
-          users: Math.floor(Math.random() * 5_000),
-          revenue: Math.floor(Math.random() * 10_000),
+          users: 0,    // TODO: integrate with active session count
+          revenue: 0,
           performance: 85,
           security: 10,
         },
         rootCause: {
-          identified: Math.random() > 0.3,
+          identified: false,
           cause: 'Memory leak in background process',
           confidence: 0.78,
           evidence: ['Gradual memory increase', 'Process CPU correlation', 'Log pattern analysis'],
@@ -495,12 +523,12 @@ export class QuantumAnomalyDetector {
         detectionTime: timestamp,
         confidence: 0.92,
         historicalContext: {
-          firstSeen: new Date(timestamp.getTime() - Math.random() * 2 * 60 * 60 * 1_000),
+          firstSeen: timestamp,
           frequency: 1,
-          previousOccurrences: Math.floor(Math.random() * 5),
+          previousOccurrences: 0,
         },
         impact: {
-          users: Math.floor(Math.random() * 1_000),
+          users: 0,
           revenue: 0,
           performance: 20,
           security: 90,
@@ -524,13 +552,13 @@ export class QuantumAnomalyDetector {
         detectionTime: timestamp,
         confidence: 0.91,
         historicalContext: {
-          firstSeen: new Date(timestamp.getTime() - Math.random() * 4 * 60 * 60 * 1_000),
-          frequency: Math.floor(Math.random() * 6) + 1,
-          previousOccurrences: Math.floor(Math.random() * 10) + 1,
+          firstSeen: timestamp,
+          frequency: 1,
+          previousOccurrences: 0,
         },
         impact: {
-          users: Math.floor(Math.random() * 1_500),
-          revenue: Math.floor(Math.random() * 3_000),
+          users: 0,
+          revenue: 0,
           performance: 60,
           security: 10,
         },
@@ -579,7 +607,7 @@ export class QuantumAnomalyDetector {
     return anomalies
       .filter((a) => a.severity === 'CRITICAL' || a.severity === 'HIGH')
       .map((anomaly) => ({
-        id: `alert-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        id: `alert-${crypto.randomUUID()}`,
         anomalyId: anomaly.id,
         severity: anomaly.severity,
         title: `${anomaly.type} Anomaly Detected`,
@@ -588,8 +616,8 @@ export class QuantumAnomalyDetector {
         status: 'ACTIVE' as const,
         escalationLevel: anomaly.severity === 'CRITICAL' ? 2 : 1,
         autoResolution: {
-          attempted: Math.random() > 0.5,
-          successful: Math.random() > 0.3,
+          attempted: false,
+          successful: false,
           actions: ['Automatic scaling triggered'],
         },
       }))
@@ -597,17 +625,17 @@ export class QuantumAnomalyDetector {
 
   private async generateRecommendations(anomalies: DetectedAnomaly[]): Promise<AnomalyRecommendation[]> {
     return anomalies.map((anomaly) => ({
-      id: `rec-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      id: `rec-${crypto.randomUUID()}`,
       anomalyId: anomaly.id,
       type: (anomaly.severity === 'CRITICAL' ? 'IMMEDIATE' : anomaly.severity === 'HIGH' ? 'SHORT_TERM' : 'LONG_TERM') as AnomalyRecommendation['type'],
       priority: anomaly.severity,
       title: `Resolve ${anomaly.type} Issue`,
       description: `Address the detected ${anomaly.type.toLowerCase()} anomaly`,
       estimatedImpact: {
-        performance: Math.random() * 50 + 25,
-        cost: Math.random() * 5_000 + 1_000,
-        risk: Math.random() * 40 + 30,
-        effort: Math.random() * 8 + 2,
+        performance: 0,  // TODO: compute from historical baseline
+        cost: 0,
+        risk: 0,
+        effort: 0,
       },
       implementation: {
         steps: ['Investigate anomaly source', 'Implement corrective measures', 'Monitor stability'],
@@ -650,12 +678,12 @@ export class QuantumAnomalyDetector {
       },
       trends: {
         direction,
-        velocity: Math.random() * 10 + 1,
-        confidence: 0.85 + Math.random() * 0.1,
+        velocity: 1,         // TODO: compute from rolling score window
+        confidence: 0.85,
       },
       benchmarks: {
-        industry: 85 + Math.random() * 10,
-        historical: 88 + Math.random() * 8,
+        industry: 85,        // TODO: pull from external benchmark API
+        historical: 88,
         target: 95,
       },
     }

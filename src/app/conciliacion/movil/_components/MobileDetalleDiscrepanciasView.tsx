@@ -45,7 +45,7 @@ export default function MobileDetalleDiscrepanciasView({ onBack, sessionId }: { 
   return (
     <div className="space-y-6 pb-24 animate-in slide-in-from-right-10 duration-500">
       {/* HEADER MÓVIL */}
-      <header className="flex justify-between items-center bg-slate-900 -mx-4 px-4 py-3 border-b border-white/5 sticky top-[-16px] z-[60]">
+      <header className="flex justify-between items-center bg-[#F0EDE8] -mx-4 px-4 py-3 border-b border-white/5 sticky top-[-16px] z-[60]">
          <button onClick={onBack} className="text-slate-400 text-xs font-bold uppercase tracking-widest">← Volver</button>
          <div className="text-center">
             <div className="text-xs font-black text-red-400">DETALLE DISCREPANCIAS</div>
@@ -56,11 +56,11 @@ export default function MobileDetalleDiscrepanciasView({ onBack, sessionId }: { 
 
       {/* MÉTRICAS RÁPIDAS */}
       <div className="grid grid-cols-2 gap-3">
-         <div className="bg-slate-900 p-4 rounded-2xl border border-red-500/20">
+         <div className="bg-[#F0EDE8] p-4 rounded-2xl border border-red-500/20">
             <div className="text-[10px] text-slate-500 font-black uppercase mb-1">Total Críticos</div>
             <div className="text-xl font-black text-red-500">33 spots</div>
          </div>
-         <div className="bg-slate-900 p-4 rounded-2xl border border-indigo-500/20">
+         <div className="bg-[#F0EDE8] p-4 rounded-2xl border border-indigo-500/20">
             <div className="text-[10px] text-slate-500 font-black uppercase mb-1">Impacto Pend.</div>
             <div className="text-xl font-black text-indigo-400">$2.4M</div>
          </div>
@@ -72,7 +72,7 @@ export default function MobileDetalleDiscrepanciasView({ onBack, sessionId }: { 
             <div 
               key={spot.id} 
               onClick={() => setSelectedSpot(selectedSpot?.id === spot.id ? null : spot)}
-              className={`bg-slate-900 border rounded-2xl p-4 transition-all ${
+              className={`bg-[#F0EDE8] border rounded-2xl p-4 transition-all ${
                 selectedSpot?.id === spot.id ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-white/5'
               }`}
             >

@@ -10,13 +10,13 @@
  * @security_level MILITARY_GRADE
  */
 
-import { NumeroContrato } from '../value-objects/NumeroContrato.js'
-import { EstadoContrato } from '../value-objects/EstadoContrato.js'
-import { TerminosPago } from '../value-objects/TerminosPago.js'
-import { TasaComision } from '../value-objects/TasaComision.js'
-import { TotalesContrato } from '../value-objects/TotalesContrato.js'
-import { RiesgoCredito } from '../value-objects/RiesgoCredito.js'
-import { MetricasRentabilidad } from '../value-objects/MetricasRentabilidad.js'
+import { NumeroContrato } from '../value-objects/NumeroContrato'
+import { EstadoContrato } from '../value-objects/EstadoContrato'
+import { TerminosPago } from '../value-objects/TerminosPago'
+import { TasaComision } from '../value-objects/TasaComision'
+import { TotalesContrato } from '../value-objects/TotalesContrato'
+import { RiesgoCredito } from '../value-objects/RiesgoCredito'
+import { MetricasRentabilidad } from '../value-objects/MetricasRentabilidad'
 
 export interface ContratoProps {
     id: string

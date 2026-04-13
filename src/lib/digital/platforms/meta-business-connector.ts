@@ -448,7 +448,11 @@ export class MetaBusinessConnector {
           payload.stop_time = validatedAdSet.schedule.stopTime
         }
         if (validatedAdSet.schedule.adScheduling) {
-          payload.adset_schedule = validatedAdSet.schedule.adScheduling
+          payload.adset_schedule = validatedAdSet.schedule.adScheduling.map(s => ({
+            days: s.days,
+            start_minute: s.startMinute,
+            end_minute: s.endMinute,
+          }))
         }
       }
 
@@ -755,22 +759,23 @@ export class MetaBusinessConnector {
     const targetingSpec: Record<string, unknown> = {}
 
     if (targeting.geoLocations) {
-      targetingSpec.geo_locations = {}
-      
+      const geoLoc: Record<string, unknown> = {}
+      targetingSpec.geo_locations = geoLoc
+
       if (targeting.geoLocations.countries) {
-        targetingSpec.geo_locations.countries = targeting.geoLocations.countries
+        geoLoc.countries = targeting.geoLocations.countries
       }
-      
+
       if (targeting.geoLocations.regions) {
-        targetingSpec.geo_locations.regions = targeting.geoLocations.regions
+        geoLoc.regions = targeting.geoLocations.regions
       }
-      
+
       if (targeting.geoLocations.cities) {
-        targetingSpec.geo_locations.cities = targeting.geoLocations.cities
+        geoLoc.cities = targeting.geoLocations.cities
       }
-      
+
       if (targeting.geoLocations.locationTypes) {
-        targetingSpec.geo_locations.location_types = targeting.geoLocations.locationTypes
+        geoLoc.location_types = targeting.geoLocations.locationTypes
       }
     }
 

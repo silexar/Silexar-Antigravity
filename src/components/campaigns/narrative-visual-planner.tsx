@@ -151,7 +151,7 @@ export function NarrativeVisualPlanner() {
 
     const newNode: NarrativeNode = {
       id: crypto.randomUUID(),
-      type: type as any,
+      type: type as unknown,
       name: `${nodeType.name} ${narrativeStructure.nodes.length + 1}`,
       description: nodeType.description,
       creative_pool_id: '',

@@ -255,7 +255,7 @@ Silexar Pulse`;
                 <Eye className="w-4 h-4" /> Vista Previa del Email
               </h3>
             </div>
-            <div className="bg-slate-900 rounded-xl p-4 max-h-48 overflow-y-auto">
+            <div className="bg-[#F0EDE8] rounded-xl p-4 max-h-48 overflow-y-auto">
               <pre className="text-xs text-slate-300 whitespace-pre-wrap font-mono">{emailDraft}</pre>
             </div>
           </div>
@@ -265,11 +265,12 @@ Silexar Pulse`;
             <label className="block text-sm font-black text-slate-700 uppercase tracking-widest mb-2">
               <Mail className="w-4 h-4 inline mr-2" /> Email del Cliente
             </label>
-            <input 
+            <input
               type="email"
               value={clientEmail}
               onChange={(e) => setClientEmail(e.target.value)}
               placeholder="cliente@empresa.com"
+              aria-label="Email del Cliente"
               className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
             />
           </div>

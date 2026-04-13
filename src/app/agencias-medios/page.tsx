@@ -10,6 +10,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
 import { 
   Briefcase, 
@@ -58,27 +59,33 @@ const GlassCard = ({ children, className = '', onClick }: { children: React.Reac
 const GlassButton = ({ children, onClick, variant = 'secondary', className = '' }: { 
   children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string;
 }) => {
-  const variants = {
-    primary: 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-md shadow-cyan-200/50 border border-transparent',
-    secondary: 'bg-white/80 backdrop-blur-sm hover:bg-white text-slate-700 shadow-sm shadow-slate-200/50 border border-white/40'
+  const getVariantClass = (v: string) => {
+    switch (v) {
+      case 'primary': return 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-md shadow-cyan-200/50 border border-transparent';
+      case 'secondary': return 'bg-white/80 backdrop-blur-sm hover:bg-white text-slate-700 shadow-sm shadow-slate-200/50 border border-white/40';
+      default: return 'bg-white/80 backdrop-blur-sm hover:bg-white text-slate-700 shadow-sm shadow-slate-200/50 border border-white/40';
+    }
   };
   return (
-    <button onClick={onClick} className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 hover:-translate-y-0.5 ${variants[variant]} ${className}`}>
+    <button onClick={onClick} className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 hover:-translate-y-0.5 ${getVariantClass(variant)} ${className}`}>
       {children}
     </button>
   );
 };
 
 const TipoBadge = ({ tipo }: { tipo: string }) => {
-  const colors: Record<string, string> = {
-    medios: 'from-cyan-400 to-cyan-500',
-    creativa: 'from-pink-400 to-pink-500',
-    digital: 'from-purple-400 to-purple-500',
-    integral: 'from-emerald-400 to-emerald-500',
-    btl: 'from-amber-400 to-amber-500'
+  const getColor = (t: string) => {
+    switch (t) {
+      case 'medios': return 'from-cyan-400 to-cyan-500';
+      case 'creativa': return 'from-pink-400 to-pink-500';
+      case 'digital': return 'from-purple-400 to-purple-500';
+      case 'integral': return 'from-emerald-400 to-emerald-500';
+      case 'btl': return 'from-amber-400 to-amber-500';
+      default: return 'from-cyan-400 to-cyan-500';
+    }
   };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${colors[tipo] || colors.medios} shadow-md`}>
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getColor(tipo)} shadow-md`}>
       <Briefcase className="w-3.5 h-3.5" />
       {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
     </span>
@@ -94,20 +101,21 @@ export default function AgenciasMediosPage() {
   const [agencias, setAgencias] = useState<Agencia[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
 
   const fetchAgencias = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ ...(search && { search }) });
+      const params = new URLSearchParams({ ...(debouncedSearch && { search: debouncedSearch }) });
       const response = await fetch(`/api/agencias-medios?${params}`);
       const data = await response.json();
       if (data.success) setAgencias(data.data);
     } catch {
-      // /* console.error('Error:', error) */;
+      // /* */;
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [debouncedSearch]);
 
   useEffect(() => { fetchAgencias(); }, [fetchAgencias]);
 
@@ -136,8 +144,8 @@ export default function AgenciasMediosPage() {
             { label: 'Activas', value: agencias.filter(a => a.activa).length, icon: CheckCircle, color: 'from-emerald-400 to-emerald-500' },
             { label: 'Comisión Promedio', value: `${(agencias.reduce((sum, a) => sum + a.comisionPorcentaje, 0) / (agencias.length || 1)).toFixed(1)}%`, icon: Percent, color: 'from-blue-400 to-blue-500' },
             { label: 'Por Tipo', value: [...new Set(agencias.map(a => a.tipoAgencia))].length, icon: Building, color: 'from-purple-400 to-purple-500' }
-          ].map((stat, i) => (
-            <GlassCard key={i}>
+          ].map((stat) => (
+            <GlassCard key={stat.label}>
               <div className="flex items-center gap-4">
                 <div className={`p-4 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg shadow-slate-200/50`}>
                   <stat.icon className="w-8 h-8 text-white" />
@@ -159,6 +167,7 @@ export default function AgenciasMediosPage() {
               <input
                 type="text"
                 placeholder="Buscar agencias..."
+                aria-label="Buscar agencias"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full rounded-xl py-3 pl-12 pr-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] border-none outline-none focus:ring-2 focus:ring-cyan-400/50 text-slate-700"

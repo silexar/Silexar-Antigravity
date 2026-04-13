@@ -197,7 +197,7 @@ export function ApiHealthDashboard() {
           </div>
           <div className="space-y-1">
             {aiRecommendations.map((rec, i) => (
-              <p key={i} className="text-xs text-slate-300">{rec}</p>
+              <p key={rec} className="text-xs text-slate-300">{rec}</p>
             ))}
           </div>
         </NeuromorphicCard>

@@ -9,6 +9,7 @@
  */
 
 import { NextRequest } from 'next/server'
+import * as crypto from 'crypto'
 import { getRedisClient } from '@/lib/cache/redis-client'
 import { logError, logSecurity } from './audit-logger'
 
@@ -40,13 +41,13 @@ interface MemoryWindow {
 
 const memoryStore = new Map<string, MemoryWindow>()
 
-// Prune stale entries every 5 min to avoid memory leaks
+// Prune stale entries every 1 min to avoid memory leaks (high-frequency cleanup)
 setInterval(() => {
-  const cutoff = Date.now() - 5 * 60 * 1000
+  const cutoff = Date.now() - 1 * 60 * 1000
   for (const [key, win] of memoryStore.entries()) {
     if (win.purgedAt < cutoff) memoryStore.delete(key)
   }
-}, 5 * 60 * 1000)
+}, 1 * 60 * 1000)
 
 // ─── Core class ───────────────────────────────────────────────────────────────
 
@@ -92,7 +93,7 @@ class EnterpriseRateLimiter {
       await redis
         .multi()
         .zremrangebyscore(key, '-inf', windowStart)
-        .zadd(key, now, `${now}-${Math.random()}`)
+        .zadd(key, now, `${now}-${crypto.randomUUID()}`)
         .expire(key, Math.ceil(this.config.windowMs / 1000) + 1)
         .exec()
 
@@ -148,9 +149,15 @@ class EnterpriseRateLimiter {
 
       return { success: true, limit: this.config.maxRequests, remaining, resetTime }
     } catch (error) {
-      // Fail open — never block a request due to rate-limiter internals
+      // Auth rate limiter: fail CLOSED — reject if we cannot determine state
       logError('Rate limiter unexpected error', error as Error, { key })
-      return { success: true, limit: this.config.maxRequests, remaining: this.config.maxRequests, resetTime }
+      return {
+        success: false,
+        limit: this.config.maxRequests,
+        remaining: 0,
+        resetTime,
+        retryAfter: Math.ceil(this.config.windowMs / 1000),
+      }
     }
   }
 
@@ -256,7 +263,7 @@ export async function rateLimit(options: {
       await redis
         .multi()
         .zremrangebyscore(options.key, '-inf', windowStart)
-        .zadd(options.key, now, `${now}-${Math.random()}`)
+        .zadd(options.key, now, `${now}-${crypto.randomUUID()}`)
         .expire(options.key, Math.ceil(options.window / 1000) + 1)
         .exec()
       const count = await redis.zcount(options.key, windowStart, '+inf')

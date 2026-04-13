@@ -242,7 +242,8 @@ export class AuditService {
         eventos = eventos.filter(e => e.usuarioId === filters.usuarioId);
       }
       if (filters.tipoEvento?.length) {
-        eventos = eventos.filter(e => filters.tipoEvento!.includes(e.tipoEvento));
+        const tipoEvento = filters.tipoEvento;
+        eventos = eventos.filter(e => tipoEvento.includes(e.tipoEvento));
       }
       if (filters.recursoTipo) {
         eventos = eventos.filter(e => e.recursoTipo === filters.recursoTipo);
@@ -251,7 +252,8 @@ export class AuditService {
         eventos = eventos.filter(e => e.recursoId === filters.recursoId);
       }
       if (filters.nivelRiesgo?.length) {
-        eventos = eventos.filter(e => filters.nivelRiesgo!.includes(e.nivelRiesgo));
+        const nivelRiesgo = filters.nivelRiesgo;
+        eventos = eventos.filter(e => nivelRiesgo.includes(e.nivelRiesgo));
       }
       if (filters.limite) {
         eventos = eventos.slice(-filters.limite);

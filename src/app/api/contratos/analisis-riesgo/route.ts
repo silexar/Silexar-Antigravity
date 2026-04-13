@@ -10,8 +10,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // Mock de análisis de riesgo basado en anunciante
@@ -140,56 +140,67 @@ const anunciantesRiesgo: Record<string, {
   }
 };
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const anuncianteId = searchParams.get('anuncianteId');
-    
-    if (!anuncianteId) {
-      return NextResponse.json(
-        { success: false, error: 'Se requiere anuncianteId' },
-        { status: 400 }
-      );
+/**
+ * GET - Obtener análisis de riesgo
+ * Requiere: contratos:read
+ */
+export const GET = withApiRoute(
+  { resource: 'contratos', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const anuncianteId = searchParams.get('anuncianteId');
+        
+        if (!anuncianteId) {
+          return NextResponse.json(
+            { success: false, error: 'Se requiere anuncianteId' },
+            { status: 400 }
+          );
+        }
+        
+        // Simular delay de procesamiento de IA
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Buscar análisis o generar uno por defecto
+        const analisis = anunciantesRiesgo[anuncianteId] || {
+          score: 500,
+          maxScore: 1000,
+          nivelRiesgo: 'medio' as const,
+          factoresPositivos: ['Sin historial negativo conocido'],
+          factoresNegativos: ['Cliente nuevo sin historial'],
+          recomendaciones: {
+            terminosPago: 15,
+            limiteCredito: 10000000,
+            descuentoMaximo: 10,
+            requiereGarantia: true
+          },
+          indicadores: {
+            historialPagos: 0,
+            tendenciaFacturacion: 'estable' as const,
+            industria: 'estable' as const,
+            contratosExitosos: 0
+          },
+          confianza: 50
+        };
+        
+        return NextResponse.json({
+          success: true,
+          data: {
+            ...analisis,
+            fechaActualizacion: new Date().toISOString(),
+            anuncianteId,
+            consultadoPor: ctx.userId
+          }
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Contratos/AnalisisRiesgo] Error:', error instanceof Error ? error : undefined, { 
+        module: 'analisis-riesgo',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    // Simular delay de procesamiento de IA
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Buscar análisis o generar uno por defecto
-    const analisis = anunciantesRiesgo[anuncianteId] || {
-      score: 500,
-      maxScore: 1000,
-      nivelRiesgo: 'medio' as const,
-      factoresPositivos: ['Sin historial negativo conocido'],
-      factoresNegativos: ['Cliente nuevo sin historial'],
-      recomendaciones: {
-        terminosPago: 15,
-        limiteCredito: 10000000,
-        descuentoMaximo: 10,
-        requiereGarantia: true
-      },
-      indicadores: {
-        historialPagos: 0,
-        tendenciaFacturacion: 'estable' as const,
-        industria: 'estable' as const,
-        contratosExitosos: 0
-      },
-      confianza: 50
-    };
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        ...analisis,
-        fechaActualizacion: new Date().toISOString(),
-        anuncianteId
-      }
-    });
-  } catch (error) {
-    logger.error('[API/Contratos/AnalisisRiesgo] Error:', error instanceof Error ? error : undefined, { module: 'analisis-riesgo' });
-    return NextResponse.json(
-      { success: false, error: 'Error en análisis de riesgo' },
-      { status: 500 }
-    );
   }
-}
+);

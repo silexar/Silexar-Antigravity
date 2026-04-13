@@ -150,15 +150,12 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       });
 
       setIsInitialized(true);
-      console.log('🚀 TIER 0 Accessibility System initialized with consciousness-level enhancement');
-      
       if (autoRun) {
         await runInitialAudit();
       }
       
     } catch (error) {
-      console.error('❌ Failed to initialize TIER 0 Accessibility System:', error);
-    } finally {
+      } finally {
       setIsLoading(false);
     }
   }, [wcagLevel, quantumEnhancement, consciousnessLevel, autoFix, autoRun]);
@@ -180,11 +177,9 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       setQuantumInsights(report.quantumInsights);
       setRecommendations(report.recommendations);
       setLastAuditTime(new Date());
-      
-      console.log(`✅ Initial accessibility audit completed - Overall Score: ${report.overallScore.toFixed(1)}%`);
-      
+
     } catch (error) {
-      console.error('❌ Initial accessibility audit failed:', error);
+      console.error('Initial accessibility audit failed:', error);
     }
   }, []);
 
@@ -207,11 +202,9 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       setQuantumInsights(report.quantumInsights);
       setRecommendations(report.recommendations);
       setLastAuditTime(new Date());
-      
-      console.log(`✅ Accessibility audit completed - Overall Score: ${report.overallScore.toFixed(1)}%`);
-      
+
     } catch (error) {
-      console.error('❌ Accessibility audit failed:', error);
+      console.error('Accessibility audit failed:', error);
     } finally {
       setIsLoading(false);
     }
@@ -241,11 +234,8 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       setRecommendations(updatedReport.recommendations);
       setLastAuditTime(new Date());
       
-      console.log('🔧 Auto-fix completed - violations addressed');
-      
-    } catch (error) {
-      console.error('❌ Auto-fix failed:', error);
-    } finally {
+      } catch (error) {
+      } finally {
       setIsLoading(false);
     }
   }, []);
@@ -278,8 +268,7 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       try {
         await runAudit(document);
       } catch (error) {
-        console.warn('⚠️ Real-time accessibility monitoring error:', error);
-      }
+        }
     }, monitoringInterval);
     
     // Set up DOM mutation observer for immediate updates
@@ -294,8 +283,7 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
           try {
             await runAudit(document);
           } catch (error) {
-            console.warn('⚠️ DOM mutation accessibility check error:', error);
-          }
+            }
         }, 1000);
       }
     });
@@ -307,8 +295,7 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       attributeFilter: ['class', 'id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'role', 'tabindex']
     });
     
-    console.log('🔄 Real-time accessibility monitoring enabled');
-  }, [isRealTimeEnabled, monitoringInterval, runAudit]);
+    }, [isRealTimeEnabled, monitoringInterval, runAudit]);
 
   /**
    * Disable Real-Time Monitoring
@@ -330,8 +317,7 @@ export const useTier0Accessibility = (config: AccessibilityHookConfig = {}): Use
       mutationObserverRef.current = null;
     }
     
-    console.log('⏹️ Real-time accessibility monitoring disabled');
-  }, [isRealTimeEnabled]);
+    }, [isRealTimeEnabled]);
 
   /**
    * Initialize system on mount

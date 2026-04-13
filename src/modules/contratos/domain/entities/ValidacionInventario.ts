@@ -366,13 +366,19 @@ export class ValidacionInventario {
     recursoDisponible.capacidadDisponible -= 1;
 
     this._reservasTemporales.push(reserva);
-    this._metadatos.reservasCreadas = this._metadatos.reservasCreadas || [];
-    this._metadatos.reservasCreadas.push({
+    const reservasCreadas = (this._metadatos.reservasCreadas || []) as Array<{
+      fecha: string;
+      reservaId: string;
+      recursoId: string;
+      clienteId: string;
+    }>;
+    reservasCreadas.push({
       fecha: new Date().toISOString(),
       reservaId: reserva.id,
       recursoId,
       clienteId
     });
+    this._metadatos.reservasCreadas = reservasCreadas;
 
     return reserva;
   }
@@ -411,12 +417,17 @@ export class ValidacionInventario {
     await this.simularConfirmacionReserva(reserva);
 
     reserva.estado = 'confirmada';
-    this._metadatos.reservasConfirmadas = this._metadatos.reservasConfirmadas || [];
-    this._metadatos.reservasConfirmadas.push({
+    const reservasConfirmadas = (this._metadatos.reservasConfirmadas || []) as Array<{
+      fecha: string;
+      reservaId: string;
+      recursoId: string;
+    }>;
+    reservasConfirmadas.push({
       fecha: new Date().toISOString(),
       reservaId,
       recursoId: reserva.recursoId
     });
+    this._metadatos.reservasConfirmadas = reservasConfirmadas;
   }
 
   /**
@@ -458,7 +469,14 @@ export class ValidacionInventario {
   /**
    * Métodos privados de validación específica
    */
-  private async validarRecursoEspecifico(recurso: unknown): Promise<void> {
+  private async validarRecursoEspecifico(recurso: {
+    tipo: TipoInventario;
+    cantidad: number;
+    fechaInicio: Date;
+    fechaFin: Date;
+    horarios: string[];
+    especificaciones: Record<string, unknown>;
+  }): Promise<void> {
     // Simular consulta a sistema de inventario
     const disponibilidadRecurso = await this.consultarSistemaInventario(recurso);
     
@@ -471,7 +489,12 @@ export class ValidacionInventario {
     this._conflictos.push(...conflictosRecurso);
   }
 
-  private async consultarSistemaInventario(recurso: unknown): Promise<DisponibilidadRecursoProps | null> {
+  private async consultarSistemaInventario(recurso: {
+    tipo: TipoInventario;
+    fechaInicio: Date;
+    fechaFin: Date;
+    horarios: string[];
+  }): Promise<DisponibilidadRecursoProps | null> {
     // Simular consulta a sistema externo
     await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
 
@@ -496,7 +519,9 @@ export class ValidacionInventario {
     };
   }
 
-  private async detectarConflictosRecurso(recurso: unknown): Promise<ConflictoInventarioProps[]> {
+  private async detectarConflictosRecurso(recurso: {
+    tipo: TipoInventario;
+  }): Promise<ConflictoInventarioProps[]> {
     const conflictos: ConflictoInventarioProps[] = [];
 
     // Simular detección de conflictos
@@ -573,12 +598,12 @@ export class ValidacionInventario {
     return (recursosDisponibles / this._recursosRequeridos.length) * 100;
   }
 
-  private async simularCreacionReserva(reserva: ReservaTemporalProps): Promise<void> {
+  private async simularCreacionReserva(_reserva: ReservaTemporalProps): Promise<void> {
     // Simular llamada a API externa
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 
-  private async simularConfirmacionReserva(reserva: ReservaTemporalProps): Promise<void> {
+  private async simularConfirmacionReserva(_reserva: ReservaTemporalProps): Promise<void> {
     // Simular llamada a API externa
     await new Promise(resolve => setTimeout(resolve, 300));
   }

@@ -13,6 +13,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -243,172 +244,181 @@ let secuencia = 5;
 // GET - Listar activos con filtros
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    
-    const search = searchParams.get('search') || '';
-    const tipo = searchParams.get('tipo') || '';
-    const estado = searchParams.get('estado') || '';
-    const plataforma = searchParams.get('plataforma') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '20', 10);
+export const GET = withApiRoute(
+  { resource: 'campanas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      
+      const search = searchParams.get('search') || '';
+      const tipo = searchParams.get('tipo') || '';
+      const estado = searchParams.get('estado') || '';
+      const plataforma = searchParams.get('plataforma') || '';
+      const page = parseInt(searchParams.get('page') || '1', 10);
+      const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-    let filtered = [...mockActivos];
+      let filtered = [...mockActivos];
 
-    if (search) {
-      const s = search.toLowerCase();
-      filtered = filtered.filter(a => 
-        a.nombre.toLowerCase().includes(s) ||
-        a.codigo.toLowerCase().includes(s) ||
-        a.anuncianteNombre.toLowerCase().includes(s)
-      );
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(a => 
+          a.nombre.toLowerCase().includes(s) ||
+          a.codigo.toLowerCase().includes(s) ||
+          a.anuncianteNombre.toLowerCase().includes(s)
+        );
+      }
+
+      if (tipo) {
+        filtered = filtered.filter(a => a.tipoCategoria === tipo);
+      }
+
+      if (estado) {
+        filtered = filtered.filter(a => a.estado === estado);
+      }
+
+      if (plataforma) {
+        filtered = filtered.filter(a => a.plataformas.includes(plataforma));
+      }
+
+      // Métricas agregadas
+      const metricas = {
+        total: mockActivos.length,
+        activos: mockActivos.filter(a => a.estado === 'activo').length,
+        programados: mockActivos.filter(a => a.estado === 'programado').length,
+        pausados: mockActivos.filter(a => a.estado === 'pausado').length,
+        impresionesTotales: mockActivos.reduce((sum, a) => sum + a.impresiones, 0),
+        clicsTotales: mockActivos.reduce((sum, a) => sum + a.clics, 0),
+        inversionTotal: mockActivos.reduce((sum, a) => sum + a.costoTotal, 0),
+        roasPromedio: mockActivos.filter(a => a.roas > 0).reduce((sum, a) => sum + a.roas, 0) / 
+                      mockActivos.filter(a => a.roas > 0).length || 0
+      };
+
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / limit);
+      const offset = (page - 1) * limit;
+      const data = filtered.slice(offset, offset + limit);
+
+      return NextResponse.json({
+        success: true,
+        data,
+        metricas,
+        pagination: { total, page, limit, totalPages }
+      });
+      
+    } catch (error) {
+      logger.error('[API/ActivosDigitales] Error GET:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
+      return NextResponse.json({ success: false, error: 'Error al obtener activos' }, { status: 500 });
     }
-
-    if (tipo) {
-      filtered = filtered.filter(a => a.tipoCategoria === tipo);
-    }
-
-    if (estado) {
-      filtered = filtered.filter(a => a.estado === estado);
-    }
-
-    if (plataforma) {
-      filtered = filtered.filter(a => a.plataformas.includes(plataforma));
-    }
-
-    // Métricas agregadas
-    const metricas = {
-      total: mockActivos.length,
-      activos: mockActivos.filter(a => a.estado === 'activo').length,
-      programados: mockActivos.filter(a => a.estado === 'programado').length,
-      pausados: mockActivos.filter(a => a.estado === 'pausado').length,
-      impresionesTotales: mockActivos.reduce((sum, a) => sum + a.impresiones, 0),
-      clicsTotales: mockActivos.reduce((sum, a) => sum + a.clics, 0),
-      inversionTotal: mockActivos.reduce((sum, a) => sum + a.costoTotal, 0),
-      roasPromedio: mockActivos.filter(a => a.roas > 0).reduce((sum, a) => sum + a.roas, 0) / 
-                    mockActivos.filter(a => a.roas > 0).length || 0
-    };
-
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / limit);
-    const offset = (page - 1) * limit;
-    const data = filtered.slice(offset, offset + limit);
-
-    return NextResponse.json({
-      success: true,
-      data,
-      metricas,
-      pagination: { total, page, limit, totalPages }
-    });
-    
-  } catch (error) {
-    logger.error('[API/ActivosDigitales] Error GET:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-    return NextResponse.json({ success: false, error: 'Error al obtener activos' }, { status: 500 });
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // POST - Crear activo digital
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.nombre?.trim()) {
-      return NextResponse.json({ success: false, error: 'Nombre requerido' }, { status: 400 });
+export const POST = withApiRoute(
+  { resource: 'campanas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      if (!body.nombre?.trim()) {
+        return NextResponse.json({ success: false, error: 'Nombre requerido' }, { status: 400 });
+      }
+
+      secuencia += 1;
+      const codigo = `ADX${secuencia.toString().padStart(6, '0')}`;
+
+      const newActivo: ActivoDigitalData = {
+        id: `adx-${Date.now()}`,
+        codigo,
+        nombre: body.nombre,
+        tipo: body.tipoEspecifico || 'banner_display',
+        tipoCategoria: body.tipoCategoria || 'banner',
+        estado: 'borrador',
+        anuncianteId: body.anuncianteId || '',
+        anuncianteNombre: body.anuncianteNombre || 'Nuevo Anunciante',
+        formatoPrincipal: body.formatoPrincipal || '300x250',
+        segmentacionResumen: {
+          demografica: body.segDemografica?.edadRangos || [],
+          geografica: body.segGeografica?.regiones || [],
+          dispositivos: body.segDispositivo?.tipos || [],
+          intereses: body.segConductual?.intereses || []
+        },
+        alcanceEstimado: body.alcanceEstimado || '0',
+        impresiones: 0,
+        clics: 0,
+        ctr: 0,
+        conversiones: 0,
+        costoTotal: 0,
+        roas: 0,
+        presupuestoTipo: body.presupuesto?.tipo || 'diario',
+        presupuestoMonto: body.presupuesto?.monto || 0,
+        presupuestoGastado: 0,
+        fechaInicio: body.fechaInicio || new Date().toISOString().split('T')[0],
+        fechaFin: body.fechaFin || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+        plataformas: body.plataformas || [],
+        fechaCreacion: new Date().toISOString(),
+        creadoPor: ctx.userId || 'Usuario Actual'
+      };
+
+      mockActivos.push(newActivo);
+
+      return NextResponse.json({
+        success: true,
+        data: newActivo,
+        message: 'Activo digital creado exitosamente'
+      }, { status: 201 });
+      
+    } catch (error) {
+      logger.error('[API/ActivosDigitales] Error POST:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
+      return NextResponse.json({ success: false, error: 'Error al crear activo' }, { status: 500 });
     }
-
-    secuencia += 1;
-    const codigo = `ADX${secuencia.toString().padStart(6, '0')}`;
-
-    const newActivo: ActivoDigitalData = {
-      id: `adx-${Date.now()}`,
-      codigo,
-      nombre: body.nombre,
-      tipo: body.tipoEspecifico || 'banner_display',
-      tipoCategoria: body.tipoCategoria || 'banner',
-      estado: 'borrador',
-      anuncianteId: body.anuncianteId || '',
-      anuncianteNombre: body.anuncianteNombre || 'Nuevo Anunciante',
-      formatoPrincipal: body.formatoPrincipal || '300x250',
-      segmentacionResumen: {
-        demografica: body.segDemografica?.edadRangos || [],
-        geografica: body.segGeografica?.regiones || [],
-        dispositivos: body.segDispositivo?.tipos || [],
-        intereses: body.segConductual?.intereses || []
-      },
-      alcanceEstimado: body.alcanceEstimado || '0',
-      impresiones: 0,
-      clics: 0,
-      ctr: 0,
-      conversiones: 0,
-      costoTotal: 0,
-      roas: 0,
-      presupuestoTipo: body.presupuesto?.tipo || 'diario',
-      presupuestoMonto: body.presupuesto?.monto || 0,
-      presupuestoGastado: 0,
-      fechaInicio: body.fechaInicio || new Date().toISOString().split('T')[0],
-      fechaFin: body.fechaFin || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
-      plataformas: body.plataformas || [],
-      fechaCreacion: new Date().toISOString(),
-      creadoPor: 'Usuario Actual'
-    };
-
-    mockActivos.push(newActivo);
-
-    return NextResponse.json({
-      success: true,
-      data: newActivo,
-      message: 'Activo digital creado exitosamente'
-    }, { status: 201 });
-    
-  } catch (error) {
-    logger.error('[API/ActivosDigitales] Error POST:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-    return NextResponse.json({ success: false, error: 'Error al crear activo' }, { status: 500 });
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // PUT - Actualización masiva
 // ═══════════════════════════════════════════════════════════════
 
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.activoIds || !Array.isArray(body.activoIds)) {
-      return NextResponse.json({ success: false, error: 'IDs requeridos' }, { status: 400 });
-    }
-
-    let actualizados = 0;
-    for (const id of body.activoIds) {
-      const idx = mockActivos.findIndex(a => a.id === id);
-      if (idx !== -1) {
-        switch (body.accion) {
-          case 'activar':
-            mockActivos[idx].estado = 'activo';
-            break;
-          case 'pausar':
-            mockActivos[idx].estado = 'pausado';
-            break;
-          case 'archivar':
-            mockActivos[idx].estado = 'archivado';
-            break;
-        }
-        actualizados++;
+export const PUT = withApiRoute(
+  { resource: 'campanas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      if (!body.activoIds || !Array.isArray(body.activoIds)) {
+        return NextResponse.json({ success: false, error: 'IDs requeridos' }, { status: 400 });
       }
-    }
 
-    return NextResponse.json({
-      success: true,
-      message: `${actualizados} activos actualizados`,
-      actualizados
-    });
-    
-  } catch (error) {
-    logger.error('[API/ActivosDigitales] Error PUT:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-    return NextResponse.json({ success: false, error: 'Error al actualizar' }, { status: 500 });
+      let actualizados = 0;
+      for (const id of body.activoIds) {
+        const idx = mockActivos.findIndex(a => a.id === id);
+        if (idx !== -1) {
+          switch (body.accion) {
+            case 'activar':
+              mockActivos[idx].estado = 'activo';
+              break;
+            case 'pausar':
+              mockActivos[idx].estado = 'pausado';
+              break;
+            case 'archivar':
+              mockActivos[idx].estado = 'archivado';
+              break;
+          }
+          actualizados++;
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: `${actualizados} activos actualizados`,
+        actualizados
+      });
+      
+    } catch (error) {
+      logger.error('[API/ActivosDigitales] Error PUT:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
+      return NextResponse.json({ success: false, error: 'Error al actualizar' }, { status: 500 });
+    }
   }
-}
+);

@@ -420,7 +420,7 @@ export class CortexSupremeEngine {
       const modalityResults = await this.analyzeModalities(quantumEnhanced);
       
       // Consciousness-level reasoning
-      const reasoning = await this.consciousReasoning(modalityResults, input.context);
+      const reasoning = await this.consciousReasoning(modalityResults, input.context as unknown as Record<string, unknown>);
       
       // Emotional analysis and response
       const emotions = await this.analyzeEmotions(input);
@@ -756,7 +756,8 @@ export class CortexSupremeEngine {
     // Add analysis results
     response += `\n📊 **Analysis Results:**\n`;
     Object.keys(modalityResults).forEach(modality => {
-      response += `• ${modality.toUpperCase()}: Processed with ${modalityResults[modality].confidence ? (modalityResults[modality].confidence * 100).toFixed(0) : 90}% confidence\n`;
+      const mRes = modalityResults[modality] as { confidence?: number } | null;
+      response += `• ${modality.toUpperCase()}: Processed with ${mRes?.confidence ? ((mRes.confidence) * 100).toFixed(0) : 90}% confidence\n`;
     });
     
     // Add quantum advantage
@@ -944,8 +945,7 @@ export class CortexSupremeEngine {
     
     // Cap at maximum consciousness
     Object.keys(this.consciousnessState).forEach(key => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.consciousnessState as Record<string, number>)[key] = Math.min(0.99, (this.consciousnessState as Record<string, number>)[key]);
+      (this.consciousnessState as unknown as Record<string, number>)[key] = Math.min(0.99, (this.consciousnessState as unknown as Record<string, number>)[key]);
     });
     
     logger.info('✨ Supreme AI consciousness evolved', { state: JSON.stringify(this.consciousnessState) });

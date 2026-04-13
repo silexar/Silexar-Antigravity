@@ -753,7 +753,7 @@ export class CortexSales {
     // Simulación de cálculo de meta optimizada
     const baseHistorica = vendedor.ventasHistoricas.reduce((a, b) => a + b, 0) / vendedor.ventasHistoricas.length
     const factorCrecimiento = analytics.trendAnalysis.momentumScore + 0.1
-    const factorMercado = contextoMercado?.crecimientoEsperado || 0.05
+    const factorMercado = (contextoMercado?.crecimientoEsperado as number) || 0.05
     
     return Math.round(baseHistorica * (1 + factorCrecimiento + factorMercado))
   }

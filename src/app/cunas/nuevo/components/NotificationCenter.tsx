@@ -5,7 +5,7 @@ export const NotificationCenter = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   if (!isOpen) return (
-     <button onClick={() => setIsOpen(true)} className="fixed bottom-6 right-6 p-4 bg-slate-900 text-white rounded-full shadow-xl hover:scale-105 transition-transform z-50">
+     <button onClick={() => setIsOpen(true)} className="fixed bottom-6 right-6 p-4 bg-[#F0EDE8] text-white rounded-full shadow-xl hover:scale-105 transition-transform z-50">
         <Bell className="w-6 h-6" />
         <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-slate-900"></span>
      </button>
@@ -14,7 +14,7 @@ export const NotificationCenter = () => {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full lg:w-96 overflow-hidden">
        {/* Header */}
-       <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
+       <div className="bg-[#F0EDE8] text-white p-4 flex justify-between items-center">
           <div className="flex items-center gap-2 font-bold">
              <Bell className="w-5 h-5 text-yellow-400" /> Centro de Alertas
           </div>

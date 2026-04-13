@@ -11,6 +11,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Layout,
@@ -379,11 +380,6 @@ const ContratosListWidget: React.FC<{
       case 'EN_REVISION': return 'bg-purple-100 text-purple-700';
       default: return 'bg-slate-100 text-slate-700';
     }
-  };
-
-  const formatCurrency = (val: number) => {
-    if (val >= 1000000) return `$${(val / 1000000).toFixed(0)}M`;
-    return `$${(val / 1000).toFixed(0)}K`;
   };
 
   return (

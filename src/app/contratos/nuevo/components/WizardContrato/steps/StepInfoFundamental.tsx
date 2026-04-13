@@ -65,6 +65,7 @@ const NeuromorphicInput: React.FC<{
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={label}
         className={`
           w-full rounded-xl py-3.5 bg-slate-50
           shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
@@ -316,6 +317,7 @@ const SelectorAnunciante: React.FC<{
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Buscar anunciante..."
+                  aria-label="Buscar anunciante"
                   autoFocus
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-indigo-400/50 text-slate-700"
                 />

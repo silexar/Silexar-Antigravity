@@ -131,7 +131,7 @@ export const CollaborativeForecast = () => {
                 );
               })}
               {/* TOTALS ROW */}
-              <tr className="bg-slate-900 text-white font-bold">
+              <tr className="bg-[#F0EDE8] text-white font-bold">
                 <td className="px-5 py-4 text-sm">TEAM TOTAL</td>
                 <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.commit)}</td>
                 <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.bestCase)}</td>

@@ -58,12 +58,12 @@ interface ProgrammerStatus { id: string; name: string; status: 'pending' | 'offl
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+        <div className="absolute inset-0 bg-[#F0EDE8]/60 backdrop-blur-sm" onClick={onClose} />
         
         <div className="relative w-full max-w-lg bg-[#e0e5ec] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/40">
             
             {/* Header */}
-            <div className="bg-emerald-500 text-white p-6 flex justify-between items-start">
+            <div className="bg-emerald-500 text-[#2C2C2A] p-6 flex justify-between items-start">
                 <div>
                     <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
                         <Send className="w-5 h-5" /> NOTIFICACIÓN ENVIADA
@@ -84,19 +84,19 @@ interface ProgrammerStatus { id: string; name: string; status: 'pending' | 'offl
                             <CheckCircle2 className="w-6 h-6" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-slate-400 uppercase">Estado Actual</p>
+                            <p className="text-xs font-bold text-[#888780] uppercase">Estado Actual</p>
                             <p className="font-bold text-emerald-600">Enviada a 3 programadores</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-xs font-bold text-slate-400 uppercase">Tiempo Transcurrido</p>
+                        <p className="text-xs font-bold text-[#888780] uppercase">Tiempo Transcurrido</p>
                         <p className="font-mono text-slate-700 font-bold">{Math.floor(elapsed / 60).toString().padStart(2,'0')}:{(elapsed % 60).toString().padStart(2,'0')}</p>
                     </div>
                 </div>
 
                 {/* PROGRAMMERS LIST */}
                 <div>
-                    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3 flex items-center gap-2">
                         <User className="w-4 h-4" /> Respuestas del Equipo
                     </h3>
                     <div className="space-y-3">
@@ -113,7 +113,7 @@ interface ProgrammerStatus { id: string; name: string; status: 'pending' | 'offl
                                         }`} />
                                         <span className="font-bold text-slate-700 text-sm">{prog.name}</span>
                                     </div>
-                                    <span className="text-[10px] uppercase font-bold text-slate-400">{prog.status === 'assigned' ? '🟢 ASIGNADO' : prog.status === 'pending' ? '🟡 PENDIENTE' : '🔴 OFFLINE'}</span>
+                                    <span className="text-[10px] uppercase font-bold text-[#888780]">{prog.status === 'assigned' ? '🟢 ASIGNADO' : prog.status === 'pending' ? '🟡 PENDIENTE' : '🔴 OFFLINE'}</span>
                                 </div>
                                 
                                 {prog.status === 'assigned' && (
@@ -125,7 +125,7 @@ interface ProgrammerStatus { id: string; name: string; status: 'pending' | 'offl
                                 
                                 {prog.status === 'pending' && (
                                     <div className="mt-2 flex justify-between items-center">
-                                        <span className="text-xs text-slate-400">Último visto: {prog.lastSeen}</span>
+                                        <span className="text-xs text-[#888780]">Último visto: {prog.lastSeen}</span>
                                         <button className="text-[10px] font-bold text-amber-600 hover:text-amber-800 bg-amber-100 px-2 py-1 rounded-full flex items-center gap-1">
                                             🔔 Recordar
                                         </button>
@@ -153,7 +153,7 @@ interface ProgrammerStatus { id: string; name: string; status: 'pending' | 'offl
                     <button onClick={onNewConsultation} className="py-3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl flex items-center justify-center gap-2 hover:shadow-sm transition-all">
                         <RefreshCw className="w-4 h-4" /> Nueva Consulta
                     </button>
-                    <button className="py-3 bg-slate-800 text-white hover:bg-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all">
+                    <button className="py-3 bg-[#E8E5E0] text-[#2C2C2A] hover:bg-[#D4D1CC] font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all">
                         <Smartphone className="w-4 h-4" /> Contactar Directo
                     </button>
                 </div>

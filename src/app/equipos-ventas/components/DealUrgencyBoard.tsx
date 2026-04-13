@@ -35,7 +35,9 @@ export function DealUrgencyBoard() {
           setDeals([...d.data].sort((a: UrgentDeal, b: UrgentDeal) => b.urgenciaScore - a.urgenciaScore));
         }
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[DealUrgencyBoard] Failed to load deals:', error);
+      });
   }, []);
 
   const filtered = filter === 'all' ? deals : deals.filter(d => d.urgenciaNivel === filter);

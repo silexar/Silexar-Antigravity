@@ -37,19 +37,18 @@ interface TarifasData {
 }
 
 interface StepTarifasProps extends WizardStepProps {
-  data: TarifasData;
+  data: Record<string, unknown>;
   onUpdate: (data: Partial<TarifasData>) => void;
 }
 
 export const StepTarifasCampana: React.FC<StepTarifasProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isActive, 
+  isActive: _isActive,
   onComplete,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onBack,
-  data,
+  onBack: _onBack,
+  data: rawData,
   onUpdate
 }) => {
+  const data = rawData as TarifasData;
   // Initialize defaults
   useEffect(() => {
     if (!data.modalidad) {

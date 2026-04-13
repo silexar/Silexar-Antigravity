@@ -49,7 +49,7 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0EDE8]/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200">
         
         {/* Header */}
@@ -60,12 +60,12 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-800">Cortex Voice AI</h3>
-              <p className="text-sm text-slate-500">Configuración de Generación Neural</p>
+              <p className="text-sm text-[#888780]">Configuración de Generación Neural</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors"
+            className="p-2 hover:bg-slate-200 rounded-full text-[#888780] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -92,13 +92,13 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                      config.voiceId === voice.id ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-600'
+                      config.voiceId === voice.id ? 'bg-violet-600 text-[#2C2C2A]' : 'bg-slate-200 text-slate-600'
                     }`}>
                       {voice.lang.substring(3)}
                     </div>
                     <div>
                       <div className="text-sm font-medium text-slate-800">{voice.name}</div>
-                      <div className="text-xs text-slate-500">{voice.gender === 'male' ? 'Masculino' : 'Femenino'} • {voice.lang}</div>
+                      <div className="text-xs text-[#888780]">{voice.gender === 'male' ? 'Masculino' : 'Femenino'} • {voice.lang}</div>
                     </div>
                   </div>
                   {config.voiceId === voice.id && (
@@ -138,14 +138,15 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
             <div className="space-y-3">
               <div className="flex justify-between">
                 <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Gauge className="w-4 h-4 text-slate-400" /> Velocidad
+                  <Gauge className="w-4 h-4 text-[#888780]" /> Velocidad
                 </label>
                 <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600">{config.speed?.toFixed(1)}x</span>
               </div>
-              <input 
+              <input
                 type="range" min="0.5" max="2.0" step="0.1"
                 value={config.speed}
                 onChange={(e) => setConfig({ ...config, speed: parseFloat(e.target.value) })}
+                aria-label="Velocidad de voz"
                 className="w-full accent-violet-600"
               />
             </div>
@@ -154,14 +155,15 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
             <div className="space-y-3">
               <div className="flex justify-between">
                 <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Music className="w-4 h-4 text-slate-400" /> Tono (Pitch)
+                  <Music className="w-4 h-4 text-[#888780]" /> Tono (Pitch)
                 </label>
                 <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600">{config.pitch}</span>
               </div>
-              <input 
+              <input
                 type="range" min="-10" max="10" step="1"
                 value={config.pitch}
                 onChange={(e) => setConfig({ ...config, pitch: parseInt(e.target.value) })}
+                aria-label="Tono (Pitch)"
                 className="w-full accent-violet-600"
               />
             </div>
@@ -197,7 +199,7 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
 
         {/* Footer */}
         <div className="p-6 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-[#888780]">
             <Settings2 className="w-4 h-4" />
             <span>Usando motor neural v2.5</span>
           </div>
@@ -212,7 +214,7 @@ export const VoiceConfigModal: React.FC<VoiceConfigModalProps> = ({
               onClick={handleGenerate}
               disabled={isGenerating}
               className={`
-                px-6 py-2 rounded-xl text-white font-medium shadow-lg flex items-center gap-2 transition-all
+                px-6 py-2 rounded-xl text-[#2C2C2A] font-medium shadow-lg flex items-center gap-2 transition-all
                 ${isGenerating 
                   ? 'bg-slate-400 cursor-wait' 
                   : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:shadow-indigo-500/25 hover:scale-[1.02]'

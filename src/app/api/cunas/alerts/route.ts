@@ -11,12 +11,10 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiNotFound, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
-import { AuditEventType, AuditSeverity } from '@/lib/security/audit-types';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
-import { checkPermission } from '@/lib/security/rbac';
-import { apiRateLimiter } from '@/lib/security/rate-limiter';
+import { AuditEventType, AuditSeverity } from '@/lib/security/audit-types';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -206,234 +204,202 @@ function scheduleAlertsForCuna(config: AlertConfig): ScheduledAlert[] {
 
 // ═══════════════════════════════════════════════════════════════
 // POST - Crear configuración de alertas
+// Requiere: cunas:create
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  // 1. Rate limit check
-  const rl = await apiRateLimiter.checkRateLimit(request);
-  if (!rl.success) return apiError('RATE_LIMIT', 'Too many requests', 429);
+export const POST = withApiRoute(
+  { resource: 'cunas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      // Validate input with Zod
+      let body: unknown;
+      try { body = await req.json(); } catch { return apiError('INVALID_JSON', 'Invalid JSON', 400); }
+      const parsed = CreateAlertConfigSchema.safeParse(body);
+      if (!parsed.success) return apiError('VALIDATION_ERROR', 'Invalid input', 422, parsed.error.flatten());
 
-  // 2. Extract auth context
-  const ctx = getUserContext(request);
-  if (!ctx.userId) return apiUnauthorized();
+      return await withTenantContext(ctx.tenantId, async () => {
+        const {
+          cunaId, spxCodigo, cunaNombre, fechaFinVigencia,
+          alertas, ejecutivoId, ejecutivoEmail, tipoCuna
+        } = parsed.data;
 
-  // 3. Validate input with Zod
-  let body: unknown;
-  try { body = await request.json(); } catch { return apiError('INVALID_JSON', 'Invalid JSON', 400); }
-  const parsed = CreateAlertConfigSchema.safeParse(body);
-  if (!parsed.success) return apiError('VALIDATION_ERROR', 'Invalid input', 422, parsed.error.flatten());
+        const configId = `alert-config-${Date.now()}`;
 
-  // 4. Check permissions (RBAC)
-  if (!checkPermission(ctx, 'cunas', 'create')) return apiForbidden();
+        const config: AlertConfig = {
+          id: configId,
+          cunaId,
+          spxCodigo: spxCodigo || 'SPX000000',
+          cunaNombre: cunaNombre || 'Cuña sin nombre',
+          alertas: {
+            diasAntes7: alertas?.diasAntes7 ?? true,
+            diasAntes1: alertas?.diasAntes1 ?? true,
+            alertarEjecutivo: alertas?.alertarEjecutivo ?? true,
+            alertarOperador: alertas?.alertarOperador ?? false,
+            alertarComercial: alertas?.alertarComercial ?? false
+          },
+          fechaFinVigencia,
+          fechaAlerta7Dias: subDays(new Date(fechaFinVigencia), 7).toISOString().split('T')[0],
+          fechaAlerta1Dia: subDays(new Date(fechaFinVigencia), 1).toISOString().split('T')[0],
+          ejecutivoId,
+          ejecutivoEmail,
+          estado: 'activo',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
 
-  try {
-    const result = await withTenantContext(ctx.tenantId, async () => {
-      const {
-        cunaId, spxCodigo, cunaNombre, fechaFinVigencia,
-        alertas, ejecutivoId, ejecutivoEmail, tipoCuna
-      } = parsed.data;
+        alertConfigs.set(configId, config);
 
-      const configId = `alert-config-${Date.now()}`;
+        const newAlerts = scheduleAlertsForCuna(config);
+        scheduledAlerts.push(...newAlerts);
 
-      const config: AlertConfig = {
-        id: configId,
-        cunaId,
-        spxCodigo: spxCodigo || 'SPX000000',
-        cunaNombre: cunaNombre || 'Cuña sin nombre',
-        alertas: {
-          diasAntes7: alertas?.diasAntes7 ?? true,
-          diasAntes1: alertas?.diasAntes1 ?? true,
-          alertarEjecutivo: alertas?.alertarEjecutivo ?? true,
-          alertarOperador: alertas?.alertarOperador ?? false,
-          alertarComercial: alertas?.alertarComercial ?? false
-        },
-        fechaFinVigencia,
-        fechaAlerta7Dias: subDays(new Date(fechaFinVigencia), 7).toISOString().split('T')[0],
-        fechaAlerta1Dia: subDays(new Date(fechaFinVigencia), 1).toISOString().split('T')[0],
-        ejecutivoId,
-        ejecutivoEmail,
-        estado: 'activo',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
+        const diasRestantes = calculateDaysRemaining(fechaFinVigencia);
+        const analisis = getDurationAnalysis(tipoCuna || 'audio', diasRestantes);
 
-      alertConfigs.set(configId, config);
-
-      const newAlerts = scheduleAlertsForCuna(config);
-      scheduledAlerts.push(...newAlerts);
-
-      const diasRestantes = calculateDaysRemaining(fechaFinVigencia);
-      const analisis = getDurationAnalysis(tipoCuna || 'audio', diasRestantes);
-
-      return { config, alertasProgramadas: newAlerts.length, diasRestantes, analisis };
-    });
-
-    // 5. Audit log for alert config creation
-    auditLogger.logEvent({
-      eventType: AuditEventType.DATA_CREATE,
-      severity: AuditSeverity.LOW,
-      userId: ctx.userId,
-      userRole: ctx.role,
-      resource: 'cunas/alerts',
-      action: 'create_alert_config',
-      details: { cunaId: parsed.data.cunaId, tenantId: ctx.tenantId },
-      success: true,
-    });
-
-    return apiSuccess(result, 201);
-  } catch (error) {
-    logger.error('[API/Alerts] Error POST:', error instanceof Error ? error : undefined, { module: 'alerts' });
-    return apiServerError();
+        return apiSuccess({ 
+          config, 
+          alertasProgramadas: newAlerts.length, 
+          diasRestantes, 
+          analisis 
+        }, 201);
+      });
+    } catch (error) {
+      logger.error('[API/Alerts] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'alerts',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // GET - Obtener análisis de vigencia y alertas
+// Requiere: cunas:read
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  // 1. Rate limit check
-  const rl = await apiRateLimiter.checkRateLimit(request);
-  if (!rl.success) return apiError('RATE_LIMIT', 'Too many requests', 429);
+export const GET = withApiRoute(
+  { resource: 'cunas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const cunaId = searchParams.get('cunaId');
+        const fechaFin = searchParams.get('fechaFin');
+        const tipoCuna = searchParams.get('tipoCuna') || 'audio';
 
-  // 2. Extract auth context
-  const ctx = getUserContext(request);
-  if (!ctx.userId) return apiUnauthorized();
+        // Duration analysis only
+        if (fechaFin) {
+          const diasRestantes = calculateDaysRemaining(fechaFin);
+          const analisis = getDurationAnalysis(tipoCuna, diasRestantes);
 
-  // 3. Check permissions (RBAC)
-  if (!checkPermission(ctx, 'cunas', 'read')) return apiForbidden();
+          return apiSuccess({
+            diasRestantes,
+            diasRestantesFormateado: diasRestantes > 0
+              ? `${diasRestantes} días restantes`
+              : diasRestantes === 0
+                ? '¡Vence hoy!'
+                : `Venció hace ${Math.abs(diasRestantes)} días`,
+            analisis,
+            alertasRecomendadas: {
+              diasAntes7: diasRestantes > 7,
+              diasAntes1: diasRestantes > 1,
+              alertarEjecutivo: true
+            }
+          });
+        }
 
-  try {
-    const result = await withTenantContext(ctx.tenantId, async () => {
-      const { searchParams } = new URL(request.url);
-      const cunaId = searchParams.get('cunaId');
-      const fechaFin = searchParams.get('fechaFin');
-      const tipoCuna = searchParams.get('tipoCuna') || 'audio';
+        // Alert config for a specific cuna
+        if (cunaId) {
+          const config = Array.from(alertConfigs.values()).find(c => c.cunaId === cunaId);
+          const cunaAlerts = scheduledAlerts.filter(a => a.cunaId === cunaId);
 
-      // Duration analysis only
-      if (fechaFin) {
-        const diasRestantes = calculateDaysRemaining(fechaFin);
-        const analisis = getDurationAnalysis(tipoCuna, diasRestantes);
+          return apiSuccess({
+            config: config ?? null,
+            alertas: cunaAlerts,
+            totalAlertas: cunaAlerts.length
+          });
+        }
 
-        return {
-          diasRestantes,
-          diasRestantesFormateado: diasRestantes > 0
-            ? `${diasRestantes} días restantes`
-            : diasRestantes === 0
-              ? '¡Vence hoy!'
-              : `Venció hace ${Math.abs(diasRestantes)} días`,
-          analisis,
-          alertasRecomendadas: {
-            diasAntes7: diasRestantes > 7,
-            diasAntes1: diasRestantes > 1,
-            alertarEjecutivo: true
-          }
-        };
-      }
+        // General stats
+        const pendientes = scheduledAlerts.filter(a => a.estado === 'pendiente').length;
+        const hoy = new Date().toISOString().split('T')[0];
+        const alertasHoy = scheduledAlerts.filter(a => a.fechaProgramada === hoy && a.estado === 'pendiente');
 
-      // Alert config for a specific cuna
-      if (cunaId) {
-        const config = Array.from(alertConfigs.values()).find(c => c.cunaId === cunaId);
-        const cunaAlerts = scheduledAlerts.filter(a => a.cunaId === cunaId);
-
-        return {
-          config: config ?? null,
-          alertas: cunaAlerts,
-          totalAlertas: cunaAlerts.length
-        };
-      }
-
-      // General stats
-      const pendientes = scheduledAlerts.filter(a => a.estado === 'pendiente').length;
-      const hoy = new Date().toISOString().split('T')[0];
-      const alertasHoy = scheduledAlerts.filter(a => a.fechaProgramada === hoy && a.estado === 'pendiente');
-
-      return {
-        totalConfigs: alertConfigs.size,
-        alertasPendientes: pendientes,
-        alertasHoy: alertasHoy.length,
-        proximasAlertas: scheduledAlerts
-          .filter(a => a.estado === 'pendiente')
-          .sort((a, b) => a.fechaProgramada.localeCompare(b.fechaProgramada))
-          .slice(0, 10)
-      };
-    });
-
-    return apiSuccess(result);
-  } catch (error) {
-    logger.error('[API/Alerts] Error GET:', error instanceof Error ? error : undefined, { module: 'alerts' });
-    return apiServerError();
+        return apiSuccess({
+          totalConfigs: alertConfigs.size,
+          alertasPendientes: pendientes,
+          alertasHoy: alertasHoy.length,
+          proximasAlertas: scheduledAlerts
+            .filter(a => a.estado === 'pendiente')
+            .sort((a, b) => a.fechaProgramada.localeCompare(b.fechaProgramada))
+            .slice(0, 10)
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Alerts] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'alerts',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // PUT - Actualizar configuración de alertas
+// Requiere: cunas:update
 // ═══════════════════════════════════════════════════════════════
 
-export async function PUT(request: NextRequest) {
-  // 1. Rate limit check
-  const rl = await apiRateLimiter.checkRateLimit(request);
-  if (!rl.success) return apiError('RATE_LIMIT', 'Too many requests', 429);
+export const PUT = withApiRoute(
+  { resource: 'cunas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      // Validate input with Zod
+      let body: unknown;
+      try { body = await req.json(); } catch { return apiError('INVALID_JSON', 'Invalid JSON', 400); }
+      const parsed = UpdateAlertConfigSchema.safeParse(body);
+      if (!parsed.success) return apiError('VALIDATION_ERROR', 'Invalid input', 422, parsed.error.flatten());
 
-  // 2. Extract auth context
-  const ctx = getUserContext(request);
-  if (!ctx.userId) return apiUnauthorized();
+      return await withTenantContext(ctx.tenantId, async () => {
+        const config = alertConfigs.get(parsed.data.configId);
+        if (!config) return apiError('NOT_FOUND', 'Configuración no encontrada', 404);
 
-  // 3. Validate input with Zod
-  let body: unknown;
-  try { body = await request.json(); } catch { return apiError('INVALID_JSON', 'Invalid JSON', 400); }
-  const parsed = UpdateAlertConfigSchema.safeParse(body);
-  if (!parsed.success) return apiError('VALIDATION_ERROR', 'Invalid input', 422, parsed.error.flatten());
+        if (parsed.data.alertas) {
+          config.alertas = { ...config.alertas, ...parsed.data.alertas };
+        }
+        if (parsed.data.estado) {
+          config.estado = parsed.data.estado;
+        }
+        config.updatedAt = new Date().toISOString();
 
-  // 4. Check permissions (RBAC)
-  if (!checkPermission(ctx, 'cunas', 'update')) return apiForbidden();
+        alertConfigs.set(parsed.data.configId, config);
 
-  try {
-    const result = await withTenantContext(ctx.tenantId, async () => {
-      const config = alertConfigs.get(parsed.data.configId);
-      if (!config) return null;
+        // Reschedule alerts if needed
+        if (parsed.data.alertas && config.estado === 'activo') {
+          scheduledAlerts = scheduledAlerts.map(a =>
+            a.alertConfigId === parsed.data.configId
+              ? { ...a, estado: 'cancelada' as const }
+              : a
+          );
+          const newAlerts = scheduleAlertsForCuna(config);
+          scheduledAlerts.push(...newAlerts);
+        }
 
-      if (parsed.data.alertas) {
-        config.alertas = { ...config.alertas, ...parsed.data.alertas };
-      }
-      if (parsed.data.estado) {
-        config.estado = parsed.data.estado;
-      }
-      config.updatedAt = new Date().toISOString();
-
-      alertConfigs.set(parsed.data.configId, config);
-
-      // Reschedule alerts if needed
-      if (parsed.data.alertas && config.estado === 'activo') {
-        scheduledAlerts = scheduledAlerts.map(a =>
-          a.alertConfigId === parsed.data.configId
-            ? { ...a, estado: 'cancelada' as const }
-            : a
-        );
-        const newAlerts = scheduleAlertsForCuna(config);
-        scheduledAlerts.push(...newAlerts);
-      }
-
-      return config;
-    });
-
-    if (!result) return apiNotFound('alert-config');
-
-    // 5. Audit log for config changes
-    auditLogger.logEvent({
-      eventType: AuditEventType.DATA_UPDATE,
-      severity: AuditSeverity.LOW,
-      userId: ctx.userId,
-      userRole: ctx.role,
-      resource: 'cunas/alerts',
-      action: 'update_alert_config',
-      details: { configId: parsed.data.configId, changes: parsed.data, tenantId: ctx.tenantId },
-      success: true,
-    });
-
-    return apiSuccess(result);
-  } catch (error) {
-    logger.error('[API/Alerts] Error PUT:', error instanceof Error ? error : undefined, { module: 'alerts' });
-    return apiServerError();
+        return apiSuccess({
+          config,
+          actualizadoPor: ctx.userId,
+          fechaActualizacion: new Date().toISOString()
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Alerts] Error PUT:', error instanceof Error ? error : undefined, { 
+        module: 'alerts',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
+    }
   }
-}
+);

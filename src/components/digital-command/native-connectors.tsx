@@ -12,6 +12,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -277,13 +278,6 @@ export function NativeConnectors({ platformStatus }: NativeConnectorsProps) {
     return 'Conectado'
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
@@ -417,7 +411,7 @@ export function NativeConnectors({ platformStatus }: NativeConnectorsProps) {
                     <p className="text-sm text-gray-500 mb-2">Características Disponibles</p>
                     <div className="flex flex-wrap gap-1">
                       {connector.features.map((feature, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge key={`${feature}-${index}`} variant="secondary" className="text-xs">
                           {feature}
                         </Badge>
                       ))}
@@ -491,7 +485,7 @@ export function NativeConnectors({ platformStatus }: NativeConnectorsProps) {
 
       {/* Modal de Configuración */}
       {isConfiguring && selectedConnector && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-[#F0EDE8] bg-opacity-50 flex items-center justify-center z-50">
           <Card className="w-full max-w-md mx-4">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

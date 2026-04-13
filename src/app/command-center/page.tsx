@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import { 
   Activity, 
@@ -231,7 +232,7 @@ const CommandCenter: React.FC = () => {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as unknown)}
               className={cn(
                 'flex items-center space-x-2 px-4 py-3 font-medium transition-all duration-200',
                 'border-b-2',
@@ -252,8 +253,8 @@ const CommandCenter: React.FC = () => {
         <div className="space-y-6">
           {/* Metrics Grid */}
           <NeuromorphicGrid columns={3}>
-            {metrics.map((metric, index) => (
-              <NeuromorphicCard key={index} variant="embossed" borderAccent="blue">
+            {metrics.map((metric) => (
+              <NeuromorphicCard key={metric.name} variant="embossed" borderAccent="blue">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">

@@ -13,6 +13,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // Mock de datos para pruebas
 const mockTandas: TandaPauta[] = [
@@ -65,100 +66,106 @@ const mockTandas: TandaPauta[] = [
   }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const formato = (searchParams.get('formato') || 'csv') as FormatoExportacion;
-    const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
-    const emisora = searchParams.get('emisora') || 'COOP';
-    const download = searchParams.get('download') === 'true';
+export const GET = withApiRoute(
+  { resource: 'reportes', action: 'export', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const formato = (searchParams.get('formato') || 'csv') as FormatoExportacion;
+      const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
+      const emisora = searchParams.get('emisora') || 'COOP';
+      const download = searchParams.get('download') === 'true';
 
-    // Filtrar tandas por fecha (en producción vendría de la BD)
-    const tandasFiltradas = mockTandas.filter(t => t.fecha === fecha);
+      // Filtrar tandas por fecha (en producción vendría de la BD)
+      const tandasFiltradas = mockTandas.filter(t => t.fecha === fecha);
 
-    // Generar archivo
-    const resultado = GeneradorPauta.generar({
-      formato,
-      emisora: 'Radio Cooperativa',
-      emisoraCodigo: emisora,
-      fecha,
-      tandas: tandasFiltradas,
-      incluirEncabezados: true
-    });
+      // Generar archivo
+      const resultado = GeneradorPauta.generar({
+        formato,
+        emisora: 'Radio Cooperativa',
+        emisoraCodigo: emisora,
+        fecha,
+        tandas: tandasFiltradas,
+        incluirEncabezados: true
+      });
 
-    if (!resultado.success) {
-      return NextResponse.json({ success: false, error: 'Error al generar archivo' }, { status: 500 });
-    }
+      if (!resultado.success) {
+        return NextResponse.json({ success: false, error: 'Error al generar archivo' }, { status: 500 });
+      }
 
-    // Si es descarga, devolver como archivo
-    if (download) {
-      return new NextResponse(resultado.contenido, {
-        headers: {
-          'Content-Type': resultado.mimeType,
-          'Content-Disposition': `attachment; filename="${resultado.nombreArchivo}"`,
-          'Content-Length': resultado.tamanioBytes.toString()
+      // Si es descarga, devolver como archivo
+      if (download) {
+        return new NextResponse(resultado.contenido, {
+          headers: {
+            'Content-Type': resultado.mimeType,
+            'Content-Disposition': `attachment; filename="${resultado.nombreArchivo}"`,
+            'Content-Length': resultado.tamanioBytes.toString()
+          }
+        });
+      }
+
+      // Si no, devolver info del archivo generado
+      return NextResponse.json({
+        success: true,
+        data: {
+          formato: resultado.formato,
+          nombreArchivo: resultado.nombreArchivo,
+          mimeType: resultado.mimeType,
+          tamanioBytes: resultado.tamanioBytes,
+          tandasIncluidas: tandasFiltradas.length,
+          spotsIncluidos: tandasFiltradas.reduce((sum, t) => sum + t.spots.length, 0),
+          preview: resultado.contenido.substring(0, 500) + (resultado.contenido.length > 500 ? '...' : '')
         }
       });
-    }
 
-    // Si no, devolver info del archivo generado
-    return NextResponse.json({
-      success: true,
-      data: {
-        formato: resultado.formato,
-        nombreArchivo: resultado.nombreArchivo,
-        mimeType: resultado.mimeType,
-        tamanioBytes: resultado.tamanioBytes,
-        tandasIncluidas: tandasFiltradas.length,
-        spotsIncluidos: tandasFiltradas.reduce((sum, t) => sum + t.spots.length, 0),
-        preview: resultado.contenido.substring(0, 500) + (resultado.contenido.length > 500 ? '...' : '')
+    } catch (error) {
+      logger.error('[API/Exportar] Error GET:', error instanceof Error ? error : undefined, { module: 'exportar-pauta', action: 'GET' });
+      return apiServerError()
+    }
+  }
+);
+
+export const POST = withApiRoute(
+  { resource: 'reportes', action: 'export' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      const { formato, fecha, emisora, emisoraCodigo, tandas } = body;
+
+      if (!formato || !fecha || !tandas || !Array.isArray(tandas)) {
+        return NextResponse.json({ success: false, error: 'Formato, fecha y tandas requeridos' }, { status: 400 });
       }
-    });
 
-  } catch (error) {
-    logger.error('[API/Exportar] Error GET:', error instanceof Error ? error : undefined, { module: 'exportar-pauta', action: 'GET' });
-    return apiServerError()
-  }
-}
+      // Generar archivo
+      const resultado = GeneradorPauta.generar({
+        formato: formato as FormatoExportacion,
+        emisora: emisora || 'Sin especificar',
+        emisoraCodigo: emisoraCodigo || 'XXX',
+        fecha,
+        tandas,
+        incluirEncabezados: true
+      });
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    const { formato, fecha, emisora, emisoraCodigo, tandas } = body;
+      if (!resultado.success) {
+        return NextResponse.json({ success: false, error: 'Error al generar archivo' }, { status: 500 });
+      }
 
-    if (!formato || !fecha || !tandas || !Array.isArray(tandas)) {
-      return NextResponse.json({ success: false, error: 'Formato, fecha y tandas requeridos' }, { status: 400 });
+      return NextResponse.json({
+        success: true,
+        data: {
+          formato: resultado.formato,
+          nombreArchivo: resultado.nombreArchivo,
+          contenido: resultado.contenido,
+          mimeType: resultado.mimeType,
+          tamanioBytes: resultado.tamanioBytes
+        },
+        message: 'Pauta generada exitosamente'
+      });
+
+    } catch (error) {
+      logger.error('[API/Exportar] Error POST:', error instanceof Error ? error : undefined, { module: 'exportar-pauta', action: 'POST' });
+      return apiServerError()
     }
-
-    // Generar archivo
-    const resultado = GeneradorPauta.generar({
-      formato: formato as FormatoExportacion,
-      emisora: emisora || 'Sin especificar',
-      emisoraCodigo: emisoraCodigo || 'XXX',
-      fecha,
-      tandas,
-      incluirEncabezados: true
-    });
-
-    if (!resultado.success) {
-      return NextResponse.json({ success: false, error: 'Error al generar archivo' }, { status: 500 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        formato: resultado.formato,
-        nombreArchivo: resultado.nombreArchivo,
-        contenido: resultado.contenido,
-        mimeType: resultado.mimeType,
-        tamanioBytes: resultado.tamanioBytes
-      },
-      message: 'Pauta generada exitosamente'
-    });
-
-  } catch (error) {
-    logger.error('[API/Exportar] Error POST:', error instanceof Error ? error : undefined, { module: 'exportar-pauta', action: 'POST' });
-    return apiServerError()
   }
-}
+);

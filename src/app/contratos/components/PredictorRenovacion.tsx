@@ -158,8 +158,8 @@ export function PredictorRenovacion() {
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase">Factores</p>
                     <div className="mt-1 space-y-1">
-                      {p.factores.map((f, i) => (
-                        <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
+                      {p.factores.map((f) => (
+                        <div key={f} className="flex items-center gap-2 text-xs text-slate-600">
                           <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                           {f}
                         </div>

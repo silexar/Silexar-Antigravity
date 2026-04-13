@@ -7,6 +7,7 @@
  * Supports tap to expand and swipe-friendly action layout.
  */
 
+import { memo } from 'react'
 import { Radio, Calendar, ChevronRight, Pause, Play, XCircle, Edit3 } from 'lucide-react'
 
 type EstadoCampana = 'ACTIVA' | 'PAUSADA' | 'BORRADOR' | 'FINALIZADA' | 'CANCELADA'
@@ -40,7 +41,7 @@ function formatDateRange(inicio: Date, fin: Date): string {
   return `${fmt(inicio)} — ${fmt(fin)}`
 }
 
-export function MobileCampaignCard({
+function MobileCampaignCardBase({
   id,
   nombre,
   nombreAnunciante,
@@ -160,3 +161,5 @@ export function MobileCampaignCard({
     </div>
   )
 }
+
+export const MobileCampaignCard = memo(MobileCampaignCardBase)

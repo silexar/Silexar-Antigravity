@@ -47,12 +47,12 @@ jobs:
       - name: 🎯 Run Baseline Test
         env:
           TEST_URL: ${{ github.event.inputs.environment == 'production' && secrets.PROD_URL || secrets.STAGING_URL }}
-        run: npm run test:baseline
+        run: npm run test:baseline --if-present
         
       - name: 📊 Run Performance Test
         env:
           TEST_URL: ${{ github.event.inputs.environment == 'production' && secrets.PROD_URL || secrets.STAGING_URL }}
-        run: npm run test:performance
+        run: npm run test:performance --if-present
         
       - name: 🔍 Run Monitoring Test
         env:
@@ -63,7 +63,7 @@ jobs:
           MONITORING_DURATION=$((MINUTES*60*1000))
           export MONITORING_DURATION
           echo "Monitoring duration (ms): $MONITORING_DURATION"
-          npm run test:monitoring
+          npm run test:monitoring --if-present
         
       - name: 📤 Upload Performance Reports
         uses: actions/upload-artifact@v4

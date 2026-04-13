@@ -9,9 +9,10 @@
  * @tier TIER_0_FORTUNE_10
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { UserOperatorPortal } from '@/components/user/user-operator-portal'
 import { UserProfile } from '@/components/user/user-profile'
+import { useAuth } from '@/components/security-initializer'
 import {
   LayoutDashboard, User, Settings, HelpCircle, LogOut,
   Bell, Search, Menu, ChevronDown
@@ -29,36 +30,24 @@ interface AuthenticatedUser {
 }
 
 export default function PortalPage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const { user: authUser, isLoading: authLoading } = useAuth()
   const [currentView, setCurrentView] = useState<PortalView>('dashboard')
-  const [user, setUser] = useState<AuthenticatedUser | null>(null)
   const [showUserMenu, setShowUserMenu] = useState(false)
 
-  useEffect(() => {
-    // Simulate auth check
-    checkAuth()
-  }, [])
+  // Use authenticated user from real auth context
+  const user = authUser ? {
+    id: authUser.id,
+    name: authUser.name,
+    email: authUser.email,
+    category: authUser.category,
+    permissions: [],
+    tenantName: authUser.tenantSlug || 'Silexar'
+  } : null
 
-  const checkAuth = async () => {
-    setIsLoading(true)
-    await new Promise(r => setTimeout(r, 500))
-
-    // Mock authenticated user
-    setUser({
-      id: 'user_003',
-      name: 'Ana Silva',
-      email: 'ana.silva@empresa.com',
-      category: 'vendedor',
-      permissions: ['crm_view', 'crm_create', 'crm_edit', 'rep_view'],
-      tenantName: 'Tech Solutions Inc'
-    })
-
-    setIsLoading(false)
-  }
-
-  const handleLogout = () => {
-    // Clear session and redirect
+  const handleLogout = async () => {
+    // Clear session via auth context (handled by SecurityInitializer)
     sessionStorage.removeItem('silexar_user')
+    sessionStorage.removeItem('silexar_token')
     localStorage.removeItem('silexar_user')
     window.location.href = '/login'
   }
@@ -78,7 +67,7 @@ export default function PortalPage() {
     return categories[category] || { name: category, icon: '👤', color: 'gray' }
   }
 
-  if (isLoading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">

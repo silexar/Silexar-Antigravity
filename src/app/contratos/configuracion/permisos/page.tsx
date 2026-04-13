@@ -280,7 +280,8 @@ const NeuroSlider: React.FC<{
   onChange: (value: number) => void;
   suffix?: string;
   formatValue?: (val: number) => string;
-}> = ({ value, min, max, step = 1, onChange, suffix = '', formatValue }) => (
+  label?: string;
+}> = ({ value, min, max, step = 1, onChange, suffix = '', formatValue, label }) => (
   <div className="space-y-2">
     <div className="flex justify-between items-center">
       <span className="text-sm text-slate-500">Valor actual:</span>
@@ -295,6 +296,7 @@ const NeuroSlider: React.FC<{
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
+      aria-label={label}
       className={`${neuroStyles.slider} [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-br [&::-webkit-slider-thumb]:from-indigo-400 [&::-webkit-slider-thumb]:to-purple-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer`}
     />
     <div className="flex justify-between text-xs text-slate-400">
@@ -311,7 +313,8 @@ const NeuroInput: React.FC<{
   placeholder?: string;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
-}> = ({ value, onChange, type = 'text', placeholder, prefix, suffix }) => (
+  label?: string;
+}> = ({ value, onChange, type = 'text', placeholder, prefix, suffix, label }) => (
   <div className="relative">
     {prefix && (
       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -323,6 +326,7 @@ const NeuroInput: React.FC<{
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      aria-label={label ?? placeholder}
       className={`${neuroStyles.input} w-full ${prefix ? 'pl-10' : ''} ${suffix ? 'pr-10' : ''}`}
     />
     {suffix && (
@@ -456,6 +460,7 @@ const UserPermissionCard: React.FC<{
                     step={5000000}
                     onChange={(val) => handleLimiteChange('valorMaximoContrato', val)}
                     formatValue={formatCurrency}
+                    label="Valor Máximo de Contrato"
                   />
                 </div>
                 
@@ -471,6 +476,7 @@ const UserPermissionCard: React.FC<{
                     step={1}
                     onChange={(val) => handleLimiteChange('descuentoMaximo', val)}
                     suffix="%"
+                    label="Descuento Máximo Permitido"
                   />
                 </div>
                 
@@ -486,6 +492,7 @@ const UserPermissionCard: React.FC<{
                     step={15}
                     onChange={(val) => handleLimiteChange('diasPagoMaximo', val)}
                     suffix=" días"
+                    label="Días de Pago Máximo"
                   />
                 </div>
               </div>
@@ -673,8 +680,8 @@ export default function PermisosConfiguracion() {
             { label: 'Con Permisos Custom', value: usuarios.filter(u => u.rolPersonalizado).length, icon: <Settings className="w-5 h-5" />, color: 'text-amber-600' },
             { label: 'Pueden Aprobar', value: usuarios.filter(u => u.limitesPersonalizados.puedeAprobar).length, icon: <Check className="w-5 h-5" />, color: 'text-green-600' },
             { label: 'Pueden Firmar', value: usuarios.filter(u => u.limitesPersonalizados.puedeFirmar).length, icon: <FileSignature className="w-5 h-5" />, color: 'text-purple-600' }
-          ].map((stat, idx) => (
-            <div key={idx} className={`${neuroStyles.cardRaised} p-5`}>
+          ].map((stat) => (
+            <div key={stat.label} className={`${neuroStyles.cardRaised} p-5`}>
               <div className="flex items-center gap-3">
                 <div className={`p-3 rounded-xl ${neuroStyles.cardInset} ${stat.color}`}>
                   {stat.icon}

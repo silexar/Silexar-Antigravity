@@ -130,7 +130,7 @@ export default function ExportarPautaPage() {
         setPreview(data.data);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -152,7 +152,7 @@ export default function ExportarPautaPage() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setGenerando(false);
     }
@@ -293,7 +293,7 @@ export default function ExportarPautaPage() {
               )}
 
               {/* Contenido preview */}
-              <div className="flex-1 bg-slate-900 rounded-xl p-4 overflow-auto font-mono text-sm text-slate-300">
+              <div className="flex-1 bg-[#F0EDE8] rounded-xl p-4 overflow-auto font-mono text-sm text-slate-300">
                 {loading ? (
                   <div className="text-center py-8"><RefreshCw className="w-8 h-8 animate-spin text-indigo-400 mx-auto" /></div>
                 ) : preview?.preview ? (

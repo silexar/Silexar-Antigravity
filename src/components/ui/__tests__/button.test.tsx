@@ -37,9 +37,10 @@ describe('Button Component', () => {
   })
 
   it('renders with different sizes', () => {
+    // Silexar Pulse uses rounded-full (not rounded-md) for neumorphic design
     const { rerender } = render(<Button size="sm">Small</Button>)
     let button = screen.getByRole('button', { name: 'Small' })
-    expect(button).toHaveClass('h-9', 'rounded-md', 'px-3')
+    expect(button).toHaveClass('h-9', 'rounded-full', 'px-3')
 
     rerender(<Button size="default">Default</Button>)
     button = screen.getByRole('button', { name: 'Default' })
@@ -47,7 +48,7 @@ describe('Button Component', () => {
 
     rerender(<Button size="lg">Large</Button>)
     button = screen.getByRole('button', { name: 'Large' })
-    expect(button).toHaveClass('h-11', 'rounded-md', 'px-8')
+    expect(button).toHaveClass('h-11', 'rounded-full', 'px-8')
 
     rerender(<Button size="icon">⚙</Button>)
     button = screen.getByRole('button', { name: '⚙' })

@@ -11,7 +11,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/utils';
 import { 
   Users, 
   Search, 
@@ -116,8 +118,6 @@ const TipoBadge = ({ tipo }: { tipo: string }) => {
   );
 };
 
-const formatCurrency = (value: number) => `$${(value / 1000000).toFixed(1)}M`;
-
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
@@ -128,11 +128,12 @@ export default function VendedoresPage() {
   const [stats, setStats] = useState<Stats>({ total: 0, activos: 0, ventasTotales: 0, cumplimientoPromedio: 0 });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
 
   const fetchVendedores = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ ...(search && { search }) });
+      const params = new URLSearchParams({ ...(debouncedSearch && { search: debouncedSearch }) });
       const response = await fetch(`/api/vendedores?${params}`);
       const data = await response.json();
       if (data.success) {
@@ -140,11 +141,11 @@ export default function VendedoresPage() {
         setStats(data.stats);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [debouncedSearch]);
 
   useEffect(() => { fetchVendedores(); }, [fetchVendedores]);
 
@@ -177,7 +178,7 @@ export default function VendedoresPage() {
             { label: 'Ventas Totales', value: formatCurrency(stats.ventasTotales), icon: DollarSign, color: 'from-blue-400 to-blue-500' },
             { label: 'Cumplimiento Prom.', value: `${stats.cumplimientoPromedio}%`, icon: Target, color: 'from-purple-400 to-purple-500' }
           ].map((stat, i) => (
-            <NeuromorphicCard key={i}>
+            <NeuromorphicCard key={`${stat}-${i}`}>
               <div className="flex items-center gap-4">
                 <div className={`p-4 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
                   <stat.icon className="w-8 h-8 text-white" />

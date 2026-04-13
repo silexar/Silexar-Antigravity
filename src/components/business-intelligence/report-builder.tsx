@@ -232,7 +232,7 @@ export function ReportBuilder() {
                     const IconComponent = element.icon
                     return (
                       <div
-                        key={index}
+                        key={`${element}-${index}`}
                         className="p-3 bg-slate-700/30 rounded-lg cursor-grab hover:bg-slate-700/50 transition-colors"
                         draggable
                       >
@@ -373,7 +373,7 @@ export function ReportBuilder() {
                       status: 'warning'
                     }
                   ].map((report, index) => (
-                    <Card key={index} className="bg-slate-700/30 border-slate-600 hover:bg-slate-700/50 transition-colors">
+                    <Card key={`${report}-${index}`} className="bg-slate-700/30 border-slate-600 hover:bg-slate-700/50 transition-colors">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <h3 className="text-sm font-medium text-white">{report.name}</h3>

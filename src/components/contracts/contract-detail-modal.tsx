@@ -77,12 +77,58 @@ export default function ContractDetailModal({
   contract,
   onUpdate
 }: ContractDetailModalProps) {
+  // Typed view of contract fields — contract is Record<string,unknown> from parent
+  type ContractView = {
+    id: string; numero: string; anunciante: string; producto: string;
+    estado: string; prioridad: string;
+    fechaInicio?: string; fechaFin?: string; moneda?: string;
+    valorNeto?: number; valorBruto?: number;
+    rutAnunciante?: string; ejecutivo?: string; agencia?: string;
+    tipoContrato?: string; modalidadFacturacion?: string; plazoPago?: number | string;
+    descuentoAplicado?: number; esCanje?: boolean;
+    facturarComisionAgencia?: boolean;
+    financiero?: {
+      montoFacturado?: number; montoPendiente?: number;
+      comisionAgencia?: number; descuentosAplicados?: number; impuestos?: number;
+      [k: string]: unknown;
+    };
+    workflow?: {
+      pasos?: unknown[]; historial?: unknown[]; etapaActual?: string; progreso?: number;
+      proximaAccion?: string; responsable?: string; fechaLimite?: string;
+    };
+    alertas?: string[];
+    performance?: {
+      cumplimiento?: number; satisfaccionCliente?: number; rentabilidad?: number;
+      [k: string]: unknown;
+    };
+    documentos?: {
+      contrato?: boolean; anexos?: boolean; aprobaciones?: boolean; facturas?: number;
+      [k: string]: unknown;
+    };
+    tags?: string[];
+    observaciones?: string;
+    [k: string]: unknown
+  }
+  const c = contract as ContractView
+  type ContractAnalysisView = {
+    riskScore?: number; complianceScore?: number; profitabilityScore?: number;
+    recommendations?: { title?: string; priority?: string; description?: string; impact?: number; timeline?: string }[];
+    optimization?: { timeReduction?: number; potentialSavings?: number; riskReduction?: number; optimizedEfficiency?: number };
+    [k: string]: unknown;
+  }
+  type PredictiveAnalyticsView = {
+    contractSuccess?: { probability?: number; factors?: { name?: string; impact?: number }[] };
+    revenueForecasting?: { nextQuarter?: number; confidence?: number };
+    [k: string]: unknown;
+  }
   const [activeTab, setActiveTab] = useState('resumen')
   const [isEditing, setIsEditing] = useState(false)
   const [editedContract, setEditedContract] = useState(contract)
   const [contractAnalysis, setContractAnalysis] = useState<Record<string, unknown> | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [predictiveAnalytics, setPredictiveAnalytics] = useState<Record<string, unknown> | null>(null)
+  const ca = contractAnalysis as ContractAnalysisView | null
+  const pa = predictiveAnalytics as PredictiveAnalyticsView | null
 
   // Inicializar análisis Cortex-Contracts
   useEffect(() => {
@@ -97,16 +143,15 @@ export default function ContractDetailModal({
       setIsAnalyzing(true)
       
       // Análisis integral del contrato
-      const analysis = await cortexContracts.analyzeContract(contract.id)
+      const analysis = await cortexContracts.analyzeContract(c.id)
       setContractAnalysis(analysis)
       
       // Analytics predictivo
-      const predictive = await cortexContracts.generatePredictiveAnalytics(contract.id)
-      setPredictiveAnalytics(predictive)
+      const predictive = await cortexContracts.generatePredictiveAnalytics(c.id)
+      setPredictiveAnalytics(predictive as unknown as Record<string, unknown>)
       
     } catch (error) {
-      console.error('Error en análisis Cortex-Contracts:', error)
-    } finally {
+      } finally {
       setIsAnalyzing(false)
     }
   }
@@ -120,8 +165,7 @@ export default function ContractDetailModal({
       // Re-analizar después de cambios
       await initializeCortexAnalysis()
     } catch (error) {
-      console.error('Error guardando contrato:', error)
-    }
+      }
   }
 
   const handleInputChange = (field: string, value: unknown) => {
@@ -135,7 +179,7 @@ export default function ContractDetailModal({
     setEditedContract((prev: Record<string, unknown>) => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, unknown>),
         [field]: value
       }
     }))
@@ -145,7 +189,7 @@ export default function ContractDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
         <DialogHeader className="border-b border-slate-700 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -154,25 +198,25 @@ export default function ContractDetailModal({
               </div>
               <div>
                 <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
-                  {contract.numero}
+                  {c.numero}
                   <Sparkles className="h-5 w-5 text-yellow-400" />
                 </DialogTitle>
                 <p className="text-slate-400 mt-1">
-                  {contract.anunciante} • {contract.producto}
+                  {c.anunciante} • {c.producto}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <Badge 
-                className={`${CortexContractsUtils.getStatusColor(contract.estado)} text-white`}
+                className={`${CortexContractsUtils.getStatusColor(c.estado)} text-white`}
               >
-                {contract.estado.toUpperCase()}
+                {c.estado.toUpperCase()}
               </Badge>
               <Badge 
                 variant="outline" 
-                className={`${CortexContractsUtils.getPriorityColor(contract.prioridad)} border-current`}
+                className={`${CortexContractsUtils.getPriorityColor(c.prioridad)} border-current`}
               >
-                {contract.prioridad.toUpperCase()}
+                {c.prioridad.toUpperCase()}
               </Badge>
               {isEditing ? (
                 <div className="flex space-x-2">
@@ -240,17 +284,17 @@ export default function ContractDetailModal({
                       <Label className="text-slate-300">Anunciante</Label>
                       {isEditing ? (
                         <Input
-                          value={editedContract.anunciante}
+                          value={(editedContract as ContractView).anunciante}
                           onChange={(e) => handleInputChange('anunciante', e.target.value)}
                           className="bg-slate-700 border-slate-600 text-white"
                         />
                       ) : (
-                        <p className="text-white font-medium">{contract.anunciante}</p>
+                        <p className="text-white font-medium">{c.anunciante}</p>
                       )}
                     </div>
                     <div>
                       <Label className="text-slate-300">RUT</Label>
-                      <p className="text-white font-medium">{contract.rutAnunciante}</p>
+                      <p className="text-white font-medium">{c.rutAnunciante}</p>
                     </div>
                   </div>
                   
@@ -258,12 +302,12 @@ export default function ContractDetailModal({
                     <Label className="text-slate-300">Producto/Servicio</Label>
                     {isEditing ? (
                       <Input
-                        value={editedContract.producto}
+                        value={(editedContract as ContractView).producto}
                         onChange={(e) => handleInputChange('producto', e.target.value)}
                         className="bg-slate-700 border-slate-600 text-white"
                       />
                     ) : (
-                      <p className="text-white font-medium">{contract.producto}</p>
+                      <p className="text-white font-medium">{c.producto}</p>
                     )}
                   </div>
 
@@ -272,13 +316,13 @@ export default function ContractDetailModal({
                       <Label className="text-slate-300">Ejecutivo</Label>
                       <p className="text-white font-medium flex items-center gap-2">
                         <User className="h-4 w-4 text-blue-400" />
-                        {contract.ejecutivo}
+                        {c.ejecutivo}
                       </p>
                     </div>
                     <div>
                       <Label className="text-slate-300">Agencia</Label>
                       <p className="text-white font-medium">
-                        {contract.agencia || 'Directo'}
+                        {c.agencia || 'Directo'}
                       </p>
                     </div>
                   </div>
@@ -287,19 +331,19 @@ export default function ContractDetailModal({
                     <div>
                       <Label className="text-slate-300">Tipo</Label>
                       <Badge variant="outline" className="text-blue-400 border-blue-400">
-                        Tipo {contract.tipoContrato}
+                        Tipo {c.tipoContrato}
                       </Badge>
                     </div>
                     <div>
                       <Label className="text-slate-300">Facturación</Label>
                       <Badge variant="outline" className="text-purple-400 border-purple-400">
-                        {contract.modalidadFacturacion}
+                        {c.modalidadFacturacion}
                       </Badge>
                     </div>
                     <div>
                       <Label className="text-slate-300">Pago</Label>
                       <Badge variant="outline" className="text-green-400 border-green-400">
-                        {contract.plazoPago} días
+                        {c.plazoPago} días
                       </Badge>
                     </div>
                   </div>
@@ -318,10 +362,10 @@ export default function ContractDetailModal({
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <Label className="text-slate-300">Progreso General</Label>
-                      <span className="text-white font-bold">{contract.workflow.progreso}%</span>
+                      <span className="text-white font-bold">{c.workflow?.progreso}%</span>
                     </div>
                     <Progress 
-                      value={contract.workflow.progreso} 
+                      value={c.workflow?.progreso} 
                       className="h-3 bg-slate-700"
                     />
                   </div>
@@ -330,13 +374,13 @@ export default function ContractDetailModal({
                     <Label className="text-slate-300">Etapa Actual</Label>
                     <p className="text-white font-medium flex items-center gap-2">
                       <Activity className="h-4 w-4 text-emerald-400" />
-                      {contract.workflow.etapaActual}
+                      {c.workflow?.etapaActual}
                     </p>
                   </div>
 
                   <div>
                     <Label className="text-slate-300">Próxima Acción</Label>
-                    <p className="text-white font-medium">{contract.workflow.proximaAccion}</p>
+                    <p className="text-white font-medium">{c.workflow?.proximaAccion}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -344,24 +388,24 @@ export default function ContractDetailModal({
                       <Label className="text-slate-300">Responsable</Label>
                       <p className="text-white font-medium flex items-center gap-2">
                         <User className="h-4 w-4 text-blue-400" />
-                        {contract.workflow.responsable}
+                        {c.workflow?.responsable}
                       </p>
                     </div>
                     <div>
                       <Label className="text-slate-300">Fecha Límite</Label>
                       <p className="text-white font-medium flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-orange-400" />
-                        {new Date(contract.workflow.fechaLimite).toLocaleDateString()}
+                        {c.workflow?.fechaLimite ? new Date(c.workflow.fechaLimite).toLocaleDateString() : '-'}
                       </p>
                     </div>
                   </div>
 
-                  {contract.alertas.length > 0 && (
+                  {(c.alertas?.length ?? 0) > 0 && (
                     <div>
                       <Label className="text-slate-300">Alertas Activas</Label>
                       <div className="space-y-2 mt-2">
-                        {contract.alertas.map((alerta: string, index: number) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                        {c.alertas?.map((alerta: string, index: number) => (
+                          <div key={`${alerta}-${index}`} className="flex items-center gap-2 p-2 bg-orange-500/10 rounded-lg border border-orange-500/20">
                             <AlertTriangle className="h-4 w-4 text-orange-400" />
                             <span className="text-orange-300 text-sm">{alerta}</span>
                           </div>
@@ -385,31 +429,31 @@ export default function ContractDetailModal({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-green-400 mb-2">
-                      {contract.performance.cumplimiento}%
+                      {c.performance?.cumplimiento}%
                     </div>
                     <div className="text-slate-300">Cumplimiento</div>
                     <Progress 
-                      value={contract.performance.cumplimiento} 
+                      value={c.performance?.cumplimiento} 
                       className="h-2 mt-2 bg-slate-700"
                     />
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-blue-400 mb-2">
-                      {contract.performance.satisfaccionCliente}%
+                      {c.performance?.satisfaccionCliente}%
                     </div>
                     <div className="text-slate-300">Satisfacción Cliente</div>
                     <Progress 
-                      value={contract.performance.satisfaccionCliente} 
+                      value={c.performance?.satisfaccionCliente} 
                       className="h-2 mt-2 bg-slate-700"
                     />
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-purple-400 mb-2">
-                      {contract.performance.rentabilidad}%
+                      {c.performance?.rentabilidad}%
                     </div>
                     <div className="text-slate-300">Rentabilidad</div>
                     <Progress 
-                      value={contract.performance.rentabilidad} 
+                      value={c.performance?.rentabilidad} 
                       className="h-2 mt-2 bg-slate-700"
                     />
                   </div>
@@ -434,13 +478,13 @@ export default function ContractDetailModal({
                     <div>
                       <Label className="text-slate-300">Valor Bruto</Label>
                       <p className="text-2xl font-bold text-green-400">
-                        {CortexContractsUtils.formatCurrency(contract.valorBruto)}
+                        {CortexContractsUtils.formatCurrency(c.valorBruto ?? 0)}
                       </p>
                     </div>
                     <div>
                       <Label className="text-slate-300">Valor Neto</Label>
                       <p className="text-2xl font-bold text-white">
-                        {CortexContractsUtils.formatCurrency(contract.valorNeto)}
+                        {CortexContractsUtils.formatCurrency(c.valorNeto ?? 0)}
                       </p>
                     </div>
                   </div>
@@ -449,20 +493,20 @@ export default function ContractDetailModal({
                     <div>
                       <Label className="text-slate-300">Moneda</Label>
                       <Badge variant="outline" className="text-blue-400 border-blue-400">
-                        {contract.moneda}
+                        {c.moneda}
                       </Badge>
                     </div>
                     <div>
                       <Label className="text-slate-300">Descuento</Label>
-                      <p className="text-orange-400 font-medium">{contract.descuentoAplicado}%</p>
+                      <p className="text-orange-400 font-medium">{c.descuentoAplicado}%</p>
                     </div>
                     <div>
                       <Label className="text-slate-300">Es Canje</Label>
                       <Badge 
-                        variant={contract.esCanje ? "destructive" : "outline"}
-                        className={contract.esCanje ? "" : "text-green-400 border-green-400"}
+                        variant={c.esCanje ? "destructive" : "outline"}
+                        className={c.esCanje ? "" : "text-green-400 border-green-400"}
                       >
-                        {contract.esCanje ? 'SÍ' : 'NO'}
+                        {c.esCanje ? 'SÍ' : 'NO'}
                       </Badge>
                     </div>
                   </div>
@@ -475,7 +519,7 @@ export default function ContractDetailModal({
                         <div>
                           <p className="text-xs text-slate-400">Inicio</p>
                           <p className="text-white font-medium">
-                            {new Date(contract.fechaInicio).toLocaleDateString()}
+                            {c.fechaInicio ? new Date(c.fechaInicio).toLocaleDateString() : '-'}
                           </p>
                         </div>
                       </div>
@@ -484,7 +528,7 @@ export default function ContractDetailModal({
                         <div>
                           <p className="text-xs text-slate-400">Fin</p>
                           <p className="text-white font-medium">
-                            {new Date(contract.fechaFin).toLocaleDateString()}
+                            {c.fechaFin ? new Date(c.fechaFin).toLocaleDateString() : '-'}
                           </p>
                         </div>
                       </div>
@@ -505,28 +549,28 @@ export default function ContractDetailModal({
                   <div>
                     <Label className="text-slate-300">Monto Facturado</Label>
                     <p className="text-2xl font-bold text-green-400">
-                      {CortexContractsUtils.formatCurrency(contract.financiero.montoFacturado)}
+                      {CortexContractsUtils.formatCurrency(c.financiero?.montoFacturado ?? 0)}
                     </p>
                     <p className="text-sm text-slate-400">
-                      {((contract.financiero.montoFacturado / contract.valorNeto) * 100).toFixed(1)}% del total
+                      {(((c.financiero?.montoFacturado ?? 0) / (c.valorNeto ?? 1)) * 100).toFixed(1)}% del total
                     </p>
                   </div>
 
                   <div>
                     <Label className="text-slate-300">Monto Pendiente</Label>
                     <p className="text-2xl font-bold text-orange-400">
-                      {CortexContractsUtils.formatCurrency(contract.financiero.montoPendiente)}
+                      {CortexContractsUtils.formatCurrency(c.financiero?.montoPendiente ?? 0)}
                     </p>
                     <p className="text-sm text-slate-400">
-                      {((contract.financiero.montoPendiente / contract.valorNeto) * 100).toFixed(1)}% del total
+                      {(((c.financiero?.montoPendiente ?? 0) / (c.valorNeto ?? 1)) * 100).toFixed(1)}% del total
                     </p>
                   </div>
 
-                  {contract.agencia && contract.facturarComisionAgencia && (
+                  {c.agencia && c.facturarComisionAgencia && (
                     <div>
                       <Label className="text-slate-300">Comisión Agencia</Label>
                       <p className="text-xl font-bold text-blue-400">
-                        {CortexContractsUtils.formatCurrency(contract.financiero.comisionAgencia)}
+                        {CortexContractsUtils.formatCurrency(c.financiero?.comisionAgencia ?? 0)}
                       </p>
                     </div>
                   )}
@@ -535,13 +579,13 @@ export default function ContractDetailModal({
                     <div>
                       <Label className="text-slate-300">Descuentos</Label>
                       <p className="text-red-400 font-medium">
-                        {CortexContractsUtils.formatCurrency(contract.financiero.descuentosAplicados)}
+                        {CortexContractsUtils.formatCurrency(c.financiero?.descuentosAplicados ?? 0)}
                       </p>
                     </div>
                     <div>
                       <Label className="text-slate-300">Impuestos</Label>
                       <p className="text-slate-300 font-medium">
-                        {CortexContractsUtils.formatCurrency(contract.financiero.impuestos)}
+                        {CortexContractsUtils.formatCurrency(c.financiero?.impuestos ?? 0)}
                       </p>
                     </div>
                   </div>
@@ -614,10 +658,10 @@ export default function ContractDetailModal({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${contract.documentos.contrato ? 'bg-green-400' : 'bg-red-400'}`} />
+                        <div className={`w-3 h-3 rounded-full ${c.documentos?.contrato ? 'bg-green-400' : 'bg-red-400'}`} />
                         <span className="text-white">Contrato Principal</span>
                       </div>
-                      {contract.documentos.contrato ? (
+                      {c.documentos?.contrato ? (
                         <CheckCircle className="h-5 w-5 text-green-400" />
                       ) : (
                         <AlertTriangle className="h-5 w-5 text-red-400" />
@@ -626,10 +670,10 @@ export default function ContractDetailModal({
 
                     <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${contract.documentos.anexos ? 'bg-green-400' : 'bg-red-400'}`} />
+                        <div className={`w-3 h-3 rounded-full ${c.documentos?.anexos ? 'bg-green-400' : 'bg-red-400'}`} />
                         <span className="text-white">Anexos</span>
                       </div>
-                      {contract.documentos.anexos ? (
+                      {c.documentos?.anexos ? (
                         <CheckCircle className="h-5 w-5 text-green-400" />
                       ) : (
                         <AlertTriangle className="h-5 w-5 text-red-400" />
@@ -638,10 +682,10 @@ export default function ContractDetailModal({
 
                     <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${contract.documentos.aprobaciones ? 'bg-green-400' : 'bg-red-400'}`} />
+                        <div className={`w-3 h-3 rounded-full ${c.documentos?.aprobaciones ? 'bg-green-400' : 'bg-red-400'}`} />
                         <span className="text-white">Aprobaciones</span>
                       </div>
-                      {contract.documentos.aprobaciones ? (
+                      {c.documentos?.aprobaciones ? (
                         <CheckCircle className="h-5 w-5 text-green-400" />
                       ) : (
                         <AlertTriangle className="h-5 w-5 text-red-400" />
@@ -654,7 +698,7 @@ export default function ContractDetailModal({
                         <span className="text-white">Facturas Generadas</span>
                       </div>
                       <Badge variant="outline" className="text-blue-400 border-blue-400">
-                        {contract.documentos.facturas}
+                        {c.documentos?.facturas}
                       </Badge>
                     </div>
                   </div>
@@ -710,9 +754,9 @@ export default function ContractDetailModal({
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {contract.tags.map((tag: string, index: number) => (
-                    <Badge 
-                      key={index} 
+                  {c.tags?.map((tag: string, index: number) => (
+                    <Badge
+                      key={`${tag}-${index}`}
                       variant="outline" 
                       className="text-emerald-400 border-emerald-400"
                     >
@@ -755,13 +799,13 @@ export default function ContractDetailModal({
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold text-center mb-2">
-                        <span className={`${contractAnalysis.riskScore >= 80 ? 'text-green-400' : contractAnalysis.riskScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
-                          {contractAnalysis.riskScore}
+                        <span className={`${(ca?.riskScore ?? 0) >= 80 ? 'text-green-400' : (ca?.riskScore ?? 0) >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {ca?.riskScore}
                         </span>
                         <span className="text-slate-400 text-lg">/100</span>
                       </div>
-                      <Progress 
-                        value={contractAnalysis.riskScore} 
+                      <Progress
+                        value={ca?.riskScore ?? 0}
                         className="h-2 bg-slate-700"
                       />
                     </CardContent>
@@ -773,13 +817,13 @@ export default function ContractDetailModal({
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold text-center mb-2">
-                        <span className={`${contractAnalysis.complianceScore >= 80 ? 'text-green-400' : contractAnalysis.complianceScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
-                          {contractAnalysis.complianceScore}
+                        <span className={`${(ca?.complianceScore ?? 0) >= 80 ? 'text-green-400' : (ca?.complianceScore ?? 0) >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {ca?.complianceScore}
                         </span>
                         <span className="text-slate-400 text-lg">/100</span>
                       </div>
-                      <Progress 
-                        value={contractAnalysis.complianceScore} 
+                      <Progress
+                        value={ca?.complianceScore ?? 0}
                         className="h-2 bg-slate-700"
                       />
                     </CardContent>
@@ -791,13 +835,13 @@ export default function ContractDetailModal({
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold text-center mb-2">
-                        <span className={`${contractAnalysis.profitabilityScore >= 80 ? 'text-green-400' : contractAnalysis.profitabilityScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
-                          {contractAnalysis.profitabilityScore}
+                        <span className={`${(ca?.profitabilityScore ?? 0) >= 80 ? 'text-green-400' : (ca?.profitabilityScore ?? 0) >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {ca?.profitabilityScore}
                         </span>
                         <span className="text-slate-400 text-lg">/100</span>
                       </div>
-                      <Progress 
-                        value={contractAnalysis.profitabilityScore} 
+                      <Progress
+                        value={ca?.profitabilityScore ?? 0}
                         className="h-2 bg-slate-700"
                       />
                     </CardContent>
@@ -814,15 +858,15 @@ export default function ContractDetailModal({
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {(contractAnalysis.recommendations as Record<string, unknown>[]).map((rec, index: number) => (
-                        <div key={index} className="p-4 bg-slate-700/50 rounded-lg border-l-4 border-emerald-500">
+                      {ca?.recommendations?.map((rec, index: number) => (
+                        <div key={`rec-${index}`} className="p-4 bg-slate-700/50 rounded-lg border-l-4 border-emerald-500">
                           <div className="flex items-start justify-between mb-2">
                             <h4 className="font-semibold text-white">{rec.title}</h4>
-                            <Badge 
+                            <Badge
                               variant={rec.priority === 'critical' ? 'destructive' : 'outline'}
                               className={rec.priority === 'high' ? 'text-orange-400 border-orange-400' : ''}
                             >
-                              {rec.priority.toUpperCase()}
+                              {(rec.priority ?? '').toUpperCase()}
                             </Badge>
                           </div>
                           <p className="text-slate-300 text-sm mb-3">{rec.description}</p>
@@ -850,13 +894,13 @@ export default function ContractDetailModal({
                         <div>
                           <h4 className="font-semibold text-white mb-3">Probabilidad de Éxito</h4>
                           <div className="text-2xl font-bold text-green-400 mb-2">
-                            {predictiveAnalytics.contractSuccess.probability}%
+                            {pa?.contractSuccess?.probability}%
                           </div>
                           <div className="space-y-2">
-                            {((predictiveAnalytics.contractSuccess as Record<string, unknown>).factors as Record<string, unknown>[]).map((factor, index: number) => (
-                              <div key={index} className="flex justify-between text-sm">
+                            {pa?.contractSuccess?.factors?.map((factor, index: number) => (
+                              <div key={`factor-${index}`} className="flex justify-between text-sm">
                                 <span className="text-slate-300">{factor.name}</span>
-                                <span className="text-white">{Math.round(factor.impact * 100)}%</span>
+                                <span className="text-white">{Math.round((factor.impact ?? 0) * 100)}%</span>
                               </div>
                             ))}
                           </div>
@@ -868,13 +912,13 @@ export default function ContractDetailModal({
                             <div>
                               <span className="text-slate-300 text-sm">Próximo Trimestre</span>
                               <div className="text-xl font-bold text-blue-400">
-                                {CortexContractsUtils.formatCurrency(predictiveAnalytics.revenueForecasting.nextQuarter)}
+                                {CortexContractsUtils.formatCurrency(pa?.revenueForecasting?.nextQuarter ?? 0)}
                               </div>
                             </div>
                             <div>
                               <span className="text-slate-300 text-sm">Confianza</span>
                               <div className="text-lg font-semibold text-white">
-                                {Math.round(predictiveAnalytics.revenueForecasting.confidence * 100)}%
+                                {Math.round((pa?.revenueForecasting?.confidence ?? 0) * 100)}%
                               </div>
                             </div>
                           </div>
@@ -896,25 +940,25 @@ export default function ContractDetailModal({
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-emerald-400">
-                          +{contractAnalysis.optimization.timeReduction}%
+                          +{ca?.optimization?.timeReduction}%
                         </div>
                         <div className="text-slate-300 text-sm">Reducción Tiempo</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-green-400">
-                          {CortexContractsUtils.formatCurrency(contractAnalysis.optimization.potentialSavings).slice(0, -3)}K
+                          {(CortexContractsUtils.formatCurrency(ca?.optimization?.potentialSavings ?? 0) ?? '').slice(0, -3)}K
                         </div>
                         <div className="text-slate-300 text-sm">Ahorro Potencial</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-blue-400">
-                          -{contractAnalysis.optimization.riskReduction}%
+                          -{ca?.optimization?.riskReduction}%
                         </div>
                         <div className="text-slate-300 text-sm">Reducción Riesgo</div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-purple-400">
-                          {contractAnalysis.optimization.optimizedEfficiency}%
+                          {ca?.optimization?.optimizedEfficiency}%
                         </div>
                         <div className="text-slate-300 text-sm">Eficiencia Objetivo</div>
                       </div>

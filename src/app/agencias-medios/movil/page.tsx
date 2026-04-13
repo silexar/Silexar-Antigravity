@@ -50,7 +50,7 @@ export default function MobileAgenciasMediosApp() {
         setAgencias(data.data);
       }
     } catch {
-      // /* console.error('Error fetching agencias medios:', error) */;
+      // /* */;
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ export default function MobileAgenciasMediosApp() {
   };
 
   // Helper para Bottom Navigation
-  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: string; icon: React.ElementType; label: string; alert?: boolean }) => {
+  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: 'dashboard' | 'lista' | 'alertas'; icon: React.ElementType; label: string; alert?: boolean }) => {
     const isActive = activeTab === id;
     return (
       <button 

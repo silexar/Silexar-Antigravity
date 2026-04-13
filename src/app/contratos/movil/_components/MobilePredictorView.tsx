@@ -115,8 +115,8 @@ export function MobilePredictorView() {
 
               {isExp && (
                 <div className="px-3 pb-3 space-y-2 border-t border-slate-50 pt-2">
-                  {p.factores.map((f, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-[10px] text-slate-600">
+                  {p.factores.map((f) => (
+                    <div key={f} className="flex items-center gap-1.5 text-[10px] text-slate-600">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {f}
                     </div>
                   ))}

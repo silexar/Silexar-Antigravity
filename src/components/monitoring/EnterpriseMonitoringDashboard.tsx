@@ -118,8 +118,7 @@ export default function EnterpriseMonitoringDashboard() {
       generateAlerts(newMetrics);
 
     } catch (error) {
-      console.error('Failed to update metrics:', error);
-    }
+      }
     finally {
       isUpdatingRef.current = false;
     }

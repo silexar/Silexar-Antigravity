@@ -1,5 +1,10 @@
 # 🧠 BASE DE CONOCIMIENTO QA — MEMORIA AUTODIDACTA (QC_KNOWLEDGE)
 
+> **VERSIÓN:** 2.0.0  
+> **ÚLTIMA ACTUALIZACIÓN:** 2026-04-03  
+> **AGENTE RESPONSABLE:** CEO Kimi  
+> **TOTAL LECCIONES:** 15
+
 > **PROTOCOLO DE USO:**
 > - **ANTES** de cada auditoría: LEER este archivo completo.
 > - **DESPUÉS** de cada auditoría: AGREGAR nuevas lecciones.
@@ -11,14 +16,84 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Total Lecciones | 12 |
+| Total Lecciones | 15 |
 | Módulos Auditados | 12 módulos DDD + auditoría global Tier 0 |
-| Última Auditoría | 2026-03-26 |
-| Errores Más Recurrentes | `logger.xxx({object})`, `as unknown` aritmética, `unknown` en params |
+| Última Auditoría | 2026-04-03 |
+| Errores Más Recurrentes | `logger.xxx({object})`, nombres de archivos con espacios, archivos temporales en repo |
 
 ---
 
-## 🗃️ LECCIONES REGISTRADAS
+## 🆕 LECCIONES RECIENTES (2026-04-03)
+
+### [013] Archivos Temporales de Build en Repositorio
+**Módulo origen:** Sistema (Limpieza Base)
+**Fecha:** 2026-04-03
+**Situación:** Archivos `*.tsbuildinfo` (~1MB+) y `vitest.config.ts.timestamp-*.mjs` estaban en el repositorio, aumentando tamaño innecesariamente y causando conflictos potenciales.
+**Lección (Qué revisar):** 
+```bash
+# Buscar antes de cada commit
+git status
+# Verificar que NO aparezcan:
+# - *.tsbuildinfo
+# - *.timestamp-*.mjs
+# - .next/
+# - node_modules/
+```
+**Auto-Fix aplicado:** Eliminados 3 archivos, actualizado `.gitignore` con reglas más estrictas.
+**Severidad:** 🔴 Crítica
+**🔁 Recurrencia:** 1
+
+---
+
+### [014] Nombres de Archivos con Espacios y Caracteres Especiales
+**Módulo origen:** Sistema (Organización Documentación)
+**Fecha:** 2026-04-03
+**Situación:** Archivos como `# ?? SILEXAR PULSE QUANTUM - SISTEM.txt` y `Manifiesto de Arquitectura Definitiva silexar pulse 2025.txt` con espacios, emojis (#, ??) y caracteres especiales. Esto causa:
+- Problemas en scripts de automatización
+- Fallos en CI/CD pipelines
+- Incompatibilidad entre sistemas operativos
+- Dificultad para referenciar en documentación
+**Lección (Qué revisar):** Todos los archivos deben seguir:
+```
+✅ NOMBRE_DESCRIPITVO_EXTENSION
+✅ nombre-archivo-descriptivo.md
+✅ ComponenteReact.tsx
+✅ modulo-nombre-archivo.ts
+
+❌ "archivo con espacios.txt"
+❌ "# archivo-con-emojis !!.txt"
+❌ "Archivo.Muchos.Puntos.txt"
+❌ "documento (1).pdf"
+```
+**Auto-Fix aplicado:** Renombrados a:
+- `docs/VISION_ESTRATEGICA_SILEXAR_PULSE.md`
+- `docs/MANIFIESTO_ARQUITECTURA_2025.md`
+**Severidad:** 🔴 Crítica
+**🔁 Recurrencia:** 1
+
+---
+
+### [015] Documentación Dispersa en Raíz del Proyecto
+**Módulo origen:** Sistema (Organización)
+**Fecha:** 2026-04-03
+**Situación:** Carpeta `pendientes/` y `Pendientes y Manuales/` en raíz del proyecto mezclaban documentación estratégica con estructura de código.
+**Lección (Qué revisar):** TODA documentación debe estar en `docs/`:
+```
+✅ docs/VISION_ESTRATEGICA.md
+✅ docs/planning/modulo-x.md
+✅ docs/reports/auditoria.md
+
+❌ ./pendientes/documento.md
+❌ ./Pendientes y Manuales/archivo.txt
+❌ ./documento_suelto.md
+```
+**Auto-Fix aplicado:** Documentación movida a `docs/`, carpetas eliminadas.
+**Severidad:** 🟠 Alta
+**🔁 Recurrencia:** 1
+
+---
+
+## 🗃️ LECCIONES HISTÓRICAS
 
 ### [001] Renderizado Condicional Defectuoso en JSX
 **Módulo origen:** Vencimientos
@@ -162,6 +237,26 @@ catch (err: unknown) {
 **Fecha:** <YYYY-MM-DD>
 **Situación:** <qué pasó exactamente>
 **Lección (Qué revisar):** <qué buscar proactivamente>
+**Auto-Fix aplicado:** <qué corrección se hizo automáticamente>
 **Severidad:** 🔴 Crítica | 🟠 Alta | 🟡 Media | 🟢 Baja
 **🔁 Recurrencia:** 1
 ```
+
+---
+
+## 🎯 CHECKLIST PRE-AUDITORÍA
+
+Antes de comenzar cualquier auditoría QC, verificar:
+
+- [ ] Leído `SYSTEM_KNOWLEDGE_BASE.md` completo
+- [ ] Leído este archivo (`qc_knowledge.md`) completo
+- [ ] Identificado módulo a auditar
+- [ ] Ejecutado `npm run check` (TypeScript)
+- [ ] Ejecutado `npm run lint` (ESLint)
+- [ ] Revisado estructura de directorios del módulo
+
+---
+
+> **"La calidad es la suma de pequeñas atenciones al detalle, documentadas y mejoradas continuamente."**
+> 
+> *— Agente CEO Kimi, Silexar Pulse Quality Engineering*

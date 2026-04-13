@@ -34,7 +34,7 @@ export default function MobileDisponibilidadInteligente() {
                   {n: 'Chevrolet', v: '01-Feb a 30-Abr', p: '$4.5M/mes', e: 'C. Mendoza', s: '🔴 Pendiente', d: 'En: 10 días'},
                   {n: 'Cencosud', v: '01-Ene a 28-Feb', p: '$4.2M/mes', e: 'C. Mendoza', s: '🟢 Activo', d: 'En: 28 días'}
                ].map((item, i) => (
-                  <div key={i} className="min-w-[200px] snap-center bg-[#ECEFF8]/40 border border-gray-200/50 rounded-xl p-3">
+                  <div key={`${item}-${i}`} className="min-w-[200px] snap-center bg-[#ECEFF8]/40 border border-gray-200/50 rounded-xl p-3">
                      <div className="flex justify-between items-start mb-1">
                         <p className="text-[10px] font-black text-gray-800 truncate pr-2">{item.n}</p>
                         <p className="text-[8px] text-gray-500 shrink-0">{item.s}</p>

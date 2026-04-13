@@ -201,9 +201,9 @@ export function ObservacionesCampana({
                   )}
                   
                   <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                    {obs.mensaje.split(/(@\w+)/g).map((part, i) => 
+                    {obs.mensaje.split(/(@\w+)/g).map((part, i) =>
                       part.startsWith('@') ? (
-                        <span key={i} className="text-blue-600 font-medium">{part}</span>
+                        <span key={`mention-${i}`} className="text-blue-600 font-medium">{part}</span>
                       ) : part
                     )}
                   </p>

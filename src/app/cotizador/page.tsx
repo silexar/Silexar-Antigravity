@@ -333,7 +333,7 @@ export default function CotizadorPage() {
                     </div>
                     
                     {cotizacion.descuentos.map((d, i) => (
-                      <div key={i} className="flex justify-between text-emerald-600">
+                      <div key={`${d}-${i}`} className="flex justify-between text-emerald-600">
                         <span>{d.tipo} ({d.porcentaje}%)</span>
                         <span>-${(d.monto / 1000).toFixed(0)}K</span>
                       </div>
@@ -369,7 +369,7 @@ export default function CotizadorPage() {
                   
                   <div className="mt-4 space-y-2">
                     {cotizacion.recomendaciones.map((rec, i) => (
-                      <div key={i} className="text-sm text-slate-600 p-2 bg-violet-50 rounded-lg">
+                      <div key={`${rec}-${i}`} className="text-sm text-slate-600 p-2 bg-violet-50 rounded-lg">
                         {rec}
                       </div>
                     ))}

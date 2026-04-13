@@ -159,7 +159,7 @@ export default function DashboardEjecutivoPage() {
           { icon: Users, label: 'Clientes', color: 'from-rose-400 to-rose-500', href: '/anunciantes' },
           { icon: Calendar, label: 'Agenda', color: 'from-emerald-400 to-emerald-500', href: '#' }
         ].map((acc, i) => (
-          <a key={i} href={acc.href} className="flex flex-col items-center gap-1">
+          <a key={`${acc}-${i}`} href={acc.href} className="flex flex-col items-center gap-1">
             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${acc.color} flex items-center justify-center`}>
               <acc.icon className="w-5 h-5 text-white" />
             </div>
@@ -287,7 +287,7 @@ export default function DashboardEjecutivoPage() {
             { icon: MessageCircle, label: 'Asistente' },
             { icon: Calendar, label: 'Agenda' }
           ].map((item, i) => (
-            <button key={i} className={`flex flex-col items-center gap-1 ${item.active ? 'text-indigo-400' : 'text-white/50'}`}>
+            <button key={`${item}-${i}`} className={`flex flex-col items-center gap-1 ${item.active ? 'text-indigo-400' : 'text-white/50'}`}>
               <item.icon className="w-5 h-5" />
               <span className="text-xs">{item.label}</span>
             </button>

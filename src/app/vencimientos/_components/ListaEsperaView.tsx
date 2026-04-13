@@ -36,7 +36,7 @@ export default function ListaEsperaView() {
 
       <div className="space-y-6">
         {LISTAS_ESPERA_MOCK.map((lista, i) => (
-          <div key={i} className="rounded-xl border border-gray-200 bg-white/3 p-5">
+          <div key={`${lista}-${i}`} className="rounded-xl border border-gray-200 bg-white/3 p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <span className="text-lg">📻</span>

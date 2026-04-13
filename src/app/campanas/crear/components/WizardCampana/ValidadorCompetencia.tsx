@@ -139,12 +139,13 @@ export const ValidadorCompetencia: React.FC<ValidadorCompetenciaProps> = ({
   const handleAgregarRegla = () => {
     if (!nuevoAnuncianteA || !nuevoAnuncianteB) return;
 
+    const prioridad: 'alta' | 'media' = nuevaMismaTanda ? 'alta' : 'media';
     onAgregarRegla?.({
       anuncianteA: nuevoAnuncianteA,
       anuncianteB: nuevoAnuncianteB,
       separacionMinima: nuevaSeparacion,
       mismaTanda: nuevaMismaTanda,
-      prioridad: nuevaMismaTanda ? 'alta' : 'media',
+      prioridad,
       activa: true,
       categoria: nuevaCategoria
     });

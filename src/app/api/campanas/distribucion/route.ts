@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'RATE_LIMIT' }, { status: 429, headers: baseHeaders })
     }
 
-    const body = await request.json().catch(() => ({}))
+    const body = await request.json().catch((_e) => null)
     const { lineas = [] } = body || {}
 
     const lineasDistribuidas = lineas.map((l: Record<string, unknown>) => {

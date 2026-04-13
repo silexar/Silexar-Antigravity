@@ -176,9 +176,9 @@ export default function VistaOperativaTable({ onSelectRow }: { onSelectRow?: (id
                     { icon: '🚨', label: 'Alertar', color: 'red' },
                     { icon: '📈', label: 'Tendencias', color: 'cyan' },
                     { icon: '🔧', label: 'Diagnosticar', color: 'orange' }
-                  ].map((btn, idx) => (
-                    <button 
-                      key={idx}
+                  ].map((btn) => (
+                    <button
+                      key={btn.label}
                       title={btn.label}
                       className="w-8 h-8 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 shadow-sm flex items-center justify-center text-xs transition-all hover:scale-110 active:scale-90"
                     >

@@ -119,8 +119,7 @@ export function SDKManagement() {
       
       setSdkConfigs(mockConfigs)
     } catch (error) {
-      console.error('Error cargando configuraciones SDK:', error)
-    } finally {
+      } finally {
       setIsLoading(false)
     }
   }
@@ -149,8 +148,7 @@ export function SDKManagement() {
       
       setAnalytics(mockAnalytics)
     } catch (error) {
-      console.error('Error cargando analytics:', error)
-    }
+      }
   }
 
   const generateNewAPIKey = async (platform: 'iOS' | 'Android') => {
@@ -175,8 +173,7 @@ export function SDKManagement() {
       setShowApiKeys(prev => ({ ...prev, [newConfig.api_key]: true }))
       
     } catch (error) {
-      console.error('Error generando API key:', error)
-    } finally {
+      } finally {
       setIsLoading(false)
     }
   }
@@ -191,8 +188,7 @@ export function SDKManagement() {
         )
       )
     } catch (error) {
-      console.error('Error revocando API key:', error)
-    }
+      }
   }
 
   const copyToClipboard = async (text: string, keyId: string) => {
@@ -201,8 +197,7 @@ export function SDKManagement() {
       setCopiedKey(keyId)
       setTimeout(() => setCopiedKey(null), 2000)
     } catch (error) {
-      console.error('Error copiando al portapapeles:', error)
-    }
+      }
   }
 
   const toggleKeyVisibility = (apiKey: string) => {

@@ -43,7 +43,9 @@ export function ObjectionHandler() {
     fetch('/api/equipos-ventas/deals?tipo=objeciones')
       .then(r => r.json())
       .then(d => { if (d.success) setObjeciones(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[ObjectionHandler] Failed to load objeciones:', error);
+      });
   }, []);
 
   const filtered = objeciones.filter(o =>

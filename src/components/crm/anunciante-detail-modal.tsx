@@ -120,7 +120,7 @@ export default function AnuncianteDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-2xl text-white flex items-center gap-3">
             <Building2 className="h-6 w-6 text-blue-400" />

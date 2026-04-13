@@ -75,8 +75,7 @@ export function AIPredictiveDashboard({ enterpriseId, className = '' }: AIDashbo
 
       }
     } catch (error) {
-      console.error('AI prediction error:', error)
-    } finally {
+      } finally {
       setIsProcessing(false)
       setPredictionQuery('')
     }
@@ -188,7 +187,7 @@ export function AIPredictiveDashboard({ enterpriseId, className = '' }: AIDashbo
                 <h4 className="text-sm font-medium mb-2">Key Factors:</h4>
                 <ul className="text-sm space-y-1">
                   {latestPrediction.factors.map((factor, index) => (
-                    <li key={index} className="flex items-center gap-2">
+                    <li key={factor} className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-blue-500 rounded-full" />
                       {factor}
                     </li>
@@ -343,8 +342,7 @@ export function AIAnomalyDetectionPanel({ enterpriseId }: { enterpriseId: string
         
         setAnomalies(mockAnomalies)
       } catch (error) {
-        console.error('Anomaly detection error:', error)
-      }
+        }
     }
     
     detectAnomalies()

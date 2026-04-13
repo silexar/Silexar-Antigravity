@@ -11,6 +11,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   RefreshCw,
@@ -104,11 +105,6 @@ const factoresIA = [
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTES AUXILIARES
 // ═══════════════════════════════════════════════════════════════
-
-const formatCurrency = (value: number) => {
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
-  return `$${value.toLocaleString()}`;
-};
 
 const formatDias = (fecha: Date) => {
   const dias = Math.ceil((fecha.getTime() - Date.now()) / (1000 * 60 * 60 * 24));

@@ -1080,8 +1080,9 @@ arr2.forEach(item => {
     });
     
     if (currentFunction) {
-      currentFunction.lines = lines.length - currentFunction.startLine + 1;
-      functions.push(currentFunction);
+      const cf = currentFunction as { name: string; startLine: number; lines: number; complexity: number };
+      cf.lines = lines.length - cf.startLine + 1;
+      functions.push(cf);
     }
     
     return functions;

@@ -330,7 +330,7 @@ export class WhatsAppBusiness {
         text: { body: text }
       })
 
-      message.id = response.messages[0].id
+      message.id = ((response.messages as Record<string, unknown>[])?.[0]?.id as string) || message.id
       this.messageQueue.push(message)
 
       // Actualizar CRM si hay clientId
@@ -387,7 +387,7 @@ export class WhatsAppBusiness {
         template: message.content.template
       })
 
-      message.id = response.messages[0].id
+      message.id = ((response.messages as Record<string, unknown>[])?.[0]?.id as string) || message.id
       this.messageQueue.push(message)
 
       // Actualizar métricas del template
@@ -448,7 +448,7 @@ export class WhatsAppBusiness {
         interactive
       })
 
-      message.id = response.messages[0].id
+      message.id = ((response.messages as Record<string, unknown>[])?.[0]?.id as string) || message.id
       this.messageQueue.push(message)
 
       logger.info(`📱 WhatsApp mensaje interactivo enviado a ${to}`)
@@ -466,10 +466,10 @@ export class WhatsAppBusiness {
   async processWebhook(payload: Record<string, unknown>): Promise<void> {
     try {
       if (payload.object === 'whatsapp_business_account') {
-        for (const entry of payload.entry) {
-          for (const change of entry.changes) {
+        for (const entry of (payload.entry as Record<string, unknown>[])) {
+          for (const change of (entry.changes as Record<string, unknown>[])) {
             if (change.field === 'messages') {
-              await this.processMessageUpdate(change.value)
+              await this.processMessageUpdate(change.value as Record<string, unknown>)
             }
           }
         }
@@ -695,26 +695,27 @@ export class WhatsAppBusiness {
   private async processMessageUpdate(value: Record<string, unknown>): Promise<void> {
     // Procesar actualizaciones de estado de mensajes
     if (value.messages) {
-      for (const message of value.messages) {
+      for (const message of (value.messages as Record<string, unknown>[])) {
         await this.handleIncomingMessage(message)
       }
     }
 
     if (value.statuses) {
-      for (const status of value.statuses) {
+      for (const status of (value.statuses as Record<string, unknown>[])) {
         await this.handleMessageStatus(status)
       }
     }
   }
 
   private async handleIncomingMessage(messageData: Record<string, unknown>): Promise<void> {
+    const msgProfile = messageData.profile as Record<string, unknown> | undefined
     const message: WhatsAppMessage = {
-      id: messageData.id,
-      from: messageData.from,
+      id: messageData.id as string,
+      from: messageData.from as string,
       to: this.phoneNumberId,
-      type: messageData.type,
+      type: messageData.type as WhatsAppMessage['type'],
       content: this.parseMessageContent(messageData),
-      timestamp: new Date(messageData.timestamp * 1000),
+      timestamp: new Date((messageData.timestamp as number) * 1000),
       status: { status: 'delivered', timestamp: new Date() }
     }
 
@@ -723,7 +724,7 @@ export class WhatsAppBusiness {
     // Actualizar conversación del contacto
     const contact = await this.upsertContact({
       wa_id: message.from,
-      profile: { name: messageData.profile?.name || 'Unknown', phone: message.from }
+      profile: { name: (msgProfile?.name as string) || 'Unknown', phone: message.from }
     })
     
     contact.conversationHistory.push(message)
@@ -736,29 +737,34 @@ export class WhatsAppBusiness {
   private async handleMessageStatus(statusData: Record<string, unknown>): Promise<void> {
     const messageIndex = this.messageQueue.findIndex(m => m.id === statusData.id)
     if (messageIndex !== -1) {
+      const errors = statusData.errors as Record<string, unknown>[] | undefined
       this.messageQueue[messageIndex].status = {
-        status: statusData.status,
-        timestamp: new Date(statusData.timestamp * 1000),
-        error: statusData.errors?.[0]
+        status: statusData.status as WhatsAppMessage['status']['status'],
+        timestamp: new Date((statusData.timestamp as number) * 1000),
+        error: errors?.[0] as WhatsAppError | undefined
       }
     }
   }
 
   private parseMessageContent(messageData: Record<string, unknown>): MessageContent {
     switch (messageData.type) {
-      case 'text':
-        return { text: messageData.text.body }
+      case 'text': {
+        const textData = messageData.text as Record<string, unknown> | undefined
+        return { text: (textData?.body as string) || '' }
+      }
       case 'image':
       case 'video':
       case 'audio':
-      case 'document':
+      case 'document': {
+        const mediaData = messageData[messageData.type as string] as Record<string, unknown> | undefined
         return {
           media: {
-            type: messageData.type,
-            url: messageData[messageData.type].id, // En producción sería la URL real
-            caption: messageData[messageData.type].caption
+            type: messageData.type as 'image' | 'document' | 'video' | 'audio',
+            url: (mediaData?.id as string) || '', // En producción sería la URL real
+            caption: mediaData?.caption as string | undefined
           }
         }
+      }
       default:
         return { text: 'Mensaje no soportado' }
     }

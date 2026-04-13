@@ -277,7 +277,7 @@ export const CortexAutomationsPanel = () => {
 
                 {/* Flow Actions */}
                 <div className="flex gap-2">
-                  <button className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors">
+                  <button className="flex items-center gap-1.5 px-4 py-2 bg-[#F0EDE8] text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors">
                     <Play size={12} /> Run Now
                   </button>
                   <button className="flex items-center gap-1.5 px-4 py-2 bg-white text-slate-600 text-xs font-semibold rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">

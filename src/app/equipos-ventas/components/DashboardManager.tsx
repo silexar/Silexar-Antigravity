@@ -64,7 +64,7 @@ export const DashboardManager = () => {
             onClick={() => setActiveSection(s.key)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               activeSection === s.key
-                ? 'bg-slate-900 text-white shadow-lg'
+                ? 'bg-[#F0EDE8] text-white shadow-lg'
                 : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
@@ -137,7 +137,7 @@ export const DashboardManager = () => {
                  <h3 className="font-bold text-slate-800 mb-4">Forecast del Equipo</h3>
                  <div className="h-40 flex items-end justify-between gap-2">
                     {[40, 65, 80].map((h, i) => (
-                      <div key={i} className="w-full bg-slate-100 rounded-t-lg relative group">
+                      <div key={`${h}-${i}`} className="w-full bg-slate-100 rounded-t-lg relative group">
                          <div 
                            className={`absolute bottom-0 w-full rounded-t-lg transition-all duration-500 ${i===1 ? 'bg-orange-400' : i===2 ? 'bg-blue-500' : 'bg-slate-300'}`} 
                            style={{ height: `${h}%` }}

@@ -1,5 +1,5 @@
 /**
- * 🌐 SILEXAR PULSE - API Routes Tandas
+ * 🌐 SILEXAR PULSE - API Routes Tandas TIER 0
  * 
  * @description API REST endpoints para gestión de tandas comerciales
  * 
@@ -9,8 +9,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // Mock de datos
@@ -70,76 +70,108 @@ const mockTandas = [
   }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
-    const emisora = searchParams.get('emisora') || '';
-    const estado = searchParams.get('estado') || '';
+/**
+ * GET - Listar tandas
+ * Requiere: emisiones:read
+ */
+export const GET = withApiRoute(
+  { resource: 'emisiones', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
+        const emisora = searchParams.get('emisora') || '';
+        const estado = searchParams.get('estado') || '';
 
-    let filtered = [...mockTandas];
+        let filtered = [...mockTandas];
 
-    if (fecha) {
-      filtered = filtered.filter(t => t.fecha === fecha);
+        if (fecha) {
+          filtered = filtered.filter(t => t.fecha === fecha);
+        }
+
+        if (emisora) {
+          filtered = filtered.filter(t => t.emisoraNombre.toLowerCase().includes(emisora.toLowerCase()));
+        }
+
+        if (estado) {
+          filtered = filtered.filter(t => t.estado === estado);
+        }
+
+        // Stats
+        const stats = {
+          totalTandas: filtered.length,
+          aprobadas: filtered.filter(t => t.estado === 'aprobada').length,
+          enRevision: filtered.filter(t => t.estado === 'en_revision').length,
+          exportadas: filtered.filter(t => t.estado === 'exportada').length,
+          spotsTotales: filtered.reduce((sum, t) => sum + t.spotsProgramados, 0)
+        };
+
+        return NextResponse.json({
+          success: true,
+          data: filtered,
+          stats,
+          fecha,
+          consultadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Tandas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'tandas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    if (emisora) {
-      filtered = filtered.filter(t => t.emisoraNombre.toLowerCase().includes(emisora.toLowerCase()));
-    }
-
-    if (estado) {
-      filtered = filtered.filter(t => t.estado === estado);
-    }
-
-    // Stats
-    const stats = {
-      totalTandas: filtered.length,
-      aprobadas: filtered.filter(t => t.estado === 'aprobada').length,
-      enRevision: filtered.filter(t => t.estado === 'en_revision').length,
-      exportadas: filtered.filter(t => t.estado === 'exportada').length,
-      spotsTotales: filtered.reduce((sum, t) => sum + t.spotsProgramados, 0)
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      stats,
-      fecha
-    });
-  } catch (error) {
-    logger.error('[API/Tandas] Error:', error instanceof Error ? error : undefined, { module: 'tandas' });
-    return NextResponse.json({ success: false, error: 'Error al obtener tandas' }, { status: 500 });
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.emisoraId || !body.fecha || !body.horaInicio) {
-      return NextResponse.json({ success: false, error: 'Emisora, fecha y hora requeridos' }, { status: 400 });
+/**
+ * POST - Crear tanda
+ * Requiere: emisiones:create
+ */
+export const POST = withApiRoute(
+  { resource: 'emisiones', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const body = await req.json();
+        
+        if (!body.emisoraId || !body.fecha || !body.horaInicio) {
+          return NextResponse.json({ success: false, error: 'Emisora, fecha y hora requeridos' }, { status: 400 });
+        }
+
+        const newTanda = {
+          id: `tan-${Date.now()}`,
+          codigo: `TAN-${(mockTandas.length + 1).toString().padStart(3, '0')}`,
+          emisoraNombre: 'Nueva Emisora',
+          fecha: body.fecha,
+          horaInicio: body.horaInicio,
+          horaFin: body.horaFin || null,
+          duracionMaxima: body.duracionMaxima || 180,
+          duracionProgramada: 0,
+          spotsMaximos: body.spotsMaximos || 6,
+          spotsProgramados: 0,
+          estado: 'planificada',
+          spots: [],
+          creadoPor: ctx.userId
+        };
+
+        mockTandas.push(newTanda);
+
+        return NextResponse.json({ 
+          success: true, 
+          data: newTanda, 
+          message: 'Tanda creada' 
+        }, { status: 201 });
+      });
+    } catch (error) {
+      logger.error('[API/Tandas] Error:', error instanceof Error ? error : undefined, { 
+        module: 'tandas',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    const newTanda = {
-      id: `tan-${Date.now()}`,
-      codigo: `TAN-${(mockTandas.length + 1).toString().padStart(3, '0')}`,
-      emisoraNombre: 'Nueva Emisora',
-      fecha: body.fecha,
-      horaInicio: body.horaInicio,
-      horaFin: body.horaFin || null,
-      duracionMaxima: body.duracionMaxima || 180,
-      duracionProgramada: 0,
-      spotsMaximos: body.spotsMaximos || 6,
-      spotsProgramados: 0,
-      estado: 'planificada',
-      spots: []
-    };
-
-    mockTandas.push(newTanda);
-
-    return NextResponse.json({ success: true, data: newTanda, message: 'Tanda creada' }, { status: 201 });
-  } catch (error) {
-    logger.error('[API/Tandas] Error:', error instanceof Error ? error : undefined, { module: 'tandas' });
-    return NextResponse.json({ success: false, error: 'Error al crear tanda' }, { status: 500 });
   }
-}
+);

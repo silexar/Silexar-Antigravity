@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silexar Pulse Security Dashboard - TIER 0 Fort Knox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%); }
+    .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+    .score-circle { 
+      width: 200px; height: 200px; 
+      border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; font-weight: 700;
+      position: relative;
+    }
+    .score-circle::before {
+      content: ''; position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: #1e1b4b;
+    }
+    .score-value { position: relative; z-index: 1; }
+    .pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .severity-critical { background: linear-gradient(135deg, #dc2626, #991b1b); }
+    .severity-high { background: linear-gradient(135deg, #ea580c, #c2410c); }
+    .severity-medium { background: linear-gradient(135deg, #ca8a04, #a16207); }
+    .severity-low { background: linear-gradient(135deg, #16a34a, #15803d); }
+    .agent-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+    .finding-row:hover { background: rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+  <!-- Header -->
+  <header class="border-b border-white/10 bg-black/20">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Security Dashboard</h1>
+          <p class="text-sm text-gray-400">Silexar Pulse • TIER 0 Fort Knox Edition</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-full">
+          <div class="w-2 h-2 bg-green-400 rounded-full pulse"></div>
+          <span class="text-sm text-green-400">En vivo</span>
+        </div>
+        <button onclick="refreshDashboard()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+          Actualizar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Score Principal -->
+    <section class="mb-8">
+      <div class="card rounded-2xl p-8 border border-white/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-8">
+            <div id="scoreCircle" class="score-circle bg-gradient-to-br from-green-400 to-green-600">
+              <span class="score-value text-white">87</span>
+            </div>
+            <div>
+              <h2 class="text-3xl font-bold mb-2">Score de Seguridad</h2>
+              <div id="certification" class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-full text-lg font-semibold">
+                ✅ CERTIFIED ENTERPRISE
+              </div>
+              <p class="text-gray-400 mt-2">Última actualización: <span id="lastUpdate">2026-04-05 09:45:33</span></p>
+            </div>
+          </div>
+          <div class="grid grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-red-400" id="countCritical">0</div>
+              <div class="text-sm text-gray-400">Críticos</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-orange-400" id="countHigh">12</div>
+              <div class="text-sm text-gray-400">Altos</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-yellow-400" id="countMedium">45</div>
+              <div class="text-sm text-gray-400">Medios</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-green-400" id="countLow">128</div>
+              <div class="text-sm text-gray-400">Bajos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agentes -->
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold mb-4">Estado de Agentes</h3>
+      <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('AC')">
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-blue-400 font-bold">AC</span>
+          </div>
+          <div class="text-sm font-medium">Coordinator</div>
+          <div class="text-xs text-green-400 mt-1">✓ Activo</div>
+        </div>
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('AS')">
+          <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-purple-400 font-bold">AS</span>
+          </div>
+          <div class="text-sm font-medium">Static</div>
+          <div class="text-xs text-green-400 mt-1">✓ Activo</div>
+        </div>
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('ASE')">
+          <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-red-400 font-bold">ASE</span>
+          </div>
+          <div class="text-sm font-medium">Secrets</div>
+          <div class="text-xs text-green-400 mt-1">✓ Activo</div>
+        </div>
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('ASAST')">
+          <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-orange-400 font-bold">AST</span>
+          </div>
+          <div class="text-sm font-medium">SAST</div>
+          <div class="text-xs text-green-400 mt-1">✓ Activo</div>
+        </div>
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('AD')">
+          <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-cyan-400 font-bold">AD</span>
+          </div>
+          <div class="text-sm font-medium">Dynamic</div>
+          <div class="text-xs text-gray-400 mt-1">En espera</div>
+        </div>
+        <div class="agent-card card rounded-xl p-4 border border-white/10 cursor-pointer" onclick="filterByAgent('AIAC')">
+          <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-pink-400 font-bold">IAC</span>
+          </div>
+          <div class="text-sm font-medium">IaC</div>
+          <div class="text-xs text-green-400 mt-1">✓ Activo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gráficos -->
+    <section class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="card rounded-2xl p-6 border border-white/10">
+        <h3 class="text-lg font-semibold mb-4">Vulnerabilidades por Severidad</h3>
+        <canvas id="severityChart" height="200"></canvas>
+      </div>
+      <div class="card rounded-2xl p-6 border border-white/10">
+        <h3 class="text-lg font-semibold mb-4">Tendencia de Score</h3>
+        <canvas id="trendChart" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Dimensiones -->
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold mb-4">Dimensiones de Seguridad</h3>
+      <div class="card rounded-2xl p-6 border border-white/10">
+        <div class="space-y-4">
+          <div class="flex items-center gap-4">
+            <div class="w-32 text-sm">OWASP Top 10</div>
+            <div class="flex-1 h-8 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-end px-2 text-sm font-semibold" style="width: 90%">90%</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-32 text-sm">8 Capas AI</div>
+            <div class="flex-1 h-8 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-end px-2 text-sm font-semibold text-black" style="width: 85%">85%</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-32 text-sm">Secrets</div>
+            <div class="flex-1 h-8 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-end px-2 text-sm font-semibold" style="width: 100%">100%</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-32 text-sm">SAST</div>
+            <div class="flex-1 h-8 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-end px-2 text-sm font-semibold text-black" style="width: 80%">80%</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-32 text-sm">Infraestructura</div>
+            <div class="flex-1 h-8 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-end px-2 text-sm font-semibold" style="width: 92%">92%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hallazgos Recientes -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold">Hallazgos Recientes</h3>
+        <div class="flex gap-2">
+          <button onclick="filterSeverity('all')" class="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded-full transition">Todos</button>
+          <button onclick="filterSeverity('critical')" class="px-3 py-1 text-sm bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-full transition">Críticos</button>
+          <button onclick="filterSeverity('high')" class="px-3 py-1 text-sm bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-full transition">Altos</button>
+        </div>
+      </div>
+      <div class="card rounded-2xl border border-white/10 overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-white/5">
+            <tr>
+              <th class="text-left p-4 text-sm font-medium text-gray-400">Severidad</th>
+              <th class="text-left p-4 text-sm font-medium text-gray-400">Categoría</th>
+              <th class="text-left p-4 text-sm font-medium text-gray-400">Archivo</th>
+              <th class="text-left p-4 text-sm font-medium text-gray-400">Agente</th>
+              <th class="text-left p-4 text-sm font-medium text-gray-400">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="findingsTable">
+            <!-- Dinámico -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Datos de ejemplo
+    const findings = [
+      { severity: 'HIGH', category: 'AI_LAYER_L1_MISSING', file: 'src/lib/ai/wil.ts', line: 45, agent: 'AS', status: 'OPEN' },
+      { severity: 'MEDIUM', category: 'NO_ZOD_VALIDATION', file: 'src/app/api/campanas/route.ts', line: 23, agent: 'ASAST', status: 'OPEN' },
+      { severity: 'LOW', category: 'MAGIC_NUMBER', file: 'src/lib/utils/format.ts', line: 12, agent: 'ASAST', status: 'OPEN' },
+      { severity: 'HIGH', category: 'ANY_IN_SECURITY', file: 'src/lib/security/rbac.ts', line: 88, agent: 'AS', status: 'FIXED' },
+      { severity: 'MEDIUM', category: 'NO_TRY_CATCH', file: 'src/app/api/auth/route.ts', line: 34, agent: 'AS', status: 'OPEN' },
+    ];
+
+    // Renderizar hallazgos
+    function renderFindings(filter = 'all') {
+      const tbody = document.getElementById('findingsTable');
+      tbody.innerHTML = findings
+        .filter(f => filter === 'all' || f.severity.toLowerCase() === filter)
+        .map(f => `
+          <tr class="finding-row border-t border-white/5">
+            <td class="p-4">
+              <span class="px-2 py-1 rounded text-xs font-semibold ${
+                f.severity === 'CRITICAL' ? 'bg-red-500 text-white' :
+                f.severity === 'HIGH' ? 'bg-orange-500 text-white' :
+                f.severity === 'MEDIUM' ? 'bg-yellow-500 text-black' :
+                'bg-green-500 text-white'
+              }">${f.severity}</span>
+            </td>
+            <td class="p-4 text-sm">${f.category}</td>
+            <td class="p-4 text-sm font-mono text-gray-400">${f.file}:${f.line}</td>
+            <td class="p-4 text-sm">${f.agent}</td>
+            <td class="p-4">
+              <span class="px-2 py-1 rounded text-xs ${
+                f.status === 'FIXED' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              }">${f.status}</span>
+            </td>
+          </tr>
+        `).join('');
+    }
+
+    // Filtrar por severidad
+    function filterSeverity(severity) {
+      renderFindings(severity);
+    }
+
+    // Filtrar por agente
+    function filterByAgent(agent) {
+      const tbody = document.getElementById('findingsTable');
+      tbody.innerHTML = findings
+        .filter(f => f.agent === agent)
+        .map(f => `
+          <tr class="finding-row border-t border-white/5">
+            <td class="p-4">
+              <span class="px-2 py-1 rounded text-xs font-semibold ${
+                f.severity === 'CRITICAL' ? 'bg-red-500 text-white' :
+                f.severity === 'HIGH' ? 'bg-orange-500 text-white' :
+                f.severity === 'MEDIUM' ? 'bg-yellow-500 text-black' :
+                'bg-green-500 text-white'
+              }">${f.severity}</span>
+            </td>
+            <td class="p-4 text-sm">${f.category}</td>
+            <td class="p-4 text-sm font-mono text-gray-400">${f.file}:${f.line}</td>
+            <td class="p-4 text-sm">${f.agent}</td>
+            <td class="p-4">
+              <span class="px-2 py-1 rounded text-xs ${
+                f.status === 'FIXED' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              }">${f.status}</span>
+            </td>
+          </tr>
+        `).join('');
+    }
+
+    // Actualizar dashboard
+    function refreshDashboard() {
+      document.getElementById('lastUpdate').textContent = new Date().toLocaleString('es-CL');
+      // Aquí iría la llamada real a la API
+      alert('Dashboard actualizado');
+    }
+
+    // Gráfico de severidad
+    const severityCtx = document.getElementById('severityChart').getContext('2d');
+    new Chart(severityCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Críticos', 'Altos', 'Medios', 'Bajos'],
+        datasets: [{
+          data: [0, 12, 45, 128],
+          backgroundColor: ['#dc2626', '#ea580c', '#ca8a04', '#16a34a'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { color: 'white' }
+          }
+        }
+      }
+    });
+
+    // Gráfico de tendencia
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    new Chart(trendCtx, {
+      type: 'line',
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Score',
+          data: [72, 75, 78, 82, 85, 87],
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34, 197, 94, 0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: 'white' }
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: { color: 'rgba(255,255,255,0.5)' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          x: {
+            ticks: { color: 'rgba(255,255,255,0.5)' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+
+    // Inicializar
+    renderFindings();
+
+    // Auto-refresh cada 30 segundos
+    setInterval(() => {
+      refreshDashboard();
+    }, 30000);
+  </script>
+</body>
+</html>

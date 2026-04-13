@@ -2,17 +2,20 @@
  * SILEXAR PULSE - Mobile Authentication API
  *
  * Endpoints for mobile app authentication:
- * - Login with email/password (bcrypt verification)
+ * - Login with email/password (Argon2id verification via PasswordSecurityEngine)
  * - JWT token refresh
  * - Logout (single device / all devices)
  * - Token verification
  * - Biometria (prepared)
  * - Device listing
+ *
+ * SECURITY: Uses PasswordSecurityEngine (Argon2id) — bcryptjs removed.
+ * Migration path: users with legacy bcrypt hashes must reset their password.
  */
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import bcrypt from 'bcryptjs';
+import { PasswordSecurityEngine } from '@/lib/security/password-security';
 import { eq, and } from 'drizzle-orm';
 import { signToken, signRefreshToken, verifyTokenServer } from '@/lib/api/jwt';
 import {
@@ -28,6 +31,7 @@ import { users } from '@/lib/db/schema';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { authRateLimiter } from '@/lib/security/rate-limiter';
 import { auditLogger } from '@/lib/security/audit-logger';
+import { AuditEventType } from '@/lib/security/audit-types';
 import { logger } from '@/lib/observability';
 
 // ═══════════════════════════════════════════════════════════════
@@ -179,12 +183,7 @@ async function handleLogin(body: unknown, request: NextRequest) {
       .limit(1);
 
     if (userRows.length === 0) {
-      await auditLogger.logEvent({
-        type: 'FAILED_LOGIN',
-        userId: '',
-        module: 'mobile-auth',
-        details: { email, reason: 'user_not_found', ip },
-      });
+      auditLogger.log({ type: AuditEventType.LOGIN_FAILURE, userId: '', metadata: { module: 'mobile-auth', email, reason: 'user_not_found', ip } });
       return apiUnauthorized('Credenciales inválidas');
     }
 
@@ -192,28 +191,20 @@ async function handleLogin(body: unknown, request: NextRequest) {
 
     // Check account status
     if (user.status !== 'active') {
-      await auditLogger.logEvent({
-        type: 'FAILED_LOGIN',
-        userId: user.id,
-        module: 'mobile-auth',
-        details: { email, reason: 'account_inactive', status: user.status },
-      });
+      auditLogger.log({ type: AuditEventType.LOGIN_FAILURE, userId: user.id, metadata: { module: 'mobile-auth', email, reason: 'account_inactive', status: user.status } });
       return apiError('ACCOUNT_INACTIVE', 'Cuenta no activa. Contacta al administrador.', 403);
     }
 
-    // Verify password with bcrypt
+    // Verify password with PasswordSecurityEngine (Argon2id)
+    // Supports Argon2id (new) and PBKDF2 (legacy) hashes via PasswordSecurityEngine.verifyPassword()
+    // Legacy bcrypt hashes will NOT verify — affected users must reset their password.
     if (!user.passwordHash) {
       return apiUnauthorized('Credenciales inválidas');
     }
 
-    const passwordValid = await bcrypt.compare(password, user.passwordHash);
+    const passwordValid = await PasswordSecurityEngine.verifyPassword(password, user.passwordHash);
     if (!passwordValid) {
-      await auditLogger.logEvent({
-        type: 'FAILED_LOGIN',
-        userId: user.id,
-        module: 'mobile-auth',
-        details: { email, reason: 'invalid_password', ip },
-      });
+      auditLogger.log({ type: AuditEventType.LOGIN_FAILURE, userId: user.id, metadata: { module: 'mobile-auth', email, reason: 'invalid_password', ip } });
       return apiUnauthorized('Credenciales inválidas');
     }
 
@@ -254,17 +245,10 @@ async function handleLogin(body: unknown, request: NextRequest) {
     };
 
     // Audit log
-    await auditLogger.logEvent({
-      type: 'LOGIN',
-      userId: user.id,
-      module: 'mobile-auth',
-      details: {
-        email,
+    auditLogger.log({ type: AuditEventType.LOGIN_SUCCESS, userId: user.id, metadata: { module: 'mobile-auth', email,
         dispositivo: dispositivoNombre,
         plataforma,
-        dispositivoId,
-      },
-    });
+        dispositivoId, } });
 
     logger.info('mobile-auth login_success', { module: 'mobile-auth', action: 'login_success', userId: user.id,
       plataforma,
@@ -366,12 +350,7 @@ async function handleLogout(body: unknown, request: NextRequest) {
 
   const ctx = getUserContext(request);
 
-  await auditLogger.logEvent({
-    type: 'LOGOUT',
-    userId: ctx.userId || 'unknown',
-    module: 'mobile-auth',
-    details: { dispositivoId: parsed.data.dispositivoId },
-  });
+  auditLogger.log({ type: AuditEventType.LOGOUT, userId: ctx.userId || 'unknown', metadata: { module: 'mobile-auth', dispositivoId: parsed.data.dispositivoId } });
 
   logger.info('mobile-auth logout', { module: 'mobile-auth', action: 'logout', userId: ctx.userId,
     dispositivoId: parsed.data.dispositivoId,
@@ -388,12 +367,7 @@ async function handleLogoutAll(request: NextRequest) {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
 
-  await auditLogger.logEvent({
-    type: 'LOGOUT',
-    userId: ctx.userId,
-    module: 'mobile-auth',
-    details: { scope: 'all_devices' },
-  });
+  auditLogger.log({ type: AuditEventType.LOGOUT, userId: ctx.userId, metadata: { module: 'mobile-auth', scope: 'all_devices' } });
 
   logger.info('mobile-auth logout_all', { module: 'mobile-auth', action: 'logout_all', userId: ctx.userId,
   });

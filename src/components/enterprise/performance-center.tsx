@@ -403,7 +403,6 @@ export default function PerformanceCenter() {
       setIsLoading(false);
 
     } catch (error) {
-      console.error('Failed to load performance data:', error);
       setIsLoading(false);
     }
   };
@@ -436,7 +435,7 @@ export default function PerformanceCenter() {
       case 'CRITICAL':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-[#F0EDE8] text-gray-800 border-gray-200';
     }
   };
 
@@ -474,7 +473,7 @@ export default function PerformanceCenter() {
   const getOptimizationStatusColor = (status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED') => {
     switch (status) {
       case 'PENDING':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#F0EDE8] text-gray-800';
       case 'IN_PROGRESS':
         return 'bg-blue-100 text-blue-800';
       case 'COMPLETED':
@@ -526,7 +525,7 @@ export default function PerformanceCenter() {
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-[#F0EDE8] rounded-lg p-1">
             {[
               { id: 'overview', name: 'Overview', icon: Gauge },
               { id: 'targets', name: 'Targets', icon: Target },
@@ -535,10 +534,10 @@ export default function PerformanceCenter() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as any)}
+                onClick={() => setViewMode(mode.id as unknown)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-blue-600 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -627,7 +626,7 @@ export default function PerformanceCenter() {
           {servicePerformances.map((service) => (
             <div
               key={service.serviceName}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-[12px_12px_24px_#d1d5db,-12px_-12px_24px_#ffffff] transition-shadow cursor-pointer"
               onClick={() => setSelectedService(service)}
             >
               <div className="flex items-center justify-between mb-4">
@@ -720,7 +719,7 @@ export default function PerformanceCenter() {
           </div>
           <div className="divide-y divide-gray-200">
             {performanceTargets.map((target, index) => (
-              <div key={index} className="p-6">
+              <div key={`${target}-${index}`} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Target className="w-5 h-5 text-blue-500" />
@@ -827,7 +826,7 @@ export default function PerformanceCenter() {
 
       {/* Service Detail Modal */}
       {selectedService && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-[#F0EDE8] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -857,7 +856,7 @@ export default function PerformanceCenter() {
                   { metric: selectedService.memoryUsage, icon: MemoryStick, color: 'green' },
                   { metric: selectedService.availability, icon: CheckCircle, color: 'indigo' }
                 ].map(({ metric, icon: Icon, color }, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  <div key={`${metric}-${index}`} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <Icon className={`w-5 h-5 text-${color}-500`} />
                       <h4 className="font-medium text-gray-900">{metric.name}</h4>

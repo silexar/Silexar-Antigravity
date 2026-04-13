@@ -19,7 +19,7 @@ export const CampanaLiveDeck: React.FC<CampanaLiveDeckProps> = ({ data, classNam
         (data.tipo === 'FM' ? 45000 : data.tipo === 'DIGITAL' ? 120000 : data.tipo === 'HYBRID' ? 185000 : 0);
 
     return (
-        <Card className={cn("bg-slate-900 text-white border-slate-800 shadow-2xl overflow-hidden", className)}>
+        <Card className={cn("bg-[#F0EDE8] text-white border-slate-800 shadow-2xl overflow-hidden", className)}>
             <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-indigo-500/20 rounded-lg">

@@ -117,22 +117,31 @@ describe('useToast Hook - TIER 0 Tests', () => {
     it('should handle multiple toasts with FIFO dismissal', async () => {
       const { result } = renderHook(() => useToast())
       
+      // Create Toast 1 with short duration
       act(() => {
-        result.current.toast({ title: 'Toast 1' })
-        result.current.toast({ title: 'Toast 2' })
-        result.current.toast({ title: 'Toast 3' })
+        result.current.toast({ title: 'Toast 1', duration: 1000 })
       })
       
-      expect(result.current.toasts).toHaveLength(3)
-      
-      // Wait for first toast to be dismissed
+      // Wait 600ms and create Toast 2 with longer duration
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 3100))
+        await new Promise(resolve => setTimeout(resolve, 600))
+      })
+      
+      act(() => {
+        result.current.toast({ title: 'Toast 2', duration: 3000 })
       })
       
       expect(result.current.toasts).toHaveLength(2)
+      
+      // Wait 800ms more (total ~1400ms since Toast 1, ~200ms since Toast 2)
+      // Toast 1 should be gone (expired at 1000ms), Toast 2 should remain
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 800))
+      })
+      
+      // Only Toast 2 should remain
+      expect(result.current.toasts).toHaveLength(1)
       expect(result.current.toasts[0].title).toBe('Toast 2')
-      expect(result.current.toasts[1].title).toBe('Toast 3')
     })
   })
 

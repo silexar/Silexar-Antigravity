@@ -475,6 +475,7 @@ export default function StepTerminosComerciales({
                 max="30"
                 value={terminos.descuentoGeneral}
                 onChange={(e) => handleChange('descuentoGeneral', parseInt(e.target.value))}
+                aria-label="Descuento General"
                 className="flex-1"
               />
               <span className={`text-xl font-bold ${excedeLimites ? 'text-red-600' : 'text-slate-800'}`}>

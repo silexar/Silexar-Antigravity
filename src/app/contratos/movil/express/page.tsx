@@ -122,10 +122,11 @@ const InputMobile: React.FC<{
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={label}
         className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-lg"
       />
       {onVoice && (
-        <button onClick={onVoice} className="p-3 rounded-xl bg-indigo-100 text-indigo-600">
+        <button onClick={onVoice} aria-label="Entrada por voz" className="p-3 rounded-xl bg-indigo-100 text-indigo-600">
           <Mic className="w-5 h-5" />
         </button>
       )}

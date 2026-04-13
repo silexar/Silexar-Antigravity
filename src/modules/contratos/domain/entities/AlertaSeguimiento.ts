@@ -4,8 +4,6 @@
  * Nivel Fortune 10 - Gestión Empresarial Avanzada
  */
 
-import { EstadoPlanPagos, EstadoPlanPagosEnum } from '../value-objects/EstadoPlanPagos';
-
 export enum PrioridadAlerta {
   CRITICA = 'critica',
   ALTA = 'alta',
@@ -167,7 +165,11 @@ export class AlertaSeguimiento {
     prioridad: PrioridadAlerta,
     opciones?: Partial<Omit<AlertaSeguimientoProps, 'contratoId' | 'titulo' | 'descripcion' | 'categoria' | 'prioridad'>>
   ): AlertaSeguimiento {
-    const slaDefaults = AlertaSeguimiento.SLA_DEFAULTS[prioridad];
+    // Safe access with type checking to prevent object injection
+    const slaDefaults = (prioridad === PrioridadAlerta.CRITICA) ? AlertaSeguimiento.SLA_DEFAULTS[PrioridadAlerta.CRITICA] :
+                       (prioridad === PrioridadAlerta.ALTA) ? AlertaSeguimiento.SLA_DEFAULTS[PrioridadAlerta.ALTA] :
+                       (prioridad === PrioridadAlerta.BAJA) ? AlertaSeguimiento.SLA_DEFAULTS[PrioridadAlerta.BAJA] :
+                       AlertaSeguimiento.SLA_DEFAULTS[PrioridadAlerta.MEDIA];
     
     return new AlertaSeguimiento({
       contratoId,
@@ -226,13 +228,19 @@ export class AlertaSeguimiento {
       `Asignada a ${responsable.nombre} (${responsable.cargo}) ${motivo ? `- ${motivo}` : ''}`
     );
 
-    this._metadatos.asignaciones = this._metadatos.asignaciones || [];
-    this._metadatos.asignaciones.push({
+    const asignaciones = (this._metadatos.asignaciones || []) as Array<{
+      fecha: string;
+      responsableAnterior?: string;
+      responsableNuevo: string;
+      motivo?: string;
+    }>;
+    asignaciones.push({
       fecha: new Date().toISOString(),
       responsableAnterior: responsableAnterior?.nombre,
       responsableNuevo: responsable.nombre,
       motivo
     });
+    this._metadatos.asignaciones = asignaciones;
 
     // Enviar notificación al nuevo responsable
     this.enviarNotificacion(
@@ -276,14 +284,21 @@ export class AlertaSeguimiento {
       );
     }
 
-    this._metadatos.escalamientos = this._metadatos.escalamientos || [];
-    this._metadatos.escalamientos.push({
+    const escalamientos = (this._metadatos.escalamientos || []) as Array<{
+      fecha: string;
+      nivelAnterior: number;
+      nivelNuevo: number;
+      motivo?: string;
+      responsables: string[];
+    }>;
+    escalamientos.push({
       fecha: new Date().toISOString(),
       nivelAnterior: this._nivelEscalamientoActual - 1,
       nivelNuevo: this._nivelEscalamientoActual,
       motivo,
       responsables: nuevoNivel.responsables.map(r => r.nombre)
     });
+    this._metadatos.escalamientos = escalamientos;
 
     return true;
   }
@@ -337,7 +352,6 @@ export class AlertaSeguimiento {
       return false;
     }
 
-    const sla = this.verificarSLA();
     const nivelActual = this._escalamientos[this._nivelEscalamientoActual];
 
     // Verificar si debe escalar por tiempo
@@ -524,7 +538,7 @@ export class AlertaSeguimiento {
     return false;
   }
 
-  private async simularEnvioNotificacion(notificacion: NotificacionProps): Promise<void> {
+  private async simularEnvioNotificacion(_notificacion: NotificacionProps): Promise<void> {
     // Simular delay de envío
     await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 200));
     
@@ -534,7 +548,7 @@ export class AlertaSeguimiento {
     }
   }
 
-  private async simularAccionAutomatica(accion: string): Promise<void> {
+  private async simularAccionAutomatica(_accion: string): Promise<void> {
     // Simular ejecución de acción
     await new Promise(resolve => setTimeout(resolve, 500));
   }
@@ -559,7 +573,12 @@ export class AlertaSeguimiento {
       [PrioridadAlerta.BAJA]: [480, 960, 1440]
     };
 
-    return tiemposBase[prioridad].map((tiempo, index) => ({
+    // Safe access with type checking to prevent object injection
+    const tiempos = (prioridad === PrioridadAlerta.CRITICA) ? tiemposBase[PrioridadAlerta.CRITICA] :
+                   (prioridad === PrioridadAlerta.ALTA) ? tiemposBase[PrioridadAlerta.ALTA] :
+                   (prioridad === PrioridadAlerta.BAJA) ? tiemposBase[PrioridadAlerta.BAJA] :
+                   tiemposBase[PrioridadAlerta.MEDIA];
+    return tiempos.map((tiempo, index) => ({
       nivel: index,
       tiempoLimite: tiempo,
       responsables: [], // Se asignarían responsables reales

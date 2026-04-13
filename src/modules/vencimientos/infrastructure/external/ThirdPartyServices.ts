@@ -13,7 +13,7 @@ export class CortexFlowPredictionService {
     return 0.85; // 85% de probabilidad de renovación
   }
 
-  async optimizarPricing(duracion: number, franja: string): Promise<number> {
+  async optimizarPricing(_duracion: number, _franja: string): Promise<number> {
     return 1.15; // Factor de pricing pico detectado
   }
 }

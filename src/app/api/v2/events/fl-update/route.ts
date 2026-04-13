@@ -247,9 +247,13 @@ export async function POST(request: NextRequest) {
     if (!pendingUpdates.has(modelVersion)) {
       pendingUpdates.set(modelVersion, []);
     }
-    pendingUpdates.get(modelVersion)!.push(storedUpdate);
+    const updatesList = pendingUpdates.get(modelVersion)
+    if (!updatesList) {
+      return NextResponse.json({ success: false, error: 'Model version not found' }, { status: 404 })
+    }
+    updatesList.push(storedUpdate)
 
-    const currentUpdates = pendingUpdates.get(modelVersion)!.length;
+    const currentUpdates = updatesList.length
 
     // [STRUCTURED-LOG] // logger.info({ message: `[FL-Update] Received update from ${body.sdkId} (${body.platform}) for model ${modelVersion}. Total: ${currentUpdates}`, module: 'fl-update' });
 

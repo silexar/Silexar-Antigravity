@@ -86,7 +86,7 @@ const fmt = (v: number) => {
 const TrendIcon = ({ trend }: { trend: string }) => {
   if (trend === 'IMPROVING') return <ArrowUpRight size={14} className="text-emerald-400" />;
   if (trend === 'DECLINING') return <ArrowDownRight size={14} className="text-red-400" />;
-  return <Minus size={14} className="text-slate-400" />;
+  return <Minus size={14} className="text-[#888780]" />;
 };
 
 const RiskBadge = ({ level }: { level: string }) => {
@@ -113,7 +113,7 @@ const HealthGauge = ({ score }: { score: number }) => {
           strokeDasharray={`${dash} ${circumference}`} strokeLinecap="round"
           className="transition-all duration-700" />
       </svg>
-      <span className="absolute text-sm font-black text-white">{score}</span>
+      <span className="absolute text-sm font-black text-[#2C2C2A]">{score}</span>
     </div>
   );
 };
@@ -131,11 +131,11 @@ export function KAMDashboard() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/25">
-              <Crown size={28} className="text-white" />
+              <Crown size={28} className="text-[#2C2C2A]" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-white tracking-tight">Key Account Management</h2>
-              <p className="text-sm text-slate-400">{p.nombre} &middot; Senior KAM &middot; Strategic Tier</p>
+              <h2 className="text-xl font-black text-[#2C2C2A] tracking-tight">Key Account Management</h2>
+              <p className="text-sm text-[#888780]">{p.nombre} &middot; Senior KAM &middot; Strategic Tier</p>
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-6 text-center">
@@ -148,8 +148,8 @@ export function KAMDashboard() {
               <div key={m.label} className="flex items-center gap-2">
                 <m.icon size={16} className={m.color} />
                 <div className="text-left">
-                  <p className="text-lg font-black text-white">{m.value}</p>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wider">{m.label}</p>
+                  <p className="text-lg font-black text-[#2C2C2A]">{m.value}</p>
+                  <p className="text-[10px] text-[#888780] uppercase tracking-wider">{m.label}</p>
                 </div>
               </div>
             ))}
@@ -159,7 +159,7 @@ export function KAMDashboard() {
 
       {/* ── STRATEGIC ACCOUNTS GRID ── */}
       <div>
-        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-bold text-[#888780] uppercase tracking-wider mb-3 flex items-center gap-2">
           <Star size={14} className="text-amber-400" /> Strategic Accounts
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -170,32 +170,32 @@ export function KAMDashboard() {
               className={`text-left p-4 rounded-xl border transition-all duration-300 hover:scale-[1.02] ${
                 selectedAccount === acc.id
                   ? 'bg-amber-500/10 border-amber-500/40 shadow-lg shadow-amber-500/10'
-                  : 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600'
+                  : 'bg-[#E8E5E0]/50 border-[#D4D1CC]/50 hover:border-[#CCCAC5]'
               }`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="font-bold text-white text-sm">{acc.nombre}</p>
-                  <p className="text-xs text-slate-500">{fmt(acc.arr)} ARR</p>
+                  <p className="font-bold text-[#2C2C2A] text-sm">{acc.nombre}</p>
+                  <p className="text-xs text-[#888780]">{fmt(acc.arr)} ARR</p>
                 </div>
                 <HealthGauge score={acc.healthScore} />
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 flex items-center gap-1">
+                  <span className="text-[#888780] flex items-center gap-1">
                     <TrendIcon trend={acc.trend} />
                     {acc.trend === 'IMPROVING' ? 'Growing' : acc.trend === 'DECLINING' ? 'Declining' : 'Stable'}
                   </span>
                   <RiskBadge level={acc.riskLevel} />
                 </div>
 
-                <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                <div className="flex items-center gap-1 text-[10px] text-[#888780]">
                   <Shield size={10} /> Champion: {acc.championStrength}%
                 </div>
 
-                <div className="bg-slate-900/50 rounded-lg p-2 text-[10px]">
-                  <span className="text-slate-500">Next:</span>{' '}
+                <div className="bg-[#F0EDE8]/50 rounded-lg p-2 text-[10px]">
+                  <span className="text-[#888780]">Next:</span>{' '}
                   <span className="text-amber-300 font-semibold">{acc.nextAction}</span>
                 </div>
 
@@ -213,8 +213,8 @@ export function KAMDashboard() {
       {/* ── ACTION ITEMS + EXPANSION ── */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Action Items */}
-        <div className="lg:col-span-3 bg-slate-800/40 rounded-xl border border-slate-700/50 p-5">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <div className="lg:col-span-3 bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-5">
+          <h3 className="text-sm font-bold text-[#888780] uppercase tracking-wider mb-4 flex items-center gap-2">
             <AlertTriangle size={14} className="text-amber-400" /> IA Action Items
             <span className="ml-auto bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
               {ACTION_ITEMS.length}
@@ -229,18 +229,18 @@ export function KAMDashboard() {
                 LOW: 'border-l-slate-500',
               };
               return (
-                <div key={i} className={`border-l-2 rounded-r-lg p-3 flex items-center justify-between ${prioColor[item.prioridad] || ''}`}>
+                <div key={`${item}-${i}`} className={`border-l-2 rounded-r-lg p-3 flex items-center justify-between ${prioColor[item.prioridad] || ''}`}>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-white font-medium truncate">{item.mensaje}</p>
+                    <p className="text-xs text-[#2C2C2A] font-medium truncate">{item.mensaje}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      {item.cuenta && <span className="text-[10px] text-slate-500">{item.cuenta}</span>}
+                      {item.cuenta && <span className="text-[10px] text-[#888780]">{item.cuenta}</span>}
                       <span className={`text-[9px] font-bold uppercase ${
                         item.prioridad === 'CRITICAL' ? 'text-red-400' :
                         item.prioridad === 'HIGH' ? 'text-amber-400' : 'text-blue-400'
                       }`}>{item.prioridad}</span>
                     </div>
                   </div>
-                  <button className="p-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                  <button className="p-1.5 rounded-lg bg-[#D4D1CC]/50 hover:bg-slate-600 text-[#888780] hover:text-[#2C2C2A] transition-colors">
                     <ChevronRight size={14} />
                   </button>
                 </div>
@@ -250,38 +250,38 @@ export function KAMDashboard() {
         </div>
 
         {/* Expansion Pipeline */}
-        <div className="lg:col-span-2 bg-slate-800/40 rounded-xl border border-slate-700/50 p-5">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <div className="lg:col-span-2 bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-5">
+          <h3 className="text-sm font-bold text-[#888780] uppercase tracking-wider mb-4 flex items-center gap-2">
             <Zap size={14} className="text-emerald-400" /> Expansion Pipeline
           </h3>
           <div className="text-center mb-4">
-            <p className="text-3xl font-black text-white">{fmt(EXPANSION_PIPELINE.valorTotal)}</p>
-            <p className="text-xs text-slate-500">Total Pipeline &middot; {fmt(EXPANSION_PIPELINE.valorWeighted)} weighted</p>
+            <p className="text-3xl font-black text-[#2C2C2A]">{fmt(EXPANSION_PIPELINE.valorTotal)}</p>
+            <p className="text-xs text-[#888780]">Total Pipeline &middot; {fmt(EXPANSION_PIPELINE.valorWeighted)} weighted</p>
           </div>
           <div className="space-y-3">
             {Object.entries(EXPANSION_PIPELINE.porTipo).map(([tipo, count]) => (
               <div key={tipo} className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{tipo}</span>
+                <span className="text-xs text-[#888780]">{tipo}</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="w-20 h-1.5 bg-[#D4D1CC] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500"
                       style={{ width: `${(count / EXPANSION_PIPELINE.totalOportunidades) * 100}%` }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-white w-4 text-right">{count}</span>
+                  <span className="text-xs font-bold text-[#2C2C2A] w-4 text-right">{count}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-700/50">
+          <div className="mt-4 pt-4 border-t border-[#D4D1CC]/50">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-500">Opportunities</span>
-              <span className="text-white font-bold">{EXPANSION_PIPELINE.totalOportunidades}</span>
+              <span className="text-[#888780]">Opportunities</span>
+              <span className="text-[#2C2C2A] font-bold">{EXPANSION_PIPELINE.totalOportunidades}</span>
             </div>
             <div className="flex items-center justify-between text-xs mt-1">
-              <span className="text-slate-500">Win Rate Est.</span>
+              <span className="text-[#888780]">Win Rate Est.</span>
               <span className="text-emerald-400 font-bold">63%</span>
             </div>
           </div>
@@ -296,15 +296,15 @@ export function KAMDashboard() {
           { label: 'Retention', value: `${p.retentionRate}%`, sub: 'best in class', icon: Shield, color: 'from-violet-500 to-purple-600' },
           { label: 'Certifications', value: p.certificaciones.toString(), sub: 'all current', icon: Star, color: 'from-amber-500 to-orange-600' },
         ].map(m => (
-          <div key={m.label} className="bg-slate-800/40 rounded-xl border border-slate-700/50 p-4">
+          <div key={m.label} className="bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${m.color} flex items-center justify-center`}>
-                <m.icon size={16} className="text-white" />
+                <m.icon size={16} className="text-[#2C2C2A]" />
               </div>
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider">{m.label}</span>
+              <span className="text-[10px] text-[#888780] uppercase tracking-wider">{m.label}</span>
             </div>
-            <p className="text-xl font-black text-white">{m.value}</p>
-            <p className="text-[10px] text-slate-500">{m.sub}</p>
+            <p className="text-xl font-black text-[#2C2C2A]">{m.value}</p>
+            <p className="text-[10px] text-[#888780]">{m.sub}</p>
           </div>
         ))}
       </div>
@@ -316,27 +316,27 @@ export function KAMDashboard() {
         return (
           <div className="bg-gradient-to-r from-slate-800/80 to-slate-800/40 rounded-xl border border-amber-500/20 p-5 animate-in slide-in-from-top duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[#2C2C2A] flex items-center gap-2">
                 <Eye size={14} className="text-amber-400" /> {acc.nombre} — Detail View
               </h3>
-              <button onClick={() => setSelectedAccount(null)} className="text-xs text-slate-500 hover:text-white">Close</button>
+              <button onClick={() => setSelectedAccount(null)} className="text-xs text-[#888780] hover:text-[#2C2C2A]">Close</button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
-                <p className="text-lg font-black text-white">{fmt(acc.arr)}</p>
-                <p className="text-[10px] text-slate-500">Current ARR</p>
+                <p className="text-lg font-black text-[#2C2C2A]">{fmt(acc.arr)}</p>
+                <p className="text-[10px] text-[#888780]">Current ARR</p>
               </div>
               <div>
                 <p className="text-lg font-black text-emerald-400">{fmt(acc.expansionPotential)}</p>
-                <p className="text-[10px] text-slate-500">Expansion Potential</p>
+                <p className="text-[10px] text-[#888780]">Expansion Potential</p>
               </div>
               <div>
-                <p className="text-lg font-black text-white">{acc.championStrength}%</p>
-                <p className="text-[10px] text-slate-500">Champion Strength</p>
+                <p className="text-lg font-black text-[#2C2C2A]">{acc.championStrength}%</p>
+                <p className="text-[10px] text-[#888780]">Champion Strength</p>
               </div>
               <div>
                 <HealthGauge score={acc.healthScore} />
-                <p className="text-[10px] text-slate-500 mt-1">Health Score</p>
+                <p className="text-[10px] text-[#888780] mt-1">Health Score</p>
               </div>
             </div>
           </div>

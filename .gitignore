@@ -58,3 +58,74 @@ compilation-check-*.txt
 *.njsproj
 *.sln
 *.sw?
+# Build artifacts
+tsconfig*.tsbuildinfo
+vitest.config.ts.timestamp-*.mjs
+
+# Documentation folders (use docs/ instead)
+pendientes/
+Pendientes y Manuales/
+
+# Security - Credentials
+*.pem
+*.key
+*.p12
+*.pfx
+.env.development.local
+credentials.json
+serviceAccountKey.json
+.htpasswd
+.netrc
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.dump
+# End Security
+
+# === SECURITY LEARNING DATABASE ===
+# Keep the learning DB and knowledge base tracked for production
+# These files contain AI-learned security patterns
+.security-learning-db.json
+.security/knowledge-base.json
+.security/fix-history.json
+# But ignore backups and temp files
+.security/*.backup
+.security/*.bak
+.security/*.tmp
+
+# === LOCAL BUILD & AUDIT ARTIFACTS ===
+build-debug.txt
+build-errors.txt
+build-log.txt
+build-output.txt
+api-check-output.txt
+app-check-output.txt
+core-check-output.txt
+minimal-check.txt
+tsc-output.txt
+eslint-output.txt
+security-report.json
+
+# Root-level generated audit reports
+/AUDITORIA_*.md
+/ANALISIS_*.md
+/CORRECCIONES_*.md
+/DIA*.md
+/RBAC_COVERAGE_*.md
+/RED_TEAM_*.md
+/RESUMEN_EJECUTIVO_*.md
+/VALIDACION_SEGURIDAD_*.md
+/ESTADO_FINAL_*.md
+/FINAL_CONFIGURATION_*.md
+/HARDENING_*.md
+/SECURITY_*.md
+/SECURITY_PIPELINE_*.md
+/SKILL_*.md
+/COMANDOS_SEGURIDAD_GUIA.md
+
+# Local tool configs/backups
+.qwen/
+.security-backups/
+scripts/git-commit-bypass.ps1
+scripts/git-commit-bypass.sh

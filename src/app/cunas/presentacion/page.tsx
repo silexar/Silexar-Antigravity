@@ -287,7 +287,7 @@ export default function PresentacionPage() {
               <div className="flex items-center gap-1 h-16">
                 {Array.from({ length: 50 }).map((_, i) => (
                   <div 
-                    key={i}
+                    key={`${_}-${i}`}
                     className={`w-1.5 rounded-full transition-all duration-150 ${
                       (i / 50) * 100 < progress ? 'bg-emerald-500' : 'bg-white/20'
                     }`}

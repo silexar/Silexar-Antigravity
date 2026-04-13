@@ -1,0 +1,268 @@
+# Snyk Configuration - Silexar Pulse
+# Monitoreo continuo de vulnerabilidades en dependencias
+# Versión: 3.0.0 - Fort Knox Edition
+
+# Versión del archivo de configuración
+version: v1.0.0
+
+# Política de severidad
+severityThreshold: high
+
+# Ignorar vulnerabilidades específicas
+# Formato: SNYK-JS-PACKAGE-XXXX:
+#   - '*':                      # Todas las versiones
+#       reason: Razón del ignore
+#       expires: 2026-06-01    # Fecha de expiración
+ignore:
+  # Ejemplo:
+  # SNYK-JS-LODASH-12345:
+  #   - '*':
+  #       reason: 'No explotable en nuestro contexto'
+  #       expires: '2026-06-01T00:00:00.000Z'
+
+# Configuración de escaneo
+scan:
+  # Escanear en cada install
+  autoScan: true
+  
+  # Escaneo de desarrollo
+  dev: true
+  
+  # Escaneo de producción
+  production: true
+  
+  # Tipos de manifestos a escanear
+  manifests:
+    - package.json
+    - package-lock.json
+    - yarn.lock
+    - pnpm-lock.yaml
+
+# Configuración de patches
+patch:
+  # Aplicar patches automáticamente
+  auto: false
+  
+  # Requerir review antes de aplicar
+  requireReview: true
+
+# Configuración de PRs automáticos
+pr:
+  # Crear PRs automáticos
+  enabled: true
+  
+  # Severidad mínima para crear PR
+  severityThreshold: high
+  
+  # Límite de PRs abiertos
+  limit: 10
+  
+  # Política de agrupación
+  policy:
+    # Agrupar por severidad
+    groupBy: severity
+    
+    # No agrupar críticos
+    separateCritical: true
+
+# Configuración de alertas
+alerts:
+  # Canales de notificación
+  channels:
+    - email
+    - slack
+    - github
+  
+  # Severidad mínima para alertar
+  severityThreshold: medium
+  
+  # Frecuencia de alertas
+  frequency: daily
+  
+  # Horario de alertas
+  schedule:
+    hour: 9
+    minute: 0
+    timezone: America/Santiago
+
+# Configuración de Slack
+slack:
+  # Webhook URL (definir en env var SNYK_SLACK_WEBHOOK)
+  webhook: ${SNYK_SLACK_WEBHOOK}
+  
+  # Canal
+  channel: '#security-alerts'
+  
+  # Severidad mínima
+  severityThreshold: high
+  
+  # Incluir información adicional
+  include:
+    - cvssScore
+    - exploitMaturity
+    - fixAvailable
+
+# Configuración de email
+email:
+  # Destinatarios
+  to:
+    - security@silexar.com
+    - devops@silexar.com
+  
+  # Severidad mínima
+  severityThreshold: high
+  
+  # Frecuencia
+  frequency: immediate  # immediate, daily, weekly
+
+# Configuración de GitHub
+github:
+  # Crear issues automáticos
+  createIssues: true
+  
+  # Labels para issues
+  labels:
+    - security
+    - dependencies
+    - snyk
+  
+  # Asignar a
+  assignees:
+    - security-team
+
+# Configuración de licencias
+licenses:
+  # Licencias permitidas
+  allowed:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - MPL-2.0
+    - Unlicense
+    - 0BSD
+    - CC0-1.0
+  
+  # Licencias prohibidas
+  forbidden:
+    - GPL-2.0
+    - GPL-3.0
+    - AGPL-3.0
+    - LGPL-2.1
+    - LGPL-3.0
+    - EPL-1.0
+    - EPL-2.0
+    - CDDL-1.0
+    - CPL-1.0
+  
+  # Política
+  policy: permissive  # permissive, copyleft, strict
+
+# Configuración de código
+code:
+  # Escaneo de código
+  enabled: true
+  
+  # Severidad mínima
+  severityThreshold: medium
+  
+  # Lenguajes
+  languages:
+    - typescript
+    - javascript
+  
+  # Ignorar archivos
+  ignore:
+    - '**/*.test.ts'
+    - '**/*.spec.ts'
+    - '**/__mocks__/**'
+    - '**/node_modules/**'
+    - '**/.next/**'
+    - '**/dist/**'
+    - '**/coverage/**'
+
+# Configuración de contenedores
+container:
+  # Escaneo de imágenes
+  enabled: true
+  
+  # Severidad mínima
+  severityThreshold: high
+  
+  # Imágenes a escanear
+  images:
+    - silexar-pulse:latest
+    - silexar-pulse:production
+  
+  # Registro
+  registry:
+    - docker.io
+    - ghcr.io
+
+# Configuración de infraestructura
+iac:
+  # Escaneo de IaC
+  enabled: true
+  
+  # Severidad mínima
+  severityThreshold: high
+  
+  # Archivos
+  files:
+    - '**/*.tf'
+    - '**/*.tfvars'
+    - '**/Dockerfile*'
+    - '**/docker-compose*.yml'
+    - '**/k8s/**/*.yaml'
+    - '**/.github/workflows/*.yml'
+
+# Configuración de secrets
+secrets:
+  # Escaneo de secrets
+  enabled: true
+  
+  # Severidad mínima
+  severityThreshold: high
+  
+  # Ignorar archivos
+  ignore:
+    - '**/*.test.ts'
+    - '**/__mocks__/**'
+    - '.env.example'
+    - '.env.local.example'
+
+# Configuración de monitoreo
+monitor:
+  # Monitorear proyecto
+  enabled: true
+  
+  # Frecuencia de re-escaneo
+  frequency: daily
+  
+  # Tags
+  tags:
+    - silexar-pulse
+    - production
+    - tier0
+
+# Configuración de reportes
+report:
+  # Generar reportes
+  enabled: true
+  
+  # Formatos
+  formats:
+    - json
+    - html
+    - sarif
+  
+  # Destino
+  output: ./security-reports/
+  
+  # Incluir información
+  include:
+    - vulnerabilities
+    - licenses
+    - dependencies
+    - fixAdvice

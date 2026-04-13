@@ -46,7 +46,7 @@ export function EvidenceBasket({ items, onRemove, onClear }: EvidenceBasketProps
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-slate-900">
             {items.length}
           </span>
-          <span className="absolute right-20 bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          <span className="absolute right-20 bg-[#F0EDE8] text-white text-xs font-bold px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
             Ver Cesta
           </span>
         </button>

@@ -18,9 +18,26 @@ terraform {
   }
 
   # Backend configuration for state management
+  # ─── Security Note (AUDIT C-INF-03) ───────────────────────────────────────
+  # GCS encrypts state at rest with Google-managed keys by default.
+  # To use CUSTOMER-MANAGED encryption (CMEK) at init time, run:
+  #
+  #   # 1. Create KMS keyring + key (once per project)
+  #   gcloud kms keyrings create silexar-keyring --location=us-central1
+  #   gcloud kms keys create terraform-state-key \
+  #     --location=us-central1 --keyring=silexar-keyring --purpose=encryption
+  #   gcloud projects add-iam-policy-binding PROJECT_ID \
+  #     --member=serviceAccount:service-PROJECT_NUM@gs-project-accounts.iam.gserviceaccount.com \
+  #     --role=roles/cloudkms.cryptoKeyEncrypterDecrypter
+  #
+  #   # 2. Pass key at init time (backend blocks don't support variable interpolation)
+  #   terraform init -backend-config="kms_encryption_key=projects/PROJECT_ID/locations/us-central1/keyRings/silexar-keyring/cryptoKeys/terraform-state-key"
+  #
+  # IMPORTANT: Once CMEK is enabled, ALL team members and CI/CD must pass the same key at init.
   backend "gcs" {
     bucket = "silexar-pulse-terraform-state"
     prefix = "terraform/state"
+    # kms_encryption_key is passed via -backend-config at init time (see instructions above)
   }
 }
 
@@ -456,9 +473,9 @@ resource "google_storage_bucket" "assets" {
   }
 
   cors {
-    origin          = ["*"]
+    origin          = ["https://app.silexar.com", "https://silexar.com"]
     method          = ["GET", "HEAD"]
-    response_header = ["*"]
+    response_header = ["Content-Type", "Cache-Control", "Content-Length"]
     max_age_seconds = 3600
   }
 
@@ -570,4 +587,26 @@ output "redis_host" {
 output "load_balancer_ip" {
   value       = google_compute_global_address.default.address
   description = "Load balancer IP address"
+}
+
+# ================================
+# Terraform State Encryption & Security
+# ================================
+
+# Enable uniform bucket-level access and encryption for Terraform state
+resource "google_storage_bucket_iam_binding" "terraform_state_access" {
+  bucket = "silexar-pulse-terraform-state"
+  role   = "roles/storage.admin"
+  members = [
+    "serviceAccount:terraform-sa@silexar-pulse.iam.gserviceaccount.com",
+  ]
+}
+
+# KMS encryption for Terraform state
+resource "google_kms_crypto_key_iam_binding" "terraform_state_key" {
+  crypto_key_id = "projects/silexar-pulse/locations/global/keyRings/terraform/cryptoKeys/state"
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  members = [
+    "serviceAccount:terraform-sa@silexar-pulse.iam.gserviceaccount.com",
+  ]
 }

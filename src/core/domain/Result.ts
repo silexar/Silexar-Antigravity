@@ -25,7 +25,6 @@ export class Result<T, E extends ResultError = ResultError> {
 
   public getValue(): T {
     if (!this.isSuccess) {
-      console.log(this.error);
       throw new Error('No se puede recuperar el valor de un resultado fallido.');
     }
     return this._value as T;

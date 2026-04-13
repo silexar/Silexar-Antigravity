@@ -45,8 +45,9 @@ export default function MobileWizardCrearPrograma() {
                </div>
                <div>
                   <label className="block text-[9px] text-gray-500 font-black uppercase mb-1">📺 Programa</label>
-                  <input 
-                     type="text" 
+                  <input
+                     type="text"
+                     aria-label="Nombre del Programa"
                      className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-lg px-2 py-2 text-xs text-slate-200 outline-none"
                      value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})}
                   />
@@ -60,11 +61,11 @@ export default function MobileWizardCrearPrograma() {
                   <div className="flex items-center gap-2">
                      <div className="flex-1">
                         <label className="block text-[8px] text-gray-500 font-black uppercase mb-1">Desde</label>
-                        <input type="time" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-md px-2 py-1.5 text-xs text-gray-800 outline-none" value={formData.desde} onChange={e => setFormData({...formData, desde: e.target.value})} />
+                        <input type="time" aria-label="Hora desde" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-md px-2 py-1.5 text-xs text-gray-800 outline-none" value={formData.desde} onChange={e => setFormData({...formData, desde: e.target.value})} />
                      </div>
                      <div className="flex-1">
                         <label className="block text-[8px] text-gray-500 font-black uppercase mb-1">Hasta</label>
-                        <input type="time" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-md px-2 py-1.5 text-xs text-gray-800 outline-none" value={formData.hasta} onChange={e => setFormData({...formData, hasta: e.target.value})} />
+                        <input type="time" aria-label="Hora hasta" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-md px-2 py-1.5 text-xs text-gray-800 outline-none" value={formData.hasta} onChange={e => setFormData({...formData, hasta: e.target.value})} />
                      </div>
                   </div>
                   <div>
@@ -95,7 +96,7 @@ export default function MobileWizardCrearPrograma() {
             {/* Equipo Breve */}
             <div>
                <h3 className="text-[9px] text-emerald-500 font-black uppercase tracking-widest mb-2">👥 PRINCIPAL</h3>
-               <input type="text" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-800 outline-none" value={formData.cond1} onChange={e => setFormData({...formData, cond1: e.target.value})} />
+               <input type="text" aria-label="Conductor Principal" className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-800 outline-none" value={formData.cond1} onChange={e => setFormData({...formData, cond1: e.target.value})} />
             </div>
 
          </div>
@@ -183,7 +184,7 @@ export default function MobileWizardCrearPrograma() {
                      { r: 'TELECOM', stat: '1 cliente max', req: true },
                      { r: 'AUTOMOTRIZ', stat: 'Máx 2 (no directa)', req: true },
                   ].map((x, i) => (
-                     <div key={i} className={`p-2.5 rounded-lg flex items-center gap-3 border ${x.req ? 'bg-red-500/5 border-red-500/20' : 'bg-white/70 border-gray-200'}`}>
+                     <div key={`${x}-${i}`} className={`p-2.5 rounded-lg flex items-center gap-3 border ${x.req ? 'bg-red-500/5 border-red-500/20' : 'bg-white/70 border-gray-200'}`}>
                         <input type="checkbox" defaultChecked={x.req} className="w-3.5 h-3.5 accent-red-500" />
                         <div>
                            <p className="text-[10px] font-black text-gray-800 uppercase">{x.r}</p>

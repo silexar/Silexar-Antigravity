@@ -8,6 +8,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import {
   DollarSign, Target,
   BarChart3, Star,
@@ -60,9 +61,6 @@ const ANNUAL_PROJECTION = {
 export const CommissionCalculator = () => {
   const [, setStatementGenerated] = useState(false);
   
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
-
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
 

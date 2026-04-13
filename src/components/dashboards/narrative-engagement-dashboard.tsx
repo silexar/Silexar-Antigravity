@@ -550,7 +550,7 @@ export function NarrativeEngagementDashboard() {
       {generateInsights.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {generateInsights.map((insight, index) => (
-            <Alert key={index} className={
+            <Alert key={`${insight}-${index}`} className={
               insight.type === 'success' ? 'border-green-200 bg-green-50' :
               insight.type === 'warning' ? 'border-yellow-200 bg-yellow-50' :
               insight.type === 'error' ? 'border-red-200 bg-red-50' :
@@ -902,10 +902,10 @@ export function NarrativeEngagementDashboard() {
                   </div>
                   <div className="flex items-center justify-center gap-1 mb-2">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star 
-                        key={i} 
+                      <Star
+                        key={`star-${i}`}
                         className={`h-4 w-4 ${
-                          i < Math.floor((narrativeMetrics?.overall_metrics.narrative_engagement_score || 0) / 20) 
+                          i < Math.floor((narrativeMetrics?.overall_metrics.narrative_engagement_score || 0) / 20)
                             ? 'text-yellow-400 fill-current' 
                             : 'text-gray-300'
                         }`} 

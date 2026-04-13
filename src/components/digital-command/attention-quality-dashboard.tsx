@@ -97,8 +97,7 @@ export function AttentionQualityDashboard() {
         }
 
       } catch (error) {
-        console.error('Error loading attention quality data:', error)
-      } finally {
+        } finally {
         setIsLoading(false)
       }
     }
@@ -310,7 +309,7 @@ export function AttentionQualityDashboard() {
                   
                   <div className="mt-4 space-y-2">
                     {dimensionsData.map((dim, index) => (
-                      <div key={index} className="flex items-center justify-between">
+                      <div key={`${dim}-${index}`} className="flex items-center justify-between">
                         <span className="text-sm font-medium">{dim.dimension}</span>
                         <div className="flex items-center gap-2">
                           <Progress value={dim.score} className="w-20" />
@@ -386,7 +385,7 @@ export function AttentionQualityDashboard() {
         <TabsContent value="campaigns" className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
             {qualityScores.map((score, index) => (
-              <Card key={index} className={`cursor-pointer transition-all ${
+              <Card key={`${score}-${index}`} className={`cursor-pointer transition-all ${
                 selectedCampaign === score.campaign_id ? 'ring-2 ring-blue-500' : ''
               }`} onClick={() => setSelectedCampaign(score.campaign_id)}>
                 <CardContent className="p-6">
@@ -452,7 +451,7 @@ export function AttentionQualityDashboard() {
         <TabsContent value="insights" className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
             {insights.map((insight, index) => (
-              <Alert key={index} className={
+              <Alert key={`${insight}-${index}`} className={
                 insight.type === 'optimization' ? 'border-blue-200 bg-blue-50' :
                 insight.type === 'alert' ? 'border-red-200 bg-red-50' :
                 insight.type === 'opportunity' ? 'border-green-200 bg-green-50' :
@@ -501,7 +500,7 @@ export function AttentionQualityDashboard() {
         <TabsContent value="integrations" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {dataIntegrations.map((integration, index) => (
-              <Card key={index}>
+              <Card key={`${integration}-${index}`}>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span>{integration.source.replace('_', ' ')}</span>

@@ -1,7 +1,10 @@
 /**
  * Silexar Pulse - Next.js 16 Configuration
- * Enterprise-grade with security headers and Turbopack
+ * Enterprise-grade with security headers, Turbopack y Sentry
  */
+
+// @ts-check
+import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -47,6 +50,7 @@ const nextConfig = {
       'd3',
       'chart.js',
     ],
+    clientTraceMetadata: [],
   },
 
   // Turbopack configuration (default bundler in Next.js 16)
@@ -58,33 +62,26 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'strict-dynamic' https:; style-src 'self'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://api.anthropic.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'strict-dynamic'",
-              "style-src 'self' 'nonce-generated' https://fonts.googleapis.com",
-              "img-src 'self' data: https: blob:",
-              "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https:",
-              "frame-ancestors 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "upgrade-insecure-requests",
-            ].join('; '),
-          },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()'
           },
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-          { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
         ],
       },
       {
@@ -100,4 +97,20 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // DSN y org se leen de env vars — nunca hardcodeados
+  silent: true,
+  sourcemaps: {
+    disable: true,
+  },
+  tunnelRoute: '/monitoring/sentry-tunnel',
+  // Next.js 16: use webpack options instead of deprecated autoInstrumentServerFunctions
+  webpack: {
+    // Disable auto-instrumentation (we handle errors manually)
+    autoInstrumentServerFunctions: false,
+    // Remove debug logging in production
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
+});

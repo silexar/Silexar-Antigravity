@@ -44,7 +44,7 @@ export default function MobileEmisoraDetailView() {
          </h3>
          <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x">
             {topPerformers.map((p, i) => (
-               <div key={i} className={`flex-shrink-0 w-72 rounded-xl border p-4 snap-center relative overflow-hidden ${p.estado === 'lider' ? 'bg-amber-500/5 border-amber-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
+               <div key={`${p}-${i}`} className={`flex-shrink-0 w-72 rounded-xl border p-4 snap-center relative overflow-hidden ${p.estado === 'lider' ? 'bg-amber-500/5 border-amber-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
                   {p.estado === 'lider' && <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full blur-xl"></div>}
                   {p.estado === 'oportunidad' && <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full blur-xl"></div>}
                   

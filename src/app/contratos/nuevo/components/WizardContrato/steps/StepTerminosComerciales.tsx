@@ -152,7 +152,7 @@ const AnalisisCortexRisk: React.FC<{
               Factores Positivos
             </h4>
             {data.factoresPositivos.map((factor, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+              <div key={`${factor}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 {factor}
               </div>
@@ -165,7 +165,7 @@ const AnalisisCortexRisk: React.FC<{
                 Factores de Riesgo
               </h4>
               {data.factoresNegativos.map((factor, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+                <div key={`${factor}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   {factor}
                 </div>
@@ -221,6 +221,7 @@ const CurrencyInput: React.FC<{
         type="number"
         value={value || ''}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+        aria-label={label}
         className="
           w-full rounded-xl py-3.5 pl-12 pr-16 bg-slate-50
           shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
@@ -254,6 +255,7 @@ const PercentageInput: React.FC<{
         max={max}
         value={value || ''}
         onChange={(e) => onChange(Math.min(parseFloat(e.target.value) || 0, max))}
+        aria-label={label}
         className="
           w-full rounded-xl py-3.5 pl-12 pr-4 bg-slate-50
           shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
@@ -317,6 +319,7 @@ const NumberInput: React.FC<{
         max={max}
         value={value || ''}
         onChange={(e) => onChange(parseInt(e.target.value) || 0)}
+        aria-label={label}
         className={`
           w-full rounded-xl py-3.5 bg-slate-50
           shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]

@@ -171,7 +171,7 @@ const AudioPlayer = ({ audioUrl, duracion }: { audioUrl?: string; duracion: stri
           <div className="flex items-end gap-0.5 h-16">
             {waveformData.map((height, index) => (
               <div
-                key={index}
+                key={`wave-${index}`}
                 className={`flex-1 rounded-full transition-all duration-150 ${
                   index / waveformData.length < currentTime / 100
                     ? 'bg-gradient-to-t from-emerald-500 to-emerald-400'
@@ -197,6 +197,7 @@ const AudioPlayer = ({ audioUrl, duracion }: { audioUrl?: string; duracion: stri
             min="0"
             max="100"
             defaultValue="80"
+            aria-label="Volumen"
             className="w-20 h-1 bg-slate-600 rounded-full appearance-none cursor-pointer"
             style={{ writingMode: 'vertical-lr', WebkitAppearance: 'slider-vertical' }}
           />
@@ -264,7 +265,7 @@ const HistorialTimeline = ({ historial }: { historial?: { accion: string; timest
       {historial.map((item, index) => {
         const Icon = iconMap[item.accion] || History;
         return (
-          <div key={index} className="flex gap-4">
+          <div key={`${item.accion}-${index}`} className="flex gap-4">
             <div className="flex flex-col items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shadow-sm">
                 <Icon className="w-5 h-5 text-slate-600" />
@@ -337,7 +338,7 @@ export default function DetalleCunaPage({ params }: PageProps) {
         ]
       });
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -357,7 +358,7 @@ export default function DetalleCunaPage({ params }: PageProps) {
         setCuna(data.data);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     }
   };
 
@@ -502,8 +503,8 @@ export default function DetalleCunaPage({ params }: PageProps) {
                     <div>
                       <h3 className="font-semibold text-slate-800 mb-2">Etiquetas</h3>
                       <div className="flex flex-wrap gap-2">
-                        {cuna.tags.map((tag, i) => (
-                          <span key={i} className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm">
+                        {cuna.tags.map((tag) => (
+                          <span key={tag} className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm">
                             #{tag}
                           </span>
                         ))}

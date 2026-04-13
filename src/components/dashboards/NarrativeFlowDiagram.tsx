@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import { select, scaleLinear, scaleOrdinal, schemeCategory10, max, min, interpolateZoom, zoom, zoomIdentity } from 'd3';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

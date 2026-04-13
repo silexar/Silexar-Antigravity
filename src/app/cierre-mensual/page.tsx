@@ -168,8 +168,8 @@ export default function CierreMensualPage() {
             { label: 'Facturado', value: `$${((resumen?.totalFacturado || 0) / 1000000).toFixed(1)}M`, icon: DollarSign, color: 'text-blue-500' },
             { label: 'Pendiente', value: `$${((resumen?.pendienteFacturar || 0) / 1000000).toFixed(1)}M`, icon: Clock, color: 'text-amber-500' },
             { label: 'Campañas', value: `${resumen?.campanasVendidas || 0} + ${resumen?.campanasBonificadas || 0} bon`, icon: FileText, color: 'text-indigo-500' }
-          ].map((stat, i) => (
-            <Card key={i} className="p-4">
+          ].map((stat) => (
+            <Card key={stat.label} className="p-4">
               <div className="flex items-center gap-3">
                 <stat.icon className={`w-8 h-8 ${stat.color}`} />
                 <div>
@@ -189,8 +189,8 @@ export default function CierreMensualPage() {
               Errores de Validación ({resumen?.errores.length})
             </h3>
             <ul className="space-y-2">
-              {resumen?.errores.map((err, i) => (
-                <li key={i} className="flex items-center gap-2 text-red-600">
+              {resumen?.errores.map((err) => (
+                <li key={err.mensaje} className="flex items-center gap-2 text-red-600">
                   <XCircle className="w-4 h-4" />
                   {err.mensaje}
                 </li>

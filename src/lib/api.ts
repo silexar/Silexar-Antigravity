@@ -1,6 +1,10 @@
 /**
- * 🔌 SILEXAR PULSE - API Client
- * Client for connecting frontend to backend API
+ * 🔌 SILEXAR PULSE - API Client (v2 legacy endpoints)
+ * Client for connecting frontend to backend API.
+ *
+ * SECURITY: Auth uses httpOnly cookies (silexar_session).
+ * Tokens are NEVER stored in localStorage — XSS-safe.
+ * Cookies are sent automatically via withCredentials: true.
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
@@ -8,37 +12,25 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 // API Configuration
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v2';
 
-// Create axios instance
+// Create axios instance — cookies sent automatically (no localStorage)
 const apiClient: AxiosInstance = axios.create({
     baseURL: API_URL,
     timeout: 30000,
+    withCredentials: true, // sends httpOnly silexar_session cookie automatically
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Request interceptor - Add auth token
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('auth_token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
-// Response interceptor - Handle errors
+// Response interceptor — Handle 401 without touching localStorage
 apiClient.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
         if (error.response?.status === 401) {
-            // Unauthorized - clear token and redirect to login
-            localStorage.removeItem('auth_token');
-            window.location.href = '/login';
+            // Session expired — redirect to login (server clears cookie)
+            if (typeof window !== 'undefined') {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
@@ -47,24 +39,23 @@ apiClient.interceptors.response.use(
 // Auth API
 export const authAPI = {
     register: async (data: { email: string; name: string; password: string }) => {
+        // Server sets httpOnly silexar_session cookie — nothing stored client-side
         const response = await apiClient.post('/auth/register', data);
-        if (response.data.access_token) {
-            localStorage.setItem('auth_token', response.data.access_token);
-        }
         return response.data;
     },
 
     login: async (data: { email: string; password: string }) => {
+        // Server sets httpOnly silexar_session cookie — nothing stored client-side
         const response = await apiClient.post('/auth/login', data);
-        if (response.data.access_token) {
-            localStorage.setItem('auth_token', response.data.access_token);
-        }
         return response.data;
     },
 
-    logout: () => {
-        localStorage.removeItem('auth_token');
-        window.location.href = '/login';
+    logout: async () => {
+        // Server invalidates session and clears cookie
+        await apiClient.post('/auth/logout').catch(() => null);
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+        }
     },
 
     getProfile: async () => {
@@ -72,8 +63,13 @@ export const authAPI = {
         return response.data;
     },
 
-    isAuthenticated: () => {
-        return !!localStorage.getItem('auth_token');
+    isAuthenticated: async (): Promise<boolean> => {
+        try {
+            await apiClient.get('/auth/me');
+            return true;
+        } catch {
+            return false;
+        }
     },
 };
 

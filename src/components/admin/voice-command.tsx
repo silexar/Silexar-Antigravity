@@ -212,7 +212,7 @@ export function VoiceCommandCenter() {
         <div className="grid grid-cols-2 gap-2">
           {quickActions.map((action, i) => (
             <button
-              key={i}
+              key={action.phrase}
               onClick={() => executeQuickAction(action.phrase)}
               className="p-3 bg-slate-800/50 rounded-lg text-left hover:bg-slate-700/50 transition-all group"
             >

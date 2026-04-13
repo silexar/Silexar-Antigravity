@@ -10,6 +10,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import apiClient from '@/lib/api/client';
 import { 
   Radio, 
   CheckCircle,
@@ -102,14 +103,13 @@ export default function RegistroEmisionPage() {
     setLoading(true);
     try {
       const estadoParam = filtro !== 'todos' ? `&estado=${filtro}` : '';
-      const response = await fetch(`/api/registro-emision?fecha=${fecha}${estadoParam}`);
-      const data = await response.json();
-      if (data.success) {
+      const { data } = await apiClient.get<{ data: typeof registros; stats: typeof stats }>(`/api/registro-emision?fecha=${fecha}${estadoParam}`);
+      if (data?.data) {
         setRegistros(data.data);
         setStats(data.stats);
       }
     } catch {
-      // /* console.error('Error fetching data mitigado para prevenir leak') */;
+      // /* */;
     } finally {
       setLoading(false);
     }
@@ -125,32 +125,24 @@ export default function RegistroEmisionPage() {
 
   const confirmarEmision = async (id: string) => {
     try {
-      await fetch('/api/registro-emision', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, confirmado: true, confianza: 100 })
-      });
+      await apiClient.put('/api/registro-emision', { id, confirmado: true, confianza: 100 });
       fetchData();
     } catch {
-      // /* console.error('Error confirmando emision mitigado') */;
+      // /* */;
     }
   };
 
   const registrarManual = async (registro: Registro) => {
     try {
-      await fetch('/api/registro-emision', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          spotTandaId: registro.spotTandaId,
-          cunaNombre: registro.cunaNombre,
-          horaProgramada: registro.horaProgra,
-          metodo: 'manual'
-        })
+      await apiClient.post('/api/registro-emision', {
+        spotTandaId: registro.spotTandaId,
+        cunaNombre: registro.cunaNombre,
+        horaProgramada: registro.horaProgra,
+        metodo: 'manual',
       });
       fetchData();
     } catch {
-      // /* console.error('Error registro manual mitigado') */;
+      // /* */;
     }
   };
 
@@ -197,7 +189,7 @@ export default function RegistroEmisionPage() {
             { label: 'Emisión', value: `${stats.porcentajeEmision}%`, icon: Radio, color: 'from-purple-400 to-purple-500' },
             { label: 'Confianza', value: `${stats.confianzaPromedio}%`, icon: Fingerprint, color: 'from-teal-400 to-teal-500' }
           ].map((stat, i) => (
-            <GlassCard key={i} className="p-4">
+            <GlassCard key={`${stat}-${i}`} className="p-4">
               <div className="flex items-center gap-2">
                 <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color} shadow-sm border border-white/20`}>
                   <stat.icon className="w-4 h-4 text-white" />

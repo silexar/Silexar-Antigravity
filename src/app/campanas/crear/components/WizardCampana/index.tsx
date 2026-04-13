@@ -69,15 +69,12 @@ export default function CrearCampanaWizard() {
           />
         );
       case 'tarifas':
-        // Cast to any because TS might complain about partial draft, but in reality 
-        // the state flows through and updates correctly.
         return (
           <StepTarifasCampana 
             isActive={true}
             onComplete={handleStepCompletion}
             onBack={prevStep}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data={state.campanaDraft as any}
+            data={state.campanaDraft}
             onUpdate={updateDraft}
           />
         );
@@ -87,8 +84,7 @@ export default function CrearCampanaWizard() {
             isActive={true}
             onComplete={handleStepCompletion}
             onBack={prevStep}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data={state.campanaDraft as any}
+            data={state.campanaDraft}
             onUpdate={updateDraft}
           />
         );
@@ -98,8 +94,7 @@ export default function CrearCampanaWizard() {
              isActive={true}
              onComplete={handleStepCompletion}
              onBack={prevStep}
-             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-             data={state.campanaDraft as any}
+             data={state.campanaDraft}
              onUpdate={updateDraft}
           />
         );
@@ -109,8 +104,7 @@ export default function CrearCampanaWizard() {
              isActive={true}
              onComplete={handleStepCompletion}
              onBack={prevStep}
-             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-             data={state.campanaDraft as any}
+             data={state.campanaDraft}
              onUpdate={updateDraft}
            />
         );
@@ -120,8 +114,7 @@ export default function CrearCampanaWizard() {
              isActive={true}
              onComplete={handleStepCompletion}
              onBack={prevStep}
-             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-             data={state.campanaDraft as any}
+             data={state.campanaDraft}
           />
         );
       default:

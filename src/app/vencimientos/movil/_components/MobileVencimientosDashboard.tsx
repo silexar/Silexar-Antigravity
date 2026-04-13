@@ -79,7 +79,7 @@ export default function MobileVencimientosDashboard() {
           { label: 'Revenue', value: formatCLP(emisora.revenue), color: 'text-gray-800' },
           { label: 'Alertas', value: `${emisora.alertas}`, color: emisora.alertas > 0 ? 'text-red-600' : 'text-emerald-600' }
         ].map((k, i) => (
-          <div key={i} className="rounded-xl border border-gray-200 bg-white/70 p-3 text-center">
+          <div key={`${k}-${i}`} className="rounded-xl border border-gray-200 bg-white/70 p-3 text-center">
             <p className="text-[10px] text-gray-400">{k.label}</p>
             <p className={`text-lg font-bold ${k.color}`}>{k.value}</p>
           </div>

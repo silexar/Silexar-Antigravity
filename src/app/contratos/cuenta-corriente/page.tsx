@@ -374,6 +374,7 @@ export default function CuentaCorrientePage() {
                   value={busqueda}
                   onChange={e => setBusqueda(e.target.value)}
                   placeholder="Buscar movimiento..."
+                  aria-label="Buscar movimiento"
                   className={`${neuro.input} pl-10 w-64`}
                 />
               </div>
@@ -393,12 +394,14 @@ export default function CuentaCorrientePage() {
                   type="date"
                   value={periodoDesde.toISOString().split('T')[0]}
                   onChange={e => setPeriodoDesde(new Date(e.target.value))}
+                  aria-label="Período desde"
                   className={`${neuro.input} w-40`}
                 />
                 <span className="text-slate-400">—</span>
                 <input
                   type="date"
                   value={periodoHasta.toISOString().split('T')[0]}
+                  aria-label="Período hasta"
                   onChange={e => setPeriodoHasta(new Date(e.target.value))}
                   className={`${neuro.input} w-40`}
                 />
@@ -667,6 +670,7 @@ export default function CuentaCorrientePage() {
                   <input
                     type="email"
                     defaultValue={cuenta.clienteEmail}
+                    aria-label="Email destinatario"
                     className={`${neuro.input} w-full`}
                     placeholder="correo@empresa.cl"
                   />

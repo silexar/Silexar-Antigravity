@@ -189,7 +189,7 @@ export const OneOnOnePrepPanel = () => {
                       </h4>
                       <div className="space-y-2">
                         {rep.aiTalkingPoints.map((point, i) => (
-                          <div key={i} className="flex items-start gap-2 bg-violet-50 rounded-lg px-3 py-2">
+                          <div key={`${point}-${i}`} className="flex items-start gap-2 bg-violet-50 rounded-lg px-3 py-2">
                             <MessageSquare size={10} className="text-violet-400 mt-0.5 flex-shrink-0" />
                             <p className="text-xs text-violet-700">{point}</p>
                           </div>

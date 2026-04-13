@@ -8,12 +8,11 @@
  * @tier TIER_0_FORTUNE_10
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
-
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -191,189 +190,226 @@ const materialesMock: MaterialPendiente[] = [
 // HANDLERS
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-  const { searchParams } = new URL(request.url);
-  const vista = searchParams.get('vista') || 'lista';
-  const estado = searchParams.get('estado');
-  const anuncianteId = searchParams.get('anuncianteId');
-  const urgentes = searchParams.get('urgentes') === 'true';
+/**
+ * GET - Listar material pendiente
+ * Requiere: cunas:read
+ */
+export const GET = withApiRoute(
+  { resource: 'cunas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const vista = searchParams.get('vista') || 'lista';
+      const estado = searchParams.get('estado');
+      const anuncianteId = searchParams.get('anuncianteId');
+      const urgentes = searchParams.get('urgentes') === 'true';
 
-  let materiales = [...materialesMock];
+      return await withTenantContext(ctx.tenantId, async () => {
+        let materiales = [...materialesMock];
 
-  // Filtrar por estado
-  if (estado) {
-    materiales = materiales.filter(m => m.estado === estado);
-  }
+        // Filtrar por estado
+        if (estado) {
+          materiales = materiales.filter(m => m.estado === estado);
+        }
 
-  // Filtrar por anunciante
-  if (anuncianteId) {
-    materiales = materiales.filter(m => m.anuncianteId === anuncianteId);
-  }
+        // Filtrar por anunciante
+        if (anuncianteId) {
+          materiales = materiales.filter(m => m.anuncianteId === anuncianteId);
+        }
 
-  // Solo urgentes
-  if (urgentes) {
-    materiales = materiales.filter(m => m.esUrgente);
-  }
+        // Solo urgentes
+        if (urgentes) {
+          materiales = materiales.filter(m => m.esUrgente);
+        }
 
-  // Vista agrupada por anunciante
-  if (vista === 'por_anunciante') {
-    const anunciantes = new Map<string, ReporteMaterialPorAnunciante>();
-    
-    for (const mat of materialesMock) {
-      if (!anunciantes.has(mat.anuncianteId)) {
-        anunciantes.set(mat.anuncianteId, {
-          anuncianteId: mat.anuncianteId,
-          anuncianteNombre: mat.anuncianteNombre,
-          totalPendiente: 0,
-          totalRecibido: 0,
-          totalVencido: 0,
-          tasaCumplimiento: 0,
-          materialesDetalle: []
+        // Vista agrupada por anunciante
+        if (vista === 'por_anunciante') {
+          const anunciantes = new Map<string, ReporteMaterialPorAnunciante>();
+          
+          for (const mat of materialesMock) {
+            if (!anunciantes.has(mat.anuncianteId)) {
+              anunciantes.set(mat.anuncianteId, {
+                anuncianteId: mat.anuncianteId,
+                anuncianteNombre: mat.anuncianteNombre,
+                totalPendiente: 0,
+                totalRecibido: 0,
+                totalVencido: 0,
+                tasaCumplimiento: 0,
+                materialesDetalle: []
+              });
+            }
+            
+            const anunciante = anunciantes.get(mat.anuncianteId);
+            if (!anunciante) continue;
+            anunciante.materialesDetalle.push(mat);
+            
+            if (mat.estado === 'pendiente') anunciante.totalPendiente++;
+            if (mat.estado === 'recibido' || mat.estado === 'aprobado') anunciante.totalRecibido++;
+            if (mat.estado === 'vencido') anunciante.totalVencido++;
+          }
+          
+          // Calcular tasa de cumplimiento
+          for (const anunciante of anunciantes.values()) {
+            const total = anunciante.materialesDetalle.length;
+            anunciante.tasaCumplimiento = total > 0 
+              ? Math.round((anunciante.totalRecibido / total) * 100) 
+              : 0;
+          }
+          
+          return apiSuccess({
+            data: Array.from(anunciantes.values()),
+            meta: {
+              totalAnunciantes: anunciantes.size,
+              totalMateriales: materialesMock.length,
+              totalPendiente: materialesMock.filter(m => m.estado === 'pendiente').length,
+              totalVencido: materialesMock.filter(m => m.estado === 'vencido').length
+            }
+          });
+        }
+
+        // Vista lista normal
+        materiales.sort((a, b) => a.diasRestantes - b.diasRestantes);
+
+        return apiSuccess({
+          data: materiales,
+          meta: {
+            total: materiales.length,
+            pendientes: materiales.filter(m => m.estado === 'pendiente').length,
+            recibidos: materiales.filter(m => m.estado === 'recibido').length,
+            vencidos: materiales.filter(m => m.estado === 'vencido').length,
+            urgentes: materiales.filter(m => m.esUrgente).length
+          }
         });
-      }
-      
-      const anunciante = anunciantes.get(mat.anuncianteId)!;
-      anunciante.materialesDetalle.push(mat);
-      
-      if (mat.estado === 'pendiente') anunciante.totalPendiente++;
-      if (mat.estado === 'recibido' || mat.estado === 'aprobado') anunciante.totalRecibido++;
-      if (mat.estado === 'vencido') anunciante.totalVencido++;
+      });
+    } catch (error) {
+      logger.error('[API/Cunas/MaterialPendiente] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'cunas/material-pendiente', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    // Calcular tasa de cumplimiento
-    for (const anunciante of anunciantes.values()) {
-      const total = anunciante.materialesDetalle.length;
-      anunciante.tasaCumplimiento = total > 0 
-        ? Math.round((anunciante.totalRecibido / total) * 100) 
-        : 0;
+  }
+);
+
+/**
+ * POST - Crear solicitud de material
+ * Requiere: cunas:create
+ */
+export const POST = withApiRoute(
+  { resource: 'cunas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { anuncianteId, tipoMaterial, descripcion, duracionEsperada, 
+              fechaLimiteEntrega, contactoNombre, contactoEmail, contactoTelefono,
+              vencimientoId, contratoId } = body;
+
+      return await withTenantContext(ctx.tenantId, async () => {
+        const nuevoMaterial: MaterialPendiente = {
+          id: `mat-${Date.now()}`,
+          anuncianteId,
+          anuncianteNombre: 'Anunciante', // En producción se buscaría
+          contratoId: contratoId || null,
+          contratoNumero: contratoId ? `CNT-2026-${Date.now().toString().slice(-4)}` : null,
+          vencimientoId: vencimientoId || null,
+          vencimientoNombre: vencimientoId ? 'Auspicio vinculado' : null,
+          tipoMaterial,
+          descripcion,
+          duracionEsperada: duracionEsperada || null,
+          fechaSolicitud: new Date().toISOString(),
+          fechaLimiteEntrega,
+          fechaRecepcion: null,
+          estado: 'pendiente',
+          recordatoriosEnviados: 0,
+          ultimoRecordatorio: null,
+          contactoNombre: contactoNombre || null,
+          contactoEmail: contactoEmail || null,
+          contactoTelefono: contactoTelefono || null,
+          diasRestantes: Math.ceil((new Date(fechaLimiteEntrega).getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+          esUrgente: false,
+          cunaAsignadaId: null,
+          cunaAsignadaCodigo: null
+        };
+
+        return apiSuccess({
+          data: nuevoMaterial,
+          mensaje: 'Solicitud de material creada exitosamente'
+        }, 201);
+      });
+    } catch (error) {
+      logger.error('[API/Cunas/MaterialPendiente] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'cunas/material-pendiente', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    return NextResponse.json({
-      success: true,
-      data: Array.from(anunciantes.values()),
-      meta: {
-        totalAnunciantes: anunciantes.size,
-        totalMateriales: materialesMock.length,
-        totalPendiente: materialesMock.filter(m => m.estado === 'pendiente').length,
-        totalVencido: materialesMock.filter(m => m.estado === 'vencido').length
-      }
-    });
   }
+);
 
-  // Vista lista normal
-  materiales.sort((a, b) => a.diasRestantes - b.diasRestantes);
+/**
+ * PUT - Actualizar material (recibir, vincular cuña, enviar recordatorio)
+ * Requiere: cunas:update
+ */
+export const PUT = withApiRoute(
+  { resource: 'cunas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { accion, datos } = body;
 
-  return NextResponse.json({
-    success: true,
-    data: materiales,
-    meta: {
-      total: materiales.length,
-      pendientes: materiales.filter(m => m.estado === 'pendiente').length,
-      recibidos: materiales.filter(m => m.estado === 'recibido').length,
-      vencidos: materiales.filter(m => m.estado === 'vencido').length,
-      urgentes: materiales.filter(m => m.esUrgente).length
+      return await withTenantContext(ctx.tenantId, async () => {
+        switch (accion) {
+          case 'marcar_recibido':
+            return apiSuccess({
+              mensaje: 'Material marcado como recibido',
+              actualizadoPor: ctx.userId,
+              fechaActualizacion: new Date().toISOString()
+            });
+            
+          case 'vincular_cuna':
+            return apiSuccess({
+              mensaje: `Material vinculado a cuña ${datos?.cunaId}`,
+              actualizadoPor: ctx.userId,
+              fechaActualizacion: new Date().toISOString()
+            });
+            
+          case 'enviar_recordatorio':
+            return apiSuccess({
+              mensaje: 'Recordatorio enviado al cliente',
+              enviadoPor: ctx.userId,
+              fechaEnvio: new Date().toISOString()
+            });
+            
+          case 'rechazar':
+            return apiSuccess({
+              mensaje: 'Material rechazado, se solicitó nuevo envío',
+              rechazadoPor: ctx.userId,
+              fechaRechazo: new Date().toISOString()
+            });
+            
+          case 'aprobar':
+            return apiSuccess({
+              mensaje: 'Material aprobado',
+              aprobadoPor: ctx.userId,
+              fechaAprobacion: new Date().toISOString()
+            });
+            
+          default:
+            return apiError('INVALID_ACTION', 'Acción no válida', 400);
+        }
+      });
+    } catch (error) {
+      logger.error('[API/Cunas/MaterialPendiente] Error PUT:', error instanceof Error ? error : undefined, { 
+        module: 'cunas/material-pendiente', 
+        action: 'PUT',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-  });
-  } catch (error) {
-    logger.error('[API/Cunas/MaterialPendiente] Error GET:', error instanceof Error ? error : undefined, { module: 'cunas/material-pendiente', action: 'GET' })
-    return apiServerError()
   }
-}
-
-// Crear solicitud de material
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { anuncianteId, tipoMaterial, descripcion, duracionEsperada, 
-            fechaLimiteEntrega, contactoNombre, contactoEmail, contactoTelefono,
-            vencimientoId, contratoId } = body;
-
-    const nuevoMaterial: MaterialPendiente = {
-      id: `mat-${Date.now()}`,
-      anuncianteId,
-      anuncianteNombre: 'Anunciante', // En producción se buscaría
-      contratoId: contratoId || null,
-      contratoNumero: contratoId ? `CNT-2026-${Date.now().toString().slice(-4)}` : null,
-      vencimientoId: vencimientoId || null,
-      vencimientoNombre: vencimientoId ? 'Auspicio vinculado' : null,
-      tipoMaterial,
-      descripcion,
-      duracionEsperada: duracionEsperada || null,
-      fechaSolicitud: new Date().toISOString(),
-      fechaLimiteEntrega,
-      fechaRecepcion: null,
-      estado: 'pendiente',
-      recordatoriosEnviados: 0,
-      ultimoRecordatorio: null,
-      contactoNombre: contactoNombre || null,
-      contactoEmail: contactoEmail || null,
-      contactoTelefono: contactoTelefono || null,
-      diasRestantes: Math.ceil((new Date(fechaLimiteEntrega).getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
-      esUrgente: false,
-      cunaAsignadaId: null,
-      cunaAsignadaCodigo: null
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: nuevoMaterial,
-      mensaje: 'Solicitud de material creada exitosamente'
-    });
-
-  } catch (error) {
-    logger.error('[API/Cunas/MaterialPendiente] Error POST:', error instanceof Error ? error : undefined, { module: 'cunas/material-pendiente', action: 'POST' })
-    return apiServerError()
-  }
-}
-
-// Actualizar material (recibir, vincular cuña, enviar recordatorio)
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { materialId, accion, datos } = body;
-
-    switch (accion) {
-      case 'marcar_recibido':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Material marcado como recibido'
-        });
-        
-      case 'vincular_cuna':
-        return NextResponse.json({
-          success: true,
-          mensaje: `Material vinculado a cuña ${datos.cunaId}`
-        });
-        
-      case 'enviar_recordatorio':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Recordatorio enviado al cliente'
-        });
-        
-      case 'rechazar':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Material rechazado, se solicitó nuevo envío'
-        });
-        
-      case 'aprobar':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Material aprobado'
-        });
-        
-      default:
-        return NextResponse.json({ 
-          success: false, 
-          error: 'Acción no válida' 
-        }, { status: 400 });
-    }
-
-  } catch (error) {
-    logger.error('[API/Cunas/MaterialPendiente] Error PUT:', error instanceof Error ? error : undefined, { module: 'cunas/material-pendiente', action: 'PUT' })
-    return apiServerError()
-  }
-}
+);

@@ -15,20 +15,29 @@
  */
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { SuperAdminDashboard } from '@/components/admin/super-admin-dashboard'
-import { ClientAdminPanel } from '@/components/admin/client-admin-panel'
-import { ExportConfiguration } from '@/components/admin/export-configuration'
-import { CEOCommandCenter } from '@/components/admin/ceo-command-center'
-import { ClientWizard } from '@/components/admin/client-wizard'
-import { LicenseManager } from '@/components/admin/license-manager'
-import { ExecutiveDashboard } from '@/components/admin/executive-dashboard'
-import { CommercialCRM } from '@/components/admin/commercial-crm'
-import { AlertCenter } from '@/components/admin/alert-center'
-import { SecurityPanel } from '@/components/admin/security-panel'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/components/security-initializer'
+
+// WHY: Lazy loading de componentes pesados del admin. Cada panel pesa ~150-400KB.
+// Al cargarlos estáticamente el bundle inicial era ~2MB. Con dynamic se cargan
+// solo cuando el usuario activa el tab correspondiente.
+const AdminPanelSkeleton = () => <Skeleton className="w-full h-64 rounded-2xl" />
+
+const SuperAdminDashboard  = dynamic(() => import('@/components/admin/super-admin-dashboard').then(m => ({ default: m.SuperAdminDashboard })), { loading: AdminPanelSkeleton, ssr: false })
+const ClientAdminPanel     = dynamic(() => import('@/components/admin/client-admin-panel').then(m => ({ default: m.ClientAdminPanel })), { loading: AdminPanelSkeleton, ssr: false })
+const ExportConfiguration  = dynamic(() => import('@/components/admin/export-configuration').then(m => ({ default: m.ExportConfiguration })), { loading: AdminPanelSkeleton, ssr: false })
+const CEOCommandCenter     = dynamic(() => import('@/components/admin/ceo-command-center').then(m => ({ default: m.CEOCommandCenter })), { loading: AdminPanelSkeleton, ssr: false })
+const ClientWizard         = dynamic(() => import('@/components/admin/client-wizard').then(m => ({ default: m.ClientWizard })), { loading: AdminPanelSkeleton, ssr: false })
+const LicenseManager       = dynamic(() => import('@/components/admin/license-manager').then(m => ({ default: m.LicenseManager })), { loading: AdminPanelSkeleton, ssr: false })
+const ExecutiveDashboard   = dynamic(() => import('@/components/admin/executive-dashboard').then(m => ({ default: m.ExecutiveDashboard })), { loading: AdminPanelSkeleton, ssr: false })
+const CommercialCRM        = dynamic(() => import('@/components/admin/commercial-crm').then(m => ({ default: m.CommercialCRM })), { loading: AdminPanelSkeleton, ssr: false })
+const AlertCenter          = dynamic(() => import('@/components/admin/alert-center').then(m => ({ default: m.AlertCenter })), { loading: AdminPanelSkeleton, ssr: false })
+const SecurityPanel        = dynamic(() => import('@/components/admin/security-panel').then(m => ({ default: m.SecurityPanel })), { loading: AdminPanelSkeleton, ssr: false })
 import { 
   Users, 
   Crown,
@@ -83,6 +92,25 @@ interface UserInfo {
 }
 
 export default function AdminPage() {
+  // 🔐 Auth guard: Require authentication for admin access
+  const { user, isLoading } = useAuth()
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-slate-400">Verificando autenticación...</p>
+        </div>
+      </div>
+    )
+  }
+  if (!user) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login?callbackUrl=/admin'
+    }
+    return null
+  }
+
   const [activeTab, setActiveTab] = useState('command-center')
   const [systemOverview, setSystemOverview] = useState<SystemOverview | null>(null)
   const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
@@ -380,8 +408,8 @@ export default function AdminPage() {
                     { name: 'RDF Media', plan: 'Enterprise', status: 'active', date: '2025-01-15' },
                     { name: 'Grupo Prisa Chile', plan: 'Enterprise+', status: 'active', date: '2025-01-10' },
                     { name: 'Mega Media', plan: 'Professional', status: 'expiring', date: '2024-12-20' },
-                  ].map((client, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  ].map((client) => (
+                    <div key={client.name} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-slate-600 rounded-lg flex items-center justify-center">
                           <Building2 className="w-5 h-5 text-slate-300" />

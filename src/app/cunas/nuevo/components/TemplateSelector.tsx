@@ -56,7 +56,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ currentData,
                   {template.defaultDuration}s
                 </span>
                 {template.commonElements.slice(0, 2).map((el, i) => (
-                  <span key={i} className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full capitalize">
+                  <span key={`${el}-${i}`} className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full capitalize">
                     {el.replace('_', ' ')}
                   </span>
                 ))}

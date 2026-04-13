@@ -59,7 +59,7 @@ export const OrgChartHierarchy = () => {
       {/* Team Nodes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
         {MOCK_ORG.teams?.map((team, i) => (
-          <div key={i} className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group">
+          <div key={`${team}-${i}`} className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group">
             <div className="flex items-center justify-between mb-2">
               <span className="text-lg">{team.emoji}</span>
               <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${team.attainment >= 140 ? 'bg-emerald-100 text-emerald-700' : team.attainment >= 120 ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>{team.attainment}%</span>

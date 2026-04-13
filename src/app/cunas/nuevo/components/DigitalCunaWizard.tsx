@@ -285,6 +285,7 @@ export const DigitalCunaWizard: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    aria-label="Nombre de la Cuña"
                     value={formData.nombre}
                     onChange={(e) => updateFormData('nombre', e.target.value)}
                     placeholder="Ej: Campaña Verano 2026"
@@ -297,6 +298,7 @@ export const DigitalCunaWizard: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    aria-label="Descripción"
                     value={formData.descripcion}
                     onChange={(e) => updateFormData('descripcion', e.target.value)}
                     placeholder="Descripción breve..."

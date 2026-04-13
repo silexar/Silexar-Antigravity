@@ -100,7 +100,7 @@ export function MobileStatsGrid({
     return (
       <div className={`${gridClass} ${className}`} aria-busy="true" aria-label="Cargando métricas">
         {Array.from({ length: columns === 2 ? 4 : 3 }).map((_, i) => (
-          <SkeletonCard key={i} />
+          <SkeletonCard key={`${_}-${i}`} />
         ))}
       </div>
     )

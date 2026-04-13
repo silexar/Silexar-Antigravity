@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';import { logger } from '
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -135,150 +136,159 @@ const inboxMock: ItemInbox[] = [
 // HANDLERS
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const procesado = searchParams.get('procesado');
-    const origen = searchParams.get('origen');
-    const search = searchParams.get('search');
+export const GET = withApiRoute(
+  { resource: 'cunas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const procesado = searchParams.get('procesado');
+      const origen = searchParams.get('origen');
+      const search = searchParams.get('search');
 
-    let items = [...inboxMock];
+      let items = [...inboxMock];
 
-    // Filtrar por procesado
-    if (procesado !== null) {
-      const esProcesado = procesado === 'true';
-      items = items.filter(i => i.procesado === esProcesado);
-    }
-
-    // Filtrar por origen
-    if (origen) {
-      items = items.filter(i => i.origen === origen);
-    }
-
-    // Búsqueda
-    if (search) {
-      const searchLower = search.toLowerCase();
-      items = items.filter(i =>
-        i.asunto?.toLowerCase().includes(searchLower) ||
-        i.remitente.toLowerCase().includes(searchLower) ||
-        i.anuncianteDetectadoNombre?.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Ordenar por fecha más reciente
-    items.sort((a, b) => new Date(b.fechaRecepcion).getTime() - new Date(a.fechaRecepcion).getTime());
-
-    return NextResponse.json({
-      success: true,
-      data: items,
-      meta: {
-        total: items.length,
-        pendientes: inboxMock.filter(i => !i.procesado).length,
-        procesados: inboxMock.filter(i => i.procesado).length,
-        porOrigen: {
-          email: inboxMock.filter(i => i.origen === 'email').length,
-          whatsapp: inboxMock.filter(i => i.origen === 'whatsapp').length,
-          ftp: inboxMock.filter(i => i.origen === 'ftp').length
-        }
+      // Filtrar por procesado
+      if (procesado !== null) {
+        const esProcesado = procesado === 'true';
+        items = items.filter(i => i.procesado === esProcesado);
       }
-    });
-  } catch (error) {
-    logger.error('[API/Inbox] Error GET:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'GET' });
-    return apiServerError();
+
+      // Filtrar por origen
+      if (origen) {
+        items = items.filter(i => i.origen === origen);
+      }
+
+      // Búsqueda
+      if (search) {
+        const searchLower = search.toLowerCase();
+        items = items.filter(i =>
+          i.asunto?.toLowerCase().includes(searchLower) ||
+          i.remitente.toLowerCase().includes(searchLower) ||
+          i.anuncianteDetectadoNombre?.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Ordenar por fecha más reciente
+      items.sort((a, b) => new Date(b.fechaRecepcion).getTime() - new Date(a.fechaRecepcion).getTime());
+
+      return NextResponse.json({
+        success: true,
+        data: items,
+        meta: {
+          total: items.length,
+          pendientes: inboxMock.filter(i => !i.procesado).length,
+          procesados: inboxMock.filter(i => i.procesado).length,
+          porOrigen: {
+            email: inboxMock.filter(i => i.origen === 'email').length,
+            whatsapp: inboxMock.filter(i => i.origen === 'whatsapp').length,
+            ftp: inboxMock.filter(i => i.origen === 'ftp').length
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('[API/Inbox] Error GET:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'GET' });
+      return apiServerError();
+    }
   }
-}
+);
 
 // Crear cuña desde inbox
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { inboxId, anuncianteId, nombre, tipo, urgencia, gruposDistribucion } = body;
+export const POST = withApiRoute(
+  { resource: 'cunas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inboxId, anuncianteId, nombre, tipo, urgencia, gruposDistribucion } = body;
 
-    const itemInbox = inboxMock.find(i => i.id === inboxId);
-    if (!itemInbox) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Item de inbox no encontrado' 
-      }, { status: 404 });
-    }
-
-    if (itemInbox.procesado) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Este item ya fue procesado' 
-      }, { status: 400 });
-    }
-
-    // Simular creación de cuña
-    const nuevaCunaId = `cuna-${Date.now()}`;
-    const nuevaCodigo = `SPX${Date.now().toString().slice(-6)}`;
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        cunaId: nuevaCunaId,
-        codigo: nuevaCodigo,
-        nombre: nombre || itemInbox.asunto || 'Cuña desde inbox',
-        anuncianteId: anuncianteId || itemInbox.anuncianteDetectadoId,
-        tipo: tipo || 'audio',
-        estado: 'pendiente_validacion'
-      },
-      mensaje: `Cuña ${nuevaCodigo} creada exitosamente desde inbox`,
-      inboxActualizado: {
-        procesado: true,
-        cunaCreada: true,
-        cunaResultanteId: nuevaCunaId
-      }
-    });
-
-  } catch (error) {
-    logger.error('[API/Inbox] Error POST:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'POST' });
-    return apiServerError();
-  }
-}
-
-// Asignar item a usuario o descartar
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { inboxId, accion, usuarioId, notas } = body;
-
-    switch (accion) {
-      case 'asignar':
-        return NextResponse.json({
-          success: true,
-          mensaje: `Item asignado a usuario ${usuarioId}`
-        });
-        
-      case 'descartar':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Item marcado como descartado'
-        });
-        
-      case 'marcar_spam':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Item marcado como spam'
-        });
-        
-      case 'vincular_anunciante':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Anunciante vinculado manualmente'
-        });
-        
-      default:
+      const itemInbox = inboxMock.find(i => i.id === inboxId);
+      if (!itemInbox) {
         return NextResponse.json({ 
           success: false, 
-          error: 'Acción no válida' 
-        }, { status: 400 });
-    }
+          error: 'Item de inbox no encontrado' 
+        }, { status: 404 });
+      }
 
-  } catch (error) {
-    logger.error('[API/Inbox] Error PUT:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'PUT' });
-    return apiServerError();
+      if (itemInbox.procesado) {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Este item ya fue procesado' 
+        }, { status: 400 });
+      }
+
+      // Simular creación de cuña
+      const nuevaCunaId = `cuna-${Date.now()}`;
+      const nuevaCodigo = `SPX${Date.now().toString().slice(-6)}`;
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          cunaId: nuevaCunaId,
+          codigo: nuevaCodigo,
+          nombre: nombre || itemInbox.asunto || 'Cuña desde inbox',
+          anuncianteId: anuncianteId || itemInbox.anuncianteDetectadoId,
+          tipo: tipo || 'audio',
+          estado: 'pendiente_validacion'
+        },
+        mensaje: `Cuña ${nuevaCodigo} creada exitosamente desde inbox`,
+        inboxActualizado: {
+          procesado: true,
+          cunaCreada: true,
+          cunaResultanteId: nuevaCunaId
+        }
+      });
+
+    } catch (error) {
+      logger.error('[API/Inbox] Error POST:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'POST' });
+      return apiServerError();
+    }
   }
-}
+);
+
+// Asignar item a usuario o descartar
+export const PUT = withApiRoute(
+  { resource: 'cunas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inboxId, accion, usuarioId, notas } = body;
+
+      switch (accion) {
+        case 'asignar':
+          return NextResponse.json({
+            success: true,
+            mensaje: `Item asignado a usuario ${usuarioId}`
+          });
+          
+        case 'descartar':
+          return NextResponse.json({
+            success: true,
+            mensaje: 'Item marcado como descartado'
+          });
+          
+        case 'marcar_spam':
+          return NextResponse.json({
+            success: true,
+            mensaje: 'Item marcado como spam'
+          });
+          
+        case 'vincular_anunciante':
+          return NextResponse.json({
+            success: true,
+            mensaje: 'Anunciante vinculado manualmente'
+          });
+          
+        default:
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Acción no válida' 
+          }, { status: 400 });
+      }
+
+    } catch (error) {
+      logger.error('[API/Inbox] Error PUT:', error instanceof Error ? error : undefined, { module: 'cunas/inbox', action: 'PUT' });
+      return apiServerError();
+    }
+  }
+);

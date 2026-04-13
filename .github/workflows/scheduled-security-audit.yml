@@ -1,0 +1,322 @@
+# 🔒 SILEXAR PULSE - SCHEDULED SECURITY AUDIT
+# Auditorías de seguridad automáticas programadas
+# Versión: 1.0.0 | Tier: TIER_0_PENTAGON++
+
+name: 🔒 Scheduled Security Audit
+
+on:
+  schedule:
+    # Lunes 9:00 AM UTC - Reporte semanal completo
+    - cron: '0 9 * * 1'
+    # Miércoles 9:00 AM UTC - Auto-remediación semanal
+    - cron: '0 9 * * 3'
+    # Diario 2:00 AM UTC - Health check
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      audit_type:
+        description: 'Tipo de auditoría'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - report-only
+          - remediate-only
+          - health-check
+
+env:
+  NODE_VERSION: '20'
+  SECURITY_THRESHOLD: 8.0
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════
+  # JOB 1: REPORTE SEMANAL (Lunes 9 AM)
+  # ═══════════════════════════════════════════════════════════════
+  weekly-report:
+    name: 📊 Weekly Security Report
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * 1' || inputs.audit_type == 'full' || inputs.audit_type == 'report-only'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Security Report
+        run: npm run security:dashboard:report
+
+      - name: Read Security Score
+        id: score
+        run: |
+          SCORE=$(cat security-report.json | jq -r '.metrics.score')
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "Security Score: $SCORE"
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-weekly-${{ github.run_id }}
+          path: security-report.json
+          retention-days: 90
+
+      - name: Comment on Commit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const score = '${{ steps.score.outputs.score }}';
+            const status = parseFloat(score) >= 8.0 ? '✅ PASS' : '⚠️ REVIEW NEEDED';
+            const emoji = parseFloat(score) >= 8.0 ? '🟢' : '🟡';
+            
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `${emoji} **Weekly Security Audit Complete**\n\nScore: ${score}/10\nStatus: ${status}\n\nReport available in artifacts.`
+            });
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            📊 Weekly Security Report Generated
+            
+            Repository: ${{ github.repository }}
+            Score: ${{ steps.score.outputs.score }}/10
+            Status: ${{ parseFloat(steps.score.outputs.score) >= 8.0 && '✅ PASS' || '⚠️ REVIEW NEEDED' }}
+            
+            Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK }}
+
+  # ═══════════════════════════════════════════════════════════════
+  # JOB 2: AUTO-REMEDIACIÓN SEMANAL (Miércoles 9 AM)
+  # ═══════════════════════════════════════════════════════════════
+  weekly-remediation:
+    name: 🔧 Weekly Auto-Remediation
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * 3' || inputs.audit_type == 'full' || inputs.audit_type == 'remediate-only'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Check Current Score
+        id: before
+        run: |
+          npm run security:dashboard:report
+          SCORE=$(cat security-report.json | jq -r '.metrics.score')
+          echo "score_before=$SCORE" >> $GITHUB_OUTPUT
+
+      - name: Run Auto-Remediation
+        run: npm run security:remediate
+
+      - name: Check Score After Remediation
+        id: after
+        run: |
+          npm run security:dashboard:report
+          SCORE=$(cat security-report.json | jq -r '.metrics.score')
+          echo "score_after=$SCORE" >> $GITHUB_OUTPUT
+
+      - name: Check for Changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            🔒 Auto-remediation: Security fixes
+            
+            Automated security fixes generated by hardening system.
+            
+            Score before: ${{ steps.before.outputs.score_before }}/10
+            Score after: ${{ steps.after.outputs.score_after }}/10
+          title: '🔒 Security: Auto-remediation fixes'
+          body: |
+            ## Automated Security Fixes
+            
+            This PR contains automated security fixes generated by the hardening system.
+            
+            ### Changes Made
+            - Applied auto-remediation to fix security issues
+            - Removed console statements
+            - Fixed type safety issues
+            - Applied ESLint security rules
+            
+            ### Metrics
+            - Score before: ${{ steps.before.outputs.score_before }}/10
+            - Score after: ${{ steps.after.outputs.score_after }}/10
+            
+            Please review the changes before merging.
+          branch: security/auto-remediation-${{ github.run_id }}
+          delete-branch: true
+          labels: security, automated, hardening
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🔧 Weekly Auto-Remediation Complete
+            
+            Repository: ${{ github.repository }}
+            Score before: ${{ steps.before.outputs.score_before }}/10
+            Score after: ${{ steps.after.outputs.score_after }}/10
+            Changes detected: ${{ steps.changes.outputs.has_changes == 'true' && '✅ YES' || '❌ NO' }}
+            
+            ${{ steps.changes.outputs.has_changes == 'true' && 'PR created with fixes' || 'No changes needed' }}
+            
+            Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK }}
+
+  # ═══════════════════════════════════════════════════════════════
+  # JOB 3: HEALTH CHECK DIARIO (2 AM)
+  # ═══════════════════════════════════════════════════════════════
+  daily-health-check:
+    name: 💚 Daily Health Check
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 2 * * *' || inputs.audit_type == 'health-check'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Health Check
+        id: health
+        run: |
+          npm run security:dashboard:report
+          SCORE=$(cat security-report.json | jq -r '.metrics.score')
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          
+          CRITICAL=$(cat security-report.json | jq -r '.metrics.vulnerabilities.critical')
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+
+      - name: Check Score Threshold
+        run: |
+          SCORE=${{ steps.health.outputs.score }}
+          if (( $(echo "$SCORE < ${{ env.SECURITY_THRESHOLD }}" | bc -l) )); then
+            echo "❌ Security score ($SCORE) below threshold (${{ env.SECURITY_THRESHOLD }})"
+            exit 1
+          fi
+
+      - name: Check Critical Vulnerabilities
+        run: |
+          CRITICAL=${{ steps.health.outputs.critical }}
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "❌ Critical vulnerabilities found: $CRITICAL"
+            exit 1
+          fi
+
+      - name: Upload Health Metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-metrics-daily-${{ github.run_id }}
+          path: security-report.json
+          retention-days: 30
+
+      - name: Notify on Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🚨 SECURITY ALERT: Daily Health Check Failed
+            
+            Repository: ${{ github.repository }}
+            Score: ${{ steps.health.outputs.score }}/10
+            Critical vulnerabilities: ${{ steps.health.outputs.critical }}
+            
+            Immediate action required!
+            
+            Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK }}
+
+  # ═══════════════════════════════════════════════════════════════
+  # JOB 4: AUDITORÍA COMPLETA (Manual Trigger)
+  # ═══════════════════════════════════════════════════════════════
+  full-audit:
+    name: 🔍 Full Security Audit
+    runs-on: ubuntu-latest
+    if: inputs.audit_type == 'full'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Full Security Pipeline
+        run: npm run security:full
+
+      - name: Generate Report
+        run: npm run security:dashboard:report
+
+      - name: Upload Full Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-full-${{ github.run_id }}
+          path: |
+            security-report.json
+            security-reports/
+          retention-days: 90
+
+      - name: Create Issue if Score < 8.0
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Security Score Below Threshold',
+              body: 'Full security audit failed. Score below 8.0. Review the report in artifacts.',
+              labels: ['security', 'critical', 'automated']
+            });

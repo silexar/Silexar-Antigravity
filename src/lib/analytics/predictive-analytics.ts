@@ -722,7 +722,7 @@ export class PredictiveAnalyticsManager {
     
     for (const type of insightTypes) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const insight = await this.generateInsight(type as any, dataSource);
+      const insight = await this.generateInsight(type as unknown, dataSource);
       insights.push(insight);
     }
     
@@ -866,10 +866,12 @@ export class PredictiveAnalyticsManager {
     };
 
     switch (model.type) {
-      case 'regression':
-        output.value = Math.random() * 1000;
-        output.confidenceInterval = [output.value * 0.9, output.value * 1.1];
+      case 'regression': {
+        const regValue = Math.random() * 1000;
+        output.value = regValue;
+        output.confidenceInterval = [regValue * 0.9, regValue * 1.1];
         break;
+      }
       case 'classification':
         const classes = ['Class A', 'Class B', 'Class C'];
         output.value = classes[Math.floor(Math.random() * classes.length)];
@@ -953,7 +955,7 @@ export class PredictiveAnalyticsManager {
     return {
       id: insightId,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: type as any,
+      type: type as unknown,
       title: insightData.title,
       description: insightData.description,
       severity: insightData.severity,
@@ -974,7 +976,7 @@ export class PredictiveAnalyticsManager {
           data: Array.from({ length: 30 }, (_, i) => ({
             x: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000),
             y: Math.random() * 100
-          }))
+          })) as unknown as Record<string, unknown>
         }
       ],
       actions: [
@@ -1069,7 +1071,7 @@ export const analyticsUtils = {
       confidence: model.confidence,
       complexity: analyticsUtils.calculateComplexity(model),
       status: model.status,
-      lastTrained: model.lastTrained
+      lastTrained: model.lastTrained ?? new Date()
     })).sort((a, b) => b.accuracy - a.accuracy);
   }
 };

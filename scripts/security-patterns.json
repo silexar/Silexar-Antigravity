@@ -1,0 +1,354 @@
+{
+  "name": "Silexar Pulse Security Patterns",
+  "version": "1.0.0",
+  "description": "Patrones de detección de secretos y código vulnerable para pre-commit hooks",
+  "severity": {
+    "CRITICAL": "Bloquea el commit inmediatamente",
+    "HIGH": "Bloquea el commit, requiere revisión",
+    "MEDIUM": "Advertencia, requiere confirmación",
+    "LOW": "Advertencia informativa"
+  },
+  "secrets": {
+    "api_keys": {
+      "patterns": [
+        {
+          "name": "AWS Access Key ID",
+          "regex": "AKIA[0-9A-Z]{16}",
+          "severity": "CRITICAL",
+          "description": "AWS Access Key ID expuesta"
+        },
+        {
+          "name": "AWS Secret Access Key",
+          "regex": "['\"](aws)?_?(secret)?_?(access)?_?key['\"]\\s*[:=]\\s*['\"][0-9a-zA-Z/+]{40}['\"]",
+          "severity": "CRITICAL",
+          "description": "AWS Secret Access Key expuesta",
+          "flags": "i"
+        },
+        {
+          "name": "Generic API Key",
+          "regex": "(api[_-]?key|apikey|api[_-]?secret)\\s*[:=]\\s*['\"][a-zA-Z0-9_\\-]{16,}['\"]",
+          "severity": "HIGH",
+          "description": "Posible API Key genérica",
+          "flags": "i"
+        },
+        {
+          "name": "Bearer Token",
+          "regex": "bearer\\s+[a-zA-Z0-9_\\-\\.=]{20,}",
+          "severity": "CRITICAL",
+          "description": "Bearer token expuesto",
+          "flags": "i"
+        },
+        {
+          "name": "Basic Auth Header",
+          "regex": "basic\\s+[a-zA-Z0-9+/=]{20,}",
+          "severity": "CRITICAL",
+          "description": "Basic Auth credentials expuestas",
+          "flags": "i"
+        }
+      ]
+    },
+    "tokens": {
+      "patterns": [
+        {
+          "name": "JWT Token",
+          "regex": "eyJ[a-zA-Z0-9_-]*\\.eyJ[a-zA-Z0-9_-]*\\.[a-zA-Z0-9_-]*",
+          "severity": "CRITICAL",
+          "description": "JWT token expuesto"
+        },
+        {
+          "name": "Slack Token",
+          "regex": "xox[baprs]-[0-9]{10,13}-[0-9]{10,13}[a-zA-Z0-9-]*",
+          "severity": "CRITICAL",
+          "description": "Slack token expuesto"
+        },
+        {
+          "name": "GitHub Token",
+          "regex": "gh[pousr]_[A-Za-z0-9_]{36,}",
+          "severity": "CRITICAL",
+          "description": "GitHub token expuesto"
+        },
+        {
+          "name": "GitLab Token",
+          "regex": "glpat-[0-9a-zA-Z-]{20}",
+          "severity": "CRITICAL",
+          "description": "GitLab Personal Access Token expuesto"
+        },
+        {
+          "name": "npm Token",
+          "regex": "npm_[a-zA-Z0-9]{36}",
+          "severity": "CRITICAL",
+          "description": "npm access token expuesto"
+        },
+        {
+          "name": "Private Key",
+          "regex": "-----BEGIN (RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----",
+          "severity": "CRITICAL",
+          "description": "Private key expuesta"
+        },
+        {
+          "name": "OpenAI API Key",
+          "regex": "sk-[a-zA-Z0-9]{48}",
+          "severity": "CRITICAL",
+          "description": "OpenAI API Key expuesta"
+        },
+        {
+          "name": "Stripe Key",
+          "regex": "sk_(live|test)_[0-9a-zA-Z]{24,}",
+          "severity": "CRITICAL",
+          "description": "Stripe secret key expuesta"
+        },
+        {
+          "name": "SendGrid Key",
+          "regex": "SG\\.[a-zA-Z0-9_-]{22}\\.[a-zA-Z0-9_-]{43}",
+          "severity": "CRITICAL",
+          "description": "SendGrid API Key expuesta"
+        },
+        {
+          "name": "Twilio Key",
+          "regex": "SK[0-9a-fA-F]{32}",
+          "severity": "CRITICAL",
+          "description": "Twilio API Key expuesta"
+        },
+        {
+          "name": "Supabase Key",
+          "regex": "eyJ[A-Za-z0-9_-]*\\.eyJ[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]*",
+          "severity": "HIGH",
+          "description": "Posible Supabase JWT"
+        },
+        {
+          "name": "Vercel Token",
+          "regex": "vercel_[a-zA-Z0-9_]{24,}",
+          "severity": "CRITICAL",
+          "description": "Vercel token expuesto"
+        },
+        {
+          "name": "Docker Hub Token",
+          "regex": "dckr_pat_[a-zA-Z0-9_-]{27,}",
+          "severity": "CRITICAL",
+          "description": "Docker Hub Personal Access Token expuesto"
+        }
+      ]
+    },
+    "passwords": {
+      "patterns": [
+        {
+          "name": "Password in URL",
+          "regex": "[a-zA-Z]{3,10}://[^/\\s:@]*:[^/\\s:@]*@[^/\\s:@]*",
+          "severity": "CRITICAL",
+          "description": "Contraseña en URL (user:pass@host)"
+        },
+        {
+          "name": "Hardcoded Password",
+          "regex": "(password|passwd|pwd)\\s*[:=]\\s*['\"][^'\"]{4,}['\"]",
+          "severity": "HIGH",
+          "description": "Contraseña hardcodeada detectada",
+          "flags": "i"
+        },
+        {
+          "name": "Database Password",
+          "regex": "(database|db)_?(password|passwd|pwd)\\s*[:=]\\s*['\"][^'\"]+['\"]",
+          "severity": "CRITICAL",
+          "description": "Contraseña de base de datos expuesta",
+          "flags": "i"
+        }
+      ]
+    }
+  },
+  "vulnerable_code": {
+    "eval_functions": {
+      "patterns": [
+        {
+          "name": "eval() usage",
+          "regex": "[^a-zA-Z0-9_$]eval\\s*\\(",
+          "severity": "CRITICAL",
+          "description": "Uso de eval() - ejecución de código arbitrario"
+        },
+        {
+          "name": "new Function()",
+          "regex": "new\\s+Function\\s*\\(",
+          "severity": "CRITICAL",
+          "description": "Uso de new Function() - ejecución de código arbitrario"
+        },
+        {
+          "name": "setTimeout with string",
+          "regex": "setTimeout\\s*\\(\\s*['\"]",
+          "severity": "HIGH",
+          "description": "setTimeout con string - ejecución de código"
+        },
+        {
+          "name": "setInterval with string",
+          "regex": "setInterval\\s*\\(\\s*['\"]",
+          "severity": "HIGH",
+          "description": "setInterval con string - ejecución de código"
+        }
+      ]
+    },
+    "xss_vulnerabilities": {
+      "patterns": [
+        {
+          "name": "innerHTML assignment",
+          "regex": "\\.innerHTML\\s*[=:]",
+          "severity": "HIGH",
+          "description": "innerHTML puede causar XSS - usar textContent o DOMPurify"
+        },
+        {
+          "name": "outerHTML assignment",
+          "regex": "\\.outerHTML\\s*[=:]",
+          "severity": "HIGH",
+          "description": "outerHTML puede causar XSS"
+        },
+        {
+          "name": "document.write",
+          "regex": "document\\.write\\s*\\(",
+          "severity": "HIGH",
+          "description": "document.write puede causar XSS"
+        },
+        {
+          "name": "dangerouslySetInnerHTML",
+          "regex": "dangerouslySetInnerHTML",
+          "severity": "MEDIUM",
+          "description": "dangerouslySetInnerHTML en React - asegurar sanitización"
+        }
+      ]
+    },
+    "insecure_practices": {
+      "patterns": [
+        {
+          "name": "console.log with sensitive data",
+          "regex": "console\\.(log|warn|error|info|debug)\\s*\\([^)]*(password|token|secret|key|credential|auth)",
+          "severity": "MEDIUM",
+          "description": "console.log puede exponer datos sensibles",
+          "flags": "i"
+        },
+        {
+          "name": "disabled security (SSL)",
+          "regex": "NODE_TLS_REJECT_UNAUTHORIZED\\s*[=:]\\s*['\"]?0['\"]?",
+          "severity": "CRITICAL",
+          "description": "SSL verification deshabilitado - INSEGURO"
+        },
+        {
+          "name": "insecure randomness",
+          "regex": "Math\\.random\\s*\\(\\s*\\)",
+          "severity": "MEDIUM",
+          "description": "Math.random() no es criptográficamente seguro - usar crypto.randomBytes"
+        },
+        {
+          "name": "SQL injection risk",
+          "regex": "(query|execute)\\s*\\(\\s*['\"][^'\"]*\\$\\{[^}]+\\}",
+          "severity": "CRITICAL",
+          "description": "Posible SQL injection - usar prepared statements"
+        },
+        {
+          "name": "child_process exec",
+          "regex": "child_process.*\\.exec\\s*\\(",
+          "severity": "HIGH",
+          "description": "exec() con input no sanitizado puede ser peligroso - usar execFile"
+        }
+      ]
+    }
+  },
+  "file_patterns": {
+    "blocked_files": [
+      {
+        "pattern": "\\.env(\\.local|\\.production|\\.development)?$",
+        "severity": "CRITICAL",
+        "description": "Archivo .env no debe ser commiteado"
+      },
+      {
+        "pattern": "\\.key$",
+        "severity": "CRITICAL",
+        "description": "Archivos de claves privadas"
+      },
+      {
+        "pattern": "\\.pem$",
+        "severity": "CRITICAL",
+        "description": "Archivos PEM (certificados/claves)"
+      },
+      {
+        "pattern": "\\.p12$",
+        "severity": "CRITICAL",
+        "description": "Archivos PKCS#12 (certificados)"
+      },
+      {
+        "pattern": "id_rsa$",
+        "severity": "CRITICAL",
+        "description": "Clave privada SSH"
+      },
+      {
+        "pattern": "id_dsa$",
+        "severity": "CRITICAL",
+        "description": "Clave privada SSH (DSA)"
+      },
+      {
+        "pattern": "id_ecdsa$",
+        "severity": "CRITICAL",
+        "description": "Clave privada SSH (ECDSA)"
+      },
+      {
+        "pattern": "id_ed25519$",
+        "severity": "CRITICAL",
+        "description": "Clave privada SSH (Ed25519)"
+      },
+      {
+        "pattern": "\\.htpasswd$",
+        "severity": "CRITICAL",
+        "description": "Archivo de passwords htpasswd"
+      },
+      {
+        "pattern": "\\.netrc$",
+        "severity": "CRITICAL",
+        "description": "Archivo .netrc con credenciales"
+      },
+      {
+        "pattern": "credentials\\.json$",
+        "severity": "CRITICAL",
+        "description": "Archivo de credenciales JSON"
+      },
+      {
+        "pattern": "serviceAccountKey\\.json$",
+        "severity": "CRITICAL",
+        "description": "Firebase service account key"
+      }
+    ],
+    "suspicious_extensions": [
+      {
+        "pattern": "\\.log$",
+        "severity": "LOW",
+        "description": "Archivos de log pueden contener información sensible"
+      },
+      {
+        "pattern": "\\.dump$",
+        "severity": "HIGH",
+        "description": "Database dumps pueden contener datos sensibles"
+      },
+      {
+        "pattern": "\\.sql$",
+        "severity": "MEDIUM",
+        "description": "Archivos SQL - revisar por datos sensibles"
+      }
+    ]
+  },
+  "ignore_patterns": [
+    "node_modules/",
+    "\\.git/",
+    "dist/",
+    "build/",
+    "coverage/",
+    "\\.next/",
+    "\\.husky/_",
+    "scripts/security-patterns.json",
+    "scripts/security-precommit.js",
+    "__mocks__/",
+    "\\.test\\.",
+    "\\.spec\\.",
+    "test/",
+    "tests/",
+    "e2e/",
+    "playwright\\.config",
+    "vitest\\.config",
+    "\\.d\\.ts$",
+    "package-lock\\.json$",
+    "yarn\\.lock$",
+    "pnpm-lock\\.yaml$"
+  ]
+}

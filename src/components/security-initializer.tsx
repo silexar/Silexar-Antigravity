@@ -40,7 +40,6 @@ export function useAuth() {
 function useCSPReporter() {
   useEffect(() => {
     const handler = (event: SecurityPolicyViolationEvent) => {
-      // Report CSP violations to the server
       fetch('/api/security/csp-violation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,7 +63,6 @@ function useCSPReporter() {
 
 function useSessionMonitor(refreshSession: () => Promise<void>) {
   useEffect(() => {
-    // Refresh session when tab becomes visible (user returns)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         refreshSession()
@@ -76,10 +74,37 @@ function useSessionMonitor(refreshSession: () => Promise<void>) {
   }, [refreshSession])
 
   useEffect(() => {
-    // Periodic token refresh — every 20 minutes
+    // Periodic session validation — every 20 minutes
     const interval = setInterval(refreshSession, 20 * 60_000)
     return () => clearInterval(interval)
   }, [refreshSession])
+}
+
+// ─── Fetch current user from server ─────────────────────────
+// Uses the httpOnly silexar_session cookie (sent via credentials:'include').
+// NEVER reads or stores the JWT in JavaScript — the token lives only in httpOnly cookies.
+
+async function fetchCurrentUser(): Promise<AuthUser | null> {
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    if (!data.success || !data.data) return null
+    const u = data.data.user ?? data.data
+    return {
+      id: u.userId ?? u.id,
+      email: u.email,
+      name: u.name || u.email?.split('@')[0],
+      category: u.role ?? u.category ?? 'vendedor',
+      tenantId: u.tenantId ?? null,
+      tenantSlug: u.tenantSlug ?? null,
+    }
+  } catch {
+    return null
+  }
 }
 
 // ─── Security Initializer Component ──────────────────────────
@@ -94,22 +119,17 @@ export function SecurityInitializer({ children }: { children: React.ReactNode })
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include',
+        credentials: 'include', // server sets httpOnly silexar_session + silexar_refresh cookies
       })
 
       const data = await res.json()
-
       if (!data.success) {
         return { success: false, error: data.error?.message || 'Login failed' }
       }
 
-      // Store token in httpOnly cookie via response, and user in state
-      setUser(data.data.user)
-
-      // Store access token for API calls (refresh token stays in httpOnly cookie)
-      if (data.data.accessToken) {
-        sessionStorage.setItem('silexar_token', data.data.accessToken)
-      }
+      // Identity comes from /api/auth/me — no JWT in JS memory
+      const currentUser = await fetchCurrentUser()
+      setUser(currentUser)
 
       return { success: true }
     } catch {
@@ -127,71 +147,37 @@ export function SecurityInitializer({ children }: { children: React.ReactNode })
       // Continue logout even if server call fails
     } finally {
       setUser(null)
-      sessionStorage.removeItem('silexar_token')
       window.location.href = '/login'
     }
   }, [])
 
   const refreshSession = useCallback(async () => {
     try {
-      // The silexar_refresh httpOnly cookie is sent automatically by the browser
-      // because of credentials: 'include'. We never read it from JS (it's httpOnly).
+      // The silexar_refresh httpOnly cookie is sent automatically
       const res = await fetch('/api/auth/refresh', {
         method: 'POST',
         credentials: 'include',
       })
 
       if (!res.ok) {
-        // Refresh token expired or invalid — clear local state
         setUser(null)
-        sessionStorage.removeItem('silexar_token')
         return
       }
 
-      const data = await res.json()
-      if (data.success && data.data?.accessToken) {
-        // Access token returned in body — store for Authorization header use
-        sessionStorage.setItem('silexar_token', data.data.accessToken)
-        // Silexar_session + silexar_refresh cookies are updated via Set-Cookie in the response
-      }
+      // Re-fetch identity after token rotation
+      const currentUser = await fetchCurrentUser()
+      setUser(currentUser)
     } catch {
       // Silent fail — next request will trigger re-auth if needed
     }
   }, [])
 
-  // Initial session check
+  // Initial session check — validate server-side via httpOnly cookie
   useEffect(() => {
-    const token = sessionStorage.getItem('silexar_token')
-    if (!token) {
-      setIsLoading(false)
-      return
-    }
-
-    // Decode JWT payload (no verification — that happens server-side)
-    try {
-      const parts = token.split('.')
-      if (parts.length === 3) {
-        const payload = JSON.parse(atob(parts[1]))
-        if (payload.exp && payload.exp * 1000 > Date.now()) {
-          setUser({
-            id: payload.userId,
-            email: payload.email,
-            name: payload.name || payload.email.split('@')[0],
-            category: payload.role || 'vendedor',
-            tenantId: payload.tenantId || null,
-            tenantSlug: payload.tenantSlug || null,
-          })
-        } else {
-          // Token expired — try refresh
-          refreshSession()
-        }
-      }
-    } catch {
-      sessionStorage.removeItem('silexar_token')
-    }
-
-    setIsLoading(false)
-  }, [refreshSession])
+    fetchCurrentUser()
+      .then(setUser)
+      .finally(() => setIsLoading(false))
+  }, [])
 
   // Activate security monitors
   useCSPReporter()

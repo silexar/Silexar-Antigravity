@@ -303,7 +303,7 @@ export const AnalyticsCards = memo<AnalyticsCardsProps>(({
           </div>
         </div>
         {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-          <div key={i} className="holographic-card p-4 rounded-lg">
+          <div key={`skeleton-${i}`} className="holographic-card p-4 rounded-lg">
             <div className="animate-pulse space-y-3">
               <div className="h-4 bg-muted rounded w-2/3"></div>
               <div className="h-6 bg-muted rounded w-1/2"></div>

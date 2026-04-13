@@ -391,7 +391,7 @@ export default function CalendarioContratosPage() {
                 
                 return (
                   <motion.button
-                    key={idx}
+                    key={fecha.toISOString()}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setDiaSeleccionado(fecha)}
                     className={`

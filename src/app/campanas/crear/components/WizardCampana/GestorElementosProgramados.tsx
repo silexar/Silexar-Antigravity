@@ -174,7 +174,6 @@ export const GestorElementosProgramados: React.FC<GestorElementosProps> = ({
   const [filtroMedio, setFiltroMedio] = useState<MedioCampana | 'todos'>('todos');
   const [filtroEstado, setFiltroEstado] = useState<EstadoElemento | 'todos'>('todos');
   const [filtroTipo, setFiltroTipo] = useState<TipoContenido | 'todos'>('todos');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_mostrarFiltrosAvanzados, _setMostrarFiltrosAvanzados] = useState(false);
   const [dialogoConfirmacion, setDialogoConfirmacion] = useState<{
     abierto: boolean;

@@ -514,8 +514,8 @@ export default function ConfirmacionesPage() {
                         <TableCell className="font-medium">{envio.fecha}</TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {envio.destinatarios.map((d, i) => (
-                              <Badge key={i} variant="outline" className="text-xs">{d}</Badge>
+                            {envio.destinatarios.map((d) => (
+                              <Badge key={d} variant="outline" className="text-xs">{d}</Badge>
                             ))}
                           </div>
                         </TableCell>

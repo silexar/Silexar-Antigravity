@@ -100,8 +100,35 @@ export class CategoriaProducto {
     descripcion: string,
     opciones?: Partial<Omit<CategoriaProductoProps, 'tipo' | 'nivel' | 'descripcion'>>
   ): CategoriaProducto {
-    const multiplicadorBase = CategoriaProducto.MULTIPLICADORES_BASE[tipo];
-    const multiplicadorNivel = CategoriaProducto.MULTIPLICADORES_NIVEL[nivel];
+    // Safe lookup with switch to prevent object injection
+    const getMultiplicadorBase = (t: TipoCategoria): number => {
+      switch (t) {
+        case TipoCategoria.RADIO: return 1.0;
+        case TipoCategoria.TELEVISION: return 2.5;
+        case TipoCategoria.DIGITAL: return 1.8;
+        case TipoCategoria.STREAMING: return 2.2;
+        case TipoCategoria.PODCAST: return 1.3;
+        case TipoCategoria.OUTDOOR: return 1.5;
+        case TipoCategoria.PRINT: return 0.8;
+        case TipoCategoria.EVENTO: return 3.0;
+        case TipoCategoria.PATROCINIO: return 2.8;
+        case TipoCategoria.BRANDED_CONTENT: return 3.5;
+        default: return 1.0;
+      }
+    };
+
+    const getMultiplicadorNivel = (n: NivelCategoria): number => {
+      switch (n) {
+        case NivelCategoria.PREMIUM: return 2.0;
+        case NivelCategoria.STANDARD: return 1.0;
+        case NivelCategoria.BASICO: return 0.7;
+        case NivelCategoria.PROMOCIONAL: return 0.5;
+        default: return 1.0;
+      }
+    };
+
+    const multiplicadorBase = getMultiplicadorBase(tipo);
+    const multiplicadorNivel = getMultiplicadorNivel(nivel);
     const multiplicadorFinal = multiplicadorBase * multiplicadorNivel;
 
     return new CategoriaProducto({
@@ -248,35 +275,35 @@ export class CategoriaProducto {
    * Métodos estáticos de utilidad
    */
   private static getDiasMinimosPorTipo(tipo: TipoCategoria): number {
-    const diasMinimos: Record<TipoCategoria, number> = {
-      [TipoCategoria.RADIO]: 7,
-      [TipoCategoria.TELEVISION]: 14,
-      [TipoCategoria.DIGITAL]: 3,
-      [TipoCategoria.STREAMING]: 7,
-      [TipoCategoria.PODCAST]: 7,
-      [TipoCategoria.OUTDOOR]: 30,
-      [TipoCategoria.PRINT]: 1,
-      [TipoCategoria.EVENTO]: 1,
-      [TipoCategoria.PATROCINIO]: 30,
-      [TipoCategoria.BRANDED_CONTENT]: 14
-    };
-    return diasMinimos[tipo];
+    switch (tipo) {
+      case TipoCategoria.RADIO: return 7;
+      case TipoCategoria.TELEVISION: return 14;
+      case TipoCategoria.DIGITAL: return 3;
+      case TipoCategoria.STREAMING: return 7;
+      case TipoCategoria.PODCAST: return 7;
+      case TipoCategoria.OUTDOOR: return 30;
+      case TipoCategoria.PRINT: return 1;
+      case TipoCategoria.EVENTO: return 1;
+      case TipoCategoria.PATROCINIO: return 30;
+      case TipoCategoria.BRANDED_CONTENT: return 14;
+      default: return 7;
+    }
   }
 
   private static getDiasMaximosPorTipo(tipo: TipoCategoria): number {
-    const diasMaximos: Record<TipoCategoria, number> = {
-      [TipoCategoria.RADIO]: 365,
-      [TipoCategoria.TELEVISION]: 365,
-      [TipoCategoria.DIGITAL]: 180,
-      [TipoCategoria.STREAMING]: 365,
-      [TipoCategoria.PODCAST]: 365,
-      [TipoCategoria.OUTDOOR]: 365,
-      [TipoCategoria.PRINT]: 30,
-      [TipoCategoria.EVENTO]: 7,
-      [TipoCategoria.PATROCINIO]: 365,
-      [TipoCategoria.BRANDED_CONTENT]: 180
-    };
-    return diasMaximos[tipo];
+    switch (tipo) {
+      case TipoCategoria.RADIO: return 365;
+      case TipoCategoria.TELEVISION: return 365;
+      case TipoCategoria.DIGITAL: return 180;
+      case TipoCategoria.STREAMING: return 365;
+      case TipoCategoria.PODCAST: return 365;
+      case TipoCategoria.OUTDOOR: return 365;
+      case TipoCategoria.PRINT: return 30;
+      case TipoCategoria.EVENTO: return 7;
+      case TipoCategoria.PATROCINIO: return 365;
+      case TipoCategoria.BRANDED_CONTENT: return 180;
+      default: return 365;
+    }
   }
 
   private evaluarRestriccionHorario(restriccion: string, hora: number, diaSemana: number): boolean {

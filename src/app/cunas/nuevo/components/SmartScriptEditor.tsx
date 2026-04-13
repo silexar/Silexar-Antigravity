@@ -40,19 +40,20 @@ interface SmartScriptEditorProps {
 // COMPONENTES UI
 // ═══════════════════════════════════════════════════════════════
 
-const ToolButton = ({ 
-  icon: Icon, label, onClick, active = false, disabled = false 
-}: { 
+const ToolButton = ({
+  icon: Icon, label, onClick, active = false, disabled = false
+}: {
   icon: React.ElementType; label: string; onClick: () => void; active?: boolean; disabled?: boolean;
 }) => (
   <button
     onClick={onClick}
     disabled={disabled}
     title={label}
+    aria-label={label}
     className={`
       p-2 rounded-lg transition-all duration-200 flex items-center gap-2
-      ${active 
-        ? 'bg-violet-100 text-violet-700 shadow-sm' 
+      ${active
+        ? 'bg-violet-100 text-violet-700 shadow-sm'
         : 'hover:bg-slate-100 text-slate-600 hover:text-slate-800'
       }
       disabled:opacity-50 disabled:cursor-not-allowed
@@ -78,6 +79,7 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [extractedScripts, setExtractedScripts] = useState<ExtractedScript[] | null>(null);
   const [isExtracting, setIsExtracting] = useState(false);
+  const [isImproving, setIsImproving] = useState(false);
   
   // Enterprise Logic State
   const [showVoiceConfig, setShowVoiceConfig] = useState(false);
@@ -128,7 +130,7 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
   };
 
   // Manejador de inserción de etiquetas
-  const handleInsertTag = (tagType: 'ENFASIS' | 'PAUSA' | 'DELETREO') => {
+  const handleInsertTag = (tagType: 'ENFASIS' | 'PAUSA' | 'DELETREO' | 'NEGRITA' | 'CURSIVA') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -145,6 +147,10 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
       replacement = `[ÉNFASIS]${selectedText || 'texto'}[/ÉNFASIS]`;
     } else if (tagType === 'DELETREO') {
       replacement = `[DELETREO]${selectedText || 'texto'}[/DELETREO]`;
+    } else if (tagType === 'NEGRITA') {
+      replacement = `[NEGRITA]${selectedText || 'texto'}[/NEGRITA]`;
+    } else if (tagType === 'CURSIVA') {
+      replacement = `[CURSIVA]${selectedText || 'texto'}[/CURSIVA]`;
     }
 
     const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
@@ -194,6 +200,24 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
     setShowVoiceConfig(false);
   };
 
+  // Mejorar guión con IA
+  const handleImproveWithAI = async () => {
+    if (!text.trim()) return;
+    setIsImproving(true);
+    try {
+      // Simulación de mejora IA - en producción llamar a servicio real
+      const improved = text
+        .replace(/\bmuy\b/gi, 'extremadamente')
+        .replace(/\bbueno\b/gi, 'excelente')
+        .replace(/\bmalo\b/gi, 'deficiente');
+      setText(improved);
+    } catch (error) {
+      logger.error('Error improving script with AI', error instanceof Error ? error : undefined);
+    } finally {
+      setIsImproving(false);
+    }
+  };
+
   // ... (rest of render logic needs update to include VariablePicker)
 
   return (
@@ -219,7 +243,7 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
                 <FileText className="w-5 h-5 text-violet-600" />
                 Guiones Detectados
               </h3>
-              <button onClick={() => setExtractedScripts(null)} className="p-1 hover:bg-slate-100 rounded-full">
+              <button onClick={() => setExtractedScripts(null)} aria-label="Cerrar" className="p-1 hover:bg-slate-100 rounded-full">
                 <X className="w-5 h-5 text-slate-500" />
               </button>
             </div>
@@ -256,8 +280,8 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
             onChange={handleFileUpload} 
           />
           <div className="w-px h-6 bg-slate-200 mx-2" />
-          <ToolButton icon={Bold} label="Negrita" onClick={() => {}} disabled={disabled} />
-          <ToolButton icon={Italic} label="Cursiva" onClick={() => {}} disabled={disabled} />
+          <ToolButton icon={Bold} label="Negrita" onClick={() => handleInsertTag('NEGRITA')} disabled={disabled} />
+          <ToolButton icon={Italic} label="Cursiva" onClick={() => handleInsertTag('CURSIVA')} disabled={disabled} />
           <div className="w-px h-6 bg-slate-200 mx-2" />
           <ToolButton icon={Sparkles} label="Énfasis" onClick={() => handleInsertTag('ENFASIS')} disabled={disabled} />
           <ToolButton icon={Clock} label="Pausa (1s)" onClick={() => handleInsertTag('PAUSA')} disabled={disabled} />
@@ -270,7 +294,7 @@ export const SmartScriptEditor: React.FC<SmartScriptEditorProps> = ({
             active={showPreview}
             disabled={disabled} 
           />
-          <ToolButton icon={Wand2} label="Mejorar con IA" onClick={() => {}} disabled={disabled} />
+          <ToolButton icon={Wand2} label="Mejorar con IA" onClick={() => handleImproveWithAI()} disabled={disabled || isImproving} />
         </div>
 
         {/* Dynamic Variable Picker Panel (Collapsible or always visible in large screens) */}

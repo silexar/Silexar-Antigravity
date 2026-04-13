@@ -78,7 +78,6 @@ export function QuickActionsMobile({
         setRecordingTime(t => t + 1);
       }, 1000);
     } catch (error) {
-      console.error('Error accessing microphone:', error);
       alert('No se pudo acceder al micrófono');
     }
   }, []);

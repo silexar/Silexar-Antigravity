@@ -16,14 +16,14 @@ interface Discrepancia {
 
 export default function DetalleDiscrepanciasView({ onBack, sessionId }: { onBack: () => void, sessionId: string }) {
   const [selectedSpot, setSelectedSpot] = useState<Discrepancia | null>(null);
-  const [showOverrideModal, setShowOverrideModal] = useState<boolean>(false);
+  const [_showOverrideModal, _setShowOverrideModal] = useState<boolean>(false);
   const [pinInput, setPinInput] = useState<string>('');
-  const [isForced, setIsForced] = useState<boolean>(false);
+  const [_isForced, _setIsForced] = useState<boolean>(false);
 
-  const handleForceOverride = () => {
+  const _handleForceOverride = () => {
     if (pinInput === '1234') {
-        setIsForced(true);
-        setShowOverrideModal(false);
+        _setIsForced(true);
+        _setShowOverrideModal(false);
         setPinInput('');
         alert('✅ Bypass Comercial Aprobado. Spot enviado a cola de emisión forzada.');
     } else {

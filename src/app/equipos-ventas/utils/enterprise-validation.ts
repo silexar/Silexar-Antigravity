@@ -71,7 +71,7 @@ export function validatePercentage(value: string): ValidationResult {
  * Debounce: Delay execution until after `wait` ms of inactivity.
  * Useful for search inputs, filter changes.
  */
-export function debounce<T extends (...args: any[]) => void>(fn: T, wait: number): T {
+export function debounce<T extends (...args: unknown[]) => void>(fn: T, wait: number): T {
   let timeout: ReturnType<typeof setTimeout>;
   return ((...args: Parameters<T>) => {
     clearTimeout(timeout);
@@ -83,7 +83,7 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, wait: number
  * Throttle: Execute at most once per `limit` ms.
  * Useful for rate-limiting button clicks, API calls.
  */
-export function throttle<T extends (...args: any[]) => void>(fn: T, limit: number): T {
+export function throttle<T extends (...args: unknown[]) => void>(fn: T, limit: number): T {
   let inThrottle = false;
   return ((...args: Parameters<T>) => {
     if (!inThrottle) {

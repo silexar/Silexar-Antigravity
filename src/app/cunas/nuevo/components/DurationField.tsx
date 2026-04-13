@@ -257,6 +257,7 @@ export default function DurationField({
           placeholder={config.placeholder}
           min={config.min}
           max={config.max}
+          aria-label="Duración (segundos)"
           className={`
             w-full px-4 py-3 rounded-xl border transition-all
             ${!config.editable 

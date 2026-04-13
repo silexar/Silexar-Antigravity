@@ -112,9 +112,10 @@ export function DesktopPropiedadesDashboard({ tiposIniciales }: { tiposIniciales
           <div className="p-4 border-b border-slate-100">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input 
-                type="text" 
-                placeholder="Buscar propiedad..." 
+              <input
+                type="text"
+                placeholder="Buscar propiedad..."
+                aria-label="Buscar propiedad"
                 className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>

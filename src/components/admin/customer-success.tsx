@@ -317,7 +317,7 @@ export function CustomerSuccess() {
                     <p className="text-xs text-red-400 mb-1">⚠️ Riesgos:</p>
                     <div className="flex flex-wrap gap-1">
                       {customer.riskFactors.map((r, i) => (
-                        <span key={i} className="text-xs px-2 py-0.5 bg-red-500/20 text-red-300 rounded">{r}</span>
+                        <span key={r} className="text-xs px-2 py-0.5 bg-red-500/20 text-red-300 rounded">{r}</span>
                       ))}
                     </div>
                   </div>
@@ -327,7 +327,7 @@ export function CustomerSuccess() {
                     <p className="text-xs text-green-400 mb-1">💰 Oportunidades:</p>
                     <div className="flex flex-wrap gap-1">
                       {customer.opportunities.map((o, i) => (
-                        <span key={i} className="text-xs px-2 py-0.5 bg-green-500/20 text-green-300 rounded">{o}</span>
+                        <span key={o} className="text-xs px-2 py-0.5 bg-green-500/20 text-green-300 rounded">{o}</span>
                       ))}
                     </div>
                   </div>

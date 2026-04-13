@@ -64,8 +64,7 @@ export default function AdaptiveUI({ userId, className = '', children }: Adaptiv
       setProfile(userProfile);
       setAdaptations(userAdaptations);
     } catch (error) {
-      console.error('Error loading user profile:', error);
-    }
+      }
   };
 
   const handleAdaptUI = useCallback(async () => {
@@ -81,8 +80,7 @@ export default function AdaptiveUI({ userId, className = '', children }: Adaptiv
         applyAdaptation(adaptation);
       });
     } catch (error) {
-      console.error('Error adapting UI:', error);
-    } finally {
+      } finally {
       setIsAdapting(false);
     }
   }, [userId, adaptiveSettings.autoAdapt]);
@@ -91,7 +89,7 @@ export default function AdaptiveUI({ userId, className = '', children }: Adaptiv
     adaptation.changes.forEach(change => {
       const element = document.querySelector(`[data-adaptive="${change.element}"]`);
       if (element) {
-        (element as HTMLElement).style.setProperty(change.property, change.newValue);
+        (element as HTMLElement).style.setProperty(change.property, change.newValue as string | null);
       }
     });
   };
@@ -107,8 +105,7 @@ export default function AdaptiveUI({ userId, className = '', children }: Adaptiv
         setTimeout(handleAdaptUI, 1000);
       }
     } catch (error) {
-      console.error('Error learning from interaction:', error);
-    }
+      }
   }, [userId, adaptiveSettings.learningEnabled, adaptiveSettings.autoAdapt, handleAdaptUI]);
 
   const getDeviceIcon = (deviceType: string) => {

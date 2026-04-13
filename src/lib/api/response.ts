@@ -3,6 +3,7 @@
  */
 
 import { NextResponse } from 'next/server'
+import * as Sentry from '@sentry/nextjs'
 
 interface ApiSuccessResponse<T> {
   success: true
@@ -55,8 +56,23 @@ export function apiValidationError(details: unknown) {
   return apiError('VALIDATION_ERROR', 'Invalid request data', 422, details)
 }
 
-export function apiServerError(message = 'Internal server error') {
-  return apiError('INTERNAL_ERROR', message, 500)
+/**
+ * Respuesta de error 500. Automáticamente reporta a Sentry si se pasa el error.
+ * Uso: return apiServerError(error)  ← en catch blocks de API routes
+ */
+export function apiServerError(errorOrMessage: unknown = 'Internal server error') {
+  // WHY: Sentry.captureException centralizado aquí evita tener que añadirlo
+  // manualmente en cada catch block — cualquier apiServerError() lo reporta.
+  if (errorOrMessage instanceof Error) {
+    Sentry.captureException(errorOrMessage)
+    return apiError('INTERNAL_ERROR', 'Internal server error', 500)
+  }
+  if (typeof errorOrMessage === 'string') {
+    return apiError('INTERNAL_ERROR', errorOrMessage, 500)
+  }
+  // unknown error object — lo capturamos igual
+  Sentry.captureException(errorOrMessage)
+  return apiError('INTERNAL_ERROR', 'Internal server error', 500)
 }
 
 /**

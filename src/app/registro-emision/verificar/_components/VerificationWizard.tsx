@@ -107,11 +107,12 @@ export function VerificationWizard({ onStartVerification }: WizardProps) {
                     </div>
 
                     <div className="relative">
-                        <input 
-                           type="text" 
+                        <input
+                           type="text"
                            value={searchQuery}
                            onChange={(e) => setSearchQuery(e.target.value)}
                            placeholder="Ej: CAM-2024-001 o Contrato 9876..."
+                           aria-label="ID de Campaña o Número de Contrato"
                            className="w-full pl-6 pr-16 py-5 bg-[#e0e5ec] text-slate-800 font-bold text-lg rounded-2xl outline-none shadow-[inset_6px_6px_12px_#b8b9be,inset_-6px_-6px_12px_#ffffff] focus:shadow-[inset_9px_9px_18px_#b8b9be,inset_-9px_-9px_18px_#ffffff] transition-all placeholder:font-normal"
                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                         />
@@ -164,7 +165,7 @@ export function VerificationWizard({ onStartVerification }: WizardProps) {
                                 
                                 return (
                                     <button 
-                                        key={i}
+                                        key={`${_}-${i}`}
                                         onClick={() => hasEvents && selectDate(dateStr)}
                                         disabled={!hasEvents}
                                         className={`
@@ -245,11 +246,12 @@ export function VerificationWizard({ onStartVerification }: WizardProps) {
                             <label className="block text-sm font-black text-slate-700 uppercase tracking-widest mb-2 pl-1">🎯 Objetivo Específico (Opcional)</label>
                             <div className="relative">
                                 <Barcode className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                                <input 
-                                   type="text" 
+                                <input
+                                   type="text"
                                    value={spxQuery}
                                    onChange={(e) => setSpxQuery(e.target.value)}
                                    placeholder="Escanear o digitar Código SPX..."
+                                   aria-label="Código SPX"
                                    className="w-full pl-12 pr-4 py-4 bg-white text-slate-800 font-bold text-lg rounded-xl outline-none shadow-sm border border-slate-200 focus:border-teal-500 transition-all font-mono"
                                 />
                             </div>

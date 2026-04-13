@@ -11,6 +11,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import apiClient from '@/lib/api/client';
 import { 
   Building2, 
   ArrowLeft, 
@@ -281,24 +282,18 @@ export default function NuevoAnunciantePage() {
     
     setLoading(true);
     try {
-      const response = await fetch('/api/anunciantes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
+      const { data, error } = await apiClient.post<{ id: string }>('/api/anunciantes', formData);
+
+      if (data) {
         setSuccess(true);
         setTimeout(() => {
           router.push('/anunciantes');
         }, 1500);
       } else {
-        setErrors({ nombreRazonSocial: data.error || 'Error al crear anunciante' });
+        setErrors({ nombreRazonSocial: error?.message ?? 'Error al crear anunciante' });
       }
     } catch (error) {
-      /* console.error('Error creating anunciante:', error) */;
+      /* */;
       setErrors({ nombreRazonSocial: 'Error de conexión' });
     } finally {
       setLoading(false);

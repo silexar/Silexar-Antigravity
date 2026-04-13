@@ -63,10 +63,11 @@ export const GET = withApiRoute(
       const conditions = [eq(cunas.tenantId, tenantId), eq(cunas.eliminado, false)]
 
       if (search) {
-        conditions.push(or(
+        const searchCond = or(
           ilike(cunas.nombre, `%${search}%`),
           ilike(cunas.codigo, `%${search}%`)
-        )!)
+        );
+        if (searchCond) conditions.push(searchCond);
       }
 
       if (tipo) {
@@ -91,7 +92,7 @@ export const GET = withApiRoute(
       if (soloPendientes) conditions.push(eq(cunas.estado, 'pendiente_aprobacion'))
 
       // and() is always defined — conditions always has at least 2 items
-      const whereCondition = and(...conditions)!
+      const whereCondition = and(...conditions) ?? eq(cunas.tenantId, tenantId)
 
       // Query Data
       const data = await getDB()
@@ -208,7 +209,7 @@ export const POST = withApiRoute(
       // Insert en Drizzle
       const result = await getDB().insert(cunas).values({
         tenantId,
-        codigo: `SPX${Math.floor(Math.random() * 99999).toString().padStart(6, '0')}`,
+        codigo: `SPX-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         nombre: body.nombre,
         anuncianteId: body.anuncianteId,
         tipoCuna: tipoFinal as TipoCuna,

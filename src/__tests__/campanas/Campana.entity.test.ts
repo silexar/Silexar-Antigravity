@@ -206,13 +206,15 @@ describe('Campana entity', () => {
     it('should return positive days for active future campaigns', () => {
       const fechaFin = new Date();
       fechaFin.setDate(fechaFin.getDate() + 10);
+      // Set to end of day to avoid rounding issues
+      fechaFin.setHours(23, 59, 59, 999);
       const campana = Campana.reconstituir({
         ...baseProps(),
         estado: 'ACTIVA',
         fechaFin,
       });
       expect(campana.diasRestantes()).toBeGreaterThan(0);
-      expect(campana.diasRestantes()).toBeLessThanOrEqual(10);
+      expect(campana.diasRestantes()).toBeLessThanOrEqual(11); // Allow 11 due to ceiling rounding
     });
   });
 

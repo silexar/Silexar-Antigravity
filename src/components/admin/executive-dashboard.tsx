@@ -16,7 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import { formatCurrency } from '@/lib/utils'
+import {
   NeuromorphicCard, 
   NeuromorphicButton, 
   NeuromorphicGrid
@@ -145,13 +146,6 @@ export function ExecutiveDashboard() {
     ])
 
     setIsLoading(false)
-  }
-
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(1)}M`
-    }
-    return `$${(value / 1000).toFixed(0)}K`
   }
 
   const totalRevenue = revenueData.reduce((sum, d) => sum + d.actual, 0)
@@ -311,7 +305,7 @@ export function ExecutiveDashboard() {
             const previousHeight = (data.previous / maxValue) * 100
             
             return (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              <div key={data.month} className="flex-1 flex flex-col items-center gap-1">
                 <div className="w-full flex items-end justify-center gap-1 h-40">
                   <div 
                     className="w-4 bg-slate-600 rounded-t transition-all"
@@ -347,7 +341,7 @@ export function ExecutiveDashboard() {
           
           <div className="space-y-4">
             {aiPredictions.map((prediction, i) => (
-              <div key={i} className="p-4 bg-slate-800/50 rounded-lg">
+              <div key={prediction.metric} className="p-4 bg-slate-800/50 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-white font-medium">{prediction.metric}</span>
                   <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded">
@@ -421,7 +415,7 @@ export function ExecutiveDashboard() {
               { name: 'Radio Cooperativa', risk: 72, reason: 'Licencia expira en 7 días', revenue: 599000 },
               { name: 'Tele13 Digital', risk: 68, reason: 'Baja tasa de uso', revenue: 99000 },
             ].map((client, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+              <div key={client.name} className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                 <div>
                   <p className="text-white font-medium">{client.name}</p>
                   <p className="text-xs text-slate-400">{client.reason}</p>

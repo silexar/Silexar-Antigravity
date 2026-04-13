@@ -10,6 +10,7 @@ import { apiSuccess, apiValidationError, getUserContext, apiForbidden} from '@/l
 import { checkPermission } from '@/lib/security/rbac';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { filterInput } from '@/lib/ai/input-filter';
 
 const respuestas: Record<string, { respuesta: string; acciones?: { label: string; emoji: string }[] }> = {
   precio: {
@@ -38,6 +39,17 @@ export const POST = withApiRoute(
 
     if (!consulta || typeof consulta !== 'string') {
       return apiValidationError({ formErrors: ['Consulta requerida'], fieldErrors: {} })
+    }
+
+    // L2: Input filter — block injection attempts before any processing
+    const filterResult = filterInput(consulta)
+    if (filterResult.isBlocked) {
+      return apiSuccess({
+        respuesta: 'No puedo procesar esa solicitud.',
+        tipo: 'blocked',
+        acciones: [],
+        confianza: 0,
+      })
     }
 
     const query = consulta.toLowerCase()

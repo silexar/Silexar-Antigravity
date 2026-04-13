@@ -136,8 +136,7 @@ export default function SmartForms({
         setForm(formData);
       }
     } catch (error) {
-      console.error('Error loading form:', error);
-    }
+      }
   };
 
   const calculateFormProgress = () => {
@@ -181,7 +180,7 @@ export default function SmartForms({
     }));
 
     // Get auto-complete suggestions
-    if (value && value.length > 1) {
+    if (typeof value === 'string' && value.length > 1) {
       const suggestions = await engine.getAutoCompleteSuggestions(formId, fieldId, value);
       setAutoCompleteSuggestions(prev => ({
         ...prev,
@@ -230,8 +229,7 @@ export default function SmartForms({
       mediaRecorder.start();
       setIsVoiceRecording(true);
     } catch (error) {
-      console.error('Error starting voice recording:', error);
-    }
+      }
   };
 
   const stopVoiceRecording = () => {
@@ -256,8 +254,7 @@ export default function SmartForms({
 
       setAiInsights(prev => [...prev, `Voice input processed: "${voiceResult.transcript}"`]);
     } catch (error) {
-      console.error('Error processing voice input:', error);
-    } finally {
+      } finally {
       setIsProcessingVoice(false);
     }
   };
@@ -404,7 +401,7 @@ export default function SmartForms({
           </div>
           <div className="space-y-1">
             {aiInsights.slice(-3).map((insight, index) => (
-              <p key={index} className="text-sm text-purple-700">{insight}</p>
+              <p key={`${insight}-${index}`} className="text-sm text-purple-700">{insight}</p>
             ))}
           </div>
         </div>
@@ -426,7 +423,7 @@ export default function SmartForms({
               {field.type === 'textarea' ? (
                 <textarea
                   id={field.id}
-                  value={fieldStates[field.id]?.value || ''}
+                  value={String(fieldStates[field.id]?.value ?? '')}
                   onChange={(e) => handleFieldChange(field.id, e.target.value)}
                   placeholder={field.placeholder}
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none ${getValidationColor(field.id)}`}
@@ -436,7 +433,7 @@ export default function SmartForms({
                 <input
                   type={field.type === 'phone' ? 'tel' : field.type}
                   id={field.id}
-                  value={fieldStates[field.id]?.value || ''}
+                  value={String(fieldStates[field.id]?.value ?? '')}
                   onChange={(e) => handleFieldChange(field.id, e.target.value)}
                   placeholder={field.placeholder}
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${getValidationColor(field.id)}`}
@@ -448,7 +445,7 @@ export default function SmartForms({
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto">
                   {autoCompleteSuggestions[field.id].map((suggestion, index) => (
                     <button
-                      key={index}
+                      key={`${suggestion}-${index}`}
                       type="button"
                       onClick={() => handleSuggestionSelect(field.id, suggestion)}
                       className="w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between"
@@ -467,19 +464,19 @@ export default function SmartForms({
             {fieldStates[field.id] && (
               <div className="mt-1 space-y-1">
                 {fieldStates[field.id].errors.map((error, index) => (
-                  <div key={index} className="flex items-center text-red-600 text-sm">
+                  <div key={`${error}-${index}`} className="flex items-center text-red-600 text-sm">
                     <AlertCircle className="h-3 w-3 mr-1" />
                     {error}
                   </div>
                 ))}
                 {fieldStates[field.id].warnings.map((warning, index) => (
-                  <div key={index} className="flex items-center text-yellow-600 text-sm">
+                  <div key={`${warning}-${index}`} className="flex items-center text-yellow-600 text-sm">
                     <AlertCircle className="h-3 w-3 mr-1" />
                     {warning}
                   </div>
                 ))}
                 {fieldStates[field.id].suggestions.map((suggestion, index) => (
-                  <div key={index} className="flex items-center text-blue-600 text-sm">
+                  <div key={`${suggestion}-${index}`} className="flex items-center text-blue-600 text-sm">
                     <Lightbulb className="h-3 w-3 mr-1" />
                     {suggestion}
                   </div>
@@ -549,8 +546,7 @@ export function useSmartForms(formId: string) {
         const formData = engine.getForm(formId);
         setForm(formData);
       } catch (error) {
-        console.error('Error loading form:', error);
-      } finally {
+        } finally {
         setIsLoading(false);
       }
     };

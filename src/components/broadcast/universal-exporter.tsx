@@ -454,7 +454,7 @@ export function UniversalExporter() {
                     <div className="text-xs text-muted-foreground mb-1">Características:</div>
                     <div className="flex flex-wrap gap-1">
                       {system.features.map((feature, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={`${feature}-${index}`} variant="outline" className="text-xs">
                           {feature}
                         </Badge>
                       ))}
@@ -546,7 +546,7 @@ export function UniversalExporter() {
                         const Icon = icon
                         
                         return (
-                          <div key={index} className="flex items-start space-x-2 text-sm">
+                          <div key={`${result}-${index}`} className="flex items-start space-x-2 text-sm">
                             <Icon className={`w-4 h-4 mt-0.5 ${color}`} />
                             <div className="flex-1">
                               <span>{result.message}</span>

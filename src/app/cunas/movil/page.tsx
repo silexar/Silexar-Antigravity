@@ -124,7 +124,7 @@ export default function MobileCunasApp() {
   };
 
   // Helper para Bottom Navigation
-  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: string; icon: React.ElementType; label: string; alert?: boolean }) => {
+  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: 'dashboard' | 'cunas' | 'alertas' | 'estudio'; icon: React.ElementType; label: string; alert?: boolean }) => {
     const isActive = activeTab === id || (id === 'cunas' && selectedCunaId !== null);
     return (
       <button 

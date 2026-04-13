@@ -12,7 +12,6 @@
  */
 
 import { useState, useCallback } from 'react';
-import { logger } from '@/lib/observability';
 
 // ==================== INTERFACES ====================
 
@@ -119,9 +118,7 @@ export function useCortexSuggestions() {
     producto: string,
     lineas: Array<{ programa?: string; horaInicio?: string; horaFin?: string }>,
     emisora: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fechaInicio: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fechaFin: string
   ) => {
     setState(prev => ({ ...prev, isAnalyzing: true }));
@@ -135,7 +132,8 @@ export function useCortexSuggestions() {
     // 1. Detectar conflictos de competencia
     const categoriaAnunciante = detectarCategoria(anunciante);
     if (categoriaAnunciante) {
-      const competidores = CATEGORIAS_COMPETENCIA[categoriaAnunciante] || [];
+      const competidores = Object.entries(CATEGORIAS_COMPETENCIA)
+        .find(([k]) => k === categoriaAnunciante)?.[1] ?? [];
       
       // Simular conflicto si hay competidor en el mismo bloque
       if (competidores.length > 0 && lineas.length > 0) {
@@ -264,7 +262,7 @@ export function useCortexSuggestions() {
   /**
    * Ignorar conflicto con justificación
    */
-  const ignorarConflicto = useCallback((conflictoId: string, justificacion: string) => {
+  const ignorarConflicto = useCallback((conflictoId: string, _justificacion: string) => {
     // logger.info(`Conflicto ${conflictoId} ignorado. Justificación: ${justificacion}`);
     setState(prev => ({
       ...prev,
@@ -276,11 +274,8 @@ export function useCortexSuggestions() {
    * Verificar disponibilidad de bloque específico
    */
   const verificarDisponibilidad = useCallback(async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _bloque: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fecha: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _emisora: string
   ): Promise<{ disponible: boolean; ocupacion: number; alertas: string[] }> => {
     await new Promise(resolve => setTimeout(resolve, 300));

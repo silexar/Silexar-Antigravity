@@ -11,8 +11,6 @@ export interface RecoveryTestResult {
 }
 
 export const runUltraFastRecoveryTest = async (): Promise<RecoveryTestResult> => {
-    console.log('🚀 Iniciando test de recuperación ultra-rápida...');
-    
     const startTime = Date.now();
     
     // Simular test de recuperación
@@ -25,7 +23,6 @@ export const runUltraFastRecoveryTest = async (): Promise<RecoveryTestResult> =>
         servicesRecovered: 5,
     };
     
-    console.log('✅ Test completado:', result);
     return result;
 };
 

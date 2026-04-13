@@ -89,7 +89,7 @@ class CampanaServiceImpl {
       if (data.adTargetingProfile) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const profile = data.adTargetingProfile as any;
+          const profile = data.adTargetingProfile as unknown;
           if (profile.bateriaMinima && profile.bateriaMinima < 10) {
                return { valido: false, error: 'Security Warning: Targeting de batería < 10% puede violar políticas de OS.' };
           }

@@ -259,7 +259,7 @@ export default function MaterialPendientePage() {
         setMeta(data.meta);
       }
     } catch (error) {
-      /* console.error('Error cargando datos:', error) */;
+      /* */;
     }
     setLoading(false);
   }, [vista, filtroEstado]);
@@ -287,7 +287,7 @@ export default function MaterialPendientePage() {
       alert('✅ Recordatorio enviado');
       cargarDatos();
     } catch (error) {
-      /* console.error('Error enviando recordatorio:', error) */;
+      /* */;
     }
   };
 

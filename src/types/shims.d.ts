@@ -12,7 +12,4 @@ declare module '../../../../shared/domain/errors/ValidationError' { export class
 declare module '../../../../shared/domain/errors/UnauthorizedError' { export class UnauthorizedError extends Error {} }
 declare module '../../../../shared/domain/errors/ForbiddenError' { export class ForbiddenError extends Error {} }
 
-// Extend auditLogger instance typing with helper shortcuts
-declare module '@/lib/security/audit-logger' {
-  export const auditLogger: unknown
-}
+// auditLogger is typed as ExtendedAuditLogger directly in @/lib/security/audit-logger — no augmentation needed.

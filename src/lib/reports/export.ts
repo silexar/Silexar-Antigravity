@@ -311,7 +311,7 @@ async function logPowerBIExport(reportId: string, data: Record<string, unknown>)
       reportId,
       action: 'powerbi_export_prepared',
       dataSize: JSON.stringify(data).length,
-      datasetName: data.dataset?.name,
+      datasetName: (data.dataset as Record<string, unknown> | undefined)?.name,
       status: 'success'
     };
     

@@ -93,7 +93,7 @@ export function ShortcutsHelp({ shortcuts }: { shortcuts: Shortcut[] }) {
       </h4>
       <div className="space-y-2 text-sm">
         {shortcuts.slice(0, 8).map((s, i) => (
-          <div key={i} className="flex items-center justify-between">
+          <div key={`${s}-${i}`} className="flex items-center justify-between">
             <span className="text-slate-600">{s.description}</span>
             <kbd className="px-2 py-0.5 bg-slate-100 rounded text-xs font-mono">
               {s.ctrl && 'Ctrl+'}

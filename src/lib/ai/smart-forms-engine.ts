@@ -180,10 +180,10 @@ export class SmartFormsEngine {
 
   public async createSmartForm(formConfig: Record<string, unknown>): Promise<SmartForm> {
     const form: SmartForm = {
-      id: formConfig.id || `form-${Date.now()}`,
-      name: formConfig.name,
-      fields: formConfig.fields.map((field: unknown) => this.createSmartField(field)),
-      validationRules: formConfig.validationRules || [],
+      id: (formConfig.id as string) || `form-${Date.now()}`,
+      name: formConfig.name as string,
+      fields: (formConfig.fields as unknown[]).map((field: unknown) => this.createSmartField(field as Record<string, unknown>)),
+      validationRules: (formConfig.validationRules as ValidationRule[]) || [],
       adaptationHistory: [],
       completionRate: 0.85,
       averageTime: 180, // 3 minutes
@@ -196,19 +196,20 @@ export class SmartFormsEngine {
   }
 
   private createSmartField(fieldConfig: Record<string, unknown>): SmartField {
+    const validation = fieldConfig.validation as Record<string, unknown> | undefined;
     return {
-      id: fieldConfig.id,
-      name: fieldConfig.name,
-      type: fieldConfig.type,
-      label: fieldConfig.label,
-      placeholder: fieldConfig.placeholder || '',
-      required: fieldConfig.required || false,
+      id: fieldConfig.id as string,
+      name: fieldConfig.name as string,
+      type: fieldConfig.type as SmartField['type'],
+      label: fieldConfig.label as string,
+      placeholder: (fieldConfig.placeholder as string) || '',
+      required: (fieldConfig.required as boolean) || false,
       validation: {
-        rules: fieldConfig.validation?.rules || [],
+        rules: (validation?.rules as ValidationRule[]) || [],
         realTimeValidation: true,
         aiPrediction: true,
         errorPrevention: true,
-        customMessages: fieldConfig.validation?.customMessages || {}
+        customMessages: (validation?.customMessages as Record<string, string>) || {}
       },
       autoComplete: {
         enabled: true,
@@ -305,32 +306,34 @@ export class SmartFormsEngine {
           severity: rule.severity
         };
       
-      case 'email':
+      case 'email': {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const strVal = typeof value === 'string' ? value : '';
         return {
-          isValid: !value || emailRegex.test(value),
+          isValid: !value || emailRegex.test(strVal),
           message: rule.message || 'Please enter a valid email address',
           severity: rule.severity
         };
-      
-      case 'phone':
+      }
+      case 'phone': {
         const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        const strVal = typeof value === 'string' ? value : '';
         return {
-          isValid: !value || phoneRegex.test(value.replace(/\D/g, '')),
+          isValid: !value || phoneRegex.test(strVal.replace(/\D/g, '')),
           message: rule.message || 'Please enter a valid phone number',
           severity: rule.severity
         };
-      
-      case 'length':
-        const length = value ? value.toString().length : 0;
-        const minLength = rule.parameters.min || 0;
-        const maxLength = rule.parameters.max || Infinity;
+      }
+      case 'length': {
+        const length = value ? String(value).length : 0;
+        const minLength = (rule.parameters.min as number) || 0;
+        const maxLength = (rule.parameters.max as number) || Infinity;
         return {
           isValid: length >= minLength && length <= maxLength,
           message: rule.message || `Length must be between ${minLength} and ${maxLength} characters`,
           severity: rule.severity
         };
-      
+      }
       default:
         return { isValid: true, message: '', severity: 'info' };
     }
@@ -346,10 +349,10 @@ export class SmartFormsEngine {
     const suggestions: string[] = [];
 
     // AI-enhanced email validation
-    if (field.type === 'email' && value) {
+    if (field.type === 'email' && value && typeof value === 'string') {
       const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
       const domain = value.split('@')[1];
-      
+
       if (domain && !commonDomains.includes(domain)) {
         const similarity = this.calculateDomainSimilarity(domain, commonDomains);
         if (similarity.score > 0.8) {
@@ -359,7 +362,7 @@ export class SmartFormsEngine {
     }
 
     // AI-enhanced phone validation
-    if (field.type === 'phone' && value) {
+    if (field.type === 'phone' && value && typeof value === 'string') {
       const cleaned = value.replace(/\D/g, '');
       if (cleaned.length > 0 && cleaned.length < 10) {
         warnings.push('Phone number seems incomplete');
@@ -367,8 +370,8 @@ export class SmartFormsEngine {
     }
 
     // Context-aware validation
-    if (context?.userLocation && field.type === 'phone') {
-      const countryCode = this.getCountryCodeFromLocation(context.userLocation);
+    if (context?.userLocation && field.type === 'phone' && typeof value === 'string') {
+      const countryCode = this.getCountryCodeFromLocation(context.userLocation as string);
       if (countryCode && !value.startsWith(countryCode)) {
         suggestions.push(`Consider adding country code ${countryCode}`);
       }
@@ -381,7 +384,7 @@ export class SmartFormsEngine {
     const predictions: string[] = [];
 
     // Predict common errors based on field type and value
-    if (field.type === 'email' && value) {
+    if (field.type === 'email' && value && typeof value === 'string') {
       if (value.includes(' ')) {
         predictions.push('Email addresses cannot contain spaces');
       }
@@ -390,7 +393,7 @@ export class SmartFormsEngine {
       }
     }
 
-    if (field.type === 'phone' && value) {
+    if (field.type === 'phone' && value && typeof value === 'string') {
       const cleaned = value.replace(/\D/g, '');
       if (cleaned.length > 15) {
         predictions.push('Phone number seems too long');

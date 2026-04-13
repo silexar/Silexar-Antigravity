@@ -265,7 +265,7 @@ interface SilexarTokenPayload {
   exp: number; iat: number; jti: string; // unique per token
 }
 ```
-**Tokens:** Access = 24h, Refresh = 7d. Clock tolerance: 30s.
+**Tokens:** Access = 1h, Refresh = 7d. Clock tolerance: 30s.
 
 **Social OAuth:** Google, GitHub, Microsoft, Discord via better-auth (redirect: `/api/auth/callback/{provider}`)
 
@@ -369,6 +369,39 @@ Request from user
 | Data breach (at rest) | D4 (AES-256 + tenant keys) |
 | Undetected intrusion | D5 (SIEM + anomaly alerts) |
 | Privilege escalation attempt | D1 (logged at 90 risk score) |
+
+---
+
+## Security Dashboard
+
+Terminal-based security monitoring dashboard for real-time visibility.
+
+**Location:** `scripts/security-dashboard.js`
+
+**Features:**
+- Real-time security score display with color coding
+- OWASP Top 10 compliance bars with progress visualization
+- Vulnerability summary by severity
+- Last scan timestamp
+- CI/CD integration (exit codes)
+
+**Usage:**
+```bash
+npm run security:dashboard              # Launch dashboard
+npm run security:dashboard:watch        # Auto-refresh every 30s
+npm run security:dashboard:ci           # CI mode (silent, returns exit code)
+```
+
+**Exit Codes:**
+- `0` - Score ≥ 7.0 (OK)
+- `1` - Score < 7.0 (CI failure)
+
+**Score Colors:**
+- 🟢 Green (≥ 8.0) - Excellent/Production Ready
+- 🟡 Yellow (6.0-8.0) - Needs Attention
+- 🔴 Red (< 6.0) - Critical
+
+**Data Source:** Reads from `scripts/security-metrics.json` or extracts from audit files (`AUDITORIA_*.md`)
 
 ---
 
@@ -1949,4 +1982,9 @@ npm run db:push          # Push schema directly
 npm run db:studio        # Visual DB browser (port 4983)
 npm run storybook        # Storybook (port 6006)
 npm run analyze          # Bundle analysis
+
+# Security Dashboard
+npm run security:dashboard         # Visual security dashboard
+npm run security:dashboard:watch   # Auto-refresh every 30s
+npm run security:dashboard:ci      # CI mode (exit code only)
 ```

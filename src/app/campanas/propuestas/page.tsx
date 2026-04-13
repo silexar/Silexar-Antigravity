@@ -297,6 +297,7 @@ export default function GeneradorPropuestas() {
                         <Label>Email</Label>
                         <Input
                           type="email"
+                          aria-label="Email"
                           value={data.contactoEmail}
                           onChange={(e) => updateField('contactoEmail', e.target.value)}
                         />
@@ -330,6 +331,7 @@ export default function GeneradorPropuestas() {
                         </Label>
                         <Input
                           type="date"
+                          aria-label="Fecha Inicio"
                           value={data.fechaInicio}
                           onChange={(e) => updateField('fechaInicio', e.target.value)}
                         />
@@ -341,6 +343,7 @@ export default function GeneradorPropuestas() {
                         </Label>
                         <Input
                           type="date"
+                          aria-label="Fecha Fin"
                           value={data.fechaFin}
                           onChange={(e) => updateField('fechaFin', e.target.value)}
                         />
@@ -409,6 +412,7 @@ export default function GeneradorPropuestas() {
                                   <div className="text-right">
                                     <Input
                                       type="number"
+                                      aria-label={`Spots para ${emisora.nombre}`}
                                       value={seleccionada.spots}
                                       onChange={(e) => updateSpots(emisora.id, parseInt(e.target.value) || 0)}
                                       className="w-20 h-8 text-center"

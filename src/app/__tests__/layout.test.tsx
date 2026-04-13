@@ -52,7 +52,7 @@ describe('RootLayout - TIER 0 Tests', () => {
       render(<RootLayout>{mockChildren}</RootLayout>)
       
       const bodyElement = document.body
-      expect(bodyElement).toHaveClass('min-h-screen', 'bg-slate-950', 'font-sans', 'antialiased')
+      expect(bodyElement).toHaveClass('min-h-screen', 'bg-[#F0EDE8]', 'font-sans', 'antialiased')
       expect(bodyElement).toHaveAttribute('suppressHydrationWarning')
     })
   })

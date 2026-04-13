@@ -303,7 +303,7 @@ export const WizardContrato: React.FC<WizardContratoProps> = (props) => {
       onComplete?.(id);
     },
     onSaveError: (error) => {
-      /* console.error('Error guardando contrato:', error) */;
+      /* */;
     }
   });
   

@@ -109,7 +109,7 @@ export default function MobileVerificationPage() {
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
       {/* HEADER */}
-      <div className="bg-slate-900/90 backdrop-blur-3xl text-white p-6 pt-12 rounded-b-[2.5rem] shadow-xl border-b border-indigo-500/20 relative overflow-hidden">
+      <div className="bg-[#F0EDE8]/90 backdrop-blur-3xl text-[#2C2C2A] p-6 pt-12 rounded-b-[2.5rem] shadow-xl border-b border-indigo-500/20 relative overflow-hidden">
         {/* Background effect */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
@@ -121,29 +121,29 @@ export default function MobileVerificationPage() {
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 SILEXAR MOBILE
               </h1>
-              <p className="text-slate-400 text-xs font-medium mt-0.5">
+              <p className="text-[#888780] text-xs font-medium mt-0.5">
                 Registro de Emisión · TIER 0
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowExport(true)}
-                className="w-9 h-9 rounded-full bg-slate-800/80 border border-slate-700/50 flex items-center justify-center active:scale-90 transition-transform"
+                className="w-9 h-9 rounded-full bg-[#E8E5E0]/80 border border-[#D4D1CC]/50 flex items-center justify-center active:scale-90 transition-transform"
               >
-                <Share2 className="w-4 h-4 text-slate-300" />
+                <Share2 className="w-4 h-4 text-[#5F5E5A]" />
               </button>
               <div className="relative">
-                <button className="w-9 h-9 rounded-full bg-slate-800/80 border border-slate-700/50 flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-slate-300" />
+                <button className="w-9 h-9 rounded-full bg-[#E8E5E0]/80 border border-[#D4D1CC]/50 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-[#5F5E5A]" />
                 </button>
                 {alerts.filter(a => !a.resolved).length > 0 && (
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center border-2 border-slate-900">
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] font-bold text-[#2C2C2A] flex items-center justify-center border-2 border-slate-900">
                     {alerts.filter(a => !a.resolved).length}
                   </div>
                 )}
               </div>
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500/80 to-purple-500/80 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/10">
-                <span className="font-bold text-xs text-white">AG</span>
+                <span className="font-bold text-xs text-[#2C2C2A]">AG</span>
               </div>
             </div>
           </div>
@@ -152,20 +152,20 @@ export default function MobileVerificationPage() {
           {activeTab === 'home' && stats && (
             <div className="grid grid-cols-3 gap-4 mt-2">
               <div className="text-center">
-                <p className="text-2xl font-black text-white">{stats.total}</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Emisiones</p>
+                <p className="text-2xl font-black text-[#2C2C2A]">{stats.total}</p>
+                <p className="text-[10px] font-bold text-[#888780] uppercase">Emisiones</p>
               </div>
               <div className="text-center relative">
-                <div className="absolute inset-y-0 left-0 w-px bg-slate-700" />
+                <div className="absolute inset-y-0 left-0 w-px bg-[#D4D1CC]" />
                 <p className={`text-2xl font-black ${stats.porcentajeEmision >= 90 ? 'text-emerald-400' : stats.porcentajeEmision >= 70 ? 'text-amber-400' : 'text-red-400'}`}>
                   {stats.porcentajeEmision}%
                 </p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Tasa</p>
-                <div className="absolute inset-y-0 right-0 w-px bg-slate-700" />
+                <p className="text-[10px] font-bold text-[#888780] uppercase">Tasa</p>
+                <div className="absolute inset-y-0 right-0 w-px bg-[#D4D1CC]" />
               </div>
               <div className="text-center">
                 <p className="text-2xl font-black text-blue-400">{stats.confianzaPromedio}%</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Confianza</p>
+                <p className="text-[10px] font-bold text-[#888780] uppercase">Confianza</p>
               </div>
             </div>
           )}
@@ -174,7 +174,7 @@ export default function MobileVerificationPage() {
           {activeTab !== 'home' && (
             <div className="flex items-center gap-2 mt-1">
               <div className="w-1 h-4 bg-indigo-500 rounded-full" />
-              <p className="text-sm font-bold text-white capitalize">{activeTab === 'verificar' ? 'Verificación' : activeTab}</p>
+              <p className="text-sm font-bold text-[#2C2C2A] capitalize">{activeTab === 'verificar' ? 'Verificación' : activeTab}</p>
             </div>
           )}
         </div>
@@ -203,13 +203,13 @@ export default function MobileVerificationPage() {
               }`}>
                 <Icon
                   className={`w-5 h-5 transition-colors ${
-                    isActive ? 'text-indigo-600' : 'text-slate-400'
+                    isActive ? 'text-indigo-600' : 'text-[#888780]'
                   }`}
                   strokeWidth={isActive ? 2.5 : 2}
                 />
               </div>
               <span className={`text-[10px] font-bold transition-colors ${
-                isActive ? 'text-indigo-600' : 'text-slate-400'
+                isActive ? 'text-indigo-600' : 'text-[#888780]'
               }`}>{tab.label}</span>
               {isActive && (
                 <div className="w-1 h-1 bg-indigo-600 rounded-full" />
@@ -243,7 +243,7 @@ function HomeView({ stats, alerts, loading, onNavigate, onRefresh, onExport }: H
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
-        <p className="text-sm font-bold text-slate-400">Cargando dashboard...</p>
+        <p className="text-sm font-bold text-[#888780]">Cargando dashboard...</p>
       </div>
     );
   }
@@ -282,11 +282,11 @@ function HomeView({ stats, alerts, loading, onNavigate, onRefresh, onExport }: H
       {stats && (
         <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-white/60">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest flex items-center gap-2">
               <Target className="w-4 h-4 text-indigo-500" /> Resumen del Día
             </h3>
             <button onClick={onRefresh} className="p-1.5 rounded-lg bg-slate-50 active:scale-90">
-              <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
+              <RefreshCw className="w-3.5 h-3.5 text-[#888780]" />
             </button>
           </div>
             <div className="grid grid-cols-4 gap-2">
@@ -301,7 +301,7 @@ function HomeView({ stats, alerts, loading, onNavigate, onRefresh, onExport }: H
       {/* CRITICAL ALERTS */}
       {alerts.filter(a => !a.resolved).length > 0 && (
         <div>
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1 flex items-center gap-2">
+          <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3 px-1 flex items-center gap-2">
             <AlertTriangle className="w-3.5 h-3.5 text-red-500" /> Alertas Activas
           </h3>
           <div className="space-y-2">
@@ -316,13 +316,13 @@ function HomeView({ stats, alerts, loading, onNavigate, onRefresh, onExport }: H
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="font-bold text-slate-800 text-sm">{alert.client}</p>
-                    <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                    <span className="text-[10px] text-[#888780] flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {alert.timestamp}
                     </span>
                   </div>
                   <p className={`text-xs mt-0.5 ${alert.critical ? 'text-red-600' : 'text-amber-600'}`}>{alert.issue}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 self-center shrink-0" />
+                <ChevronRight className="w-4 h-4 text-[#5F5E5A] self-center shrink-0" />
               </div>
             ))}
           </div>
@@ -331,7 +331,7 @@ function HomeView({ stats, alerts, loading, onNavigate, onRefresh, onExport }: H
 
       {/* QUICK ACTIONS */}
       <div>
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">⚡ Acciones Rápidas</h3>
+        <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3 px-1">⚡ Acciones Rápidas</h3>
         <div className="flex gap-3 overflow-x-auto pb-3 -mx-1 px-1 snap-x">
           <ActionChip icon={<Zap className="w-4 h-4" />} label="Verificar Todo" color="bg-indigo-600" onClick={() => onNavigate('verificar')} />
           <ActionChip icon={<Share2 className="w-4 h-4" />} label="Exportar" color="bg-purple-600" onClick={onExport} />
@@ -361,7 +361,7 @@ function QuickAccessCard({ icon, label, color, onClick }: {
       onClick={onClick}
       className="bg-white/60 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-white/60 flex flex-col items-center gap-3 active:scale-[0.95] transition-all"
     >
-      <div className={`w-12 h-12 rounded-xl ${color} text-white flex items-center justify-center shadow-lg`}>
+      <div className={`w-12 h-12 rounded-xl ${color} text-[#2C2C2A] flex items-center justify-center shadow-lg`}>
         {icon}
       </div>
       <span className="text-xs font-bold text-slate-600 text-center leading-tight">{label}</span>
@@ -373,7 +373,7 @@ function StatPill({ label, value, color }: { label: string; value: number; color
   return (
     <div className="bg-white/50 backdrop-blur-sm rounded-lg p-2 text-center border border-white/40 shadow-sm">
       <p className={`text-lg font-black ${color}`}>{value}</p>
-      <p className="text-[9px] font-bold text-slate-400 uppercase">{label}</p>
+      <p className="text-[9px] font-bold text-[#888780] uppercase">{label}</p>
     </div>
   );
 }
@@ -387,7 +387,7 @@ function ActionChip({ icon, label, color, onClick }: {
   return (
     <button
       onClick={onClick}
-      className={`snap-center shrink-0 px-5 py-3 ${color} text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg active:scale-95 transition-transform`}
+      className={`snap-center shrink-0 px-5 py-3 ${color} text-[#2C2C2A] rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg active:scale-95 transition-transform`}
     >
       {icon} {label}
     </button>
@@ -405,25 +405,25 @@ function SentinelStatusMobile() {
   }, []);
 
     return (
-      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-2xl p-4 flex items-center gap-4 shadow-xl">
+      <div className="bg-[#F0EDE8]/80 backdrop-blur-md border border-[#D4D1CC]/50 rounded-2xl p-4 flex items-center gap-4 shadow-xl">
         <div className="relative">
-        <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-emerald-400">
+        <div className="w-10 h-10 rounded-full bg-[#D4D1CC] flex items-center justify-center text-emerald-400">
           <ShieldCheck className="w-5 h-5" />
         </div>
-        <div className="absolute top-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse" />
+        <div className="absolute top-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#D4D1CC] animate-pulse" />
       </div>
       <div className="flex-1">
         <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1">
           Sentinel Active
           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
         </p>
-        <p className="text-xs font-bold text-slate-300 font-mono">
+        <p className="text-xs font-bold text-[#5F5E5A] font-mono">
           {count.toLocaleString()} items escaneados
         </p>
       </div>
       <div className="flex gap-0.5 items-end h-5">
         {[40, 60, 30, 80, 50, 90, 40].map((h, i) => (
-          <div key={i} className="w-1 bg-emerald-500/30 rounded-full" style={{ height: `${h}%` }} />
+          <div key={`${h}-${i}`} className="w-1 bg-emerald-500/30 rounded-full" style={{ height: `${h}%` }} />
         ))}
       </div>
     </div>

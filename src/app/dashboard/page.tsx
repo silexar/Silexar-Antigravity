@@ -191,7 +191,7 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {loading
-              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-14" />)
+              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={`${_}-${i}`} className="h-14" />)
               : health
               ? Object.entries(health.checks).map(([key, check]) => (
                   <div key={key} className="p-3 bg-slate-700/30 rounded-xl">
@@ -234,7 +234,7 @@ export default function DashboardPage() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {loading
-              ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32" />)
+              ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={`${_}-${i}`} className="h-32" />)
               : (
               <>
                 <MetricCard icon={BarChart3}  label="Campañas"    value={metrics?.campanas?.total ?? '—'}    sub={metrics?.campanas?.activas ? `${metrics.campanas.activas} activas` : undefined}      color="orange"  href="/campanas" />

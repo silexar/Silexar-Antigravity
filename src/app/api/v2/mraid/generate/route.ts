@@ -246,7 +246,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
-  return NextResponse.json({
+  try {
+    return NextResponse.json({
     endpoint: 'POST /api/v2/mraid/generate',
     description: 'Generate MRAID v3 compatible micro-applications with CPVI billing',
     authentication: 'Bearer token required',
@@ -327,4 +328,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     },
   });
+  } catch (error) {
+    logger.error('[API/V2/MRAID/Generate] Error:', error instanceof Error ? error : undefined);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
+  }
 }

@@ -4,6 +4,7 @@ import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, ge
 import { rateLimit } from '@/lib/security/rate-limiter'
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 const baseHeaders = {
   'X-Content-Type-Options': 'nosniff',
@@ -12,28 +13,24 @@ const baseHeaders = {
   'Cache-Control': 'private, no-cache, no-store, must-revalidate',
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
-    const rl = await rateLimit({ key: `campanas_prog_disp:${clientIP}`, limit: 200, window: 60_000 })
-    if (!rl.success) {
-      return NextResponse.json({ success: false, error: 'RATE_LIMIT' }, { status: 429, headers: baseHeaders })
+export const POST = withApiRoute(
+  { resource: 'campanas', action: 'read' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json().catch((_e) => null)
+      const { fechaInicio, fechaTermino } = body || {}
+      // Mock disponibilidad por bloque [0..1]
+      const disponibilidad = {
+        AM: 0.75,
+        MEDIODIA: 0.6,
+        PM: 0.5,
+        NOCHE: 0.8,
+        PRIME: 0.35,
+      }
+      return NextResponse.json({ success: true, fechaInicio, fechaTermino, disponibilidad }, { status: 200, headers: baseHeaders })
+    } catch (error) {
+      logger.error('[API/Campanas/Programacion/Disponibilidad] Error POST:', error instanceof Error ? error : undefined, { module: 'campanas/programacion/disponibilidad', action: 'POST' })
+      return apiServerError()
     }
-
-    const body = await request.json().catch(() => ({}))
-    const { fechaInicio, fechaTermino } = body || {}
-    // Mock disponibilidad por bloque [0..1]
-    const disponibilidad = {
-      AM: 0.75,
-      MEDIODIA: 0.6,
-      PM: 0.5,
-      NOCHE: 0.8,
-      PRIME: 0.35,
-    }
-    return NextResponse.json({ success: true, fechaInicio, fechaTermino, disponibilidad }, { status: 200, headers: baseHeaders })
-  } catch (error) {
-    logger.error('[API/Campanas/Programacion/Disponibilidad] Error POST:', error instanceof Error ? error : undefined, { module: 'campanas/programacion/disponibilidad', action: 'POST' })
-    return apiServerError()
   }
-}
-
+);

@@ -1,11 +1,34 @@
 ---
-name: Quality Assurance & QC TIER 0
-description: Protocolo estricto de Control de Calidad, auditoría UX y Cero Deuda Técnica que Antigravity debe ejecutar obligatoriamente para certificar cualquier módulo construido, con capacidades de lectura/escritura en una base de conocimiento para no repetir errores pasados.
+name: Quality Assurance & QC TIER 0 v2.0 - Enterprise Supreme
+description: Protocolo definitivo de Control de Calidad Fortune 10 para Silexar Pulse. 14 bloques auto-repair, Neumorphism exacto, integración con knowledge base, y sistema de aprendizaje continuo. Versión mejorada con lecciones históricas y templates de corrección.
+version: 2.0.0
+last_updated: 2026-04-03
+author: Agente CEO Kimi
 ---
 
-# 🛡️ SKILL: QUALITY ASSURANCE SUPREME TIER 0 — AUTO-REPAIR AUTODIDACTA
+# 🛡️ SKILL: QUALITY ASSURANCE SUPREME TIER 0 v2.0
+## AUTO-REPAIR AUTODIDACTA - Silexar Pulse Enterprise
 
-El protocolo definitivo e ilimitado de control de calidad para **todo** módulo construido o por construir en Silexar Pulse Antygravity. Este Skill es **universal** — se aplica con la misma intensidad a Vencimientos, Conciliación, Contratos, Campañas, Cuñas, Equipos de Ventas, Super-Admin o cualquier módulo futuro. Transforma a Antigravity en un equipo supremo y autónomo de QA Enterprise que **no solo detecta problemas, sino que los CORRIGE automáticamente** y se auto-enseña para nunca repetirlos.
+> **ADVERTENCIA:** Este skill se integra con `.agent/knowledge/SYSTEM_KNOWLEDGE_BASE.md` y `.agent/skills/quality-assurance-qc/qc_knowledge.md`. DEBES leer ambos antes de ejecutar.
+
+El protocolo definitivo de control de calidad **Fortune 10** para todo módulo de Silexar Pulse. Este skill:
+- **DETECTA** problemas usando 14 bloques especializados
+- **CORRIGE** automáticamente usando lecciones históricas
+- **APRENDE** registrando nuevos patrones en la knowledge base
+- **PREVIENE** consultando errores pasados antes de comenzar
+
+---
+
+## 📚 PREREQUISITOS OBLIGATORIOS
+
+Antes de usar este skill, DEBES leer en orden:
+
+1. **`.agent/knowledge/SYSTEM_KNOWLEDGE_BASE.md`** - Patrones aprobados y errores críticos
+2. **`qc_knowledge.md`** (este directorio) - Lecciones históricas con recurrencia
+3. **`CLAUDE.md`** - Sección "Code Conventions"
+4. **`modulo-creation-protocol/SKILL.md`** - Estándar de construcción
+
+> **Nota:** Si no lees la knowledge base, repetirás errores ya documentados.
 
 ---
 

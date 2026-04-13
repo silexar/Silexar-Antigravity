@@ -25,7 +25,9 @@ export function MobileMeetingPrep() {
     fetch('/api/equipos-ventas/deals?tipo=reuniones')
       .then(r => r.json())
       .then(d => { if (d.success) setReuniones(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MobileMeetingPrep] Failed to load reuniones:', error);
+      });
   }, []);
 
   return (
@@ -60,9 +62,9 @@ export function MobileMeetingPrep() {
               {sec === `${r.id}-${s}` && (
                 <div className="px-3 pb-2 space-y-1">
                   {s === 'bio' && <p className="text-[10px] text-slate-600 bg-blue-50 p-2 rounded-lg">{r.bio}</p>}
-                  {s === 'objeciones' && r.objeciones.map((o, i) => <p key={i} className="text-[10px] text-amber-700 bg-amber-50 p-1.5 rounded-lg">{o}</p>)}
-                  {s === 'talking' && r.talkingPoints.map((tp, i) => <p key={i} className="text-[10px] text-violet-600 flex items-start gap-1"><ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" />{tp}</p>)}
-                  {s === 'docs' && r.docs.map((d, i) => <p key={i} className="text-[10px] text-slate-600 flex items-center gap-1"><FileText className="w-2.5 h-2.5" />{d}</p>)}
+                  {s === 'objeciones' && r.objeciones.map((o, i) => <p key={`${o}-${i}`} className="text-[10px] text-amber-700 bg-amber-50 p-1.5 rounded-lg">{o}</p>)}
+                  {s === 'talking' && r.talkingPoints.map((tp, i) => <p key={`${tp}-${i}`} className="text-[10px] text-violet-600 flex items-start gap-1"><ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" />{tp}</p>)}
+                  {s === 'docs' && r.docs.map((d, i) => <p key={`${d}-${i}`} className="text-[10px] text-slate-600 flex items-center gap-1"><FileText className="w-2.5 h-2.5" />{d}</p>)}
                 </div>
               )}
             </div>

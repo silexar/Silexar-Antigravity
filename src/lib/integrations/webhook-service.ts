@@ -248,33 +248,32 @@ export class WebhookService {
         endpoint.secret
       )
 
-      // Prepare headers for production
-      // Headers will include: Content-Type, X-Webhook-Signature, X-Webhook-Event, X-Webhook-Delivery
-      void signature // Used in production for HMAC verification
-
-      // Send request (mock for now)
-      logger.info(`📤 Webhook delivery: ${delivery.event} → ${endpoint.url}`)
-
-      // In production: actual fetch
-      // const response = await fetch(endpoint.url, {
-      //   method: 'POST',
-      //   headers,
-      //   body: JSON.stringify(delivery.payload),
-      //   signal: AbortSignal.timeout(30000) // 30s timeout
-      // })
-
-      // Mock success
-      const mockSuccess = Math.random() > 0.1 // 90% success rate
-
-      if (mockSuccess) {
-        delivery.status = 'success'
-        delivery.responseStatus = 200
-        delivery.completedAt = new Date()
-        endpoint.lastDeliveryAt = new Date()
-        endpoint.lastDeliveryStatus = 'success'
-      } else {
-        throw new Error('Simulated failure')
+      // Prepare headers
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Webhook-Signature': signature,
+        'X-Webhook-Event': payload.event,
+        'X-Webhook-Delivery': delivery.id,
+        ...endpoint.headers,
       }
+
+      // Send request
+      const response = await fetch(endpoint.url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(delivery.payload),
+        signal: AbortSignal.timeout(30000) // 30s timeout
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      delivery.status = 'success'
+      delivery.responseStatus = response.status
+      delivery.completedAt = new Date()
+      endpoint.lastDeliveryAt = new Date()
+      endpoint.lastDeliveryStatus = 'success'
 
     } catch (error) {
       delivery.status = 'failed'

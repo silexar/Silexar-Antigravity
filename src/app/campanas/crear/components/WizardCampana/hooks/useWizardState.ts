@@ -13,7 +13,6 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { logger } from '@/lib/observability';
 import { WizardState, WizardStep, WIZARD_STEPS } from '../types/wizard.types';
 
 const STORAGE_KEY = 'silexar_campaign_draft';
@@ -42,7 +41,7 @@ export const useWizardState = () => {
         // logger.info('📦 Draft recuperado de localStorage');
         return { ...INITIAL_STATE, ...parsed, isLoading: false };
       }
-    } catch (e) {
+    } catch (_e) {
       // logger.warn('Error recuperando draft:', e);
     }
     return INITIAL_STATE;
@@ -68,8 +67,8 @@ export const useWizardState = () => {
       setLastSaved(new Date());
       setHasUnsavedChanges(false);
       // logger.info('💾 Draft guardado automáticamente');
-    } catch (e) {
-      // logger.warn('Error guardando draft:', e);
+    } catch (_e) {
+      // logger.warn('Error guardando draft:', _e);
     }
   }, [state]);
 

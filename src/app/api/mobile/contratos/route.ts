@@ -16,8 +16,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError, getUserContext } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // ═══════════════════════════════════════════════════════════════
@@ -277,98 +277,98 @@ const mockAlertas: AlertaMobileDTO[] = [
 /**
  * GET /api/mobile/contratos
  * Lista contratos del usuario con filtros
+ * Requiere: contratos:read
  */
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const endpoint = searchParams.get('endpoint') || 'contratos';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+export const GET = withApiRoute(
+  { resource: 'contratos', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const endpoint = searchParams.get('endpoint') || 'contratos';
+      const page = parseInt(searchParams.get('page') || '1');
+      const limit = parseInt(searchParams.get('limit') || '20');
 
-    // Validar token (en producción: verificar JWT)
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json<MobileResponse<null>>({
-        success: false,
-        data: null,
-        error: 'Token de autenticación requerido',
-        timestamp: new Date().toISOString()
-      }, { status: 401 });
+      return await withTenantContext(ctx.tenantId, async () => {
+        switch (endpoint) {
+          case 'contratos':
+            return handleGetContratos(searchParams, page, limit);
+          case 'dashboard':
+            return handleGetDashboard(ctx.userId);
+          case 'alertas':
+            return handleGetAlertas(page, limit);
+          case 'contrato':
+            return handleGetContrato(searchParams.get('id') || '');
+          default:
+            return NextResponse.json<MobileResponse<null>>({
+              success: false,
+              data: null,
+              error: 'Endpoint no válido',
+              timestamp: new Date().toISOString()
+            }, { status: 400 });
+        }
+      });
+    } catch (error) {
+      logger.error('[Mobile API] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'mobile/contratos', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    switch (endpoint) {
-      case 'contratos':
-        return handleGetContratos(searchParams, page, limit);
-      case 'dashboard':
-        return handleGetDashboard();
-      case 'alertas':
-        return handleGetAlertas(page, limit);
-      case 'contrato':
-        return handleGetContrato(searchParams.get('id') || '');
-      default:
-        return NextResponse.json<MobileResponse<null>>({
-          success: false,
-          data: null,
-          error: 'Endpoint no válido',
-          timestamp: new Date().toISOString()
-        }, { status: 400 });
-    }
-  } catch (error) {
-    logger.error('[Mobile API] Error GET:', error instanceof Error ? error : undefined, { module: 'mobile/contratos', action: 'GET' });
-    return apiServerError()
   }
-}
+);
 
 /**
  * POST /api/mobile/contratos
  * Acciones y sincronización
+ * Requiere: contratos:update
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const accion = body.accion;
+export const POST = withApiRoute(
+  { resource: 'contratos', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const accion = body.accion;
 
-    // Validar token
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json<MobileResponse<null>>({
-        success: false,
-        data: null,
-        error: 'Token de autenticación requerido',
-        timestamp: new Date().toISOString()
-      }, { status: 401 });
+      return await withTenantContext(ctx.tenantId, async () => {
+        switch (accion) {
+          case 'sync':
+            return handleSync(body as SyncRequestDTO, ctx.userId);
+          case 'aprobar':
+            return handleAprobar(body.contratoId, body.comentario, ctx.userId);
+          case 'rechazar':
+            return handleRechazar(body.contratoId, body.motivo, ctx.userId);
+          case 'firmar':
+            return handleFirmar(body.contratoId, body.firma, ctx.userId);
+          case 'comentar':
+            return handleComentar(body.contratoId, body.comentario, ctx.userId);
+          case 'marcar_leida':
+            return handleMarcarLeida(body.alertaId, ctx.userId);
+          case 'registrar_push':
+            return handleRegistrarPush(body as PushTokenDTO, ctx.userId);
+          case 'offline_queue':
+            return handleOfflineQueue(body.acciones as AccionOfflineDTO[], ctx.userId);
+          default:
+            return NextResponse.json<MobileResponse<null>>({
+              success: false,
+              data: null,
+              error: 'Acción no válida',
+              timestamp: new Date().toISOString()
+            }, { status: 400 });
+        }
+      });
+    } catch (error) {
+      logger.error('[Mobile API] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'mobile/contratos', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    switch (accion) {
-      case 'sync':
-        return handleSync(body as SyncRequestDTO);
-      case 'aprobar':
-        return handleAprobar(body.contratoId, body.comentario);
-      case 'rechazar':
-        return handleRechazar(body.contratoId, body.motivo);
-      case 'firmar':
-        return handleFirmar(body.contratoId, body.firma);
-      case 'comentar':
-        return handleComentar(body.contratoId, body.comentario);
-      case 'marcar_leida':
-        return handleMarcarLeida(body.alertaId);
-      case 'registrar_push':
-        return handleRegistrarPush(body as PushTokenDTO);
-      case 'offline_queue':
-        return handleOfflineQueue(body.acciones as AccionOfflineDTO[]);
-      default:
-        return NextResponse.json<MobileResponse<null>>({
-          success: false,
-          data: null,
-          error: 'Acción no válida',
-          timestamp: new Date().toISOString()
-        }, { status: 400 });
-    }
-  } catch (error) {
-    logger.error('[Mobile API] Error POST:', error instanceof Error ? error : undefined, { module: 'mobile/contratos', action: 'POST' });
-    return apiServerError()
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // HANDLERS ESPECÍFICOS
@@ -416,10 +416,10 @@ function handleGetContratos(params: URLSearchParams, page: number, limit: number
   });
 }
 
-function handleGetDashboard() {
+function handleGetDashboard(userId: string) {
   const dashboard: DashboardMobileDTO = {
     usuario: {
-      id: 'usr-001',
+      id: userId,
       nombre: 'Carlos Mendoza',
       rol: 'Ejecutivo Comercial'
     },
@@ -486,8 +486,7 @@ function handleGetContrato(id: string) {
   });
 }
 
-function handleSync(request: SyncRequestDTO) {
-  // En producción: comparar syncToken y devolver solo cambios
+function handleSync(request: SyncRequestDTO, userId: string) {
   const response: SyncResponseDTO = {
     nuevoSyncToken: `sync-${Date.now()}`,
     contratosActualizados: mockContratos,
@@ -497,7 +496,11 @@ function handleSync(request: SyncRequestDTO) {
     configActualizada: false
   };
 
-  // [STRUCTURED-LOG] // logger.info({ message: `[Sync] Dispositivo ${request.dispositivoId} (${request.plataforma} v${request.version})`, module: 'contratos' });
+  logger.info('[Sync] Dispositivo sincronizado', { 
+    module: 'mobile/contratos', 
+    userId,
+    dispositivoId: request.dispositivoId 
+  });
 
   return NextResponse.json<MobileResponse<SyncResponseDTO>>({
     success: true,
@@ -506,8 +509,12 @@ function handleSync(request: SyncRequestDTO) {
   });
 }
 
-function handleAprobar(contratoId: string, comentario?: string) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Acción] Aprobar contrato ${contratoId}${comentario ? ': ' + comentario : ''}`, module: 'contratos' });
+function handleAprobar(contratoId: string, comentario: string | undefined, userId: string) {
+  logger.info('[Acción] Aprobar contrato desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    contratoId 
+  });
   
   return NextResponse.json<MobileResponse<{ aprobado: boolean }>>({
     success: true,
@@ -516,8 +523,12 @@ function handleAprobar(contratoId: string, comentario?: string) {
   });
 }
 
-function handleRechazar(contratoId: string, motivo: string) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Acción] Rechazar contrato ${contratoId}: ${motivo}`, module: 'contratos' });
+function handleRechazar(contratoId: string, motivo: string, userId: string) {
+  logger.info('[Acción] Rechazar contrato desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    contratoId 
+  });
   
   return NextResponse.json<MobileResponse<{ rechazado: boolean }>>({
     success: true,
@@ -527,8 +538,12 @@ function handleRechazar(contratoId: string, motivo: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleFirmar(contratoId: string, _firma: string) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Acción] Firmar contrato ${contratoId}`, module: 'contratos' });
+function handleFirmar(contratoId: string, _firma: string, userId: string) {
+  logger.info('[Acción] Firmar contrato desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    contratoId 
+  });
   
   return NextResponse.json<MobileResponse<{ firmado: boolean; urlDocumento: string }>>({
     success: true,
@@ -540,8 +555,12 @@ function handleFirmar(contratoId: string, _firma: string) {
   });
 }
 
-function handleComentar(contratoId: string, comentario: string) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Acción] Comentario en ${contratoId}: ${comentario}`, module: 'contratos' });
+function handleComentar(contratoId: string, comentario: string, userId: string) {
+  logger.info('[Acción] Comentario en contrato desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    contratoId 
+  });
   
   return NextResponse.json<MobileResponse<{ comentarioId: string }>>({
     success: true,
@@ -550,8 +569,12 @@ function handleComentar(contratoId: string, comentario: string) {
   });
 }
 
-function handleMarcarLeida(alertaId: string) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Acción] Marcar alerta ${alertaId} como leída`, module: 'contratos' });
+function handleMarcarLeida(alertaId: string, userId: string) {
+  logger.info('[Acción] Marcar alerta como leída desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    alertaId 
+  });
   
   return NextResponse.json<MobileResponse<{ marcada: boolean }>>({
     success: true,
@@ -560,10 +583,13 @@ function handleMarcarLeida(alertaId: string) {
   });
 }
 
-function handleRegistrarPush(token: PushTokenDTO) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Push] Registrar token ${token.plataforma}: ${token.dispositivoNombre}`, module: 'contratos' });
+function handleRegistrarPush(token: PushTokenDTO, userId: string) {
+  logger.info('[Push] Registrar token desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    plataforma: token.plataforma 
+  });
   
-  // En producción: guardar en DB para enviar notificaciones
   return NextResponse.json<MobileResponse<{ registrado: boolean }>>({
     success: true,
     data: { registrado: true },
@@ -571,10 +597,13 @@ function handleRegistrarPush(token: PushTokenDTO) {
   });
 }
 
-function handleOfflineQueue(acciones: AccionOfflineDTO[]) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Offline] Procesando ${acciones.length} acciones pendientes`, module: 'contratos' });
+function handleOfflineQueue(acciones: AccionOfflineDTO[], userId: string) {
+  logger.info('[Offline] Procesando acciones pendientes desde mobile', { 
+    module: 'mobile/contratos', 
+    userId,
+    cantidad: acciones.length 
+  });
   
-  // En producción: procesar cada acción y devolver resultados
   const resultados = acciones.map(a => ({
     id: a.id,
     exito: true,

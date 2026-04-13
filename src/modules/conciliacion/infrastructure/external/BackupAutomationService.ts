@@ -1,4 +1,3 @@
-import { BackupSeguridad } from "../../domain/entities/BackupSeguridad";
 import { logger } from '@/lib/observability';
 
 export class BackupAutomationService {

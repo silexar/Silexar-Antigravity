@@ -65,7 +65,7 @@ export function NeuralSpinner({ className }: { className?: string }) {
     <div className={cn("flex space-x-1", className)}>
       {[0, 1, 2].map((i) => (
         <div
-          key={i}
+          key={`spinner-${i}`}
           className="w-2 h-8 bg-neural-500 rounded-full animate-pulse"
           style={{ 
             animationIterationCount: "3",

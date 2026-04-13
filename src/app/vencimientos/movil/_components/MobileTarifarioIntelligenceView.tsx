@@ -33,7 +33,7 @@ export default function MobileTarifarioIntelligenceView() {
             { tag: 'Noche', val: 60, c1: 'from-emerald-500', c2: 'to-teal-500' }
           ].map((f, i) => (
              <button 
-                key={i} 
+                key={`${f}-${i}`} 
                 className={`${i === 2 ? 'col-span-2' : ''} bg-white/70 border border-gray-200/50 rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group active:scale-95 transition-all`}
                 onClick={() => handleOptimization(f.tag, f.val)}
                 disabled={isLoading}

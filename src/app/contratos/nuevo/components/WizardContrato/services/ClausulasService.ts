@@ -474,15 +474,68 @@ export class ClausulasService {
   
   private evaluarCondicion(condicion: string, contexto: Record<string, unknown>): boolean {
     try {
-      // Crear función con el contexto
-      const func = new Function(
-        ...Object.keys(contexto),
-        `return ${condicion}`
-      );
-      return func(...Object.values(contexto));
+      // WHY: Se reemplazó new Function() por evaluación segura de expresiones simples.
+      // new Function() permite inyección de código arbitrario (OWASP A03).
+      // Las condiciones de cláusulas siguen el patrón: "campo operador valor"
+      // Ej: "montoTotal > 1000000", "tipoContrato === 'AUSPICIO'", "requiere2FA === true"
+      return this.evaluarExpresionSegura(condicion, contexto);
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Evalúa expresiones simples de forma segura sin eval() ni new Function().
+   * Soporta: ===, !==, >, <, >=, <=, &&, ||
+   * El campo debe ser una clave del contexto.
+   */
+  private evaluarExpresionSegura(expr: string, ctx: Record<string, unknown>): boolean {
+    // Normalizar espacios
+    const e = expr.trim();
+
+    // Soporte para AND / OR compuesto (split por && y ||)
+    if (e.includes('&&')) {
+      return e.split('&&').every(part => this.evaluarExpresionSegura(part.trim(), ctx));
+    }
+    if (e.includes('||')) {
+      return e.split('||').some(part => this.evaluarExpresionSegura(part.trim(), ctx));
+    }
+
+    // Operadores de comparación
+    const operadores = ['===', '!==', '>=', '<=', '>', '<'];
+    for (const op of operadores) {
+      const idx = e.indexOf(op);
+      if (idx === -1) continue;
+      const campo = e.slice(0, idx).trim();
+      const valorStr = e.slice(idx + op.length).trim();
+      const valorCtx = ctx[campo];
+
+      // Parsear el valor literal (string, number, boolean)
+      let valorLiteral: unknown;
+      if (valorStr === 'true') valorLiteral = true;
+      else if (valorStr === 'false') valorLiteral = false;
+      else if (!isNaN(Number(valorStr))) valorLiteral = Number(valorStr);
+      else if ((valorStr.startsWith("'") && valorStr.endsWith("'")) ||
+               (valorStr.startsWith('"') && valorStr.endsWith('"'))) {
+        valorLiteral = valorStr.slice(1, -1);
+      } else {
+        // El valor puede ser otra clave del contexto
+        valorLiteral = ctx[valorStr] ?? valorStr;
+      }
+
+      switch (op) {
+        case '===': return valorCtx === valorLiteral;
+        case '!==': return valorCtx !== valorLiteral;
+        case '>=':  return (valorCtx as number) >= (valorLiteral as number);
+        case '<=':  return (valorCtx as number) <= (valorLiteral as number);
+        case '>':   return (valorCtx as number) > (valorLiteral as number);
+        case '<':   return (valorCtx as number) < (valorLiteral as number);
+      }
+    }
+
+    // Si es solo un campo booleano
+    if (e in ctx) return Boolean(ctx[e]);
+    return false;
   }
   
   // ═══════════════════════════════════════════════════════════════

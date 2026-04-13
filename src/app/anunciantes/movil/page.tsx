@@ -61,7 +61,7 @@ export default function MobileAnunciantesApp() {
         setAnunciantes(data.data);
       }
     } catch {
-      // /* console.error('Error fetching anunciantes:', error) */;
+      // /* */;
     } finally {
       setLoading(false);
     }
@@ -101,7 +101,7 @@ export default function MobileAnunciantesApp() {
   };
 
   // Helper para Bottom Navigation
-  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: string; icon: React.ElementType; label: string; alert?: boolean }) => {
+  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: 'dashboard' | 'lista' | 'alertas' | 'detalle' | 'crear'; icon: React.ElementType; label: string; alert?: boolean }) => {
     // Si estamos en detalle o crear, el nav sigue mostrando la pestaña padre o nada (mejor mostramos lista activa)
     const isActive = activeTab === id || (id === 'lista' && activeTab === 'detalle') || (id === 'dashboard' && activeTab === 'crear');
     return (

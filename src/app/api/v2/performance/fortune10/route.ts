@@ -180,7 +180,7 @@ class PerformanceMonitor {
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
-    this.metrics.get(name)!.push(value);
+    this.metrics.get(name)?.push(value);
   }
 
   stopMonitoring(): void {

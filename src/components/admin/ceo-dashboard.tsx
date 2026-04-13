@@ -166,7 +166,7 @@ export function CEODashboard() {
       {/* Revenue Metrics */}
       <div className="grid grid-cols-6 gap-4">
         {revenueMetrics.map((metric, i) => (
-          <NeuromorphicCard key={i} variant="embossed" className="p-4">
+          <NeuromorphicCard key={metric.label} variant="embossed" className="p-4">
             <p className="text-xs text-slate-500 mb-1">{metric.label}</p>
             <p className="text-2xl font-bold text-white">{formatValue(metric.current, metric.format)}</p>
             <div className={`flex items-center gap-1 text-xs mt-1 ${

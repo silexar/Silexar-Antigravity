@@ -82,7 +82,6 @@ export default function GlobalInfrastructureDashboard({ className = '' }: Dashbo
       setThreats(threatsData.slice(-10)); // Last 10 threats
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
       setIsLoading(false);
     }
   };
@@ -169,7 +168,7 @@ export default function GlobalInfrastructureDashboard({ className = '' }: Dashbo
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as unknown)}
               className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === id
                   ? 'border-blue-500 text-blue-600'
@@ -528,7 +527,7 @@ export default function GlobalInfrastructureDashboard({ className = '' }: Dashbo
                         <p className="text-sm text-gray-600 mb-2">Acciones de Mitigación:</p>
                         <div className="flex flex-wrap gap-2">
                           {threat.mitigation.actions.map((action, index) => (
-                            <span key={index} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            <span key={`${action}-${index}`} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
                               {action}
                             </span>
                           ))}

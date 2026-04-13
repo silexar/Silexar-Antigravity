@@ -55,6 +55,7 @@ export function MobileSearchBar({
         autoFocus={autoFocus}
         value={value}
         placeholder={placeholder}
+        aria-label={placeholder}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onChange={(e) => onChange(e.target.value)}

@@ -333,9 +333,9 @@ export default function CollaborationPanel({
                         </span>
                       </div>
                       <p className="text-sm text-slate-600 mt-1">
-                        {com.texto.split(/(@\w+)/g).map((part, i) => 
+                        {com.texto.split(/(@\w+)/g).map((part, i) =>
                           part.startsWith('@') ? (
-                            <span key={i} className="text-indigo-600 font-medium">{part}</span>
+                            <span key={`part-${i}`} className="text-indigo-600 font-medium">{part}</span>
                           ) : part
                         )}
                       </p>
@@ -394,6 +394,7 @@ export default function CollaborationPanel({
               onChange={e => setNuevoComentario(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleEnviarComentario()}
               placeholder="Escribe un comentario..."
+              aria-label="Escribe un comentario"
               className={`${neuro.input} flex-1`}
             />
             <button

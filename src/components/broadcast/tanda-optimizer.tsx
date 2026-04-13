@@ -536,7 +536,7 @@ export function TandaOptimizer() {
                 <h4 className="font-semibold">Razonamiento de IA</h4>
                 <div className="space-y-2">
                   {optimizationResult.reasoning.map((reason, index) => (
-                    <div key={index} className="flex items-start space-x-2 text-sm">
+                    <div key={`${reason}-${index}`} className="flex items-start space-x-2 text-sm">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <span>{reason}</span>
                     </div>
@@ -550,7 +550,7 @@ export function TandaOptimizer() {
               <h4 className="font-semibold mb-3">Cambios Propuestos</h4>
               <div className="space-y-2">
                 {optimizationResult.changes.map((change, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 rounded-lg bg-muted/30">
+                  <div key={`${change}-${index}`} className="flex items-center space-x-3 p-3 rounded-lg bg-muted/30">
                     <ArrowRight className="w-4 h-4 text-broadcast-500" />
                     <div className="flex-1">
                       <span className="font-medium">{change.reason}</span>

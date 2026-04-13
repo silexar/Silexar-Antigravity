@@ -45,6 +45,7 @@ export const MobileAnunciantesList: React.FC<ListProps> = ({
           </div>
           <input
             type="text"
+            aria-label="Buscar por nombre, código o RUT"
             className="block w-full pl-11 pr-4 py-3.5 bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-slate-800 placeholder-slate-400 font-medium transition-all"
             placeholder="Buscar por nombre, código o RUT..."
             value={searchTerm}
@@ -79,7 +80,7 @@ export const MobileAnunciantesList: React.FC<ListProps> = ({
       <div className="space-y-4 pt-2">
         {loading ? (
           [...Array(4)].map((_, i) => (
-            <div key={i} className="animate-pulse p-5 rounded-3xl bg-white shadow-sm border border-slate-100">
+            <div key={`skeleton-${i}`} className="animate-pulse p-5 rounded-3xl bg-white shadow-sm border border-slate-100">
               <div className="flex justify-between">
                 <div className="h-5 bg-slate-200 rounded w-1/3 mb-4" />
                 <div className="h-5 bg-slate-200 rounded w-1/6 mb-4" />

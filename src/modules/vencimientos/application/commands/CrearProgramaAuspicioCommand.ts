@@ -1,4 +1,3 @@
-import { ProgramaAuspicio } from '../../domain/entities/ProgramaAuspicio';
 import { logger } from '@/lib/observability';
 import { IProgramaAuspicioRepository } from '../../domain/repositories/IProgramaAuspicioRepository';
 

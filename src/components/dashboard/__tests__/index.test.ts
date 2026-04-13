@@ -19,14 +19,10 @@ import './recent-activity.test'
 
 describe('Dashboard Components Test Suite', () => {
   beforeAll(() => {
-    console.log('🚀 Starting Dashboard Components Test Suite')
-    console.log('📊 Testing enterprise-grade components with >85% coverage')
-  })
+    })
 
   afterAll(() => {
-    console.log('✅ Dashboard Components Test Suite completed')
-    console.log('📈 All components tested with Fortune 500 standards')
-  })
+    })
 
   it('should have all dashboard components tested', () => {
     const expectedComponents = [

@@ -460,6 +460,7 @@ export default function HistorialContratoPage({
                 <input
                   type="text"
                   placeholder="Buscar en historial..."
+                  aria-label="Buscar en historial"
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   className="bg-transparent flex-1 focus:outline-none text-sm"

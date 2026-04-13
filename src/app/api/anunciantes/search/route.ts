@@ -13,6 +13,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -236,88 +237,91 @@ const mockAnunciantes: AnuncianteEnriquecido[] = [
 // GET - Buscar anunciantes con datos enriquecidos
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    
-    const query = searchParams.get('q') || searchParams.get('query') || '';
-    const includeInactive = searchParams.get('includeInactive') === 'true';
-    const orderBy = searchParams.get('orderBy') || 'recent_activity';
-    const limit = parseInt(searchParams.get('limit') || '8', 10);
-    const industria = searchParams.get('industria') || '';
-    
-    let results = [...mockAnunciantes];
-    
-    // Filtrar por estado
-    if (!includeInactive) {
-      results = results.filter(a => a.estado === 'activo');
-    }
-    
-    // Filtrar por industria
-    if (industria) {
-      results = results.filter(a => 
-        a.industria.toLowerCase().includes(industria.toLowerCase())
+export const GET = withApiRoute(
+  { resource: 'anunciantes', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      
+      const query = searchParams.get('q') || searchParams.get('query') || '';
+      const includeInactive = searchParams.get('includeInactive') === 'true';
+      const orderBy = searchParams.get('orderBy') || 'recent_activity';
+      const limit = parseInt(searchParams.get('limit') || '8', 10);
+      const industria = searchParams.get('industria') || '';
+      
+      let results = [...mockAnunciantes];
+      
+      // Filtrar por estado
+      if (!includeInactive) {
+        results = results.filter(a => a.estado === 'activo');
+      }
+      
+      // Filtrar por industria
+      if (industria) {
+        results = results.filter(a => 
+          a.industria.toLowerCase().includes(industria.toLowerCase())
+        );
+      }
+      
+      // Búsqueda por texto
+      if (query) {
+        const queryLower = query.toLowerCase();
+        results = results.filter(a =>
+          a.nombre.toLowerCase().includes(queryLower) ||
+          a.razonSocial.toLowerCase().includes(queryLower) ||
+          a.rut.includes(query) ||
+          a.industria.toLowerCase().includes(queryLower) ||
+          a.productosRecientes.some(p => p.toLowerCase().includes(queryLower))
+        );
+      }
+      
+      // Ordenar
+      results.sort((a, b) => {
+        switch (orderBy) {
+          case 'recent_activity':
+            return new Date(b.ultimaActividad).getTime() - new Date(a.ultimaActividad).getTime();
+          case 'name':
+            return a.nombre.localeCompare(b.nombre);
+          case 'cunas_count':
+            return b.cunasActivas - a.cunasActivas;
+          case 'contracts':
+            return b.contratosActivos - a.contratosActivos;
+          case 'risk':
+            return b.riskScore - a.riskScore;
+          default:
+            return 0;
+        }
+      });
+      
+      // Limitar resultados
+      results = results.slice(0, limit);
+      
+      // Enriquecer con scoring visual
+      const enrichedResults = results.map(a => ({
+        ...a,
+        badges: generateBadges(a),
+        searchRelevance: query ? calculateRelevance(a, query) : 1
+      }));
+      
+      return NextResponse.json({
+        success: true,
+        data: enrichedResults,
+        meta: {
+          total: enrichedResults.length,
+          query,
+          orderBy
+        }
+      });
+      
+    } catch (error) {
+      logger.error('[API/Anunciantes/Search] Error GET:', error instanceof Error ? error : undefined, { module: 'search' });
+      return NextResponse.json(
+        { success: false, error: 'Error al buscar anunciantes' },
+        { status: 500 }
       );
     }
-    
-    // Búsqueda por texto
-    if (query) {
-      const queryLower = query.toLowerCase();
-      results = results.filter(a =>
-        a.nombre.toLowerCase().includes(queryLower) ||
-        a.razonSocial.toLowerCase().includes(queryLower) ||
-        a.rut.includes(query) ||
-        a.industria.toLowerCase().includes(queryLower) ||
-        a.productosRecientes.some(p => p.toLowerCase().includes(queryLower))
-      );
-    }
-    
-    // Ordenar
-    results.sort((a, b) => {
-      switch (orderBy) {
-        case 'recent_activity':
-          return new Date(b.ultimaActividad).getTime() - new Date(a.ultimaActividad).getTime();
-        case 'name':
-          return a.nombre.localeCompare(b.nombre);
-        case 'cunas_count':
-          return b.cunasActivas - a.cunasActivas;
-        case 'contracts':
-          return b.contratosActivos - a.contratosActivos;
-        case 'risk':
-          return b.riskScore - a.riskScore;
-        default:
-          return 0;
-      }
-    });
-    
-    // Limitar resultados
-    results = results.slice(0, limit);
-    
-    // Enriquecer con scoring visual
-    const enrichedResults = results.map(a => ({
-      ...a,
-      badges: generateBadges(a),
-      searchRelevance: query ? calculateRelevance(a, query) : 1
-    }));
-    
-    return NextResponse.json({
-      success: true,
-      data: enrichedResults,
-      meta: {
-        total: enrichedResults.length,
-        query,
-        orderBy
-      }
-    });
-    
-  } catch (error) {
-    logger.error('[API/Anunciantes/Search] Error GET:', error instanceof Error ? error : undefined, { module: 'search' });
-    return NextResponse.json(
-      { success: false, error: 'Error al buscar anunciantes' },
-      { status: 500 }
-    );
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // FUNCIONES AUXILIARES
@@ -386,53 +390,56 @@ function calculateRelevance(anunciante: AnuncianteEnriquecido, query: string): n
 // POST - Crear nuevo anunciante (Quick Create)
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.nombre?.trim()) {
+export const POST = withApiRoute(
+  { resource: 'anunciantes', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      if (!body.nombre?.trim()) {
+        return NextResponse.json(
+          { success: false, error: 'El nombre es requerido' },
+          { status: 400 }
+        );
+      }
+      
+      // Generar nuevo ID
+      const newId = `anc-${Date.now()}`;
+      
+      const newAnunciante: AnuncianteEnriquecido = {
+        id: newId,
+        nombre: body.nombre,
+        razonSocial: body.razonSocial || body.nombre,
+        rut: body.rut || '',
+        logo: body.logo,
+        industria: body.industria || 'General',
+        estado: 'activo',
+        contratosActivos: 0,
+        cunasActivas: 0,
+        ultimaActividad: new Date().toISOString(),
+        ultimaActividadRelativa: 'Ahora',
+        riskLevel: 'medio',
+        riskScore: 500,
+        creditScore: 50,
+        productosRecientes: [],
+        contactoPrincipal: body.contacto
+      };
+      
+      // En producción: guardar en base de datos
+      mockAnunciantes.push(newAnunciante);
+      
+      return NextResponse.json({
+        success: true,
+        data: newAnunciante,
+        message: 'Anunciante creado exitosamente'
+      }, { status: 201 });
+      
+    } catch (error) {
+      logger.error('[API/Anunciantes/Search] Error POST:', error instanceof Error ? error : undefined, { module: 'search' });
       return NextResponse.json(
-        { success: false, error: 'El nombre es requerido' },
-        { status: 400 }
+        { success: false, error: 'Error al crear anunciante' },
+        { status: 500 }
       );
     }
-    
-    // Generar nuevo ID
-    const newId = `anc-${Date.now()}`;
-    
-    const newAnunciante: AnuncianteEnriquecido = {
-      id: newId,
-      nombre: body.nombre,
-      razonSocial: body.razonSocial || body.nombre,
-      rut: body.rut || '',
-      logo: body.logo,
-      industria: body.industria || 'General',
-      estado: 'activo',
-      contratosActivos: 0,
-      cunasActivas: 0,
-      ultimaActividad: new Date().toISOString(),
-      ultimaActividadRelativa: 'Ahora',
-      riskLevel: 'medio',
-      riskScore: 500,
-      creditScore: 50,
-      productosRecientes: [],
-      contactoPrincipal: body.contacto
-    };
-    
-    // En producción: guardar en base de datos
-    mockAnunciantes.push(newAnunciante);
-    
-    return NextResponse.json({
-      success: true,
-      data: newAnunciante,
-      message: 'Anunciante creado exitosamente'
-    }, { status: 201 });
-    
-  } catch (error) {
-    logger.error('[API/Anunciantes/Search] Error POST:', error instanceof Error ? error : undefined, { module: 'search' });
-    return NextResponse.json(
-      { success: false, error: 'Error al crear anunciante' },
-      { status: 500 }
-    );
   }
-}
+);

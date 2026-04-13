@@ -11,6 +11,7 @@
  */
 
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { logger } from '@/lib/observability';
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -19,6 +20,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { SecurityInitializer } from '@/components/security-initializer'
+import { CSPProvider } from '@/components/security/CSPProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -75,11 +77,13 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const nonce = (await headers()).get('X-CSP-Nonce') ?? ''
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -125,44 +129,54 @@ export default function RootLayout({
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <ErrorBoundary>
-          <SecurityInitializer>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Providers>
-                <div className="relative flex min-h-screen flex-col">
-                  <div className="flex-1">
-                    {children}
+          <CSPProvider>
+            <SecurityInitializer>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Providers>
+                  <div className="relative flex min-h-screen flex-col">
+                    <div className="flex-1">
+                      {children}
+                    </div>
                   </div>
-                </div>
-                <Toaster />
-              </Providers>
-            </ThemeProvider>
-          </SecurityInitializer>
+                  <Toaster />
+                </Providers>
+              </ThemeProvider>
+            </SecurityInitializer>
+          </CSPProvider>
         </ErrorBoundary>
         
-        {/* Security Monitoring Script (development only) */}
+        {/* Security Monitoring Script (development only)
+            SECURITY NOTE: dangerouslySetInnerHTML is safe here because:
+            1. Content is a hardcoded constant — zero user-controlled data.
+            2. Rendered only in development (NODE_ENV=development).
+            3. Protected by CSP nonce — only this specific script executes.
+            DOMPurify does NOT apply to <script> tags (it sanitizes HTML, not JS).
+        */}
         {process.env.NODE_ENV === 'development' && (
           <script
+            nonce={nonce}
             dangerouslySetInnerHTML={{
               __html: `
-              // TIER 0 Security Monitoring
+              // TIER 0 Security Monitoring (development only)
               (function() {
                 'use strict';
-                
+
                 // Monitor for console access attempts
-                let devtools = {open: false, orientation: null};
-                const threshold = 160;
-                
+                var devtools = {open: false, orientation: null};
+                var threshold = 160;
+
                 setInterval(function() {
-                  if (window.outerHeight - window.innerHeight > threshold || 
+                  if (window.outerHeight - window.innerHeight > threshold ||
                       window.outerWidth - window.innerWidth > threshold) {
                     if (!devtools.open) {
                       devtools.open = true;
-                      logger.warn('🛡️ TIER 0 Security: Developer tools detected');
+                      // console.warn used intentionally — this runs in browser context, not Node.js
+                      console.warn('[TIER 0] Security: Developer tools detected');
                       // In production, this could trigger additional security measures
                     }
                   } else {

@@ -12,88 +12,95 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // ═══════════════════════════════════════════════════════════════
 // GET /api/equipos-ventas/deals
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const tipo = searchParams.get('tipo') || 'deals';
+export const GET = withApiRoute(
+  { resource: 'equipos-ventas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const tipo = searchParams.get('tipo') || 'deals';
 
-    switch (tipo) {
-      case 'deals':
-        return NextResponse.json({
-          success: true,
-          data: MOCK_DEALS,
-          stats: {
-            totalDeals: MOCK_DEALS.length,
-            valorTotal: MOCK_DEALS.reduce((s, d) => s + d.valor, 0),
-            urgentes: MOCK_DEALS.filter(d => d.urgenciaNivel === 'critica' || d.urgenciaNivel === 'alta').length,
-          }
-        });
+      switch (tipo) {
+        case 'deals':
+          return NextResponse.json({
+            success: true,
+            data: MOCK_DEALS,
+            stats: {
+              totalDeals: MOCK_DEALS.length,
+              valorTotal: MOCK_DEALS.reduce((s, d) => s + d.valor, 0),
+              urgentes: MOCK_DEALS.filter(d => d.urgenciaNivel === 'critica' || d.urgenciaNivel === 'alta').length,
+            }
+          });
 
-      case 'templates':
-        return NextResponse.json({ success: true, data: MOCK_TEMPLATES });
+        case 'templates':
+          return NextResponse.json({ success: true, data: MOCK_TEMPLATES });
 
-      case 'objeciones':
-        return NextResponse.json({ success: true, data: MOCK_OBJECIONES });
+        case 'objeciones':
+          return NextResponse.json({ success: true, data: MOCK_OBJECIONES });
 
-      case 'reuniones':
-        return NextResponse.json({ success: true, data: MOCK_REUNIONES });
+        case 'reuniones':
+          return NextResponse.json({ success: true, data: MOCK_REUNIONES });
 
-      case 'activity-log':
-        return NextResponse.json({ success: true, data: MOCK_ACTIVITY_LOG });
+        case 'activity-log':
+          return NextResponse.json({ success: true, data: MOCK_ACTIVITY_LOG });
 
-      default:
-        return NextResponse.json({ success: false, error: 'Tipo no reconocido' }, { status: 400 });
+        default:
+          return NextResponse.json({ success: false, error: 'Tipo no reconocido' }, { status: 400 });
+      }
+    } catch (error) {
+      logger.error('[API/EquiposVentas/Deals] Error GET:', error instanceof Error ? error : undefined, { module: 'equipos-ventas/deals', action: 'GET' });
+      return apiServerError()
     }
-  } catch (error) {
-    logger.error('[API/EquiposVentas/Deals] Error GET:', error instanceof Error ? error : undefined, { module: 'equipos-ventas/deals', action: 'GET' });
-    return apiServerError()
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // POST /api/equipos-ventas/deals
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { accion } = body;
+export const POST = withApiRoute(
+  { resource: 'equipos-ventas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { accion } = body;
 
-    switch (accion) {
-      case 'generar-mensaje':
-        return NextResponse.json({
-          success: true,
-          data: {
-            asunto: `Propuesta comercial para ${body.cliente || 'su empresa'}`,
-            cuerpo: `Estimado/a ${body.contacto || 'cliente'},\n\nEs un placer contactarle desde Silexar Pulse. Basándonos en nuestra conversación reciente, me gustaría presentarle una propuesta adaptada a las necesidades de ${body.cliente}.\n\n${body.contexto || 'Nuestra solución enterprise ofrece las mejores herramientas del mercado.'}\n\nQuedo a su disposición para agendar una reunión.\n\nSaludos cordiales.`,
-          }
-        });
+      switch (accion) {
+        case 'generar-mensaje':
+          return NextResponse.json({
+            success: true,
+            data: {
+              asunto: `Propuesta comercial para ${body.cliente || 'su empresa'}`,
+              cuerpo: `Estimado/a ${body.contacto || 'cliente'},\n\nEs un placer contactarle desde Silexar Pulse. Basándonos en nuestra conversación reciente, me gustaría presentarle una propuesta adaptada a las necesidades de ${body.cliente}.\n\n${body.contexto || 'Nuestra solución enterprise ofrece las mejores herramientas del mercado.'}\n\nQuedo a su disposición para agendar una reunión.\n\nSaludos cordiales.`,
+            }
+          });
 
-      case 'prep-reunion':
-        return NextResponse.json({
-          success: true,
-          data: {
-            bio: `${body.contacto || 'Contacto'} — ${body.cargo || 'Director'} en ${body.empresa || 'Empresa'}. Experiencia en transformación digital.`,
-            historial: ['Reunión inicial (15 enero)', 'Demo técnica (22 enero)', 'Propuesta enviada (28 enero)'],
-            objeciones: ['Presupuesto limitado Q1', 'Integración con sistema legacy'],
-            talkingPoints: ['Revisar ROI proyectado', 'Presentar case study similar', 'Proponer piloto 30 días', 'Confirmar timeline implementación'],
-            docs: ['Propuesta_v2.pdf', 'ROI_Calculator.xlsx'],
-          }
-        });
+        case 'prep-reunion':
+          return NextResponse.json({
+            success: true,
+            data: {
+              bio: `${body.contacto || 'Contacto'} — ${body.cargo || 'Director'} en ${body.empresa || 'Empresa'}. Experiencia en transformación digital.`,
+              historial: ['Reunión inicial (15 enero)', 'Demo técnica (22 enero)', 'Propuesta enviada (28 enero)'],
+              objeciones: ['Presupuesto limitado Q1', 'Integración con sistema legacy'],
+              talkingPoints: ['Revisar ROI proyectado', 'Presentar case study similar', 'Proponer piloto 30 días', 'Confirmar timeline implementación'],
+              docs: ['Propuesta_v2.pdf', 'ROI_Calculator.xlsx'],
+            }
+          });
 
-      default:
-        return NextResponse.json({ success: true, id: `new-${Date.now()}` });
+        default:
+          return NextResponse.json({ success: true, id: `new-${Date.now()}` });
+      }
+    } catch (error) {
+      logger.error('[API/EquiposVentas/Deals] Error POST:', error instanceof Error ? error : undefined, { module: 'equipos-ventas/deals', action: 'POST' });
+      return apiServerError()
     }
-  } catch (error) {
-    logger.error('[API/EquiposVentas/Deals] Error POST:', error instanceof Error ? error : undefined, { module: 'equipos-ventas/deals', action: 'POST' });
-    return apiServerError()
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // MOCK DATA

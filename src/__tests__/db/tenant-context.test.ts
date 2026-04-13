@@ -170,8 +170,10 @@ describe('withTenantContext()', () => {
     const { withTenantContext } = await import('@/lib/db/tenant-context')
     await withTenantContext('tenant-001', async () => null)
     const statements = getExecutedStatements()
+    // Check for setting is_super_admin to 'true' (as a string value, not the SQL boolean param)
+    // The reset calls use '' (empty string) as the value, not 'true'
     const setsSuperAdmin = statements.some(
-      (s) => s.includes('is_super_admin') && s.includes('true'),
+      (s) => s.includes('is_super_admin') && s.includes("'true'"),
     )
     expect(setsSuperAdmin).toBe(false)
   })

@@ -16,16 +16,16 @@ global:
 app:
   name: continuous-improvement-staging
   version: "2040.1.0"
-  
+
   # TIER 0: Image Configuration
   image:
     repository: silexar/continuous-improvement-staging
-    tag: "latest"
+    tag: "1.0.0" # Pin to specific version, update via CI/CD with SHA256 digest
     pullPolicy: Always
-    
+
   # TIER 0: Replica Configuration
   replicaCount: 3
-  
+
   # TIER 0: Resource Configuration
   resources:
     requests:
@@ -34,13 +34,13 @@ app:
     limits:
       cpu: 2
       memory: 4Gi
-      
+
   # TIER 0: Environment Variables
   env:
     NODE_ENV: staging
     CONSCIOUSNESS_LEVEL: "0.998"
     QUANTUM_OPTIMIZED: "true"
-    
+
   # TIER 0: Health Checks
   healthCheck:
     enabled: true
@@ -49,7 +49,7 @@ app:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
-    
+
   readinessProbe:
     enabled: true
     path: /api/ready
@@ -91,9 +91,9 @@ ingress:
 postgresql:
   enabled: true
   auth:
-    postgresPassword: ""  # Set via secret
+    postgresPassword: "" # Set via secret
     username: staging_user
-    password: ""  # Set via secret
+    password: "" # Set via secret
     database: continuous_improvement_staging
   primary:
     resources:
@@ -113,7 +113,7 @@ redis:
   enabled: true
   auth:
     enabled: true
-    password: ""  # Set via secret
+    password: "" # Set via secret
   master:
     resources:
       requests:

@@ -11,6 +11,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BarChart3,
@@ -199,12 +200,6 @@ const mockDatos: Record<MetricaDisponible, unknown> = {
 // ═══════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
-
-const formatCurrency = (value: number) => {
-  if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
-  return `$${(value / 1000).toFixed(0)}K`;
-};
 
 const getTamañoGrid = (tamaño: Widget['tamaño']) => {
   switch (tamaño) {
@@ -440,6 +435,7 @@ export default function ReportsBuilderPage() {
                   type="text"
                   value={reporte.nombre}
                   onChange={e => setReporte({ ...reporte, nombre: e.target.value })}
+                  aria-label="Nombre del reporte"
                   className="text-2xl font-bold text-slate-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded px-2 -ml-2"
                 />
                 <p className="text-slate-500">Constructor de reportes personalizados</p>

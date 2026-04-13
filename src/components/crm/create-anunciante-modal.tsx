@@ -18,7 +18,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { cortexRisk } from '@/lib/cortex/cortex-risk'
+import { cortexRisk, type RiskAssessmentResult } from '@/lib/cortex/cortex-risk'
 import { 
   Building2, 
   User, 
@@ -56,7 +56,7 @@ export default function CreateAnuncianteModal({
   })
 
   const [isEvaluatingRisk, setIsEvaluatingRisk] = useState(false)
-  const [riskEvaluation, setRiskEvaluation] = useState<Record<string, unknown> | null>(null)
+  const [riskEvaluation, setRiskEvaluation] = useState<RiskAssessmentResult | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleInputChange = (field: string, value: string) => {
@@ -86,7 +86,6 @@ export default function CreateAnuncianteModal({
       setRiskEvaluation(assessment)
       
     } catch (error) {
-      console.error('Error evaluando riesgo:', error)
       alert('Error al evaluar riesgo crediticio')
     } finally {
       setIsEvaluatingRisk(false)
@@ -131,7 +130,6 @@ export default function CreateAnuncianteModal({
       setRiskEvaluation(null)
       
     } catch (error) {
-      console.error('Error creando anunciante:', error)
       alert('Error al crear anunciante')
     } finally {
       setIsSubmitting(false)
@@ -140,7 +138,7 @@ export default function CreateAnuncianteModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-2xl text-white flex items-center gap-3">
             <Building2 className="h-6 w-6 text-blue-400" />

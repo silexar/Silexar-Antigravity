@@ -37,22 +37,39 @@ function createLogEntry(
 }
 
 function emit(entry: LogEntry): void {
-  // In production, this would send to a log aggregator (Datadog, CloudWatch, etc.)
-  // For now, structured JSON to stdout (compatible with most log parsers)
+  // Structured JSON to stdout — compatible with Datadog, CloudWatch, Loki, Elasticsearch
   const output = JSON.stringify(entry)
 
   switch (entry.level) {
     case 'error':
-      console.error(output)
+      // Errors go to stderr for log collectors that separate streams
+      process.stderr.write(output + '\n')
+      // Also report to Sentry if configured (non-blocking)
+      if (process.env.SENTRY_DSN) {
+        try {
+          // Dynamic import to avoid bundling Sentry in edge runtime if not needed
+          void import('@sentry/nextjs').then((Sentry) => {
+            Sentry.captureMessage(entry.message, {
+              level: 'error',
+              extra: entry as Record<string, unknown>,
+            })
+          })
+        } catch {
+          // Sentry failure must never crash the application
+        }
+      }
       break
     case 'warn':
-      console.warn(output)
+      process.stderr.write(output + '\n')
       break
     case 'debug':
-      if (process.env.NODE_ENV === 'development') console.debug(output)
+      if (process.env.NODE_ENV === 'development') {
+        process.stdout.write(output + '\n')
+      }
       break
     default:
-      console.log(output)
+      // info — structured JSON to stdout
+      process.stdout.write(output + '\n')
   }
 }
 

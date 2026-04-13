@@ -12,8 +12,6 @@ export interface InitializationResult {
 
 export const initializeEnterpriseSystem = async (): Promise<InitializationResult> => {
     const startTime = Date.now();
-    console.log('🚀 Inicializando sistema enterprise TIER0+...');
-
     const modules = [
         'CoreModule',
         'AuthModule',
@@ -25,10 +23,7 @@ export const initializeEnterpriseSystem = async (): Promise<InitializationResult
 
     // Simular carga de módulos
     for (const module of modules) {
-        console.log(`  ✓ ${module} cargado`);
-    }
-
-    console.log('✅ Sistema enterprise inicializado');
+        }
 
     return {
         success: true,

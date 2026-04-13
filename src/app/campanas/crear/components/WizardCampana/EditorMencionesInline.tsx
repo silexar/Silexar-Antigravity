@@ -284,7 +284,8 @@ export const EditorMencionesInline: React.FC<EditorMencionesProps> = ({
   const textoPreview = useMemo(() => {
     let preview = texto;
     Object.entries(valoresVariables).forEach(([key, value]) => {
-      preview = preview.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value || `[${key}]`);
+      const placeholder = `{{${key}}}`;
+      preview = preview.split(placeholder).join(value || `[${key}]`);
     });
     return preview;
   }, [texto, valoresVariables]);
@@ -302,7 +303,7 @@ export const EditorMencionesInline: React.FC<EditorMencionesProps> = ({
     setTexto(nuevoTexto);
     
     // Agregar al historial (cada 10 caracteres de diferencia)
-    const ultimoHistorial = historialTexto[indiceHistorial] || '';
+    const ultimoHistorial = historialTexto.at(indiceHistorial) || '';
     if (Math.abs(nuevoTexto.length - ultimoHistorial.length) >= 10) {
       const nuevoHistorial = [...historialTexto.slice(0, indiceHistorial + 1), nuevoTexto];
       if (nuevoHistorial.length > 20) nuevoHistorial.shift(); // Máximo 20 estados

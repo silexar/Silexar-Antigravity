@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Activity, 
@@ -27,7 +28,6 @@ import {
 } from 'lucide-react';
 import { NeuromorphicCard, NeuromorphicButton, NeuromorphicStatus, NeuromorphicGrid } from '@/components/ui/neuromorphic';
 import { cn } from '@/lib/utils';
-import * as d3 from 'd3';
 
 // System metrics interface
 interface SystemMetric {
@@ -294,7 +294,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
       case 'degraded': return 'text-yellow-400';
       case 'critical':
       case 'offline': return 'text-red-400';
-      default: return 'text-slate-400';
+      default: return 'text-[#888780]';
     }
   };
 
@@ -329,25 +329,25 @@ const RealTimeMonitoringDashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)]">
-              <Activity className="w-6 h-6 text-white" />
+              <Activity className="w-6 h-6 text-[#2C2C2A]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Real-Time Monitoring</h1>
-              <p className="text-slate-400">SILEXAR PULSE - System Health Dashboard</p>
+              <h1 className="text-3xl font-bold text-[#2C2C2A]">Real-Time Monitoring</h1>
+              <p className="text-[#888780]">SILEXAR PULSE - System Health Dashboard</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-slate-400">System Health:</span>
+              <span className="text-sm text-[#888780]">System Health:</span>
               <span className={cn("text-sm font-semibold", getStatusColor(systemHealth.status))}>
                 {systemHealth.overall.toFixed(1)}% - {systemHealth.status.toUpperCase()}
               </span>
             </div>
             
             <select
-              className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm"
+              className="bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg px-3 py-2 text-[#2C2C2A] text-sm"
               value={selectedTimeRange}
-              onChange={(e) => setSelectedTimeRange(e.target.value as any)}
+              onChange={(e) => setSelectedTimeRange(e.target.value as unknown)}
             >
               <option value="1h">Last Hour</option>
               <option value="6h">Last 6 Hours</option>
@@ -376,8 +376,8 @@ const RealTimeMonitoringDashboard: React.FC = () => {
 
       {/* System Overview */}
       <NeuromorphicGrid columns={3}>
-        {systemMetrics.map((metric, index) => (
-          <NeuromorphicCard key={index} variant="embossed" borderAccent={metric.status === 'critical' ? 'red' : metric.status === 'warning' ? 'yellow' : 'blue'}>
+        {systemMetrics.map((metric) => (
+          <NeuromorphicCard key={metric.name} variant="embossed" borderAccent={metric.status === 'critical' ? 'red' : metric.status === 'warning' ? 'yellow' : 'blue'}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -387,7 +387,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                   {metric.name === 'Error Rate' && <AlertCircle className="w-5 h-5 text-blue-400" />}
                   {metric.name === 'Active Users' && <Activity className="w-5 h-5 text-blue-400" />}
                   {metric.name === 'Throughput' && <TrendingUp className="w-5 h-5 text-blue-400" />}
-                  <h3 className="text-slate-300 font-medium">{metric.name}</h3>
+                  <h3 className="text-[#5F5E5A] font-medium">{metric.name}</h3>
                 </div>
                 <div className={cn("flex items-center space-x-2", getStatusColor(metric.status))}>
                   <NeuromorphicStatus 
@@ -400,21 +400,21 @@ const RealTimeMonitoringDashboard: React.FC = () => {
               </div>
               
               <div className="flex items-baseline space-x-2 mb-4">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-bold text-[#2C2C2A]">
                   {metric.value.toLocaleString()}
                 </span>
-                <span className="text-sm text-slate-400">{metric.unit}</span>
+                <span className="text-sm text-[#888780]">{metric.unit}</span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className={cn("flex items-center space-x-1", 
                   metric.trend === 'up' ? 'text-green-400' : 
-                  metric.trend === 'down' ? 'text-red-400' : 'text-slate-400'
+                  metric.trend === 'down' ? 'text-red-400' : 'text-[#888780]'
                 )}>
                   <TrendingUp className={cn("w-4 h-4", metric.trend === 'down' && 'rotate-180')} />
                   <span>{metric.trend}</span>
                 </span>
-                <span className="text-slate-400">
+                <span className="text-[#888780]">
                   Threshold: {metric.threshold}{metric.unit}
                 </span>
               </div>
@@ -428,26 +428,26 @@ const RealTimeMonitoringDashboard: React.FC = () => {
         <NeuromorphicCard variant="embossed">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white">Component Status</h2>
+              <h2 className="text-xl font-semibold text-[#2C2C2A]">Component Status</h2>
               <div className="flex items-center space-x-4 text-sm">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full" />
-                  <span className="text-slate-400">{systemHealth.components.online} Online</span>
+                  <span className="text-[#888780]">{systemHealth.components.online} Online</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-                  <span className="text-slate-400">{systemHealth.components.warning} Warning</span>
+                  <span className="text-[#888780]">{systemHealth.components.warning} Warning</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full" />
-                  <span className="text-slate-400">{systemHealth.components.critical} Critical</span>
+                  <span className="text-[#888780]">{systemHealth.components.critical} Critical</span>
                 </div>
               </div>
             </div>
             
             <div className="space-y-3">
               {componentStatus.map((component) => (
-                <div key={component.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                <div key={component.id} className="flex items-center justify-between p-3 bg-[#E8E5E0]/50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <NeuromorphicStatus 
                       status={component.status === 'online' ? 'online' : 
@@ -457,13 +457,13 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                       pulse={component.status === 'online'}
                     />
                     <div>
-                      <h3 className="text-white font-medium">{component.name}</h3>
-                      <p className="text-slate-400 text-sm">Version {component.version}</p>
+                      <h3 className="text-[#2C2C2A] font-medium">{component.name}</h3>
+                      <p className="text-[#888780] text-sm">Version {component.version}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-white font-semibold">{component.uptime}%</div>
-                    <div className="text-slate-400 text-sm">{component.responseTime}ms</div>
+                    <div className="text-[#2C2C2A] font-semibold">{component.uptime}%</div>
+                    <div className="text-[#888780] text-sm">{component.responseTime}ms</div>
                   </div>
                 </div>
               ))}
@@ -476,7 +476,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <h2 className="text-xl font-semibold text-white">System Alerts</h2>
+                <h2 className="text-xl font-semibold text-[#2C2C2A]">System Alerts</h2>
                 <span className={cn(
                   "px-2 py-1 rounded text-xs font-medium border",
                   filteredAlerts.filter(a => !a.acknowledged).length > 0 
@@ -488,9 +488,9 @@ const RealTimeMonitoringDashboard: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <select
-                  className="bg-slate-800 border border-slate-700 rounded px-3 py-1 text-white text-sm"
+                  className="bg-[#E8E5E0] border border-[#D4D1CC] rounded px-3 py-1 text-[#2C2C2A] text-sm"
                   value={alertsFilter}
-                  onChange={(e) => setAlertsFilter(e.target.value as any)}
+                  onChange={(e) => setAlertsFilter(e.target.value as unknown)}
                 >
                   <option value="all">All Alerts</option>
                   <option value="unacknowledged">Unacknowledged</option>
@@ -504,7 +504,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
             
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {filteredAlerts.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-[#888780]">
                   <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>No alerts to display</p>
                 </div>
@@ -530,7 +530,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
-                            <h4 className="text-white font-medium">{alert.title}</h4>
+                            <h4 className="text-[#2C2C2A] font-medium">{alert.title}</h4>
                             <span className={cn(
                               "px-2 py-1 rounded text-xs font-medium border",
                               alert.type === 'critical' ? 'bg-red-900/20 text-red-400 border-red-500/30' :
@@ -540,9 +540,9 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                               {alert.type.toUpperCase()}
                             </span>
                           </div>
-                          <p className="text-slate-300 text-sm mb-2">{alert.message}</p>
+                          <p className="text-[#5F5E5A] text-sm mb-2">{alert.message}</p>
                           <div className="flex items-center justify-between">
-                            <div className="text-xs text-slate-400">
+                            <div className="text-xs text-[#888780]">
                               {alert.component} • {alert.timestamp.toLocaleTimeString()}
                             </div>
                             {!alert.acknowledged && (
@@ -572,10 +572,10 @@ const RealTimeMonitoringDashboard: React.FC = () => {
           <NeuromorphicCard variant="embossed" className="max-w-2xl w-full mx-4">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">Monitoring Settings</h2>
+                <h2 className="text-xl font-semibold text-[#2C2C2A]">Monitoring Settings</h2>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="text-slate-400 hover:text-white"
+                  className="text-[#888780] hover:text-[#2C2C2A]"
                 >
                   <EyeOff className="w-5 h-5" />
                 </button>
@@ -583,14 +583,15 @@ const RealTimeMonitoringDashboard: React.FC = () => {
               
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-white font-medium mb-3">Alert Thresholds</h3>
+                  <h3 className="text-[#2C2C2A] font-medium mb-3">Alert Thresholds</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {systemMetrics.map((metric) => (
                       <div key={metric.name} className="space-y-2">
-                        <label className="text-slate-300 text-sm">{metric.name} Threshold</label>
+                        <label className="text-[#5F5E5A] text-sm">{metric.name} Threshold</label>
                         <input
                           type="number"
-                          className="w-full bg-slate-900/80 border border-slate-700/50 rounded-lg px-3 py-2 text-white"
+                          aria-label={`Umbral para ${metric.name}`}
+                          className="w-full bg-[#F0EDE8]/80 border border-[#D4D1CC]/50 rounded-lg px-3 py-2 text-[#2C2C2A]"
                           defaultValue={metric.threshold}
                         />
                       </div>
@@ -599,18 +600,18 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-white font-medium mb-3">Notification Settings</h3>
+                  <h3 className="text-[#2C2C2A] font-medium mb-3">Notification Settings</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-300">Email Notifications</span>
+                      <span className="text-[#5F5E5A]">Email Notifications</span>
                       <input type="checkbox" className="rounded" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-300">Slack Integration</span>
+                      <span className="text-[#5F5E5A]">Slack Integration</span>
                       <input type="checkbox" className="rounded" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-300">SMS for Critical Alerts</span>
+                      <span className="text-[#5F5E5A]">SMS for Critical Alerts</span>
                       <input type="checkbox" className="rounded" />
                     </div>
                   </div>

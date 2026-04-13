@@ -327,8 +327,8 @@ export function ConfirmacionHoraria() {
                           </tr>
                         </thead>
                         <tbody>
-                          {datos.programacion.slice(0, 5).map((item, i) => (
-                            <tr key={i} className="hover:bg-slate-50">
+                          {datos.programacion.slice(0, 5).map((item) => (
+                            <tr key={`${item.fecha}-${item.hora}-${item.bloque}`} className="hover:bg-slate-50">
                               <td className="px-2 py-1 border">{item.fecha}</td>
                               <td className="px-2 py-1 border">{item.hora}</td>
                               <td className="px-2 py-1 border">{item.bloque}</td>

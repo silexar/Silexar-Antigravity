@@ -363,6 +363,7 @@ export const DeviceIntelligencePanel: React.FC<DeviceIntelligencePanelProps> = (
                     max="50"
                     value={value.connectionRules.minSpeedMbps}
                     onChange={(e) => updateConnectionRules({ minSpeedMbps: parseInt(e.target.value) })}
+                    aria-label="Velocidad mínima en Mbps"
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
                   />
                 </div>

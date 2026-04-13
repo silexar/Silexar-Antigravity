@@ -39,19 +39,18 @@ interface FacturacionData {
 }
 
 interface StepFacturacionProps extends WizardStepProps {
-  data: FacturacionData;
+  data: Record<string, unknown>;
   onUpdate: (data: Partial<FacturacionData>) => void;
 }
 
 export const StepFacturacionCampana: React.FC<StepFacturacionProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isActive,
+  isActive: _isActive,
   onComplete,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onBack,
-  data,
+  onBack: _onBack,
+  data: rawData,
   onUpdate
 }) => {
+  const data = rawData as FacturacionData;
   // Initialize defaults
   useEffect(() => {
     if (!data.estiloFacturacion) {
@@ -92,7 +91,7 @@ export const StepFacturacionCampana: React.FC<StepFacturacionProps> = ({
             
             <RadioGroup 
               value={data.estiloFacturacion} 
-              onValueChange={(val) => onUpdate({ estiloFacturacion: val as any })}
+              onValueChange={(val) => onUpdate({ estiloFacturacion: val as FacturacionData['estiloFacturacion'] })}
               className="space-y-4"
             >
               <div className={`
@@ -143,7 +142,7 @@ export const StepFacturacionCampana: React.FC<StepFacturacionProps> = ({
             </h3>
             <Select 
               value={data.facturacionPor} 
-              onValueChange={(val) => onUpdate({ facturacionPor: val as any })}
+              onValueChange={(val) => onUpdate({ facturacionPor: val as FacturacionData['facturacionPor'] })}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Seleccione frecuencia" />
@@ -204,7 +203,7 @@ export const StepFacturacionCampana: React.FC<StepFacturacionProps> = ({
             
              <RadioGroup 
               value={data.direccionFacturacion} 
-              onValueChange={(val) => onUpdate({ direccionFacturacion: val as any })}
+              onValueChange={(val) => onUpdate({ direccionFacturacion: val as FacturacionData['direccionFacturacion'] })}
               className="space-y-3"
             >
                <div className="flex items-center space-x-2">

@@ -16,7 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import { formatCurrency } from '@/lib/utils'
+import {
   NeuromorphicCard, 
   NeuromorphicButton 
 } from '@/components/ui/neuromorphic'
@@ -114,12 +115,6 @@ export function InvestorRelations() {
     ])
 
     setIsLoading(false)
-  }
-
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
-    return `$${value}`
   }
 
   const getTypeColor = (type: string) => {
@@ -243,7 +238,7 @@ export function InvestorRelations() {
         </h4>
         <div className="space-y-2">
           {shareholders.map((sh, i) => (
-            <div key={i} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={sh.name} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
               <div className="flex items-center gap-3">
                 <span className={`text-xs px-2 py-0.5 rounded ${getTypeColor(sh.type)}`}>
                   {sh.type}

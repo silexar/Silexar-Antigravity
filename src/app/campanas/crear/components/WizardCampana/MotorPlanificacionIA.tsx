@@ -86,9 +86,7 @@ interface ConfiguracionPlanificacion {
 // ==================== COMPONENTE PRINCIPAL ====================
 
 export function MotorPlanificacionIA({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lineasAPlanificar: _lineasAPlanificar,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   bloquesDisponibles: _bloquesDisponibles,
   onPlanificacionCompleta,
 }: {
@@ -139,15 +137,16 @@ export function MotorPlanificacionIA({
       { id: 'c3', campanaId: 'cam1', anunciante: 'SANTANDER', duracion: 30, tipoPedido: 'AUSPICIO', lineaId: 'l3' },
     ];
 
-    for (let i = 0; i < mockCunas.length; i++) {
-      const cuna = mockCunas[i];
-      setProgreso(((i + 1) / mockCunas.length) * 100);
+    let idx = 0;
+    for (const cuna of mockCunas) {
+      setProgreso(((idx + 1) / mockCunas.length) * 100);
       setEtapa(`🎯 Procesando: ${cuna.anunciante} (${cuna.duracion}s)`);
 
       await new Promise(r => setTimeout(r, 800));
 
       // Buscar mejor bloque
-      const bloqueSeleccionado = mockBloques[i % mockBloques.length];
+      const bloqueSeleccionado = mockBloques[idx % mockBloques.length];
+      idx++;
       const espacioDisponible = bloqueSeleccionado.capacidadTotal - bloqueSeleccionado.capacidadUsada;
 
       // Verificar competencia

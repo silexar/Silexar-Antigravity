@@ -611,6 +611,7 @@ export default function CobranzaAutomatizadaPanel() {
                         <label className="block text-sm text-slate-600 mb-2">Monto promesa</label>
                         <input
                           type="number"
+                          aria-label="Monto promesa"
                           className={`${neuro.input} w-full`}
                           placeholder="0"
                         />
@@ -619,6 +620,7 @@ export default function CobranzaAutomatizadaPanel() {
                         <label className="block text-sm text-slate-600 mb-2">Fecha promesa</label>
                         <input
                           type="date"
+                          aria-label="Fecha promesa"
                           className={`${neuro.input} w-full`}
                         />
                       </div>

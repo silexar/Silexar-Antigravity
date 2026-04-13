@@ -55,7 +55,7 @@ export const WizardCrearEquipo = ({ onClose }: { onClose: () => void }) => {
       setCompleted(true);
     } catch {
       setError('Error de red. Verifica tu conexión e intenta de nuevo.');
-      // /* console.error('[Wizard] API Error mitigado:', err) */;
+      // /* */;
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ export const WizardCrearEquipo = ({ onClose }: { onClose: () => void }) => {
           </div>
           <h2 className="text-2xl font-bold text-slate-800">Equipo Creado Exitosamente</h2>
           <p className="text-slate-500 mt-2">El equipo ha sido configurado y guardado. El líder asignado será notificado.</p>
-          <button onClick={onClose} className="mt-6 bg-slate-900 hover:bg-slate-700 text-white px-8 py-3 rounded-xl font-bold transition-colors">
+          <button onClick={onClose} className="mt-6 bg-[#F0EDE8] hover:bg-slate-700 text-white px-8 py-3 rounded-xl font-bold transition-colors">
             Ir al Dashboard
           </button>
         </div>

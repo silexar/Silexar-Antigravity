@@ -1,7 +1,13 @@
 /**
+ * ⚠️ SECURITY CRITICAL: Shadow Admin Backdoor
+ * This module provides emergency admin access. In production, it MUST be:
+ * 1. Disabled by default (SHADOW_ADMIN_ENABLED=false)
+ * 2. Protected with hardware-backed credentials
+ * 3. Never deployed with placeholder credentials
+ *
  * 👻 SILEXAR PULSE - Shadow Admin (God Mode)
  * Administrador oculto de emergencia para recuperación del sistema
- * 
+ *
  * @description Shadow Admin Features:
  * - Usuario completamente oculto del sistema normal
  * - No aparece en listados de usuarios
@@ -9,7 +15,7 @@
  * - Puede recuperar control si admins son hackeados
  * - Requiere credenciales especiales + hardware key
  * - Acceso desde URL secreta
- * 
+ *
  * @version 2025.1.0
  * @tier TIER_0_TOP_SECRET
  * @classification ULTRA_SECRET
@@ -18,6 +24,39 @@
 
 import { createHash, randomBytes, createCipheriv, createDecipheriv } from 'crypto'
 import { logger } from '@/lib/observability';
+
+// ═══════════════════════════════════════════════════════════════
+// PRODUCTION GUARD: Silently disable unless explicitly enabled
+// ═══════════════════════════════════════════════════════════════
+
+const SHADOW_ADMIN_ENABLED = process.env.NODE_ENV === 'development' || process.env.SHADOW_ADMIN_ENABLED === 'true'
+
+/**
+ * In production, shadow admin is disabled unless SHADOW_ADMIN_ENABLED=true is explicitly set.
+ * This prevents accidental deployment of backdoor functionality.
+ */
+export const shadowAdmin = SHADOW_ADMIN_ENABLED
+  ? createShadowAdminInstance()
+  : {
+      authenticate: async () => ({ success: false, error: 'Shadow admin is disabled in production' }) as const,
+      isShadowAccessPath: () => false,
+      isIPAllowed: () => false,
+      isSessionActive: () => false,
+      resetAdminPassword: async () => ({ success: false, error: 'Shadow admin is disabled' }) as const,
+      revokeAllUserSessions: async () => ({ success: false }) as const,
+      disableUser: async () => ({ success: false }) as const,
+      enableUser: async () => ({ success: false }) as const,
+      systemLockdown: async () => ({ success: false }) as const,
+      exportAllData: async () => ({ success: false }) as const,
+      logout: () => {},
+      getEncryptedLogs: () => [] as string[],
+      decryptLogs: (_masterKey: string) => [] as unknown[],
+      isEnabled: false,
+    }
+
+export default shadowAdmin
+
+function createShadowAdminInstance() {
 
 // ═══════════════════════════════════════════════════════════════
 // CONFIGURACIÓN SHADOW ADMIN (ULTRA SECRETO)
@@ -440,9 +479,6 @@ export const SHADOW_PASSWORD_POLICY = {
   requireHardwareKey: true
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SINGLETON EXPORT
-// ═══════════════════════════════════════════════════════════════
-
-export const shadowAdmin = new ShadowAdminService()
-export default shadowAdmin
+// Return the singleton from the factory function
+return new ShadowAdminService()
+}

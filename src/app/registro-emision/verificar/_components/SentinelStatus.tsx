@@ -50,7 +50,7 @@ export function SentinelStatus() {
         {/* MINI GRAPH (CSS ONLY) */}
         <div className="flex gap-0.5 items-end h-6">
             {[40, 60, 30, 80, 50, 90, 40].map((h, i) => (
-                <div key={i} className="w-1 bg-slate-300 rounded-full" style={{ height: `${h}%` }} />
+                <div key={`${h}-${i}`} className="w-1 bg-slate-300 rounded-full" style={{ height: `${h}%` }} />
             ))}
         </div>
     </div>

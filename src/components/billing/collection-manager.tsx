@@ -591,7 +591,7 @@ export function CollectionManager() {
                       <p className="text-xs font-medium text-muted-foreground">TRIGGERS:</p>
                       <div className="flex flex-wrap gap-1">
                         {strategy.triggers.map((trigger, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
+                          <Badge key={`${trigger}-${index}`} variant="outline" className="text-xs">
                             {trigger}
                           </Badge>
                         ))}
@@ -602,7 +602,7 @@ export function CollectionManager() {
                       <p className="text-xs font-medium text-muted-foreground">ACCIONES:</p>
                       <div className="flex flex-wrap gap-1">
                         {strategy.actions.map((action, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
+                          <Badge key={`${action}-${index}`} variant="outline" className="text-xs">
                             {action}
                           </Badge>
                         ))}

@@ -190,7 +190,7 @@ export function SalespersonDetailModal({ vendedor, isOpen, onClose }: Salesperso
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
             <Avatar className="h-12 w-12">
@@ -650,7 +650,7 @@ export function SalespersonDetailModal({ vendedor, isOpen, onClose }: Salesperso
                     <span className="text-slate-400 text-sm">Especializaciones:</span>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {vendedor.especializaciones.map((esp, index) => (
-                        <Badge key={index} variant="outline" className="text-blue-400 border-blue-400">
+                        <Badge key={`${esp}-${index}`} variant="outline" className="text-blue-400 border-blue-400">
                           {esp}
                         </Badge>
                       ))}
@@ -660,7 +660,7 @@ export function SalespersonDetailModal({ vendedor, isOpen, onClose }: Salesperso
                     <span className="text-slate-400 text-sm">Certificaciones:</span>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {vendedor.certificaciones.map((cert, index) => (
-                        <Badge key={index} variant="outline" className="text-green-400 border-green-400">
+                        <Badge key={`${cert}-${index}`} variant="outline" className="text-green-400 border-green-400">
                           {cert}
                         </Badge>
                       ))}

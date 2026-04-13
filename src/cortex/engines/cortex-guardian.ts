@@ -608,7 +608,7 @@ export class CortexGuardian extends EventEmitter {
     let message = '';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const params = action.parameters as any;
+    const params = action.parameters as unknown;
     switch (action.type) {
       case 'ISOLATE':
         affectedResources.push(...(params.systems || ['system_1']));

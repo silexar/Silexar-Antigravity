@@ -722,14 +722,14 @@ export class WILTrainingSystem extends EventEmitter {
       }
     }
 
-    moduleProgress!.status = status as UserProgress['status']
-    moduleProgress!.progress = progress
+    moduleProgress.status = status as UserProgress['status']
+    moduleProgress.progress = progress
     
     if (status === 'completed') {
-      moduleProgress!.completionDate = new Date()
+      moduleProgress.completionDate = new Date()
     }
 
-    userProgressMap.set(moduleId, moduleProgress!)
+    userProgressMap.set(moduleId, moduleProgress)
   }
 
   private async processQuizActivity(activityData: Record<string, unknown>, module: TrainingModule): Promise<{ correct: boolean; score: number; timeSpent: number; attempts: number; explanation: string }> {

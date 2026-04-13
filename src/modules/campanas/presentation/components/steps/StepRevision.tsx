@@ -88,7 +88,7 @@ export const StepRevision: React.FC<{ data: CampanaWizardData, updateData: (fiel
                              const fullName = `${monthNum} ${monthName} - ${campaignName} - ${productName}`;
                              
                              return (
-                                <div key={i} className="flex items-center gap-3 p-3 hover:bg-white transition-colors group">
+                                <div key={`${_}-${i}`} className="flex items-center gap-3 p-3 hover:bg-white transition-colors group">
                                     <div className="h-4 w-4 rounded border border-slate-300 bg-white flex items-center justify-center text-indigo-600">
                                         {/* Simulated Checkbox */}
                                         <div className="w-2.5 h-2.5 bg-indigo-600 rounded-[1px] opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -171,8 +171,8 @@ export class Sprint1SecurityValidator {
       const initialCount = auditLogger.queryEvents().length;
       
       auditLogger.logEvent({
-        eventType: 'LOGIN_SUCCESS' as any,
-        severity: 'LOW' as any,
+        eventType: 'LOGIN_SUCCESS' as unknown,
+        severity: 'LOW' as unknown,
         userId: 'validation-test',
         resource: 'VALIDATION_TEST',
         action: 'TEST_LOG',

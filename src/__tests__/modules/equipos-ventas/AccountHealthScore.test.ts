@@ -123,7 +123,7 @@ describe('AccountHealthScore entity', () => {
 
     it('throws when dimension not found', () => {
       const ahs = AccountHealthScore.create(makeProps())
-      expect(() => ahs.actualizarDimension('INVALID' as any, 50)).toThrow()
+      expect(() => ahs.actualizarDimension('INVALID' as unknown, 50)).toThrow()
     })
   })
 

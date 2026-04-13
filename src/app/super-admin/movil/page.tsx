@@ -16,7 +16,7 @@ import { MobileSuperAdminApp } from './_components/MobileSuperAdminApp';
 
 export default function SuperAdminMovilPage() {
   return (
-    <div className="bg-slate-900 w-full overflow-hidden">
+    <div className="bg-[#F0EDE8] w-full overflow-hidden">
       {/* 
         El MobileSuperAdminApp encapsula todo el layout, bottom navigation,
         botón de pánico y state management.

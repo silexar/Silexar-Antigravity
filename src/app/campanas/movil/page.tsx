@@ -35,7 +35,7 @@ export default function MobileCampanasApp() {
   } = useCampanas();
 
   // Helper para Bottom Navigation
-  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: string; icon: React.ElementType; label: string; alert?: boolean }) => {
+  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: 'dashboard' | 'campanas' | 'alertas' | 'calendario' | 'detalle' | 'crear'; icon: React.ElementType; label: string; alert?: boolean }) => {
     // Mantener highlight en la pestaña original si estamos en sub-vistas
     const isActive = activeTab === id || 
                      (id === 'campanas' && activeTab === 'detalle') || 

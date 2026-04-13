@@ -148,7 +148,7 @@ export function NarrativePlanner() {
 
     const newNode: NarrativeNode = {
       id: crypto.randomUUID(),
-      type: draggedNodeType as any,
+      type: draggedNodeType as unknown,
       name: `${nodeTypes.find(nt => nt.type === draggedNodeType)?.label} ${narrative.nodes.length + 1}`,
       position: { x, y },
       creative_pool_id: '',
@@ -295,7 +295,6 @@ export function NarrativePlanner() {
       
       alert('Narrativa guardada exitosamente')
     } catch (error) {
-      console.error('Error guardando narrativa:', error)
       alert('Error guardando narrativa')
     }
   }
@@ -729,7 +728,7 @@ export function NarrativePlanner() {
                 <div className="space-y-2">
                   <h4 className="font-medium">Validación</h4>
                   {validateNarrative().map((error, index) => (
-                    <Alert key={index}>
+                    <Alert key={`${error}-${index}`}>
                       <AlertTriangle className="h-4 w-4" />
                       <AlertDescription className="text-sm">{error}</AlertDescription>
                     </Alert>

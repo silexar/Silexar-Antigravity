@@ -7,15 +7,12 @@
 
 import { NextResponse } from 'next/server'
 import { withApiRoute } from '@/lib/api/with-api-route'
-import { apiSuccess, apiError, apiServerError, getUserContext, apiForbidden} from '@/lib/api/response'
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
 import { PropiedadesIntegrationAPI } from '../../../modules/propiedades/api/PropiedadesIntegrationAPI'
-import { MockTipoPropiedadRepository, MockValorPropiedadRepository } from '../../../modules/propiedades/infrastructure/repositories/MockPropiedadRepository'
+import { TipoPropiedadDrizzleRepository, ValorPropiedadDrizzleRepository } from '../../../modules/propiedades/infrastructure/repositories/PropiedadesDrizzleRepository'
 import { logger } from '@/lib/observability';
-import { checkPermission } from '@/lib/security/rbac';
-import { auditLogger } from '@/lib/security/audit-logger';
-import { withTenantContext } from '@/lib/db/tenant-context';
 import { getDB } from '@/lib/db';
-import { campanas, anunciantes, users, campanasCunas, campanasEmisoras } from '@/lib/db/schema';
+import { campanas, anunciantes, users } from '@/lib/db/schema';
 import { SQL, eq, ilike, and } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -158,8 +155,8 @@ export const POST = withApiRoute(
       // Cross-module property validation
       if (body.propiedades && body.propiedades.length > 0) {
         const propiedadesAPI = new PropiedadesIntegrationAPI(
-          new MockTipoPropiedadRepository(),
-          new MockValorPropiedadRepository()
+          new TipoPropiedadDrizzleRepository(tenantId),
+          new ValorPropiedadDrizzleRepository(tenantId)
         )
         const validacion = await propiedadesAPI.validarCoherenciaPropiedades(body.propiedades)
         if (validacion.isFailure) {
@@ -180,7 +177,7 @@ export const POST = withApiRoute(
         .insert(campanas)
         .values({
           tenantId,
-          codigo: `CAM-2025-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
+          codigo: `CAM-2025-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
           nombre: body.nombre,
           anuncianteId: body.anuncianteId,
           tipoCampana: body.tipoCampana,

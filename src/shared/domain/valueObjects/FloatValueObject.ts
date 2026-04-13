@@ -31,34 +31,34 @@ export abstract class FloatValueObject {
   }
 
   round(): FloatValueObject {
-    return new (this.constructor as any)(Math.round(this._value));
+    return new (this.constructor as unknown)(Math.round(this._value));
   }
 
   floor(): FloatValueObject {
-    return new (this.constructor as any)(Math.floor(this._value));
+    return new (this.constructor as unknown)(Math.floor(this._value));
   }
 
   ceil(): FloatValueObject {
-    return new (this.constructor as any)(Math.ceil(this._value));
+    return new (this.constructor as unknown)(Math.ceil(this._value));
   }
 
   add(other: FloatValueObject): FloatValueObject {
-    return new (this.constructor as any)(this._value + other._value);
+    return new (this.constructor as unknown)(this._value + other._value);
   }
 
   subtract(other: FloatValueObject): FloatValueObject {
-    return new (this.constructor as any)(this._value - other._value);
+    return new (this.constructor as unknown)(this._value - other._value);
   }
 
   multiply(other: FloatValueObject): FloatValueObject {
-    return new (this.constructor as any)(this._value * other._value);
+    return new (this.constructor as unknown)(this._value * other._value);
   }
 
   divide(other: FloatValueObject): FloatValueObject {
     if (other.isZero()) {
       throw new Error('Cannot divide by zero');
     }
-    return new (this.constructor as any)(this._value / other._value);
+    return new (this.constructor as unknown)(this._value / other._value);
   }
 
   protected validateValue(value: number): void {

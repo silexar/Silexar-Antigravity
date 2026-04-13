@@ -230,7 +230,7 @@ export default function FacturacionPage() {
             { label: 'Vencido', value: `$${(stats.montoVencido / 1000000).toFixed(1)}M`, icon: AlertTriangle, color: 'from-red-400 to-red-500' },
             { label: 'Alertas', value: stats.alertasCriticas, icon: Brain, color: 'from-violet-400 to-violet-500' }
           ].map((stat, i) => (
-            <Card key={i} className="p-4">
+            <Card key={`${stat}-${i}`} className="p-4">
               <div className="flex items-center gap-3">
                 <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color}`}>
                   <stat.icon className="w-5 h-5 text-white" />
@@ -253,7 +253,7 @@ export default function FacturacionPage() {
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {alertas.map((alerta, i) => (
-                <AlertaCard key={i} alerta={alerta} />
+                <AlertaCard key={`${alerta}-${i}`} alerta={alerta} />
               ))}
             </div>
           </Card>

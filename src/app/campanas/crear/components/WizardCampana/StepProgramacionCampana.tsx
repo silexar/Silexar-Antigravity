@@ -14,7 +14,6 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { logger } from '@/lib/observability';
 import { WizardStepProps } from './types/wizard.types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -60,14 +59,11 @@ interface ResultadoPlanificacion {
 }
 
 export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isActive,
+  isActive: _isActive,
   onComplete,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onBack,
+  onBack: _onBack,
   data,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onUpdate
+  onUpdate: _onUpdate
 }) => {
   // Hook de control de campaña
   const { 
@@ -201,8 +197,8 @@ export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
     setActiveTab('progreso');
 
     // Simular validación paso a paso
-    for (let i = 0; i < validaciones.length; i++) {
-      const v = validaciones[i];
+    let idx = 0;
+    for (const v of validaciones) {
       if (!v.enabled) continue;
 
       setValidaciones(prev => prev.map(item => 
@@ -220,8 +216,9 @@ export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
       ];
 
       setValidaciones(prev => prev.map(item => 
-        item.id === v.id ? { ...item, estado: estados[i], mensaje: mensajes[i] } : item
+        item.id === v.id ? { ...item, estado: estados.at(idx) ?? 'ok', mensaje: mensajes.at(idx) } : item
       ));
+      idx++;
     }
 
     // Simular planificación
@@ -350,8 +347,7 @@ export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
           <MotorPlanificacionIA 
             lineasAPlanificar={[]}
             bloquesDisponibles={[]}
-            onPlanificacionCompleta={(resultados) => {
-              // logger.info('Planificación completa:', resultados);
+            onPlanificacionCompleta={(_resultados) => {
               setStatus('completed');
               onComplete();
             }}
@@ -361,7 +357,7 @@ export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
         {/* TAB: Mapa de Calor */}
         <TabsContent value="calor" className="space-y-6">
           <MapaCalorSaturacion 
-            onBloqueClick={(bloque) => { /* logger.info('Bloque seleccionado:', bloque) */ }}
+            onBloqueClick={(_bloque) => { /* no-op */ }}
           />
         </TabsContent>
 
@@ -455,9 +451,10 @@ export const StepProgramacionCampana: React.FC<StepProgramacionProps> = ({
                       <SelectItem value="bloques">Bloques</SelectItem>
                     </SelectContent>
                   </Select>
-                  <input 
+                  <input
                     type="text"
                     value="00:00"
+                    aria-label="Valor de separación"
                     className="w-20 px-2 border rounded text-center text-sm"
                     disabled={configuracion.separacionTipo === 'ninguno'}
                     readOnly

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiUnauthorized, getUserContext, apiForbidden} from '@/lib/api/response';
+import { apiSuccess, apiUnauthorized, apiServerError, getUserContext, apiForbidden} from '@/lib/api/response';
 import { checkPermission } from '@/lib/security/rbac';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
@@ -11,11 +11,21 @@ export async function GET(request: NextRequest) {
 
   const perm = checkPermission(ctx, 'campanas', 'read');
   if (!perm) return apiForbidden();
-  return apiSuccess({ billing: [] });
+  try {
+    return apiSuccess({ billing: [] });
+  } catch (error) {
+    logger.error('[API/V2/Billing] Error:', error instanceof Error ? error : undefined);
+    return apiServerError();
+  }
 }
 
 export async function POST(request: NextRequest) {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
-  return apiSuccess({ invoiceId: `inv_${Date.now()}` });
+  try {
+    return apiSuccess({ invoiceId: `inv_${Date.now()}` });
+  } catch (error) {
+    logger.error('[API/V2/Billing] Error:', error instanceof Error ? error : undefined);
+    return apiServerError();
+  }
 }

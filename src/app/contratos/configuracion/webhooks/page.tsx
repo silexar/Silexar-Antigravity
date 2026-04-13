@@ -376,8 +376,9 @@ export default function WebhooksPage() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">Nombre</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
+                      aria-label="Nombre del webhook"
                       placeholder="Ej: Integración ERP"
                       className={`${neuro.input} w-full`}
                     />
@@ -385,8 +386,9 @@ export default function WebhooksPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">URL del Endpoint</label>
-                    <input 
-                      type="url" 
+                    <input
+                      type="url"
+                      aria-label="URL del Endpoint"
                       placeholder="https://tu-servidor.com/webhook"
                       className={`${neuro.input} w-full`}
                     />

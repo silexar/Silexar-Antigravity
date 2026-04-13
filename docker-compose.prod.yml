@@ -58,6 +58,18 @@ services:
       - "traefik.http.routers.silexar.rule=Host(`yourdomain.com`)"
       - "traefik.http.routers.silexar.tls=true"
       - "traefik.http.routers.silexar.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.silexar.tls.options=default"
+      # Apply security headers + general rate limit to all app routes
+      - "traefik.http.routers.silexar.middlewares=default-chain@file,compress@file"
+      # Separate router for auth routes with stricter rate limiting
+      - "traefik.http.routers.silexar-auth.rule=Host(`yourdomain.com`) && PathPrefix(`/api/auth`)"
+      - "traefik.http.routers.silexar-auth.tls=true"
+      - "traefik.http.routers.silexar-auth.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.silexar-auth.middlewares=auth-chain@file"
+      - "traefik.http.routers.silexar-auth.priority=10"
+      - "traefik.http.services.silexar.loadbalancer.server.port=3000"
+      - "traefik.http.services.silexar.loadbalancer.healthcheck.path=/api/health"
+      - "traefik.http.services.silexar.loadbalancer.healthcheck.interval=30s"
 
   # ================================
   # PostgreSQL Database
@@ -76,8 +88,7 @@ services:
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     networks:
       - silexar-network
-    ports:
-      - "5432:5432"
+    # DB and Redis are only accessible via internal Docker network for security
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-silexar} -d ${POSTGRES_DB:-silexar_production}"]
       interval: 30s
@@ -126,8 +137,7 @@ services:
       - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
     networks:
       - silexar-network
-    ports:
-      - "6379:6379"
+    # DB and Redis are only accessible via internal Docker network for security
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -214,7 +224,7 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin123}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD environment variable is required}
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SERVER_DOMAIN=${GRAFANA_DOMAIN:-localhost}
       - GF_SMTP_ENABLED=true
@@ -248,14 +258,15 @@ services:
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
+      - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:?ERROR: ELASTIC_PASSWORD must be set in environment — never use a default password in production}
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - silexar-network
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       interval: 30s
@@ -283,7 +294,7 @@ services:
     depends_on:
       - elasticsearch
     ports:
-      - "5044:5044"
+      - "127.0.0.1:5044:5044"
     deploy:
       resources:
         limits:
@@ -304,7 +315,7 @@ services:
     networks:
       - silexar-network
     ports:
-      - "5601:5601"
+      - "127.0.0.1:5601:5601"
     depends_on:
       - elasticsearch
     healthcheck:

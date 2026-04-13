@@ -11,6 +11,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -65,117 +66,126 @@ const alertasMock: AlertaProgramacion[] = [
 // HANDLERS
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const estado = searchParams.get('estado');
-    const prioridad = searchParams.get('prioridad');
+export const GET = withApiRoute(
+  { resource: 'emisiones', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const estado = searchParams.get('estado');
+      const prioridad = searchParams.get('prioridad');
 
-    let alertas = [...alertasMock];
+      let alertas = [...alertasMock];
 
-    if (estado && estado !== 'todas') {
-      alertas = alertas.filter(a => a.estado === estado);
-    }
-
-    if (prioridad && prioridad !== 'todas') {
-      alertas = alertas.filter(a => a.prioridad === prioridad);
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: alertas,
-      stats: {
-        total: alertas.length,
-        nuevas: alertas.filter(a => a.estado === 'nueva').length,
-        enRevision: alertas.filter(a => a.estado === 'en_revision').length,
-        resueltas: alertas.filter(a => a.estado === 'resuelta').length,
-        criticas: alertas.filter(a => a.prioridad === 'critica').length
+      if (estado && estado !== 'todas') {
+        alertas = alertas.filter(a => a.estado === estado);
       }
-    });
-  } catch (error) {
-    logger.error('[API/RegistroEmision/Alertas] Error GET:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'GET' })
-    return apiServerError()
-  }
-}
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const {
-      anunciante,
-      campana,
-      material,
-      tipoProblema,
-      descripcion,
-      fechaProgramada,
-      horaProgramada,
-      emisora,
-      prioridad
-    } = body;
+      if (prioridad && prioridad !== 'todas') {
+        alertas = alertas.filter(a => a.prioridad === prioridad);
+      }
 
-    // Análisis IA de causas posibles
-    const causasPosibles = [
-      'Cambio de programación de última hora',
-      'Problema técnico en sistema de emisión',
-      'Material no cargado en playout',
-      'Conflicto de horarios no detectado'
-    ];
-
-    const nuevaAlerta: AlertaProgramacion = {
-      id: `alert-${Date.now()}`,
-      anunciante,
-      campana,
-      material,
-      tipoProblema,
-      descripcion,
-      fechaProgramada,
-      horaProgramada,
-      emisora,
-      prioridad: prioridad || 'media',
-      estado: 'nueva',
-      causasPosibles,
-      recomendacionIa: 'Verificar con el programador de turno y revisar el log de sistema',
-      fechaCreacion: new Date().toISOString()
-    };
-
-    alertasMock.push(nuevaAlerta);
-
-    return NextResponse.json({
-      success: true,
-      data: nuevaAlerta,
-      message: 'Alerta creada y notificaciones enviadas'
-    });
-  } catch (error) {
-    logger.error('[API/RegistroEmision/Alertas] Error POST:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'POST' });
-    return apiServerError()
-  }
-}
-
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { id, estado, asignadoA, resolucion } = body;
-
-    const alerta = alertasMock.find(a => a.id === id);
-    if (!alerta) {
       return NextResponse.json({
-        success: false,
-        error: 'Alerta no encontrada'
-      }, { status: 404 });
+        success: true,
+        data: alertas,
+        stats: {
+          total: alertas.length,
+          nuevas: alertas.filter(a => a.estado === 'nueva').length,
+          enRevision: alertas.filter(a => a.estado === 'en_revision').length,
+          resueltas: alertas.filter(a => a.estado === 'resuelta').length,
+          criticas: alertas.filter(a => a.prioridad === 'critica').length
+        }
+      });
+    } catch (error) {
+      logger.error('[API/RegistroEmision/Alertas] Error GET:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'GET' })
+      return apiServerError()
     }
-
-    if (estado) alerta.estado = estado;
-    if (asignadoA) alerta.asignadoA = asignadoA;
-
-    return NextResponse.json({
-      success: true,
-      data: alerta,
-      message: estado === 'resuelta' 
-        ? `Alerta resuelta: ${resolucion}`
-        : 'Alerta actualizada correctamente'
-    });
-  } catch (error) {
-    logger.error('[API/RegistroEmision/Alertas] Error PUT:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'PUT' });
-    return apiServerError()
   }
-}
+);
+
+export const POST = withApiRoute(
+  { resource: 'emisiones', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const {
+        anunciante,
+        campana,
+        material,
+        tipoProblema,
+        descripcion,
+        fechaProgramada,
+        horaProgramada,
+        emisora,
+        prioridad
+      } = body;
+
+      // Análisis IA de causas posibles
+      const causasPosibles = [
+        'Cambio de programación de última hora',
+        'Problema técnico en sistema de emisión',
+        'Material no cargado en playout',
+        'Conflicto de horarios no detectado'
+      ];
+
+      const nuevaAlerta: AlertaProgramacion = {
+        id: `alert-${Date.now()}`,
+        anunciante,
+        campana,
+        material,
+        tipoProblema,
+        descripcion,
+        fechaProgramada,
+        horaProgramada,
+        emisora,
+        prioridad: prioridad || 'media',
+        estado: 'nueva',
+        causasPosibles,
+        recomendacionIa: 'Verificar con el programador de turno y revisar el log de sistema',
+        fechaCreacion: new Date().toISOString()
+      };
+
+      alertasMock.push(nuevaAlerta);
+
+      return NextResponse.json({
+        success: true,
+        data: nuevaAlerta,
+        message: 'Alerta creada y notificaciones enviadas'
+      });
+    } catch (error) {
+      logger.error('[API/RegistroEmision/Alertas] Error POST:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'POST' });
+      return apiServerError()
+    }
+  }
+);
+
+export const PUT = withApiRoute(
+  { resource: 'emisiones', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { id, estado, asignadoA, resolucion } = body;
+
+      const alerta = alertasMock.find(a => a.id === id);
+      if (!alerta) {
+        return NextResponse.json({
+          success: false,
+          error: 'Alerta no encontrada'
+        }, { status: 404 });
+      }
+
+      if (estado) alerta.estado = estado;
+      if (asignadoA) alerta.asignadoA = asignadoA;
+
+      return NextResponse.json({
+        success: true,
+        data: alerta,
+        message: estado === 'resuelta' 
+          ? `Alerta resuelta: ${resolucion}`
+          : 'Alerta actualizada correctamente'
+      });
+    } catch (error) {
+      logger.error('[API/RegistroEmision/Alertas] Error PUT:', error instanceof Error ? error : undefined, { module: 'registro-emision/alertas', action: 'PUT' });
+      return apiServerError()
+    }
+  }
+);

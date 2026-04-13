@@ -11,6 +11,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Columns3,
@@ -135,12 +136,6 @@ const mockPipeline: EstadoPipeline[] = [
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTES
 // ═══════════════════════════════════════════════════════════════
-
-const formatCurrency = (value: number) => {
-  if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
-  return `$${value.toLocaleString()}`;
-};
 
 const RiesgoBadge: React.FC<{ nivel: string; score?: number }> = ({ nivel, score }) => {
   const config = {
@@ -330,6 +325,7 @@ export default function PipelinePage() {
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
                 placeholder="Buscar contratos..."
+                aria-label="Buscar contratos"
                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50"
               />
             </div>

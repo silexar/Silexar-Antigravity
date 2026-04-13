@@ -197,7 +197,7 @@ export default function ProgramacionPage() {
         setBloques(data.data);
       }
     } catch (error) {
-      /* console.error('Error cargando parrilla:', error) */;
+      /* */;
     }
     setLoading(false);
   }, [diaSeleccionado]);
@@ -222,7 +222,7 @@ export default function ProgramacionPage() {
       await fetch(`/api/cunas/programacion?id=${programacionId}`, { method: 'DELETE' });
       cargarParrilla();
     } catch (error) {
-      /* console.error('Error eliminando programación:', error) */;
+      /* */;
     }
   };
 

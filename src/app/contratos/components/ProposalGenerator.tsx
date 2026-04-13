@@ -113,6 +113,7 @@ export function ProposalGenerator() {
           <div className="space-y-4">
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Buscar cliente..."
+              aria-label="Buscar cliente"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-violet-400" />
             <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
               {clientesFiltrados.map(c => (
@@ -158,6 +159,7 @@ export function ProposalGenerator() {
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input value={presupuesto} onChange={e => setPresupuesto(e.target.value)}
                   placeholder="La IA sugerirá basado en historial"
+                  aria-label="Presupuesto objetivo"
                   type="number" className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-violet-400" />
               </div>
             </div>
@@ -205,8 +207,8 @@ export function ProposalGenerator() {
                   </tr>
                 </thead>
                 <tbody>
-                  {propuesta.medios.map((m, i) => (
-                    <tr key={i} className="border-b border-slate-50">
+                  {propuesta.medios.map((m) => (
+                    <tr key={m.nombre} className="border-b border-slate-50">
                       <td className="py-2 font-bold text-slate-700 flex items-center gap-1">
                         {m.tipo.includes('Radio') ? <Radio className="w-3 h-3 text-blue-400" /> :
                          m.tipo.includes('TV') ? <Tv className="w-3 h-3 text-purple-400" /> :
@@ -248,7 +250,7 @@ export function ProposalGenerator() {
                 <Zap className="w-3 h-3" /> Argumentos de Venta IA
               </p>
               {propuesta.argumentosVenta.map((a, i) => (
-                <p key={i} className="text-xs text-amber-700 mt-1 flex items-start gap-1.5">
+                <p key={`arg-${i}`} className="text-xs text-amber-700 mt-1 flex items-start gap-1.5">
                   <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" /> {a}
                 </p>
               ))}

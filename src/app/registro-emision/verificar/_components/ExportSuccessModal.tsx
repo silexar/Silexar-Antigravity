@@ -42,13 +42,13 @@ export function ExportSuccessModal({ isOpen, onClose, onReset }: ExportSuccessMo
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
         {/* Backdrop */}
-        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md transition-opacity" />
+        <div className="absolute inset-0 bg-[#F0EDE8]/80 backdrop-blur-md transition-opacity" />
 
         {/* Modal Content */}
         <div className="relative w-full max-w-2xl bg-[#e0e5ec] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/30 flex flex-col">
             
             {/* Header: Success Burst */}
-            <div className="bg-emerald-500 text-white p-8 text-center relative overflow-hidden">
+            <div className="bg-emerald-500 text-[#2C2C2A] p-8 text-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
                 <div className="relative z-10 flex flex-col items-center">
                     <div className="w-20 h-20 bg-white text-emerald-500 rounded-full flex items-center justify-center mb-4 shadow-lg animate-bounce duration-[2000ms]">
@@ -63,7 +63,7 @@ export function ExportSuccessModal({ isOpen, onClose, onReset }: ExportSuccessMo
                 
                 {/* 1. DELIVERY SUMMARY */}
                 <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-4 flex items-center gap-2">
                         <FileText className="w-4 h-4" /> Resumen de Entrega
                     </h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
@@ -89,12 +89,12 @@ export function ExportSuccessModal({ isOpen, onClose, onReset }: ExportSuccessMo
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {/* Blockchain */}
-                    <div className="bg-slate-800 text-slate-300 rounded-2xl p-5 relative overflow-hidden">
+                    <div className="bg-[#E8E5E0] text-[#5F5E5A] rounded-2xl p-5 relative overflow-hidden">
                         <div className="absolute top-2 right-2 opacity-10"><ShieldCheck className="w-20 h-20" /></div>
-                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Auditoría Blockchain</h4>
+                        <h4 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3">Auditoría Blockchain</h4>
                         <div className="space-y-2 text-xs font-mono">
-                            <p><span className="text-slate-500">Hash:</span> <span className="text-emerald-400">0x7f4a...3b8e</span></p>
-                            <p><span className="text-slate-500">Timestamp:</span> {new Date().toISOString().split('T')[1].split('.')[0]}Z</p>
+                            <p><span className="text-[#888780]">Hash:</span> <span className="text-emerald-400">0x7f4a...3b8e</span></p>
+                            <p><span className="text-[#888780]">Timestamp:</span> {new Date().toISOString().split('T')[1].split('.')[0]}Z</p>
                             <p className="inline-block bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-bold mt-1">VÁLIDA E INMUTABLE</p>
                         </div>
                     </div>
@@ -121,11 +121,11 @@ export function ExportSuccessModal({ isOpen, onClose, onReset }: ExportSuccessMo
 
                 {/* 3. NEXT ACTIONS */}
                 <div className="border-t border-slate-200 pt-6">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Próximas Acciones Sugeridas</h4>
+                    <h4 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-4">Próximas Acciones Sugeridas</h4>
                     <div className="grid grid-cols-3 gap-3">
                         <ActionButton icon={RefreshCw} label="Nueva Verificación" onClick={onReset ?? (() => {})} variant="primary" />
                         <ActionButton icon={BarChart2} label="Ver Analytics" onClick={onClose} variant="secondary" />
-                        <ActionButton icon={Phone} label="Llamar Cliente" onClick={() => {}} variant="secondary" />
+                        <ActionButton icon={Phone} label="Llamar Cliente" onClick={() => window.open('tel:+56900000000', '_self')} variant="secondary" />
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@ export function ExportSuccessModal({ isOpen, onClose, onReset }: ExportSuccessMo
 interface SummaryItemProps { label: string; value: string; }
 const SummaryItem = ({ label, value }: SummaryItemProps) => (
     <div className="flex flex-col">
-        <span className="text-[10px] uppercase font-bold text-slate-400">{label}</span>
+        <span className="text-[10px] uppercase font-bold text-[#888780]">{label}</span>
         <span className="font-bold text-slate-700">{value}</span>
     </div>
 );
@@ -149,7 +149,7 @@ const ActionButton = ({ icon: Icon, label, onClick, variant }: ActionButtonProps
         onClick={onClick}
         className={`p-3 rounded-xl flex flex-col items-center justify-center gap-2 transition-all hover:-translate-y-1 ${
             variant === 'primary' 
-            ? 'bg-slate-800 text-white shadow-lg shadow-slate-300' 
+            ? 'bg-[#E8E5E0] text-[#2C2C2A] shadow-lg shadow-slate-300' 
             : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shadow-sm'
         }`}
     >

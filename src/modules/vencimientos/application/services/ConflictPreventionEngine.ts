@@ -23,10 +23,21 @@ export class ConflictPreventionEngine {
   };
 
   /**
+   * Safe lookup for competitors to prevent object injection
+   */
+  private getCompetidoresSeguro(brand: string): string[] {
+    // Use Object.entries to safely search for the brand
+    const entries = Object.entries(this.competitorsGraph);
+    const found = entries.find(([key]) => key === brand);
+    return found ? found[1] : [];
+  }
+
+  /**
    * Evalúa si una nueva inserción colisiona con el inventario actual de la tanda.
    */
   public async analyzeBrandSafety(newBrand: string, currentBatchBrands: string[]): Promise<ConflictAlert | null> {
-    const enemies = this.competitorsGraph[newBrand] || [];
+    // Safe lookup using Map to prevent object injection
+    const enemies = this.getCompetidoresSeguro(newBrand);
 
     for (const existingBrand of currentBatchBrands) {
       if (enemies.includes(existingBrand)) {

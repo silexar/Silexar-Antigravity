@@ -208,7 +208,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
-  return NextResponse.json({
+  try {
+    return NextResponse.json({
     endpoint: 'POST /api/v2/generate/image',
     description: 'Generate advertising images using AI (Vertex AI Imagen)',
     authentication: 'Bearer token required',
@@ -249,4 +250,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       numVariants: 4,
     },
   });
+  } catch (error) {
+    logger.error('[API/V2/Generate/Image] Error:', error instanceof Error ? error : undefined);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
+  }
 }

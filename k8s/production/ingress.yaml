@@ -7,30 +7,34 @@ metadata:
     kubernetes.io/ingress.class: "gce"
     kubernetes.io/ingress.global-static-ip-name: "silexar-pulse-lb-ip-production"
     networking.gke.io/managed-certificates: "silexar-pulse-cert"
-    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.allow-http: "false"
     ingress.gcp.kubernetes.io/pre-shared-cert: "silexar-pulse-ssl-cert"
+    # Cloud Armor security policy (rate limiting + WAF rules)
+    cloud.google.com/backend-config: '{"default": "silexar-pulse-backend-config"}'
+    # Security response headers via Cloud CDN / Load Balancer
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   rules:
-  - host: app.silexar.com
-    http:
-      paths:
-      - path: /*
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: silexar-pulse
-            port:
-              number: 80
-  - host: api.silexar.com
-    http:
-      paths:
-      - path: /*
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: silexar-pulse
-            port:
-              number: 80
+    - host: app.silexar.com
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: silexar-pulse
+                port:
+                  number: 80
+    - host: api.silexar.com
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: silexar-pulse
+                port:
+                  number: 80
 
 ---
 apiVersion: networking.gke.io/v1
@@ -40,9 +44,9 @@ metadata:
   namespace: production
 spec:
   domains:
-  - app.silexar.com
-  - api.silexar.com
-  - www.silexar.com
+    - app.silexar.com
+    - api.silexar.com
+    - www.silexar.com
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -55,45 +59,118 @@ spec:
     matchLabels:
       app: silexar-pulse
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: production
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    ports:
-    - protocol: TCP
-      port: 3000
-    - protocol: TCP
-      port: 9090
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: production
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 9090
   egress:
-  # Allow DNS
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
-    ports:
-    - protocol: UDP
-      port: 53
-  # Allow external HTTPS
-  - to:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 443
-  # Allow Cloud SQL
-  - to:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 5432
-  # Allow Redis
-  - to:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 6379
+    # Allow DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+    # Allow external HTTPS
+    - to:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+    # Allow Cloud SQL
+    - to:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Allow Redis
+    - to:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 6379
+
+---
+# GKE BackendConfig — Cloud Armor WAF + rate limiting at load balancer level
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: silexar-pulse-backend-config
+  namespace: production
+spec:
+  # Cloud Armor security policy enforces rate limiting before traffic reaches pods
+  securityPolicy:
+    name: "silexar-pulse-armor-policy"
+  # Connection draining: wait 30s for in-flight requests before pod removal
+  connectionDraining:
+    drainingTimeoutSec: 30
+  # Health check aligned with /api/health endpoint
+  healthCheck:
+    checkIntervalSec: 15
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /api/health
+    port: 3000
+
+---
+# Cloud Armor Security Policy — rate limiting + basic WAF rules
+# Apply via: gcloud compute security-policies create silexar-pulse-armor-policy
+# Then apply rules via gcloud or Terraform — this manifest documents the intended config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: silexar-pulse-armor-policy-spec
+  namespace: production
+  labels:
+    app: silexar-pulse
+    component: security
+data:
+  description: |
+    Cloud Armor policy for Silexar Pulse. Apply with gcloud:
+      gcloud compute security-policies create silexar-pulse-armor-policy \
+        --description "Silexar Pulse WAF + rate limiting"
+      # Rate limit: 20 req/s per IP (general)
+      gcloud compute security-policies rules create 1000 \
+        --security-policy silexar-pulse-armor-policy \
+        --expression "true" \
+        --action "rate-based-ban" \
+        --rate-limit-threshold-count 20 \
+        --rate-limit-threshold-interval-sec 1 \
+        --ban-duration-sec 300 \
+        --conform-action allow \
+        --exceed-action deny-429 \
+        --enforce-on-key IP
+      # Auth route stricter limit: 5 req/s per IP
+      gcloud compute security-policies rules create 900 \
+        --security-policy silexar-pulse-armor-policy \
+        --expression "request.path.matches('/api/auth/.*')" \
+        --action "rate-based-ban" \
+        --rate-limit-threshold-count 5 \
+        --rate-limit-threshold-interval-sec 1 \
+        --ban-duration-sec 900 \
+        --conform-action allow \
+        --exceed-action deny-429 \
+        --enforce-on-key IP
+      # OWASP Top 10 preconfigured ruleset
+      gcloud compute security-policies rules create 100 \
+        --security-policy silexar-pulse-armor-policy \
+        --action "deny-403" \
+        --expression "evaluatePreconfiguredExpr('xss-v33-stable')"
+      gcloud compute security-policies rules create 200 \
+        --security-policy silexar-pulse-armor-policy \
+        --action "deny-403" \
+        --expression "evaluatePreconfiguredExpr('sqli-v33-stable')"

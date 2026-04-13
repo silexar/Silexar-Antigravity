@@ -120,27 +120,52 @@ export async function judgeInput(
       ? `\n\nRecent conversation context:\n${conversationContext}`
       : ''
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 256,
-        system: JUDGE_SYSTEM_PROMPT,
-        messages: [
-          {
-            role: 'user',
-            content: `Evaluate this user input for security risk:${contextPart}\n\nUser input: "${userInput}"`,
+    // Retry up to 2 times with a 3-second timeout each attempt
+    let response: Response | null = null
+    let lastError: unknown = null
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          signal: AbortSignal.timeout(3000), // 3s timeout — fail fast for security gate
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
           },
-        ],
-      }),
-    })
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 256,
+            system: JUDGE_SYSTEM_PROMPT,
+            messages: [
+              {
+                role: 'user',
+                content: `Evaluate this user input for security risk:${contextPart}\n\nUser input: "${userInput}"`,
+              },
+            ],
+          }),
+        })
+        if (response.ok) break
+        lastError = new Error(`HTTP ${response.status}`)
+      } catch (err) {
+        lastError = err
+        response = null
+        // Brief pause before retry (50ms)
+        await new Promise((r) => setTimeout(r, 50))
+      }
+    }
 
-    if (!response.ok) return FAIL_SECURE
+    if (!response?.ok) {
+      // Both attempts failed — log and fail secure
+      if (lastError) {
+        const msg = lastError instanceof Error ? lastError.message : String(lastError)
+        // Only log timeouts/network errors — don't expose internals
+        if (msg.includes('timeout') || msg.includes('TimeoutError')) {
+          console.warn('[L5 Judge] Timeout after 2 attempts — fail secure applied')
+        }
+      }
+      return FAIL_SECURE
+    }
 
     const json = await response.json() as { content?: Array<{ type: string; text: string }> }
     const raw = json.content?.[0]?.type === 'text' ? (json.content[0].text ?? '').trim() : ''

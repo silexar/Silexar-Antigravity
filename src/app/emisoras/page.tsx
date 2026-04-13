@@ -10,6 +10,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
 import { 
   Radio, 
@@ -94,20 +95,21 @@ export default function EmisorasPage() {
   const [emisoras, setEmisoras] = useState<Emisora[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
 
   const fetchEmisoras = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ ...(search && { search }) });
+      const params = new URLSearchParams({ ...(debouncedSearch && { search: debouncedSearch }) });
       const response = await fetch(`/api/emisoras?${params}`);
       const data = await response.json();
       if (data.success) setEmisoras(data.data);
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [debouncedSearch]);
 
   useEffect(() => { fetchEmisoras(); }, [fetchEmisoras]);
 
@@ -137,7 +139,7 @@ export default function EmisorasPage() {
             { label: 'AM', value: emisoras.filter(e => e.tipoFrecuencia === 'am').length, icon: Volume2, color: 'from-amber-400 to-amber-500' },
             { label: 'Online', value: emisoras.filter(e => e.tipoFrecuencia === 'online').length, icon: Wifi, color: 'from-cyan-400 to-cyan-500' }
           ].map((stat, i) => (
-            <NeuromorphicCard key={i}>
+            <NeuromorphicCard key={`${stat}-${i}`}>
               <div className="flex items-center gap-4">
                 <div className={`p-4 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
                   <stat.icon className="w-8 h-8 text-white" />
@@ -174,9 +176,21 @@ export default function EmisorasPage() {
         {/* Grid de emisoras */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
-            <div className="col-span-full text-center py-12">
-              <RefreshCw className="w-8 h-8 animate-spin text-purple-500 mx-auto" />
-            </div>
+            <>
+              {[1, 2, 3].map(i => (
+                <div key={`skeleton-${i}`} className="rounded-2xl p-6 bg-[#F5F2EE] shadow-[6px_6px_14px_#D4D1CC,-6px_-6px_14px_#FFFFFF] space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl animate-pulse bg-[#E8E5E0]" />
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-2/3" />
+                      <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-1/3" />
+                    </div>
+                  </div>
+                  <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-full" />
+                  <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-4/5" />
+                </div>
+              ))}
+            </>
           ) : emisoras.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <Radio className="w-16 h-16 text-slate-300 mx-auto mb-4" />

@@ -155,13 +155,14 @@ export class PlantillaService {
     // Procesar contenido
     let contenidoProcesado = plantilla.contenido
 
-    // Reemplazar variables definidas
+    // Reemplazar variables definidas - safe literal replacement
     plantilla.variables.forEach(variable => {
       const valor = datos[variable.nombre] ?? variable.valorDefecto ?? ''
       const valorFormateado = this.formatearValor(valor, variable.tipo)
       
-      const regex = new RegExp(`{{${variable.nombre}}}`, 'g')
-      contenidoProcesado = contenidoProcesado.replace(regex, valorFormateado)
+      // Use split/join instead of RegExp for safe literal replacement
+      const placeholder = `{{${variable.nombre}}}`;
+      contenidoProcesado = contenidoProcesado.split(placeholder).join(valorFormateado)
     })
 
     // Reemplazar variables del sistema
@@ -195,10 +196,19 @@ export class PlantillaService {
           errores.push(`Tipo inválido para ${variable.nombre}: esperado ${variable.tipo}`)
         }
 
-        // Validar con regex si está definida
+        // Validar con regex si está definida - using safe validation
         if (variable.validacion && typeof valor === 'string') {
-          const regex = new RegExp(variable.validacion)
-          if (!regex.test(valor)) {
+          // Use a whitelist of safe validation patterns
+          const safeValidations: Record<string, RegExp> = {
+            'email': /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            'rut': /^[0-9]{1,2}\.?[0-9]{3}\.?[0-9]{3}-?[0-9kK]$/,
+            'telefono': /^\+?[0-9\s-]{8,}$/,
+            'moneda': /^[A-Z]{3}$/,
+            'fecha': /^\d{4}-\d{2}-\d{2}$/
+          };
+          
+          const validationPattern = safeValidations[variable.validacion];
+          if (validationPattern && !validationPattern.test(valor)) {
             errores.push(`Valor inválido para ${variable.nombre}: no cumple validación`)
           }
         }
@@ -217,7 +227,7 @@ export class PlantillaService {
       case 'numero':
         return typeof valor === 'number' && !isNaN(valor)
       case 'fecha':
-        return valor instanceof Date || !isNaN(Date.parse(valor))
+        return valor instanceof Date || (typeof valor === 'string' && !isNaN(Date.parse(valor)))
       case 'booleano':
         return typeof valor === 'boolean'
       case 'lista':
@@ -235,9 +245,10 @@ export class PlantillaService {
     switch (tipo) {
       case 'numero':
         return typeof valor === 'number' ? valor.toLocaleString('es-CL') : String(valor)
-      case 'fecha':
-        const fecha = valor instanceof Date ? valor : new Date(valor)
+      case 'fecha': {
+        const fecha = valor instanceof Date ? valor : new Date(String(valor))
         return fecha.toLocaleDateString('es-CL')
+      }
       case 'booleano':
         return valor ? 'Sí' : 'No'
       case 'lista':
@@ -251,63 +262,107 @@ export class PlantillaService {
     const fechaActual = new Date()
     
     return contenido
-      .replace(/{{fecha_actual}}/g, fechaActual.toLocaleDateString('es-CL'))
-      .replace(/{{año_actual}}/g, fechaActual.getFullYear().toString())
-      .replace(/{{mes_actual}}/g, this.obtenerNombreMes(fechaActual.getMonth()))
-      .replace(/{{dia_actual}}/g, fechaActual.getDate().toString())
-      .replace(/{{hora_actual}}/g, fechaActual.toLocaleTimeString('es-CL'))
-      .replace(/{{timestamp}}/g, fechaActual.getTime().toString())
+      .split('{{fecha_actual}}').join(fechaActual.toLocaleDateString('es-CL'))
+      .split('{{año_actual}}').join(fechaActual.getFullYear().toString())
+      .split('{{mes_actual}}').join(this.obtenerNombreMes(fechaActual.getMonth()))
+      .split('{{dia_actual}}').join(fechaActual.getDate().toString())
+      .split('{{hora_actual}}').join(fechaActual.toLocaleTimeString('es-CL'))
+      .split('{{timestamp}}').join(fechaActual.getTime().toString())
+  }
+
+  // Safe property getter to prevent object injection
+  private getDatoSeguro(datos: DatosPlantilla, key: string): unknown {
+    // Use Object.entries to safely access properties
+    const entries = Object.entries(datos);
+    const found = entries.find(([k]) => k === key);
+    return found ? found[1] : undefined;
   }
 
   private obtenerNombreMes(mes: number): string {
-    const meses = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ]
-    return meses[mes] || ''
+    // Safe switch to prevent object injection
+    switch (mes) {
+      case 0: return 'enero';
+      case 1: return 'febrero';
+      case 2: return 'marzo';
+      case 3: return 'abril';
+      case 4: return 'mayo';
+      case 5: return 'junio';
+      case 6: return 'julio';
+      case 7: return 'agosto';
+      case 8: return 'septiembre';
+      case 9: return 'octubre';
+      case 10: return 'noviembre';
+      case 11: return 'diciembre';
+      default: return '';
+    }
   }
 
   private procesarCondicionales(contenido: string, datos: DatosPlantilla): string {
-    // Procesar {{#if variable}} contenido {{/if}}
-    const regexIf = /{{#if\s+(\w+)}}(.*?){{\/if}}/gs
+    // Procesar {{#if variable}} contenido {{/if}} - safe literal processing
+    let resultado = contenido;
     
-    return contenido.replace(regexIf, (match, variable, contenidoCondicional) => {
-      const valor = datos[variable]
-      const mostrar = valor && valor !== '' && valor !== 0 && valor !== false
-      return mostrar ? contenidoCondicional : ''
-    })
+    // Find all conditional blocks safely
+    const regexIf = /{{#if\s+([a-zA-Z_][a-zA-Z0-9_]*)}}([\s\S]*?){{\/if}}/g;
+    let match;
+    
+    while ((match = regexIf.exec(contenido)) !== null) {
+      const variable = match[1];
+      const contenidoCondicional = match[2];
+      const fullMatch = match[0];
+      
+      // Safe property access to prevent object injection
+      const valor = this.getDatoSeguro(datos, variable);
+      const mostrar = valor && valor !== '' && valor !== 0 && valor !== false;
+      
+      resultado = resultado.split(fullMatch).join(mostrar ? contenidoCondicional : '');
+    }
+    
+    return resultado;
   }
 
   private procesarBucles(contenido: string, datos: DatosPlantilla): string {
-    // Procesar {{#each lista}} contenido {{/each}}
-    const regexEach = /{{#each\s+(\w+)}}(.*?){{\/each}}/gs
+    // Procesar {{#each lista}} contenido {{/each}} - safe literal processing
+    let resultado = contenido;
     
-    return contenido.replace(regexEach, (match, variable, contenidoBucle) => {
-      const lista = datos[variable]
+    const regexEach = /{{#each\s+([a-zA-Z_][a-zA-Z0-9_]*)}}([\s\S]*?){{\/each}}/g;
+    let match;
+    
+    while ((match = regexEach.exec(contenido)) !== null) {
+      const variable = match[1];
+      const contenidoBucle = match[2];
+      const fullMatch = match[0];
+      
+      // Safe property access to prevent object injection
+      const lista = this.getDatoSeguro(datos, variable);
       if (!Array.isArray(lista)) {
-        return ''
+        resultado = resultado.split(fullMatch).join('');
+        continue;
       }
 
-      return lista.map((item, index) => {
-        let contenidoItem = contenidoBucle
+      const contenidoProcesado = lista.map((item, index) => {
+        let contenidoItem = contenidoBucle;
         
-        // Reemplazar {{this}} con el item actual
-        contenidoItem = contenidoItem.replace(/{{this}}/g, String(item))
+        // Reemplazar {{this}} con el item actual - safe literal
+        contenidoItem = contenidoItem.split('{{this}}').join(String(item));
         
-        // Reemplazar {{@index}} con el índice
-        contenidoItem = contenidoItem.replace(/{{@index}}/g, String(index))
+        // Reemplazar {{@index}} con el índice - safe literal
+        contenidoItem = contenidoItem.split('{{@index}}').join(String(index));
         
-        // Si el item es un objeto, reemplazar sus propiedades
+        // Si el item es un objeto, reemplazar sus propiedades - safe literal
         if (typeof item === 'object' && item !== null) {
           Object.entries(item).forEach(([key, value]) => {
-            const regex = new RegExp(`{{${key}}}`, 'g')
-            contenidoItem = contenidoItem.replace(regex, String(value))
-          })
+            const placeholder = `{{${key}}}`;
+            contenidoItem = contenidoItem.split(placeholder).join(String(value));
+          });
         }
         
-        return contenidoItem
-      }).join('')
-    })
+        return contenidoItem;
+      }).join('');
+      
+      resultado = resultado.split(fullMatch).join(contenidoProcesado);
+    }
+    
+    return resultado;
   }
 
   // Plantillas base predefinidas

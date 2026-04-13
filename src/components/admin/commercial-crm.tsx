@@ -15,8 +15,9 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
+import { formatCurrency } from '@/lib/utils'
+import {
+  NeuromorphicCard,
   NeuromorphicButton 
 } from '@/components/ui/neuromorphic'
 import {
@@ -227,10 +228,6 @@ export function CommercialCRM() {
       }
       return lead
     }))
-  }
-
-  const formatCurrency = (value: number) => {
-    return `$${(value / 1000).toFixed(0)}K`
   }
 
   const getLeadsByStage = (stage: Lead['stage']) => {

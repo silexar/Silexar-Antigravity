@@ -234,7 +234,7 @@ export function AuditLogViewer() {
               <select
                 value={filters.userId}
                 onChange={(e) => setFilters({ ...filters, userId: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
               >
                 <option value="">Todos</option>
                 {uniqueUsers.map(u => (
@@ -247,7 +247,7 @@ export function AuditLogViewer() {
               <select
                 value={filters.action}
                 onChange={(e) => setFilters({ ...filters, action: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
               >
                 <option value="">Todas</option>
                 {uniqueActions.map(a => (
@@ -260,7 +260,7 @@ export function AuditLogViewer() {
               <select
                 value={filters.result}
                 onChange={(e) => setFilters({ ...filters, result: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
               >
                 <option value="">Todos</option>
                 <option value="success">Éxito</option>
@@ -338,7 +338,7 @@ export function AuditLogViewer() {
                 {log.details && (
                   <div className="col-span-3">
                     <p className="text-slate-500 text-xs mb-1">Detalles</p>
-                    <pre className="text-xs bg-slate-900 p-2 rounded overflow-x-auto text-slate-300">
+                    <pre className="text-xs bg-[#F0EDE8] p-2 rounded overflow-x-auto text-slate-300">
                       {JSON.stringify(log.details, null, 2)}
                     </pre>
                   </div>

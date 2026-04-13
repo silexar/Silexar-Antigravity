@@ -34,7 +34,7 @@ export default function TarifarioIntelligenceView() {
             { tag: 'Valle (Baja Demanda)', val: demandas.valle, cl: 'from-blue-500/20 to-cyan-500/10 border-blue-500/30' },
             { tag: 'Noche (Creciente)', val: demandas.noche, cl: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/30' }
           ].map((f, i) => (
-             <div key={i} className={`bg-gradient-to-b ${f.cl} p-5 rounded-xl border relative overflow-hidden group`}>
+             <div key={`${f}-${i}`} className={`bg-gradient-to-b ${f.cl} p-5 rounded-xl border relative overflow-hidden group`}>
                 <div className="absolute top-0 right-0 p-3 opacity-50 group-hover:opacity-100 transition-opacity">
                   <span className="text-2xl">🔥</span>
                 </div>

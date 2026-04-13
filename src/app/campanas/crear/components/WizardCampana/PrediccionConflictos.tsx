@@ -205,7 +205,7 @@ export function PrediccionConflictos() {
     }));
   };
 
-  const aplicarSugerencia = (id: string) => {
+  const aplicarSugerencia = (_id: string) => {
     // ;
   };
 

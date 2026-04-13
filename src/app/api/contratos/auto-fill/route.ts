@@ -14,10 +14,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
-
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -140,81 +139,96 @@ const PLANTILLAS: Plantilla[] = [
 
 // ═══════════════════════════════════════════════════════════════
 // GET: Obtener datos de auto-fill
+// Requiere: contratos:read
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const clienteId = searchParams.get('clienteId');
-    const plantillaId = searchParams.get('plantillaId');
-    const listarContratos = searchParams.get('contratos');
-    const listarPlantillas = searchParams.get('plantillas');
+export const GET = withApiRoute(
+  { resource: 'contratos', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const clienteId = searchParams.get('clienteId');
+        const plantillaId = searchParams.get('plantillaId');
+        const listarContratos = searchParams.get('contratos');
+        const listarPlantillas = searchParams.get('plantillas');
 
-    // Listar contratos clonables
-    if (listarContratos) {
-      return NextResponse.json({
-        success: true,
-        data: CONTRATOS_ANTERIORES.map(c => ({
-          id: c.id, numero: c.numero, cliente: c.cliente,
-          fecha: c.fecha, valor: c.valor,
-          lineasCount: c.lineas.length,
-        })),
+        // Listar contratos clonables
+        if (listarContratos) {
+          return NextResponse.json({
+            success: true,
+            data: CONTRATOS_ANTERIORES.map(c => ({
+              id: c.id, numero: c.numero, cliente: c.cliente,
+              fecha: c.fecha, valor: c.valor,
+              lineasCount: c.lineas.length,
+            })),
+            consultadoPor: ctx.userId
+          });
+        }
+
+        // Listar plantillas
+        if (listarPlantillas) {
+          return NextResponse.json({
+            success: true,
+            data: PLANTILLAS.map(p => ({
+              id: p.id, nombre: p.nombre, descripcion: p.descripcion,
+              categoria: p.categoria, lineasCount: p.lineas.length,
+              descuentoSugerido: p.descuentoSugerido,
+            })),
+            consultadoPor: ctx.userId
+          });
+        }
+
+        // Auto-fill desde contrato anterior del cliente
+        if (clienteId) {
+          const contrato = CONTRATOS_ANTERIORES.find(c => c.clienteId === clienteId);
+          if (!contrato) {
+            return NextResponse.json({
+              success: false,
+              error: 'No se encontró contrato anterior para este cliente',
+            }, { status: 404 });
+          }
+
+          return NextResponse.json({
+            success: true,
+            fuente: 'contrato_anterior',
+            contratoRef: { id: contrato.id, numero: contrato.numero, fecha: contrato.fecha },
+            lineas: contrato.lineas,
+            terminosPago: contrato.terminosPago,
+            modalidadFacturacion: contrato.modalidadFacturacion,
+            descuento: contrato.lineas[0]?.descuento || 0,
+            consultadoPor: ctx.userId
+          });
+        }
+
+        // Auto-fill desde plantilla
+        if (plantillaId) {
+          const plantilla = PLANTILLAS.find(p => p.id === plantillaId);
+          if (!plantilla) {
+            return NextResponse.json({ success: false, error: 'Plantilla no encontrada' }, { status: 404 });
+          }
+
+          return NextResponse.json({
+            success: true,
+            fuente: 'plantilla',
+            plantillaRef: { id: plantilla.id, nombre: plantilla.nombre },
+            lineas: plantilla.lineas,
+            terminosPago: plantilla.terminosPago,
+            descuentoSugerido: plantilla.descuentoSugerido,
+            consultadoPor: ctx.userId
+          });
+        }
+
+        return NextResponse.json({ success: false, error: 'Parámetro requerido: clienteId, plantillaId, contratos o plantillas' }, { status: 400 });
       });
-    }
-
-    // Listar plantillas
-    if (listarPlantillas) {
-      return NextResponse.json({
-        success: true,
-        data: PLANTILLAS.map(p => ({
-          id: p.id, nombre: p.nombre, descripcion: p.descripcion,
-          categoria: p.categoria, lineasCount: p.lineas.length,
-          descuentoSugerido: p.descuentoSugerido,
-        })),
+    } catch (error) {
+      logger.error('[API/Contratos/AutoFill] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'contratos/auto-fill', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
       });
+      return apiServerError();
     }
-
-    // Auto-fill desde contrato anterior del cliente
-    if (clienteId) {
-      const contrato = CONTRATOS_ANTERIORES.find(c => c.clienteId === clienteId);
-      if (!contrato) {
-        return NextResponse.json({
-          success: false,
-          error: 'No se encontró contrato anterior para este cliente',
-        }, { status: 404 });
-      }
-
-      return NextResponse.json({
-        success: true,
-        fuente: 'contrato_anterior',
-        contratoRef: { id: contrato.id, numero: contrato.numero, fecha: contrato.fecha },
-        lineas: contrato.lineas,
-        terminosPago: contrato.terminosPago,
-        modalidadFacturacion: contrato.modalidadFacturacion,
-        descuento: contrato.lineas[0]?.descuento || 0,
-      });
-    }
-
-    // Auto-fill desde plantilla
-    if (plantillaId) {
-      const plantilla = PLANTILLAS.find(p => p.id === plantillaId);
-      if (!plantilla) {
-        return NextResponse.json({ success: false, error: 'Plantilla no encontrada' }, { status: 404 });
-      }
-
-      return NextResponse.json({
-        success: true,
-        fuente: 'plantilla',
-        plantillaRef: { id: plantilla.id, nombre: plantilla.nombre },
-        lineas: plantilla.lineas,
-        terminosPago: plantilla.terminosPago,
-        descuentoSugerido: plantilla.descuentoSugerido,
-      });
-    }
-
-    return NextResponse.json({ success: false, error: 'Parámetro requerido: clienteId, plantillaId, contratos o plantillas' }, { status: 400 });
-  } catch (error) {
-    logger.error('[API/Contratos/AutoFill] Error GET:', error instanceof Error ? error : undefined, { module: 'contratos/auto-fill', action: 'GET' });
-    return apiServerError();
   }
-}
+);

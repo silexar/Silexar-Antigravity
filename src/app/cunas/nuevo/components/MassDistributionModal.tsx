@@ -56,7 +56,7 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 bg-[#F0EDE8]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         
         {/* Header */}
@@ -66,7 +66,7 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
               <Mail className="w-5 h-5 text-violet-600" />
               {activeTab === 'config' ? 'Configuración de Envío Masivo' : 'Monitor de Entrega en Tiempo Real'}
             </h3>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-[#888780]">
               {activeTab === 'config' 
                  ? `Preparando envío para ${recipients.length} destinatarios calificados.`
                  : `Tracking ID: ${deliveryId}`}
@@ -76,7 +76,7 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
             onClick={onClose} 
             className="p-2 hover:bg-slate-200 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5 text-[#888780]" />
           </button>
         </div>
 
@@ -137,7 +137,7 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
                         style={{ width: `${trackingData.progress}%` }}
                       />
                    </div>
-                   <div className="mt-4 flex gap-4 text-xs font-medium text-slate-500">
+                   <div className="mt-4 flex gap-4 text-xs font-medium text-[#888780]">
                       <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-slate-200" /> Enviado</div>
                       <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-400" /> Abierto</div>
                       <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500" /> Confirmado</div>
@@ -153,17 +153,17 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
                             <div className={`
                                w-10 h-10 rounded-full flex items-center justify-center
                                ${rcp.status === 'confirmed' ? 'bg-emerald-100 text-emerald-600' : 
-                                 rcp.status === 'failed' ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-500'}
+                                 rcp.status === 'failed' ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-[#888780]'}
                             `}>
                                <User className="w-5 h-5" />
                             </div>
                             <div>
                                <div className="font-bold text-slate-800">{rcp.name}</div>
-                               <div className="text-xs text-slate-500 flex items-center gap-2">
+                               <div className="text-xs text-[#888780] flex items-center gap-2">
                                   <span>{rcp.email}</span>
                                   {rcp.status === 'confirmed' && <span className="text-emerald-600 font-bold">• Confirmado {format(rcp.timeline.confirmedAt!, 'HH:mm')}</span>}
                                   {rcp.status === 'opened' && <span className="text-blue-500 font-bold">• Leído {format(rcp.timeline.openedAt!, 'HH:mm')}</span>}
-                                  {rcp.status === 'delivered' && <span className="text-slate-400">• Entregado</span>}
+                                  {rcp.status === 'delivered' && <span className="text-[#888780]">• Entregado</span>}
                                   {rcp.status === 'failed' && <span className="text-red-500 font-bold">• Error: {rcp.timeline.failReason}</span>}
                                </div>
                             </div>
@@ -195,14 +195,14 @@ export const MassDistributionModal: React.FC<MassDistributionModalProps> = ({
                  <button 
                    onClick={handleSend}
                    disabled={isSending}
-                   className="px-6 py-2 bg-violet-600 text-white font-bold rounded-xl shadow-lg hover:bg-violet-700 transition-all flex items-center gap-2"
+                   className="px-6 py-2 bg-violet-600 text-[#2C2C2A] font-bold rounded-xl shadow-lg hover:bg-violet-700 transition-all flex items-center gap-2"
                  >
                    {isSending ? <Loader2 className="w-5 h-5 animate-spin"/> : <Send className="w-5 h-5" />}
                    {isSending ? 'Iniciando...' : 'Enviar Masivo'}
                  </button>
               </>
            ) : (
-              <button onClick={onClose} className="px-6 py-2 bg-slate-900 text-white font-bold rounded-xl shadow hover:bg-slate-800">
+              <button onClick={onClose} className="px-6 py-2 bg-[#F0EDE8] text-[#2C2C2A] font-bold rounded-xl shadow hover:bg-[#E8E5E0]">
                 Cerrar Monitor
               </button>
            )}
@@ -232,7 +232,7 @@ interface CheckItemProps {
 const CheckItem = ({ label, checked }: CheckItemProps) => (
   <div className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer">
      <div className={`w-5 h-5 rounded border flex items-center justify-center ${checked ? 'bg-violet-600 border-violet-600' : 'border-slate-300'}`}>
-        {checked && <CheckCircle className="w-3.5 h-3.5 text-white" />}
+        {checked && <CheckCircle className="w-3.5 h-3.5 text-[#2C2C2A]" />}
      </div>
      <span className="text-sm text-slate-700">{label}</span>
   </div>
@@ -246,8 +246,8 @@ interface OptionCardProps {
 }
 const OptionCard = ({ icon: Icon, title, desc, selected }: OptionCardProps) => (
   <div className={`flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all ${selected ? 'border-violet-600 bg-violet-50' : 'border-slate-200 hover:border-violet-200'}`}>
-     <Icon className={`w-6 h-6 mb-2 ${selected ? 'text-violet-600' : 'text-slate-400'}`} />
+     <Icon className={`w-6 h-6 mb-2 ${selected ? 'text-violet-600' : 'text-[#888780]'}`} />
      <div className={`font-bold text-sm ${selected ? 'text-violet-900' : 'text-slate-700'}`}>{title}</div>
-     <div className="text-xs text-slate-500">{desc}</div>
+     <div className="text-xs text-[#888780]">{desc}</div>
   </div>
 );

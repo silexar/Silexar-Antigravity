@@ -50,6 +50,7 @@ export default function CampanasPage() {
   const {
     campanas, campanasFiltradas, stats, columnas, columnasVisibles,
     filtrosGuardados, historialReciente,
+    isLoading, isError,
     searchTerm, setSearchTerm, filtroActivo, setFiltroActivo,
     sortField, sortDirection,
     vistaActiva, setVistaActiva, seleccionados, setSeleccionados,
@@ -105,6 +106,32 @@ export default function CampanasPage() {
   // ============================================================================
   // RENDER
   // ============================================================================
+
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#F0EDE8] p-6">
+      <div className="max-w-[1900px] mx-auto space-y-4">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={`skeleton-${i}`} className="h-16 animate-pulse bg-[#E8E5E0] rounded-xl shadow-[inset_3px_3px_8px_#D4D1CC,inset_-3px_-3px_8px_#FFFFFF]" />
+        ))}
+      </div>
+    </div>
+  )
+
+  if (isError) return (
+    <div className="min-h-screen bg-[#F0EDE8] p-6 flex items-center justify-center">
+      <div className="text-center p-8 bg-[#F5F2EE] rounded-2xl shadow-[6px_6px_14px_#D4D1CC,-6px_-6px_14px_#FFFFFF]">
+        <AlertTriangle className="h-12 w-12 text-[#A32D2D] mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-[#2C2C2A] mb-2">Error al cargar campañas</h2>
+        <p className="text-[#5F5E5A] mb-4">No fue posible obtener los datos. Por favor intenta nuevamente.</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-3 rounded-xl font-medium text-white bg-[#1D5AE8] shadow-[4px_4px_10px_#D4D1CC,-4px_-4px_10px_#FFFFFF] hover:brightness-105 transition-all duration-150"
+        >
+          Reintentar
+        </button>
+      </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-sky-50 p-6">

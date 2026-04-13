@@ -10,6 +10,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import apiClient from '@/lib/api/client';
 import { 
   Users, 
   UserPlus,
@@ -114,15 +115,14 @@ export default function UsuariosPage() {
       if (filtroRol) params.set('rol', filtroRol);
       if (filtroEstado) params.set('estado', filtroEstado);
       
-      const response = await fetch(`/api/usuarios?${params}`);
-      const data = await response.json();
-      if (data.success) {
+      const { data } = await apiClient.get<{ data: typeof usuarios; roles: typeof roles; stats: typeof stats }>(`/api/usuarios?${params}`);
+      if (data?.data) {
         setUsuarios(data.data);
         setRoles(data.roles);
         setStats(data.stats);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -132,14 +132,10 @@ export default function UsuariosPage() {
 
   const toggleActivo = async (usuario: Usuario) => {
     try {
-      await fetch('/api/usuarios', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: usuario.id, activo: !usuario.activo })
-      });
+      await apiClient.put('/api/usuarios', { id: usuario.id, activo: !usuario.activo });
       fetchData();
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     }
   };
 
@@ -183,7 +179,7 @@ export default function UsuariosPage() {
             { label: 'Inactivos', value: stats.inactivos, icon: XCircle, color: 'from-red-400 to-red-500' },
             { label: 'Roles', value: roles.length, icon: Shield, color: 'from-blue-400 to-blue-500' }
           ].map((stat, i) => (
-            <NeuromorphicCard key={i} className="p-4">
+            <NeuromorphicCard key={`${stat}-${i}`} className="p-4">
               <div className="flex items-center gap-3">
                 <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color}`}>
                   <stat.icon className="w-5 h-5 text-white" />

@@ -13,60 +13,9 @@ import { qualityLogger } from '../quality/quality-logger';
 import { db } from '@/lib/db';
 import { auditLogs } from '@/lib/db/audit-logs-schema';
 
-// 🎯 Audit Event Types
-export enum AuditEventType {
-  // Authentication Events
-  LOGIN_SUCCESS = 'LOGIN_SUCCESS',
-  LOGIN_FAILURE = 'LOGIN_FAILURE',
-  LOGOUT = 'LOGOUT',
-  PASSWORD_CHANGE = 'PASSWORD_CHANGE',
-  ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
-  
-  // Authorization Events
-  ACCESS_GRANTED = 'ACCESS_GRANTED',
-  ACCESS_DENIED = 'ACCESS_DENIED',
-  PERMISSION_CHANGE = 'PERMISSION_CHANGE',
-  ROLE_CHANGE = 'ROLE_CHANGE',
-  
-  // Data Events
-  DATA_CREATE = 'DATA_CREATE',
-  DATA_READ = 'DATA_READ',
-  DATA_UPDATE = 'DATA_UPDATE',
-  DATA_DELETE = 'DATA_DELETE',
-  DATA_EXPORT = 'DATA_EXPORT',
-  
-  // System Events
-  SYSTEM_START = 'SYSTEM_START',
-  SYSTEM_STOP = 'SYSTEM_STOP',
-  CONFIG_CHANGE = 'CONFIG_CHANGE',
-  BACKUP_CREATE = 'BACKUP_CREATE',
-  BACKUP_RESTORE = 'BACKUP_RESTORE',
-  
-  // Security Events
-  SECURITY_VIOLATION = 'SECURITY_VIOLATION',
-  RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
-  SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
-  MALWARE_DETECTED = 'MALWARE_DETECTED',
-  
-  // API Events
-  API_CALL = 'API_CALL',
-  API_ERROR = 'API_ERROR',
-  API_RATE_LIMITED = 'API_RATE_LIMITED',
-  
-  // Admin Events
-  ADMIN_ACTION = 'ADMIN_ACTION',
-  USER_CREATED = 'USER_CREATED',
-  USER_DELETED = 'USER_DELETED',
-  USER_MODIFIED = 'USER_MODIFIED'
-}
-
-// 🔒 Audit Event Severity
-export enum AuditSeverity {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
-}
+// Re-export canonical enum definitions from audit-types (single source of truth)
+export { AuditEventType, AuditSeverity } from './audit-types'
+import { AuditEventType, AuditSeverity } from './audit-types'
 
 // 📊 Audit Event Interface
 interface AuditEvent {
@@ -165,28 +114,41 @@ export class AuditLogger {
       details: event.details
     });
 
-    // Persist to DB asynchronously — fire-and-forget, never block the request
-    // Capture db in local const so TS knows it's non-null inside the callback
+    // Persist to DB — fire-and-forget for non-critical, error-logged for critical.
+    // In-memory array is a fast read cache; DB is the durable record of truth.
     const dbInstance = db;
     if (dbInstance) {
-      Promise.resolve().then(() =>
-        dbInstance.insert(auditLogs).values({
-          eventId:     event.id,
-          eventType:   event.eventType,
-          eventCategory: 'SECURITY',
-          userId:      event.userId as string | undefined,
-          sessionId:   event.sessionId,
-          ipAddress:   event.ipAddress,
-          userAgent:   event.userAgent,
-          resource:    event.resource,
-          action:      event.action,
-          result:      event.success ? 'success' : 'failure',
-          eventData:   event.details as Record<string, unknown>,
-          metadata:    event.metadata as Record<string, unknown>,
-          severity:    event.severity,
-          timestamp:   event.timestamp,
-        }).catch(() => { /* DB unavailable — in-memory fallback is sufficient */ })
-      );
+      const isCritical = event.severity === AuditSeverity.CRITICAL;
+      const row = {
+        eventId:       event.id,
+        eventType:     event.eventType,
+        eventCategory: 'SECURITY',
+        userId:        event.userId as string | undefined,
+        sessionId:     event.sessionId,
+        ipAddress:     event.ipAddress,
+        userAgent:     event.userAgent,
+        resource:      event.resource,
+        action:        event.action,
+        result:        event.success ? 'success' : 'failure',
+        eventData:     event.details as Record<string, unknown>,
+        metadata:      event.metadata as Record<string, unknown>,
+        severity:      event.severity,
+        timestamp:     event.timestamp,
+      };
+
+      Promise.resolve()
+        .then(() => dbInstance.insert(auditLogs).values(row))
+        .catch((dbErr: unknown) => {
+          // DB write failed — always log prominently; for CRITICAL events
+          // also log the full event so it is not silently lost.
+          qualityLogger.error('AuditLogger: DB write failed', 'AUDIT_DB_ERROR', {
+            eventId: event.id,
+            eventType: event.eventType,
+            severity: event.severity,
+            error: dbErr instanceof Error ? dbErr.message : String(dbErr),
+            ...(isCritical ? { fullEvent: event } : {}),
+          });
+        });
     }
 
     // Alert on critical events immediately
@@ -227,14 +189,16 @@ export class AuditLogger {
 
     // Apply filters
     if (filter.eventType && filter.eventType.length > 0) {
-      filteredEvents = filteredEvents.filter(event => 
-        filter.eventType!.includes(event.eventType)
+      const eventTypes = filter.eventType;
+      filteredEvents = filteredEvents.filter(event =>
+        eventTypes.includes(event.eventType)
       );
     }
 
     if (filter.severity && filter.severity.length > 0) {
-      filteredEvents = filteredEvents.filter(event => 
-        filter.severity!.includes(event.severity)
+      const severities = filter.severity;
+      filteredEvents = filteredEvents.filter(event =>
+        severities.includes(event.severity)
       );
     }
 
@@ -563,6 +527,7 @@ export interface ExtendedAuditLogger extends AuditLogger {
     userId?: string;
     metadata?: Record<string, unknown>;
   }): void;
+  dataAccess(message: string, userId?: string, details?: Record<string, unknown>): void;
   auth(message: string, user?: unknown, details?: Record<string, unknown>): void;
   critical(message: string, details?: Record<string, unknown>): void;
   security(message: string, details?: Record<string, unknown>): void;
@@ -622,6 +587,20 @@ extended.error = (message, error?, details?) => {
       error instanceof Error ? error : new Error(String(error ?? '')),
       details,
     );
+  } catch { /* noop */ }
+};
+
+extended.dataAccess = (message, userId?, details?) => {
+  try {
+    _auditLogger.logEvent({
+      eventType: AuditEventType.DATA_READ,
+      severity: AuditSeverity.LOW,
+      userId,
+      resource: 'DATA_ACCESS',
+      action: 'READ',
+      details: { message, ...details },
+      success: true,
+    });
   } catch { /* noop */ }
 };
 

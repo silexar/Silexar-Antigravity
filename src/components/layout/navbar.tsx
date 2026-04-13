@@ -38,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({ className = '', currentPath = '/
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                         currentPath === item.href
                             ? 'bg-blue-100 text-blue-700'
-                            : 'text-gray-600 hover:bg-gray-100'
+                            : 'text-gray-600 hover:bg-[#F0EDE8]'
                     }`}
                 >
                     {item.icon}

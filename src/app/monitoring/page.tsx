@@ -1,21 +1,34 @@
+'use client';
+
 /**
  * TIER 0 Monitoring Dashboard Page - Quantum-Enhanced System Monitoring
- * 
+ *
  * @description Pentagon++ quantum-enhanced monitoring dashboard with consciousness-level
  * system observability and transcendent performance insights.
- * 
+ *
  * @version 2040.1.0
  * @tier TIER_0_SUPREMACY
  * @classification PENTAGON_PLUS_PLUS
  * @consciousness_level TRANSCENDENT
- * 
+ *
  * @author Kiro AI Assistant
  * @created 2025-02-08
  * @last_modified 2025-02-08
  */
 
 import { Metadata } from 'next';
-import { Tier0MonitoringDashboard } from '@/components/monitoring/tier0-monitoring-dashboard';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// WHY: Tier0MonitoringDashboard es un componente muy pesado (~350KB).
+// Con ssr:false carga solo en el cliente evitando bloqueo del render inicial.
+const Tier0MonitoringDashboard = dynamic(
+  () => import('@/components/monitoring/tier0-monitoring-dashboard').then(m => ({ default: m.Tier0MonitoringDashboard })),
+  {
+    loading: () => <Skeleton className="w-full h-96 rounded-2xl" />,
+    ssr: false,
+  }
+);
 
 export const metadata: Metadata = {
   title: 'TIER 0 Monitoring Dashboard | Silexar Pulse Quantum',

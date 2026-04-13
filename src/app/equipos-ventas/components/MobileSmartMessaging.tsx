@@ -28,7 +28,9 @@ export function MobileSmartMessaging() {
     fetch('/api/equipos-ventas/deals?tipo=templates')
       .then(r => r.json())
       .then(d => { if (d.success) setTpls(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MobileSmartMessaging] Failed to load templates:', error);
+      });
   }, []);
 
   const generate = async (t: Tmpl) => {

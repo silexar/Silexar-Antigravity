@@ -137,7 +137,7 @@ export default function InboxPage() {
         setMeta(data.meta);
       }
     } catch (error) {
-      /* console.error('Error cargando inbox:', error) */;
+      /* */;
     }
     setLoading(false);
   }, [filtro, search]);
@@ -165,7 +165,7 @@ export default function InboxPage() {
         setSelectedItem(null);
       }
     } catch (error) {
-      /* console.error('Error creando cuña:', error) */;
+      /* */;
     }
   };
 
@@ -181,7 +181,7 @@ export default function InboxPage() {
       cargarInbox();
       setSelectedItem(null);
     } catch (error) {
-      /* console.error('Error descartando:', error) */;
+      /* */;
     }
   };
 

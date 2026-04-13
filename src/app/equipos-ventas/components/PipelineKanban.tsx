@@ -99,42 +99,42 @@ const DealCard = ({ deal, onMove }: { deal: KanbanDeal; onMove: (dir: 'left' | '
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all ${deal.days >= 7 ? 'ring-1 ring-amber-200' : ''}`}>
+    <div className={`bg-white dark:bg-[#E8E5E0] rounded-xl border border-slate-200 dark:border-[#D4D1CC] shadow-sm hover:shadow-md transition-all ${deal.days >= 7 ? 'ring-1 ring-amber-200' : ''}`}>
       {/* Drag Handle + Header */}
       <div
-        className="p-3 cursor-pointer active:bg-slate-50 dark:active:bg-slate-700 transition-colors rounded-t-xl"
+        className="p-3 cursor-pointer active:bg-slate-50 dark:active:bg-[#D4D1CC] transition-colors rounded-t-xl"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-start justify-between mb-1">
           <div className="flex items-center gap-1.5">
-            <Grip size={10} className="text-slate-300 cursor-grab" />
+            <Grip size={10} className="text-[#5F5E5A] cursor-grab" />
             <span className="text-xs">{deal.signal}</span>
-            <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{deal.client}</span>
+            <span className="text-sm font-semibold text-slate-800 dark:text-[#2C2C2A]">{deal.client}</span>
           </div>
-          {expanded ? <ChevronUp size={12} className="text-slate-400" /> : <ChevronDown size={12} className="text-slate-400" />}
+          {expanded ? <ChevronUp size={12} className="text-[#888780]" /> : <ChevronDown size={12} className="text-[#888780]" />}
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">${(deal.amount / 1000).toFixed(0)}K</span>
+          <span className="text-sm font-bold text-slate-700 dark:text-[#5F5E5A]">${(deal.amount / 1000).toFixed(0)}K</span>
           <div className="flex items-center gap-2">
             {deal.days > 0 && (
-              <span className={`text-[10px] flex items-center gap-0.5 ${deal.days >= 5 ? 'text-red-500' : 'text-slate-400'}`}>
+              <span className={`text-[10px] flex items-center gap-0.5 ${deal.days >= 5 ? 'text-red-500' : 'text-[#888780]'}`}>
                 {deal.days >= 5 && <AlertTriangle size={8} />}
                 {deal.days}d
               </span>
             )}
-            <span className="text-[10px] text-slate-400">{deal.prob}%</span>
+            <span className="text-[10px] text-[#888780]">{deal.prob}%</span>
           </div>
         </div>
       </div>
 
       {/* Expanded */}
       {expanded && (
-        <div className="px-3 pb-3 border-t border-slate-100 dark:border-slate-700 pt-2 space-y-2 animate-in slide-in-from-top-1 duration-150">
+        <div className="px-3 pb-3 border-t border-slate-100 dark:border-[#D4D1CC] pt-2 space-y-2 animate-in slide-in-from-top-1 duration-150">
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-2.5 py-1.5 flex items-center gap-1">
             <ArrowRight size={10} className="text-blue-500" />
             <span className="text-[11px] text-blue-700 dark:text-blue-400 font-medium">{deal.nextStep}</span>
           </div>
-          <p className="text-[10px] text-slate-400">Owner: {deal.owner}</p>
+          <p className="text-[10px] text-[#888780]">Owner: {deal.owner}</p>
           {/* Quick Actions */}
           <div className="flex gap-1.5">
             <button className="flex-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 text-[10px] font-semibold py-1.5 rounded-lg flex items-center justify-center gap-1 hover:bg-blue-100 transition-colors">
@@ -149,7 +149,7 @@ const DealCard = ({ deal, onMove }: { deal: KanbanDeal; onMove: (dir: 'left' | '
           </div>
           {/* Move Stage Buttons */}
           <div className="flex gap-1.5 pt-1">
-            <button onClick={() => onMove('left')} className="flex-1 text-[10px] text-slate-400 hover:text-slate-600 border border-slate-200 dark:border-slate-600 rounded-lg py-1 font-medium transition-colors">← Stage anterior</button>
+            <button onClick={() => onMove('left')} className="flex-1 text-[10px] text-[#888780] hover:text-slate-600 border border-slate-200 dark:border-[#CCCAC5] rounded-lg py-1 font-medium transition-colors">← Stage anterior</button>
             <button onClick={() => onMove('right')} className="flex-1 text-[10px] text-orange-500 hover:text-orange-600 border border-orange-200 dark:border-orange-700 rounded-lg py-1 font-semibold transition-colors">Stage siguiente →</button>
           </div>
         </div>
@@ -181,11 +181,11 @@ export const PipelineKanban = () => {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+        <h3 className="font-bold text-slate-800 dark:text-[#2C2C2A] flex items-center gap-2">
           <Target size={18} className="text-orange-500" /> Pipeline Kanban
         </h3>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-[#888780]">
             {stages.reduce((sum, s) => sum + s.deals.length, 0)} deals •{' '}
             ${(stages.reduce((sum, s) => sum + s.deals.reduce((ds, d) => ds + d.amount, 0), 0) / 1000000).toFixed(1)}M total
           </span>
@@ -202,17 +202,17 @@ export const PipelineKanban = () => {
               <div className={`${stage.headerBg} rounded-t-xl px-3 py-2.5 border ${stage.borderColor} border-b-0`}>
                 <div className="flex justify-between items-center">
                   <span className={`text-xs font-bold uppercase tracking-wider ${stage.color}`}>{stage.label}</span>
-                  <span className="text-[10px] bg-white/80 dark:bg-slate-800/80 px-1.5 py-0.5 rounded-full text-slate-500 font-bold">
+                  <span className="text-[10px] bg-white/80 dark:bg-[#E8E5E0]/80 px-1.5 py-0.5 rounded-full text-[#888780] font-bold">
                     {stage.deals.length}
                   </span>
                 </div>
-                <p className="text-xs font-semibold text-slate-500 mt-0.5">${(stageTotal / 1000).toFixed(0)}K</p>
+                <p className="text-xs font-semibold text-[#888780] mt-0.5">${(stageTotal / 1000).toFixed(0)}K</p>
               </div>
 
               {/* Cards Column */}
-              <div className={`bg-slate-50/50 dark:bg-slate-900/50 border ${stage.borderColor} border-t-0 rounded-b-xl p-2 space-y-2 min-h-[200px]`}>
+              <div className={`bg-slate-50/50 dark:bg-[#F0EDE8]/50 border ${stage.borderColor} border-t-0 rounded-b-xl p-2 space-y-2 min-h-[200px]`}>
                 {stage.deals.length === 0 ? (
-                  <div className="text-center py-8 text-slate-300">
+                  <div className="text-center py-8 text-[#5F5E5A]">
                     <Target size={20} className="mx-auto mb-1" />
                     <p className="text-[10px]">Sin deals</p>
                   </div>

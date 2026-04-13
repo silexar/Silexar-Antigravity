@@ -103,7 +103,7 @@ export const MobileAnunciantesDashboard: React.FC<DashboardProps> = ({
       <div className="space-y-3">
         {loading ? (
           [...Array(3)].map((_, i) => (
-            <div key={i} className="animate-pulse flex items-center p-4 rounded-2xl bg-white shadow-sm border border-slate-100">
+            <div key={`skeleton-${i}`} className="animate-pulse flex items-center p-4 rounded-2xl bg-white shadow-sm border border-slate-100">
               <div className="w-10 h-10 bg-slate-200 rounded-xl mr-4" />
               <div className="flex-1 space-y-2">
                 <div className="h-4 bg-slate-200 rounded w-1/2" />

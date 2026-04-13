@@ -718,22 +718,26 @@ export function useGestorElementosHibrido(opciones: OpcionesGestorElementos) {
 
     // Filtrar por medio
     if (filtros.medios && filtros.medios.length > 0) {
-      resultado = resultado.filter(e => filtros.medios!.includes(e.medio));
+      const medios = filtros.medios;
+      resultado = resultado.filter(e => medios.includes(e.medio));
     }
 
     // Filtrar por tipo
     if (filtros.tipos && filtros.tipos.length > 0) {
-      resultado = resultado.filter(e => filtros.tipos!.includes(e.tipo));
+      const tipos = filtros.tipos;
+      resultado = resultado.filter(e => tipos.includes(e.tipo));
     }
 
     // Filtrar por estado
     if (filtros.estados && filtros.estados.length > 0) {
-      resultado = resultado.filter(e => filtros.estados!.includes(e.estado));
+      const estados = filtros.estados;
+      resultado = resultado.filter(e => estados.includes(e.estado));
     }
 
     // Filtrar por prioridad
     if (filtros.prioridades && filtros.prioridades.length > 0) {
-      resultado = resultado.filter(e => filtros.prioridades!.includes(e.prioridad));
+      const prioridades = filtros.prioridades;
+      resultado = resultado.filter(e => prioridades.includes(e.prioridad));
     }
 
     // Filtrar por bloqueado

@@ -25,33 +25,35 @@ import {
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
+interface RevisionData {
+  nombre?: string
+  anunciante?: string
+  producto?: string
+  referenciaCliente?: string
+  fechaInicio?: string
+  fechaFin?: string
+  ejecutivo?: string
+  agenciaCreativa?: string
+  agenciaMedios?: string
+  emisoraPrincipal?: string
+  valorBruto?: number
+  valorNeto?: number
+  modalidad?: string
+  comisionAgencia?: number
+  estiloFacturacion?: string
+  lineas?: Array<{
+    id: string
+    programa: string
+    duracion: number
+    distribucion: Record<string, number>
+  }>
+  tipoPedido?: string
+  tipoPauta?: string
+  categoria?: string
+}
+
 interface StepRevisionProps extends WizardStepProps {
-  data: {
-    nombre?: string
-    anunciante?: string
-    producto?: string
-    referenciaCliente?: string
-    fechaInicio?: string
-    fechaFin?: string
-    ejecutivo?: string
-    agenciaCreativa?: string
-    agenciaMedios?: string
-    emisoraPrincipal?: string
-    valorBruto?: number
-    valorNeto?: number
-    modalidad?: string
-    comisionAgencia?: number
-    estiloFacturacion?: string
-    lineas?: Array<{
-      id: string
-      programa: string
-      duracion: number
-      distribucion: Record<string, number>
-    }>
-    tipoPedido?: string
-    tipoPauta?: string
-    categoria?: string
-  }
+  data: Record<string, unknown>
 }
 
 interface Validacion {
@@ -63,13 +65,12 @@ interface Validacion {
 }
 
 export const StepRevisionFinal: React.FC<StepRevisionProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isActive: _isActive,
   onComplete,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onBack: _onBack,
-  data
+  data: rawData
 }) => {
+  const data = rawData as RevisionData
   const router = useRouter()
   const [isCreating, setIsCreating] = useState(false)
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false)
@@ -93,10 +94,8 @@ export const StepRevisionFinal: React.FC<StepRevisionProps> = ({
   ], [data])
 
   const errores = validaciones.filter(v => !v.valido && v.criticidad === 'error')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const advertencias = validaciones.filter(v => !v.valido && v.criticidad === 'warning')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const info = validaciones.filter(v => !v.valido && v.criticidad === 'info')
+  const _advertencias = validaciones.filter(v => !v.valido && v.criticidad === 'warning')
+  const _info = validaciones.filter(v => !v.valido && v.criticidad === 'info')
   const puedeCrear = errores.length === 0
 
   // Cálculos

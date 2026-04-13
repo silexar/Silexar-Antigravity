@@ -16,7 +16,7 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
   ];
 
   return (
-    <div className="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] bg-[#F0EDE8]/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-slate-50 w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
@@ -27,7 +27,7 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-800 tracking-tight">Analytics de Utilización Inteligente</h2>
-              <p className="text-sm text-slate-500 font-medium mt-0.5">
+              <p className="text-sm text-[#888780] font-medium mt-0.5">
                 Dashboard consolidado de uso de propiedades cross-módulo
               </p>
             </div>
@@ -40,7 +40,7 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
               <Download className="w-4 h-4" /> Export PDF
             </button>
             <div className="w-px h-6 bg-slate-200 mx-1"></div>
-            <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+            <button onClick={onClose} className="p-2 text-[#888780] hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -53,70 +53,70 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
           <div className="grid grid-cols-3 gap-6">
             
             <div className="col-span-1 bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#888780] mb-4">
                 <span className="text-xl">🥇</span> Top 1 Uso
               </div>
               <div className="space-y-3">
                 <h3 className="text-lg font-bold text-slate-800">Tipo Pedido Campaña</h3>
                 <div className="flex gap-4">
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Uso Total</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Uso Total</div>
                     <div className="font-black text-xl text-emerald-600">98.7%</div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Asignaciones</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Asignaciones</div>
                     <div className="font-bold text-xl text-slate-700">2,847</div>
                   </div>
                 </div>
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Top: "01 PUBLICIDAD"</span>
+                  <span className="text-[#888780] font-medium">Top: "01 PUBLICIDAD"</span>
                   <span className="flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded"><ArrowUpRight className="w-3 h-3"/> +12%</span>
                 </div>
               </div>
             </div>
 
             <div className="col-span-1 bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#888780] mb-4">
                 <span className="text-xl">🥈</span> Top 2 Uso
               </div>
               <div className="space-y-3">
                 <h3 className="text-lg font-bold text-slate-800">Industria Cliente</h3>
                 <div className="flex gap-4">
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Uso Total</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Uso Total</div>
                     <div className="font-black text-xl text-emerald-600">89.3%</div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Asignaciones</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Asignaciones</div>
                     <div className="font-bold text-xl text-slate-700">1,234</div>
                   </div>
                 </div>
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Top: "FINANCIERO"</span>
+                  <span className="text-[#888780] font-medium">Top: "FINANCIERO"</span>
                   <span className="flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded"><ArrowUpRight className="w-3 h-3"/> +8%</span>
                 </div>
               </div>
             </div>
 
             <div className="col-span-1 bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#888780] mb-4">
                 <span className="text-xl">🥉</span> Top 3 Uso
               </div>
               <div className="space-y-3">
                 <h3 className="text-lg font-bold text-slate-800">Tipo Cliente</h3>
                 <div className="flex gap-4">
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Uso Total</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Uso Total</div>
                     <div className="font-black text-xl text-indigo-600">76.4%</div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Asignaciones</div>
+                    <div className="text-[10px] uppercase font-bold text-[#888780]">Asignaciones</div>
                     <div className="font-bold text-xl text-slate-700">987</div>
                   </div>
                 </div>
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Top: "DIRECTO"</span>
-                  <span className="flex items-center gap-1 font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded"><Minus className="w-3 h-3"/> 0%</span>
+                  <span className="text-[#888780] font-medium">Top: "DIRECTO"</span>
+                  <span className="flex items-center gap-1 font-bold text-[#888780] bg-slate-100 px-2 py-0.5 rounded"><Minus className="w-3 h-3"/> 0%</span>
                 </div>
               </div>
             </div>
@@ -133,7 +133,7 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm whitespace-nowrap">
-                  <thead className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider border-b border-slate-200">
+                  <thead className="bg-slate-50 text-[#888780] text-[10px] uppercase tracking-wider border-b border-slate-200">
                     <tr>
                       <th className="px-4 py-3 font-bold border-r border-slate-100">Propiedad</th>
                       <th className="px-4 py-3 font-bold text-center"><div className="flex items-center justify-center gap-1"><FileText className="w-3 h-3"/> Contratos</div></th>
@@ -145,24 +145,24 @@ export function AnalyticsUtilizacionModal({ onClose }: { onClose: () => void }) 
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-700">
                     {matrizUtilizacion.map((row, i) => (
-                      <tr key={i} className={`hover:bg-slate-50 ${row.alert ? 'bg-amber-50/20' : ''}`}>
+                      <tr key={`${row}-${i}`} className={`hover:bg-slate-50 ${row.alert ? 'bg-amber-50/20' : ''}`}>
                         <td className="px-4 py-2.5 font-bold flex items-center gap-2 border-r border-slate-100">
                           {row.prop} {row.alert && <AlertTriangle className="w-3.5 h-3.5 text-amber-500"/>}
                         </td>
-                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.cont === 'N/A' ? <span className="text-slate-300">-</span> : row.cont}</td>
-                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.camp === 'N/A' ? <span className="text-slate-300">-</span> : row.camp}</td>
-                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.cli === 'N/A' ? <span className="text-slate-300">-</span> : row.cli}</td>
-                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.rep === 'N/A' ? <span className="text-slate-300">-</span> : row.rep}</td>
+                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.cont === 'N/A' ? <span className="text-[#5F5E5A]">-</span> : row.cont}</td>
+                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.camp === 'N/A' ? <span className="text-[#5F5E5A]">-</span> : row.camp}</td>
+                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.cli === 'N/A' ? <span className="text-[#5F5E5A]">-</span> : row.cli}</td>
+                        <td className="px-4 py-2.5 text-center font-mono text-xs">{row.rep === 'N/A' ? <span className="text-[#5F5E5A]">-</span> : row.rep}</td>
                         <td className={`px-4 py-2.5 text-center font-mono text-xs font-bold border-l border-slate-100 bg-indigo-50/30 ${parseFloat(row.glob) > 80 ? 'text-emerald-600' : parseFloat(row.glob) < 40 ? 'text-rose-600' : 'text-slate-700'}`}>{row.glob}</td>
                       </tr>
                     ))}
-                    <tr className="bg-slate-800 text-white font-bold text-xs uppercase tracking-wider">
-                      <td className="px-4 py-3 border-r border-slate-700">PROMEDIO POR MÓDULO</td>
+                    <tr className="bg-[#E8E5E0] text-[#2C2C2A] font-bold text-xs uppercase tracking-wider">
+                      <td className="px-4 py-3 border-r border-[#D4D1CC]">PROMEDIO POR MÓDULO</td>
                       <td className="px-4 py-3 text-center">62.1%</td>
                       <td className="px-4 py-3 text-center">67.4%</td>
                       <td className="px-4 py-3 text-center">67.5%</td>
                       <td className="px-4 py-3 text-center">70.3%</td>
-                      <td className="px-4 py-3 text-center border-l border-slate-700 bg-indigo-900">66.8%</td>
+                      <td className="px-4 py-3 text-center border-l border-[#D4D1CC] bg-indigo-900">66.8%</td>
                     </tr>
                   </tbody>
                 </table>

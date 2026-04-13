@@ -130,7 +130,7 @@ export function MobileSuccessionFlightRisk() {
 
                 {/* Factors */}
                 {risk.factores.map((f, i) => (
-                  <p key={i} className="text-[10px] text-slate-500 pl-1 py-0.5">• {f}</p>
+                  <p key={`${f}-${i}`} className="text-[10px] text-slate-500 pl-1 py-0.5">• {f}</p>
                 ))}
 
                 {/* Impact */}
@@ -154,7 +154,7 @@ export function MobileSuccessionFlightRisk() {
       {tab === 'succession' && (
         <div className="space-y-3">
           {SUCCESSION.map((plan, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-slate-100 p-3">
+            <div key={`${plan}-${i}`} className="bg-white rounded-2xl border border-slate-100 p-3">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <div className="flex items-center gap-1.5 mb-0.5">

@@ -10,6 +10,7 @@
 
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 import {
   CheckCircle, AlertCircle, XCircle, Volume2, FileAudio,
@@ -59,23 +60,34 @@ export const NeuromorphicButton = ({
   className?: string;
   disabled?: boolean;
 }) => {
-  const variants = {
-    primary: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_8px_16px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_20px_rgba(16,185,129,0.4)] border border-emerald-400/50',
-    secondary: 'bg-white/80 backdrop-blur-md text-slate-700 shadow-sm border border-slate-200/60 hover:bg-white hover:shadow-md hover:border-slate-300/80',
-    danger: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_8px_16px_rgba(239,68,68,0.3)] border border-red-400/50',
-    ghost: 'bg-transparent text-slate-600 hover:bg-slate-100/50 backdrop-blur-sm'
+  // Safe getters to prevent object injection
+  const getVariantClass = (v: typeof variant): string => {
+    switch (v) {
+      case 'primary': return 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_8px_16px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_20px_rgba(16,185,129,0.4)] border border-emerald-400/50';
+      case 'danger': return 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_8px_16px_rgba(239,68,68,0.3)] border border-red-400/50';
+      case 'ghost': return 'bg-transparent text-slate-600 hover:bg-slate-100/50 backdrop-blur-sm';
+      case 'secondary':
+      default: return 'bg-white/80 backdrop-blur-md text-slate-700 shadow-sm border border-slate-200/60 hover:bg-white hover:shadow-md hover:border-slate-300/80';
+    }
   };
-  const sizes = { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2', lg: 'px-6 py-3 text-lg' };
+  const getSizeClass = (s: typeof size): string => {
+    switch (s) {
+      case 'sm': return 'px-3 py-1.5 text-sm';
+      case 'lg': return 'px-6 py-3 text-lg';
+      case 'md':
+      default: return 'px-4 py-2';
+    }
+  };
   
   return (
     <button 
       onClick={onClick} 
       disabled={disabled}
       className={`
-        ${sizes[size]} rounded-xl font-medium transition-all duration-200 
+        ${getSizeClass(size)} rounded-xl font-medium transition-all duration-200 
         flex items-center gap-2 hover:scale-[1.02]
         disabled:opacity-50 disabled:cursor-not-allowed
-        ${variants[variant]} ${className}
+        ${getVariantClass(variant)} ${className}
       `}
     >
       {children}
@@ -88,16 +100,20 @@ export const NeuromorphicButton = ({
 // ═══════════════════════════════════════════════════════════════
 
 export const EstadoBadge = ({ estado, size = 'md' }: { estado: EstadoCuna; size?: 'sm' | 'md' }) => {
-  const config: Record<EstadoCuna, { bg: string; icon: React.ElementType; label: string }> = {
-    en_aire: { bg: 'from-emerald-400 to-emerald-500', icon: Volume2, label: 'En Aire' },
-    aprobada: { bg: 'from-blue-400 to-blue-500', icon: CheckCircle, label: 'Aprobada' },
-    pendiente_validacion: { bg: 'from-amber-400 to-amber-500', icon: AlertCircle, label: 'Pendiente' },
-    borrador: { bg: 'from-slate-400 to-slate-500', icon: FileAudio, label: 'Borrador' },
-    pausada: { bg: 'from-orange-400 to-orange-500', icon: Pause, label: 'Pausada' },
-    vencida: { bg: 'from-red-400 to-red-500', icon: Clock, label: 'Vencida' },
-    finalizada: { bg: 'from-gray-400 to-gray-500', icon: XCircle, label: 'Finalizada' }
+  // Safe switch to prevent object injection
+  const getConfig = (e: EstadoCuna) => {
+    switch (e) {
+      case 'en_aire': return { bg: 'from-emerald-400 to-emerald-500', icon: Volume2, label: 'En Aire' };
+      case 'aprobada': return { bg: 'from-blue-400 to-blue-500', icon: CheckCircle, label: 'Aprobada' };
+      case 'pendiente_validacion': return { bg: 'from-amber-400 to-amber-500', icon: AlertCircle, label: 'Pendiente' };
+      case 'borrador': return { bg: 'from-slate-400 to-slate-500', icon: FileAudio, label: 'Borrador' };
+      case 'pausada': return { bg: 'from-orange-400 to-orange-500', icon: Pause, label: 'Pausada' };
+      case 'vencida': return { bg: 'from-red-400 to-red-500', icon: Clock, label: 'Vencida' };
+      case 'finalizada': return { bg: 'from-gray-400 to-gray-500', icon: XCircle, label: 'Finalizada' };
+      default: return { bg: 'from-slate-400 to-slate-500', icon: FileAudio, label: 'Borrador' };
+    }
   };
-  const { bg, icon: Icon, label } = config[estado] || config.borrador;
+  const { bg, icon: Icon, label } = getConfig(estado);
   const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-sm';
   return (
     <span className={`inline-flex items-center gap-1.5 ${sizeClasses} rounded-full font-medium text-white bg-gradient-to-r ${bg} shadow-md`}>
@@ -108,13 +124,17 @@ export const EstadoBadge = ({ estado, size = 'md' }: { estado: EstadoCuna; size?
 };
 
 export const UrgenciaBadge = ({ urgencia }: { urgencia: UrgenciaCuna }) => {
-  const config: Record<UrgenciaCuna, { color: string; label: string; pulse: boolean }> = {
-    critica: { color: 'bg-red-500', label: '🔴 Crítica', pulse: true },
-    urgente: { color: 'bg-amber-500', label: '🟠 Urgente', pulse: false },
-    programada: { color: 'bg-blue-500', label: '🔵 Programada', pulse: false },
-    standby: { color: 'bg-slate-400', label: '⚪ Standby', pulse: false }
+  // Safe switch to prevent object injection
+  const getConfig = (u: UrgenciaCuna) => {
+    switch (u) {
+      case 'critica': return { color: 'bg-red-500', label: '🔴 Crítica', pulse: true };
+      case 'urgente': return { color: 'bg-amber-500', label: '🟠 Urgente', pulse: false };
+      case 'programada': return { color: 'bg-blue-500', label: '🔵 Programada', pulse: false };
+      case 'standby': return { color: 'bg-slate-400', label: '⚪ Standby', pulse: false };
+      default: return { color: 'bg-slate-400', label: '⚪ Standby', pulse: false };
+    }
   };
-  const { color, label, pulse } = config[urgencia];
+  const { color, label, pulse } = getConfig(urgencia);
   return (
     <div className="flex items-center gap-2">
       <span className={`w-2.5 h-2.5 rounded-full ${color} ${pulse ? 'animate-pulse' : ''}`} />
@@ -124,15 +144,19 @@ export const UrgenciaBadge = ({ urgencia }: { urgencia: UrgenciaCuna }) => {
 };
 
 export const TipoBadge = ({ tipo }: { tipo: TipoCuna }) => {
-  const config: Record<TipoCuna, { color: string; icon: React.ElementType }> = {
-    audio: { color: 'bg-blue-100 text-blue-700', icon: FileAudio },
-    mencion: { color: 'bg-purple-100 text-purple-700', icon: Mic },
-    presentacion: { color: 'bg-amber-100 text-amber-700', icon: Radio },
-    cierre: { color: 'bg-pink-100 text-pink-700', icon: Target },
-    promo_ida: { color: 'bg-cyan-100 text-cyan-700', icon: Sparkles },
-    jingle: { color: 'bg-green-100 text-green-700', icon: Music }
+  // Safe switch to prevent object injection
+  const getConfig = (t: TipoCuna) => {
+    switch (t) {
+      case 'audio': return { color: 'bg-blue-100 text-blue-700', icon: FileAudio };
+      case 'mencion': return { color: 'bg-purple-100 text-purple-700', icon: Mic };
+      case 'presentacion': return { color: 'bg-amber-100 text-amber-700', icon: Radio };
+      case 'cierre': return { color: 'bg-pink-100 text-pink-700', icon: Target };
+      case 'promo_ida': return { color: 'bg-cyan-100 text-cyan-700', icon: Sparkles };
+      case 'jingle': return { color: 'bg-green-100 text-green-700', icon: Music };
+      default: return { color: 'bg-blue-100 text-blue-700', icon: FileAudio };
+    }
   };
-  const { color, icon: Icon } = config[tipo] || config.audio;
+  const { color, icon: Icon } = getConfig(tipo);
   return (
     <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium ${color}`}>
       <Icon className="w-3.5 h-3.5" />
@@ -175,7 +199,7 @@ export const TiempoRestanteBadge = ({ proximaEmision }: { proximaEmision: string
 export const EmisoraChip = ({ nombre, logo }: { nombre: string; logo?: string }) => (
   <div className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-100">
     {logo ? (
-      <img src={logo} alt={nombre} className="w-4 h-4 rounded-full object-cover" />
+      <Image src={logo} alt={nombre} width={16} height={16} className="rounded-full object-cover" />
     ) : (
       <div className="w-4 h-4 rounded-full bg-purple-200 flex items-center justify-center">
         <Radio className="w-2.5 h-2.5 text-purple-600" />

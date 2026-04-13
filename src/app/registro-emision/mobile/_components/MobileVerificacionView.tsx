@@ -87,7 +87,7 @@ export function MobileVerificacionView() {
               { name: 'Banco XYZ Q4', date: '13 Dic', found: '2/4' },
             ].map((item, i) => (
               <button
-                key={i}
+                key={`${item}-${i}`}
                 onClick={() => selectDate('2024-12-14')}
                 className="w-full bg-white rounded-xl p-4 border border-slate-100 shadow-sm flex items-center justify-between active:scale-[0.98] transition-transform"
               >
@@ -220,7 +220,7 @@ export function MobileVerificacionView() {
             { label: 'I/O', value: `${120 + progress}MB/s`, color: 'text-emerald-500' },
             { label: 'NET', value: '↓ 24Mbps', color: 'text-blue-500' },
           ].map((hw, i) => (
-            <div key={i} className="bg-slate-800/90 rounded-xl p-3 text-center">
+            <div key={`${hw}-${i}`} className="bg-slate-800/90 rounded-xl p-3 text-center">
               <p className={`text-xs font-bold ${hw.color}`}>{hw.label}</p>
               <p className="text-sm font-mono font-bold text-white">{hw.value}</p>
             </div>

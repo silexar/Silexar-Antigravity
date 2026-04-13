@@ -263,7 +263,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-900">
+      <div className="flex items-center justify-center h-screen bg-[#F0EDE8]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-slate-400">Cargando tu portal...</p>

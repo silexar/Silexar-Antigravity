@@ -12,6 +12,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { formatCurrency } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -198,7 +199,6 @@ export function DigitalCampaignManager() {
       setIsLoading(false)
 
     } catch (error) {
-      console.error('❌ Error cargando campañas:', error)
       setIsLoading(false)
     }
   }
@@ -246,13 +246,6 @@ export function DigitalCampaignManager() {
     }
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {

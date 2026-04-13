@@ -127,7 +127,7 @@ export class MLPredictiveEngine {
     }
 
     try {
-      const prediction = await this.executePrediction(model, request);
+      const prediction = await this.executePrediction(model as { type: string; algorithm: string; parameters: Record<string, unknown>; features: string[]; confidence: number }, request);
       this.predictions.set(cacheKey, prediction);
       
       // Auto-optimize if enabled and confidence is high
@@ -376,7 +376,7 @@ export class MLPredictiveEngine {
     // Predictions are valid for 1 hour
     const oneHour = 60 * 60 * 1000;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return Date.now() - (prediction as any).timestamp < oneHour;
+    return Date.now() - (prediction as unknown).timestamp < oneHour;
   }
 
   private triggerOptimization(modelType: string, prediction: PredictionResult): void {
@@ -429,7 +429,7 @@ export class MLPredictiveEngine {
       const model = this.models.get(modelType);
       if (model) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (model as any).confidence = metrics.f1Score;
+        (model as unknown).confidence = metrics.f1Score;
       }
       
       logger.info(`${modelType} model training completed successfully`);

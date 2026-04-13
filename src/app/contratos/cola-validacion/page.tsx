@@ -504,7 +504,7 @@ export default function ColaValidacionIA() {
               { label: 'Emails', count: solicitudes.filter(s => s.origen === 'EMAIL').length, icon: <Mail className="w-5 h-5" />, color: 'bg-red-100 text-red-600' }
             ].map((stat, idx) => (
               <motion.div
-                key={idx}
+                key={stat.label}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
@@ -531,6 +531,7 @@ export default function ColaValidacionIA() {
               <input
                 type="text"
                 placeholder="Buscar por cliente o solicitante..."
+                aria-label="Buscar por cliente o solicitante"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
                 className="bg-transparent flex-1 focus:outline-none text-sm"

@@ -233,7 +233,7 @@ export function TeamManagementModal({ equipo, isOpen, onClose }: TeamManagementM
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
+      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
             <div className="p-2 bg-blue-600 rounded-lg">
@@ -380,7 +380,7 @@ export function TeamManagementModal({ equipo, isOpen, onClose }: TeamManagementM
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {equipo.jefe.certificaciones.map((cert, index) => (
-                        <Badge key={index} variant="outline" className="text-yellow-400 border-yellow-400">
+                        <Badge key={`${cert}-${index}`} variant="outline" className="text-yellow-400 border-yellow-400">
                           {cert}
                         </Badge>
                       ))}
@@ -420,7 +420,7 @@ export function TeamManagementModal({ equipo, isOpen, onClose }: TeamManagementM
                       <span className="text-slate-400 text-sm">Territorio:</span>
                       <div className="flex flex-wrap gap-2 mt-1">
                         {equipo.territorio.map((t, index) => (
-                          <Badge key={index} variant="outline" className="text-blue-400 border-blue-400">
+                          <Badge key={`${t}-${index}`} variant="outline" className="text-blue-400 border-blue-400">
                             {t}
                           </Badge>
                         ))}
@@ -432,7 +432,7 @@ export function TeamManagementModal({ equipo, isOpen, onClose }: TeamManagementM
                       <span className="text-slate-400 text-sm">Industrias:</span>
                       <div className="flex flex-wrap gap-2 mt-1">
                         {equipo.industrias.map((ind, index) => (
-                          <Badge key={index} variant="outline" className="text-green-400 border-green-400">
+                          <Badge key={`${ind}-${index}`} variant="outline" className="text-green-400 border-green-400">
                             {ind}
                           </Badge>
                         ))}
@@ -792,7 +792,7 @@ export function TeamManagementModal({ equipo, isOpen, onClose }: TeamManagementM
                       <div className="flex items-center justify-between">
                         <div className="flex flex-wrap gap-1">
                           {objetivo.responsables.slice(0, 3).map((responsable, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
+                            <Badge key={`${responsable}-${index}`} variant="outline" className="text-xs">
                               {responsable}
                             </Badge>
                           ))}

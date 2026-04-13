@@ -399,8 +399,9 @@ export function UserManagement() {
                         <div className="flex-1 relative">
                           <input type={showPassword ? 'text' : 'password'} value={newUser.password}
                             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                            className="w-full px-3 py-2 pr-10 bg-slate-900 border border-slate-600 rounded text-white" placeholder="Contraseña" />
-                          <button onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2">
+                            aria-label="Contraseña"
+                            className="w-full px-3 py-2 pr-10 bg-[#F0EDE8] border border-slate-600 rounded text-white" placeholder="Contraseña" />
+                          <button aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'} onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2">
                             {showPassword ? <EyeOff className="w-4 h-4 text-slate-400" /> : <Eye className="w-4 h-4 text-slate-400" />}
                           </button>
                         </div>
@@ -410,7 +411,8 @@ export function UserManagement() {
                       </div>
                       <input type={showPassword ? 'text' : 'password'} value={newUser.confirmPassword}
                         onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-white" placeholder="Confirmar contraseña" />
+                        aria-label="Confirmar contraseña"
+                        className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-600 rounded text-white" placeholder="Confirmar contraseña" />
                     </div>
                   )}
                 </div>

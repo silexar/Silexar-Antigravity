@@ -222,8 +222,8 @@ export function CEOMobileCommand() {
       <div className="grid grid-cols-3 gap-3">
         {kpis.map((kpi, i) => (
           <NeuromorphicCard 
-            key={i} 
-            variant="embossed" 
+            key={kpi.label}
+            variant="embossed"
             className={`p-4 ${kpi.priority === 'high' ? 'ring-1 ring-yellow-500/30' : ''}`}
           >
             <div className="flex items-center justify-between mb-1">

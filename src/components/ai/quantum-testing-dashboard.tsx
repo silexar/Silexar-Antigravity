@@ -9,6 +9,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { 
   TestTube, 
   Shield, 
@@ -78,8 +79,7 @@ export default function QuantumTestingDashboard({ className = '' }: QuantumTesti
       setTestSuites(testGenerator.getAllTestSuites());
       setQualityReports(qualityAssurance.getAllQualityReports());
     } catch (error) {
-      console.error('Error loading system data:', error);
-    }
+      }
   };
 
   const handleGenerateTests = async () => {
@@ -147,8 +147,7 @@ export class UserService {
       setTestSuites(prev => [...prev, suite]);
       setSelectedTestSuite(suite);
     } catch (error) {
-      console.error('Error generating tests:', error);
-    } finally {
+      } finally {
       setIsGeneratingTests(false);
     }
   };
@@ -174,8 +173,7 @@ export default function UserProfile({ userId }) {
       const userData = await response.json();
       setUser(userData);
     } catch (error) {
-      console.error('Error:', error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   };
@@ -186,7 +184,7 @@ export default function UserProfile({ userId }) {
     <div>
       <h1>{user.name}</h1>
       <p>{user.email}</p>
-      <div dangerouslySetInnerHTML={{__html: user.bio}} />
+      <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(user.bio || '')}} />
     </div>
   );
 }`;
@@ -205,8 +203,7 @@ export default function UserProfile({ userId }) {
       setQualityReports(prev => [...prev, report]);
       setSelectedQualityReport(report);
     } catch (error) {
-      console.error('Error analyzing quality:', error);
-    } finally {
+      } finally {
       setIsAnalyzingQuality(false);
     }
   };
@@ -217,7 +214,7 @@ export default function UserProfile({ userId }) {
       case 'failed': return 'text-red-600 bg-red-50';
       case 'running': return 'text-blue-600 bg-blue-50';
       case 'pending': return 'text-yellow-600 bg-yellow-50';
-      default: return 'text-gray-600 bg-gray-50';
+      default: return 'text-gray-600 bg-[#F0EDE8]';
     }
   };
 
@@ -227,7 +224,7 @@ export default function UserProfile({ userId }) {
       case 'high': return 'text-orange-600 bg-orange-50';
       case 'medium': return 'text-yellow-600 bg-yellow-50';
       case 'low': return 'text-blue-600 bg-blue-50';
-      default: return 'text-gray-600 bg-gray-50';
+      default: return 'text-gray-600 bg-[#F0EDE8]';
     }
   };
 
@@ -306,7 +303,7 @@ export default function UserProfile({ userId }) {
         )}
 
         {/* Navigation Tabs */}
-        <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+        <div className="flex space-x-1 bg-[#F0EDE8] rounded-lg p-1 shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]">
           {[
             { id: 'overview', label: 'Overview', icon: Activity },
             { id: 'testing', label: 'AI Testing', icon: TestTube },
@@ -315,7 +312,7 @@ export default function UserProfile({ userId }) {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as unknown)}
               className={`flex items-center px-4 py-2 rounded-md font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-white text-purple-600 shadow'
@@ -621,7 +618,7 @@ export default function UserProfile({ userId }) {
                         <div key={key} className="flex items-center justify-between">
                           <span className="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
                           <div className="flex items-center">
-                            <div className="w-24 bg-gray-200 rounded-full h-2 mr-3">
+                            <div className="w-24 bg-[#F0EDE8] rounded-full h-2 mr-3 shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]">
                               <div
                                 className={`h-2 rounded-full ${
                                   value >= 80 ? 'bg-green-500' : value >= 60 ? 'bg-yellow-500' : 'bg-red-500'

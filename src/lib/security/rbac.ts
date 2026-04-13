@@ -294,7 +294,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
 // JERARQUÍA DE ROLES
 // ═══════════════════════════════════════════════════════════════
 
-const ROLE_HIERARCHY: Record<UserRole, number> = {
+export const ROLE_HIERARCHY: Record<UserRole, number> = {
   SUPER_CEO: 100,
   ADMIN: 90,
   CLIENT_ADMIN: 80,
@@ -348,6 +348,9 @@ export function checkPermission(
   action: PermissionAction
 ): boolean {
   if (!ctx || !ctx.role) return false;
+
+  // SUPER_CEO tiene acceso total a todos los recursos y acciones
+  if (ctx.role === 'SUPER_CEO') return true;
 
   const rolePermissions = ROLE_PERMISSIONS[ctx.role as UserRole];
   if (!rolePermissions) return false;

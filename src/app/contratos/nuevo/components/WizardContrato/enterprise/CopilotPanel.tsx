@@ -76,9 +76,9 @@ const MensajeChat: React.FC<{
         {/* Acciones sugeridas */}
         {mensaje.acciones && mensaje.acciones.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
-            {mensaje.acciones.map((accion, idx) => (
+            {mensaje.acciones.map((accion) => (
               <motion.button
-                key={idx}
+                key={accion.titulo}
                 onClick={() => onAccion?.(accion)}
                 className="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors flex items-center gap-1"
                 whileHover={{ scale: 1.02 }}
@@ -189,7 +189,7 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
       const respuesta = await copilot.procesarMensaje(inputValue);
       setMensajes(prev => [...prev, respuesta]);
     } catch (error) {
-      /* console.error('Error procesando mensaje:', error) */;
+      /* */;
       const mensajeError: MensajeCopilot = {
         id: crypto.randomUUID(),
         rol: 'asistente',
@@ -282,9 +282,9 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
             <span className="text-xs font-medium text-amber-700">Sugerencias IA</span>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {sugerencias.slice(0, 3).map((sug, idx) => (
+            {sugerencias.slice(0, 3).map((sug) => (
               <SugerenciaChip
-                key={idx}
+                key={sug.razonamiento}
                 sugerencia={sug}
                 onAplicar={() => {
                   ;
@@ -350,6 +350,7 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Escribe tu mensaje..."
+              aria-label="Escribe tu mensaje"
               disabled={isLoading}
               className="
                 w-full px-4 py-3 pr-12 rounded-xl

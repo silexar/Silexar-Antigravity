@@ -306,7 +306,7 @@ export class CortexContracts {
       const cacheKey = `analysis_${contractId}_${Date.now()}`
       if (this.analysisCache.has(cacheKey)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return this.analysisCache.get(cacheKey) as any
+        return this.analysisCache.get(cacheKey) as unknown
       }
 
       // Análisis de riesgo
@@ -325,7 +325,7 @@ export class CortexContracts {
       const alerts = await this.generateAlerts(contract)
       
       // Calcular optimizaciones
-      const optimization = await this.calculateOptimization(contract)
+      const optimization = await this.calculateOptimization(contract) as { currentEfficiency: number; optimizedEfficiency: number; potentialSavings: number; timeReduction: number; riskReduction: number }
 
       const analysis: z.infer<typeof ContractAnalysisSchema> = {
         contractId,
@@ -472,19 +472,19 @@ export class CortexContracts {
 
       // Predicción de éxito del contrato
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const contractSuccess = await this.predictContractSuccess(contract) as any
+      const contractSuccess = await this.predictContractSuccess(contract) as unknown
 
       // Forecasting de revenue
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const revenueForecasting = await this.forecastRevenue(contract) as any
+      const revenueForecasting = await this.forecastRevenue(contract) as unknown
 
       // Predicción de riesgos
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const riskPrediction = await this.predictRisks(contract) as any
+      const riskPrediction = await this.predictRisks(contract) as unknown
 
       // Análisis de comportamiento del cliente
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const clientBehavior = await this.analyzeClientBehavior(contract) as any
+      const clientBehavior = await this.analyzeClientBehavior(contract) as unknown
 
       return {
         contractSuccess,

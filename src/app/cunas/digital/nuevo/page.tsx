@@ -142,7 +142,7 @@ const Button = ({
   );
 };
 
-const Input = ({ label, value, onChange, placeholder, type = 'text', required = false }: { 
+const Input = ({ label, value, onChange, placeholder, type = 'text', required = false }: {
   label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string; required?: boolean;
 }) => (
   <div className="space-y-2">
@@ -154,6 +154,7 @@ const Input = ({ label, value, onChange, placeholder, type = 'text', required = 
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      aria-label={label}
       className="w-full rounded-xl py-3 px-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] border-none outline-none focus:ring-2 focus:ring-emerald-400/50 text-slate-700"
     />
   </div>
@@ -206,7 +207,7 @@ const MultiSelect = ({
           return (
             <span key={val} className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm">
               {opt?.label || val}
-              <button onClick={() => toggle(val)} className="hover:text-emerald-900">
+              <button onClick={() => toggle(val)} aria-label={`Eliminar ${opt?.label || val}`} className="hover:text-emerald-900">
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -218,6 +219,7 @@ const MultiSelect = ({
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={label}
           className="w-full rounded-xl py-3 px-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] text-left flex items-center justify-between"
         >
           <span className="text-slate-500">{placeholder}</span>

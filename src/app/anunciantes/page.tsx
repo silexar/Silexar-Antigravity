@@ -11,6 +11,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
 import { 
   Building2, 
@@ -78,15 +79,18 @@ const GlassCard = ({
   variant?: 'raised' | 'inset' | 'flat';
   onClick?: () => void;
 }) => {
-  const variants = {
-    raised: 'bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/50',
-    inset: 'bg-white/40 backdrop-blur-sm border border-slate-200 shadow-inner',
-    flat: 'bg-white/50 backdrop-blur-md border border-white/40'
+  const getVariantClass = (v: string) => {
+    switch (v) {
+      case 'raised': return 'bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/50';
+      case 'inset': return 'bg-white/40 backdrop-blur-sm border border-slate-200 shadow-inner';
+      case 'flat': return 'bg-white/50 backdrop-blur-md border border-white/40';
+      default: return '';
+    }
   };
 
   return (
     <div 
-      className={`rounded-2xl p-6 transition-all duration-300 ${variants[variant]} ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''} ${className}`}
+      className={`rounded-2xl p-6 transition-all duration-300 ${getVariantClass(variant)} ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''} ${className}`}
       onClick={onClick}
     >
       {children}
@@ -111,18 +115,24 @@ const GlassButton = ({
   className?: string;
   'aria-label'?: string;
 }) => {
-  const variants = {
-    primary: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200/50 border border-transparent hover:-translate-y-0.5',
-    secondary: 'bg-white/80 backdrop-blur-sm border border-white/60 text-slate-700 shadow-sm shadow-slate-200/50 hover:bg-white',
-    success: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-200/50 border border-transparent hover:-translate-y-0.5',
-    danger: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md shadow-red-200/50 border border-transparent hover:-translate-y-0.5',
-    ghost: 'bg-transparent text-slate-600 hover:bg-slate-100/50'
+  const getVariantClass = (v: string) => {
+    switch (v) {
+      case 'primary': return 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200/50 border border-transparent hover:-translate-y-0.5';
+      case 'secondary': return 'bg-white/80 backdrop-blur-sm border border-white/60 text-slate-700 shadow-sm shadow-slate-200/50 hover:bg-white';
+      case 'success': return 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-200/50 border border-transparent hover:-translate-y-0.5';
+      case 'danger': return 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md shadow-red-200/50 border border-transparent hover:-translate-y-0.5';
+      case 'ghost': return 'bg-transparent text-slate-600 hover:bg-slate-100/50';
+      default: return '';
+    }
   };
 
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
+  const getSizeClass = (s: string) => {
+    switch (s) {
+      case 'sm': return 'px-3 py-1.5 text-sm';
+      case 'md': return 'px-4 py-2 text-base';
+      case 'lg': return 'px-6 py-3 text-lg';
+      default: return '';
+    }
   };
 
   return (
@@ -133,8 +143,8 @@ const GlassButton = ({
       className={`
         rounded-xl font-medium transition-all duration-200
         flex items-center gap-2 justify-center
-        ${variants[variant]}
-        ${sizes[size]}
+        ${getVariantClass(variant)}
+        ${getSizeClass(size)}
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
@@ -165,6 +175,7 @@ const GlassInput = ({
       <input
         type="text"
         placeholder={placeholder}
+        aria-label={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`
@@ -209,16 +220,18 @@ const GlassSelect = ({
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StatusBadge = ({ estado, activo: _activo }: { estado: string; activo: boolean }) => {
-  const config = {
-    activo: { bg: 'from-emerald-400 to-emerald-500', text: 'text-white', icon: CheckCircle2 },
-    inactivo: { bg: 'from-slate-400 to-slate-500', text: 'text-white', icon: XCircle },
-    suspendido: { bg: 'from-amber-400 to-amber-500', text: 'text-white', icon: AlertCircle },
-    pendiente: { bg: 'from-blue-400 to-blue-500', text: 'text-white', icon: Building }
+  const getConfig = (e: string) => {
+    switch (e) {
+      case 'activo': return { bg: 'from-emerald-400 to-emerald-500', text: 'text-white', icon: CheckCircle2 };
+      case 'inactivo': return { bg: 'from-slate-400 to-slate-500', text: 'text-white', icon: XCircle };
+      case 'suspendido': return { bg: 'from-amber-400 to-amber-500', text: 'text-white', icon: AlertCircle };
+      case 'pendiente': return { bg: 'from-blue-400 to-blue-500', text: 'text-white', icon: Building };
+      default: return { bg: 'from-blue-400 to-blue-500', text: 'text-white', icon: Building };
+    }
   };
 
-  const { bg, text, icon: Icon } = config[estado as keyof typeof config] || config.pendiente;
+  const { bg, text, icon: Icon } = getConfig(estado);
 
   return (
     <span className={`
@@ -241,6 +254,7 @@ export default function AnunciantesPage() {
   const [anunciantes, setAnunciantes] = useState<Anunciante[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [filterEstado, setFilterEstado] = useState('');
   const [pagination, setPagination] = useState<PaginationInfo>({
     total: 0, page: 1, limit: 10, totalPages: 0, hasNextPage: false, hasPreviousPage: false
@@ -260,7 +274,7 @@ export default function AnunciantesPage() {
       const params = new URLSearchParams({
         page: pagination.page.toString(),
         limit: pagination.limit.toString(),
-        ...(search && { search }),
+        ...(debouncedSearch && { search: debouncedSearch }),
         ...(filterEstado && { estado: filterEstado })
       });
 
@@ -271,24 +285,21 @@ export default function AnunciantesPage() {
         setAnunciantes(data.data);
         setPagination(prev => ({ ...prev, ...data.pagination }));
       }
-    } catch (error) {
-      /* console.error('Error fetching anunciantes:', error) */;
+    } catch (_error) {
+      /* */;
     } finally {
       setLoading(false);
     }
-  }, [pagination.page, pagination.limit, search, filterEstado]);
+  }, [pagination.page, pagination.limit, debouncedSearch, filterEstado]);
 
   useEffect(() => {
     fetchAnunciantes();
   }, [fetchAnunciantes]);
 
-  // Handler de búsqueda con debounce
+  // Reset to page 1 when debounced search changes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setPagination(prev => ({ ...prev, page: 1 }));
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
+    setPagination(prev => ({ ...prev, page: 1 }));
+  }, [debouncedSearch]);
 
   // Toggle estado
   const handleToggleActivo = async (id: string) => {
@@ -299,8 +310,8 @@ export default function AnunciantesPage() {
         body: JSON.stringify({ action: 'toggle_activo' })
       });
       fetchAnunciantes();
-    } catch (error) {
-      /* console.error('Error toggling anunciante:', error) */;
+    } catch (_error) {
+      /* */;
     }
   };
 
@@ -311,8 +322,8 @@ export default function AnunciantesPage() {
     try {
       await fetch(`/api/anunciantes/${id}`, { method: 'DELETE' });
       fetchAnunciantes();
-    } catch (error) {
-      /* console.error('Error deleting anunciante:', error) */;
+    } catch (_error) {
+      /* */;
     }
   };
 
@@ -418,9 +429,19 @@ export default function AnunciantesPage() {
         {/* ═══ TABLA DE ANUNCIANTES ═══ */}
         <GlassCard className="overflow-hidden p-0 sm:p-0 border-0">
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <RefreshCw className="w-8 h-8 animate-spin text-blue-500" />
-              <span className="ml-3 text-slate-500">Cargando anunciantes...</span>
+            <div className="overflow-x-auto p-4">
+              <table className="w-full">
+                <tbody>
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <tr key={`skeleton-row-${i}`} className="border-b border-[#E8E5E0]">
+                      <td className="py-3 px-4"><div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-24" /></td>
+                      <td className="py-3 px-4"><div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-40" /></td>
+                      <td className="py-3 px-4"><div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-32" /></td>
+                      <td className="py-3 px-4"><div className="h-6 animate-pulse bg-[#E8E5E0] rounded-full w-16" /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : anunciantes.length === 0 ? (
             <div className="text-center py-12">

@@ -29,8 +29,9 @@ export default function GestionProgramasView() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-black text-gray-500 mb-1 uppercase tracking-wider">Nombre del Programa</label>
-            <input 
+            <input
               type="text" required
+              aria-label="Nombre del Programa"
               value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: e.target.value })}
               className="w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
               placeholder="Ej: Buenos Días Silexar"
@@ -53,8 +54,9 @@ export default function GestionProgramasView() {
             </div>
             <div>
               <label className="block text-xs font-black text-gray-500 mb-1 uppercase tracking-wider">Cupos Máx.</label>
-              <input 
+              <input
                 type="number" min="1" required
+                aria-label="Cupos Máximos"
                 value={formData.cupoMax} onChange={e => setFormData({ ...formData, cupoMax: parseInt(e.target.value) })}
                 className="w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all text-sm"
               />

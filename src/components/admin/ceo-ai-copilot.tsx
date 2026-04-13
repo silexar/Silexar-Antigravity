@@ -192,7 +192,7 @@ export function CEOAICopilot() {
 
         <div className="grid grid-cols-4 gap-3 mb-4">
           {briefing.metrics.map((m, i) => (
-            <div key={i} className="p-3 bg-slate-800/50 rounded text-center">
+            <div key={m.label} className="p-3 bg-slate-800/50 rounded text-center">
               <p className="text-lg font-bold text-white">{m.value}</p>
               <p className="text-xs text-slate-400">{m.label}</p>
               <p className={`text-xs ${m.trend.includes('+') ? 'text-green-400' : m.trend.includes('-') ? 'text-red-400' : 'text-slate-400'}`}>
@@ -207,7 +207,7 @@ export function CEOAICopilot() {
             <p className="text-sm text-green-400 mb-2">✨ Highlights</p>
             <ul className="space-y-1">
               {briefing.highlights.map((h, i) => (
-                <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                <li key={h} className="text-sm text-slate-300 flex items-start gap-2">
                   <CheckCircle className="w-3 h-3 text-green-400 mt-1 flex-shrink-0" />
                   {h}
                 </li>
@@ -218,7 +218,7 @@ export function CEOAICopilot() {
             <p className="text-sm text-yellow-400 mb-2">🎯 Prioridades Hoy</p>
             <ul className="space-y-1">
               {briefing.priorities.map((p, i) => (
-                <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                <li key={p} className="text-sm text-slate-300 flex items-start gap-2">
                   <span className="text-yellow-400">{i + 1}.</span>
                   {p}
                 </li>
@@ -277,7 +277,7 @@ export function CEOAICopilot() {
         
         <div className="h-48 overflow-y-auto mb-3 space-y-3">
           {chatHistory.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div key={`item-${i}`} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[80%] p-3 rounded-lg ${
                 msg.role === 'user' 
                   ? 'bg-purple-600 text-white' 

@@ -322,6 +322,7 @@ export const TargetingMatrixPanel: React.FC<TargetingMatrixPanelProps> = ({
                 max="65"
                 value={value.edadMinima}
                 onChange={(e) => onChange({ ...value, edadMinima: parseInt(e.target.value) })}
+                aria-label="Edad mínima"
                 className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
               />
               <span className="text-sm text-slate-500 w-8">{value.edadMinima}</span>
@@ -333,6 +334,7 @@ export const TargetingMatrixPanel: React.FC<TargetingMatrixPanelProps> = ({
                 max="100"
                 value={value.edadMaxima}
                 onChange={(e) => onChange({ ...value, edadMaxima: parseInt(e.target.value) })}
+                aria-label="Edad máxima"
                 className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
               />
             </div>
@@ -403,20 +405,22 @@ export const TargetingMatrixPanel: React.FC<TargetingMatrixPanelProps> = ({
               <input
                 type="time"
                 value={value.horasActivas[0]?.inicio || '06:00'}
-                onChange={(e) => onChange({ 
-                  ...value, 
-                  horasActivas: [{ ...value.horasActivas[0], inicio: e.target.value }] 
+                onChange={(e) => onChange({
+                  ...value,
+                  horasActivas: [{ ...value.horasActivas[0], inicio: e.target.value }]
                 })}
+                aria-label="Hora de inicio"
                 className="px-3 py-2 border border-slate-200 rounded-xl"
               />
               <span className="text-slate-500">hasta</span>
               <input
                 type="time"
                 value={value.horasActivas[0]?.fin || '23:00'}
-                onChange={(e) => onChange({ 
-                  ...value, 
-                  horasActivas: [{ ...value.horasActivas[0], fin: e.target.value }] 
+                onChange={(e) => onChange({
+                  ...value,
+                  horasActivas: [{ ...value.horasActivas[0], fin: e.target.value }]
                 })}
+                aria-label="Hora de fin"
                 className="px-3 py-2 border border-slate-200 rounded-xl"
               />
             </div>
@@ -477,7 +481,7 @@ export const TargetingMatrixPanel: React.FC<TargetingMatrixPanelProps> = ({
                       <div className="text-xs text-slate-500">Radio: {fence.radioKm} km</div>
                     </div>
                   </div>
-                  <button className="text-red-500 hover:bg-red-50 p-2 rounded-lg">
+                  <button aria-label="Eliminar zona" className="text-red-500 hover:bg-red-50 p-2 rounded-lg">
                     <X className="w-4 h-4" />
                   </button>
                 </div>

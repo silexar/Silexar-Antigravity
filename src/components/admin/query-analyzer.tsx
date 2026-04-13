@@ -51,7 +51,7 @@ export function QueryAnalyzer() {
         <h4 className="text-white font-medium mb-3 flex items-center gap-2"><Zap className="w-4 h-4 text-yellow-400" />Top Queries</h4>
         <div className="space-y-2">
           {queries.map((q, i) => (
-            <div key={i} className="p-3 bg-slate-800/50 rounded-lg">
+            <div key={q.query} className="p-3 bg-slate-800/50 rounded-lg">
               <div className="flex items-center justify-between mb-1">
                 <code className="text-xs text-slate-300 truncate max-w-[60%]">{q.query}</code>
                 <span className={`text-sm font-bold ${q.avgTime > 1000 ? 'text-red-400' : 'text-green-400'}`}>{q.avgTime}ms</span>

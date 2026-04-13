@@ -21,7 +21,7 @@ export const Fortune10OptimizedComponent = memo<OptimizedComponentProps>(
       
       // Monitoreo de rendimiento para Fortune 10
       if (renderTime > 16.67) { // Más de 60fps
-        console.warn(`[Fortune10 Performance] Render lento detectado: ${renderTime.toFixed(2)}ms`)
+        console.warn(`[Fortune10] Slow render: ${renderTime.toFixed(2)}ms`)
       }
 
       if (onRender) {
@@ -95,13 +95,15 @@ function isDeepEqual(obj1: unknown, obj2: unknown): boolean {
   
   if (typeof obj1 !== 'object' || typeof obj2 !== 'object') return false
   
-  const keys1 = Object.keys(obj1)
-  const keys2 = Object.keys(obj2)
-  
+  const o1 = obj1 as Record<string, unknown>
+  const o2 = obj2 as Record<string, unknown>
+  const keys1 = Object.keys(o1)
+  const keys2 = Object.keys(o2)
+
   if (keys1.length !== keys2.length) return false
-  
+
   for (const key of keys1) {
-    if (!keys2.includes(key) || !isDeepEqual(obj1[key], obj2[key])) {
+    if (!keys2.includes(key) || !isDeepEqual(o1[key], o2[key])) {
       return false
     }
   }
@@ -211,15 +213,16 @@ export class Fortune10Preloader {
       const loadTime = performance.now() - startTime
       
       this.preloadedComponents.add(componentPath)
-      
-      // Monitoreo de precarga para Fortune 10
+
+      // WHY: console.warn is kept intentionally — slow preload is a genuine performance warning.
+      // console.log removed (was debug noise in production builds).
       if (loadTime > 1000) {
-        console.warn(`[Fortune10 Preload] Componente lento al precargar: ${componentPath} (${loadTime.toFixed(2)}ms)`)
+        console.warn(`[Fortune10] Slow preload: ${componentPath} (${loadTime.toFixed(2)}ms)`)
       }
-      
-      console.log(`[Fortune10 Preload] Componente precargado: ${componentPath} (${loadTime.toFixed(2)}ms)`)
     } catch (error) {
-      console.error(`[Fortune10 Preload] Error al precargar componente: ${componentPath}`, error)
+      // WHY: console.error is kept intentionally — failed import is a genuine error
+      // that should surface in browser devtools and error monitoring.
+      console.error(`[Fortune10] Failed to preload: ${componentPath}`, error)
     }
   }
 

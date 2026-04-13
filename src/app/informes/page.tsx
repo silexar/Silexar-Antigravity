@@ -78,7 +78,7 @@ const TendenciaIcon = ({ tendencia }: { tendencia: 'up' | 'down' | 'stable' }) =
 const BarraGrafico = ({ datos, maxValor }: { datos: { etiqueta: string; valor: number; color?: string }[]; maxValor: number }) => (
   <div className="space-y-3">
     {datos.map((d, i) => (
-      <div key={i}>
+      <div key={`${d}-${i}`}>
         <div className="flex justify-between text-sm mb-1">
           <span className="text-slate-600">{d.etiqueta}</span>
           <span className="font-bold text-slate-800">{typeof d.valor === 'number' && d.valor > 1000 ? `$${(d.valor / 1000000).toFixed(1)}M` : `${d.valor}%`}</span>
@@ -131,7 +131,7 @@ export default function InformesPage() {
         setInforme(data.data);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -220,7 +220,7 @@ export default function InformesPage() {
 
             {/* Secciones del informe */}
             {informe.secciones.map((seccion, i) => (
-              <NeuromorphicCard key={i}>
+              <NeuromorphicCard key={`${seccion}-${i}`}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">{seccion.titulo}</h3>
                 
                 {/* Métricas */}
@@ -300,7 +300,7 @@ export default function InformesPage() {
                 </h3>
                 <ul className="space-y-3">
                   {informe.recomendaciones.map((rec, i) => (
-                    <li key={i} className="flex items-start gap-3">
+                    <li key={`${rec}-${i}`} className="flex items-start gap-3">
                       <span className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                         {i + 1}
                       </span>

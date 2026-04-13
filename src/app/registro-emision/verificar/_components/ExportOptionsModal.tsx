@@ -39,7 +39,7 @@ export function ExportOptionsModal({ isOpen, onClose, onSuccess }: ExportOptions
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onClick={onClose} />
+        <div className="absolute inset-0 bg-[#F0EDE8]/70 backdrop-blur-sm" onClick={onClose} />
         
         <div className="relative w-full max-w-4xl bg-[#e0e5ec] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col md:flex-row border border-white/30">
             
@@ -79,7 +79,7 @@ export function ExportOptionsModal({ isOpen, onClose, onSuccess }: ExportOptions
 
             {/* CONTENT: CONFIGURATION */}
             <div className="flex-1 p-8 bg-white/50 relative">
-                <button aria-label="Cerrar" onClick={onClose} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
+                <button aria-label="Cerrar" onClick={onClose} className="absolute top-4 right-4 p-2 text-[#888780] hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
                     <X className="w-5 h-5" />
                 </button>
 
@@ -112,7 +112,7 @@ export function ExportOptionsModal({ isOpen, onClose, onSuccess }: ExportOptions
                                 </div>
                                 <div>
                                     <p className="font-bold text-slate-700 text-lg">SuperMax_Verif_15Dic.zip</p>
-                                    <p className="text-sm text-slate-500">127 MB • Tiempo est: ~30s</p>
+                                    <p className="text-sm text-[#888780]">127 MB • Tiempo est: ~30s</p>
                                 </div>
                             </div>
                             
@@ -144,10 +144,10 @@ export function ExportOptionsModal({ isOpen, onClose, onSuccess }: ExportOptions
                              <Header icon={Smartphone} title="WhatsApp Business" color="text-emerald-600" />
                              <div className="mt-6 bg-emerald-50/50 p-5 rounded-xl border border-emerald-100">
                                  <div className="flex items-center gap-3 mb-4">
-                                     <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">MG</div>
+                                     <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[#888780] font-bold">MG</div>
                                      <div>
                                          <p className="font-bold text-slate-700">María González</p>
-                                         <p className="text-xs text-slate-400">SuperMax SpA</p>
+                                         <p className="text-xs text-[#888780]">SuperMax SpA</p>
                                      </div>
                                  </div>
                                  <div className="bg-[#dcf8c6] p-3 rounded-lg rounded-tl-none text-sm text-slate-800 shadow-sm inline-block max-w-[80%]">
@@ -166,11 +166,11 @@ export function ExportOptionsModal({ isOpen, onClose, onSuccess }: ExportOptions
                         </div>
 
                         <div className="flex gap-4">
-                             <button onClick={onClose} className="flex-1 py-3 text-slate-500 font-bold hover:bg-slate-100 rounded-xl transition-colors">Cancelar</button>
+                             <button onClick={onClose} className="flex-1 py-3 text-[#888780] font-bold hover:bg-slate-100 rounded-xl transition-colors">Cancelar</button>
                              <button 
                                 onClick={handleExport}
                                 disabled={isExporting || isDone}
-                                className={`flex-[2] py-3 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${isDone ? 'bg-emerald-500' : 'bg-slate-800 hover:bg-slate-700 hover:-translate-y-0.5'}`}
+                                className={`flex-[2] py-3 rounded-xl font-bold text-[#2C2C2A] shadow-lg flex items-center justify-center gap-2 transition-all ${isDone ? 'bg-emerald-500' : 'bg-[#E8E5E0] hover:bg-[#D4D1CC] hover:-translate-y-0.5'}`}
                              >
                                  {isExporting ? 'Procesando...' : isDone ? <><CheckCircle2 className="w-5 h-5" /> Exportación Exitosa</> : <><Download className="w-5 h-5" /> Ejecutar Exportación</>}
                              </button>
@@ -198,10 +198,10 @@ const MethodButton = ({ active, onClick, icon: Icon, label, desc, color }: Metho
             </div>
             <div>
                 <p className={`text-sm font-bold ${active ? 'text-slate-800' : 'text-slate-600'}`}>{label}</p>
-                <p className="text-[10px] text-slate-400">{desc}</p>
+                <p className="text-[10px] text-[#888780]">{desc}</p>
             </div>
         </div>
-        {active && <div className={`w-1.5 h-1.5 rounded-full bg-slate-800`} />}
+        {active && <div className={`w-1.5 h-1.5 rounded-full bg-[#E8E5E0]`} />}
     </button>
 );
 
@@ -215,10 +215,10 @@ const Header = ({ icon: Icon, title, color }: HeaderProps) => (
 
 const ContentPreview = ({ items }: { items: string[] }) => (
     <div className="mt-6">
-        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">📋 Contenido Incluido</h4>
+        <h4 className="text-xs font-bold text-[#888780] uppercase tracking-widest mb-3">📋 Contenido Incluido</h4>
         <div className="grid grid-cols-2 gap-2">
             {items.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+                <div key={`${item}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500" /> {item}
                 </div>
             ))}
@@ -234,9 +234,9 @@ const Chip = ({ text }: { text: string }) => (
 
 const SecurityToggle = ({ label, checked }: { label: string, checked?: boolean }) => (
     <label className="flex items-center gap-2 cursor-pointer select-none">
-        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${checked ? 'bg-slate-800 border-slate-800' : 'border-slate-400'}`}>
-            {checked && <CheckCircle2 className="w-3 h-3 text-white" />}
+        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${checked ? 'bg-[#E8E5E0] border-[#D4D1CC]' : 'border-slate-400'}`}>
+            {checked && <CheckCircle2 className="w-3 h-3 text-[#2C2C2A]" />}
         </div>
-        <span className="text-xs font-bold text-slate-500">{label}</span>
+        <span className="text-xs font-bold text-[#888780]">{label}</span>
     </label>
 );

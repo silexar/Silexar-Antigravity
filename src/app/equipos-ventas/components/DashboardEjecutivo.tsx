@@ -140,7 +140,7 @@ export const DashboardEjecutivo = () => {
           <DailyActivityTracker />
 
           {/* Pipeline Kanban Board */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-[#F0EDE8] rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <PipelineKanban />
           </div>
 

@@ -94,9 +94,9 @@ class TIER0QualityValidator {
     generatedTests?: Record<string, unknown>;
   } = {}
   private logger = {
-    info: (message: string) => console.log(`[INFO] ${new Date().toISOString()} ${message}`),
-    error: (message: string) => console.error(`[ERROR] ${new Date().toISOString()} ${message}`),
-    warn: (message: string) => console.warn(`[WARN] ${new Date().toISOString()} ${message}`)
+    info: (message: string) => .toISOString()} ${message}`),
+    error: (message: string) => .toISOString()} ${message}`),
+    warn: (message: string) => .toISOString()} ${message}`)
   }
 
   /**
@@ -152,14 +152,9 @@ class TIER0QualityValidator {
     try {
       const coverage = await testCoverageAnalyzer.analyzeCoverage()
       
-      console.log(`   📈 Test Coverage: ${coverage.coveragePercentage.toFixed(1)}%`)
-      console.log(`   📁 Total Files: ${coverage.totalFiles}`)
-      console.log(`   ✅ Tested Files: ${coverage.testedFiles}`)
-      console.log(`   🚨 Critical Uncovered: ${coverage.criticalUncovered.length}`)
-      
+      }%`)
       return coverage
     } catch (error) {
-      console.error('   ❌ Test coverage analysis failed:', error)
       return { coveragePercentage: 0, error: (error as Error).message }
     }
   }
@@ -171,14 +166,11 @@ class TIER0QualityValidator {
     try {
       const documentation = await jsDocCoverageAnalyzer.analyzeCoverage()
       
-      console.log(`   📚 Documentation Coverage: ${documentation.coveragePercentage.toFixed(1)}%`)
-      console.log(`   📄 Total Files: ${documentation.totalFiles}`)
-      console.log(`   ✅ Documented Files: ${documentation.documentedFiles}`)
-      console.log(`   🎯 Quality Score: ${documentation.qualityScore.toFixed(1)}/100`)
+      }%`)
+      }/100`)
       
       return documentation
     } catch (error) {
-      console.error('   ❌ Documentation analysis failed:', error)
       return { coveragePercentage: 0, qualityScore: 0, error: (error as Error).message }
     }
   }
@@ -190,19 +182,16 @@ class TIER0QualityValidator {
     try {
       const testGeneration = await automatedTestGenerator.generateTests()
       
-      console.log(`   🤖 Tests Generated: ${testGeneration.generatedTests.length}`)
-      console.log(`   📈 Coverage Improvement: +${testGeneration.coverageImprovement.toFixed(1)}%`)
-      console.log(`   🎯 Estimated New Coverage: ${testGeneration.estimatedCoverage.toFixed(1)}%`)
+      }%`)
+      }%`)
       
       // Optionally write the generated tests
       if (process.argv.includes('--write-tests')) {
         await automatedTestGenerator.writeTests(testGeneration.generatedTests)
-        console.log(`   ✅ Tests written to filesystem`)
-      }
+        }
       
       return testGeneration
     } catch (error) {
-      console.error('   ❌ Test generation failed:', error)
       return { generatedTests: [], coverageImprovement: 0, error: (error as Error).message }
     }
   }
@@ -215,14 +204,10 @@ class TIER0QualityValidator {
       performanceMonitor.initialize()
       const performance = await performanceMonitor.generateReport()
       
-      console.log(`   ⚡ Performance Score: ${performance.overallScore}/100`)
-      console.log(`   🎯 LCP: ${performance.coreWebVitals.lcp.value}ms (${performance.coreWebVitals.lcp.rating})`)
-      console.log(`   📊 CLS: ${performance.coreWebVitals.cls.value} (${performance.coreWebVitals.cls.rating})`)
-      console.log(`   🔧 Components Analyzed: ${performance.componentMetrics.length}`)
-      
+      `)
+      `)
       return performance
     } catch (error) {
-      console.error('   ❌ Performance analysis failed:', error)
       return { overallScore: 0, componentMetrics: [], error: (error as Error).message }
     }
   }
@@ -234,14 +219,8 @@ class TIER0QualityValidator {
     try {
       const qualityGates = await qualityGatesSystem.runQualityGates()
       
-      console.log(`   🛡️ Overall Score: ${qualityGates.overallScore}/100`)
-      console.log(`   ✅ Passed Gates: ${qualityGates.summary.passedGates}/${qualityGates.summary.totalGates}`)
-      console.log(`   ❌ Failed Gates: ${qualityGates.summary.failedGates}`)
-      console.log(`   🚫 Blockers: ${qualityGates.blockers.length}`)
-      
       return qualityGates
     } catch (error) {
-      console.error('   ❌ Quality gates failed:', error)
       return { passed: false, overallScore: 0, summary: { passedGates: 0, totalGates: 0 }, error: (error as Error).message }
     }
   }
@@ -460,10 +439,7 @@ class TIER0QualityValidator {
     const markdownContent = this.generateMarkdownReport(report)
     await fs.writeFile(markdownPath, markdownContent, 'utf-8')
 
-    console.log(`📄 Reports exported:`)
-    console.log(`   📊 JSON: ${jsonPath}`)
-    console.log(`   📝 Markdown: ${markdownPath}`)
-  }
+    }
 
   /**
    * Generate markdown report
@@ -524,30 +500,19 @@ ${rec.actions.map(action => `- ${action}`).join('\n')}
    * Display console summary
    */
   displaySummary(report: TIER0QualityReport): void {
-    console.log('\n' + '='.repeat(60))
-    console.log('🏆 TIER 0 QUALITY VALIDATION SUMMARY')
-    console.log('='.repeat(60))
+    )
+    )
     
-    console.log(`📊 Overall Score: ${report.overallScore}/100`)
-    console.log(`🎯 TIER 0 Compliance: ${report.tier0Compliance ? '✅ PASSED' : '❌ FAILED'}`)
-    console.log(`🏥 Health Status: ${report.summary.overallHealth.toUpperCase()}`)
-    console.log(`🚀 Production Ready: ${report.summary.readyForProduction ? '✅ YES' : '❌ NO'}`)
-    
-    console.log('\n📈 METRICS BREAKDOWN:')
-    console.log(`   Test Coverage: ${report.summary.testCoverageScore.toFixed(1)}% ${report.summary.tier0Requirements.testCoverage.passed ? '✅' : '❌'}`)
-    console.log(`   Documentation: ${report.summary.documentationScore.toFixed(1)}% ${report.summary.tier0Requirements.documentation.passed ? '✅' : '❌'}`)
-    console.log(`   Performance: ${report.summary.performanceScore}/100 ${report.summary.tier0Requirements.performance.passed ? '✅' : '❌'}`)
-    console.log(`   Quality Gates: ${report.summary.qualityGatesScore}/100 ${report.summary.tier0Requirements.qualityGates.passed ? '✅' : '❌'}`)
-    
+    }`)
+    }% ${report.summary.tier0Requirements.testCoverage.passed ? '✅' : '❌'}`)
+    }% ${report.summary.tier0Requirements.documentation.passed ? '✅' : '❌'}`)
     if (report.recommendations.length > 0) {
-      console.log('\n🎯 TOP RECOMMENDATIONS:')
       report.recommendations.slice(0, 3).forEach((rec, index) => {
-        console.log(`   ${index + 1}. ${rec.title} (${rec.priority.toUpperCase()}) - ${rec.effort}h`)
+        }) - ${rec.effort}h`)
       })
     }
     
-    console.log(`\n⏱️ Total Effort Required: ${report.actionPlan.estimatedTotalEffort} hours`)
-    console.log('='.repeat(60))
+    )
   }
 }
 
@@ -570,7 +535,6 @@ async function main() {
     process.exit(report.tier0Compliance ? 0 : 1)
     
   } catch (error) {
-    console.error('💥 TIER 0 Quality Validation failed:', error)
     process.exit(1)
   }
 }

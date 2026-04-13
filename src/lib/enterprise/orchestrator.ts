@@ -10,7 +10,7 @@
  * @reliability 99.999% service coordination with global intelligence
  */
 
-import { auditLogger } from '@/lib/security/audit-logger'
+import { auditLogger, logAuth, logError } from '@/lib/security/audit-logger'
 import { logger } from '@/lib/observability';
 import { enterpriseCache } from './cache-manager'
 import { globalConfig } from './global-config'
@@ -240,7 +240,7 @@ export class EnterpriseOrchestrator {
         this.startAutomationEngine()
       }
 
-      await auditLogger.logAuth('Enterprise Orchestrator initialized', undefined, {
+      logAuth('Enterprise Orchestrator initialized', undefined, {
         event: 'ORCHESTRATOR_INIT',
         config: {
           mode: this.config.mode,
@@ -254,7 +254,7 @@ export class EnterpriseOrchestrator {
 
     } catch (error) {
       logger.error('❌ Failed to initialize Enterprise Orchestrator:', error instanceof Error ? error : undefined)
-      await auditLogger.logError('Orchestrator initialization failed', error as Error)
+      logError('Orchestrator initialization failed', error as Error)
       throw error
     }
   }
@@ -336,7 +336,7 @@ export class EnterpriseOrchestrator {
       reason
     })
 
-    await auditLogger.logAuth('Service scaled', undefined, {
+    logAuth('Service scaled', undefined, {
       event: 'SERVICE_SCALED',
       serviceId,
       oldReplicas,
@@ -402,7 +402,7 @@ export class EnterpriseOrchestrator {
 
     await this.logEvent('service-stop', serviceId, 'info', `Service stopped`, { reason })
 
-    await auditLogger.logAuth('Service stopped', undefined, {
+    logAuth('Service stopped', undefined, {
       event: 'SERVICE_STOPPED',
       serviceId,
       reason
@@ -750,7 +750,7 @@ export class EnterpriseOrchestrator {
       deployment.status = 'failed'
       deployment.endTime = Date.now()
 
-      await auditLogger.logError('Deployment failed', error as Error, { deploymentId })
+      logError('Deployment failed', error as Error, { deploymentId })
 
       // Rollback if enabled
       if (this.config.deployment.rollbackEnabled) {

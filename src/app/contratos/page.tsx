@@ -9,8 +9,11 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
+import apiClient from '@/lib/api/client';
 import { 
   FileText, 
   Search, 
@@ -129,6 +132,67 @@ const formatCurrency = (value: number, currency: string = 'CLP') => {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// CONTRATO ROW — extracted to avoid duplication in virtual list
+// ═══════════════════════════════════════════════════════════════
+
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+
+function ContratoRow({ contrato, router }: { contrato: Contrato; router: AppRouterInstance }) {
+  return (
+    <>
+      <div className="flex items-center gap-4">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-500 shadow-md">
+          <FileText className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-sm text-indigo-600">{contrato.numeroContrato}</span>
+            <span className="px-2 py-0.5 rounded text-xs bg-slate-100 text-slate-600">
+              {contrato.tipoContrato}
+            </span>
+          </div>
+          <h3 className="font-medium text-slate-800 mt-1">{contrato.titulo}</h3>
+          <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
+            <span className="flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5" />
+              {contrato.clienteNombre}
+            </span>
+            {contrato.ejecutivoNombre && (
+              <span className="flex items-center gap-1">
+                <User className="w-3.5 h-3.5" />
+                {contrato.ejecutivoNombre}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-6">
+        <div className="text-sm text-slate-600">
+          <div className="flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            {new Date(contrato.fechaInicio).toLocaleDateString('es-CL')} - {new Date(contrato.fechaFin).toLocaleDateString('es-CL')}
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="font-bold text-lg text-slate-800">{formatCurrency(contrato.valorTotalNeto)}</p>
+          <p className="text-xs text-slate-400">{contrato.moneda}</p>
+        </div>
+        <ProgressBar percentage={contrato.porcentajeEjecutado} />
+        <StatusBadge estado={contrato.estado} />
+        <div className="flex gap-2">
+          <button onClick={() => router.push(`/contratos/${contrato.id}`)} className="p-2 rounded-lg hover:bg-indigo-50 text-indigo-500">
+            <Eye className="w-4 h-4" />
+          </button>
+          <button onClick={() => router.push(`/contratos/${contrato.id}/editar`)} className="p-2 rounded-lg hover:bg-amber-50 text-amber-500">
+            <Edit3 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
@@ -139,26 +203,36 @@ export default function ContratosPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterEstado, setFilterEstado] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
+
+  // Virtual list — only activates when list exceeds 50 items
+  const listContainerRef = useRef<HTMLDivElement>(null)
+  const rowVirtualizer = useVirtualizer({
+    count: contratos.length,
+    getScrollElement: () => listContainerRef.current,
+    estimateSize: () => 90, // estimated row height in px
+    overscan: 5,
+    enabled: contratos.length > 50,
+  })
 
   const fetchContratos = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
-        ...(search && { search }),
+        ...(debouncedSearch && { search: debouncedSearch }),
         ...(filterEstado && { estado: filterEstado })
       });
-      const response = await fetch(`/api/contratos?${params}`);
-      const data = await response.json();
-      if (data.success) {
+      const { data } = await apiClient.get<{ data: typeof contratos; stats: typeof stats }>(`/api/contratos?${params}`);
+      if (data?.data) {
         setContratos(data.data);
         setStats(data.stats);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* handled by apiClient */ void error;
     } finally {
       setLoading(false);
     }
-  }, [search, filterEstado]);
+  }, [debouncedSearch, filterEstado]);
 
   useEffect(() => { fetchContratos(); }, [fetchContratos]);
 
@@ -239,6 +313,7 @@ export default function ContratosPage() {
               <input
                 type="text"
                 placeholder="Buscar contratos..."
+                aria-label="Buscar contratos"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full rounded-xl py-3 pl-12 pr-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] border-none outline-none focus:ring-2 focus:ring-indigo-400/50 text-slate-700"
@@ -260,8 +335,17 @@ export default function ContratosPage() {
         {/* Lista de contratos */}
         <NeuromorphicCard className="overflow-hidden">
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <RefreshCw className="w-8 h-8 animate-spin text-indigo-500" />
+            <div className="space-y-4 p-4">
+              {[1, 2, 3, 4].map(i => (
+                <div key={`skeleton-${i}`} className="flex items-center gap-4 p-4 rounded-xl">
+                  <div className="w-12 h-12 rounded-xl animate-pulse bg-[#E8E5E0]" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-1/3" />
+                    <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-1/2" />
+                  </div>
+                  <div className="h-6 w-20 animate-pulse bg-[#E8E5E0] rounded-full" />
+                </div>
+              ))}
             </div>
           ) : contratos.length === 0 ? (
             <div className="text-center py-12">
@@ -269,69 +353,42 @@ export default function ContratosPage() {
               <h3 className="text-xl font-medium text-slate-600">No hay contratos</h3>
             </div>
           ) : (
-            <div className="space-y-4">
-              {contratos.map((contrato) => (
-                <div key={contrato.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-500 shadow-md">
-                      <FileText className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm text-indigo-600">{contrato.numeroContrato}</span>
-                        <span className="px-2 py-0.5 rounded text-xs bg-slate-100 text-slate-600">
-                          {contrato.tipoContrato}
-                        </span>
+            // Virtual list: scrollable container with fixed height when >50 items
+            <div
+              ref={listContainerRef}
+              className="space-y-4"
+              style={contratos.length > 50 ? { height: '600px', overflowY: 'auto' } : undefined}
+            >
+              {contratos.length > 50 ? (
+                // Virtualized render — only DOM nodes for visible rows
+                <div style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}>
+                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                    const contrato = contratos[virtualRow.index]
+                    return (
+                      <div
+                        key={contrato.id}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                        className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors"
+                      >
+                        <ContratoRow contrato={contrato} router={router} />
                       </div>
-                      <h3 className="font-medium text-slate-800 mt-1">{contrato.titulo}</h3>
-                      <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
-                        <span className="flex items-center gap-1">
-                          <Building2 className="w-3.5 h-3.5" />
-                          {contrato.clienteNombre}
-                        </span>
-                        {contrato.ejecutivoNombre && (
-                          <span className="flex items-center gap-1">
-                            <User className="w-3.5 h-3.5" />
-                            {contrato.ejecutivoNombre}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-6">
-                    {/* Fechas */}
-                    <div className="text-sm text-slate-600">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        {new Date(contrato.fechaInicio).toLocaleDateString('es-CL')} - {new Date(contrato.fechaFin).toLocaleDateString('es-CL')}
-                      </div>
-                    </div>
-
-                    {/* Valor */}
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-800">{formatCurrency(contrato.valorTotalNeto)}</p>
-                      <p className="text-xs text-slate-400">{contrato.moneda}</p>
-                    </div>
-
-                    {/* Progreso */}
-                    <ProgressBar percentage={contrato.porcentajeEjecutado} />
-
-                    {/* Estado */}
-                    <StatusBadge estado={contrato.estado} />
-
-                    {/* Acciones */}
-                    <div className="flex gap-2">
-                      <button onClick={() => router.push(`/contratos/${contrato.id}`)} className="p-2 rounded-lg hover:bg-indigo-50 text-indigo-500">
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => router.push(`/contratos/${contrato.id}/editar`)} className="p-2 rounded-lg hover:bg-amber-50 text-amber-500">
-                        <Edit3 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
+                    )
+                  })}
                 </div>
-              ))}
+              ) : (
+                // Standard render for ≤50 items — no virtualization overhead
+                contratos.map((contrato) => (
+                  <div key={contrato.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors">
+                    <ContratoRow contrato={contrato} router={router} />
+                  </div>
+                ))
+              )}
             </div>
           )}
         </NeuromorphicCard>

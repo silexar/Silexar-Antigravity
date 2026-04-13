@@ -301,7 +301,7 @@ export function ContinuousImprovementModule({ onBack }: ContinuousImprovementMod
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                        {getTypeIcon((improvement as any).type)}
+                        {getTypeIcon((improvement as unknown).type)}
                         <span className="text-white text-sm font-medium">
                           {improvement.title}
                         </span>
@@ -335,7 +335,7 @@ export function ContinuousImprovementModule({ onBack }: ContinuousImprovementMod
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                        {getTypeIcon((selectedImprovement as any).type)}
+                        {getTypeIcon((selectedImprovement as unknown).type)}
                         <div>
                           <CardTitle className="text-white">{selectedImprovement.title}</CardTitle>
                           <CardDescription className="text-purple-200">
@@ -358,19 +358,19 @@ export function ContinuousImprovementModule({ onBack }: ContinuousImprovementMod
                       <div className="grid grid-cols-3 gap-4">
                         <div className="text-center">
                           <div className="text-2xl font-bold text-yellow-400">
-                            +{(selectedImprovement as any).estimatedImpact?.performance}%
+                            +{(selectedImprovement as unknown).estimatedImpact?.performance}%
                           </div>
                           <div className="text-purple-300 text-sm">Performance</div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-red-400">
-                            +{(selectedImprovement as any).estimatedImpact?.security}%
+                            +{(selectedImprovement as unknown).estimatedImpact?.security}%
                           </div>
                           <div className="text-purple-300 text-sm">Security</div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-blue-400">
-                            +{(selectedImprovement as any).estimatedImpact?.quality}%
+                            +{(selectedImprovement as unknown).estimatedImpact?.quality}%
                           </div>
                           <div className="text-purple-300 text-sm">Quality</div>
                         </div>
@@ -384,7 +384,7 @@ export function ContinuousImprovementModule({ onBack }: ContinuousImprovementMod
                       <h4 className="text-white font-medium mb-3">Archivos Modificados</h4>
                       <div className="space-y-2">
                         {(selectedImprovement.codeChanges ?? []).map((file: string, index: number) => (
-                          <div key={index} className="flex items-center gap-2 text-sm">
+                          <div key={`${file}-${index}`} className="flex items-center gap-2 text-sm">
                             <Code className="h-3 w-3 text-purple-400" />
                             <span className="text-purple-200">{file}</span>
                           </div>
@@ -434,22 +434,22 @@ export function ContinuousImprovementModule({ onBack }: ContinuousImprovementMod
                         {testResults.map((test) => (
                           <div key={test.id} className="flex items-center justify-between p-3 rounded-lg bg-purple-900/20">
                             <div className="flex items-center gap-3">
-                              {(test as any).status === 'running' && <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />}
+                              {(test as unknown).status === 'running' && <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />}
                               {test.status === 'passed' && <CheckCircle className="h-4 w-4 text-green-500" />}
                               {test.status === 'failed' && <AlertTriangle className="h-4 w-4 text-red-500" />}
                               <div>
-                                <div className="text-white font-medium">{(test as any).name}</div>
+                                <div className="text-white font-medium">{(test as unknown).name}</div>
                                 <div className="text-purple-300 text-sm">{test.details}</div>
                               </div>
                             </div>
                             <div className="text-purple-400 text-sm">
-                              {(test as any).duration > 0 && `${((test as any).duration / 1000).toFixed(1)}s`}
+                              {(test as unknown).duration > 0 && `${((test as unknown).duration / 1000).toFixed(1)}s`}
                             </div>
                           </div>
                         ))}
                       </div>
 
-                      {(selectedImprovement as any).status === 'ready' && !isDeploying && (
+                      {(selectedImprovement as unknown).status === 'ready' && !isDeploying && (
                         <Alert className="mt-4 border-green-500/20 bg-green-950/30">
                           <CheckCircle className="h-4 w-4 text-green-500" />
                           <AlertTitle className="text-green-400">Tests Completados Exitosamente</AlertTitle>

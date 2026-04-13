@@ -44,7 +44,7 @@ const MLPredictiveDashboard: React.FC<MLPredictiveDashboardProps> = ({ className
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {metrics.map((metric, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                    <Card key={`${metric}-${index}`} className="hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium text-gray-500">
                                 {metric.label}

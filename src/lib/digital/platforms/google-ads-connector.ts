@@ -261,7 +261,7 @@ export class GoogleAdsConnector {
         payload
       )
 
-      const campaignId = response.results[0].resourceName.split('/').pop()
+      const campaignId = ((response as GoogleAdsApiResponse).results[0]?.resourceName ?? '').split('/').pop()
       
       // Aplicar targeting si está definido
       if (validatedCampaign.targeting) {
@@ -370,7 +370,7 @@ export class GoogleAdsConnector {
         { query }
       )
 
-      return this.parseRecommendations(response.results)
+      return this.parseRecommendations((response as GoogleAdsApiResponse).results as Parameters<typeof this.parseRecommendations>[0])
       
     } catch (error) {
       logger.error('Error obteniendo recomendaciones:', error instanceof Error ? error : undefined)

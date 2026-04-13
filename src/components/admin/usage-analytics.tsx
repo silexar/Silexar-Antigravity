@@ -292,7 +292,7 @@ export function UsageAnalytics() {
             const intensity = Math.random()
             return (
               <div
-                key={i}
+                key={`day-${i}`}
                 className={`h-6 rounded ${
                   intensity > 0.8 ? 'bg-cyan-400' :
                   intensity > 0.6 ? 'bg-cyan-500/70' :

@@ -1013,7 +1013,7 @@ SP002,"Tech Solutions","00:20"`
                   {(testResult.errors.length > 0 || testResult.warnings.length > 0) && (
                     <div className="space-y-3">
                       {testResult.errors.map((error, index) => (
-                        <div key={index} className="p-3 border border-red-500 bg-red-500/10 rounded-lg">
+                        <div key={error.field} className="p-3 border border-red-500 bg-red-500/10 rounded-lg">
                           <div className="flex items-center gap-2">
                             <XCircle className="h-4 w-4 text-red-400" />
                             <span className="text-red-400 font-medium">Error</span>
@@ -1030,7 +1030,7 @@ SP002,"Tech Solutions","00:20"`
                       ))}
                       
                       {testResult.warnings.map((warning, index) => (
-                        <div key={index} className="p-3 border border-yellow-500 bg-yellow-500/10 rounded-lg">
+                        <div key={warning.field} className="p-3 border border-yellow-500 bg-yellow-500/10 rounded-lg">
                           <div className="flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4 text-yellow-400" />
                             <span className="text-yellow-400 font-medium">Advertencia</span>

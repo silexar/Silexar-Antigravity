@@ -189,7 +189,7 @@ const HomeTab = ({ role }: { role: MobileRole }) => (
         </h4>
         <div className="space-y-2">
           {MOCK_NOTIFICATIONS.map((n, i) => (
-            <div key={i} className={`text-xs p-2.5 rounded-xl border ${
+            <div key={`${n}-${i}`} className={`text-xs p-2.5 rounded-xl border ${
               n.type === 'warning' ? 'bg-red-50 border-red-100 text-red-700' :
               n.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
               'bg-blue-50 border-blue-100 text-blue-700'
@@ -351,7 +351,7 @@ const ActivityTab = () => (
       </h4>
       <div className="space-y-2">
         {MOCK_AGENDA.map((ev, i) => (
-          <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+          <div key={`${ev}-${i}`} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
             <div className={`w-1 h-8 rounded-full ${TYPE_COLORS[ev.type] || 'bg-slate-300'}`} />
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-slate-800 truncate">{ev.title}</p>
@@ -374,7 +374,7 @@ const TeamTab = ({ role }: { role: MobileRole }) => (
       </h4>
       <div className="space-y-2">
         {MOCK_TEAM_MEMBERS.map((m, i) => (
-          <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 active:bg-slate-50 transition-colors">
+          <div key={`${m}-${i}`} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 active:bg-slate-50 transition-colors">
             <div className={`w-2 h-2 rounded-full ${m.status === 'active' ? 'bg-emerald-400' : 'bg-slate-300'}`} />
             <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-500">
               #{i + 1}
@@ -464,7 +464,7 @@ const MoreTabContent = ({ onToggleDark, isDarkMode, onOpenSubView }: { onToggleD
       </h4>
       <div className="space-y-2">
         {MOCK_NOTIFICATIONS.map((n, i) => (
-          <div key={i} className={`p-3 rounded-xl border text-xs ${
+          <div key={`${n}-${i}`} className={`p-3 rounded-xl border text-xs ${
             n.type === 'warning' ? 'bg-red-50 border-red-100 text-red-700' :
             n.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
             'bg-blue-50 border-blue-100 text-blue-700'
@@ -485,7 +485,7 @@ const MoreTabContent = ({ onToggleDark, isDarkMode, onOpenSubView }: { onToggleD
         { label: 'Forecast Colaborativo', icon: PieChart, color: 'text-blue-500' },
         { label: 'Seguridad & RBAC', icon: Shield, color: 'text-red-500' },
       ].map((link, i) => (
-        <button key={i} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-slate-50 last:border-b-0 active:bg-slate-50 transition-colors">
+        <button key={`${link}-${i}`} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-slate-50 last:border-b-0 active:bg-slate-50 transition-colors">
           <link.icon size={16} className={link.color} />
           <span className="text-xs font-semibold text-slate-700 flex-1 text-left">{link.label}</span>
           <ChevronRight size={14} className="text-slate-300" />
@@ -504,7 +504,7 @@ const MoreTabContent = ({ onToggleDark, isDarkMode, onOpenSubView }: { onToggleD
         { key: 'heatmap' as MobileSubView, label: 'Mi Actividad', icon: Activity, color: 'text-green-500' },
         { key: 'objections' as MobileSubView, label: 'Objection Handler', icon: Shield, color: 'text-rose-500' },
       ].map((link, i) => (
-        <button key={i} onClick={() => onOpenSubView(link.key)}
+        <button key={`${link}-${i}`} onClick={() => onOpenSubView(link.key)}
           className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-slate-50 last:border-b-0 active:bg-slate-50 transition-colors">
           <link.icon size={16} className={link.color} />
           <span className="text-xs font-semibold text-slate-700 flex-1 text-left">{link.label}</span>
@@ -522,7 +522,7 @@ const MoreTabContent = ({ onToggleDark, isDarkMode, onOpenSubView }: { onToggleD
         { key: 'kam-health' as MobileSubView, label: 'Account Health', icon: Heart, color: 'text-pink-500' },
         { key: 'kam-succession' as MobileSubView, label: 'Succession & Flight Risk', icon: ShieldAlert, color: 'text-red-500' },
       ].map((link, i) => (
-        <button key={i} onClick={() => onOpenSubView(link.key)}
+        <button key={`${link}-${i}`} onClick={() => onOpenSubView(link.key)}
           className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-slate-50 last:border-b-0 active:bg-slate-50 transition-colors">
           <link.icon size={16} className={link.color} />
           <span className="text-xs font-semibold text-slate-700 flex-1 text-left">{link.label}</span>
@@ -543,18 +543,22 @@ export const MobileSalesCommand = () => {
   const [subView, setSubView] = useState<MobileSubView>('');
   const notifCount = MOCK_NOTIFICATIONS.length;
 
-  const ROLE_LABELS: Record<MobileRole, string> = {
-    ejecutivo: 'Ejecutivo',
-    manager: 'Manager',
-    vp: 'VP',
-    kam: 'KAM',
+  // Safe function to prevent object injection
+  const getRoleLabel = (r: MobileRole): string => {
+    switch (r) {
+      case 'ejecutivo': return 'Ejecutivo';
+      case 'manager': return 'Manager';
+      case 'vp': return 'VP';
+      case 'kam': return 'KAM';
+      default: return 'Ejecutivo';
+    }
   };
 
   return (
     <div className="max-w-md mx-auto bg-slate-50 min-h-[700px] rounded-3xl shadow-2xl border border-slate-200 overflow-hidden relative flex flex-col">
 
       {/* ──── STATUS BAR ──── */}
-      <div className="bg-slate-900 text-white px-5 py-2 flex justify-between items-center text-xs">
+      <div className="bg-[#F0EDE8] text-white px-5 py-2 flex justify-between items-center text-xs">
         <span className="font-semibold">9:41</span>
         <div className="flex items-center gap-1">
           <Smartphone size={10} />
@@ -580,7 +584,7 @@ export const MobileSalesCommand = () => {
                 onClick={() => setShowRolePicker(!showRolePicker)}
                 className="flex items-center gap-1 bg-white/10 rounded-lg px-2 py-1 text-[10px] font-semibold border border-white/10"
               >
-                {ROLE_LABELS[role]}
+                {getRoleLabel(role)}
                 <ChevronDown size={10} />
               </button>
               {/* Notifications */}
@@ -604,7 +608,7 @@ export const MobileSalesCommand = () => {
                     role === r ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  {ROLE_LABELS[r]}
+                  {getRoleLabel(r)}
                 </button>
               ))}
             </div>

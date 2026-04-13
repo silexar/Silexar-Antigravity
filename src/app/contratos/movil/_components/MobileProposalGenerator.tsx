@@ -108,8 +108,8 @@ export function MobileProposalGenerator() {
 
           {/* MEDIOS */}
           <div className="space-y-1.5">
-            {propuesta.medios.map((m, i) => (
-              <div key={i} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
+            {propuesta.medios.map((m) => (
+              <div key={m.nombre} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
                 {m.tipo === 'Radio' ? <Radio className="w-3 h-3 text-blue-500" /> :
                  m.tipo === 'TV' ? <Tv className="w-3 h-3 text-purple-500" /> :
                  <Globe className="w-3 h-3 text-cyan-500" />}
@@ -138,7 +138,7 @@ export function MobileProposalGenerator() {
           <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-100">
             <p className="text-[9px] font-bold text-amber-700 mb-1">Argumentos IA:</p>
             {propuesta.args.map((a, i) => (
-              <p key={i} className="text-[10px] text-amber-600 flex items-start gap-1">
+              <p key={`arg-${i}`} className="text-[10px] text-amber-600 flex items-start gap-1">
                 <ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" /> {a}
               </p>
             ))}

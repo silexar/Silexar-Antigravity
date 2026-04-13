@@ -8,6 +8,7 @@
  * @tier TIER_0_FORTUNE_10
  */
 
+import Image from 'next/image';
 import {
   Home, Users, MessageSquare, BarChart3,
   Bell, User, Menu, Search, Plus
@@ -60,7 +61,7 @@ export function MobileBottomNav({
   const navItems = getNavItems()
 
   return (
-    <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 h-16 bg-slate-900 border-t border-slate-800 z-50 flex items-center justify-around px-2 md:hidden">
+    <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 h-16 bg-[#F0EDE8] border-t border-[#D4D1CC] z-50 flex items-center justify-around px-2 md:hidden">
       {navItems.map(item => {
         const Icon = item.icon
         const isActive = activeTab === item.id
@@ -70,13 +71,13 @@ export function MobileBottomNav({
             key={item.id}
             onClick={() => item.id === 'more' ? onMenuOpen() : onTabChange(item.id)}
             className={`flex flex-col items-center justify-center flex-1 py-2 relative transition-colors ${
-              isActive ? 'text-orange-400' : 'text-slate-500'
+              isActive ? 'text-orange-400' : 'text-[#888780]'
             }`}
           >
             <div className="relative">
               <Icon className="w-6 h-6" />
               {item.id === 'tickets' && unreadNotifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-[#2C2C2A] text-xs rounded-full flex items-center justify-center">
                   {unreadNotifications > 9 ? '9+' : unreadNotifications}
                 </span>
               )}
@@ -118,15 +119,15 @@ export function MobileHeader({
   unreadNotifications = 0
 }: MobileHeaderProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-slate-900/95 backdrop-blur-lg border-b border-slate-800 z-40 flex items-center justify-between px-4 md:hidden">
+    <header className="fixed top-0 left-0 right-0 h-14 bg-[#F0EDE8]/95 backdrop-blur-lg border-b border-[#D4D1CC] z-40 flex items-center justify-between px-4 md:hidden">
       <button 
         onClick={onMenuOpen}
-        className="p-2 -ml-2 text-slate-400 hover:text-white"
+        className="p-2 -ml-2 text-[#888780] hover:text-[#2C2C2A]"
       >
         <Menu className="w-6 h-6" />
       </button>
 
-      <h1 className="text-white font-semibold text-lg absolute left-1/2 -translate-x-1/2">
+      <h1 className="text-[#2C2C2A] font-semibold text-lg absolute left-1/2 -translate-x-1/2">
         {title}
       </h1>
 
@@ -134,7 +135,7 @@ export function MobileHeader({
         {onSearchOpen && (
           <button 
             onClick={onSearchOpen}
-            className="p-2 text-slate-400 hover:text-white"
+            className="p-2 text-[#888780] hover:text-[#2C2C2A]"
           >
             <Search className="w-5 h-5" />
           </button>
@@ -143,7 +144,7 @@ export function MobileHeader({
         {onNotificationsOpen && (
           <button 
             onClick={onNotificationsOpen}
-            className="p-2 text-slate-400 hover:text-white relative"
+            className="p-2 text-[#888780] hover:text-[#2C2C2A] relative"
           >
             <Bell className="w-5 h-5" />
             {unreadNotifications > 0 && (
@@ -154,9 +155,9 @@ export function MobileHeader({
 
         <button className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center overflow-hidden">
           {userAvatar ? (
-            <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
+            <Image src={userAvatar} alt={userName} fill className="object-cover" sizes="32px" />
           ) : (
-            <span className="text-white text-sm font-bold">{userName.charAt(0)}</span>
+            <span className="text-[#2C2C2A] text-sm font-bold">{userName.charAt(0)}</span>
           )}
         </button>
       </div>
@@ -196,14 +197,14 @@ export function MobileSlideMenu({
       />
       
       {/* Menu */}
-      <div className="fixed top-0 left-0 bottom-0 w-72 bg-slate-900 z-50 transform transition-transform duration-300 md:hidden">
+      <div className="fixed top-0 left-0 bottom-0 w-72 bg-[#F0EDE8] z-50 transform transition-transform duration-300 md:hidden">
         {/* User Info */}
-        <div className="p-6 bg-gradient-to-br from-orange-500/20 to-red-500/20 border-b border-slate-800">
+        <div className="p-6 bg-gradient-to-br from-orange-500/20 to-red-500/20 border-b border-[#D4D1CC]">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4">
-            <span className="text-white text-2xl font-bold">{userName.charAt(0)}</span>
+            <span className="text-[#2C2C2A] text-2xl font-bold">{userName.charAt(0)}</span>
           </div>
-          <h3 className="text-white font-semibold text-lg">{userName}</h3>
-          <p className="text-slate-400 text-sm">{userEmail}</p>
+          <h3 className="text-[#2C2C2A] font-semibold text-lg">{userName}</h3>
+          <p className="text-[#888780] text-sm">{userEmail}</p>
           <span className="inline-block mt-2 px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded">
             {userRole}
           </span>
@@ -215,7 +216,7 @@ export function MobileSlideMenu({
             <button
               key={item.id}
               onClick={() => { item.onClick(); onClose(); }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#888780] hover:text-[#2C2C2A] hover:bg-[#E8E5E0] rounded-lg transition-colors"
             >
               {item.icon}
               <span>{item.label}</span>
@@ -226,7 +227,7 @@ export function MobileSlideMenu({
         {/* Close button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-500 hover:text-white"
+          className="absolute top-4 right-4 p-2 text-[#888780] hover:text-[#2C2C2A]"
         >
           ✕
         </button>
@@ -252,8 +253,8 @@ export function MobileFAB({ icon, onClick, label, variant = 'primary' }: MobileF
       onClick={onClick}
       className={`fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95 md:hidden ${
         variant === 'primary' 
-          ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white' 
-          : 'bg-slate-800 text-slate-300 border border-slate-700'
+          ? 'bg-gradient-to-br from-orange-500 to-red-500 text-[#2C2C2A]' 
+          : 'bg-[#E8E5E0] text-[#5F5E5A] border border-[#D4D1CC]'
       }`}
       aria-label={label}
     >

@@ -113,8 +113,8 @@ export function MobileComandoIAView() {
       {/* SUGGESTIONS */}
       {mensajes.length <= 1 && (
         <div className="flex flex-wrap gap-2 pb-3">
-          {SUGERENCIAS.map((s, i) => (
-            <button key={i} onClick={() => enviar(s)}
+          {SUGERENCIAS.map((s) => (
+            <button key={s} onClick={() => enviar(s)}
               className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-[11px] font-bold border border-purple-200 active:scale-95">
               {s}
             </button>
@@ -127,6 +127,7 @@ export function MobileComandoIAView() {
         <input value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && enviar(input)}
           placeholder="Pregunta algo..."
+          aria-label="Pregunta algo"
           className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-purple-400 outline-none" />
         <button onClick={() => enviar(input)} disabled={!input.trim() || pensando}
           className="px-4 py-3 bg-purple-600 text-white rounded-xl active:scale-90 disabled:opacity-50">

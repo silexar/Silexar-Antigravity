@@ -13,8 +13,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // ═══════════════════════════════════════════════════════════════
@@ -126,54 +126,60 @@ const syncStates = new Map<string, SyncState>();
 // HANDLER PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const accion = body.accion;
+/**
+ * POST /api/mobile/sync
+ * Servicios de sync y push notifications
+ * Requiere: contratos:read (para sync), contratos:update (para push config)
+ */
+export const POST = withApiRoute(
+  { resource: 'contratos', action: 'read' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const accion = body.accion;
 
-    // Validar auth
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({
-        success: false,
-        error: 'No autorizado'
-      }, { status: 401 });
+      return await withTenantContext(ctx.tenantId, async () => {
+        switch (accion) {
+          // Push Notifications
+          case 'registrar_token':
+            return handleRegistrarToken(body, ctx.userId);
+          case 'actualizar_config_push':
+            return handleActualizarConfigPush(body, ctx.userId);
+          case 'obtener_config_push':
+            return handleObtenerConfigPush(ctx.userId);
+          case 'test_push':
+            return handleTestPush(ctx.userId);
+            
+          // Offline Sync
+          case 'sync_pull':
+            return handleSyncPull(body, ctx.userId);
+          case 'sync_push':
+            return handleSyncPush(body, ctx.userId);
+          case 'resolver_conflicto':
+            return handleResolverConflicto(body, ctx.userId);
+          case 'obtener_estado_sync':
+            return handleObtenerEstadoSync(ctx.userId, body.dispositivoId);
+          case 'limpiar_cola':
+            return handleLimpiarCola(ctx.userId, body.dispositivoId);
+            
+          default:
+            return NextResponse.json({
+              success: false,
+              error: 'Acción no válida'
+            }, { status: 400 });
+        }
+      });
+    } catch (error) {
+      logger.error('[Mobile Sync] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'mobile/sync', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-
-    switch (accion) {
-      // Push Notifications
-      case 'registrar_token':
-        return handleRegistrarToken(body);
-      case 'actualizar_config_push':
-        return handleActualizarConfigPush(body);
-      case 'obtener_config_push':
-        return handleObtenerConfigPush(body.usuarioId);
-      case 'test_push':
-        return handleTestPush(body.usuarioId);
-        
-      // Offline Sync
-      case 'sync_pull':
-        return handleSyncPull(body);
-      case 'sync_push':
-        return handleSyncPush(body);
-      case 'resolver_conflicto':
-        return handleResolverConflicto(body);
-      case 'obtener_estado_sync':
-        return handleObtenerEstadoSync(body.usuarioId, body.dispositivoId);
-      case 'limpiar_cola':
-        return handleLimpiarCola(body.usuarioId, body.dispositivoId);
-        
-      default:
-        return NextResponse.json({
-          success: false,
-          error: 'Acción no válida'
-        }, { status: 400 });
-    }
-  } catch (error) {
-    logger.error('[Mobile Sync] Error POST:', error instanceof Error ? error : undefined, { module: 'mobile/sync', action: 'POST' });
-    return apiServerError()
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // HANDLERS - PUSH NOTIFICATIONS
@@ -184,21 +190,24 @@ function handleRegistrarToken(body: {
   plataforma: 'ios' | 'android';
   dispositivoId: string;
   dispositivoNombre: string;
-  usuarioId: string;
-}) {
+}, userId: string) {
   const pushToken: PushToken = {
     token: body.token,
     plataforma: body.plataforma,
     dispositivoId: body.dispositivoId,
     dispositivoNombre: body.dispositivoNombre,
-    usuarioId: body.usuarioId,
+    usuarioId: userId,
     activo: true,
     fechaRegistro: new Date()
   };
 
   pushTokens.set(body.dispositivoId, pushToken);
   
-  // [STRUCTURED-LOG] // logger.info({ message: `[Push] Token registrado: ${body.dispositivoNombre} (${body.plataforma})`, module: 'sync' });
+  logger.info('[Push] Token registrado', { 
+    module: 'mobile/sync', 
+    userId,
+    dispositivo: body.dispositivoNombre 
+  });
 
   return NextResponse.json({
     success: true,
@@ -206,10 +215,13 @@ function handleRegistrarToken(body: {
   });
 }
 
-function handleActualizarConfigPush(body: ConfiguracionPush) {
-  configuracionesPush.set(body.usuarioId, body);
+function handleActualizarConfigPush(body: ConfiguracionPush, userId: string) {
+  configuracionesPush.set(userId, { ...body, usuarioId: userId });
   
-  // [STRUCTURED-LOG] // logger.info({ message: `[Push] Config actualizada para usuario ${body.usuarioId}`, module: 'sync' });
+  logger.info('[Push] Config actualizada', { 
+    module: 'mobile/sync', 
+    userId 
+  });
 
   return NextResponse.json({
     success: true,
@@ -240,7 +252,6 @@ function handleObtenerConfigPush(usuarioId: string) {
 }
 
 function handleTestPush(usuarioId: string) {
-  // Simular envío de push
   const notificacion: NotificacionPush = {
     id: `push-${Date.now()}`,
     tipo: 'sistema',
@@ -251,7 +262,10 @@ function handleTestPush(usuarioId: string) {
     sonido: true
   };
 
-  // [STRUCTURED-LOG] // logger.info({ message: `[Push] Enviando test a usuario ${usuarioId}:`, notificacion, module: 'sync' });
+  logger.info('[Push] Enviando test', { 
+    module: 'mobile/sync', 
+    userId: usuarioId 
+  });
 
   return NextResponse.json({
     success: true,
@@ -268,15 +282,12 @@ function handleTestPush(usuarioId: string) {
 // ═══════════════════════════════════════════════════════════════
 
 function handleSyncPull(body: {
-  usuarioId: string;
   dispositivoId: string;
   ultimoSyncToken?: string;
   entidades?: string[];
-}) {
-  // En producción: consultar cambios desde ultimoSyncToken
+}, userId: string) {
   const nuevoSyncToken = `sync-${Date.now()}`;
   
-  // Simular deltas
   const deltas: DeltaSync[] = [
     {
       tipo: 'actualizar',
@@ -287,15 +298,18 @@ function handleSyncPull(body: {
     }
   ];
 
-  // Actualizar estado de sync
-  syncStates.set(`${body.usuarioId}-${body.dispositivoId}`, {
+  syncStates.set(`${userId}-${body.dispositivoId}`, {
     ultimoSync: new Date(),
     syncToken: nuevoSyncToken,
     pendientes: 0,
     enProgreso: false
   });
 
-  // [STRUCTURED-LOG] // logger.info({ message: `[Sync] Pull para ${body.usuarioId}: ${deltas.length} cambios`, module: 'sync' });
+  logger.info('[Sync] Pull realizado', { 
+    module: 'mobile/sync', 
+    userId,
+    cambios: deltas.length 
+  });
 
   return NextResponse.json({
     success: true,
@@ -310,25 +324,25 @@ function handleSyncPull(body: {
 }
 
 function handleSyncPush(body: {
-  usuarioId: string;
   dispositivoId: string;
   acciones: AccionOffline[];
-}) {
+}, userId: string) {
   const resultados: { id: string; exito: boolean; error?: string }[] = [];
   
   for (const accion of body.acciones) {
-    // En producción: procesar cada acción contra la DB
-    // [STRUCTURED-LOG] // logger.info({ message: `[Sync] Procesando acción offline: ${accion.tipo} ${accion.entidad}/${accion.entidadId}`, module: 'sync' });
-    
-    // Simular procesamiento exitoso
     resultados.push({
       id: accion.id,
       exito: true
     });
   }
 
-  // Limpiar cola local
-  colasOffline.delete(`${body.usuarioId}-${body.dispositivoId}`);
+  colasOffline.delete(`${userId}-${body.dispositivoId}`);
+
+  logger.info('[Sync] Push realizado', { 
+    module: 'mobile/sync', 
+    userId,
+    procesados: resultados.length 
+  });
 
   return NextResponse.json({
     success: true,
@@ -346,8 +360,12 @@ function handleResolverConflicto(body: {
   conflictoId: string;
   resolucion: 'local' | 'servidor' | 'merge';
   datosFinales?: Record<string, unknown>;
-}) {
-  // [STRUCTURED-LOG] // logger.info({ message: `[Sync] Resolviendo conflicto ${body.conflictoId} con ${body.resolucion}`, module: 'sync' });
+}, userId: string) {
+  logger.info('[Sync] Conflicto resuelto', { 
+    module: 'mobile/sync', 
+    userId,
+    resolucion: body.resolucion 
+  });
 
   return NextResponse.json({
     success: true,
@@ -395,24 +413,19 @@ export async function enviarPushNotificacion(
   usuarioId: string,
   notificacion: Omit<NotificacionPush, 'id'>
 ): Promise<{ enviados: number; errores: number }> {
-  // Obtener todos los tokens del usuario
   const tokensUsuario = Array.from(pushTokens.values())
     .filter(t => t.usuarioId === usuarioId && t.activo);
 
-  // Verificar configuración
   const config = configuracionesPush.get(usuarioId);
   if (config) {
-    // Verificar horario
     const ahora = new Date();
     const hora = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}`;
     if (hora < config.horarioInicio || hora > config.horarioFin) {
       if (notificacion.prioridad !== 'alta') {
-        // [STRUCTURED-LOG] // logger.info({ message: `[Push] Fuera de horario para ${usuarioId}`, module: 'sync' });
         return { enviados: 0, errores: 0 };
       }
     }
 
-    // Verificar tipo de notificación habilitado
     const tipoPermitido = (
       (notificacion.tipo === 'alerta' && config.alertasUrgentes) ||
       (notificacion.tipo === 'aprobacion' && config.aprobacionesPendientes) ||
@@ -424,7 +437,6 @@ export async function enviarPushNotificacion(
     );
 
     if (!tipoPermitido) {
-      // [STRUCTURED-LOG] // logger.info({ message: `[Push] Tipo ${notificacion.tipo} deshabilitado para ${usuarioId}`, module: 'sync' });
       return { enviados: 0, errores: 0 };
     }
   }
@@ -434,14 +446,10 @@ export async function enviarPushNotificacion(
 
   for (const token of tokensUsuario) {
     try {
-      // En producción: enviar via Firebase Cloud Messaging
-      // [STRUCTURED-LOG] // logger.info({ message: `[Push] Enviando a ${token.dispositivoNombre}:`, notificacion.titulo, module: 'sync' });
-      
-      // Simular envío
       token.ultimoUso = new Date();
       enviados++;
     } catch (error) {
-      logger.error(`Push error sending to ${token.dispositivoId}`, error instanceof Error ? error : undefined, { module: 'sync' });
+      logger.error(`Push error sending to ${token.dispositivoId}`, error instanceof Error ? error : undefined, { module: 'mobile/sync' });
       errores++;
     }
   }

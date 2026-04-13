@@ -177,6 +177,18 @@ export class RedisCache {
       await this.invalidatePattern(pattern);
       return;
     }
+    // Also clear Redis if available
+    const redis = this.getRedis();
+    if (redis) {
+      try {
+        const redisKeys = await redis.keys(this.prefix + '*');
+        if (redisKeys.length > 0) {
+          await redis.del(...redisKeys);
+        }
+      } catch {
+        // Fall through to in-memory clear
+      }
+    }
     this.cache.clear();
     this.stats = {
       hits: 0,
@@ -190,7 +202,25 @@ export class RedisCache {
   }
 
   async exists(key: string): Promise<boolean> {
-    return this.cache.has(key);
+    // Check Redis first
+    const redis = this.getRedis();
+    if (redis) {
+      try {
+        const count = await redis.exists(this.prefix + key);
+        return count > 0;
+      } catch {
+        // Fall through to in-memory
+      }
+    }
+    // In-memory: check existence AND expiry
+    const entry = this.cache.get(key);
+    if (!entry) return false;
+    const ttl = entry.ttl ?? this.config.ttl;
+    if (Date.now() - entry.timestamp > ttl) {
+      this.cache.delete(key);
+      return false;
+    }
+    return true;
   }
 
   async keys(): Promise<string[]> {
@@ -310,11 +340,12 @@ export class RedisCache {
   }
 
   private startCleanupInterval(): void {
-    // Clean up expired entries every minute
+    // Clean up expired entries every minute — use per-entry TTL, fall back to config TTL
     this.cleanupInterval = setInterval(() => {
       const now = Date.now();
       for (const [key, entry] of this.cache.entries()) {
-        if (now - entry.timestamp > this.config.ttl) {
+        const entryTtl = entry.ttl ?? this.config.ttl;
+        if (now - entry.timestamp > entryTtl) {
           this.cache.delete(key);
           this.stats.evictions++;
         }

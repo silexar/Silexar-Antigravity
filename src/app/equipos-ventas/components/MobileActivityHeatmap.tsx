@@ -21,7 +21,9 @@ export function MobileActivityHeatmap() {
     fetch('/api/equipos-ventas/deals?tipo=activity-log')
       .then(r => r.json())
       .then(d => { if (d.success) setLogs(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MobileActivityHeatmap] Failed to load activity log:', error);
+      });
   }, []);
 
   const maxT = Math.max(...logs.map(l => l.total), 1);
@@ -68,7 +70,7 @@ export function MobileActivityHeatmap() {
         <p className="text-[9px] font-bold text-slate-400 mb-1.5">Últimos 30 días</p>
         <div className="flex gap-0.5 flex-wrap">
           {logs.map((l, i) => (
-            <div key={i} className={`w-[14px] h-[14px] rounded-sm ${intensity(l.total)}`} />
+            <div key={`${l}-${i}`} className={`w-[14px] h-[14px] rounded-sm ${intensity(l.total)}`} />
           ))}
         </div>
       </div>

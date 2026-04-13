@@ -182,8 +182,8 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
 
       {expandedFields && (
         <div className="space-y-1">
-          {datosExtraidos.camposDetectados.map((campo, i) => (
-            <DetectedField key={i} campo={campo} />
+          {datosExtraidos.camposDetectados.map((campo) => (
+            <DetectedField key={campo.campo} campo={campo} />
           ))}
         </div>
       )}
@@ -239,6 +239,7 @@ function FieldRow({ icon, label, value, badge, badgeColor, confianza, editing, e
             <input
               value={editValue}
               onChange={(e) => onEditChange?.(e.target.value)}
+              aria-label={label}
               className="flex-1 px-2 py-1 border border-indigo-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               autoFocus
               onKeyDown={(e) => e.key === 'Enter' && onEditConfirm?.()}

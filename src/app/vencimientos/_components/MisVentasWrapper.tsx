@@ -127,9 +127,10 @@ export default function MisVentasWrapper() {
                   }}
                 >
                   <span className="text-xl mr-3 opacity-50 pointer-events-none">🔍</span>
-                  <input 
+                  <input
                     autoFocus
                     placeholder="Buscar clientes, agencias, o programas... (Ej: Coca Cola)"
+                    aria-label="Buscar clientes, agencias o programas"
                     className="flex-1 bg-transparent border-none text-xl font-bold text-gray-800 outline-none placeholder:text-gray-400"
                     onChange={() => {}} // Lógica real de búsqueda se conectaría aquí
                   />

@@ -16,7 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import { formatCurrency } from '@/lib/utils'
+import {
   NeuromorphicCard, 
   NeuromorphicButton 
 } from '@/components/ui/neuromorphic'
@@ -111,12 +112,6 @@ export function RevenueAnalytics() {
     ])
 
     setIsLoading(false)
-  }
-
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
-    return `$${value}`
   }
 
   const getRiskColor = (score: number) => {
@@ -250,13 +245,13 @@ export function RevenueAnalytics() {
                   <div>
                     <p className="text-slate-400 text-xs mb-1">Razones:</p>
                     <ul className="list-disc list-inside text-red-300">
-                      {prediction.reasons.map((r, i) => <li key={i}>{r}</li>)}
+                      {prediction.reasons.map((r, i) => <li key={r}>{r}</li>)}
                     </ul>
                   </div>
                   <div>
                     <p className="text-slate-400 text-xs mb-1">Acciones recomendadas:</p>
                     <ul className="list-disc list-inside text-green-300">
-                      {prediction.recommendedActions.map((a, i) => <li key={i}>{a}</li>)}
+                      {prediction.recommendedActions.map((a, i) => <li key={a}>{a}</li>)}
                     </ul>
                   </div>
                 </div>
@@ -292,7 +287,7 @@ export function RevenueAnalytics() {
                   <td className="py-2 text-white">{cohort.month}</td>
                   <td className="text-center text-slate-400">{cohort.customers}</td>
                   {cohort.retention.map((ret, i) => (
-                    <td key={i} className="text-center">
+                    <td key={`retention-${i}`} className="text-center">
                       <span className={`px-2 py-0.5 rounded text-xs ${
                         ret >= 90 ? 'bg-green-500/20 text-green-400' :
                         ret >= 80 ? 'bg-yellow-500/20 text-yellow-400' :

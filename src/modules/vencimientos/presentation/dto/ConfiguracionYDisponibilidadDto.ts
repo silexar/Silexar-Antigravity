@@ -1,29 +1,16 @@
-// @ts-expect-error — class-validator ships its type declarations under /types/ but
-// does not set the "types" field in package.json, so some tsconfig resolutions
-// cannot locate them automatically. Add "typeRoots" or install a stub if this
-// becomes a CI blocker. The decorators function correctly at runtime.
-import { IsString, IsNotEmpty, IsNumber, Min } from 'class-validator';
+import { z } from 'zod';
 
-export class ValidarDisponibilidadDto {
-  @IsString()
-  @IsNotEmpty()
-  declare programaId: string;
+export const ValidarDisponibilidadSchema = z.object({
+  programaId: z.string().min(1, 'El ID de programa es requerido'),
+  franjaHoraria: z.string().min(1, 'La franja horaria es requerida'),
+});
 
-  @IsString()
-  @IsNotEmpty()
-  declare franjaHoraria: string;
-}
+export type ValidarDisponibilidadDto = z.infer<typeof ValidarDisponibilidadSchema>;
 
-export class ConfigurarTarifarioDto {
-  @IsString()
-  @IsNotEmpty()
-  declare emisoraId: string;
+export const ConfigurarTarifarioSchema = z.object({
+  emisoraId: z.string().min(1, 'El ID de emisora es requerido'),
+  franjaHoraria: z.string().min(1, 'La franja horaria es requerida'),
+  factorRecargo: z.number().min(0.1, 'El factor de recargo debe ser al menos 0.1'),
+});
 
-  @IsString()
-  @IsNotEmpty()
-  declare franjaHoraria: string;
-
-  @IsNumber()
-  @Min(0.1)
-  declare factorRecargo: number;
-}
+export type ConfigurarTarifarioDto = z.infer<typeof ConfigurarTarifarioSchema>;

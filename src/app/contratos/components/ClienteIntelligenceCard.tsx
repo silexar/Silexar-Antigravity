@@ -144,8 +144,8 @@ export function ClienteIntelligenceCard() {
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Preferencias de Medios</p>
           <div className="flex flex-wrap gap-2">
-            {cl.preferencias.map((p, i) => (
-              <span key={i} className="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full flex items-center gap-1">
+            {cl.preferencias.map((p) => (
+              <span key={p} className="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full flex items-center gap-1">
                 {p.includes('Radio') ? <Radio className="w-3 h-3" /> :
                  p.includes('TV') ? <Tv className="w-3 h-3" /> :
                  <Globe className="w-3 h-3" />}
@@ -159,8 +159,8 @@ export function ClienteIntelligenceCard() {
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Historial de Contratos</p>
           <div className="space-y-1.5">
-            {cl.contratos.map((c, i) => (
-              <div key={i} className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg">
+            {cl.contratos.map((c) => (
+              <div key={c.num} className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg">
                 <span className="text-xs font-mono text-indigo-500">{c.num}</span>
                 <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${
                   c.estado === 'activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-200 text-slate-500'
@@ -175,8 +175,8 @@ export function ClienteIntelligenceCard() {
         {/* OPORTUNIDADES */}
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Oportunidades Activas</p>
-          {cl.oportunidades.map((o, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-xl mb-2">
+          {cl.oportunidades.map((o) => (
+            <div key={o.titulo} className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-xl mb-2">
               <ArrowUpRight className="w-4 h-4 text-amber-500" />
               <div className="flex-1">
                 <p className="text-sm font-bold text-slate-800">{o.titulo}</p>

@@ -10,7 +10,7 @@ import { z } from 'zod'
 import { withApiRoute } from '@/lib/api/with-api-route'
 import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
 import { PropiedadesIntegrationAPI } from '../../../modules/propiedades/api/PropiedadesIntegrationAPI'
-import { MockTipoPropiedadRepository, MockValorPropiedadRepository } from '../../../modules/propiedades/infrastructure/repositories/MockPropiedadRepository'
+import { TipoPropiedadDrizzleRepository, ValorPropiedadDrizzleRepository } from '../../../modules/propiedades/infrastructure/repositories/PropiedadesDrizzleRepository'
 import { logger } from '@/lib/observability'
 import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types'
@@ -59,7 +59,7 @@ export const GET = withApiRoute(
 
       const cr = {
         busquedaTexto: searchParams.get('search') || '',
-        estados: searchParams.get('estado') ? [searchParams.get('estado')] : undefined,
+        estados: searchParams.get('estado') ? [searchParams.get('estado') as string] : undefined,
         anuncianteId: searchParams.get('anuncianteId') || undefined,
         pagina: parseInt(searchParams.get('page') || '1', 10),
         tamanoPagina: Math.min(parseInt(searchParams.get('limit') || '20', 10), 100),
@@ -158,8 +158,8 @@ export const POST = withApiRoute(
       // DDD Cross-module property validation
       if (body.propiedadesSeleccionadas && body.propiedadesSeleccionadas.length > 0) {
         const propiedadesAPI = new PropiedadesIntegrationAPI(
-          new MockTipoPropiedadRepository(),
-          new MockValorPropiedadRepository()
+          new TipoPropiedadDrizzleRepository(tenantId),
+          new ValorPropiedadDrizzleRepository(tenantId)
         )
         const validacion = await propiedadesAPI.validarCoherenciaPropiedades(body.propiedadesSeleccionadas)
         if (validacion.isFailure) {
@@ -188,7 +188,6 @@ export const POST = withApiRoute(
       }
       const tipoContratoDomain = tipoMap[body.tipoContrato] ?? 'A'
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const contratoDomain = Contrato.create({
         numero: numeroC,
         anuncianteId: body.anuncianteId || '',

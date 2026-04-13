@@ -357,33 +357,33 @@ export function UserProfile() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Nombre completo</label>
-                <input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                <input type="text" value={profile.name} aria-label="Nombre completo" onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Email</label>
-                <input type="email" value={profile.email} disabled
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
+                <input type="email" value={profile.email} aria-label="Email" disabled
+                  className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Teléfono</label>
-                <input type="tel" value={profile.phone || ''} onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                <input type="tel" value={profile.phone || ''} aria-label="Teléfono" onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Departamento</label>
-                <input type="text" value={profile.department || ''} disabled
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
+                <input type="text" value={profile.department || ''} aria-label="Departamento" disabled
+                  className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Cargo</label>
-                <input type="text" value={profile.position || ''} disabled
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
+                <input type="text" value={profile.position || ''} aria-label="Cargo" disabled
+                  className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
               </div>
               <div>
                 <label className="text-slate-400 text-xs block mb-1">Miembro desde</label>
-                <input type="text" value={profile.createdAt.toLocaleDateString()} disabled
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
+                <input type="text" value={profile.createdAt.toLocaleDateString()} aria-label="Miembro desde" disabled
+                  className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
               </div>
             </div>
           </NeuromorphicCard>
@@ -767,7 +767,7 @@ export function UserProfile() {
             <p className="text-slate-400 text-sm mb-4">Guarda estos códigos en un lugar seguro. Cada código solo se puede usar una vez.</p>
             <div className="grid grid-cols-2 gap-2 mb-4">
               {profile.backupCodes.map((code, i) => (
-                <div key={i} className="p-2 bg-slate-800 rounded text-center font-mono text-white">{code}</div>
+                <div key={`${code}-${i}`} className="p-2 bg-slate-800 rounded text-center font-mono text-white">{code}</div>
               ))}
             </div>
             <div className="flex gap-2">

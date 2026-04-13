@@ -76,7 +76,7 @@ export default function AnalyticsDashboard() {
               { label: 'Tasa Renovación', value: `${KPIs.tasaRenovacion}%`, icon: '🔄', color: 'text-blue-600' },
               { label: 'Clientes Únicos', value: `${KPIs.clientesUnicos}`, icon: '👥', color: 'text-purple-600' }
             ].map((kpi, i) => (
-              <div key={i} className="rounded-xl border border-gray-200 bg-white/70 p-4">
+              <div key={`${kpi}-${i}`} className="rounded-xl border border-gray-200 bg-white/70 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <span>{kpi.icon}</span>
                   <span className="text-xs text-gray-500">{kpi.label}</span>
@@ -94,7 +94,7 @@ export default function AnalyticsDashboard() {
               { label: 'Extensiones Solicitadas', value: `${KPIs.extensionesSolicitadas}`, icon: '🔄' },
               { label: 'Extensiones Aprobadas', value: `${KPIs.extensionesAprobadas} (${Math.round(KPIs.extensionesAprobadas / KPIs.extensionesSolicitadas * 100)}%)`, icon: '✅' }
             ].map((m, i) => (
-              <div key={i} className="rounded-xl border border-gray-200/50 bg-white/3 p-3">
+              <div key={`${m}-${i}`} className="rounded-xl border border-gray-200/50 bg-white/3 p-3">
                 <span className="text-xs text-gray-400">{m.icon} {m.label}</span>
                 <p className="text-sm font-semibold text-gray-800 mt-1">{m.value}</p>
               </div>
@@ -108,7 +108,7 @@ export default function AnalyticsDashboard() {
               <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4">🏆 Ranking de Programas</h3>
               <div className="space-y-3">
                 {TOP_PROGRAMAS.map((prog, i) => (
-                  <div key={i} className="flex items-center gap-3">
+                  <div key={`${prog}-${i}`} className="flex items-center gap-3">
                     <span className="text-lg w-8 text-center">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -142,7 +142,7 @@ export default function AnalyticsDashboard() {
                   const color = em.ocupacion >= 80 ? 'bg-emerald-500' : em.ocupacion >= 60 ? 'bg-emerald-400' : em.ocupacion >= 40 ? 'bg-amber-500' : 'bg-red-500'
                   const label = em.ocupacion >= 80 ? 'Óptimo' : em.ocupacion >= 60 ? 'Saludable' : em.ocupacion >= 40 ? 'Atención' : 'Crítico'
                   return (
-                    <div key={i} className="flex items-center gap-4">
+                    <div key={`${em}-${i}`} className="flex items-center gap-4">
                       <span className={`w-4 h-4 rounded-full ${color} animate-pulse`} />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -191,7 +191,7 @@ export default function AnalyticsDashboard() {
                   const prevOcup = i > 0 ? TENDENCIA_MENSUAL[i - 1].ocupacion : m.ocupacion
                   const delta = m.ocupacion - prevOcup
                   return (
-                    <tr key={i} className="border-b border-gray-200/50">
+                    <tr key={`${m}-${i}`} className="border-b border-gray-200/50">
                       <td className="py-3 text-gray-800 font-medium">{m.mes}</td>
                       <td className="py-3 text-right text-gray-800">{m.ocupacion}%</td>
                       <td className="py-3 px-4">

@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/lib/auth/**/*.ts",
+    "src/lib/db/**/*.ts",
+    "src/lib/security/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/**/__tests__"
+  ]
+}

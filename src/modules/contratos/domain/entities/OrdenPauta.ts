@@ -4,8 +4,6 @@
  * Nivel Fortune 10 - Gestión Empresarial Avanzada
  */
 
-import { EstadoPlanPagos, EstadoPlanPagosEnum } from '../value-objects/EstadoPlanPagos';
-
 export enum SistemaEmision {
   WIDEORBIT = 'wideorbit',
   SARA = 'sara',
@@ -266,7 +264,9 @@ export class OrdenPauta {
     const conflictos: Array<{ especificacion: number; conflicto: string; sugerencia?: string }> = [];
 
     for (let i = 0; i < this._especificaciones.length; i++) {
-      const spec = this._especificaciones[i];
+      // Safe array access using at()
+      const spec = this._especificaciones.at(i);
+      if (!spec) continue;
       
       // Simular validación de inventario (en producción sería llamada real)
       const validacion = await this.simularValidacionInventario(spec);
@@ -317,7 +317,7 @@ export class OrdenPauta {
         if (resultado.success) {
           reintentoExitoso = true;
         }
-      } catch (error) {
+      } catch (_error) {
         // Error ya registrado en enviarASistemaEspecifico
       }
     }
@@ -488,17 +488,20 @@ export class OrdenPauta {
     // Simular delay de red
     await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 500));
 
-    // Simular diferentes tasas de éxito por sistema
-    const tasasExito: Record<SistemaEmision, number> = {
-      [SistemaEmision.WIDEORBIT]: 0.95,
-      [SistemaEmision.SARA]: 0.90,
-      [SistemaEmision.DALET]: 0.85,
-      [SistemaEmision.ENCO]: 0.80,
-      [SistemaEmision.RADIOFORGE]: 0.75,
-      [SistemaEmision.CUSTOM]: 0.70
+    // Simular diferentes tasas de éxito por sistema - safe switch
+    const getTasaExito = (s: SistemaEmision): number => {
+      switch (s) {
+        case SistemaEmision.WIDEORBIT: return 0.95;
+        case SistemaEmision.SARA: return 0.90;
+        case SistemaEmision.DALET: return 0.85;
+        case SistemaEmision.ENCO: return 0.80;
+        case SistemaEmision.RADIOFORGE: return 0.75;
+        case SistemaEmision.CUSTOM: return 0.70;
+        default: return 0.70;
+      }
     };
 
-    const exito = Math.random() < tasasExito[sistema];
+    const exito = Math.random() < getTasaExito(sistema);
 
     if (exito) {
       return {
@@ -542,7 +545,11 @@ export class OrdenPauta {
            ultimoIntento.numero < OrdenPauta.MAX_INTENTOS_ENVIO;
   }
 
-  private generarEspecificacionesRadio(parametros: unknown): EspecificacionPautaProps[] {
+  private generarEspecificacionesRadio(parametros: {
+    horariosPico?: string[];
+    presupuesto: number;
+    duracionCampana: number;
+  }): EspecificacionPautaProps[] {
     // Implementación específica para radio
     return [{
       tipo: TipoEspecificacion.SPOT_RADIO,
@@ -556,7 +563,10 @@ export class OrdenPauta {
     }];
   }
 
-  private generarEspecificacionesTV(parametros: unknown): EspecificacionPautaProps[] {
+  private generarEspecificacionesTV(parametros: {
+    presupuesto: number;
+    duracionCampana: number;
+  }): EspecificacionPautaProps[] {
     // Implementación específica para TV
     return [{
       tipo: TipoEspecificacion.SPOT_TV,
@@ -570,7 +580,10 @@ export class OrdenPauta {
     }];
   }
 
-  private generarEspecificacionesDigital(parametros: unknown): EspecificacionPautaProps[] {
+  private generarEspecificacionesDigital(parametros: {
+    presupuesto: number;
+    duracionCampana: number;
+  }): EspecificacionPautaProps[] {
     // Implementación específica para digital
     return [{
       tipo: TipoEspecificacion.BANNER_DIGITAL,
@@ -584,7 +597,9 @@ export class OrdenPauta {
     }];
   }
 
-  private generarEspecificacionesGenericas(parametros: unknown): EspecificacionPautaProps[] {
+  private generarEspecificacionesGenericas(parametros: {
+    duracionCampana: number;
+  }): EspecificacionPautaProps[] {
     // Implementación genérica
     return [{
       tipo: TipoEspecificacion.SPOT_RADIO,

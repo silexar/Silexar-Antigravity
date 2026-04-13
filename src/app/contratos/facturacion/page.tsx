@@ -324,7 +324,7 @@ export default function FacturacionDashboardPage() {
         <div className="grid grid-cols-4 gap-6 mb-6">
           {kpis.map((kpi, idx) => (
             <motion.div
-              key={idx}
+              key={kpi.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
@@ -456,8 +456,8 @@ export default function FacturacionDashboardPage() {
               </h3>
 
               <div className="space-y-3">
-                {distribucion.map((d, idx) => (
-                  <div key={idx}>
+                {distribucion.map((d) => (
+                  <div key={d.label}>
                     <div className="flex items-center justify-between text-sm mb-1">
                       <span className="text-slate-600">{d.label}</span>
                       <span className="font-semibold text-slate-800">{formatCurrency(d.monto)}</span>

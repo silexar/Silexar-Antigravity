@@ -241,8 +241,8 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center gap-2 mb-8">
       {Array.from({ length: totalSteps }).map((_, i) => (
-        <div 
-          key={i}
+        <div
+          key={`step-${i}`}
           className={`flex items-center ${i < totalSteps - 1 ? 'flex-1' : ''}`}
         >
           <div 

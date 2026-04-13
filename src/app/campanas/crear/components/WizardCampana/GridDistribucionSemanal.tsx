@@ -188,6 +188,7 @@ export function GridDistribucionSemanal({
                 </button>
                 <Input
                   type="text"
+                  aria-label={`Cuñas el ${fullLabel}`}
                   value={cunas[key]}
                   onChange={(e) => handleInputChange('cunas', key, e.target.value)}
                   className="w-full text-center font-bold text-lg h-10 border-0 bg-transparent p-0"
@@ -236,6 +237,7 @@ export function GridDistribucionSemanal({
                 </button>
                 <Input
                   type="text"
+                  aria-label={`Bonificadas el ${fullLabel}`}
                   value={bonificadas[key]}
                   onChange={(e) => handleInputChange('bonificadas', key, e.target.value)}
                   className="w-full text-center font-bold text-lg h-10 border-0 bg-transparent p-0 text-green-700"

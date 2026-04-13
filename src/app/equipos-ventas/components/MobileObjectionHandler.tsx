@@ -37,7 +37,9 @@ export function MobileObjectionHandler() {
     fetch('/api/equipos-ventas/deals?tipo=objeciones')
       .then(r => r.json())
       .then(d => { if (d.success) setObjs(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[MobileObjectionHandler] Failed to load objeciones:', error);
+      });
   }, []);
 
   const filtered = objs.filter(o =>

@@ -606,7 +606,7 @@ export function GoalsCommissionEngine({ vendedores, equipos }: GoalsCommissionEn
                       <h4 className="text-white font-medium">Detalle de Cálculo:</h4>
                       {calculo.detalleCalculo.map((detalle, index) => (
                         <div 
-                          key={index}
+                          key={`${detalle}-${index}`}
                           className="flex items-center justify-between p-2 bg-slate-800/30 rounded"
                         >
                           <div className="flex items-center gap-2">
@@ -745,9 +745,10 @@ export function GoalsCommissionEngine({ vendedores, equipos }: GoalsCommissionEn
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {vendedores.slice(0, 5).map((vendedor, index) => (
-                    <div 
-                      key={vendedor.id}
+                  {vendedores.slice(0, 5).map((v, index) => {
+                    const vendedor = v as { id?: string; nombre?: string; nivel?: number; puntos?: number; insignias?: unknown[] }
+                    return (<div
+                      key={(vendedor.id as string) ?? index}
                       className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
@@ -774,12 +775,12 @@ export function GoalsCommissionEngine({ vendedores, equipos }: GoalsCommissionEn
                         </p>
                         <div className="flex items-center gap-1">
                           {[...Array(Math.min(vendedor.insignias?.length || 0, 3))].map((_, i) => (
-                            <Star key={i} className="h-3 w-3 text-yellow-400 fill-current" />
+                            <Star key={`${_}-${i}`} className="h-3 w-3 text-yellow-400 fill-current" />
                           ))}
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    </div>)
+                  })}
                 </div>
               </CardContent>
             </Card>

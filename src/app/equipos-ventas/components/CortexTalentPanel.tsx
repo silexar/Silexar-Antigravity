@@ -75,7 +75,7 @@ export const CortexTalentPanel = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-slate-800 text-sm">{person.name}</p>
-                  {person.badges.map((b, i) => <span key={i} className="text-sm">{b}</span>)}
+                  {person.badges.map((b, i) => <span key={`${b}-${i}`} className="text-sm">{b}</span>)}
                 </div>
                 <p className="text-xs text-slate-400">{person.role} → <span className="text-amber-600 font-semibold">{person.nextRole}</span></p>
                 <div className="flex items-center gap-2 mt-1">

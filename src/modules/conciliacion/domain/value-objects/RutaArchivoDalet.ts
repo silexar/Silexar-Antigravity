@@ -13,7 +13,8 @@ export class RutaArchivoDalet {
 
   public static create(value: string): RutaArchivoDalet {
     // Validación de path simple pero extensible
-    const schema = z.string().min(3).regex(/^[a-zA-Z0-9_\-\.\/\\:]+$/);
+    // Nota: dentro del character class [], el punto es literal y el guión al final no necesita escape
+    const schema = z.string().min(3).regex(/^[a-zA-Z0-9_.\-/]+$/);
     const validValue = schema.parse(value);
     return new RutaArchivoDalet(validValue);
   }

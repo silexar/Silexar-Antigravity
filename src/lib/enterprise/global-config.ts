@@ -388,7 +388,7 @@ export class EnterpriseGlobalConfig {
 
     for (const key of keys) {
       if (current && typeof current === 'object' && key in current) {
-        current = current[key]
+        current = (current as Record<string, unknown>)[key]
       } else {
         return undefined
       }
@@ -409,7 +409,7 @@ export class EnterpriseGlobalConfig {
       // Navigate to parent object
       for (const key of keys) {
         if (current && typeof current === 'object' && key in current) {
-          current = current[key]
+          current = (current[key] as Record<string, unknown>)
         } else {
           return false // Path doesn't exist
         }
@@ -565,7 +565,7 @@ export class EnterpriseGlobalConfig {
         return JSON.stringify(this.config, null, 2) // Fallback to JSON
       
       case 'env':
-        return this.configToEnvFormat(this.config)
+        return this.configToEnvFormat(this.config as unknown as Record<string, unknown>)
       
       default:
         return JSON.stringify(this.config, null, 2)
@@ -642,7 +642,7 @@ export class EnterpriseGlobalConfig {
       const envKey = prefix ? `${prefix}_${key.toUpperCase()}` : key.toUpperCase()
 
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        envString += this.configToEnvFormat(value, envKey)
+        envString += this.configToEnvFormat(value as Record<string, unknown>, envKey)
       } else {
         const envValue = Array.isArray(value) ? value.join(',') : String(value)
         envString += `${envKey}=${envValue}\n`

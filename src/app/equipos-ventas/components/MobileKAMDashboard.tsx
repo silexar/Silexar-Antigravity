@@ -125,7 +125,7 @@ export function MobileKAMDashboard() {
         </h4>
         <div className="space-y-1.5">
           {MOCK_ACTIONS.map((a, i) => (
-            <div key={i} className={`p-2.5 rounded-xl border text-[10px] flex items-center gap-2 ${
+            <div key={`${a}-${i}`} className={`p-2.5 rounded-xl border text-[10px] flex items-center gap-2 ${
               a.prio === 'CRITICAL' ? 'bg-red-50 border-red-100' :
               a.prio === 'HIGH' ? 'bg-amber-50 border-amber-100' :
               'bg-blue-50 border-blue-100'

@@ -8,7 +8,7 @@ import React from 'react';
 import Link from 'next/link';
 
 export const Footer: React.FC<{ className?: string }> = ({ className = '' }) => (
-    <footer className={`bg-gray-900 text-white py-12 ${className}`}>
+    <footer className={`bg-[#F0EDE8] text-white py-12 ${className}`}>
         <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-4 gap-8">
                 <div>

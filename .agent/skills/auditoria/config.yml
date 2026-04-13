@@ -1,0 +1,398 @@
+# Security Audit Skill Configuration
+# Silexar Pulse - TIER 0 Fort Knox Edition v3.0
+# Última actualización: 2026-04-05
+
+# ============================================================================
+# CONFIGURACIÓN GENERAL
+# ============================================================================
+
+version: "3.0.0"
+name: "Security Audit TIER 0 Fort Knox"
+tier: "TIER_0_FORT_KNOX"
+description: "Sistema de auditoría de seguridad más avanzado del mundo"
+
+# ============================================================================
+# AGENTES
+# ============================================================================
+
+agents:
+  coordinator:
+    enabled: true
+    name: "Agent Coordinator"
+    id: "AC"
+    timeout: 300
+    maxRetries: 3
+    
+  static_analyzer:
+    enabled: true
+    name: "Static Analyzer"
+    id: "AS"
+    timeout: 600
+    checks:
+      - owasp_top10
+      - ai_security_layers
+      - defense_in_depth
+      - auth_authorization
+      - data_protection
+      
+  secrets_scanner:
+    enabled: true
+    name: "Secrets Scanner"
+    id: "ASE"
+    timeout: 300
+    patterns: 50
+    entropy_check: true
+    git_history_scan: true
+    
+  sast_analyzer:
+    enabled: true
+    name: "SAST Analyzer"
+    id: "ASAST"
+    timeout: 600
+    semgrep_integration: true
+    custom_rules: true
+    
+  dynamic_tester:
+    enabled: true
+    name: "Dynamic Tester"
+    id: "AD"
+    timeout: 900
+    server_required: true
+    tests:
+      - api_security
+      - auth_flows
+      - rate_limiting
+      - fuzzing
+      
+  iac_scanner:
+    enabled: true
+    name: "IaC Scanner"
+    id: "AIAC"
+    timeout: 300
+    targets:
+      - terraform
+      - docker
+      - kubernetes
+      - github_actions
+
+# ============================================================================
+# INTEGRACIONES EXTERNAS
+# ============================================================================
+
+integrations:
+  semgrep:
+    enabled: true
+    config_file: "integrations/semgrep/semgrep-config.yml"
+    rules_count: 25
+    auto_install: false
+    
+  trivy:
+    enabled: true
+    config_file: "integrations/trivy/trivy-config.yaml"
+    scanners:
+      - vuln
+      - misconfig
+      - secret
+      - license
+    
+  snyk:
+    enabled: true
+    config_file: "integrations/snyk/snyk-config.yml"
+    auto_monitor: true
+    pr_auto: true
+    
+  github:
+    enabled: true
+    sarif_upload: true
+    security_tab: true
+    pr_comments: true
+    
+  slack:
+    enabled: false
+    webhook: "${SLACK_SECURITY_WEBHOOK}"
+    channel: "#security-alerts"
+    severity_threshold: high
+    
+  jira:
+    enabled: false
+    create_tickets: true
+    project: "SEC"
+    severity_threshold: high
+
+# ============================================================================
+# DASHBOARD
+# ============================================================================
+
+dashboard:
+  enabled: true
+  file: "dashboard/dashboard.html"
+  auto_refresh: 30
+  port: 4567
+  features:
+    - realtime_score
+    - agent_status
+    - severity_chart
+    - trend_analysis
+    - findings_list
+    - dimension_progress
+
+# ============================================================================
+# MACHINE LEARNING
+# ============================================================================
+
+machine_learning:
+  enabled: true
+  module: "ml/false-positive-detector"
+  pre_trained_models: 7
+  learning_rate: 0.1
+  confidence_threshold: 0.85
+  feedback_loop: true
+  expected_fp_reduction: 0.65
+
+# ============================================================================
+# ESTRATEGIA DE BATCHES
+# ============================================================================
+
+batch_strategy:
+  enabled: true
+  thresholds:
+    max_files_per_batch: 500
+    max_lines_per_batch: 50000
+    max_modules_per_agent: 3
+  
+  strategy: "by-module"
+  
+  priority_order:
+    - "src/lib/security/**"
+    - "src/lib/auth/**"
+    - "src/lib/ai/**"
+    - "src/lib/cortex/**"
+    - "src/app/api/**"
+    - "src/modules/**"
+    - "src/app/**"
+    - "src/components/**"
+  
+  cache:
+    enabled: true
+    ttl: "24h"
+    directory: ".security-audit-cache/"
+
+# ============================================================================
+# SISTEMA DE SCORING
+# ============================================================================
+
+scoring:
+  max_score: 100
+  
+  dimensions:
+    - name: "OWASP Top 10"
+      weight: 10
+      id: "D1"
+    - name: "OWASP LLM"
+      weight: 8
+      id: "D2"
+    - name: "8 Capas AI"
+      weight: 10
+      id: "D3"
+    - name: "Defense in Depth"
+      weight: 8
+      id: "D4"
+    - name: "Secret Detection"
+      weight: 8
+      id: "D5"
+    - name: "SAST"
+      weight: 10
+      id: "D6"
+    - name: "Supply Chain"
+      weight: 6
+      id: "D7"
+    - name: "Infrastructure"
+      weight: 6
+      id: "D8"
+    - name: "Authentication"
+      weight: 6
+      id: "D9"
+    - name: "Authorization"
+      weight: 5
+      id: "D10"
+    - name: "Data Protection"
+      weight: 5
+      id: "D11"
+    - name: "Session Management"
+      weight: 5
+      id: "D12"
+    - name: "Input Validation"
+      weight: 4
+      id: "D13"
+    - name: "Error Handling"
+      weight: 5
+      id: "D14"
+    - name: "Logging/Auditing"
+      weight: 5
+      id: "D15"
+  
+  certifications:
+    fort_knox:
+      min_score: 95
+      max_critical: 0
+      max_high: 2
+      
+    enterprise:
+      min_score: 85
+      max_critical: 0
+      max_high: 5
+      
+    production:
+      min_score: 70
+      max_critical: 0
+      max_high: 10
+      
+    warning:
+      min_score: 50
+      
+    critical:
+      min_score: 0
+
+# ============================================================================
+# REGLAS NO NEGOCIABLES
+# ============================================================================
+
+non_negotiable_rules:
+  - id: "RULE-001"
+    name: "No secrets hardcoded"
+    severity: "BLOCKING"
+    check: "secrets_scanner"
+    
+  - id: "RULE-002"
+    name: "No .env in git"
+    severity: "BLOCKING"
+    check: "git_ls_files"
+    
+  - id: "RULE-003"
+    name: "No eval()"
+    severity: "BLOCKING"
+    check: "sast_analyzer"
+    
+  - id: "RULE-004"
+    name: "No dangerouslySetInnerHTML without DOMPurify"
+    severity: "BLOCKING"
+    check: "sast_analyzer"
+    
+  - id: "RULE-005"
+    name: "No raw SQL"
+    severity: "BLOCKING"
+    check: "sast_analyzer"
+    
+  - id: "RULE-006"
+    name: "No any in security files"
+    severity: "BLOCKING"
+    check: "sast_analyzer"
+    
+  - id: "RULE-007"
+    name: "No console.log in API routes"
+    severity: "BLOCKING"
+    check: "static_analyzer"
+    
+  - id: "RULE-008"
+    name: "No RLS disabled"
+    severity: "BLOCKING"
+    check: "static_analyzer"
+    
+  - id: "RULE-009"
+    name: "JWT must have expiration"
+    severity: "BLOCKING"
+    check: "static_analyzer"
+    
+  - id: "RULE-010"
+    name: "No plain text passwords"
+    severity: "BLOCKING"
+    check: "secrets_scanner"
+
+# ============================================================================
+# REPORTES
+# ============================================================================
+
+reports:
+  formats:
+    - json
+    - sarif
+    - html
+    - markdown
+    - pdf
+  
+  output_directory: "security-reports/"
+  
+  include:
+    - executive_summary
+    - score_breakdown
+    - findings_by_severity
+    - findings_by_category
+    - remediation_plan
+    - historical_comparison
+    - agent_statistics
+
+# ============================================================================
+# COMANDOS
+# ============================================================================
+
+commands:
+  full_audit: "npm run security:audit"
+  module_audit: "npm run security:audit:module"
+  incremental: "npm run security:audit:incremental"
+  ci_mode: "npm run security:audit:ci"
+  dashboard: "npm run security:dashboard"
+  
+  # Integraciones
+  semgrep: "semgrep --config=integrations/semgrep/semgrep-config.yml"
+  trivy_fs: "trivy fs --config=integrations/trivy/trivy-config.yaml"
+  trivy_image: "trivy image"
+  snyk_test: "snyk test"
+  snyk_monitor: "snyk monitor"
+
+# ============================================================================
+# PERFORMANCE
+# ============================================================================
+
+performance:
+  parallel_execution: true
+  max_parallel_agents: 6
+  cache_enabled: true
+  incremental_scanning: true
+  file_watching: false
+  
+  timeouts:
+    default: 300
+    static_analyzer: 600
+    dynamic_tester: 900
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+  file: "security-audit.log"
+  
+  include:
+    - agent_execution
+    - findings
+    - errors
+    - performance_metrics
+    - user_feedback
+
+# ============================================================================
+# ACTUALIZACIONES
+# ============================================================================
+
+updates:
+  check_frequency: "weekly"
+  auto_update_patterns: false
+  notify_new_rules: true
+  
+  sources:
+    - owasp
+    - cwe
+    - cve
+    - silexar_custom

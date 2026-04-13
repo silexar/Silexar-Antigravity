@@ -81,20 +81,20 @@ const fmt = (v: number) => v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(1)}M` : 
 const TrendIcon = ({ trend }: { trend: string }) => {
   if (trend === 'INCREASING') return <TrendingUp size={12} className="text-red-400" />;
   if (trend === 'DECREASING') return <TrendingDown size={12} className="text-emerald-400" />;
-  return <Minus size={12} className="text-slate-500" />;
+  return <Minus size={12} className="text-[#888780]" />;
 };
 
 const riskColor = (level: string) => {
   const map: Record<string, string> = {
     CRITICAL: 'text-red-400', HIGH: 'text-red-400', MEDIUM: 'text-amber-400', LOW: 'text-emerald-400'
   };
-  return map[level] || 'text-slate-400';
+  return map[level] || 'text-[#888780]';
 };
 
 const riskBg = (level: string) => {
   const map: Record<string, string> = {
     CRITICAL: 'bg-red-500/10 border-red-500/20', HIGH: 'bg-red-500/5 border-red-500/15',
-    MEDIUM: 'bg-amber-500/5 border-amber-500/15', LOW: 'bg-slate-800/50 border-slate-700/30'
+    MEDIUM: 'bg-amber-500/5 border-amber-500/15', LOW: 'bg-[#E8E5E0]/50 border-[#D4D1CC]/30'
   };
   return map[level] || '';
 };
@@ -102,7 +102,7 @@ const riskBg = (level: string) => {
 const prioridadColor = (p: string) => {
   const map: Record<string, string> = {
     CRITICA: 'bg-red-500/20 text-red-300', ALTA: 'bg-amber-500/20 text-amber-300',
-    MEDIA: 'bg-blue-500/20 text-blue-300', BAJA: 'bg-slate-600/20 text-slate-400'
+    MEDIA: 'bg-blue-500/20 text-blue-300', BAJA: 'bg-slate-600/20 text-[#888780]'
   };
   return map[p] || '';
 };
@@ -116,7 +116,7 @@ export function SuccessionFlightRiskPanel() {
   const highRisk = FLIGHT_RISKS.filter(r => r.riskLevel === 'HIGH' || r.riskLevel === 'CRITICAL').length;
 
   return (
-    <div className="bg-slate-800/40 rounded-xl border border-slate-700/50 p-5">
+    <div className="bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-5">
       {/* Header with Tabs */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex gap-2">
@@ -125,25 +125,25 @@ export function SuccessionFlightRiskPanel() {
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 ${
               activeTab === 'flight'
                 ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                : 'text-slate-500 hover:text-white hover:bg-slate-700/50'
+                : 'text-[#888780] hover:text-[#2C2C2A] hover:bg-[#D4D1CC]/50'
             }`}
           >
             <ShieldAlert size={14} /> Flight Risk
-            {highRisk > 0 && <span className="bg-red-500 text-white text-[9px] px-1.5 rounded-full">{highRisk}</span>}
+            {highRisk > 0 && <span className="bg-red-500 text-[#2C2C2A] text-[9px] px-1.5 rounded-full">{highRisk}</span>}
           </button>
           <button
             onClick={() => setActiveTab('succession')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 ${
               activeTab === 'succession'
                 ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
-                : 'text-slate-500 hover:text-white hover:bg-slate-700/50'
+                : 'text-[#888780] hover:text-[#2C2C2A] hover:bg-[#D4D1CC]/50'
             }`}
           >
             <UserCheck size={14} /> Succession Planning
           </button>
         </div>
         {activeTab === 'flight' && (
-          <span className="text-[10px] text-slate-500">
+          <span className="text-[10px] text-[#888780]">
             ARR at Risk: <span className="font-bold text-red-400">{fmt(totalARRRiesgo)}</span>
           </span>
         )}
@@ -162,17 +162,17 @@ export function SuccessionFlightRiskPanel() {
                     {risk.riskScore}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white">{risk.nombre}</p>
-                    <p className="text-[10px] text-slate-500">{risk.rol}</p>
+                    <p className="text-sm font-bold text-[#2C2C2A]">{risk.nombre}</p>
+                    <p className="text-[10px] text-[#888780]">{risk.rol}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-right">
                   <div>
-                    <p className="text-xs font-bold text-white flex items-center gap-1 justify-end">
+                    <p className="text-xs font-bold text-[#2C2C2A] flex items-center gap-1 justify-end">
                       <TrendIcon trend={risk.tendencia} />
                       <span className={riskColor(risk.riskLevel)}>{risk.riskLevel}</span>
                     </p>
-                    <p className="text-[10px] text-slate-500">Impact: {risk.impacto}</p>
+                    <p className="text-[10px] text-[#888780]">Impact: {risk.impacto}</p>
                   </div>
                 </div>
               </div>
@@ -180,26 +180,26 @@ export function SuccessionFlightRiskPanel() {
               {/* Factors */}
               <div className="space-y-1.5 mb-3">
                 {risk.factoresTop.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[10px]">
-                    <span className="text-slate-500 w-24 flex-shrink-0">{f.categoria}</span>
-                    <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div key={`${f}-${i}`} className="flex items-center gap-2 text-[10px]">
+                    <span className="text-[#888780] w-24 flex-shrink-0">{f.categoria}</span>
+                    <div className="flex-1 h-1.5 bg-[#D4D1CC] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${f.score >= 70 ? 'bg-red-500' : 'bg-amber-500'}`}
                         style={{ width: `${f.score}%` }}
                       />
                     </div>
-                    <span className="text-slate-400 flex-1 min-w-0 truncate">{f.detalle}</span>
+                    <span className="text-[#888780] flex-1 min-w-0 truncate">{f.detalle}</span>
                   </div>
                 ))}
               </div>
 
               {/* Impact + Actions */}
-              <div className="flex items-center justify-between text-[10px] pt-2 border-t border-slate-700/30">
+              <div className="flex items-center justify-between text-[10px] pt-2 border-t border-[#D4D1CC]/30">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1 text-red-400">
                     <DollarSign size={10} /> {fmt(risk.arrEnRiesgo)} ARR at risk
                   </span>
-                  <span className="flex items-center gap-1 text-slate-500">
+                  <span className="flex items-center gap-1 text-[#888780]">
                     <Users size={10} /> {risk.accountsEnRiesgo} accounts
                   </span>
                 </div>
@@ -214,7 +214,7 @@ export function SuccessionFlightRiskPanel() {
                       <CheckCircle size={10} /> {risk.accionesCompletadas} done
                     </span>
                   )}
-                  <button className="p-1 rounded bg-slate-700/50 hover:bg-slate-600 text-slate-400 hover:text-white transition-colors">
+                  <button className="p-1 rounded bg-[#D4D1CC]/50 hover:bg-slate-600 text-[#888780] hover:text-[#2C2C2A] transition-colors">
                     <ChevronRight size={12} />
                   </button>
                 </div>
@@ -228,17 +228,17 @@ export function SuccessionFlightRiskPanel() {
       {activeTab === 'succession' && (
         <div className="space-y-4">
           {SUCCESSION_PLANS.map((plan, i) => (
-            <div key={i} className="bg-slate-900/40 rounded-xl border border-slate-700/30 p-4">
+            <div key={`${plan}-${i}`} className="bg-[#F0EDE8]/40 rounded-xl border border-[#D4D1CC]/30 p-4">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm font-bold text-white">{plan.rolCritico}</p>
+                    <p className="text-sm font-bold text-[#2C2C2A]">{plan.rolCritico}</p>
                     <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${prioridadColor(plan.prioridad)}`}>
                       {plan.prioridad}
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500">
-                    Current: <span className="text-white">{plan.titular}</span> &middot; {plan.razon}
+                  <p className="text-[10px] text-[#888780]">
+                    Current: <span className="text-[#2C2C2A]">{plan.titular}</span> &middot; {plan.razon}
                   </p>
                 </div>
                 <Target size={18} className="text-violet-400" />
@@ -247,7 +247,7 @@ export function SuccessionFlightRiskPanel() {
               {/* Candidates */}
               <div className="space-y-2">
                 {plan.candidatos.map((c, j) => (
-                  <div key={j} className="bg-slate-800/50 rounded-lg p-3 flex items-center justify-between">
+                  <div key={j} className="bg-[#E8E5E0]/50 rounded-lg p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-sm ${
                         c.readiness >= 80 ? 'bg-emerald-500/20 text-emerald-400' :
@@ -257,14 +257,14 @@ export function SuccessionFlightRiskPanel() {
                         {c.readiness}%
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white">{c.nombre}</p>
-                        <p className="text-[10px] text-slate-500">
+                        <p className="text-xs font-bold text-[#2C2C2A]">{c.nombre}</p>
+                        <p className="text-[10px] text-[#888780]">
                           Gaps: {c.gaps.join(', ')}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-slate-500 flex items-center gap-1 justify-end">
+                      <p className="text-[10px] text-[#888780] flex items-center gap-1 justify-end">
                         <Clock size={10} /> {c.timeline}
                       </p>
                       {c.readiness >= 80 ? (

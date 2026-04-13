@@ -240,7 +240,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const ctx = getUserContext(request);
   if (!ctx.userId) return apiUnauthorized();
-  return NextResponse.json({
+  try {
+    return NextResponse.json({
     endpoint: 'POST /api/v2/sdk/config',
     description: 'SDK initialization and configuration endpoint',
     authentication: 'API Key in request body',
@@ -284,4 +285,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     },
   });
+  } catch (error) {
+    logger.error('[API/V2/SDK/Config] Error:', error instanceof Error ? error : undefined);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
+  }
 }

@@ -231,24 +231,27 @@ export const campaignsRouter = router({
         }
 
         if (input.tags && input.tags.length > 0) {
-          filteredCampaigns = filteredCampaigns.filter(c => 
-            input.tags!.some(tag => c.tags.includes(tag))
+          const tags = input.tags
+          filteredCampaigns = filteredCampaigns.filter(c =>
+            tags.some(tag => c.tags.includes(tag))
           )
         }
 
         if (input.budgetRange) {
-          filteredCampaigns = filteredCampaigns.filter(c => 
-            c.budget && 
-            c.budget >= input.budgetRange!.min && 
-            c.budget <= input.budgetRange!.max
+          const budgetRange = input.budgetRange
+          filteredCampaigns = filteredCampaigns.filter(c =>
+            c.budget &&
+            c.budget >= budgetRange.min &&
+            c.budget <= budgetRange.max
           )
         }
 
         if (input.dateRange) {
-          filteredCampaigns = filteredCampaigns.filter(c => 
+          const dateRange = input.dateRange
+          filteredCampaigns = filteredCampaigns.filter(c =>
             c.startDate && c.endDate &&
-            c.startDate >= input.dateRange!.start &&
-            c.endDate <= input.dateRange!.end
+            c.startDate >= dateRange.start &&
+            c.endDate <= dateRange.end
           )
         }
 
@@ -438,7 +441,7 @@ export const campaignsRouter = router({
         }
 
         // Add to simulated database
-        campaigns.push(newCampaign as typeof campaigns[number])
+        campaigns.push(newCampaign as unknown as typeof campaigns[number])
 
         const executionTime = performance.now() - startTime
 

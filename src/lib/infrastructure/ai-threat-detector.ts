@@ -278,20 +278,20 @@ export class AIThreatDetector {
     if (!model) throw new Error('DDoS model not found');
 
     // Simulate AI analysis
-    const requestRate = metadata.requestsPerSecond || 0;
-    const bandwidth = metadata.bandwidthUsage || 0;
-    const connections = metadata.activeConnections || 0;
+    const requestRate = (metadata.requestsPerSecond as number) || 0;
+    const bandwidth = (metadata.bandwidthUsage as number) || 0;
+    const connections = (metadata.activeConnections as number) || 0;
 
     let confidence = 0;
-    
+
     // High request rate indicator
     if (requestRate > 1000) confidence += 0.3;
     if (requestRate > 5000) confidence += 0.2;
-    
+
     // High bandwidth usage
     if (bandwidth > 100000000) confidence += 0.25; // 100MB/s
     if (bandwidth > 500000000) confidence += 0.15; // 500MB/s
-    
+
     // Connection flood
     if (connections > 10000) confidence += 0.2;
     if (connections > 50000) confidence += 0.1;
@@ -357,18 +357,18 @@ export class AIThreatDetector {
     
     // File upload analysis
     if (metadata.fileUpload) {
-      const fileType = metadata.fileType || '';
-      const fileSize = metadata.fileSize || 0;
-      
+      const fileType = (metadata.fileType as string) || '';
+      const fileSize = (metadata.fileSize as number) || 0;
+
       // Suspicious file types
       if (['exe', 'bat', 'cmd', 'scr'].includes(fileType)) confidence += 0.4;
-      
+
       // Large executable files
       if (fileSize > 10000000 && ['exe', 'dll'].includes(fileType)) confidence += 0.3;
     }
 
     // Network callback patterns
-    if (metadata.externalConnections > 5) confidence += 0.2;
+    if ((metadata.externalConnections as number) > 5) confidence += 0.2;
 
     // Add ML uncertainty
     confidence += (Math.random() - 0.5) * 0.1;
@@ -402,7 +402,7 @@ export class AIThreatDetector {
     if (hour < 6 || hour > 22) confidence += 0.15; // Off-hours access
     
     // Behavior anomaly
-    if (metadata.failedLogins > 5) confidence += 0.3;
+    if ((metadata.failedLogins as number) > 5) confidence += 0.3;
     if (metadata.rapidRequests) confidence += 0.2;
 
     // Add ML uncertainty
@@ -430,8 +430,9 @@ export class AIThreatDetector {
     let confidence = 0;
     
     // Large data access
-    if (metadata.dataVolumeAccessed > 1000000) confidence += 0.3; // 1MB
-    if (metadata.dataVolumeAccessed > 100000000) confidence += 0.2; // 100MB
+    const dataVolume = (metadata.dataVolumeAccessed as number) || 0;
+    if (dataVolume > 1000000) confidence += 0.3; // 1MB
+    if (dataVolume > 100000000) confidence += 0.2; // 100MB
     
     // Sensitive data access
     if (metadata.accessedSensitiveData) confidence += 0.35;

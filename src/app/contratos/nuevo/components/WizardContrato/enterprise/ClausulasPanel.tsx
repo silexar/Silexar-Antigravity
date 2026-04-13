@@ -180,6 +180,7 @@ const VariableInput: React.FC<{
         value={value}
         onChange={(e) => onChange(variable.tipo === 'numero' ? Number(e.target.value) : e.target.value)}
         placeholder={variable.descripcion}
+        aria-label={variable.nombre}
         className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
       />
     )}
@@ -476,7 +477,7 @@ export const ClausulasPanel: React.FC<ClausulasPanelProps> = ({
               {analisisRiesgo.recomendaciones.length > 0 && (
                 <div className="text-right">
                   {analisisRiesgo.recomendaciones.map((rec, idx) => (
-                    <p key={idx} className="text-xs text-slate-600">{rec}</p>
+                    <p key={`rec-${idx}`} className="text-xs text-slate-600">{rec}</p>
                   ))}
                 </div>
               )}
@@ -494,6 +495,7 @@ export const ClausulasPanel: React.FC<ClausulasPanelProps> = ({
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar cláusulas..."
+              aria-label="Buscar cláusulas"
               className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50"
             />
           </div>

@@ -1,0 +1,450 @@
+# Semgrep Configuration - Silexar Pulse Security Rules
+# Versión: 3.0.0 - Fort Knox Edition
+
+rules:
+  # ============================================================================
+  # REGLAS CRÍTICAS - BLOQUEAN DEPLOY
+  # ============================================================================
+
+  - id: silexar-no-secrets-hardcoded
+    pattern-either:
+      - pattern: const $VAR = "..."
+      - pattern: let $VAR = "..."
+      - pattern: var $VAR = "..."
+    pattern-regex: (sk-|ghp_|AKIA|xoxb-|eyJ)
+    languages:
+      - typescript
+      - javascript
+    message: |
+      🔴 CRITICAL: Secret/API Key hardcoded detected.
+      Use environment variables: process.env.VAR_NAME
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798"
+      owasp: "A02:2021"
+      silexar-priority: CRITICAL
+
+  - id: silexar-no-eval
+    pattern-either:
+      - pattern: eval($X)
+      - pattern: new Function($X)
+      - pattern: setTimeout($X, ...)
+      - pattern: setInterval($X, ...)
+    languages:
+      - typescript
+      - javascript
+    message: |
+      🔴 CRITICAL: Code injection vulnerability.
+      Never use eval() or new Function() with user input.
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-94"
+      owasp: "A03:2021"
+      silexar-priority: CRITICAL
+
+  - id: silexar-no-dangerouslySetInnerHTML
+    pattern: |
+      <div dangerouslySetInnerHTML={{__html: $X}} />
+    languages:
+      - typescript
+    message: |
+      🔴 CRITICAL: XSS vulnerability via dangerouslySetInnerHTML.
+      Use DOMPurify.sanitize() before rendering.
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-79"
+      owasp: "A03:2021"
+      silexar-priority: CRITICAL
+
+  - id: silexar-no-raw-sql
+    pattern-regex: (query|execute)\s*\(\s*[`"'].*\$
+    languages:
+      - typescript
+      - javascript
+    message: |
+      🔴 CRITICAL: SQL Injection vulnerability.
+      Use Drizzle ORM with parameterized queries only.
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89"
+      owasp: "A03:2021"
+      silexar-priority: CRITICAL
+
+  - id: silexar-no-console-log-api
+    paths:
+      include:
+        - src/app/api/**/*.ts
+    pattern-either:
+      - pattern: console.log(...)
+      - pattern: console.warn(...)
+      - pattern: console.error(...)
+    languages:
+      - typescript
+    message: |
+      🔴 CRITICAL: console.log in API route.
+      Use the centralized logger from src/lib/observability
+    severity: ERROR
+    metadata:
+      category: security
+      silexar-priority: CRITICAL
+
+  # ============================================================================
+  # REGLAS ALTAS - DEBEN CORREGIRSE
+  # ============================================================================
+
+  - id: silexar-no-any-in-security
+    paths:
+      include:
+        - src/lib/security/**
+        - src/lib/auth/**
+        - src/lib/ai/**
+    pattern: $X: any
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: 'any' type in security-critical code.
+      Use 'unknown' with type guards instead.
+    severity: WARNING
+    metadata:
+      category: security
+      silexar-priority: HIGH
+
+  - id: silexar-no-ts-ignore
+    pattern: //@ts-ignore
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: @ts-ignore without justification.
+      Use @ts-expect-error with explanation comment.
+    severity: WARNING
+    metadata:
+      category: maintainability
+      silexar-priority: HIGH
+
+  - id: silexar-no-non-null-assertion
+    pattern: $X!.$Y
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: Non-null assertion (!.) can cause runtime crashes.
+      Use optional chaining (?.) with null checks.
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-476"
+      silexar-priority: HIGH
+
+  - id: silexar-no-missing-zod-validation
+    patterns:
+      - pattern-inside: |
+          export async function $FN(request: NextRequest) {
+            ...
+          }
+      - pattern-not-inside: |
+          $SCHEMA.safeParse(...)
+      - pattern: request.json()
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: API route without Zod validation.
+      All inputs must be validated with Zod schemas.
+    severity: WARNING
+    metadata:
+      category: security
+      owasp: "A03:2021"
+      silexar-priority: HIGH
+
+  - id: silexar-no-innerHTML
+    pattern: $EL.innerHTML = $X
+    languages:
+      - typescript
+      - javascript
+    message: |
+      🟠 HIGH: innerHTML assignment with potential XSS.
+      Use textContent or DOMPurify.sanitize().
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-79"
+      silexar-priority: HIGH
+
+  # ============================================================================
+  # REGLAS DE ARQUITECTURA AI (8 Capas)
+  # ============================================================================
+
+  - id: silexar-ai-no-prompt-concatenation
+    pattern: |
+      const $PROMPT = $SYSTEM + $USER_INPUT
+    languages:
+      - typescript
+      - javascript
+    message: |
+      🟠 HIGH: AI prompt concatenation (Layer L1 violation).
+      Use buildSystemPrompt() and wrapUserInput() instead.
+    severity: WARNING
+    metadata:
+      category: ai-security
+      silexar-layer: L1
+      silexar-priority: HIGH
+
+  - id: silexar-ai-require-input-filter
+    patterns:
+      - pattern-inside: |
+          async function $FN($INPUT) {
+            ...
+          }
+      - pattern-not-inside: |
+          filterInput($INPUT)
+      - pattern: await $AI_API($INPUT)
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: AI API call without input filter (Layer L2 violation).
+      Must call filterInput() before AI API calls.
+    severity: WARNING
+    metadata:
+      category: ai-security
+      silexar-layer: L2
+      silexar-priority: HIGH
+
+  - id: silexar-ai-require-tenant-context
+    patterns:
+      - pattern-inside: |
+          export async function $FN(...) {
+            ...
+          }
+      - pattern-not-inside: |
+          withTenantContext($TENANT_ID, ...)
+      - pattern: db.$OPERATION
+    paths:
+      include:
+        - src/app/api/**/*.ts
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: Database query without tenant context (Layer L3 violation).
+      Wrap all queries with withTenantContext().
+    severity: WARNING
+    metadata:
+      category: ai-security
+      silexar-layer: L3
+      silexar-priority: HIGH
+
+  # ============================================================================
+  # REGLAS DE AUTENTICACIÓN Y AUTORIZACIÓN
+  # ============================================================================
+
+  - id: silexar-auth-require-getUserContext
+    patterns:
+      - pattern-inside: |
+          export async function $FN(request: NextRequest) {
+            ...
+          }
+      - pattern-not-inside: |
+          getUserContext(request)
+    paths:
+      include:
+        - src/app/api/**/route.ts
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: API route without authentication check.
+      Must call getUserContext(request) at the start.
+    severity: WARNING
+    metadata:
+      category: security
+      owasp: "A01:2021"
+      silexar-priority: HIGH
+
+  - id: silexar-auth-require-permission-check
+    patterns:
+      - pattern-inside: |
+          export async function POST(request: NextRequest) {
+            ...
+          }
+      - pattern-not-inside: |
+          checkPermission(...)
+    paths:
+      include:
+        - src/app/api/**/route.ts
+    languages:
+      - typescript
+    message: |
+      🟠 HIGH: Mutation endpoint without permission check.
+      Must call checkPermission() for POST/PUT/DELETE.
+    severity: WARNING
+    metadata:
+      category: security
+      owasp: "A01:2021"
+      silexar-priority: HIGH
+
+  # ============================================================================
+  # REGLAS DE MANEJO DE ERRORES
+  # ============================================================================
+
+  - id: silexar-error-no-raw-exposure
+    patterns:
+      - pattern-inside: |
+          catch ($E) {
+            ...
+          }
+      - pattern: return $RES.status(...).json({ error: $E.$PROP })
+    languages:
+      - typescript
+    message: |
+      🟡 MEDIUM: Raw error exposed to client.
+      Use generic error messages, log details internally.
+    severity: INFO
+    metadata:
+      category: security
+      owasp: "A05:2021"
+      silexar-priority: MEDIUM
+
+  - id: silexar-error-require-try-catch
+    patterns:
+      - pattern-inside: |
+          export async function $FN(...) {
+            ...
+          }
+      - pattern-not-inside: |
+          try {
+            ...
+          }
+    paths:
+      include:
+        - src/app/api/**/*.ts
+    languages:
+      - typescript
+    message: |
+      🟡 MEDIUM: API route without try-catch.
+      All async routes must handle errors.
+    severity: INFO
+    metadata:
+      category: reliability
+      silexar-priority: MEDIUM
+
+  # ============================================================================
+  # REGLAS DE CALIDAD DE CÓDIGO
+  # ============================================================================
+
+  - id: silexar-code-no-floating-promises
+    pattern: $PROMISE.then(...)
+    pattern-not-inside: await ...
+    pattern-not-inside: return ...
+    languages:
+      - typescript
+    message: |
+      🟡 MEDIUM: Floating promise (not awaited or returned).
+      Use await or void operator.
+    severity: INFO
+    metadata:
+      category: reliability
+      silexar-priority: MEDIUM
+
+  - id: silexar-code-no-magic-numbers
+    pattern-regex: \b(?!0\b|1\b)\d{2,}\b
+    languages:
+      - typescript
+    message: |
+      🟢 LOW: Magic number detected.
+      Use named constants instead.
+    severity: INFO
+    metadata:
+      category: maintainability
+      silexar-priority: LOW
+
+  # ============================================================================
+  # REGLAS DE REACT/FRONTEND
+  # ============================================================================
+
+  - id: silexar-react-no-key-index
+    pattern: |
+      $ARR.map(($ITEM, $INDEX) => <... key={$INDEX} ... />)
+    languages:
+      - typescript
+    message: |
+      🟡 MEDIUM: Using array index as React key.
+      Use unique IDs from data instead.
+    severity: INFO
+    metadata:
+      category: react
+      silexar-priority: MEDIUM
+
+  - id: silexar-react-no-effect-without-cleanup
+    patterns:
+      - pattern-inside: |
+          useEffect(() => {
+            ...
+          }, [])
+      - pattern: |
+          setInterval(...)
+      - pattern-not-inside: |
+          return () => { ... }
+    languages:
+      - typescript
+    message: |
+      🟡 MEDIUM: setInterval without cleanup in useEffect.
+      Return cleanup function with clearInterval.
+    severity: INFO
+    metadata:
+      category: react
+      silexar-priority: MEDIUM
+
+  # ============================================================================
+  # REGLAS DE INFRAESTRUCTURA
+  # ============================================================================
+
+  - id: silexar-docker-no-root
+    paths:
+      include:
+        - Dockerfile*
+    pattern-regex: ^(?!.*USER).*FROM
+    languages:
+      - dockerfile
+    message: |
+      🟠 HIGH: Dockerfile without USER instruction.
+      Run as non-root user for security.
+    severity: WARNING
+    metadata:
+      category: infrastructure
+      silexar-priority: HIGH
+
+  # ============================================================================
+  # METADATA Y CONFIGURACIÓN
+  # ============================================================================
+
+metadata:
+  version: "3.0.0"
+  name: "Silexar Pulse Security Rules"
+  description: "Reglas de seguridad personalizadas para Silexar Pulse"
+  author: "CEO Kimi - AI Security Architect"
+  tier: "TIER_0_FORT_KNOX"
+
+  severity_weights:
+    ERROR: 10
+    WARNING: 5
+    INFO: 1
+
+  categories:
+    security:
+      description: "Vulnerabilidades de seguridad"
+      threshold: 0
+    ai-security:
+      description: "Seguridad de capas AI"
+      threshold: 0
+    reliability:
+      description: "Problemas de confiabilidad"
+      threshold: 5
+    maintainability:
+      description: "Problemas de mantenibilidad"
+      threshold: 10
+    react:
+      description: "Problemas de React"
+      threshold: 5
+    infrastructure:
+      description: "Problemas de infraestructura"
+      threshold: 0

@@ -145,11 +145,11 @@ export const PanelAtajosTeclado: React.FC = () => {
                   <Badge className="bg-purple-100 text-purple-700">{categoria}</Badge>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {atajos.map((atajo, index) => {
+                  {atajos.map((atajo) => {
                     const Icono = atajo.icono;
                     return (
-                      <div 
-                        key={index}
+                      <div
+                        key={atajo.descripcion}
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                       >
                         <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export const TooltipAtajo: React.FC<TooltipAtajoProps> = ({
     <div className="group relative inline-block">
       {children}
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-        <div className="bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap flex items-center gap-1">
+        <div className="bg-[#F0EDE8] text-white px-2 py-1 rounded text-xs whitespace-nowrap flex items-center gap-1">
           <span>Atajo:</span>
           {modificadores.map(mod => (
             <kbd key={mod} className="px-1 bg-gray-700 rounded text-[10px]">{mod}</kbd>

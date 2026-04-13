@@ -5,3 +5,48 @@ dist
 .trae
 .log
 .figma
+
+# Security-sensitive files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+.env*.local
+security-report.json
+security-autofix.config.ts
+security.config.js
+
+# Infrastructure files (should not be deployed to Vercel)
+terraform/
+k8s/
+helm/
+docker-compose*.yml
+Dockerfile
+Dockerfile.production
+docker/
+monitoring/
+
+# Security files
+.security/
+security-reports/
+.ssh/
+*.key
+*.pem
+
+# Scripts (not needed in production)
+scripts/
+
+# Audit reports
+AUDITORIA_*.md
+ANALISIS_*.md
+CORRECCIONES_*.md
+VALIDACION_*.md
+FINAL_*.md
+
+# Development tools
+.vscode/
+.idea/
+__tests__/
+__mocks__/
+.storybook/

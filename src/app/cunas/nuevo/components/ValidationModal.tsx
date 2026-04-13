@@ -25,7 +25,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0EDE8]/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden border border-slate-200">
         
         {/* Header */}
@@ -38,7 +38,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
               <h3 className="text-xl font-bold text-slate-800">
                 {isValidating ? 'Analizando Reglas de Negocio...' : 'Validación Completa'}
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[#888780]">
                 {isValidating ? 'Verificando contratos, parrilla y coherencia.' : 'Reporte de conformidad Enterprise Fortune 10'}
               </p>
             </div>
@@ -60,21 +60,21 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
           {isValidating ? (
              <div className="flex flex-col items-center justify-center py-12 space-y-4">
                <div className="w-12 h-12 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin" />
-               <p className="text-slate-500 font-medium animate-pulse">Consultando servicios centrales...</p>
+               <p className="text-[#888780] font-medium animate-pulse">Consultando servicios centrales...</p>
              </div>
           ) : results ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
               {/* Left Col: Checklist */}
               <div className="space-y-6">
-                <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Validaciones Básicas</h4>
+                <h4 className="text-sm font-bold text-[#888780] uppercase tracking-wider">Validaciones Básicas</h4>
                 <div className="space-y-3">
                   {results.items.map((item) => (
                     <div key={item.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                        <StatusIcon status={item.status} />
                        <div>
                          <p className="text-sm font-semibold text-slate-700">{item.label}</p>
-                         <p className="text-xs text-slate-500">{item.message}</p>
+                         <p className="text-xs text-[#888780]">{item.message}</p>
                        </div>
                     </div>
                   ))}
@@ -100,11 +100,11 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
 
               {/* Right Col: Saturation & Recommendations */}
               <div className="space-y-6">
-                 <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Saturación del Programa</h4>
+                 <h4 className="text-sm font-bold text-[#888780] uppercase tracking-wider">Saturación del Programa</h4>
                  <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
                     <div className="flex justify-between items-end mb-2">
                        <span className="text-2xl font-bold text-slate-800">{results.saturation.current}%</span>
-                       <ArrowRight className="w-5 h-5 text-slate-300 mb-1" />
+                       <ArrowRight className="w-5 h-5 text-[#5F5E5A] mb-1" />
                        <span className={`text-2xl font-bold ${
                          results.saturation.status === 'critical' ? 'text-red-600' : 'text-slate-800'
                        }`}>
@@ -120,7 +120,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
                          style={{ width: `${results.saturation.projected}%` }}
                        />
                     </div>
-                    <p className="text-xs text-slate-400 mt-2 text-center">
+                    <p className="text-xs text-[#888780] mt-2 text-center">
                        Carga actual vs. Proyectada (Límite 80%)
                     </p>
                  </div>
@@ -171,7 +171,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
                 onClick={onConfirm}
                 disabled={results.overallScore < 70 && results.saturation.status === 'critical'} // Bloqueo Enterprise
                 className={`
-                    px-6 py-2 rounded-xl text-white font-bold shadow-lg flex items-center gap-2 transition-all
+                    px-6 py-2 rounded-xl text-[#2C2C2A] font-bold shadow-lg flex items-center gap-2 transition-all
                     ${results.overallScore >= 70 ? 'bg-emerald-600 hover:bg-emerald-700' : 
                     'bg-slate-400 cursor-not-allowed opacity-50'
                     }

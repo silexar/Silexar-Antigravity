@@ -1,4 +1,4 @@
-# 🚀 Kubernetes Namespace for Silexar Pulse Quantum
+# 🏠 Kubernetes Namespace Configuration
 # Production-ready namespace with resource quotas and network policies
 # 
 # @author SILEXAR AI Team
@@ -9,69 +9,88 @@ kind: Namespace
 metadata:
   name: silexar-pulse-quantum
   labels:
-    name: silexar-pulse-quantum
+    app: silexar-pulse-quantum
     environment: production
-    team: silexar-ai
-    version: "2040.1.0"
+    istio-injection: enabled
   annotations:
-    description: "Silexar Pulse Quantum - Enterprise AI Advertising Platform"
-    contact: "devops@silexar.com"
+    description: "Silexar Pulse Quantum production namespace"
 
 ---
-# Resource Quota
+# Staging Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: silexar-staging
+  labels:
+    app: silexar-pulse-quantum
+    environment: staging
+  annotations:
+    description: "Silexar Pulse Quantum staging namespace"
+
+---
+# Resource Quota for Production
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: silexar-resource-quota
+  name: silexar-quota
   namespace: silexar-pulse-quantum
 spec:
   hard:
-    requests.cpu: "4"
-    requests.memory: 8Gi
-    limits.cpu: "8"
-    limits.memory: 16Gi
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    pods: "50"
+    services: "20"
     persistentvolumeclaims: "10"
-    services: "10"
-    secrets: "20"
-    configmaps: "20"
-    pods: "20"
 
 ---
-# Limit Range
+# Limit Range for Production
 apiVersion: v1
 kind: LimitRange
 metadata:
-  name: silexar-limit-range
+  name: silexar-limits
   namespace: silexar-pulse-quantum
 spec:
   limits:
   - default:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 1000m
+      memory: 1Gi
     defaultRequest:
       cpu: 100m
       memory: 128Mi
     type: Container
   - max:
-      cpu: "2"
-      memory: 2Gi
+      storage: 100Gi
     min:
-      cpu: 50m
-      memory: 64Mi
-    type: Container
+      storage: 1Gi
+    type: PersistentVolumeClaim
 
 ---
-# Network Policy
+# Network Policy - Deny All Ingress by Default
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: silexar-network-policy
+  name: default-deny-ingress
   namespace: silexar-pulse-quantum
 spec:
   podSelector: {}
   policyTypes:
   - Ingress
-  - Egress
+
+---
+# Network Policy - Allow Application Traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-app-traffic
+  namespace: silexar-pulse-quantum
+spec:
+  podSelector:
+    matchLabels:
+      app: silexar-pulse-quantum
+  policyTypes:
+  - Ingress
   ingress:
   - from:
     - namespaceSelector:
@@ -80,20 +99,13 @@ spec:
     - namespaceSelector:
         matchLabels:
           name: monitoring
-  egress:
-  - to: []
     ports:
     - protocol: TCP
-      port: 53
-    - protocol: UDP
-      port: 53
-  - to:
-    - namespaceSelector:
+      port: 3000
+  - from:
+    - podSelector:
         matchLabels:
-          name: kube-system
-  - to: []
+          app: silexar-pulse-quantum
     ports:
     - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 80
+      port: 3000

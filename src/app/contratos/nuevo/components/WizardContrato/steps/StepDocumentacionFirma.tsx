@@ -326,6 +326,7 @@ const FirmanteInput: React.FC<{
       value={firmante.nombre || ''}
       onChange={(e) => onChange({ ...firmante, nombre: e.target.value })}
       placeholder="Nombre completo"
+      aria-label={`Nombre del firmante ${index + 1}`}
       className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm"
     />
     <input
@@ -333,6 +334,7 @@ const FirmanteInput: React.FC<{
       value={firmante.email || ''}
       onChange={(e) => onChange({ ...firmante, email: e.target.value })}
       placeholder="email@ejemplo.cl"
+      aria-label={`Email del firmante ${index + 1}`}
       className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm"
     />
     <select
@@ -510,7 +512,7 @@ export default function StepDocumentacionFirma({
         <div className="space-y-2">
           {firmantes.map((firmante, index) => (
             <FirmanteInput
-              key={index}
+              key={firmante.id ?? `firmante-${index}`}
               firmante={firmante}
               index={index}
               onChange={(updated) => {

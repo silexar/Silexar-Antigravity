@@ -4,7 +4,14 @@
  * Nivel Fortune 10 - Gestión Empresarial Avanzada
  */
 
-import { EstadoPlanPagos, EstadoPlanPagosEnum } from '../value-objects/EstadoPlanPagos';
+// Estado enums definidos localmente para evitar dependencias circulares
+export enum EstadoCuota {
+  ACTIVO = 'activo',
+  PENDIENTE = 'pendiente',
+  COMPLETADO = 'completado',
+  VENCIDO = 'vencido',
+  CANCELADO = 'cancelado'
+}
 
 export enum MetodoPago {
   EFECTIVO = 'efectivo',
@@ -20,7 +27,7 @@ export interface CuotaPagoProps {
   numero: number;
   monto: number;
   fechaVencimiento: Date;
-  estado: EstadoPlanPagos;
+  estado: EstadoCuota;
   metodoPago?: MetodoPago;
   fechaPago?: Date;
   montoPagado?: number;
@@ -36,7 +43,7 @@ export class CuotaPago {
   private _numero: number;
   private _monto: number;
   private _fechaVencimiento: Date;
-  private _estado: EstadoPlanPagos;
+  private _estado: EstadoCuota;
   private _metodoPago?: MetodoPago;
   private _fechaPago?: Date;
   private _montoPagado?: number;
@@ -74,7 +81,7 @@ export class CuotaPago {
   static create(props: Omit<CuotaPagoProps, 'id' | 'estado'>): CuotaPago {
     return new CuotaPago({
       ...props,
-      estado: EstadoPlanPagos.create(EstadoPlanPagosEnum.ACTIVO)
+      estado: EstadoCuota.ACTIVO
     });
   }
 
@@ -83,7 +90,7 @@ export class CuotaPago {
   get numero(): number { return this._numero; }
   get monto(): number { return this._monto; }
   get fechaVencimiento(): Date { return this._fechaVencimiento; }
-  get estado(): EstadoPlanPagos { return this._estado; }
+  get estado(): EstadoCuota { return this._estado; }
   get metodoPago(): MetodoPago | undefined { return this._metodoPago; }
   get fechaPago(): Date | undefined { return this._fechaPago; }
   get montoPagado(): number { return this._montoPagado || 0; }
@@ -105,12 +112,8 @@ export class CuotaPago {
       this._interesesMora = this._monto * CuotaPago.TASA_INTERES_MORA_DIARIA * this._diasMora;
       
       // Actualizar estado a vencido si corresponde
-      if (this._estado.estado === EstadoPlanPagosEnum.ACTIVO) {
-        this._estado = this._estado.transicionarA(
-          EstadoPlanPagosEnum.VENCIDO,
-          `Cuota vencida por ${this._diasMora} días`,
-          'SISTEMA_AUTOMATICO'
-        );
+      if (this._estado === EstadoCuota.ACTIVO || this._estado === EstadoCuota.PENDIENTE) {
+        this._estado = EstadoCuota.VENCIDO;
       }
     }
   }
@@ -137,11 +140,7 @@ export class CuotaPago {
 
     // Actualizar estado según el monto pagado
     if (montoPagado >= this.getMontoTotal()) {
-      this._estado = this._estado.transicionarA(
-        EstadoPlanPagosEnum.COMPLETADO,
-        'Cuota pagada completamente',
-        'SISTEMA_PAGO'
-      );
+      this._estado = EstadoCuota.COMPLETADO;
     } else {
       this._observaciones = `${this._observaciones || ''} - Pago parcial: $${montoPagado}`;
     }
@@ -158,21 +157,21 @@ export class CuotaPago {
    * Obtiene el saldo pendiente
    */
   getSaldoPendiente(): number {
-    return Math.max(0, this.getMontoTotal() - this._montoPagado);
+    return Math.max(0, this.getMontoTotal() - (this._montoPagado || 0));
   }
 
   /**
    * Verifica si la cuota está completamente pagada
    */
   estaPagada(): boolean {
-    return this._estado.estado === EstadoPlanPagosEnum.COMPLETADO;
+    return this._estado === EstadoCuota.COMPLETADO;
   }
 
   /**
    * Verifica si la cuota está vencida
    */
   estaVencida(): boolean {
-    return this._estado.estado === EstadoPlanPagosEnum.VENCIDO;
+    return this._estado === EstadoCuota.VENCIDO;
   }
 
   /**
@@ -227,11 +226,7 @@ export class CuotaPago {
     }
 
     // Marcar la cuota original como cancelada
-    this._estado = this._estado.transicionarA(
-      EstadoPlanPagosEnum.CANCELADO,
-      'Cuota refinanciada',
-      'SISTEMA_REFINANCIAMIENTO'
-    );
+    this._estado = EstadoCuota.CANCELADO;
 
     return cuotasRefinanciadas;
   }
@@ -284,7 +279,7 @@ export class CuotaPago {
       numero: this._numero,
       monto: this._monto,
       fechaVencimiento: this._fechaVencimiento.toISOString(),
-      estado: this._estado.toSnapshot(),
+      estado: this._estado,
       metodoPago: this._metodoPago,
       fechaPago: this._fechaPago?.toISOString(),
       montoPagado: this._montoPagado,
@@ -296,21 +291,21 @@ export class CuotaPago {
     };
   }
 
-  static fromSnapshot(snapshot: unknown): CuotaPago {
+  static fromSnapshot(snapshot: Record<string, unknown>): CuotaPago {
     return new CuotaPago({
-      id: snapshot.id,
-      numero: snapshot.numero,
-      monto: snapshot.monto,
-      fechaVencimiento: new Date(snapshot.fechaVencimiento),
-      estado: new EstadoPlanPagos(snapshot.estado),
-      metodoPago: snapshot.metodoPago,
-      fechaPago: snapshot.fechaPago ? new Date(snapshot.fechaPago) : undefined,
-      montoPagado: snapshot.montoPagado,
-      interesesMora: snapshot.interesesMora,
-      diasMora: snapshot.diasMora,
-      planPagosId: snapshot.planPagosId,
-      observaciones: snapshot.observaciones,
-      comprobantePago: snapshot.comprobantePago
+      id: snapshot.id as string,
+      numero: snapshot.numero as number,
+      monto: snapshot.monto as number,
+      fechaVencimiento: new Date(snapshot.fechaVencimiento as string),
+      estado: snapshot.estado as EstadoCuota,
+      metodoPago: snapshot.metodoPago as MetodoPago | undefined,
+      fechaPago: snapshot.fechaPago ? new Date(snapshot.fechaPago as string) : undefined,
+      montoPagado: snapshot.montoPagado as number | undefined,
+      interesesMora: snapshot.interesesMora as number | undefined,
+      diasMora: snapshot.diasMora as number | undefined,
+      planPagosId: snapshot.planPagosId as string,
+      observaciones: snapshot.observaciones as string | undefined,
+      comprobantePago: snapshot.comprobantePago as string | undefined
     });
   }
 }

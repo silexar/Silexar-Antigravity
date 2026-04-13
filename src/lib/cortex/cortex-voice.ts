@@ -122,6 +122,16 @@ class CortexVoiceImpl {
     // Generate empty WAV blob for demo
     const wavBlob = new Blob([new Uint8Array(1024)], { type: 'audio/wav' });
     
+    // Usar URL.createObjectURL si está disponible, sino usar un mock
+    let audioUrl: string | undefined;
+    try {
+      audioUrl = typeof URL !== 'undefined' && URL.createObjectURL 
+        ? URL.createObjectURL(wavBlob) 
+        : 'blob:mock-audio-url';
+    } catch {
+      audioUrl = 'blob:mock-audio-url';
+    }
+    
     return {
       audioBlob: wavBlob,
       duration: 30, // Mock 30s base duration as requested
@@ -129,7 +139,7 @@ class CortexVoiceImpl {
         generatedAt: new Date(),
         engine: engineName,
         metrics: { latency, cost },
-        audioUrl: URL.createObjectURL(wavBlob),
+        audioUrl,
         settings: config
       }
     };

@@ -279,7 +279,7 @@ export function PerformanceProfiler() {
           </thead>
           <tbody>
             {endpoints.map((ep, i) => (
-              <tr key={i} className="border-t border-slate-800">
+              <tr key={ep.path} className="border-t border-slate-800">
                 <td className="py-2">
                   <span className={`text-xs px-1.5 py-0.5 rounded mr-2 ${
                     ep.method === 'GET' ? 'bg-green-500/20 text-green-400' :

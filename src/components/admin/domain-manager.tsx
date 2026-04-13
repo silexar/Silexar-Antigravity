@@ -280,7 +280,7 @@ export function DomainManager() {
             </thead>
             <tbody>
               {selectedDomain.dnsRecords.map((record, i) => (
-                <tr key={i} className="border-t border-slate-800">
+                <tr key={record.name} className="border-t border-slate-800">
                   <td className="py-2 font-mono text-cyan-400">{record.type}</td>
                   <td className="py-2 text-white">{record.name}</td>
                   <td className="py-2 text-slate-300 font-mono text-xs">{record.value}</td>

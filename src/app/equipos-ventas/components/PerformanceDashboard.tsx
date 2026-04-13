@@ -274,7 +274,7 @@ export const PerformanceDashboard = () => {
             onClick={() => setActiveTab(btn.label.toLowerCase().replace(/\s/g, '') as 'overview' | 'coaching' | 'comp' | 'forecast')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
               btn.active
-                ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-900/20'
+                ? 'bg-[#F0EDE8] text-white border-slate-900 shadow-lg shadow-slate-900/20'
                 : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:shadow-sm'
             }`}
           >

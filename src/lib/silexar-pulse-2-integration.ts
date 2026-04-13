@@ -426,20 +426,20 @@ export class SilexarPulse2Integration extends EventEmitter {
    * Obtiene métricas consolidadas del sistema
    */
   public getSystemMetrics(): {
-    cortex_metrics: Record<string, unknown>
-    creativity_metrics: Record<string, unknown>
-    billing_metrics: Record<string, unknown>
-    performance_metrics: Record<string, unknown>
+    cortex_metrics: { sdk_installations: number; model_accuracy: number; events_per_second: number; decision_latency_ms: number; confidence_average: number; [k: string]: unknown };
+    creativity_metrics: { narratives_created: number; utilities_created: number; creativities_generated: number; average_quality_score: number; [k: string]: unknown };
+    billing_metrics: { active_contracts: number; events_per_minute: number; revenue_rate: number; top_billing_models: unknown; [k: string]: unknown };
+    performance_metrics: Record<string, unknown>;
   } {
-    const cortexAudience = this.integrationStatus.get('cortex_audience_2')?.metrics || {}
-    const cortexContext = this.integrationStatus.get('cortex_context')?.metrics || {}
-    const cortexOrchestrator = this.integrationStatus.get('cortex_orchestrator_2')?.metrics || {}
+    const cortexAudience = (this.integrationStatus.get('cortex_audience_2')?.metrics || {}) as Record<string, number>
+    const cortexContext = (this.integrationStatus.get('cortex_context')?.metrics || {}) as Record<string, number>
+    const cortexOrchestrator = (this.integrationStatus.get('cortex_orchestrator_2')?.metrics || {}) as Record<string, number>
 
-    const narrativePlanner = this.integrationStatus.get('narrative_planner')?.metrics || {}
-    const utilityStudio = this.integrationStatus.get('utility_studio')?.metrics || {}
-    const aiStudio = this.integrationStatus.get('ai_generative_studio')?.metrics || {}
+    const narrativePlanner = (this.integrationStatus.get('narrative_planner')?.metrics || {}) as Record<string, number>
+    const utilityStudio = (this.integrationStatus.get('utility_studio')?.metrics || {}) as Record<string, number>
+    const aiStudio = (this.integrationStatus.get('ai_generative_studio')?.metrics || {}) as Record<string, number>
 
-    const valueBilling = this.integrationStatus.get('value_billing')?.metrics || {}
+    const valueBilling = (this.integrationStatus.get('value_billing')?.metrics || {}) as Record<string, number>
     const billingStats = valueBillingEngine.getRealTimeStats()
 
     return {

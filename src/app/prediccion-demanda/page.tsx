@@ -126,13 +126,13 @@ export default function PrediccionDemandaPage() {
             <div className="p-4 bg-emerald-50 rounded-xl">
               <h4 className="font-medium text-emerald-800 mb-2">✅ Factores Positivos</h4>
               <ul className="text-sm text-emerald-700 space-y-1">
-                {forecastMes.factoresPositivos.map((f, i) => <li key={i}>• {f}</li>)}
+                {forecastMes.factoresPositivos.map((f, i) => <li key={`${f}-${i}`}>• {f}</li>)}
               </ul>
             </div>
             <div className="p-4 bg-red-50 rounded-xl">
               <h4 className="font-medium text-red-800 mb-2">⚠️ Factores de Riesgo</h4>
               <ul className="text-sm text-red-700 space-y-1">
-                {forecastMes.factoresRiesgo.map((f, i) => <li key={i}>• {f}</li>)}
+                {forecastMes.factoresRiesgo.map((f, i) => <li key={`${f}-${i}`}>• {f}</li>)}
               </ul>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function PrediccionDemandaPage() {
             </h2>
             <div className="space-y-4">
               {tendencias.map((t, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-white rounded-lg">
+                <div key={`${t}-${i}`} className="flex items-center justify-between p-3 bg-white rounded-lg">
                   <div className="flex items-center gap-3">
                     <TendenciaIcon tendencia={t.tendencia} />
                     <span className="font-medium">{t.categoria}</span>
@@ -173,7 +173,7 @@ export default function PrediccionDemandaPage() {
             </h2>
             <div className="space-y-3">
               {ocupacionProximos.map((o, i) => (
-                <div key={i} className="flex items-center gap-4">
+                <div key={`${o}-${i}`} className="flex items-center gap-4">
                   <span className="w-16 text-sm text-slate-500">{o.fecha}</span>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -205,7 +205,7 @@ export default function PrediccionDemandaPage() {
           </h2>
           <div className="grid md:grid-cols-3 gap-4">
             {oportunidades.map((o, i) => (
-              <div key={i} className={`p-4 rounded-xl border ${
+              <div key={`${o}-${i}`} className={`p-4 rounded-xl border ${
                 o.urgencia === 'alta' ? 'bg-red-50 border-red-200' :
                 o.urgencia === 'media' ? 'bg-amber-50 border-amber-200' :
                 'bg-slate-50 border-slate-200'
@@ -234,7 +234,7 @@ export default function PrediccionDemandaPage() {
           </h3>
           <div className="space-y-3">
             {recomendaciones.map((r, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-white rounded-lg">
+              <div key={`${r}-${i}`} className="flex items-center justify-between p-3 bg-white rounded-lg">
                 <div>
                   <p className="font-medium text-slate-800">
                     {r.tipo === 'aumentar_precio' ? '📈 Aumentar precio' : '📢 Promocionar'} - {r.bloque}

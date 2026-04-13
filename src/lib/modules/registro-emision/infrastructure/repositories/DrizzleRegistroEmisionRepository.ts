@@ -18,7 +18,7 @@ import { RegistroEmision } from "../../domain/entities/RegistroEmision";
 // MOCK IMPLEMENTATION FOR COMPILE CHECK (Replace with real imports when db is available in context)
 // const db: Record<string, unknown> = {}; 
 // const verificacionesEmision: Record<string, unknown> = {};
-// const eq: any = (a: any, b: any) => ({});
+// const eq: unknown = (a: unknown, b: unknown) => ({});
 
 export class DrizzleRegistroEmisionRepository implements IRegistroEmisionRepository {
   

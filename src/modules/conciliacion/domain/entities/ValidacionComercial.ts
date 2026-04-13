@@ -1,12 +1,6 @@
 import { Entity } from "./base/AggregateRoot";
 import { CodigoSP } from "../value-objects/CodigoSP";
 
-interface ReglaComercial {
-  id: string;
-  descripcion: string;
-  condicion: (metadata: unknown) => boolean;
-}
-
 interface ValidacionComercialProps {
   codigoSP: CodigoSP;
   reglasAplicadas: string[];

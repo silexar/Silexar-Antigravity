@@ -21,9 +21,13 @@ import {
   Key, Mail, CreditCard, Database, Megaphone
 } from 'lucide-react'
 
-// Import client admin modules
-import { UserManagement } from '@/components/admin/client/user-management'
-import { SupportTickets } from '@/components/admin/client/support-tickets'
+// WHY: Lazy loading — estos paneles son pesados y solo se necesitan cuando
+// el usuario navega a la tab correspondiente.
+import dynamic from 'next/dynamic'
+import { Skeleton } from '@/components/ui/skeleton'
+
+const UserManagement = dynamic(() => import('@/components/admin/client/user-management').then(m => ({ default: m.UserManagement })), { loading: () => <Skeleton className="w-full h-48 rounded-2xl" />, ssr: false })
+const SupportTickets = dynamic(() => import('@/components/admin/client/support-tickets').then(m => ({ default: m.SupportTickets })), { loading: () => <Skeleton className="w-full h-48 rounded-2xl" />, ssr: false })
 
 interface TenantInfo {
   name: string
@@ -92,7 +96,7 @@ export default function AdminClienteDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Admin Cliente...</p>
+          <p className="text-[#888780]">Cargando Admin Cliente...</p>
         </div>
       </div>
     )
@@ -101,17 +105,17 @@ export default function AdminClienteDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-slate-800/90 border-r border-slate-700 transition-all duration-300`}>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-[#E8E5E0]/90 border-r border-[#D4D1CC] transition-all duration-300`}>
         {/* Logo */}
-        <div className="p-4 border-b border-slate-700">
+        <div className="p-4 border-b border-[#D4D1CC]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shrink-0">
-              <Building className="w-6 h-6 text-white" />
+              <Building className="w-6 h-6 text-[#2C2C2A]" />
             </div>
             {sidebarOpen && (
               <div>
-                <p className="text-white font-bold text-sm">{tenant?.name}</p>
-                <p className="text-xs text-slate-500">{tenant?.plan}</p>
+                <p className="text-[#2C2C2A] font-bold text-sm">{tenant?.name}</p>
+                <p className="text-xs text-[#888780]">{tenant?.plan}</p>
               </div>
             )}
           </div>
@@ -126,7 +130,7 @@ export default function AdminClienteDashboard() {
               className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
                 activeModule === item.id 
                   ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                  : 'text-slate-400 hover:bg-slate-700/50'
+                  : 'text-[#888780] hover:bg-[#D4D1CC]/50'
               }`}
             >
               {item.icon}
@@ -138,12 +142,12 @@ export default function AdminClienteDashboard() {
         {/* User Count */}
         {sidebarOpen && tenant && (
           <div className="absolute bottom-4 left-4 right-4">
-            <div className="p-3 bg-slate-900/50 rounded-lg">
+            <div className="p-3 bg-[#F0EDE8]/50 rounded-lg">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-slate-400">Usuarios</span>
-                <span className="text-white">{tenant.usersCount}/{tenant.maxUsers}</span>
+                <span className="text-[#888780]">Usuarios</span>
+                <span className="text-[#2C2C2A]">{tenant.usersCount}/{tenant.maxUsers}</span>
               </div>
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-[#D4D1CC] rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
                   style={{ width: `${(tenant.usersCount / tenant.maxUsers) * 100}%` }}
@@ -157,39 +161,39 @@ export default function AdminClienteDashboard() {
       {/* Main Content */}
       <div className="flex-1">
         {/* Top Bar */}
-        <div className="bg-slate-800/50 border-b border-slate-700 px-6 py-3">
+        <div className="bg-[#E8E5E0]/50 border-b border-[#D4D1CC] px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-slate-700 rounded-lg">
-                <Menu className="w-5 h-5 text-slate-400" />
+              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-[#D4D1CC] rounded-lg">
+                <Menu className="w-5 h-5 text-[#888780]" />
               </button>
-              <h1 className="text-lg font-bold text-white">
+              <h1 className="text-lg font-bold text-[#2C2C2A]">
                 {menuItems.find(m => m.id === activeModule)?.name}
               </h1>
             </div>
 
             <div className="flex items-center gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888780]" />
                 <input
                   type="text"
                   placeholder="Buscar..."
                   aria-label="Buscar"
-                  className="w-64 pl-10 pr-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm focus:border-blue-500/50 focus:outline-none"
+                  className="w-64 pl-10 pr-4 py-2 bg-[#F0EDE8]/50 border border-[#D4D1CC] rounded-lg text-[#2C2C2A] text-sm focus:border-blue-500/50 focus:outline-none"
                 />
               </div>
-              <button aria-label="Notificaciones" className="relative p-2 hover:bg-slate-700 rounded-lg">
-                <Bell className="w-5 h-5 text-slate-400" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center">
+              <button aria-label="Notificaciones" className="relative p-2 hover:bg-[#D4D1CC] rounded-lg">
+                <Bell className="w-5 h-5 text-[#888780]" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-[#2C2C2A] text-xs rounded-full flex items-center justify-center">
                   3
                 </span>
               </button>
-              <div className="flex items-center gap-3 pl-4 border-l border-slate-700">
+              <div className="flex items-center gap-3 pl-4 border-l border-[#D4D1CC]">
                 <div className="text-right">
-                  <p className="text-white text-sm font-medium">Admin</p>
-                  <p className="text-xs text-slate-500">Administrador</p>
+                  <p className="text-[#2C2C2A] text-sm font-medium">Admin</p>
+                  <p className="text-xs text-[#888780]">Administrador</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-[#2C2C2A] font-bold">
                   A
                 </div>
               </div>
@@ -203,8 +207,8 @@ export default function AdminClienteDashboard() {
             <div className="space-y-6">
               {/* Metrics */}
               <div className="grid grid-cols-4 gap-4">
-                {metrics.map((metric, i) => (
-                  <NeuromorphicCard key={i} variant="embossed" className="p-4">
+                {metrics.map((metric) => (
+                  <NeuromorphicCard key={metric.label} variant="embossed" className="p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className={`p-2 rounded-lg bg-${metric.color}-500/20 text-${metric.color}-400`}>
                         {metric.icon}
@@ -215,8 +219,8 @@ export default function AdminClienteDashboard() {
                         </span>
                       )}
                     </div>
-                    <p className="text-2xl font-bold text-white">{metric.value}</p>
-                    <p className="text-xs text-slate-500">{metric.label}</p>
+                    <p className="text-2xl font-bold text-[#2C2C2A]">{metric.value}</p>
+                    <p className="text-xs text-[#888780]">{metric.label}</p>
                   </NeuromorphicCard>
                 ))}
               </div>
@@ -224,7 +228,7 @@ export default function AdminClienteDashboard() {
               <div className="grid grid-cols-2 gap-6">
                 {/* Quick Actions */}
                 <NeuromorphicCard variant="glow" className="p-6">
-                  <h3 className="text-white font-medium mb-4 flex items-center gap-2">
+                  <h3 className="text-[#2C2C2A] font-medium mb-4 flex items-center gap-2">
                     <Zap className="w-5 h-5 text-yellow-400" />
                     Acciones Rápidas
                   </h3>
@@ -234,16 +238,16 @@ export default function AdminClienteDashboard() {
                       { name: 'Ver Tickets', icon: <Ticket className="w-5 h-5" />, action: () => setActiveModule('tickets') },
                       { name: 'Invitar Equipo', icon: <Mail className="w-5 h-5" />, action: () => {} },
                       { name: 'API Keys', icon: <Key className="w-5 h-5" />, action: () => {} }
-                    ].map((action, i) => (
-                      <button 
-                        key={i}
+                    ].map((action) => (
+                      <button
+                        key={action.name}
                         onClick={action.action}
-                        className="p-4 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all flex items-center gap-3"
+                        className="p-4 bg-[#E8E5E0]/50 hover:bg-[#E8E5E0] rounded-xl border border-[#D4D1CC] hover:border-blue-500/50 transition-all flex items-center gap-3"
                       >
                         <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
                           {action.icon}
                         </div>
-                        <span className="text-white text-sm">{action.name}</span>
+                        <span className="text-[#2C2C2A] text-sm">{action.name}</span>
                       </button>
                     ))}
                   </div>
@@ -251,7 +255,7 @@ export default function AdminClienteDashboard() {
 
                 {/* Recent Activity */}
                 <NeuromorphicCard variant="embossed" className="p-6">
-                  <h3 className="text-white font-medium mb-4 flex items-center gap-2">
+                  <h3 className="text-[#2C2C2A] font-medium mb-4 flex items-center gap-2">
                     <Activity className="w-5 h-5 text-purple-400" />
                     Actividad Reciente
                   </h3>
@@ -261,14 +265,14 @@ export default function AdminClienteDashboard() {
                       { action: 'Ticket #123 creado', time: '30 min', type: 'info' },
                       { action: 'Integración Meta conectada', time: '2 horas', type: 'success' },
                       { action: 'Usuario suspendido por admin', time: '1 día', type: 'warning' }
-                    ].map((activity, i) => (
-                      <div key={i} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-800/50">
+                    ].map((activity) => (
+                      <div key={activity.action} className="flex items-start gap-3 p-2 rounded-lg hover:bg-[#E8E5E0]/50">
                         {activity.type === 'success' && <CheckCircle className="w-4 h-4 text-green-400 mt-0.5" />}
                         {activity.type === 'info' && <Clock className="w-4 h-4 text-blue-400 mt-0.5" />}
                         {activity.type === 'warning' && <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5" />}
                         <div className="flex-1">
-                          <p className="text-sm text-slate-300">{activity.action}</p>
-                          <p className="text-xs text-slate-500">Hace {activity.time}</p>
+                          <p className="text-sm text-[#5F5E5A]">{activity.action}</p>
+                          <p className="text-xs text-[#888780]">Hace {activity.time}</p>
                         </div>
                       </div>
                     ))}
@@ -281,9 +285,9 @@ export default function AdminClienteDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-white">Conectado a Silexar Pulse</span>
+                    <span className="text-[#2C2C2A]">Conectado a Silexar Pulse</span>
                   </div>
-                  <span className="text-xs text-slate-500">Último sync: hace 2 min</span>
+                  <span className="text-xs text-[#888780]">Último sync: hace 2 min</span>
                 </div>
               </NeuromorphicCard>
             </div>
@@ -299,10 +303,10 @@ export default function AdminClienteDashboard() {
           {['teams', 'billing', 'settings', 'integrations', 'branding'].includes(activeModule) && (
             <NeuromorphicCard variant="embossed" className="p-8 text-center">
               <Settings className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-white text-xl font-medium mb-2">
+              <h3 className="text-[#2C2C2A] text-xl font-medium mb-2">
                 Módulo {menuItems.find(m => m.id === activeModule)?.name}
               </h3>
-              <p className="text-slate-400">Este módulo está en desarrollo</p>
+              <p className="text-[#888780]">Este módulo está en desarrollo</p>
             </NeuromorphicCard>
           )}
         </div>

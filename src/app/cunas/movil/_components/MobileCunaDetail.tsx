@@ -122,7 +122,7 @@ export const MobileCunaDetail: React.FC<DetailProps> = ({ cunaId, onBack }) => {
           <div className="w-full h-10 flex items-center gap-1 px-4 opacity-50">
             {/* Fake Waveform */}
             {Array.from({ length: 30 }).map((_, i) => (
-              <div key={i} className="flex-1 bg-indigo-200 rounded-full" style={{ height: `${Math.max(20, Math.random() * 100)}%` }} />
+              <div key={`${_}-${i}`} className="flex-1 bg-indigo-200 rounded-full" style={{ height: `${Math.max(20, Math.random() * 100)}%` }} />
             ))}
           </div>
           

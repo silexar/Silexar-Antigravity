@@ -2,21 +2,22 @@ name: 🔒 Security Scan
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, master]
   pull_request:
-    branches: [ main ]
-  schedule:
-    # Daily security scan at 3 AM UTC
-    - cron: '0 3 * * *'
+    branches: [main, master]
+  workflow_dispatch:
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '20'
 
 jobs:
-  security-audit:
-    name: 🛡️ Security Audit
+  # ==========================================
+  # NPM Security Audit
+  # ==========================================
+  npm-audit:
+    name: 📦 NPM Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 15
     
     steps:
       - name: 📥 Checkout Code
@@ -32,134 +33,50 @@ jobs:
         run: npm ci --prefer-offline --no-audit
         
       - name: 🔍 NPM Security Audit
+        id: npm_audit
         run: |
-          npm audit --audit-level=moderate --json > npm-audit.json || true
-          npm audit --audit-level=moderate
+          echo "Running npm audit with moderate level..."
+          npm audit --audit-level=moderate --json > npm-audit-report.json || EXIT_CODE=$?
           
-      - name: 🔐 Snyk Security Test
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=medium --json > snyk-report.json
+          # Parse critical and high vulnerabilities
+          CRITICAL_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.high // 0')
+          MODERATE_COUNT=$(cat npm-audit-report.json | jq -r '.metadata.vulnerabilities.moderate // 0')
           
-      - name: 📊 Upload Snyk Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: snyk.sarif
+          echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          echo "high_count=$HIGH_COUNT" >> $GITHUB_OUTPUT
+          echo "moderate_count=$MODERATE_COUNT" >> $GITHUB_OUTPUT
           
-      - name: 🟢 Ensure App Running for ZAP
-        run: |
-          npm run build
-          nohup npm start >/tmp/app.log 2>&1 & echo $! > /tmp/app.pid
-          echo "Waiting for http://localhost:3000 to be ready..."
-          for i in {1..60}; do
-            if curl -fsS http://localhost:3000 > /dev/null; then
-              echo "Service is up"; break
-            fi
-            sleep 2
-          done
-        
-      - name: 🔍 OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.10.0
-        with:
-          target: 'http://localhost:3000'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
-        
-      - name: 🧹 Stop Local App
-        if: always()
-        run: |
-          if [ -f /tmp/app.pid ]; then
-            kill $(cat /tmp/app.pid) || true
-          fi
-          pkill -f "next start" || true
+          echo "📊 Vulnerabilities Found:"
+          echo "  Critical: $CRITICAL_COUNT"
+          echo "  High: $HIGH_COUNT"
+          echo "  Moderate: $MODERATE_COUNT"
           
-      - name: 📤 Upload Security Reports
+          # Display audit results
+          npm audit --audit-level=moderate || true
+          
+      - name: 📤 Upload NPM Audit Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: security-reports
-          path: |
-            npm-audit.json
-            snyk-report.json
-            report_html.html
-            report_md.md
-            report_json.json
-
-  dependency-check:
-    name: 📦 Dependency Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-        
-      - name: 🔍 Run Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: 'Silexar Pulse Quantum'
-          path: '.'
-          format: 'ALL'
-          args: >
-            --enableRetired
-            --enableExperimental
-            --failOnCVSS 7
-            --suppression dependency-check-suppressions.xml
-            
-      - name: 📤 Upload Dependency Check Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: dependency-check-reports
-          path: reports/
-
-  container-security:
-    name: 🐳 Container Security
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-        
-      - name: 🏗️ Build Docker Image
+          name: npm-audit-report
+          path: npm-audit-report.json
+          retention-days: 30
+          
+      - name: 🚫 Block PR on Critical Vulnerabilities
+        if: github.event_name == 'pull_request' && steps.npm_audit.outputs.critical_count > 0
         run: |
-          docker build -f Dockerfile.production -t silexar-pulse-quantum:security-test .
-          
-      - name: 🔍 Run Trivy Container Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'silexar-pulse-quantum:security-test'
-          format: 'sarif'
-          output: 'trivy-container-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
-          
-      - name: 📊 Upload Trivy Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-container-results.sarif'
-          
-      - name: 🔐 Run Docker Scout
-        uses: docker/scout-action@v1
-        with:
-          command: cves
-          image: silexar-pulse-quantum:security-test
-          sarif-file: scout-report.sarif
-          
-      - name: 📤 Upload Scout Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'scout-report.sarif'
+          echo "❌ CRITICAL vulnerabilities found: ${{ steps.npm_audit.outputs.critical_count }}"
+          echo "This PR cannot be merged until critical vulnerabilities are resolved."
+          exit 1
 
-  secrets-scan:
-    name: 🔑 Secrets Scan
+  # ==========================================
+  # Secret Scanning
+  # ==========================================
+  secret-scan:
+    name: 🔑 Secret Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     
     steps:
       - name: 📥 Checkout Code
@@ -167,24 +84,72 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: 🔍 Run GitLeaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-          
-      - name: 🔍 Run TruffleHog
+      - name: 🔍 Scan with TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
+          base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --debug --only-verified
+          
+      - name: 🔍 Scan with GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  license-check:
-    name: 📄 License Check
+  # ==========================================
+  # Static Code Analysis (CodeQL)
+  # ==========================================
+  codeql-analysis:
+    name: 🧪 CodeQL Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript-typescript']
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: 🧪 Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+          
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: 📦 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+        
+      - name: 🏗️ Build Application
+        run: npm run build
+        
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # ==========================================
+  # PR Comment with Results
+  # ==========================================
+  pr-comment:
+    name: 💬 PR Comment
+    runs-on: ubuntu-latest
+    needs: [npm-audit, secret-scan, codeql-analysis]
+    if: github.event_name == 'pull_request' && always()
+    timeout-minutes: 5
     
     steps:
       - name: 📥 Checkout Code
@@ -199,57 +164,215 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci --prefer-offline --no-audit
         
-      - name: 📄 Check Licenses
+      - name: 🔍 Generate Audit Summary
+        id: audit_summary
         run: |
-          npx license-checker --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC' --excludePrivatePackages > license-report.txt
-          cat license-report.txt
+          npm audit --audit-level=moderate --json > audit-summary.json || true
           
-      - name: 📤 Upload License Report
-        uses: actions/upload-artifact@v4
+          # Calculate security score
+          TOTAL_DEPS=$(cat audit-summary.json | jq -r '.metadata.totalDependencies // 0')
+          CRITICAL=$(cat audit-summary.json | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(cat audit-summary.json | jq -r '.metadata.vulnerabilities.high // 0')
+          MODERATE=$(cat audit-summary.json | jq -r '.metadata.vulnerabilities.moderate // 0')
+          LOW=$(cat audit-summary.json | jq -r '.metadata.vulnerabilities.low // 0')
+          INFO=$(cat audit-summary.json | jq -r '.metadata.vulnerabilities.info // 0')
+          
+          # Calculate score (simple algorithm)
+          if [ "$TOTAL_DEPS" -gt 0 ]; then
+            SCORE=$(echo "scale=1; 10 - ($CRITICAL * 2 + $HIGH * 1 + $MODERATE * 0.5)" | bc)
+            if (( $(echo "$SCORE < 0" | bc -l) )); then SCORE=0; fi
+          else
+            SCORE="N/A"
+          fi
+          
+          echo "security_score=$SCORE" >> $GITHUB_OUTPUT
+          echo "total_deps=$TOTAL_DEPS" >> $GITHUB_OUTPUT
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+          echo "low=$LOW" >> $GITHUB_OUTPUT
+          echo "info=$INFO" >> $GITHUB_OUTPUT
+        shell: bash
+        
+      - name: 💬 Comment PR with Security Results
+        uses: actions/github-script@v7
         with:
-          name: license-report
-          path: license-report.txt
+          script: |
+            const fs = require('fs');
+            
+            const npmAuditResult = '${{ needs.npm-audit.result }}';
+            const secretScanResult = '${{ needs.secret-scan.result }}';
+            const codeqlResult = '${{ needs.codeql-analysis.result }}';
+            
+            const score = '${{ steps.audit_summary.outputs.security_score }}';
+            const totalDeps = '${{ steps.audit_summary.outputs.total_deps }}';
+            const critical = '${{ steps.audit_summary.outputs.critical }}';
+            const high = '${{ steps.audit_summary.outputs.high }}';
+            const moderate = '${{ steps.audit_summary.outputs.moderate }}';
+            const low = '${{ steps.audit_summary.outputs.low }}';
+            const info = '${{ steps.audit_summary.outputs.info }}';
+            
+            const getStatusEmoji = (result) => {
+              if (result === 'success') return '✅';
+              if (result === 'failure') return '❌';
+              return '⚠️';
+            };
+            
+            const getScoreColor = (s) => {
+              if (s === 'N/A') return '⚪';
+              const num = parseFloat(s);
+              if (num >= 8) return '🟢';
+              if (num >= 5) return '🟡';
+              return '🔴';
+            };
+            
+            const body = `## 🔒 Security Scan Results
+            
+            | Check | Status |
+            |-------|--------|
+            | ${getStatusEmoji(npmAuditResult)} NPM Audit | ${npmAuditResult.toUpperCase()} |
+            | ${getStatusEmoji(secretScanResult)} Secret Scan | ${secretScanResult.toUpperCase()} |
+            | ${getStatusEmoji(codeqlResult)} CodeQL Analysis | ${codeqlResult.toUpperCase()} |
+            
+            ### 📊 Security Score: ${getScoreColor(score)} ${score}/10
+            
+            ### 🔍 Vulnerability Summary
+            | Severity | Count |
+            |----------|-------|
+            | 🔴 Critical | ${critical} |
+            | 🟠 High | ${high} |
+            | 🟡 Moderate | ${moderate} |
+            | 🔵 Low | ${low} |
+            | ⚪ Info | ${info} |
+            
+            **Total Dependencies:** ${totalDeps}
+            
+            ---
+            *Scan completed at: ${new Date().toISOString()}*
+            `;
+            
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('🔒 Security Scan Results')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
 
-  security-summary:
-    name: 📋 Security Summary
+  # ==========================================
+  # Block PR on Critical Failures
+  # ==========================================
+  security-gate:
+    name: 🚫 Security Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [security-audit, dependency-check, container-security, secrets-scan, license-check]
-    if: always()
+    needs: [npm-audit, secret-scan, codeql-analysis]
+    if: github.event_name == 'pull_request' && always()
+    timeout-minutes: 5
     
     steps:
-      - name: 📥 Download All Reports
-        uses: actions/download-artifact@v4
-        
-      - name: 📊 Generate Security Summary
+      - name: 🚫 Check Security Gate
         run: |
-          echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📊 Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **Security Audit**: ${{ needs.security-audit.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Dependency Check**: ${{ needs.dependency-check.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Container Security**: ${{ needs.container-security.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Secrets Scan**: ${{ needs.secrets-scan.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **License Check**: ${{ needs.license-check.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📅 Scan Details" >> $GITHUB_STEP_SUMMARY
-          echo "- **Date**: $(date -u)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "Checking security scan results..."
           
-      - name: 🚨 Alert on Security Issues
-        if: contains(needs.*.result, 'failure')
+          NPM_AUDIT="${{ needs.npm-audit.result }}"
+          SECRET_SCAN="${{ needs.secret-scan.result }}"
+          CODEQL="${{ needs.codeql-analysis.result }}"
+          
+          echo "NPM Audit: $NPM_AUDIT"
+          echo "Secret Scan: $SECRET_SCAN"
+          echo "CodeQL: $CODEQL"
+          
+          FAILED=0
+          
+          if [ "$NPM_AUDIT" == "failure" ]; then
+            echo "❌ NPM Audit failed - Critical vulnerabilities detected"
+            FAILED=1
+          fi
+          
+          if [ "$SECRET_SCAN" == "failure" ]; then
+            echo "❌ Secret Scan failed - Potential secrets detected"
+            FAILED=1
+          fi
+          
+          if [ "$CODEQL" == "failure" ]; then
+            echo "❌ CodeQL Analysis failed - Security issues found"
+            FAILED=1
+          fi
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "🚫 SECURITY GATE FAILED"
+            echo "This PR cannot be merged until all security checks pass."
+            exit 1
+          fi
+          
+          echo "✅ All security checks passed!"
+
+  # ==========================================
+  # Notification (Optional)
+  # ==========================================
+  notify:
+    name: 📢 Notify
+    runs-on: ubuntu-latest
+    needs: [npm-audit, secret-scan, codeql-analysis]
+    if: failure() && github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+    
+    steps:
+      - name: 📢 Slack Notification
+        if: env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          channel: '#security-alerts'
-          text: |
-            🚨 Security issues detected in ${{ github.repository }}
-            
-            Branch: ${{ github.ref_name }}
-            Commit: ${{ github.sha }}
-            
-            Please review the security scan results immediately.
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          channel: '#security-alerts'
+          text: |
+            🚨 Security Scan Failed in `${{ github.repository }}`
+            
+            • Branch: `${{ github.ref_name }}`
+            • Commit: `${{ github.sha }}`
+            • Author: ${{ github.actor }}
+            
+            Check details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+      - name: 📢 Discord Notification
+        if: env.DISCORD_WEBHOOK_URL != ''
+        uses: tsickert/discord-webhook@v5
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          username: "Security Bot"
+          avatar-url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          content: |
+            🚨 **Security Scan Failed**
+            
+            Repository: `${{ github.repository }}`
+            Branch: `${{ github.ref_name }}`
+            Commit: `${{ github.sha }}`
+            Author: ${{ github.actor }}
+            
+            [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})

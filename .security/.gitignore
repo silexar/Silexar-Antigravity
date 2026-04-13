@@ -1,0 +1,4 @@
+﻿# Security Auto-Fix Files
+*.backup-*
+!knowledge-base.json
+!history.json

@@ -1,5 +1,16 @@
+/**
+ * CLIENT-ONLY: This service is for browser use only. Server uses DrizzleContratoRepository.
+ *
+ * This service stores contracts temporarily in browser localStorage for offline/preview purposes.
+ * All server-side contract operations MUST use DrizzleContratoRepository with proper DB persistence.
+ */
 import { Contract, ContractStatus } from '../domain/Contract';
 import { logger } from '@/lib/observability';
+
+// Runtime guard: prevent server-side usage
+if (typeof window === 'undefined') {
+  throw new Error('ContractService is client-side only. Use DrizzleContratoRepository on the server.');
+}
 
 const STORAGE_KEY = 'silexar_contracts_v1';
 
@@ -36,10 +47,17 @@ export class ContractService {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.contracts));
     }
 
-    async getAll(): Promise<Contract[]> {
+    /**
+     * WARNING: Dev-only method. Filters in-memory contracts by tenantId.
+     * Production MUST use DrizzleContratoRepository with proper DB persistence.
+     */
+    async getAll(tenantId?: string): Promise<Contract[]> {
         // Simulate network delay for "Tier 0" feel
         await new Promise(resolve => setTimeout(resolve, 400));
-        return [...this.contracts];
+        const filtered = tenantId
+            ? this.contracts.filter(c => (c as Record<string, unknown>).tenantId === tenantId)
+            : this.contracts;
+        return [...filtered];
     }
 
     async create(contract: Contract): Promise<void> {

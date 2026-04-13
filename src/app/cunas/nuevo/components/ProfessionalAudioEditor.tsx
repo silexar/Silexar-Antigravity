@@ -237,7 +237,7 @@ const WaveformDisplay = ({
       <div className="absolute inset-0 opacity-20">
         {[...Array(10)].map((_, i) => (
           <div 
-            key={i} 
+            key={`${_}-${i}`} 
             className="absolute w-px h-full bg-slate-600"
             style={{ left: `${(i + 1) * 10}%` }}
           />

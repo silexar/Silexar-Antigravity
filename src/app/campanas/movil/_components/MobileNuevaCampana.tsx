@@ -37,8 +37,7 @@ export const MobileNuevaCampana: React.FC<CrearProps> = ({ onBack }) => {
         setSuccess(true);
         setTimeout(() => onBack(), 2000);
       }, 1500);
-    } catch (error) {
-      // /* console.error('Error:', error) */;
+    } catch (_error) {
       alert('Error de conexión');
     } finally {
       // No seteamos loading false aquí porque ocultaría la pantalla de success

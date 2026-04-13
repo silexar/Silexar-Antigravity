@@ -10,6 +10,7 @@
  */
 
 import { qualityLogger } from '../quality/quality-logger';
+import { logger } from '@/lib/observability';
 
 // 🔍 Trace Context
 interface TraceContext {
@@ -788,28 +789,20 @@ export interface TraceExporter {
 
 /**
  * 📤 Console Trace Exporter
+ * WHY: Uses logger.debug instead of console.log so traces flow through
+ * the structured logging pipeline (Sentry, Datadog, CloudWatch) rather than
+ * raw stdout, which can expose internal trace data in production logs.
  */
 export class ConsoleTraceExporter implements TraceExporter {
   name = 'console';
 
   export(trace: Trace): void {
-    console.log('Trace Export:', {
-      traceId: trace.traceId,
-      duration: trace.duration,
-      spanCount: trace.spans.length,
-      services: trace.services,
-      status: trace.status
-    });
+    logger.debug('[DistributedTracing] trace', { traceId: trace.traceId, spans: trace.spans?.length });
   }
 
   batchExport(traces: Trace[]): void {
-    console.log('Batch Trace Export:', {
-      traceCount: traces.length,
-      traces: traces.map(t => ({
-        traceId: t.traceId,
-        duration: t.duration,
-        status: t.status
-      }))
+    traces.forEach(trace => {
+      this.export(trace);
     });
   }
 }

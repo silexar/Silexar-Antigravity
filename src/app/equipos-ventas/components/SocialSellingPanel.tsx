@@ -97,7 +97,7 @@ export const SocialSellingPanel = () => {
                 <p className="text-xs text-slate-400">{p.title}</p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {p.interests.map((i) => (
-                    <span key={i} className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">{i}</span>
+                    <span key={`${i}`} className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">{i}</span>
                   ))}
                 </div>
               </div>

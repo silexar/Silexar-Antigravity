@@ -57,7 +57,7 @@ export const MobileNuevoAnunciante: React.FC<CrearProps> = ({ onBack }) => {
         alert(data.error || 'Error al crear anunciante');
       }
     } catch (error) {
-      /* console.error('Error creating:', error) */;
+      /* */;
       alert('Error de conexión');
     } finally {
       setLoading(false);

@@ -11,6 +11,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -430,11 +431,13 @@ export const AIGenerativeStudioComplete: React.FC<AIGenerativeStudioProps> = ({
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
                     {generatedImages.map((img) => (
-                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-slate-700">
-                        <img 
-                          src={img.url} 
-                          alt={`Variant ${img.id}`} 
-                          className="w-full h-32 object-cover"
+                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-slate-700 h-32">
+                        <Image
+                          src={img.url}
+                          alt={`Variant ${img.id}`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, 25vw"
                         />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <Button 

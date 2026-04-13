@@ -68,8 +68,8 @@ export function MobileClienteCard() {
 
       {/* PREFERENCIAS */}
       <div className="flex flex-wrap gap-1.5">
-        {CL.prefs.map((p, i) => (
-          <span key={i} className="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full flex items-center gap-1">
+        {CL.prefs.map((p) => (
+          <span key={p} className="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full flex items-center gap-1">
             {p.includes('Radio') ? <Radio className="w-2.5 h-2.5" /> : p.includes('TV') ? <Tv className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
             {p}
           </span>
@@ -79,8 +79,8 @@ export function MobileClienteCard() {
       {/* HISTORIAL */}
       <div>
         <p className="text-[10px] font-bold text-slate-400 mb-1.5">Contratos</p>
-        {CL.hist.map((h, i) => (
-          <div key={i} className="flex items-center gap-2 py-1.5 border-b border-slate-50">
+        {CL.hist.map((h) => (
+          <div key={h.num} className="flex items-center gap-2 py-1.5 border-b border-slate-50">
             <span className="text-[10px] font-mono text-indigo-500">{h.num}</span>
             <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${h.est === 'activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{h.est}</span>
             <span className="text-xs font-bold text-slate-700 ml-auto">${(h.val / 1e6).toFixed(0)}M</span>
@@ -91,8 +91,8 @@ export function MobileClienteCard() {
       {/* OPORTUNIDADES */}
       <div>
         <p className="text-[10px] font-bold text-slate-400 mb-1.5">Oportunidades</p>
-        {CL.ops.map((o, i) => (
-          <div key={i} className="p-2.5 bg-amber-50 rounded-xl border border-amber-100 mb-1.5 flex items-center gap-2">
+        {CL.ops.map((o) => (
+          <div key={o.titulo} className="p-2.5 bg-amber-50 rounded-xl border border-amber-100 mb-1.5 flex items-center gap-2">
             <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" />
             <div className="flex-1">
               <p className="text-xs font-bold text-slate-800">{o.titulo}</p>

@@ -53,7 +53,7 @@ export default function EmisoraDetailView() {
              </h3>
              <div className="space-y-4">
                 {topPerformers.map((p, i) => (
-                   <div key={i} className={`rounded-xl border p-5 transition-all w-full relative overflow-hidden group hover:border-gray-200 hover:bg-white/90 ${p.estado === 'lider' ? 'bg-amber-500/5 border-amber-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
+                   <div key={`${p}-${i}`} className={`rounded-xl border p-5 transition-all w-full relative overflow-hidden group hover:border-gray-200 hover:bg-white/90 ${p.estado === 'lider' ? 'bg-amber-500/5 border-amber-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
                       {p.estado === 'lider' && <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-bl-full blur-2xl"></div>}
                       {p.estado === 'oportunidad' && <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full blur-2xl"></div>}
                       

@@ -80,11 +80,7 @@ export async function initializeSecurity(): Promise<SecurityResult> {
 
     if (process.env.NODE_ENV === 'development') {
       const duration = (performance.now() - startTime).toFixed(1);
-      console.info(
-        `🛡️ Security initialized: Level=${level}, Score=${scanResult.score}/100, ` +
-        `Critical=${criticalIssues}, Duration=${duration}ms`
-      );
-    }
+      }
 
     return result;
   } catch (error) {

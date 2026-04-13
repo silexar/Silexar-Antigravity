@@ -308,7 +308,7 @@ export function VisualizadorRoles() {
       </CardHeader>
       <CardContent className="p-4 space-y-4">
         {/* Usuario actual */}
-        <div className="bg-slate-50 rounded-lg p-4">
+        <div className="bg-[#F0EDE8] rounded-lg p-4">
           <h4 className="font-semibold text-sm mb-2">👤 Usuario Actual</h4>
           <div className="flex items-center justify-between">
             <div>
@@ -350,7 +350,7 @@ export function VisualizadorRoles() {
         {mostrarDetalle && rolActual && (
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full text-xs">
-              <thead className="bg-slate-100">
+              <thead className="bg-[#F0EDE8]">
                 <tr>
                   <th className="px-2 py-1 text-left">Módulo</th>
                   <th className="px-2 py-1 text-center">Ver</th>

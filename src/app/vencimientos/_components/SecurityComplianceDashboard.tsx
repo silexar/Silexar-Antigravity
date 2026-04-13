@@ -73,7 +73,7 @@ export default function SecurityComplianceDashboard() {
                         { time: "10:15:00", action: "CORTEX_AUTOAJUSTE", user: "SYSTEM_AI", desc: "Yield Management: +10% Pricing en Sonar FM", hash: "0xcc21...8fa" },
                         { time: "09:55:33", action: "LOGIN_FAILED", user: "Unknown_IP", desc: "Intento fallido desde IP 192.168.1.X", hash: "0x00fa...11c", alert: true }
                      ].map((log, i) => (
-                        <div key={i} className={`p-3 rounded-lg border flex gap-4 ${log.alert ? 'bg-red-950/20 border-red-500/30' : 'bg-[#ECEFF8]/50 border-gray-200/50 hover:border-emerald-500/30 transition-colors'}`}>
+                        <div key={`${log}-${i}`} className={`p-3 rounded-lg border flex gap-4 ${log.alert ? 'bg-red-950/20 border-red-500/30' : 'bg-[#ECEFF8]/50 border-gray-200/50 hover:border-emerald-500/30 transition-colors'}`}>
                            <div className="text-gray-500 w-16 shrink-0">{log.time}</div>
                            <div className="flex-1">
                               <span className={`${log.alert ? 'text-red-600' : 'text-emerald-600'} font-bold`}>[{log.action}]</span>

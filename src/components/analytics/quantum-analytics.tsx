@@ -61,12 +61,12 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
     document.head.appendChild(script);
 
     // Initialize gtag
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    function gtag(...args: any[]) {
-      (window as any).dataLayer.push(args);
+    (window as unknown).dataLayer = (window as unknown).dataLayer || [];
+    function gtag(...args: unknown[]) {
+      (window as unknown).dataLayer.push(args);
     }
     
-    (window as any).gtag = gtag;
+    (window as unknown).gtag = gtag;
     
     gtag('js', new Date());
     gtag('config', trackingId, {
@@ -93,7 +93,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
       const { onCLS, onINP, onFCP, onLCP, onTTFB } = await import('web-vitals');
 
       // Track Core Web Vitals with quantum enhancement
-      const sendToAnalytics = (metric: Record<string, unknown>) => {
+      const sendToAnalytics = (metric: { name: string; id: string; value: number; [key: string]: unknown }) => {
         const quantumMetric = {
           ...metric,
           consciousness_level: 'TRANSCENDENT',
@@ -103,7 +103,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
 
         // Send to Google Analytics
         if (typeof window !== 'undefined' && 'gtag' in window) {
-          (window as any).gtag('event', metric.name, {
+          (window as unknown).gtag('event', metric.name, {
             event_category: 'Web Vitals',
             event_label: metric.id,
             value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
@@ -120,17 +120,19 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(quantumMetric)
         }).catch(error => {
-          
+          console.error('[QuantumAnalytics] Failed to send quantum metrics:', error);
         });
 
       };
 
       // Initialize Core Web Vitals tracking
-      onCLS(sendToAnalytics);
-      onINP(sendToAnalytics);
-      onFCP(sendToAnalytics);
-      onLCP(sendToAnalytics);
-      onTTFB(sendToAnalytics);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const analyticsCallback = sendToAnalytics as unknown as (metric: unknown) => void;
+      onCLS(analyticsCallback);
+      onINP(analyticsCallback);
+      onFCP(analyticsCallback);
+      onLCP(analyticsCallback);
+      onTTFB(analyticsCallback);
 
     } catch (error) {
       
@@ -166,7 +168,9 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(quantumNavMetrics)
-            }).catch(() => {});
+            }).catch((error) => {
+              console.error('[QuantumAnalytics] Failed to send navigation metrics:', error);
+            });
           }
 
           // Track resource timing
@@ -184,7 +188,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
               };
 
               if (typeof window !== 'undefined' && 'gtag' in window) {
-                (window as any).gtag('event', 'slow_resource', {
+                (window as unknown).gtag('event', 'slow_resource', {
                   event_category: 'Performance',
                   event_label: resourceEntry.name,
                   value: Math.round(resourceEntry.duration),
@@ -225,7 +229,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
         // Track milestone scroll depths
         if ([25, 50, 75, 90, 100].includes(scrollDepth)) {
           if (typeof window !== 'undefined' && 'gtag' in window) {
-            (window as any).gtag('event', 'scroll_depth', {
+            (window as unknown).gtag('event', 'scroll_depth', {
               event_category: 'Engagement',
               event_label: `${scrollDepth}%`,
               value: scrollDepth,
@@ -242,7 +246,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
       const timeOnPage = Math.round((Date.now() - startTime) / 1000);
       
       if (typeof window !== 'undefined' && 'gtag' in window) {
-        (window as any).gtag('event', 'time_on_page', {
+        (window as unknown).gtag('event', 'time_on_page', {
           event_category: 'Engagement',
           event_label: 'seconds',
           value: timeOnPage,
@@ -260,7 +264,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
             const elementId = element.id || element.className || element.tagName;
             
             if (typeof window !== 'undefined' && 'gtag' in window) {
-              (window as any).gtag('event', 'element_view', {
+              (window as unknown).gtag('event', 'element_view', {
                 event_category: 'Visibility',
                 event_label: elementId,
                 custom_parameter_1: 'TRANSCENDENT'
@@ -309,7 +313,9 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(consciousnessEvent)
-      }).catch(() => {});
+      }).catch((error) => {
+        console.error('[QuantumAnalytics] Failed to send consciousness event:', error);
+      });
     };
 
     // Track quantum interactions
@@ -360,7 +366,9 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
               body: JSON.stringify({ events })
             }).then(() => {
               localStorage.removeItem('quantum_offline_events');
-            }).catch(() => {});
+            }).catch((error) => {
+              console.error('[QuantumAnalytics] Failed to sync offline events:', error);
+            });
           } catch (error) {
             
           }
@@ -368,7 +376,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
       }
 
       if (typeof window !== 'undefined' && 'gtag' in window) {
-        (window as any).gtag('event', 'connection_status', {
+        (window as unknown).gtag('event', 'connection_status', {
           event_category: 'System',
           event_label: status,
           custom_parameter_1: 'TRANSCENDENT'
@@ -402,7 +410,6 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
 
         return cleanupUserBehavior;
       } catch (error) {
-        console.error('❌ Quantum Analytics initialization failed:', error);
         return () => {}; // Return empty cleanup function on error
       }
     };
@@ -424,8 +431,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
           cleanupFn();
         }
       }).catch(error => {
-        console.error('Cleanup error:', error);
-      });
+        });
     };
   }, []);
 

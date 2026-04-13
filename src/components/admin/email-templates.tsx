@@ -34,10 +34,8 @@ import {
   Trash2,
   Copy,
   Search,
-  Code,
   FileText,
   Send,
-  CheckCircle,
   AlertTriangle,
   Bell,
   X
@@ -147,7 +145,7 @@ export function EmailTemplates() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<TemplateFormValues>({
     resolver: zodResolver(templateFormSchema),
   })
@@ -198,7 +196,7 @@ export function EmailTemplates() {
     }
   }
 
-  const duplicateTemplate = (template: EmailTemplate) => {
+  const duplicateTemplate = (_template: EmailTemplate) => {
     // In real app, this would be a mutation
     alert('Función de duplicación encolada para mutación...');
   }

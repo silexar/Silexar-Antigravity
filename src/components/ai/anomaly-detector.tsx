@@ -109,7 +109,6 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
       setStatistics(stats);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading anomaly data:', error);
       setIsLoading(false);
     }
   };
@@ -275,7 +274,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as unknown)}
               className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === id
                   ? 'border-red-500 text-red-600'
@@ -487,7 +486,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                       <h5 className="font-medium text-gray-900 mb-2">Componentes Afectados</h5>
                       <div className="flex flex-wrap gap-2">
                         {anomaly.affectedComponents.map((component, index) => (
-                          <span key={index} className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
+                          <span key={component} className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
                             {component}
                           </span>
                         ))}
@@ -523,7 +522,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                             <p className="font-medium">Evidencia:</p>
                             <ul className="list-disc list-inside">
                               {anomaly.rootCause.evidence.map((evidence, index) => (
-                                <li key={index}>{evidence}</li>
+                                <li key={evidence}>{evidence}</li>
                               ))}
                             </ul>
                           </div>
@@ -579,7 +578,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                       <h5 className="font-medium text-gray-900">Recomendaciones</h5>
                       <ul className="text-sm text-gray-600 list-disc list-inside">
                         {pattern.recommendations.map((rec, index) => (
-                          <li key={index}>{rec}</li>
+                          <li key={rec}>{rec}</li>
                         ))}
                       </ul>
                     </div>
@@ -650,7 +649,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                       <p className="text-sm text-gray-600 font-medium">Acciones tomadas:</p>
                       <ul className="text-sm text-gray-600 list-disc list-inside">
                         {alert.autoResolution.actions.map((action, index) => (
-                          <li key={index}>{action}</li>
+                          <li key={action}>{action}</li>
                         ))}
                       </ul>
                     </div>
@@ -721,7 +720,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                         <span className="text-gray-600">Recursos:</span>
                         <div className="mt-1">
                           {recommendation.implementation.resources.map((resource, index) => (
-                            <span key={index} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1">
+                            <span key={`${resource}-${index}`} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1">
                               {resource}
                             </span>
                           ))}
@@ -736,7 +735,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                     <h5 className="font-medium text-gray-900 mb-2">Pasos de Implementación</h5>
                     <ol className="text-sm text-gray-600 list-decimal list-inside space-y-1">
                       {recommendation.implementation.steps.map((step, index) => (
-                        <li key={index}>{step}</li>
+                        <li key={`${step}-${index}`}>{step}</li>
                       ))}
                     </ol>
                   </div>
@@ -745,7 +744,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                     <h5 className="font-medium text-gray-900 mb-2">Métricas de Éxito</h5>
                     <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
                       {recommendation.success_metrics.map((metric, index) => (
-                        <li key={index}>{metric}</li>
+                        <li key={`${metric}-${index}`}>{metric}</li>
                       ))}
                     </ul>
                   </div>
@@ -755,7 +754,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
                       <h5 className="font-medium text-gray-900 mb-2">Dependencias</h5>
                       <div className="flex flex-wrap gap-2">
                         {recommendation.implementation.dependencies.map((dependency, index) => (
-                          <span key={index} className="bg-gray-100 text-gray-700 text-sm px-2 py-1 rounded">
+                          <span key={`${dependency}-${index}`} className="bg-gray-100 text-gray-700 text-sm px-2 py-1 rounded">
                             {dependency}
                           </span>
                         ))}

@@ -60,7 +60,7 @@ async function verificarAccesoGeografico(req: RequestLike): Promise<void> {
 function contieneDatosPersonales(data: unknown): boolean {
   const campos = ['email', 'telefono', 'direccion', 'rut', 'nombre'];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return !!data && typeof data === 'object' && campos.some(c => (data as any)[c] != null);
+  return !!data && typeof data === 'object' && campos.some(c => (data as unknown)[c] != null);
 }
 
 function obtenerPaisIP(_ip: string): string {

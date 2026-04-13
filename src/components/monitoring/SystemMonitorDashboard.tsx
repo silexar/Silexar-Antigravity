@@ -96,7 +96,7 @@ function ErrorLog({ errors }: ErrorLogProps) {
       <CardContent>
         <div className="space-y-3 max-h-64 overflow-y-auto">
           {errors.map((error, index) => (
-            <Alert key={index} variant={error.type === 'error' ? 'destructive' : 'default'}>
+            <Alert key={`${error}-${index}`} variant={error.type === 'error' ? 'destructive' : 'default'}>
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle className="text-sm">
                 {error.type.toUpperCase()} - {new Date(error.timestamp).toLocaleTimeString()}

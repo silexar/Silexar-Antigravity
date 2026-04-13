@@ -360,7 +360,7 @@ export const CopyInstructionsEditor: React.FC<CopyInstructionsEditorProps> = ({
           </p>
 
           {(data.variacionesPorHorario || []).map((variacion, index) => (
-            <Card key={index} className="p-4 bg-white">
+            <Card key={variacion.horario ?? `variacion-${index}`} className="p-4 bg-white">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-blue-600" />

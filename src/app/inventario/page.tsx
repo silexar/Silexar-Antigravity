@@ -109,7 +109,7 @@ export default function InventarioPage() {
         setStats(data.stats);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -166,7 +166,7 @@ export default function InventarioPage() {
             { label: 'Ocupación', value: `${stats.ocupacion}%`, icon: Clock, color: 'from-purple-400 to-purple-500' },
             { label: 'Potencial', value: formatCurrency(stats.ingresosPotenciales), icon: DollarSign, color: 'from-cyan-400 to-cyan-500' }
           ].map((stat, i) => (
-            <NeuromorphicCard key={i} className="p-4">
+            <NeuromorphicCard key={`${stat}-${i}`} className="p-4">
               <div className="flex items-center gap-2">
                 <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
                   <stat.icon className="w-4 h-4 text-white" />

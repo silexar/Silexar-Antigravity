@@ -10,12 +10,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import apiClient from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 import { 
-  Palette, Plus, Search, RefreshCw, TrendingUp, Users, 
-  DollarSign, Award, Filter, ChevronDown, Building,
-  Percent, Phone, Mail, Globe, BarChart3, Sparkles
+  Palette, Plus, Search, RefreshCw, Users, 
+  DollarSign, ChevronDown, Building,
+  Percent, Phone, Mail, BarChart3, Sparkles
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════
@@ -58,16 +59,19 @@ const GlassCard = ({ children, className = '' }: { children: React.ReactNode; cl
 );
 
 const TipoBadge = ({ tipo }: { tipo: string }) => {
-  const colores: Record<string, string> = {
-    publicidad: 'from-violet-500 to-purple-600',
-    digital: 'from-cyan-500 to-blue-600',
-    medios: 'from-emerald-500 to-green-600',
-    btl: 'from-orange-500 to-amber-600',
-    integral: 'from-rose-500 to-pink-600',
-    boutique: 'from-slate-500 to-slate-600'
+  const getColor = (t: string) => {
+    switch (t) {
+      case 'publicidad': return 'from-violet-500 to-purple-600';
+      case 'digital': return 'from-cyan-500 to-blue-600';
+      case 'medios': return 'from-emerald-500 to-green-600';
+      case 'btl': return 'from-orange-500 to-amber-600';
+      case 'integral': return 'from-rose-500 to-pink-600';
+      case 'boutique': return 'from-slate-500 to-slate-600';
+      default: return 'from-slate-400 to-slate-500';
+    }
   };
   return (
-    <span className={`px-2 py-1 rounded-lg text-xs font-medium text-white bg-gradient-to-r ${colores[tipo] || 'from-slate-400 to-slate-500'}`}>
+    <span className={`px-2 py-1 rounded-lg text-xs font-medium text-white bg-gradient-to-r ${getColor(tipo)}`}>
       {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
     </span>
   );
@@ -87,37 +91,38 @@ const ScoreIndicator = ({ score }: { score: number }) => {
 // PÁGINA PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
+// Mock data con métricas IA — static, defined outside component to avoid useCallback dep
+const MOCK_AGENCIAS: AgenciaCreativa[] = [
+  { id: '1', codigo: 'AGC-001', razonSocial: 'Creativos Asociados Ltda', nombreFantasia: 'BlueWave Creative', tipoAgencia: 'digital', porcentajeComision: 15, emailGeneral: 'contacto@bluewave.cl', telefonoGeneral: '+56 2 2345 6789', paginaWeb: 'www.bluewave.cl', estado: 'activa', activa: true, campañasActivas: 12, facturacionMensual: 45000000, scoreRendimiento: 92 },
+  { id: '2', codigo: 'AGC-002', razonSocial: 'MediaPlan SpA', nombreFantasia: 'MediaPlan', tipoAgencia: 'medios', porcentajeComision: 12, emailGeneral: 'info@mediaplan.cl', telefonoGeneral: '+56 2 3456 7890', paginaWeb: 'www.mediaplan.cl', estado: 'activa', activa: true, campañasActivas: 8, facturacionMensual: 32000000, scoreRendimiento: 78 },
+  { id: '3', codigo: 'AGC-003', razonSocial: 'Impacto BTL Ltda', nombreFantasia: 'Impacto', tipoAgencia: 'btl', porcentajeComision: 18, emailGeneral: 'ventas@impacto.cl', telefonoGeneral: '+56 2 4567 8901', paginaWeb: null, estado: 'activa', activa: true, campañasActivas: 5, facturacionMensual: 18500000, scoreRendimiento: 65 },
+  { id: '4', codigo: 'AGC-004', razonSocial: 'Creativa 360 SpA', nombreFantasia: null, tipoAgencia: 'integral', porcentajeComision: 20, emailGeneral: 'hola@creativa360.cl', telefonoGeneral: '+56 2 5678 9012', paginaWeb: 'www.creativa360.cl', estado: 'activa', activa: true, campañasActivas: 15, facturacionMensual: 67000000, scoreRendimiento: 88 }
+]
+
 export default function AgenciasCreativasPage() {
   const router = useRouter();
   const [agencias, setAgencias] = useState<AgenciaCreativa[]>([]);
   const [stats, setStats] = useState<Stats>({ total: 0, activas: 0, facturacionMes: 0, comisionPromedio: 0 });
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState('');
+  const debouncedBusqueda = useDebounce(busqueda, 300);
   const [filtroTipo, setFiltroTipo] = useState('');
-
-  // Mock data con métricas IA
-  const mockAgencias: AgenciaCreativa[] = [
-    { id: '1', codigo: 'AGC-001', razonSocial: 'Creativos Asociados Ltda', nombreFantasia: 'BlueWave Creative', tipoAgencia: 'digital', porcentajeComision: 15, emailGeneral: 'contacto@bluewave.cl', telefonoGeneral: '+56 2 2345 6789', paginaWeb: 'www.bluewave.cl', estado: 'activa', activa: true, campañasActivas: 12, facturacionMensual: 45000000, scoreRendimiento: 92 },
-    { id: '2', codigo: 'AGC-002', razonSocial: 'MediaPlan SpA', nombreFantasia: 'MediaPlan', tipoAgencia: 'medios', porcentajeComision: 12, emailGeneral: 'info@mediaplan.cl', telefonoGeneral: '+56 2 3456 7890', paginaWeb: 'www.mediaplan.cl', estado: 'activa', activa: true, campañasActivas: 8, facturacionMensual: 32000000, scoreRendimiento: 78 },
-    { id: '3', codigo: 'AGC-003', razonSocial: 'Impacto BTL Ltda', nombreFantasia: 'Impacto', tipoAgencia: 'btl', porcentajeComision: 18, emailGeneral: 'ventas@impacto.cl', telefonoGeneral: '+56 2 4567 8901', paginaWeb: null, estado: 'activa', activa: true, campañasActivas: 5, facturacionMensual: 18500000, scoreRendimiento: 65 },
-    { id: '4', codigo: 'AGC-004', razonSocial: 'Creativa 360 SpA', nombreFantasia: null, tipoAgencia: 'integral', porcentajeComision: 20, emailGeneral: 'hola@creativa360.cl', telefonoGeneral: '+56 2 5678 9012', paginaWeb: 'www.creativa360.cl', estado: 'activa', activa: true, campañasActivas: 15, facturacionMensual: 67000000, scoreRendimiento: 88 }
-  ];
 
   const fetchData = useCallback(async () => {
     setLoading(true);
 
     // Try real API first — falls back to mock data if DB not connected (503)
     const { data: apiAgencias } = await apiClient.get<AgenciaCreativa[]>('/api/agencias-creativas', {
-      params: { busqueda: busqueda || undefined, tipo: filtroTipo || undefined },
+      params: { busqueda: debouncedBusqueda || undefined, tipo: filtroTipo || undefined },
     });
 
-    const source: AgenciaCreativa[] = (apiAgencias && apiAgencias.length > 0) ? apiAgencias : mockAgencias;
+    const source: AgenciaCreativa[] = (apiAgencias && apiAgencias.length > 0) ? apiAgencias : MOCK_AGENCIAS;
 
     let filtered = [...source];
-    if (busqueda) {
+    if (debouncedBusqueda) {
       filtered = filtered.filter(a =>
-        a.razonSocial.toLowerCase().includes(busqueda.toLowerCase()) ||
-        (a.nombreFantasia?.toLowerCase().includes(busqueda.toLowerCase()))
+        a.razonSocial.toLowerCase().includes(debouncedBusqueda.toLowerCase()) ||
+        (a.nombreFantasia?.toLowerCase().includes(debouncedBusqueda.toLowerCase()))
       );
     }
     if (filtroTipo) {
@@ -134,7 +139,7 @@ export default function AgenciasCreativasPage() {
         : 0,
     });
     setLoading(false);
-  }, [busqueda, filtroTipo]);
+  }, [debouncedBusqueda, filtroTipo]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -169,8 +174,8 @@ export default function AgenciasCreativasPage() {
             { label: 'Activas', value: stats.activas, icon: Users, color: 'from-emerald-400 to-emerald-500' },
             { label: 'Facturación Mes', value: `$${(stats.facturacionMes / 1000000).toFixed(1)}M`, icon: DollarSign, color: 'from-blue-400 to-blue-500' },
             { label: 'Comisión Promedio', value: `${stats.comisionPromedio}%`, icon: Percent, color: 'from-amber-400 to-amber-500' }
-          ].map((stat, i) => (
-            <GlassCard key={i} className="p-4">
+          ].map((stat) => (
+            <GlassCard key={stat.label} className="p-4">
               <div className="flex items-center gap-3">
                 <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color} shadow-md shadow-violet-200/50`}>
                   <stat.icon className="w-5 h-5 text-white" />
@@ -191,6 +196,7 @@ export default function AgenciasCreativasPage() {
             <input
               type="text"
               placeholder="Buscar agencias..."
+              aria-label="Buscar agencias"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-white/60 focus:outline-none focus:ring-2 focus:ring-violet-300"

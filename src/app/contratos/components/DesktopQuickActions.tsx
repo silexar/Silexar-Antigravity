@@ -95,6 +95,7 @@ export function DesktopQuickActions({
             <Command className="w-5 h-5 text-indigo-500" />
             <input ref={inputRef} value={query} onChange={e => setQuery(e.target.value)}
               placeholder="Escribe un comando..."
+              aria-label="Escribe un comando"
               className="flex-1 outline-none text-sm text-slate-700 placeholder-slate-400" />
             <kbd className="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-mono text-slate-400">ESC</kbd>
           </div>

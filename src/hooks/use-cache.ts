@@ -200,8 +200,7 @@ export function useCacheStats() {
         keys: cacheStats.size
       });
     } catch (error) {
-      console.error('Failed to get cache stats:', error);
-    } finally {
+      } finally {
       setLoading(false);
     }
   }, []);

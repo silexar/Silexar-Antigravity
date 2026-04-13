@@ -10,10 +10,10 @@ export const EnterpriseAIChatbot: React.FC<{ className?: string }> = ({ classNam
     const [input, setInput] = useState('');
     const sendMessage = () => { if (input.trim()) { setMessages([...messages, { role: 'user', content: input }]); setInput(''); } };
     return (
-        <Card className={className}>
+        <Card className={`${className} shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]`}>
             <CardHeader><CardTitle className="flex items-center gap-2"><Bot className="w-5 h-5" />Enterprise AI Chatbot</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-                <div className="h-64 overflow-y-auto space-y-2">{messages.map((m, i) => <div key={i} className={`p-2 rounded ${m.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'}`}>{m.content}</div>)}</div>
+                <div className="h-64 overflow-y-auto space-y-2">{messages.map((m, i) => <div key={`${m}-${i}`} className={`p-2 rounded ${m.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-[#F0EDE8] mr-8'}`}>{m.content}</div>)}</div>
                 <div className="flex gap-2"><Input value={input} onChange={e => setInput(e.target.value)} placeholder="Escribe un mensaje..." /><Button onClick={sendMessage}><Send className="w-4 h-4" /></Button></div>
             </CardContent>
         </Card>

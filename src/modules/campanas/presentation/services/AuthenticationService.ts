@@ -351,35 +351,47 @@ export class AuthenticationService {
     }
 
     /**
-     * 💾 Guarda sesión en localStorage
+     * 💾 Guarda sesión — solo datos de usuario NO sensibles.
+     *
+     * SECURITY: Tokens JWT NUNCA se almacenan en localStorage (XSS-accessible).
+     * Los tokens viven únicamente en memoria (this.tokens). Si la página se recarga,
+     * el usuario debe re-autenticarse. Para persistencia segura entre recargas
+     * usar httpOnly cookies gestionadas por SecurityInitializer (src/components/security-initializer.tsx).
      */
     private saveSession(): void {
         if (typeof window === 'undefined') return;
 
         try {
-            localStorage.setItem('auth_user', JSON.stringify(this.currentUser));
-            localStorage.setItem('auth_tokens', JSON.stringify(this.tokens));
+            // Solo guardamos datos de UI (nombre, rol) — sin tokens ni credentials
+            if (this.currentUser) {
+                const safeUserData = {
+                    id: this.currentUser.id,
+                    nombre: this.currentUser.nombre,
+                    roles: this.currentUser.roles,
+                };
+                localStorage.setItem('auth_user', JSON.stringify(safeUserData));
+            }
+            // NEVER: localStorage.setItem('auth_tokens', ...) — tokens solo en memoria
         } catch (error) {
             logger.error('Error guardando sesión:', error instanceof Error ? error : undefined);
         }
     }
 
     /**
-     * 📥 Carga sesión desde localStorage
+     * 📥 Carga datos de UI desde localStorage (solo datos no sensibles).
+     * Los tokens NO se restauran desde storage — requieren re-autenticación.
      */
     private loadStoredSession(): void {
         if (typeof window === 'undefined') return;
 
         try {
             const storedUser = localStorage.getItem('auth_user');
-            const storedTokens = localStorage.getItem('auth_tokens');
+            // SECURITY: 'auth_tokens' ya no se persiste — ignorar si existía de versiones anteriores
+            localStorage.removeItem('auth_tokens');
 
-            if (storedUser && storedTokens) {
+            if (storedUser) {
                 this.currentUser = JSON.parse(storedUser);
-                this.tokens = JSON.parse(storedTokens);
-                this.scheduleTokenRefresh();
-
-                logger.info('📥 Sesión restaurada desde localStorage');
+                logger.info('📥 Datos de usuario UI restaurados desde localStorage (tokens requieren re-auth)');
             }
         } catch (error) {
             logger.error('Error cargando sesión:', error instanceof Error ? error : undefined);
@@ -395,7 +407,7 @@ export class AuthenticationService {
 
         try {
             localStorage.removeItem('auth_user');
-            localStorage.removeItem('auth_tokens');
+            localStorage.removeItem('auth_tokens'); // limpieza de clave legacy
         } catch (error) {
             logger.error('Error limpiando sesión:', error instanceof Error ? error : undefined);
         }

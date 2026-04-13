@@ -11,6 +11,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import {
   Volume2, Eye, MousePointer, TrendingUp, DollarSign,
   Activity, Radio, Target, Clock, AlertTriangle, CheckCircle,
@@ -224,12 +225,6 @@ export function DashboardPerformance() {
     const interval = setInterval(refresh, 30000);
     return () => clearInterval(interval);
   }, [refresh]);
-
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-    return `$${value.toLocaleString()}`;
-  };
 
   return (
     <div className="space-y-6">

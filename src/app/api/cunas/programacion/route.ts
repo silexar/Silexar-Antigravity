@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';import { logger } from '
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -221,243 +222,255 @@ const programacionesMock: ProgramacionCuna[] = [
 // HANDLERS
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const tipo = searchParams.get('tipo') || 'bloques';
-    const dia = searchParams.get('dia');
-    const bloqueId = searchParams.get('bloqueId');
-    const fecha = searchParams.get('fecha');
+export const GET = withApiRoute(
+  { resource: 'cunas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const tipo = searchParams.get('tipo') || 'bloques';
+      const dia = searchParams.get('dia');
+      const bloqueId = searchParams.get('bloqueId');
+      const fecha = searchParams.get('fecha');
 
-    // Listar bloques
-    if (tipo === 'bloques') {
-      let bloques = [...bloquesMock];
+      // Listar bloques
+      if (tipo === 'bloques') {
+        let bloques = [...bloquesMock];
 
-      // Filtrar por día
-      if (dia) {
-        bloques = bloques.filter(b => b.diasActivos.includes(dia));
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: bloques,
-        meta: {
-          total: bloques.length,
-          disponibles: bloques.filter(b => b.estado === 'disponible').length,
-          parciales: bloques.filter(b => b.estado === 'parcial').length,
-          completos: bloques.filter(b => b.estado === 'completo').length
+        // Filtrar por día
+        if (dia) {
+          bloques = bloques.filter(b => b.diasActivos.includes(dia));
         }
-      });
-    }
 
-    // Listar programaciones
-    if (tipo === 'programaciones') {
-      let programaciones = [...programacionesMock];
-
-      if (bloqueId) {
-        programaciones = programaciones.filter(p => p.bloqueId === bloqueId);
-      }
-
-      if (fecha) {
-        programaciones = programaciones.filter(p => {
-          const inicio = new Date(p.fechaInicio);
-          const fin = new Date(p.fechaFin);
-          const fechaCheck = new Date(fecha);
-          return fechaCheck >= inicio && fechaCheck <= fin;
+        return NextResponse.json({
+          success: true,
+          data: bloques,
+          meta: {
+            total: bloques.length,
+            disponibles: bloques.filter(b => b.estado === 'disponible').length,
+            parciales: bloques.filter(b => b.estado === 'parcial').length,
+            completos: bloques.filter(b => b.estado === 'completo').length
+          }
         });
       }
 
-      return NextResponse.json({
-        success: true,
-        data: programaciones,
-        meta: {
-          total: programaciones.length,
-          activas: programaciones.filter(p => p.esActiva).length
+      // Listar programaciones
+      if (tipo === 'programaciones') {
+        let programaciones = [...programacionesMock];
+
+        if (bloqueId) {
+          programaciones = programaciones.filter(p => p.bloqueId === bloqueId);
         }
-      });
-    }
 
-    // Parrilla completa del día
-    if (tipo === 'parrilla') {
-      const diaFiltro = dia || 'lunes';
-      const bloquesDia = bloquesMock
-        .filter(b => b.diasActivos.includes(diaFiltro))
-        .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
-
-      const parrilla = bloquesDia.map(bloque => ({
-        ...bloque,
-        cunas: programacionesMock
-          .filter(p => p.bloqueId === bloque.id && p.esActiva)
-          .sort((a, b) => a.posicionEnBloque - b.posicionEnBloque)
-      }));
-
-      return NextResponse.json({
-        success: true,
-        data: parrilla,
-        meta: {
-          dia: diaFiltro,
-          totalBloques: parrilla.length,
-          totalCunas: parrilla.reduce((sum, b) => sum + b.cunas.length, 0)
+        if (fecha) {
+          programaciones = programaciones.filter(p => {
+            const inicio = new Date(p.fechaInicio);
+            const fin = new Date(p.fechaFin);
+            const fechaCheck = new Date(fecha);
+            return fechaCheck >= inicio && fechaCheck <= fin;
+          });
         }
-      });
-    }
 
-    return NextResponse.json({ success: false, error: 'Tipo no válido' }, { status: 400 });
-  } catch (error) {
-    logger.error('[API/Programacion] Error GET:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'GET' });
-    return apiServerError();
+        return NextResponse.json({
+          success: true,
+          data: programaciones,
+          meta: {
+            total: programaciones.length,
+            activas: programaciones.filter(p => p.esActiva).length
+          }
+        });
+      }
+
+      // Parrilla completa del día
+      if (tipo === 'parrilla') {
+        const diaFiltro = dia || 'lunes';
+        const bloquesDia = bloquesMock
+          .filter(b => b.diasActivos.includes(diaFiltro))
+          .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+        const parrilla = bloquesDia.map(bloque => ({
+          ...bloque,
+          cunas: programacionesMock
+            .filter(p => p.bloqueId === bloque.id && p.esActiva)
+            .sort((a, b) => a.posicionEnBloque - b.posicionEnBloque)
+        }));
+
+        return NextResponse.json({
+          success: true,
+          data: parrilla,
+          meta: {
+            dia: diaFiltro,
+            totalBloques: parrilla.length,
+            totalCunas: parrilla.reduce((sum, b) => sum + b.cunas.length, 0)
+          }
+        });
+      }
+
+      return NextResponse.json({ success: false, error: 'Tipo no válido' }, { status: 400 });
+    } catch (error) {
+      logger.error('[API/Programacion] Error GET:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'GET' });
+      return apiServerError();
+    }
   }
-}
+);
 
 // Crear programación
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { bloqueId, cunaId, fechaInicio, fechaFin, diasEspecificos, posicion } = body;
+export const POST = withApiRoute(
+  { resource: 'cunas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      const { bloqueId, cunaId, fechaInicio, fechaFin, diasEspecificos, posicion } = body;
 
-    // Validar bloque existe y tiene espacio
-    const bloque = bloquesMock.find(b => b.id === bloqueId);
-    if (!bloque) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Bloque no encontrado' 
-      }, { status: 404 });
-    }
-
-    if (bloque.estado === 'completo') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Bloque está completo, no hay espacio disponible' 
-      }, { status: 400 });
-    }
-
-    // Validar conflictos de competencia
-    const cunasEnBloque = programacionesMock.filter(p => p.bloqueId === bloqueId);
-    const conflictos: ConflictoCompetencia[] = [];
-    
-    // Simular detección de competencia
-    const anuncianteNuevo = 'Banco de Chile'; // En producción vendría de la cuña
-    const competidores: Record<string, string[]> = {
-      'Banco de Chile': ['Banco Santander', 'BCI', 'Banco Estado'],
-      'Coca-Cola': ['Pepsi']
-    };
-    
-    for (const programacion of cunasEnBloque) {
-      if (competidores[anuncianteNuevo]?.includes(programacion.anuncianteNombre)) {
-        conflictos.push({
-          tipo: 'competencia',
-          mensaje: `${anuncianteNuevo} es competidor de ${programacion.anuncianteNombre}`,
-          cunaConflictiva: programacion.cunaCodigo,
-          severidad: 'error'
-        });
-      }
-    }
-
-    if (conflictos.some(c => c.severidad === 'error')) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Conflicto de competencia detectado',
-        conflictos 
-      }, { status: 400 });
-    }
-
-    // Crear programación
-    const nuevaProgramacion: ProgramacionCuna = {
-      id: `prog-${Date.now()}`,
-      bloqueId,
-      bloqueCodigo: bloque.codigo,
-      bloqueNombre: bloque.nombre,
-      cunaId,
-      cunaCodigo: `SPX${Date.now().toString().slice(-6)}`,
-      cunaNombre: 'Nueva Cuña',
-      anuncianteNombre: anuncianteNuevo,
-      duracionSegundos: 30,
-      posicionEnBloque: posicion || (cunasEnBloque.length + 1),
-      fechaInicio,
-      fechaFin,
-      diasEspecificos: diasEspecificos || null,
-      esActiva: true,
-      vencimientoId: null
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: nuevaProgramacion,
-      mensaje: 'Cuña programada exitosamente',
-      conflictos: conflictos.length > 0 ? conflictos : undefined
-    });
-
-  } catch (error) {
-    logger.error('[API/Programacion] Error POST:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'POST' });
-    return apiServerError();
-  }
-}
-
-// Actualizar programación (mover, pausar, etc.)
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { accion, programacionId, datos } = body;
-
-    switch (accion) {
-      case 'mover':
-        // Mover a otro bloque o posición
-        return NextResponse.json({
-          success: true,
-          mensaje: `Cuña movida a bloque ${datos.nuevoBloqueId}, posición ${datos.nuevaPosicion}`
-        });
-        
-      case 'pausar':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Programación pausada temporalmente'
-        });
-        
-      case 'reactivar':
-        return NextResponse.json({
-          success: true,
-          mensaje: 'Programación reactivada'
-        });
-        
-      case 'extender':
-        return NextResponse.json({
-          success: true,
-          mensaje: `Programación extendida hasta ${datos.nuevaFechaFin}`
-        });
-        
-      default:
+      // Validar bloque existe y tiene espacio
+      const bloque = bloquesMock.find(b => b.id === bloqueId);
+      if (!bloque) {
         return NextResponse.json({ 
           success: false, 
-          error: 'Acción no válida' 
-        }, { status: 400 });
-    }
+          error: 'Bloque no encontrado' 
+        }, { status: 404 });
+      }
 
-  } catch (error) {
-    logger.error('[API/Programacion] Error PUT:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'PUT' });
-    return apiServerError();
+      if (bloque.estado === 'completo') {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Bloque está completo, no hay espacio disponible' 
+        }, { status: 400 });
+      }
+
+      // Validar conflictos de competencia
+      const cunasEnBloque = programacionesMock.filter(p => p.bloqueId === bloqueId);
+      const conflictos: ConflictoCompetencia[] = [];
+      
+      // Simular detección de competencia
+      const anuncianteNuevo = 'Banco de Chile'; // En producción vendría de la cuña
+      const competidores: Record<string, string[]> = {
+        'Banco de Chile': ['Banco Santander', 'BCI', 'Banco Estado'],
+        'Coca-Cola': ['Pepsi']
+      };
+      
+      for (const programacion of cunasEnBloque) {
+        if (competidores[anuncianteNuevo]?.includes(programacion.anuncianteNombre)) {
+          conflictos.push({
+            tipo: 'competencia',
+            mensaje: `${anuncianteNuevo} es competidor de ${programacion.anuncianteNombre}`,
+            cunaConflictiva: programacion.cunaCodigo,
+            severidad: 'error'
+          });
+        }
+      }
+
+      if (conflictos.some(c => c.severidad === 'error')) {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Conflicto de competencia detectado',
+          conflictos 
+        }, { status: 400 });
+      }
+
+      // Crear programación
+      const nuevaProgramacion: ProgramacionCuna = {
+        id: `prog-${Date.now()}`,
+        bloqueId,
+        bloqueCodigo: bloque.codigo,
+        bloqueNombre: bloque.nombre,
+        cunaId,
+        cunaCodigo: `SPX${Date.now().toString().slice(-6)}`,
+        cunaNombre: 'Nueva Cuña',
+        anuncianteNombre: anuncianteNuevo,
+        duracionSegundos: 30,
+        posicionEnBloque: posicion || (cunasEnBloque.length + 1),
+        fechaInicio,
+        fechaFin,
+        diasEspecificos: diasEspecificos || null,
+        esActiva: true,
+        vencimientoId: null
+      };
+
+      return NextResponse.json({
+        success: true,
+        data: nuevaProgramacion,
+        mensaje: 'Cuña programada exitosamente',
+        conflictos: conflictos.length > 0 ? conflictos : undefined
+      });
+
+    } catch (error) {
+      logger.error('[API/Programacion] Error POST:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'POST' });
+      return apiServerError();
+    }
   }
-}
+);
+
+// Actualizar programación (mover, pausar, etc.)
+export const PUT = withApiRoute(
+  { resource: 'cunas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { accion, programacionId, datos } = body;
+
+      switch (accion) {
+        case 'mover':
+          // Mover a otro bloque o posición
+          return NextResponse.json({
+            success: true,
+            mensaje: `Cuña movida a bloque ${datos.nuevoBloqueId}, posición ${datos.nuevaPosicion}`
+          });
+          
+        case 'pausar':
+          return NextResponse.json({
+            success: true,
+            mensaje: 'Programación pausada temporalmente'
+          });
+          
+        case 'reactivar':
+          return NextResponse.json({
+            success: true,
+            mensaje: 'Programación reactivada'
+          });
+          
+        case 'extender':
+          return NextResponse.json({
+            success: true,
+            mensaje: `Programación extendida hasta ${datos.nuevaFechaFin}`
+          });
+          
+        default:
+          return NextResponse.json({ 
+            success: false, 
+            error: 'Acción no válida' 
+          }, { status: 400 });
+      }
+
+    } catch (error) {
+      logger.error('[API/Programacion] Error PUT:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'PUT' });
+      return apiServerError();
+    }
+  }
+);
 
 // Eliminar programación
-export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const programacionId = searchParams.get('id');
+export const DELETE = withApiRoute(
+  { resource: 'cunas', action: 'delete' },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const programacionId = searchParams.get('id');
 
-    if (!programacionId) {
+      if (!programacionId) {
+        return NextResponse.json({
+          success: false,
+          error: 'ID de programación requerido'
+        }, { status: 400 });
+      }
+
       return NextResponse.json({
-        success: false,
-        error: 'ID de programación requerido'
-      }, { status: 400 });
+        success: true,
+        mensaje: 'Programación eliminada exitosamente'
+      });
+    } catch (error) {
+      logger.error('[API/Programacion] Error DELETE:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'DELETE' });
+      return apiServerError();
     }
-
-    return NextResponse.json({
-      success: true,
-      mensaje: 'Programación eliminada exitosamente'
-    });
-  } catch (error) {
-    logger.error('[API/Programacion] Error DELETE:', error instanceof Error ? error : undefined, { module: 'cunas/programacion', action: 'DELETE' });
-    return apiServerError();
   }
-}
+);

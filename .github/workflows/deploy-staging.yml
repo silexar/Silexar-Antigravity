@@ -1,0 +1,157 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  STAGING_NAMESPACE: silexar-staging
+
+jobs:
+  # ── Build and Push Docker Image ──────────────────────────────────────────
+  build:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+      image_digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=staging-,suffix=,format=short
+            type=raw,value=staging-latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=staging
+
+      - name: Output image digest
+        run: |
+          echo "Image Digest: ${{ steps.build.outputs.digest }}"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+
+  # ── Run Staging Tests ────────────────────────────────────────────────────
+  test-staging:
+    name: Run Tests on Staging Image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm run test -- --run
+        env:
+          DATABASE_URL: ""
+          JWT_SECRET: "staging-test-secret"
+
+  # ── Deploy to Staging Cluster ────────────────────────────────────────────
+  deploy:
+    name: Deploy to Staging Cluster
+    runs-on: ubuntu-latest
+    needs: [build, test-staging]
+    environment:
+      name: staging
+      url: https://staging.silexar.io
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME_STAGING }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to Staging
+        run: |
+          # Update deployment image
+          kubectl set image deployment/silexar-pulse-quantum \
+            silexar-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ github.sha }} \
+            -n ${{ env.STAGING_NAMESPACE }} --record
+          
+          # Wait for rollout
+          kubectl rollout status deployment/silexar-pulse-quantum \
+            -n ${{ env.STAGING_NAMESPACE }} --timeout=300s
+          
+          # Verify deployment
+          kubectl get pods -n ${{ env.STAGING_NAMESPACE }} -l app=silexar-pulse-quantum
+
+      - name: Run Smoke Tests
+        run: |
+          # Wait for service to be ready
+          sleep 30
+          
+          # Run basic smoke tests
+          curl -sf https://staging.silexar.io/api/health || exit 1
+          echo "✅ Staging health check passed"
+          
+          curl -sf https://staging.silexar.io/api/health/ready || exit 1
+          echo "✅ Staging readiness check passed"
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#deployments'
+          text: |
+            🚀 *Deploy to Staging*
+            Status: ${{ job.status }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ github.sha }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

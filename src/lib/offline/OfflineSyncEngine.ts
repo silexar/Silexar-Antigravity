@@ -12,6 +12,8 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
+// NOTE: This module runs in the browser — do NOT import server-side logger here.
+
 export interface PendingOperation {
   id: string;
   timestamp: number;
@@ -101,7 +103,7 @@ class OfflineSyncEngine {
       this.syncPendingOperations();
     }
 
-    logger.info('🔄 OfflineSyncEngine initialized', { isOnline: this.isOnline });
+    console.info('[OfflineSync] Initialized', { isOnline: this.isOnline });
   }
 
   private async initDatabase(): Promise<void> {
@@ -155,16 +157,16 @@ class OfflineSyncEngine {
   // ─────────────────────────────────────────────────────────────
 
   private handleOnline(): void {
-    logger.info('🌐 Connection restored');
+    console.info('[OfflineSync] Connection restored — starting auto-sync');
     this.isOnline = true;
     this.notifyListeners();
-    
+
     // Auto-sync al reconectar
     this.syncPendingOperations();
   }
 
   private handleOffline(): void {
-    logger.info('📴 Connection lost - Switching to offline mode');
+    console.info('[OfflineSync] Connection lost — switching to offline mode');
     this.isOnline = false;
     this.notifyListeners();
   }
@@ -181,7 +183,7 @@ class OfflineSyncEngine {
     payload: unknown
   ): Promise<string> {
     const operation: PendingOperation = {
-      id: `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `op_${crypto.randomUUID()}`,
       timestamp: Date.now(),
       type,
       entity,
@@ -222,17 +224,18 @@ class OfflineSyncEngine {
           op.status = 'syncing';
           await this.saveToStore(STORES.PENDING_OPS, op);
 
-          // Ejecutar operación
+          // Ejecutar operación — credentials:include para enviar cookie de sesión automáticamente
           const response = await fetch(op.endpoint, {
             method: op.method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(op.payload)
+            body: JSON.stringify(op.payload),
+            credentials: 'include',
           });
 
           if (response.ok) {
             // Éxito - eliminar de pendientes
             await this.deleteFromStore(STORES.PENDING_OPS, op.id);
-            logger.info(`✅ Synced operation: ${op.id}`);
+            console.info(`[OfflineSync] Synced operation: ${op.id}`);
           } else {
             throw new Error(`HTTP ${response.status}`);
           }
@@ -242,7 +245,7 @@ class OfflineSyncEngine {
           op.status = op.retryCount >= op.maxRetries ? 'failed' : 'pending';
           op.errorMessage = error instanceof Error ? error.message : 'Unknown error';
           await this.saveToStore(STORES.PENDING_OPS, op);
-          logger.warn(`⚠️ Failed to sync operation: ${op.id}`, error);
+          console.warn(`[OfflineSync] Failed to sync operation: ${op.id}`, error);
         }
       }
 
@@ -447,9 +450,9 @@ class OfflineSyncEngine {
   // MANUAL SYNC
   // ─────────────────────────────────────────────────────────────
 
-  async forcSync(): Promise<void> {
+  async forceSync(): Promise<void> {
     if (!this.isOnline) {
-      logger.warn('Cannot force sync while offline');
+      console.warn('[OfflineSync] Cannot force sync while offline');
       return;
     }
     await this.syncPendingOperations();

@@ -380,7 +380,7 @@ export function BillingInvoicing() {
                 </thead>
                 <tbody className="text-white">
                   {selectedInvoice.items.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={item.description}>
                       <td className="py-2">{item.description}</td>
                       <td className="text-center py-2">{item.quantity}</td>
                       <td className="text-right py-2">${item.unitPrice}</td>

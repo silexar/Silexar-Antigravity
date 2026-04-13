@@ -36,7 +36,7 @@ const INJECTION_PATTERNS: RegExp[] = [
   /repeat\s+(your\s+)?(system\s+prompt|instructions)/i,
   /developer\s+mode/i,
   /do\s+anything\s+now/i,
-  /\bDAN\b/,
+  /\bdan\b/i,  // DAN jailbreak — input es lowercased por normalizeLeetspeak antes de llegar aquí
 
   // XML delimiter injection attempts
   /<\s*system(_identity|_rules|_context)?/i,
@@ -47,6 +47,10 @@ const INJECTION_PATTERNS: RegExp[] = [
   /;\s*(DROP|DELETE|TRUNCATE|ALTER)\s+(TABLE|DATABASE)/i,
   /UNION\s+(ALL\s+)?SELECT\s+/i,
   /'\s*(OR|AND)\s+['"]\d+['"]\s*=\s*['"]\d+/i,
+  // OR/AND tautología SQL clásica: ' OR '1'='1, OR 1=1
+  // Input llega normalizado (leetspeak) por lo que '1'→'i'. El trailing quote puede faltar.
+  // Patrón: OR seguido de 'valor'='valor' (comilla de cierre opcional)
+  /\b(or|and)\s+'[^'=]+'\s*=\s*'[^'=]*/i,
 
   // Jailbreak identifiers
   /jailbreak(?:ed)?/i,
@@ -76,6 +80,18 @@ const RISK_TERMS: Array<{ pattern: RegExp; weight: number }> = [
 ]
 
 /**
+ * Normalize leetspeak characters to their alphabetic equivalents.
+ * Converts common substitutions like 0->o, 1->i, 3->e, @->a, etc.
+ */
+function normalizeLeetspeak(input: string): string {
+  const map: Record<string, string> = {
+    '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
+    '@': 'a', '!': 'i', '$': 's', '+': 't', '(': 'c',
+  }
+  return input.toLowerCase().split('').map(c => map[c] || c).join('')
+}
+
+/**
  * Filter user input before passing to any AI model.
  * Returns immediately on first INJECTION_PATTERNS match (no further scoring).
  */
@@ -85,9 +101,12 @@ export function filterInput(input: string): FilterResult {
     return { isBlocked: true, riskScore: 100, reason: 'Input exceeds maximum length (4000 chars)' }
   }
 
-  // Check immediate-block patterns
+  // Normalize leetspeak before pattern matching to catch obfuscated attacks
+  const normalizedInput = normalizeLeetspeak(input)
+
+  // Check immediate-block patterns against normalized input
   for (const pattern of INJECTION_PATTERNS) {
-    if (pattern.test(input)) {
+    if (pattern.test(normalizedInput)) {
       return {
         isBlocked: true,
         riskScore: 100,
@@ -96,11 +115,11 @@ export function filterInput(input: string): FilterResult {
     }
   }
 
-  // Accumulate risk score
+  // Accumulate risk score against normalized input
   let riskScore = 0
 
   for (const { pattern, weight } of RISK_TERMS) {
-    if (pattern.test(input)) {
+    if (pattern.test(normalizedInput)) {
       riskScore += weight
     }
   }

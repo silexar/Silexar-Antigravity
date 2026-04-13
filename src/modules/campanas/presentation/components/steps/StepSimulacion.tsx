@@ -62,7 +62,7 @@ export const StepSimulacion: React.FC<StepProps> = () => {
                         
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {/* Log de Consola Simulado */}
-                            <div className="md:col-span-2 bg-black rounded-lg p-4 font-mono text-xs text-green-400 h-[200px] overflow-y-auto">
+                            <div className="md:col-span-2 bg-[#F0EDE8] rounded-lg p-4 font-mono text-xs text-green-400 h-[200px] overflow-y-auto">
                                 <p>&gt; Initializing Quantum Core...</p>
                                 <p className={progress > 10 ? 'opacity-100' : 'opacity-0'}>[OK] Contract Validity Check</p>
                                 <p className={progress > 30 ? 'opacity-100' : 'opacity-0'}>[OK] FM Grid Collision Detection: 0 Conflicts</p>

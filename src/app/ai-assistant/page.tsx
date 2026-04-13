@@ -6,14 +6,22 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Bot, MessageSquare, BarChart3, Settings, User, Headphones, BookOpen } from 'lucide-react';
-import EnterpriseChatbot from '@/components/ai/EnterpriseChatbot';
-import ChatbotDashboard from '@/components/ai/ChatbotDashboard';
+
+const EnterpriseChatbot = dynamic(
+  () => import('@/components/ai/EnterpriseChatbot'),
+  { loading: () => <div className="h-96 animate-pulse bg-[#E8E5E0] rounded-2xl" />, ssr: false }
+);
+const ChatbotDashboard = dynamic(
+  () => import('@/components/ai/ChatbotDashboard'),
+  { loading: () => <div className="h-64 animate-pulse bg-[#E8E5E0] rounded-2xl" />, ssr: false }
+);
 
 export default function AIAssistantPage() {
   const [activeTab, setActiveTab] = useState('chat');
@@ -81,8 +89,8 @@ export default function AIAssistantPage() {
       {/* Stats Overview */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
+          {stats.map((stat) => (
+            <Card key={stat.label} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-gray-600">
                   {stat.label}
@@ -212,8 +220,8 @@ export default function AIAssistantPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {features.map((feature, index) => (
-                    <div key={index} className="flex items-start space-x-4 p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
+                  {features.map((feature) => (
+                    <div key={feature.title} className="flex items-start space-x-4 p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
                       <div className="bg-white p-3 rounded-lg shadow-sm">
                         <feature.icon className="h-6 w-6 text-blue-600" />
                       </div>

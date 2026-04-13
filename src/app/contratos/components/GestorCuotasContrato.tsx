@@ -424,6 +424,7 @@ export default function GestorCuotasContrato({
                           <label className="block text-xs text-slate-500 mb-1">Monto</label>
                           <input
                             type="number"
+                            aria-label="Monto de cuota"
                             defaultValue={cuota.monto}
                             onBlur={e => handleModificarCuota(idx, 'monto', Number(e.target.value))}
                             className={`${neuro.input} w-full text-right`}
@@ -433,6 +434,7 @@ export default function GestorCuotasContrato({
                           <label className="block text-xs text-slate-500 mb-1">Fecha vencimiento</label>
                           <input
                             type="date"
+                            aria-label="Fecha de vencimiento"
                             defaultValue={cuota.fechaVencimiento.toISOString().split('T')[0]}
                             onBlur={e => handleModificarCuota(idx, 'fecha', new Date(e.target.value))}
                             className={`${neuro.input} w-full`}

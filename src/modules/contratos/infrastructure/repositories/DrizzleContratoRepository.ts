@@ -5,20 +5,47 @@
  * Multi-tenant safe, full type-safety y reemplazo directo de Prisma.
  */
 
-import { IContratoRepository, BusquedaCriteria } from '../../domain/repositories/IContratoRepository.js'
-import { Contrato } from '../../domain/entities/Contrato.js'
-import { NumeroContrato } from '../../domain/value-objects/NumeroContrato.js'
-import { EstadoContrato } from '../../domain/value-objects/EstadoContrato.js'
-import { TerminosPago } from '../../domain/value-objects/TerminosPago.js'
-import { TotalesContrato } from '../../domain/value-objects/TotalesContrato.js'
-import { RiesgoCredito } from '../../domain/value-objects/RiesgoCredito.js'
-import { MetricasRentabilidad } from '../../domain/value-objects/MetricasRentabilidad.js'
+import { IContratoRepository, BusquedaCriteria } from '../../domain/repositories/IContratoRepository'
+import { Contrato } from '../../domain/entities/Contrato'
+import { NumeroContrato } from '../../domain/value-objects/NumeroContrato'
+import { EstadoContrato } from '../../domain/value-objects/EstadoContrato'
+import { TerminosPago } from '../../domain/value-objects/TerminosPago'
+import { TotalesContrato } from '../../domain/value-objects/TotalesContrato'
+import { RiesgoCredito } from '../../domain/value-objects/RiesgoCredito'
+import { MetricasRentabilidad } from '../../domain/value-objects/MetricasRentabilidad'
 
 import { db as _db } from '@/lib/db'
-import { contratos } from '@/lib/db/schema'
+import { contratos, contratosItems, contratosVencimientos } from '@/lib/db/schema'
+import type { NewContrato } from '@/lib/db/contratos-schema'
+type EstadoContratoEnum = 'borrador' | 'pendiente_evidencia' | 'pendiente_aprobacion' | 'aprobado_parcial' | 'pendiente_reaprobacion' | 'operativo' | 'aprobado' | 'activo' | 'pausado' | 'completado' | 'cancelado' | 'vencido'
 // DATABASE_URL is required at startup; non-null assertion is safe in server context
 const db = _db!
 import { eq, or, desc, inArray, gte, lte, and, sql, asc, ilike } from 'drizzle-orm'
+
+// ─── Types for related records ──────────────────────────────────
+export interface ContratoItemInput {
+  id?: string
+  descripcion: string
+  emisoraId?: string
+  cantidad: number
+  duracionPorUnidad?: number
+  precioUnitario: number
+  subtotal: number
+  fechaInicio?: string
+  fechaFin?: string
+  horaInicio?: string
+  horaFin?: string
+  diasSemana?: string
+  orden?: number
+}
+
+export interface ContratoVencimientoInput {
+  id?: string
+  numeroCuota: number
+  fechaVencimiento: string
+  monto: number
+  notas?: string
+}
 
 export class DrizzleContratoRepository implements IContratoRepository {
   // El tenantId es inyectado por el servicio de dominio para hacer el repositorio Multi-Tenant safe (Fase 2 Tarea 14)
@@ -26,11 +53,86 @@ export class DrizzleContratoRepository implements IContratoRepository {
 
   async save(contrato: Contrato): Promise<void> {
     const data = this.mapToDatabase(contrato)
-    
-    // Upsert equivalent in Drizzle
-    await db.insert(contratos).values(data).onConflictDoUpdate({
-      target: contratos.id,
-      set: data
+    // WHY: transaction ensures the upsert is atomic even when future triggers/hooks are added
+    // id is intentionally omitted from updateData for upsert operation
+    const { id: _, ...updateData } = data
+    await db.transaction(async (tx) => {
+      await tx.insert(contratos).values(data).onConflictDoUpdate({
+        target: contratos.id,
+        set: updateData,
+      })
+    })
+  }
+
+  /**
+   * Atomic save of contrato + its items + billing vencimientos.
+   * WHY: these three tables form a single aggregate — they must all succeed or all fail.
+   * If items/vencimientos inserts fail after the contrato is inserted, the data is corrupt.
+   */
+  async saveWithRelations(
+    contrato: Contrato,
+    items: ContratoItemInput[],
+    vencimientosList: ContratoVencimientoInput[],
+  ): Promise<void> {
+    const contratoData = this.mapToDatabase(contrato)
+    const { id: _cid, ...contratoUpdateData } = contratoData
+
+    await db.transaction(async (tx) => {
+      // 1. Upsert main contrato record
+      await tx.insert(contratos).values(contratoData).onConflictDoUpdate({
+        target: contratos.id,
+        set: contratoUpdateData,
+      })
+
+      // 2. Replace items: delete existing, re-insert fresh set
+      if (items.length > 0) {
+        await tx.delete(contratosItems).where(
+          and(
+            eq(contratosItems.contratoId, contrato.id),
+            eq(contratosItems.tenantId, this.tenantId),
+          ),
+        )
+        await tx.insert(contratosItems).values(
+          items.map((item, idx) => ({
+            id: item.id,
+            tenantId: this.tenantId,
+            contratoId: contrato.id,
+            descripcion: item.descripcion,
+            emisoraId: item.emisoraId ?? null,
+            cantidad: item.cantidad,
+            duracionPorUnidad: item.duracionPorUnidad ?? null,
+            precioUnitario: String(item.precioUnitario),
+            subtotal: String(item.subtotal),
+            fechaInicio: item.fechaInicio ?? null,
+            fechaFin: item.fechaFin ?? null,
+            horaInicio: item.horaInicio ?? null,
+            horaFin: item.horaFin ?? null,
+            diasSemana: item.diasSemana ?? null,
+            orden: item.orden ?? idx,
+          })),
+        )
+      }
+
+      // 3. Replace vencimientos: delete existing, re-insert fresh set
+      if (vencimientosList.length > 0) {
+        await tx.delete(contratosVencimientos).where(
+          and(
+            eq(contratosVencimientos.contratoId, contrato.id),
+            eq(contratosVencimientos.tenantId, this.tenantId),
+          ),
+        )
+        await tx.insert(contratosVencimientos).values(
+          vencimientosList.map((v) => ({
+            id: v.id,
+            tenantId: this.tenantId,
+            contratoId: contrato.id,
+            numeroCuota: v.numeroCuota,
+            fechaVencimiento: v.fechaVencimiento,
+            monto: String(v.monto),
+            notas: v.notas ?? null,
+          })),
+        )
+      }
     })
   }
 
@@ -87,7 +189,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     }
 
     if (criteria.estados && criteria.estados.length > 0) {
-      conditions.push(inArray(contratos.estado, criteria.estados as string[]))
+      conditions.push(inArray(contratos.estado, criteria.estados as EstadoContratoEnum[]))
     }
 
     if (criteria.anuncianteId) {
@@ -193,7 +295,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     .where(and(
       eq(contratos.tenantId, this.tenantId),
       eq(contratos.ejecutivoId, ejecutivoId),
-      eq(contratos.estado, 'aprobado' as string), // mapping it to approved since 'firmado' is not an enum in Drizzle
+      eq(contratos.estado, 'aprobado' as EstadoContratoEnum), // mapping it to approved since 'firmado' is not an enum in Drizzle
       gte(contratos.fechaCreacion, new Date(periodo.fechaDesde)),
       lte(contratos.fechaCreacion, new Date(periodo.fechaHasta))
     ));
@@ -206,7 +308,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     .where(and(
       eq(contratos.tenantId, this.tenantId),
       eq(contratos.ejecutivoId, ejecutivoId),
-      inArray(contratos.estado, ['borrador', 'pendiente_aprobacion'] as string[])
+      inArray(contratos.estado, ['borrador', 'pendiente_aprobacion'] as EstadoContratoEnum[])
     ));
 
     const conversionData = await db.select({
@@ -237,7 +339,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     }
   }
 
-  private mapToDatabase(contrato: Contrato): Record<string, unknown> {
+  private mapToDatabase(contrato: Contrato): NewContrato {
     const snapshot = contrato.toSnapshot()
     
     return {
@@ -261,7 +363,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
       fechaModificacion: snapshot.fechaActualizacion,
       
       // Estado y clasificación
-      estado: snapshot.estado.valor,
+      estado: snapshot.estado.valor as EstadoContratoEnum,
       tipoContrato: 'campaña', // default fallback based on mapping requirement
       
       // Términos comerciales
@@ -295,23 +397,20 @@ export class DrizzleContratoRepository implements IContratoRepository {
       producto: data.titulo as string,
       agenciaId: data.agenciaId as string | undefined,
       agencia: '',
-      ejecutivoId: data.ejecutivoId as string | undefined,
+      ejecutivoId: (data.ejecutivoId as string | undefined) || '',
       ejecutivo: '',
       totales,
-      moneda: (data.moneda as string | undefined) || 'CLP',
+      moneda: ((data.moneda as string | undefined) || 'CLP') as 'CLP' | 'USD' | 'UF',
       fechaInicio: data.fechaInicio ? new Date(data.fechaInicio as string | number) : new Date(),
       fechaFin: data.fechaFin ? new Date(data.fechaFin as string | number) : new Date(),
       fechaCreacion: data.fechaCreacion as Date,
       fechaActualizacion: (data.fechaModificacion || data.fechaCreacion) as Date,
       estado,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      prioridad: 'normal' as any,
-      tipoContrato: data.tipoContrato as string,
+      prioridad: 'normal' as 'baja' | 'media' | 'alta' | 'critica',
+      tipoContrato: (data.tipoContrato as string) as 'A' | 'B' | 'C',
       terminosPago,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      modalidadFacturacion: 'mensual' as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tipoFactura: 'normal' as any,
+      modalidadFacturacion: 'mensual' as 'cuotas' | 'hitos',
+      tipoFactura: 'normal' as 'posterior' | 'adelantado',
       esCanje: false,
       facturarComisionAgencia: false,
       riesgoCredito,
@@ -319,12 +418,12 @@ export class DrizzleContratoRepository implements IContratoRepository {
       etapaActual: data.estado as string,
       progreso: 0,
       proximaAccion: '',
-      responsableActual: data.ejecutivoId as string | undefined,
+      responsableActual: (data.ejecutivoId as string | undefined) || '',
       fechaLimiteAccion: null as unknown as Date,
       alertas: [],
       tags: [],
-      creadoPor: data.creadoPorId as string | undefined,
-      actualizadoPor: data.modificadoPorId as string | undefined,
+      creadoPor: (data.creadoPorId as string | undefined) || '',
+      actualizadoPor: (data.modificadoPorId as string | undefined) || '',
       version: 1
     })
   }
@@ -344,7 +443,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
 
   async findByEstado(estado: string): Promise<Contrato[]> {
     const data = await db.query.contratos.findMany({
-      where: and(eq(contratos.estado, estado as string), eq(contratos.tenantId, this.tenantId)),
+      where: and(eq(contratos.estado, estado as EstadoContratoEnum), eq(contratos.tenantId, this.tenantId)),
       orderBy: [desc(contratos.fechaCreacion)],
       with: { items: true, vencimientos: true }
     })
@@ -358,7 +457,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     const data = await db.query.contratos.findMany({
       where: and(
         lte(contratos.fechaFin, fechaLimite.toISOString().split('T')[0]),
-        inArray(contratos.estado, ['activo', 'aprobado'] as string[]),
+        inArray(contratos.estado, ['activo', 'aprobado'] as EstadoContratoEnum[]),
         eq(contratos.tenantId, this.tenantId)
       ),
       orderBy: [asc(contratos.fechaFin)]
@@ -397,7 +496,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
     const data = await db.query.contratos.findMany({
       where: and(
         lte(contratos.fechaFin, fechaLimite.toISOString().split('T')[0]),
-        eq(contratos.estado, 'activo' as string),
+        eq(contratos.estado, 'activo' as EstadoContratoEnum),
         eq(contratos.tenantId, this.tenantId)
       ),
       orderBy: [asc(contratos.fechaFin)]
@@ -413,13 +512,16 @@ export class DrizzleContratoRepository implements IContratoRepository {
   }
 
   async saveMany(contratosArr: Contrato[]): Promise<void> {
-    const records = contratosArr.map(c => this.mapToDatabase(c));
-    await db.insert(contratos).values(records).onConflictDoNothing();
+    const records = contratosArr.map(c => this.mapToDatabase(c))
+    // WHY: bulk insert must be atomic — partial saves leave orphaned records
+    await db.transaction(async (tx) => {
+      await tx.insert(contratos).values(records).onConflictDoNothing()
+    })
   }
 
   async updateEstadoMasivo(ids: string[], nuevoEstado: string): Promise<number> {
     const result = await db.update(contratos)
-      .set({ estado: nuevoEstado as string, fechaModificacion: new Date() })
+      .set({ estado: nuevoEstado as EstadoContratoEnum, fechaModificacion: new Date() })
       .where(and(inArray(contratos.id, ids), eq(contratos.tenantId, this.tenantId)))
       .returning({ updatedId: contratos.id });
       

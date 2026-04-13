@@ -142,8 +142,16 @@ export async function POST(request: NextRequest) {
     const token = authHeader.substring(7)
 
     try {
-      // Verify JWT token
-      const rawDecoded = verify(token, process.env.JWT_SECRET || 'quantum-secret-key')
+      // Verify JWT token — NEVER use a fallback secret; fail fast if env var is missing
+      const jwtSecret = process.env.JWT_SECRET
+      if (!jwtSecret || jwtSecret.length < 32) {
+        logger.error('JWT_SECRET not configured or too short — refusing to verify token', { correlationId })
+        return NextResponse.json(
+          { success: false, error: { code: 'SERVER_MISCONFIGURATION', message: 'Authentication service unavailable' }, metadata: { correlationId, timestamp: new Date().toISOString() } },
+          { status: 503, headers: securityHeaders }
+        )
+      }
+      const rawDecoded = verify(token, jwtSecret)
       if (typeof rawDecoded !== 'object' || rawDecoded === null) {
         throw new Error('Invalid token payload')
       }
@@ -276,7 +284,7 @@ export async function POST(request: NextRequest) {
       let result
 
       // Log prediction request start
-      await auditLogger.dataAccess('AI prediction request started', decoded['userId'], {
+      await auditLogger.dataAccess('AI prediction request started', decoded['userId'] as string | undefined, {
         event: 'AI_PREDICTION_START',
         action,
         parameters: Object.keys(sanitizedParams),
@@ -290,7 +298,7 @@ export async function POST(request: NextRequest) {
             result = await cortexProphet.predictMarketTrend(
               sp('industry'),
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              sp('timeframe') as any,
+              sp('timeframe') as unknown,
               spa('factors')
             )
             break
@@ -358,10 +366,10 @@ export async function POST(request: NextRequest) {
         }
 
         // Sanitize AI model output for security
-        const sanitizedResult = inputValidator.sanitizeObject(result)
+        const sanitizedResult = inputValidator.sanitizeObject(result) as Record<string, unknown>
 
         // Log successful prediction
-        await auditLogger.dataAccess('AI prediction completed successfully', decoded['userId'], {
+        await auditLogger.dataAccess('AI prediction completed successfully', decoded['userId'] as string | undefined, {
           event: 'AI_PREDICTION_SUCCESS',
           action,
           confidence: sanitizedResult.confidence || 0.94,
@@ -464,7 +472,9 @@ export async function POST(request: NextRequest) {
       correlationId,
       ip: clientIP,
       error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
+      // SECURITY: Stack traces are logged internally but never exposed to clients
+      // // SECURITY: Stack traces removed from response
+    // stack: '[REDACTED]',
       processingTime
     })
 
@@ -577,8 +587,16 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7)
 
     try {
-      // Verify JWT token
-      const rawDecodedGet = verify(token, process.env.JWT_SECRET || 'quantum-secret-key')
+      // Verify JWT token — NEVER use a fallback secret; fail fast if env var is missing
+      const jwtSecretGet = process.env.JWT_SECRET
+      if (!jwtSecretGet || jwtSecretGet.length < 32) {
+        logger.error('JWT_SECRET not configured or too short — refusing to verify token', { correlationId })
+        return NextResponse.json(
+          { success: false, error: { code: 'SERVER_MISCONFIGURATION', message: 'Authentication service unavailable' }, metadata: { correlationId, timestamp: new Date().toISOString() } },
+          { status: 503, headers: securityHeaders }
+        )
+      }
+      const rawDecodedGet = verify(token, jwtSecretGet)
       if (typeof rawDecodedGet !== 'object' || rawDecodedGet === null) {
         throw new Error('Invalid token payload')
       }
@@ -641,7 +659,7 @@ export async function GET(request: NextRequest) {
           }
         }
 
-        await auditLogger.dataAccess('AI prediction retrieved', decoded['userId'], {
+        await auditLogger.dataAccess('AI prediction retrieved', decoded['userId'] as string | undefined, {
           event: 'AI_PREDICTION_RETRIEVED',
           predictionId,
           ip: clientIP,
@@ -715,7 +733,7 @@ export async function GET(request: NextRequest) {
           }
         }))
 
-        await auditLogger.dataAccess('AI predictions by type retrieved', decoded['userId'], {
+        await auditLogger.dataAccess('AI predictions by type retrieved', decoded['userId'] as string | undefined, {
           event: 'AI_PREDICTIONS_BY_TYPE',
           type: inputValidator.sanitizeString(type),
           count: recentPredictions.length,
@@ -769,7 +787,7 @@ export async function GET(request: NextRequest) {
         lastUpdated: new Date().toISOString()
       }
 
-      await auditLogger.dataAccess('AI Prophet engine status retrieved', decoded['userId'], {
+      await auditLogger.dataAccess('AI Prophet engine status retrieved', decoded['userId'] as string | undefined, {
         event: 'AI_ENGINE_STATUS',
         engineId: 'cortex-prophet',
         ip: clientIP,
@@ -836,7 +854,9 @@ export async function GET(request: NextRequest) {
       correlationId,
       ip: clientIP,
       error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
+      // SECURITY: Stack traces are logged internally but never exposed to clients
+      // // SECURITY: Stack traces removed from response
+    // stack: '[REDACTED]',
       processingTime
     })
 

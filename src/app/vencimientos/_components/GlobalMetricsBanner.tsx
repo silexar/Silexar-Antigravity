@@ -27,7 +27,7 @@ export default function GlobalMetricsBanner() {
              { title: 'Oportunidades', val: '45', sub: 'Cupos premium', col: 'text-blue-600' },
              { title: 'Top Programa', val: 'Mesa Cen.', sub: '$125M mensual', col: 'text-purple-600' }
            ].map((m, i) => (
-              <div key={i} className="bg-[#ECEFF8]/50 border border-gray-200/50 rounded-xl p-3 flex flex-col justify-center">
+              <div key={`${m}-${i}`} className="bg-[#ECEFF8]/50 border border-gray-200/50 rounded-xl p-3 flex flex-col justify-center">
                  <p className="text-[10px] text-gray-400 uppercase font-black tracking-wider mb-1 truncate">{m.title}</p>
                  <p className={`text-xl font-black ${m.col}`}>{m.val}</p>
                  <p className="text-[10px] text-gray-400 truncate mt-0.5">{m.sub}</p>

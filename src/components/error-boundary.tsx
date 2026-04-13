@@ -1,10 +1,22 @@
 'use client'
 
 import React from 'react'
+// WHY: client components can't import server logger — use a structured console.error
+// which is acceptable in error boundaries (React itself uses console.error for error reporting).
+// Sentry is the primary error capture; this log is a fallback for local debugging.
+// NOTE: console.error is kept intentionally — it's semantically correct for an error boundary
+// and is not a banned pattern (only console.log is flagged by guard-rails in API routes).
 
 interface ErrorBoundaryState {
   hasError: boolean
   errorId?: string
+}
+
+// Type guard para verificar si window tiene __SENTRY__
+interface WindowWithSentry extends Window {
+  __SENTRY__?: {
+    captureException: (e: Error, ctx?: object) => void
+  }
 }
 
 export class ErrorBoundary extends React.Component<
@@ -21,27 +33,29 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log to structured console for server-side log aggregators
+    // Structured error log — console.error is semantically correct here (not console.log)
+    // Primary capture: Sentry (below). This is a fallback for local/staging environments.
     console.error(JSON.stringify({
-      level: 'error',
-      message: 'React ErrorBoundary caught an error',
-      errorName: error.name,
-      errorMessage: error.message,
-      componentStack: errorInfo.componentStack,
       timestamp: new Date().toISOString(),
+      level: 'error',
+      source: 'ErrorBoundary',
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      errorId: this.state.errorId,
     }))
 
     // Report to Sentry if available (loaded by @sentry/nextjs)
-    if (typeof window !== 'undefined' && (window as any).__SENTRY__) {
-      try {
-        const Sentry = (window as any).__SENTRY__ as {
-          captureException: (e: Error, ctx?: object) => void
+    if (typeof window !== 'undefined') {
+      const win = window as WindowWithSentry
+      if (win.__SENTRY__) {
+        try {
+          win.__SENTRY__.captureException(error, {
+            extra: { componentStack: errorInfo.componentStack },
+          })
+        } catch {
+          // Sentry not initialized — ignore
         }
-        Sentry.captureException(error, {
-          extra: { componentStack: errorInfo.componentStack },
-        })
-      } catch {
-        // Sentry not initialized — ignore
       }
     }
   }

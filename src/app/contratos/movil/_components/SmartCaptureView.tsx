@@ -357,6 +357,7 @@ function QuickInput({ label, placeholder, value, onChange, type = 'text' }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={label}
         className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-amber-400 outline-none"
       />
     </div>

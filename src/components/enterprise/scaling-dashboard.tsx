@@ -265,7 +265,6 @@ export default function ScalingDashboard() {
       setIsLoading(false);
 
     } catch (error) {
-      console.error('Failed to load scaling data:', error);
       setIsLoading(false);
     }
   };
@@ -298,11 +297,11 @@ export default function ScalingDashboard() {
       case 'SCALING_DOWN':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'STABLE':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-[#F0EDE8] text-gray-800 border-gray-200';
       case 'ERROR':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-[#F0EDE8] text-gray-800 border-gray-200';
     }
   };
 
@@ -357,7 +356,7 @@ export default function ScalingDashboard() {
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-[#F0EDE8] rounded-lg p-1">
             {[
               { id: 'overview', name: 'Overview', icon: BarChart3 },
               { id: 'predictions', name: 'ML Predictions', icon: Brain },
@@ -365,10 +364,10 @@ export default function ScalingDashboard() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as any)}
+                onClick={() => setViewMode(mode.id as unknown)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-blue-600 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -439,7 +438,7 @@ export default function ScalingDashboard() {
           {hpaStatuses.map((hpa) => (
             <div
               key={`${hpa.namespace}/${hpa.name}`}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-[12px_12px_24px_#d1d5db,-12px_-12px_24px_#ffffff] transition-shadow cursor-pointer"
               onClick={() => setSelectedHPA(hpa)}
             >
               <div className="flex items-center justify-between mb-4">
@@ -592,12 +591,12 @@ export default function ScalingDashboard() {
                 namespace: hpa.namespace
               }))
             ).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 10).map((event, index) => (
-              <div key={index} className="p-6">
+              <div key={`${event}-${index}`} className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       event.type === 'SCALE_UP' ? 'bg-green-500' :
-                      event.type === 'SCALE_DOWN' ? 'bg-blue-500' : 'bg-gray-500'
+                      event.type === 'SCALE_DOWN' ? 'bg-blue-500' : 'bg-[#F0EDE8]0'
                     }`}></div>
                     <div>
                       <div className="font-medium text-gray-900">
@@ -624,7 +623,7 @@ export default function ScalingDashboard() {
 
       {/* HPA Detail Modal */}
       {selectedHPA && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-[#F0EDE8] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -702,7 +701,7 @@ export default function ScalingDashboard() {
                   <label className="text-sm font-medium text-gray-700">Recent Events</label>
                   <div className="mt-2 space-y-2">
                     {selectedHPA.scalingEvents.slice(0, 5).map((event, index) => (
-                      <div key={index} className="bg-gray-50 p-3 rounded border">
+                      <div key={`${event}-${index}`} className="bg-[#F0EDE8] p-3 rounded border">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm font-medium text-gray-900">
                             {event.type.replace('_', ' ')}

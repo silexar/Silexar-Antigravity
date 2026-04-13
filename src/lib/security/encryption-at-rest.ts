@@ -60,13 +60,9 @@ function deriveKey(masterSecret: string, salt: Buffer): Buffer {
 function getMasterSecret(): string {
   const secret = process.env.ENCRYPTION_MASTER_KEY || process.env.BETTER_AUTH_SECRET;
   if (!secret || secret.includes('change-in-production') || secret.length < 32) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        'ENCRYPTION_MASTER_KEY must be set with a strong secret (min 32 chars) in production'
-      );
-    }
-    // En desarrollo, usar un fallback seguro pero predecible
-    return 'silexar-dev-encryption-key-do-not-use-in-production-2026';
+    throw new Error(
+      'ENCRYPTION_MASTER_KEY or BETTER_AUTH_SECRET must be set with a strong secret (min 32 chars)'
+    );
   }
   return secret;
 }

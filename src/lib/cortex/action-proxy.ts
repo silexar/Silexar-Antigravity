@@ -13,7 +13,7 @@
  *   6. Execute action handler
  *   7. Audit trail updated with result
  *
- * Fail secure: any check failure → deny, log CRITICAL, return generic "Action denied".
+ * Fail secure: unknown check failure → deny, log CRITICAL, return generic "Action denied".
  * The agent code NEVER learns why — prevents enumeration attacks.
  *
  * Permitted action types (read + notify + generate only — NEVER destructive):
@@ -30,6 +30,7 @@
 import { logger } from '@/lib/observability'
 import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types'
+import { globalCache } from '@/lib/cache/redis-cache'
 
 // ─── Action Type Registry ─────────────────────────────────────────────────────
 
@@ -219,54 +220,24 @@ export interface ActionResult {
   auditId: string
 }
 
-// ─── In-Memory Rate Limit Counters ────────────────────────────────────────────
-//
-// Production note: replace with Redis INCR + EXPIREAT for atomicity across pods.
-
-interface Counter {
-  count: number
-  resetAt: number
-}
-
 // ─── Zero Trust Action Proxy ──────────────────────────────────────────────────
 
 export class ZeroTrustActionProxy {
-  /** Hourly counters — key: `${userId}:${actionType}:hourly` */
-  private hourlyCounters: Map<string, Counter> = new Map()
-
-  /** Daily counters — key: `${userId}:hourly` (role-based aggregate) */
-  private dailyCounters: Map<string, Counter> = new Map()
-
   // ── Rate limit helpers ──────────────────────────────────────────────────
 
-  private checkAndIncrementHourly(userId: string, actionType: AgentActionType, limit: number): boolean {
-    const key = `${userId}:${actionType}:hourly`
-    const now = Date.now()
-    const entry = this.hourlyCounters.get(key)
-
-    if (!entry || entry.resetAt <= now) {
-      this.hourlyCounters.set(key, { count: 1, resetAt: now + 3_600_000 })
-      return true
-    }
-    if (entry.count >= limit) return false
-    entry.count++
+  private async checkAndIncrementHourly(userId: string, actionType: AgentActionType, limit: number): Promise<boolean> {
+    const hourKey = `action:hourly:${userId}:${actionType}`
+    const hourlyCount = (await globalCache.get<number>(hourKey)) || 0
+    if (hourlyCount >= limit) return false
+    await globalCache.set(hourKey, hourlyCount + 1, 3_600_000)
     return true
   }
 
-  private checkAndIncrementDaily(userId: string, limit: number): boolean {
-    const key = `${userId}:daily`
-    const now = Date.now()
-    const entry = this.dailyCounters.get(key)
-
-    if (!entry || entry.resetAt <= now) {
-      // Reset at next UTC midnight
-      const tomorrow = new Date()
-      tomorrow.setUTCHours(24, 0, 0, 0)
-      this.dailyCounters.set(key, { count: 1, resetAt: tomorrow.getTime() })
-      return true
-    }
-    if (entry.count >= limit) return false
-    entry.count++
+  private async checkAndIncrementDaily(userId: string, limit: number): Promise<boolean> {
+    const dayKey = `action:daily:${userId}`
+    const dailyCount = (await globalCache.get<number>(dayKey)) || 0
+    if (dailyCount >= limit) return false
+    await globalCache.set(dayKey, dailyCount + 1, 86_400_000)
     return true
   }
 
@@ -319,13 +290,13 @@ export class ZeroTrustActionProxy {
     }
 
     // ── 3. Hourly rate limit ───────────────────────────────────────────────
-    if (!this.checkAndIncrementHourly(userId, type, permissions.maxActionsPerHour)) {
+    if (!await this.checkAndIncrementHourly(userId, type, permissions.maxActionsPerHour)) {
       await this.logViolation(userId, tenantId, userRole, type, auditId, 'Hourly rate limit exceeded')
       return { success: false, auditId }
     }
 
     // ── 4. Daily rate limit ────────────────────────────────────────────────
-    if (!this.checkAndIncrementDaily(userId, permissions.maxActionsPerDay)) {
+    if (!await this.checkAndIncrementDaily(userId, permissions.maxActionsPerDay)) {
       await this.logViolation(userId, tenantId, userRole, type, auditId, 'Daily rate limit exceeded')
       return { success: false, auditId }
     }
@@ -474,81 +445,5 @@ export class ZeroTrustActionProxy {
 /** Singleton instance — import this everywhere instead of constructing a new one */
 export const actionProxy = new ZeroTrustActionProxy()
 
-// ─── Legacy functional export (backward-compatibility) ────────────────────────
-//
-// The functional `executeAgentAction()` wrapper is re-exported so that any
-// existing callers continue to compile without modification while the codebase
-// migrates to `actionProxy.execute()`.
-
-export interface AgentActionRequest {
-  type: AgentActionType
-  tenantId: string
-  userId: string
-  role: string
-  payload?: Record<string, unknown>
-}
-
-export interface AgentActionResult {
-  success: boolean
-  data?: unknown
-  error?: string
-}
-
-/**
- * @deprecated Use `actionProxy.execute()` instead.
- * Kept for backward-compatibility with existing callers.
- */
-export async function executeAgentAction(
-  request: AgentActionRequest,
-  handler: () => Promise<unknown>,
-): Promise<AgentActionResult> {
-  const { type, tenantId, userId, role } = request
-
-  if (ALWAYS_FORBIDDEN.has(type)) {
-    await auditLogger.log({
-      type: AuditEventType.SECURITY_VIOLATION,
-      userId,
-      message: `Agent attempted forbidden action: ${type}`,
-      metadata: { type, tenantId, role },
-    })
-    return { success: false, error: 'Action not permitted' }
-  }
-
-  const permissions = ROLE_PERMISSIONS[role] ?? FALLBACK_PERMISSIONS
-  const allowed = new Set<string>(permissions.allowedActions)
-
-  if (!allowed.has(type)) {
-    await auditLogger.log({
-      type: AuditEventType.SECURITY_VIOLATION,
-      userId,
-      message: `Agent action denied by RBAC: ${type} not allowed for role ${role}`,
-      metadata: { type, tenantId, role },
-    })
-    return { success: false, error: 'Action not permitted' }
-  }
-
-  await auditLogger.log({
-    type: AuditEventType.DATA_READ,
-    userId,
-    message: `Agent action executed: ${type}`,
-    metadata: {
-      actionType: type,
-      tenantId,
-      role,
-      payloadKeys: request.payload ? Object.keys(request.payload) : [],
-    },
-  })
-
-  try {
-    const data = await handler()
-    return { success: true, data }
-  } catch (error) {
-    await auditLogger.log({
-      type: AuditEventType.API_ERROR,
-      userId,
-      message: `Agent action failed: ${type}`,
-      metadata: { type, error: (error as Error).message },
-    })
-    return { success: false, error: 'Action could not be completed' }
-  }
-}
+// executeAgentAction (deprecated) removed — no callers exist.
+// Use actionProxy.execute() for all agent actions.

@@ -167,7 +167,7 @@ export const ManagementDashboard = () => {
                
                <div className="space-y-4 relative z-10">
                   {(cortex?.predictions as Array<{ probability: number; impact: string; title: string }>).map((pred, i) => (
-                     <div key={i} className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+                     <div key={`${pred}-${i}`} className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
                         <div className="flex justify-between items-start mb-1">
                            <span className="text-xs font-bold text-violet-200">Probabilidad: {pred.probability}%</span>
                            <span className={`text-[10px] px-1.5 rounded uppercase font-bold ${pred.impact==='High'?'bg-red-500/80':'bg-emerald-500/80'}`}>
@@ -186,7 +186,7 @@ export const ManagementDashboard = () => {
                </h4>
                <ul className="space-y-3">
                   {(cortex.recommendations as string[]).map((rec, i) => (
-                     <li key={i} className="flex gap-3 text-sm text-amber-900">
+                     <li key={`${rec}-${i}`} className="flex gap-3 text-sm text-amber-900">
                         <span className="font-bold text-amber-400">•</span>
                         {rec}
                      </li>

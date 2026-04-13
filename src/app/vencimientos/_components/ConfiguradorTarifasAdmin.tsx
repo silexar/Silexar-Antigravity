@@ -79,6 +79,7 @@ export default function ConfiguradorTarifasAdmin() {
                     min="0"
                     step="5"
                     value={valorTemp}
+                    aria-label="Valor de la tarifa en segundos"
                     onChange={(e) => setValorTemp(Number(e.target.value))}
                     className="w-full bg-transparent text-center font-black text-xl text-emerald-600 outline-none"
                   />

@@ -1,8 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-// Base neuromorphic styles
-export const neuromorphicStyles = {
+// Base neuromorphic styles - internal use only
+const neuromorphicStyles = {
   base: 'bg-[#F0EDE8] text-slate-700 font-sans',
   embossed: 'shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]',
   debossed: 'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]',
@@ -26,11 +26,23 @@ export const NeuromorphicCard: React.FC<NeuromorphicCardProps> = ({
 }) => {
   const borderColor = borderAccent ? `border-${borderAccent}-500/30` : '';
   
+  // Safe variant lookup with switch to prevent object injection
+  const getVariantStyle = (v: typeof variant): string => {
+    switch (v) {
+      case 'embossed': return neuromorphicStyles.embossed;
+      case 'debossed': return neuromorphicStyles.debossed;
+      case 'glow': return neuromorphicStyles.glow;
+      case 'pulse': return neuromorphicStyles.pulse;
+      default: return neuromorphicStyles.embossed;
+    }
+  };
+  const variantStyle = getVariantStyle(variant);
+  
   return (
     <div
       className={cn(
         neuromorphicStyles.base,
-        neuromorphicStyles[variant],
+        variantStyle,
         borderColor,
         'rounded-xl transition-all duration-300 hover:scale-[1.01]',
         className
@@ -59,42 +71,56 @@ export const NeuromorphicButton: React.FC<NeuromorphicButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+  // Safe size lookup with switch to prevent object injection
+  const getSizeStyle = (s: typeof size): string => {
+    switch (s) {
+      case 'sm': return 'px-3 py-1.5 text-sm';
+      case 'lg': return 'px-6 py-3 text-lg';
+      default: return 'px-4 py-2 text-base';
+    }
   };
 
-  const variantStyles = {
-    primary: `
-      bg-[#F0EDE8]
-      text-indigo-600 font-bold
-      shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-      hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-      active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
-      disabled:opacity-50 disabled:cursor-not-allowed
-    `,
-    secondary: `
-      bg-[#F0EDE8]
-      text-slate-600 font-medium
-      shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-      hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-      active:shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
-    `,
-    danger: `
-      bg-[#F0EDE8]
-      text-red-600 font-bold
-      shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-      hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-      active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
-    `,
-    success: `
-      bg-[#F0EDE8]
-      text-emerald-600 font-bold
-      shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-      hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-      active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
-    `,
+  // Safe variant lookup with switch to prevent object injection
+  const getVariantStyle = (v: typeof variant): string => {
+    switch (v) {
+      case 'primary': return `
+        bg-[#F0EDE8]
+        text-indigo-600 font-bold
+        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
+        hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+        active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+        disabled:opacity-50 disabled:cursor-not-allowed
+      `;
+      case 'secondary': return `
+        bg-[#F0EDE8]
+        text-slate-600 font-medium
+        shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+        hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+        active:shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
+      `;
+      case 'danger': return `
+        bg-[#F0EDE8]
+        text-red-600 font-bold
+        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
+        hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+        active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+      `;
+      case 'success': return `
+        bg-[#F0EDE8]
+        text-emerald-600 font-bold
+        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
+        hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+        active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+      `;
+      default: return `
+        bg-[#F0EDE8]
+        text-indigo-600 font-bold
+        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
+        hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+        active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+        disabled:opacity-50 disabled:cursor-not-allowed
+      `;
+    }
   };
 
   return (
@@ -103,8 +129,8 @@ export const NeuromorphicButton: React.FC<NeuromorphicButtonProps> = ({
         'relative rounded-lg font-semibold transition-all duration-200',
         'transform hover:scale-105 active:scale-95',
         'focus:outline-none focus:ring-2 focus:ring-blue-500/50',
-        sizeStyles[size],
-        variantStyles[variant],
+        getSizeStyle(size),
+        getVariantStyle(variant),
         className
       )}
       disabled={disabled || isLoading}
@@ -180,30 +206,48 @@ export const NeuromorphicStatus: React.FC<NeuromorphicStatusProps> = ({
   size = 'md',
   pulse = false,
 }) => {
-  const sizeStyles = {
-    sm: 'w-2 h-2',
-    md: 'w-3 h-3',
-    lg: 'w-4 h-4',
+  // Safe size lookup with switch to prevent object injection
+  const getSizeStyle = (s: typeof size): string => {
+    switch (s) {
+      case 'sm': return 'w-2 h-2';
+      case 'lg': return 'w-4 h-4';
+      default: return 'w-3 h-3';
+    }
   };
 
-  const statusColors = {
-    online: 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]',
-    offline: 'bg-slate-600',
-    warning: 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.6)]',
-    error: 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]',
+  // Safe status lookup with switch to prevent object injection
+  const getStatusColor = (st: typeof status): string => {
+    switch (st) {
+      case 'online': return 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]';
+      case 'warning': return 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.6)]';
+      case 'error': return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]';
+      case 'offline':
+      default: return 'bg-slate-600';
+    }
+  };
+
+  // Safe status color without shadow for ping effect
+  const getStatusColorNoShadow = (st: typeof status): string => {
+    switch (st) {
+      case 'online': return 'bg-green-500';
+      case 'warning': return 'bg-yellow-500';
+      case 'error': return 'bg-red-500';
+      case 'offline':
+      default: return 'bg-slate-600';
+    }
   };
 
   return (
     <div className={cn(
       'relative rounded-full',
-      sizeStyles[size],
-      statusColors[status],
+      getSizeStyle(size),
+      getStatusColor(status),
       pulse && 'animate-pulse'
     )}>
       {pulse && (
         <div className={cn(
           'absolute inset-0 rounded-full animate-ping',
-          statusColors[status].replace('shadow-', ''),
+          getStatusColorNoShadow(status),
           'opacity-75'
         )} />
       )}
@@ -225,25 +269,32 @@ export const NeuromorphicGrid: React.FC<NeuromorphicGridProps> = ({
   gap = 'md',
   ...props
 }) => {
-  const gapStyles = {
-    sm: 'gap-4',
-    md: 'gap-6',
-    lg: 'gap-8',
+  // Safe gap lookup with switch to prevent object injection
+  const getGapStyle = (g: typeof gap): string => {
+    switch (g) {
+      case 'sm': return 'gap-4';
+      case 'lg': return 'gap-8';
+      default: return 'gap-6';
+    }
   };
 
-  const gridStyles = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+  // Safe grid columns lookup to prevent object injection
+  const getGridColumns = (cols: number): string => {
+    switch (cols) {
+      case 1: return 'grid-cols-1';
+      case 2: return 'grid-cols-1 md:grid-cols-2';
+      case 3: return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+      case 4: return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+      default: return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    }
   };
 
   return (
     <div
       className={cn(
         'grid',
-        gapStyles[gap],
-        gridStyles[columns as keyof typeof gridStyles],
+        getGapStyle(gap),
+        getGridColumns(columns),
         className
       )}
       {...props}
@@ -273,50 +324,6 @@ export const NeuromorphicContainer: React.FC<React.HTMLAttributes<HTMLDivElement
   );
 };
 
-// Neuromorphic State Hook
-export const useNeuromorphicState = () => {
-  const [state, setState] = React.useState({
-    consciousness: 'BASELINE',
-    awareness: 0,
-    prediction: 0,
-    transcendence: 0,
-    isReady: false
-  });
 
-  React.useEffect(() => {
-    // Simular inicialización
-    const timer = setTimeout(() => {
-      setState(prev => ({ ...prev, isReady: true }));
-      
-      // Simular evolución de conciencia
-      const interval = setInterval(() => {
-        setState(prev => ({
-          ...prev,
-          awareness: Math.min(1, prev.awareness + 0.05),
-          prediction: Math.min(1, prev.prediction + 0.03),
-          transcendence: Math.min(1, prev.transcendence + 0.01),
-          consciousness: prev.awareness > 0.8 ? 'TRANSCENDENT' : 
-                        prev.awareness > 0.6 ? 'PREDICTIVE' :
-                        prev.awareness > 0.4 ? 'ADAPTIVE' :
-                        prev.awareness > 0.2 ? 'AWARE' : 'BASELINE'
-        }));
-      }, 2000);
 
-      return () => clearInterval(interval);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return state;
-};
-
-export default {
-  NeuromorphicCard,
-  NeuromorphicButton,
-  NeuromorphicInput,
-  NeuromorphicStatus,
-  NeuromorphicGrid,
-  NeuromorphicContainer,
-  useNeuromorphicState
-};
+// Hooks moved to separate file to prevent Fast Refresh issues

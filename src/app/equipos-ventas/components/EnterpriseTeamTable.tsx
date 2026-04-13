@@ -42,7 +42,7 @@ export const EnterpriseTeamTable = () => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {MOCK_TEAMS.map((team, i) => (
-              <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
+              <tr key={`${team}-${i}`} className="hover:bg-slate-50/50 transition-colors group">
                 {/* Team/Leader */}
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-3">

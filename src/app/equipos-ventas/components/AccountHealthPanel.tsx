@@ -72,7 +72,7 @@ const scoreColor = (s: number) => s >= 90 ? '#22c55e' : s >= 75 ? '#f59e0b' : s 
 const TrendBadge = ({ trend }: { trend: string }) => {
   if (trend === 'UP' || trend === 'IMPROVING') return <TrendingUp size={12} className="text-emerald-400" />;
   if (trend === 'DOWN' || trend === 'DECLINING') return <TrendingDown size={12} className="text-red-400" />;
-  return <Minus size={12} className="text-slate-500" />;
+  return <Minus size={12} className="text-[#888780]" />;
 };
 
 const MiniSparkline = ({ data }: { data: number[] }) => {
@@ -124,7 +124,7 @@ const HealthRing = ({ score, size = 56 }: { score: number; size?: number }) => {
           strokeDasharray={`${dash} ${circumference}`} strokeLinecap="round"
           className="transition-all duration-700" />
       </svg>
-      <span className="absolute text-xs font-black text-white">{score}</span>
+      <span className="absolute text-xs font-black text-[#2C2C2A]">{score}</span>
     </div>
   );
 };
@@ -138,14 +138,14 @@ export function AccountHealthPanel() {
   const enRiesgo = ACCOUNTS_HEALTH.filter(a => a.riskLevel === 'HIGH' || a.riskLevel === 'CRITICAL').length;
 
   return (
-    <div className="bg-slate-800/40 rounded-xl border border-slate-700/50 p-5">
+    <div className="bg-[#E8E5E0]/40 rounded-xl border border-[#D4D1CC]/50 p-5">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+        <h3 className="text-sm font-bold text-[#5F5E5A] uppercase tracking-wider flex items-center gap-2">
           <Heart size={16} className="text-pink-400" /> Account Health Intelligence
         </h3>
         <div className="flex items-center gap-3 text-xs">
-          <span className="text-slate-500">Portfolio Avg:</span>
-          <span className="font-black text-white">{avgScore}%</span>
+          <span className="text-[#888780]">Portfolio Avg:</span>
+          <span className="font-black text-[#2C2C2A]">{avgScore}%</span>
           {enRiesgo > 0 && (
             <span className="bg-red-500/20 text-red-300 px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
               <AlertCircle size={10} />{enRiesgo} at risk
@@ -164,15 +164,15 @@ export function AccountHealthPanel() {
               selectedId === acc.id
                 ? 'bg-pink-500/10 border-pink-500/30 shadow-lg shadow-pink-500/10'
                 : acc.riskLevel === 'HIGH' ? 'bg-red-500/5 border-red-500/20 hover:border-red-500/40'
-                : 'bg-slate-900/40 border-slate-700/30 hover:border-slate-600'
+                : 'bg-[#F0EDE8]/40 border-[#D4D1CC]/30 hover:border-[#CCCAC5]'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-white truncate">{acc.nombre}</p>
+                <p className="text-xs font-bold text-[#2C2C2A] truncate">{acc.nombre}</p>
                 <div className="flex items-center gap-1 mt-0.5">
                   <TrendBadge trend={acc.trend} />
-                  <span className="text-[10px] text-slate-500">{acc.trend === 'IMPROVING' ? 'Improving' : acc.trend === 'DECLINING' ? 'Declining' : 'Stable'}</span>
+                  <span className="text-[10px] text-[#888780]">{acc.trend === 'IMPROVING' ? 'Improving' : acc.trend === 'DECLINING' ? 'Declining' : 'Stable'}</span>
                 </div>
               </div>
               <HealthRing score={acc.score} />
@@ -196,24 +196,24 @@ export function AccountHealthPanel() {
         const acc = ACCOUNTS_HEALTH.find(a => a.id === selectedId);
         if (!acc) return null;
         return (
-          <div className="bg-slate-900/50 rounded-xl border border-pink-500/20 p-4 animate-in slide-in-from-top duration-300">
+          <div className="bg-[#F0EDE8]/50 rounded-xl border border-pink-500/20 p-4 animate-in slide-in-from-top duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-xs font-bold text-white flex items-center gap-2">
+              <h4 className="text-xs font-bold text-[#2C2C2A] flex items-center gap-2">
                 <Activity size={14} className="text-pink-400" />
                 {acc.nombre} &mdash; Health Dimensions
               </h4>
-              <button onClick={() => setSelectedId(null)} className="text-[10px] text-slate-500 hover:text-white">Close</button>
+              <button onClick={() => setSelectedId(null)} className="text-[10px] text-[#888780] hover:text-[#2C2C2A]">Close</button>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {acc.dimensiones.map(dim => (
-                <div key={dim.nombre} className="bg-slate-800/50 rounded-lg p-3">
+                <div key={dim.nombre} className="bg-[#E8E5E0]/50 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] text-slate-500 uppercase">{dim.nombre}</span>
+                    <span className="text-[10px] text-[#888780] uppercase">{dim.nombre}</span>
                     <TrendBadge trend={dim.tendencia} />
                   </div>
                   <p className="text-lg font-black" style={{ color: scoreColor(dim.score) }}>{dim.score}%</p>
-                  <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden mt-2">
+                  <div className="w-full h-1.5 bg-[#D4D1CC] rounded-full overflow-hidden mt-2">
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{ width: `${dim.score}%`, backgroundColor: scoreColor(dim.score) }}
@@ -228,7 +228,7 @@ export function AccountHealthPanel() {
                 <AlertCircle size={14} className="text-amber-400 flex-shrink-0" />
                 <div className="text-[10px]">
                   <span className="text-amber-300 font-bold">Action Required: </span>
-                  <span className="text-slate-400">
+                  <span className="text-[#888780]">
                     {acc.riskLevel === 'HIGH'
                       ? 'Schedule recovery meeting and prepare retention strategy'
                       : 'Monitor declining dimensions and plan proactive engagement'}

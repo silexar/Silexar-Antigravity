@@ -18,10 +18,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ca
 describe('Card Components - TIER 0 Tests', () => {
   describe('Card', () => {
     it('should render card with default props', () => {
+      // Silexar Pulse neumorphic card uses border-0 (no border) + neo-card shadow
       render(<Card data-testid="test-card">Card Content</Card>)
       const card = screen.getByTestId('test-card')
       expect(card).toBeInTheDocument()
-      expect(card).toHaveClass('rounded-lg', 'border', 'bg-card')
+      expect(card).toHaveClass('rounded-lg', 'bg-card')
+      expect(card).toHaveClass('neo-card')
     })
 
     it('should render with custom className', () => {

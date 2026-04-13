@@ -8,7 +8,9 @@
  * Used in /mobile and /vencimientos pages.
  */
 
+import { memo } from 'react'
 import { ChevronRight, Clock, AlertTriangle, CheckCircle, DollarSign } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
 
 type EstadoContrato = 'VIGENTE' | 'VENCIDO' | 'PENDIENTE_APROBACION' | 'BORRADOR'
 
@@ -36,14 +38,6 @@ const ESTADO_CONFIG: Record<EstadoContrato, {
   BORRADOR:             { label: 'Borrador',   color: '#888780', Icon: Clock },
 }
 
-function formatCurrency(amount: number, moneda = 'CLP'): string {
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: moneda,
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
-
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('es-CL', {
     day: 'numeric',
@@ -60,7 +54,7 @@ function getUrgencyClass(diasRestantes?: number): string {
   return 'text-[#888780]'
 }
 
-export function MobileContractCard({
+function MobileContractCardBase({
   id,
   numeroContrato,
   nombreAnunciante,
@@ -139,3 +133,5 @@ export function MobileContractCard({
     </button>
   )
 }
+
+export const MobileContractCard = memo(MobileContractCardBase)

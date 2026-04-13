@@ -10,7 +10,7 @@
  * @reliability 99.999% traffic distribution accuracy with global intelligence
  */
 
-import { auditLogger } from '@/lib/security/audit-logger'
+import { auditLogger, logAuth, logError } from '@/lib/security/audit-logger'
 import { logger } from '@/lib/observability';
 import { enterpriseCache } from './cache-manager'
 import { globalConfig } from './global-config'
@@ -240,7 +240,7 @@ export class EnterpriseLoadBalancer {
         this.startMetricsCollection()
       }
 
-      await auditLogger.logAuth('Enterprise Load Balancer initialized', undefined, {
+      logAuth('Enterprise Load Balancer initialized', undefined, {
         event: 'LOAD_BALANCER_INIT',
         config: {
           algorithm: this.config.algorithm,
@@ -255,7 +255,7 @@ export class EnterpriseLoadBalancer {
 
     } catch (error) {
       logger.error('❌ Failed to initialize Enterprise Load Balancer:', error instanceof Error ? error : undefined)
-      await auditLogger.logError('Load Balancer initialization failed', error as Error)
+      logError('Load Balancer initialization failed', error as Error)
       throw error
     }
   }
@@ -340,7 +340,7 @@ export class EnterpriseLoadBalancer {
       return decision
 
     } catch (error) {
-      await auditLogger.logError('Request routing failed', error as Error, { clientIp, region })
+      logError('Request routing failed', error as Error, { clientIp, region })
       throw error
     }
   }
@@ -384,7 +384,7 @@ export class EnterpriseLoadBalancer {
       })
     }
 
-    await auditLogger.logAuth('Server added to load balancer', undefined, {
+    logAuth('Server added to load balancer', undefined, {
       event: 'SERVER_ADDED',
       serverId,
       host,
@@ -422,7 +422,7 @@ export class EnterpriseLoadBalancer {
       }
     }
 
-    await auditLogger.logAuth('Server removed from load balancer', undefined, {
+    logAuth('Server removed from load balancer', undefined, {
       event: 'SERVER_REMOVED',
       serverId,
       host: server.host,
@@ -444,7 +444,7 @@ export class EnterpriseLoadBalancer {
     const oldStatus = server.status
     server.status = status
 
-    await auditLogger.logAuth('Server status updated', undefined, {
+    logAuth('Server status updated', undefined, {
       event: 'SERVER_STATUS_UPDATED',
       serverId,
       oldStatus,
@@ -841,7 +841,7 @@ export class EnterpriseLoadBalancer {
       }
     }
 
-    await auditLogger.logAuth('Server failure detected', undefined, {
+    logAuth('Server failure detected', undefined, {
       event: 'SERVER_FAILURE',
       serverId
     })
@@ -859,7 +859,7 @@ export class EnterpriseLoadBalancer {
       }
     }
 
-    await auditLogger.logAuth('Server recovery detected', undefined, {
+    logAuth('Server recovery detected', undefined, {
       event: 'SERVER_RECOVERY',
       serverId
     })

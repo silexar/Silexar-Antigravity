@@ -4,7 +4,7 @@
  * @description Interfaz del repositorio con métodos optimizados para consultas complejas
  */
 
-import { Contrato } from '../entities/Contrato.js'
+import { Contrato } from '../entities/Contrato'
 
 export interface BusquedaCriteria {
   busquedaTexto?: string

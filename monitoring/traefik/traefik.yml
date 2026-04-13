@@ -1,6 +1,6 @@
 # 🌐 Traefik Configuration for Silexar Pulse Quantum
 # Production-ready reverse proxy and load balancer configuration
-# 
+#
 # @author SILEXAR AI Team
 # @version 2040.1.0
 
@@ -36,7 +36,7 @@ providers:
 
 # API and Dashboard
 api:
-  dashboard: true
+  dashboard: false
   debug: false
   insecure: false
 

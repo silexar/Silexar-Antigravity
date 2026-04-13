@@ -117,7 +117,6 @@ export const ServiceWorkerRegistration: React.FC = () => {
       }, 60000); // Check every minute
 
     } catch (error) {
-      console.error('❌ Service Worker registration failed:', error);
       setUpdateError(`Registration failed: ${error}`);
     }
   };
@@ -149,7 +148,6 @@ export const ServiceWorkerRegistration: React.FC = () => {
       }
 
     } catch (error) {
-      console.error('❌ Service Worker update failed:', error);
       setUpdateError(`Update failed: ${error}`);
     } finally {
       setIsUpdating(false);

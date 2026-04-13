@@ -154,7 +154,7 @@ export default function TenantPortal() {
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando portal...</p>
+          <p className="text-[#888780]">Cargando portal...</p>
         </div>
       </div>
     )
@@ -167,8 +167,8 @@ export default function TenantPortal() {
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-8 h-8 text-red-400" />
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">Acceso Denegado</h1>
-          <p className="text-slate-400 mb-6">{error}</p>
+          <h1 className="text-xl font-bold text-[#2C2C2A] mb-2">Acceso Denegado</h1>
+          <p className="text-[#888780] mb-6">{error}</p>
           <NeuromorphicButton variant="secondary" onClick={() => router.push('/login')}>
             Volver al Inicio
           </NeuromorphicButton>
@@ -180,16 +180,16 @@ export default function TenantPortal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-[#D4D1CC] bg-[#F0EDE8]/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-700 rounded-lg flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-white" />
+              <Building2 className="w-6 h-6 text-[#2C2C2A]" />
             </div>
             <div>
-              <h1 className="text-white font-bold">{tenant.name}</h1>
+              <h1 className="text-[#2C2C2A] font-bold">{tenant.name}</h1>
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded-full ${getPlanBadgeColor(tenant.plan)} text-white`}>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${getPlanBadgeColor(tenant.plan)} text-[#2C2C2A]`}>
                   {tenant.plan.replace('_', ' ').toUpperCase()}
                 </span>
                 <NeuromorphicStatus status="online" size="sm" pulse />
@@ -208,13 +208,13 @@ export default function TenantPortal() {
               </div>
             )}
 
-            <button className="relative p-2 text-slate-400 hover:text-white transition-colors">
+            <button className="relative p-2 text-[#888780] hover:text-[#2C2C2A] transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
             </button>
 
             <button 
-              className="flex items-center gap-2 px-3 py-1.5 text-slate-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-[#888780] hover:text-[#2C2C2A] transition-colors"
               onClick={() => router.push('/login')}
             >
               <LogOut className="w-4 h-4" />
@@ -228,10 +228,10 @@ export default function TenantPortal() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-[#2C2C2A] mb-2">
             Bienvenido a {tenant.name}
           </h2>
-          <p className="text-slate-400">
+          <p className="text-[#888780]">
             Accede a todas las funcionalidades de tu plan {tenant.plan.replace('_', ' ')}
           </p>
         </div>
@@ -241,30 +241,30 @@ export default function TenantPortal() {
           <NeuromorphicCard variant="embossed" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-400 mb-1">Usuarios Activos</p>
-                <p className="text-2xl font-bold text-white">{tenant.users.active}</p>
+                <p className="text-xs text-[#888780] mb-1">Usuarios Activos</p>
+                <p className="text-2xl font-bold text-[#2C2C2A]">{tenant.users.active}</p>
               </div>
               <Users className="w-8 h-8 text-blue-400" />
             </div>
-            <p className="text-xs text-slate-500 mt-2">de {tenant.users.total} totales</p>
+            <p className="text-xs text-[#888780] mt-2">de {tenant.users.total} totales</p>
           </NeuromorphicCard>
 
           <NeuromorphicCard variant="embossed" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-400 mb-1">Campañas Activas</p>
-                <p className="text-2xl font-bold text-white">12</p>
+                <p className="text-xs text-[#888780] mb-1">Campañas Activas</p>
+                <p className="text-2xl font-bold text-[#2C2C2A]">12</p>
               </div>
               <BarChart3 className="w-8 h-8 text-green-400" />
             </div>
-            <p className="text-xs text-slate-500 mt-2">+3 esta semana</p>
+            <p className="text-xs text-[#888780] mt-2">+3 esta semana</p>
           </NeuromorphicCard>
 
           <NeuromorphicCard variant="embossed" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-400 mb-1">Rendimiento</p>
-                <p className="text-2xl font-bold text-white">98.5%</p>
+                <p className="text-xs text-[#888780] mb-1">Rendimiento</p>
+                <p className="text-2xl font-bold text-[#2C2C2A]">98.5%</p>
               </div>
               <Activity className="w-8 h-8 text-purple-400" />
             </div>
@@ -274,21 +274,21 @@ export default function TenantPortal() {
           <NeuromorphicCard variant="embossed" className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-400 mb-1">Días de Licencia</p>
-                <p className={`text-2xl font-bold ${tenant.license.daysRemaining <= 30 ? 'text-yellow-400' : 'text-white'}`}>
+                <p className="text-xs text-[#888780] mb-1">Días de Licencia</p>
+                <p className={`text-2xl font-bold ${tenant.license.daysRemaining <= 30 ? 'text-yellow-400' : 'text-[#2C2C2A]'}`}>
                   {tenant.license.daysRemaining}
                 </p>
               </div>
               <Shield className="w-8 h-8 text-cyan-400" />
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-[#888780] mt-2">
               Expira {tenant.license.expiresAt.toLocaleDateString()}
             </p>
           </NeuromorphicCard>
         </NeuromorphicGrid>
 
         {/* Navigation modules */}
-        <h3 className="text-lg font-semibold text-white mb-4">Módulos Disponibles</h3>
+        <h3 className="text-lg font-semibold text-[#2C2C2A] mb-4">Módulos Disponibles</h3>
         <NeuromorphicGrid columns={3} gap="md">
           {tenant.features.includes('campaigns') && (
             <NeuromorphicCard 
@@ -300,10 +300,10 @@ export default function TenantPortal() {
                 <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center group-hover:bg-blue-600/30 transition-colors">
                   <Zap className="w-6 h-6 text-blue-400" />
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-blue-400 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-blue-400 transition-colors" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Campañas</h4>
-              <p className="text-sm text-slate-400">Gestiona y monitorea tus campañas publicitarias</p>
+              <h4 className="text-[#2C2C2A] font-semibold mb-1">Campañas</h4>
+              <p className="text-sm text-[#888780]">Gestiona y monitorea tus campañas publicitarias</p>
             </NeuromorphicCard>
           )}
 
@@ -317,10 +317,10 @@ export default function TenantPortal() {
                 <div className="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center group-hover:bg-purple-600/30 transition-colors">
                   <BarChart3 className="w-6 h-6 text-purple-400" />
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-purple-400 transition-colors" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Analytics</h4>
-              <p className="text-sm text-slate-400">Métricas avanzadas y reportes en tiempo real</p>
+              <h4 className="text-[#2C2C2A] font-semibold mb-1">Analytics</h4>
+              <p className="text-sm text-[#888780]">Métricas avanzadas y reportes en tiempo real</p>
             </NeuromorphicCard>
           )}
 
@@ -334,10 +334,10 @@ export default function TenantPortal() {
                 <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center group-hover:bg-green-600/30 transition-colors">
                   <Activity className="w-6 h-6 text-green-400" />
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-green-400 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-green-400 transition-colors" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Asistente IA</h4>
-              <p className="text-sm text-slate-400">Optimización automática con inteligencia artificial</p>
+              <h4 className="text-[#2C2C2A] font-semibold mb-1">Asistente IA</h4>
+              <p className="text-sm text-[#888780]">Optimización automática con inteligencia artificial</p>
             </NeuromorphicCard>
           )}
 
@@ -350,10 +350,10 @@ export default function TenantPortal() {
               <div className="w-12 h-12 bg-orange-600/20 rounded-xl flex items-center justify-center group-hover:bg-orange-600/30 transition-colors">
                 <Settings className="w-6 h-6 text-orange-400" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-orange-400 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-orange-400 transition-colors" />
             </div>
-            <h4 className="text-white font-semibold mb-1">Administración</h4>
-            <p className="text-sm text-slate-400">Usuarios, permisos y configuración</p>
+            <h4 className="text-[#2C2C2A] font-semibold mb-1">Administración</h4>
+            <p className="text-sm text-[#888780]">Usuarios, permisos y configuración</p>
           </NeuromorphicCard>
 
           <NeuromorphicCard 
@@ -365,10 +365,10 @@ export default function TenantPortal() {
               <div className="w-12 h-12 bg-cyan-600/20 rounded-xl flex items-center justify-center group-hover:bg-cyan-600/30 transition-colors">
                 <Users className="w-6 h-6 text-cyan-400" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-cyan-400 transition-colors" />
             </div>
-            <h4 className="text-white font-semibold mb-1">Usuarios</h4>
-            <p className="text-sm text-slate-400">Gestiona el equipo de tu organización</p>
+            <h4 className="text-[#2C2C2A] font-semibold mb-1">Usuarios</h4>
+            <p className="text-sm text-[#888780]">Gestiona el equipo de tu organización</p>
           </NeuromorphicCard>
 
           <NeuromorphicCard 
@@ -380,17 +380,17 @@ export default function TenantPortal() {
               <div className="w-12 h-12 bg-pink-600/20 rounded-xl flex items-center justify-center group-hover:bg-pink-600/30 transition-colors">
                 <LayoutDashboard className="w-6 h-6 text-pink-400" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-pink-400 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-[#888780] group-hover:text-pink-400 transition-colors" />
             </div>
-            <h4 className="text-white font-semibold mb-1">Dashboard</h4>
-            <p className="text-sm text-slate-400">Vista completa del rendimiento</p>
+            <h4 className="text-[#2C2C2A] font-semibold mb-1">Dashboard</h4>
+            <p className="text-sm text-[#888780]">Vista completa del rendimiento</p>
           </NeuromorphicCard>
         </NeuromorphicGrid>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 mt-12 py-6">
-        <div className="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+      <footer className="border-t border-[#D4D1CC] mt-12 py-6">
+        <div className="max-w-7xl mx-auto px-4 text-center text-[#888780] text-sm">
           <p>Powered by Silexar Pulse Quantum • TIER 0 Enterprise</p>
         </div>
       </footer>

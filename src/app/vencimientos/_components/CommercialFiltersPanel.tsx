@@ -11,10 +11,32 @@ export default function CommercialFiltersPanel() {
     estado: ['activos']
   })
 
-  // Helper toggle array lists
+  // Helper toggle array lists - safe implementation
   const t = (k: keyof typeof filtros, val: string) => {
-    const arr = filtros[k] as string[];
-    setFiltros({...filtros, [k]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]})
+    setFiltros(prev => {
+      const newPrev = { ...prev };
+      // Seguro: usamos if/else explícito para evitar Object Injection Sink
+      if (k === 'tipo') {
+        const currentArr = newPrev.tipo;
+        const newArr = currentArr.includes(val) 
+          ? currentArr.filter(x => x !== val) 
+          : [...currentArr, val];
+        newPrev.tipo = newArr;
+      } else if (k === 'horario') {
+        const currentArr = newPrev.horario;
+        const newArr = currentArr.includes(val) 
+          ? currentArr.filter(x => x !== val) 
+          : [...currentArr, val];
+        newPrev.horario = newArr;
+      } else if (k === 'estado') {
+        const currentArr = newPrev.estado;
+        const newArr = currentArr.includes(val) 
+          ? currentArr.filter(x => x !== val) 
+          : [...currentArr, val];
+        newPrev.estado = newArr;
+      }
+      return newPrev;
+    });
   }
 
   return (

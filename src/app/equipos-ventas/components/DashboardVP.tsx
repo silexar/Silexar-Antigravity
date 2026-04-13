@@ -73,7 +73,7 @@ export const DashboardVP = () => {
   const [activeSection, setActiveSection] = useState<VPSection>('command');
 
   const sections = [
-    { key: 'command' as const, label: 'Command Center', icon: LayoutDashboard, color: 'bg-slate-900' },
+    { key: 'command' as const, label: 'Command Center', icon: LayoutDashboard, color: 'bg-[#F0EDE8]' },
     { key: 'performance' as const, label: 'Performance', icon: BarChart3, color: 'bg-blue-600' },
     { key: 'leaderboard' as const, label: 'Leaderboard', icon: Trophy, color: 'bg-amber-500' },
     { key: 'coaching' as const, label: 'Coaching IA', icon: Brain, color: 'bg-violet-600' },

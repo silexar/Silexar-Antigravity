@@ -168,6 +168,7 @@ export default function TarifasCampanaPage() {
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
                     type="number"
+                    aria-label="Valor del Paquete"
                     value={valorPaquete}
                     onChange={(e) => setValorPaquete(parseInt(e.target.value) || 0)}
                     className="w-full pl-8 pr-4 py-3 rounded-xl bg-white border border-slate-200 font-bold text-xl text-slate-800"
@@ -222,7 +223,7 @@ export default function TarifasCampanaPage() {
               </thead>
               <tbody>
                 {descuentos.map((d, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={d.nombre} className="border-b border-slate-100">
                     <td className="py-3 px-4">
                       <button onClick={() => toggleDescuento(i)} className={`w-6 h-6 rounded ${d.aplicado ? 'bg-emerald-500 text-white' : 'bg-slate-200'}`}>
                         {d.aplicado && <CheckCircle className="w-6 h-6" />}
@@ -252,6 +253,7 @@ export default function TarifasCampanaPage() {
               max="30"
               value={comision}
               onChange={(e) => setComision(parseInt(e.target.value))}
+              aria-label="Comisión de Agencia en porcentaje"
               className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
             />
             <span className="text-2xl font-bold text-emerald-600 w-16">{comision}%</span>

@@ -185,16 +185,16 @@ export function OCROrdenAgencia({ onCrearCampana }: OCROrdenProps) {
   };
 
   const getTipoPedidoLabel = (tipo: string) => {
-    const labels: Record<string, { label: string; color: string }> = {
-      'prime_am': { label: 'PRIME AM', color: 'bg-red-100 text-red-700' },
-      'prime_pm': { label: 'PRIME PM', color: 'bg-orange-100 text-orange-700' },
-      'auspicio': { label: 'AUSPICIO', color: 'bg-blue-100 text-blue-700' },
-      'menciones': { label: 'MENCIONES', color: 'bg-purple-100 text-purple-700' },
-      'frases': { label: 'FRASES', color: 'bg-pink-100 text-pink-700' },
-      'repartido': { label: 'REPARTIDO', color: 'bg-green-100 text-green-700' },
-      'trasnoche': { label: 'TRASNOCHE', color: 'bg-gray-100 text-gray-700' },
-    };
-    return labels[tipo] || { label: tipo, color: 'bg-gray-100' };
+    switch (tipo) {
+      case 'prime_am': return { label: 'PRIME AM', color: 'bg-red-100 text-red-700' };
+      case 'prime_pm': return { label: 'PRIME PM', color: 'bg-orange-100 text-orange-700' };
+      case 'auspicio': return { label: 'AUSPICIO', color: 'bg-blue-100 text-blue-700' };
+      case 'menciones': return { label: 'MENCIONES', color: 'bg-purple-100 text-purple-700' };
+      case 'frases': return { label: 'FRASES', color: 'bg-pink-100 text-pink-700' };
+      case 'repartido': return { label: 'REPARTIDO', color: 'bg-green-100 text-green-700' };
+      case 'trasnoche': return { label: 'TRASNOCHE', color: 'bg-gray-100 text-gray-700' };
+      default: return { label: tipo, color: 'bg-gray-100' };
+    }
   };
 
   const getConfianzaColor = (conf: number) => {

@@ -50,6 +50,10 @@ spec:
         - containerPort: 3000
           name: http
           protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: silexar-config
+            optional: false
         env:
         - name: NODE_ENV
           value: "production"
@@ -60,16 +64,43 @@ spec:
             secretKeyRef:
               name: silexar-secrets
               key: redis-url
+              optional: false
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: silexar-secrets
               key: database-url
+              optional: false
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
               name: silexar-secrets
               key: jwt-secret
+              optional: false
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: silexar-secrets
+              key: nextauth-secret
+              optional: false
+        - name: NEXTAUTH_URL
+          valueFrom:
+            secretKeyRef:
+              name: silexar-secrets
+              key: nextauth-url
+              optional: false
+        - name: ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: silexar-secrets
+              key: encryption-key
+              optional: true
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: silexar-secrets
+              key: sentry-dsn
+              optional: true
         - name: PROMETHEUS_METRICS
           value: "true"
         - name: JAEGER_ENDPOINT
@@ -89,6 +120,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /api/health/ready
@@ -97,6 +129,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
+          successThreshold: 1
         startupProbe:
           httpGet:
             path: /api/health
@@ -105,6 +138,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 30
+          successThreshold: 1
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -120,9 +154,13 @@ spec:
           mountPath: /app/.next/cache
       volumes:
       - name: tmp
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi
       - name: cache
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
       nodeSelector:
         kubernetes.io/os: linux
       tolerations:
@@ -154,6 +192,9 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: silexar-pulse-quantum-hpa
   namespace: silexar-pulse-quantum
+  labels:
+    app: silexar-pulse-quantum
+    component: autoscaling
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -199,8 +240,23 @@ kind: PodDisruptionBudget
 metadata:
   name: silexar-pulse-quantum-pdb
   namespace: silexar-pulse-quantum
+  labels:
+    app: silexar-pulse-quantum
+    component: pdb
 spec:
   minAvailable: 2
   selector:
     matchLabels:
       app: silexar-pulse-quantum
+
+---
+# Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: silexar-service-account
+  namespace: silexar-pulse-quantum
+  labels:
+    app: silexar-pulse-quantum
+    component: rbac
+automountServiceAccountToken: false

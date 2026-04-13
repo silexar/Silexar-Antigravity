@@ -17,6 +17,7 @@ import {
   Loader2, FileVideo, FileImage, FileAudio, Sparkles, Wand2,
   Monitor, Smartphone, Tv
 } from 'lucide-react';
+import NextImage from 'next/image';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -384,10 +385,12 @@ export const DigitalAssetUploader: React.FC<DigitalAssetUploaderProps> = ({
                     />
                   )}
                   {asset.preview && (asset.tipo.includes('BANNER') || asset.tipo.includes('IMAGE')) && (
-                    <img
+                    <NextImage
                       src={asset.preview}
                       alt={asset.file.name}
-                      className="w-full h-full object-contain"
+                      fill
+                      className="object-contain"
+                      sizes="96px"
                     />
                   )}
                   {asset.tipo.includes('AUDIO') && (

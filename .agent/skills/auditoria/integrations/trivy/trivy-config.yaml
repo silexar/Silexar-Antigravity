@@ -1,0 +1,186 @@
+# Trivy Configuration - Silexar Pulse
+# Escaneo de vulnerabilidades en contenedores, dependencias e infraestructura
+# Versión: 3.0.0 - Fort Knox Edition
+
+# Modo de escaneo
+scan:
+  # Tipos de escaneo
+  scanners:
+    - vuln          # Vulnerabilidades
+    - misconfig     # Más configuraciones
+    - secret        # Secrets
+    - license       # Licencias
+  
+  # Tipos de targets
+  targets:
+    - fs            # Sistema de archivos
+    - image         # Imágenes Docker
+    - repo          # Repositorios Git
+    - config        # Configuraciones IaC
+
+# Severidad mínima a reportar
+severity:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+  - LOW
+  - UNKNOWN
+
+# Umbrales para CI
+exit:
+  # Fallar si se encuentran vulnerabilidades de esta severidad
+  code: 1
+  # O si el score es menor que este
+  # (No aplicable para Trivy, usamos conteo)
+
+# Ignorar vulnerabilidades específicas
+ignore:
+  # Lista de CVEs a ignorar temporalmente
+  # Formato: CVE-YYYY-NNNN # Razón # Fecha de expiración
+  # - CVE-2023-1234 # Falso positivo conocido # 2026-06-01
+
+# Reglas de escaneo
+vulnerability:
+  # Tipos de vulnerabilidades
+  types:
+    - os        # Vulnerabilidades del sistema operativo
+    - library   # Vulnerabilidades de librerías
+  
+  # Ignorar no aplicables
+  ignore-unfixed: false
+  
+  # Databases
+  db:
+    repository: ghcr.io/aquasecurity/trivy-db
+    skip-update: false
+
+# Escaneo de secrets
+secret:
+  # Configuraciones de detección
+  config:
+    # Reglas personalizadas de Silexar
+    rules:
+      - id: silexar-openai-key
+        category: api-key
+        severity: CRITICAL
+        title: OpenAI API Key
+        regex: 'sk-(?:proj-|svcacct-)?[a-zA-Z0-9]{20,}'
+        keywords:
+          - sk-
+      
+      - id: silexar-stripe-key
+        category: api-key
+        severity: CRITICAL
+        title: Stripe Secret Key
+        regex: 'sk_live_[a-zA-Z0-9]{20,}'
+        keywords:
+          - sk_live_
+      
+      - id: silexar-supabase-key
+        category: api-key
+        severity: CRITICAL
+        title: Supabase JWT
+        regex: 'eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*'
+        keywords:
+          - eyJ
+      
+      - id: silexar-jwt-secret
+        category: api-key
+        severity: HIGH
+        title: JWT Secret
+        regex: 'jwt[_-]?secret["\']?\s*[:=]\s*["\'][^"\']+["\']'
+        keywords:
+          - jwt_secret
+          - jwt-secret
+
+# Escaneo de configuraciones
+misconfiguration:
+  # Escanear Terraform
+  terraform:
+    # Reglas personalizadas
+    rules:
+      - id: AVD-AWS-0001
+        severity: HIGH
+        title: Security group allows all traffic
+      
+      - id: AVD-AWS-0002
+        severity: CRITICAL
+        title: S3 bucket public read
+  
+  # Escanear Docker
+  dockerfile:
+    rules:
+      - id: AVD-DS-0001
+        severity: HIGH
+        title: Dockerfile uses latest tag
+      
+      - id: AVD-DS-0002
+        severity: CRITICAL
+        title: Dockerfile runs as root
+  
+  # Escanear Kubernetes
+  kubernetes:
+    rules:
+      - id: AVD-KSV-0001
+        severity: HIGH
+        title: Container runs as root
+      
+      - id: AVD-KSV-0002
+        severity: HIGH
+        title: No resource limits
+
+# Escaneo de licencias
+license:
+  # Licencias permitidas
+  allowed:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - MPL-2.0
+    - Unlicense
+  
+  # Licencias prohibidas
+  forbidden:
+    - GPL-2.0
+    - GPL-3.0
+    - AGPL-3.0
+    - proprietary  # Sin licencia
+  
+  # Umbral de severidad
+  severity:
+    - HIGH
+    - CRITICAL
+
+# Reportes
+report:
+  # Formatos de salida
+  formats:
+    - table       # Tabla en consola
+    - json        # JSON para parsing
+    - sarif       # SARIF para GitHub
+    - html        # HTML para visualización
+    - markdown    # Markdown para documentación
+  
+  # Incluir información adicional
+  include:
+    - OS packages
+    - Library packages
+    - Secrets
+    - Misconfigurations
+    - Licenses
+
+# Cache
+cache:
+  # Directorio de cache
+  dir: ~/.cache/trivy
+  # TTL del cache
+  ttl: 168h  # 1 semana
+  
+# Logging
+log:
+  # Nivel de log
+  level: info
+  # Formato
+  format: json

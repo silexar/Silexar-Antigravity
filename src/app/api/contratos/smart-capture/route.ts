@@ -14,6 +14,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -399,11 +400,13 @@ const contratosCreados: Map<string, { id: string; numero: string; estado: string
 // POST: Procesar captura
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
+export const POST = withApiRoute(
+  { resource: 'contratos', action: 'create' },
+  async ({ ctx, req }) => {
   const inicio = Date.now();
 
   try {
-    const body: SmartCaptureRequest = await request.json();
+    const body: SmartCaptureRequest = await req.json();
     const { metodo, datos } = body;
 
     let textoAProcesar = '';
@@ -478,15 +481,18 @@ export async function POST(request: NextRequest) {
     logger.error('[Smart Capture] Error:', error instanceof Error ? error : undefined, { module: 'smart-capture' });
     return NextResponse.json({ success: false, error: 'Error procesando captura' }, { status: 500 });
   }
-}
+  }
+);
 
 // ═══════════════════════════════════════════════════════════════
 // PUT: Confirmar borrador → Crear contrato
 // ═══════════════════════════════════════════════════════════════
 
-export async function PUT(request: NextRequest) {
+export const PUT = withApiRoute(
+  { resource: 'contratos', action: 'create' },
+  async ({ ctx, req }) => {
   try {
-    const body: ConfirmarRequest = await request.json();
+    const body: ConfirmarRequest = await req.json();
     const { borradorId, contratoFinal } = body;
 
     // Verificar que el borrador existe
@@ -527,31 +533,40 @@ export async function PUT(request: NextRequest) {
     logger.error('[Smart Capture] Error confirmando:', error instanceof Error ? error : undefined, { module: 'smart-capture' });
     return NextResponse.json({ success: false, error: 'Error creando contrato' }, { status: 500 });
   }
-}
+  }
+);
 
 // ═══════════════════════════════════════════════════════════════
 // GET: Listar borradores / queue
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET() {
-  const lista = Array.from(borradores.entries()).map(([id, b]) => ({
-    id,
-    cliente: b.contratoSugerido.cliente.nombre,
-    valor: b.contratoSugerido.valor,
-    metodo: b.metodo,
-    confianza: b.datosExtraidos.confianzaGlobal,
-    requiereValidacion: b.requiereValidacion,
-    timestamp: id.split('-')[1],
-    lineasPauta: b.contratoSugerido.lineasPauta.length,
-  }));
+export const GET = withApiRoute(
+  { resource: 'contratos', action: 'read', skipCsrf: true },
+  async () => {
+  try {
+    const lista = Array.from(borradores.entries()).map(([id, b]) => ({
+      id,
+      cliente: b.contratoSugerido.cliente.nombre,
+      valor: b.contratoSugerido.valor,
+      metodo: b.metodo,
+      confianza: b.datosExtraidos.confianzaGlobal,
+      requiereValidacion: b.requiereValidacion,
+      timestamp: id.split('-')[1],
+      lineasPauta: b.contratoSugerido.lineasPauta.length,
+    }));
 
-  return NextResponse.json({
-    success: true,
-    data: lista,
-    total: lista.length,
-    timestamp: new Date().toISOString(),
-  });
-}
+    return NextResponse.json({
+      success: true,
+      data: lista,
+      total: lista.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('[API/Contratos/SmartCapture] Error:', error instanceof Error ? error : undefined);
+    return apiServerError();
+  }
+  }
+);
 
 // ═══════════════════════════════════════════════════════════════
 // PROCESADORES — SIMULACIÓN (en producción: APIs externas)

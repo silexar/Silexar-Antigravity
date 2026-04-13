@@ -55,7 +55,7 @@ export function ContextMenuCampana({ campanaId, position, onClose, onAction, isF
     >
       {items.map((item, i) => 
         item.id.startsWith('divider') ? (
-          <div key={i} className="h-px bg-gray-200 dark:bg-slate-700 my-1" />
+          <div key={`${item}-${i}`} className="h-px bg-gray-200 dark:bg-slate-700 my-1" />
         ) : (
           <button
             key={item.id}

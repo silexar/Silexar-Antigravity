@@ -9,6 +9,7 @@
 
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { 
   CheckCircle,
@@ -213,7 +214,7 @@ export function SingleResultView({
           </div>
 
           {/* PLAYER / VIEWER */}
-          <div className="bg-slate-900 rounded-2xl p-6 relative overflow-hidden">
+          <div className="bg-[#F0EDE8] rounded-2xl p-6 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-slate-700">
               <div className="h-full w-1/3 bg-emerald-500 rounded-full" />
             </div>
@@ -221,7 +222,7 @@ export function SingleResultView({
             {isDigital && imageUrl ? (
               // IMAGE VIEWER
               <div className="aspect-video bg-slate-800 rounded-xl flex items-center justify-center">
-                <img src={imageUrl} alt="Banner" className="max-h-full max-w-full object-contain rounded-lg" />
+                <Image src={imageUrl} alt="Banner" fill className="object-contain rounded-lg" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             ) : (
               // AUDIO PLAYER
@@ -268,28 +269,30 @@ export function SingleResultView({
                         <span>Inicio: -{15 - trimStart}s</span>
                         <span>Fin: +{15 - trimEnd}s</span>
                      </div>
-                     <div className="relative h-8 bg-slate-900 rounded border border-slate-700 overflow-hidden flex items-center px-1">
+                     <div className="relative h-8 bg-[#F0EDE8] rounded border border-slate-700 overflow-hidden flex items-center px-1">
                         {/* Waveform Mock */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-20 gap-0.5">
                            {Array.from({ length: 40 }).map((_, i) => (
-                              <div key={i} className="w-1 bg-white rounded-full" style={{ height: `${20 + Math.random() * 80}%` }} />
+                              <div key={`${_}-${i}`} className="w-1 bg-white rounded-full" style={{ height: `${20 + Math.random() * 80}%` }} />
                            ))}
                         </div>
                         
                         {/* Trim Handles (Simulated with Range Inputs overlaid would be complex, simplified for UI demo) */}
-                        <input 
-                           type="range" 
-                           min="0" max="10" 
-                           value={trimStart} 
+                        <input
+                           type="range"
+                           min="0" max="10"
+                           value={trimStart}
                            onChange={(e) => { setIsTrimming(true); setTrimStart(parseInt(e.target.value)); }}
+                           aria-label="Ajustar inicio de recorte"
                            className="absolute left-0 w-1/2 h-full opacity-50 cursor-e-resize accent-emerald-500 z-10"
                            title="Ajustar Inicio"
                         />
-                         <input 
-                           type="range" 
-                           min="0" max="10" 
-                           value={trimEnd} 
+                         <input
+                           type="range"
+                           min="0" max="10"
+                           value={trimEnd}
                            onChange={(e) => { setIsTrimming(true); setTrimEnd(parseInt(e.target.value)); }}
+                           aria-label="Ajustar final de recorte"
                            className="absolute right-0 w-1/2 h-full opacity-50 cursor-w-resize accent-emerald-500 z-10"
                            title="Ajustar Final"
                            style={{ direction: 'rtl' }}

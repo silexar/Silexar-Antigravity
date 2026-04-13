@@ -8,6 +8,7 @@
  * Independent component — receives data via props, no internal fetching.
  */
 
+import { memo } from 'react'
 import { Music, Clock, Calendar, MoreHorizontal } from 'lucide-react'
 import { CunaStatusBadge, type CunaEstado } from './CunaStatusBadge'
 
@@ -37,7 +38,7 @@ function formatDate(date: Date): string {
   }).format(date)
 }
 
-export function CunaListItem({
+function CunaListItemBase({
   id,
   nombre,
   nombreAnunciante,
@@ -110,3 +111,6 @@ export function CunaListItem({
     </div>
   )
 }
+
+
+export const CunaListItem = memo(CunaListItemBase)

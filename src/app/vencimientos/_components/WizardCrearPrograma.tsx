@@ -49,8 +49,9 @@ export default function WizardCrearPrograma() {
                   </div>
                   <div>
                      <label className="block text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1.5">📺 Nombre del Programa</label>
-                     <input 
-                        type="text" 
+                     <input
+                        type="text"
+                        aria-label="Nombre del Programa"
                         className="w-full bg-[#ECEFF8]/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-emerald-500/50 outline-none transition-all placeholder-slate-600 font-medium"
                         value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})}
                      />
@@ -67,11 +68,11 @@ export default function WizardCrearPrograma() {
                      <div className="flex items-center gap-4">
                         <div className="flex-1">
                            <label className="block text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Desde</label>
-                           <input type="time" className="w-full bg-white/80 border border-gray-200 rounded-xl px-3 py-2 text-gray-800 font-medium outline-none focus:border-amber-500" value={formData.desde} onChange={e => setFormData({...formData, desde: e.target.value})} />
+                           <input type="time" aria-label="Hora de inicio" className="w-full bg-white/80 border border-gray-200 rounded-xl px-3 py-2 text-gray-800 font-medium outline-none focus:border-amber-500" value={formData.desde} onChange={e => setFormData({...formData, desde: e.target.value})} />
                         </div>
                         <div className="flex-1">
                            <label className="block text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Hasta</label>
-                           <input type="time" className="w-full bg-white/80 border border-gray-200 rounded-xl px-3 py-2 text-gray-800 font-medium outline-none focus:border-amber-500" value={formData.hasta} onChange={e => setFormData({...formData, hasta: e.target.value})} />
+                           <input type="time" aria-label="Hora de fin" className="w-full bg-white/80 border border-gray-200 rounded-xl px-3 py-2 text-gray-800 font-medium outline-none focus:border-amber-500" value={formData.hasta} onChange={e => setFormData({...formData, hasta: e.target.value})} />
                         </div>
                      </div>
                      <div>
@@ -119,19 +120,19 @@ export default function WizardCrearPrograma() {
                   <div className="bg-[#ECEFF8]/50 border border-gray-200/50 rounded-xl p-3 flexItems-center justify-between">
                      <div className="w-full">
                         <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black mb-1">C. Principal</p>
-                        <input type="text" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.cond1} onChange={e => setFormData({...formData, cond1: e.target.value})} />
+                        <input type="text" aria-label="Conductor Principal" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.cond1} onChange={e => setFormData({...formData, cond1: e.target.value})} />
                      </div>
                   </div>
                   <div className="bg-[#ECEFF8]/50 border border-gray-200/50 rounded-xl p-3 flexItems-center justify-between">
                      <div className="w-full">
                         <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black mb-1">Co-conduc.</p>
-                        <input type="text" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.cond2} onChange={e => setFormData({...formData, cond2: e.target.value})} />
+                        <input type="text" aria-label="Co-conductor" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.cond2} onChange={e => setFormData({...formData, cond2: e.target.value})} />
                      </div>
                   </div>
                   <div className="bg-[#ECEFF8]/50 border border-gray-200/50 rounded-xl p-3 flexItems-center justify-between">
                      <div className="w-full">
                         <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black mb-1">Productor</p>
-                        <input type="text" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.prod} onChange={e => setFormData({...formData, prod: e.target.value})} />
+                        <input type="text" aria-label="Productor" className="bg-transparent text-sm text-gray-800 font-medium outline-none w-full" value={formData.prod} onChange={e => setFormData({...formData, prod: e.target.value})} />
                      </div>
                   </div>
                </div>
@@ -268,7 +269,7 @@ export default function WizardCrearPrograma() {
                      { r: 'RETAIL/SUPERMERCADOS', stat: 'Multicliente', req: false },
                      { r: 'BEBIDAS ALCOHÓLICAS', stat: '1 por cat.', req: true }
                   ].map((x, i) => (
-                     <div key={i} className={`p-4 border rounded-xl flex items-center gap-4 transition-all ${x.req ? 'bg-red-500/5 border-red-500/20' : 'bg-white/70 border-gray-200'}`}>
+                     <div key={`${x}-${i}`} className={`p-4 border rounded-xl flex items-center gap-4 transition-all ${x.req ? 'bg-red-500/5 border-red-500/20' : 'bg-white/70 border-gray-200'}`}>
                         <input type="checkbox" defaultChecked={x.req} className="w-4 h-4 accent-red-500 cursor-pointer" />
                         <div>
                            <p className="text-xs font-black text-gray-800 uppercase tracking-wider">{x.r}</p>
@@ -320,7 +321,7 @@ export default function WizardCrearPrograma() {
             </h2>
             <div className="text-right">
                <p className="text-[10px] text-indigo-600 font-black uppercase tracking-widest mb-1">Vigencia Pricing</p>
-               <input type="text" value="01 Ene 2025 - 31 Dic 2025" readOnly className="bg-transparent text-gray-800 font-bold text-sm outline-none text-right border-b border-indigo-500/30 pb-0.5" />
+               <input type="text" value="01 Ene 2025 - 31 Dic 2025" readOnly aria-label="Vigencia del Pricing" className="bg-transparent text-gray-800 font-bold text-sm outline-none text-right border-b border-indigo-500/30 pb-0.5" />
             </div>
          </div>
 

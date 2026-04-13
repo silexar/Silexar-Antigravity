@@ -296,7 +296,7 @@ export function CompetitiveIntel() {
               <h5 className="text-green-400 text-sm font-medium mb-2">💪 Fortalezas</h5>
               <ul className="space-y-1">
                 {selectedCompetitor.strengths.map((s, i) => (
-                  <li key={i} className="text-sm text-slate-300 flex items-center gap-2">
+                  <li key={s} className="text-sm text-slate-300 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
                     {s}
                   </li>
@@ -307,7 +307,7 @@ export function CompetitiveIntel() {
               <h5 className="text-red-400 text-sm font-medium mb-2">⚠️ Debilidades</h5>
               <ul className="space-y-1">
                 {selectedCompetitor.weaknesses.map((w, i) => (
-                  <li key={i} className="text-sm text-slate-300 flex items-center gap-2">
+                  <li key={w} className="text-sm text-slate-300 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-red-400 rounded-full" />
                     {w}
                   </li>

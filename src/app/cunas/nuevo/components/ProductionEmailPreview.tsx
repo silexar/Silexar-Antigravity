@@ -5,8 +5,6 @@ import {
   MapPin, User, FileText 
 } from 'lucide-react';
 import { DiffEngine, type DiffResult } from '../services/DiffEngine';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 
 interface ProductionEmailPreviewProps {
   isOpen: boolean;
@@ -21,6 +19,20 @@ interface ProductionEmailPreviewProps {
     newScript: string;
     type: 'new' | 'update' | 'kill';
   };
+}
+
+// Formatear fecha sin dependencia externa
+function formatDate(date: Date): string {
+  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  const d = date.getDate().toString().padStart(2, '0');
+  const m = months[date.getMonth()];
+  return `${d} ${m}`;
+}
+
+function formatDateSlash(date: Date): string {
+  const d = date.getDate().toString().padStart(2, '0');
+  const m = (date.getMonth() + 1).toString().padStart(2, '0');
+  return `${d}/${m}`;
 }
 
 export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
@@ -51,11 +63,11 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
 
   if (!isOpen) return null;
 
-  const subject = `[${data.type.toUpperCase()}] ${data.program} - ${data.client} - ${format(new Date(), 'dd/MM')}`;
+  const subject = `[${data.type.toUpperCase()}] ${data.program} - ${data.client} - ${formatDateSlash(new Date())}`;
   const urgencyColor = data.type === 'kill' ? 'red' : data.type === 'update' ? 'amber' : 'blue';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#F0EDE8]/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
         
         {/* Header Correo */}
@@ -67,25 +79,26 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
                </div>
                <div>
                  <h3 className="text-xl font-bold text-slate-800">Notificación a Producción</h3>
-                 <p className="text-sm text-slate-500">Vista previa del correo operativo</p>
+                 <p className="text-sm text-[#888780]">Vista previa del correo operativo</p>
                </div>
              </div>
-             <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+             <button onClick={onClose} className="text-[#888780] hover:text-slate-600">
                <X className="w-5 h-5" />
              </button>
           </div>
 
           <div className="space-y-2 bg-white p-4 rounded-lg border border-slate-200 shadow-sm text-sm">
             <div className="flex gap-2">
-              <span className="text-slate-500 w-16 text-right font-medium">Para:</span>
-              <input 
+              <span className="text-[#888780] w-16 text-right font-medium">Para:</span>
+              <input
                 value={emailRecipients}
                 onChange={(e) => setEmailRecipients(e.target.value)}
+                aria-label="Destinatarios del email"
                 className="flex-1 bg-transparent border-b border-dashed border-slate-300 focus:outline-none focus:border-violet-500 text-slate-700"
               />
             </div>
             <div className="flex gap-2">
-              <span className="text-slate-500 w-16 text-right font-medium">Asunto:</span>
+              <span className="text-[#888780] w-16 text-right font-medium">Asunto:</span>
               <span className="font-bold text-slate-800">{subject}</span>
             </div>
           </div>
@@ -102,14 +115,14 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
                 <div className="flex items-center gap-1"><MapPin className="w-4 h-4"/> {data.program}</div>
                 <div className="flex items-center gap-1"><User className="w-4 h-4"/> {data.client}</div>
                 <div className="flex items-center gap-1 bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full font-medium">
-                  <Clock className="w-4 h-4"/> Al aire: {format(data.startDate, 'dd MMM', { locale: es })}
+                  <Clock className="w-4 h-4"/> Al aire: {formatDate(data.startDate)}
                 </div>
               </div>
             </div>
 
             {/* Contenido Script */}
             <div>
-              <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <h2 className="text-sm font-bold text-[#888780] uppercase tracking-wider mb-3 flex items-center gap-2">
                 <FileText className="w-4 h-4" /> 
                 {data.type === 'update' ? 'Control de Cambios' : 'Guión'}
               </h2>
@@ -124,7 +137,7 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
             </div>
 
             {/* Footer Template */}
-            <div className="border-t pt-4 text-xs text-slate-400 text-center">
+            <div className="border-t pt-4 text-xs text-[#888780] text-center">
               <p>Generado automáticamente por Silexar Pulse Antygravity</p>
               <p>{new Date().toISOString()}</p>
             </div>
@@ -134,7 +147,7 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
 
         {/* Footer Actions */}
         <div className="p-4 bg-white border-t border-slate-200 flex justify-between items-center">
-          <div className="text-xs text-slate-500 px-4">
+          <div className="text-xs text-[#888780] px-4">
              Validación Operativa: <strong className="text-emerald-600">OK 24/7</strong>
           </div>
           <div className="flex gap-3">
@@ -144,7 +157,7 @@ export const ProductionEmailPreview: React.FC<ProductionEmailPreviewProps> = ({
              <button 
                onClick={handleSend}
                disabled={isSending}
-               className="px-6 py-2 bg-violet-600 text-white font-bold rounded-lg shadow-lg hover:bg-violet-700 active:scale-95 transition-all flex items-center gap-2"
+               className="px-6 py-2 bg-violet-600 text-[#2C2C2A] font-bold rounded-lg shadow-lg hover:bg-violet-700 active:scale-95 transition-all flex items-center gap-2"
              >
                {isSending ? (
                  <>Enviando... <Clock className="w-4 h-4 animate-spin"/></>

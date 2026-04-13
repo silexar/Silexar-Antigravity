@@ -97,7 +97,7 @@ export function MobileRelationshipMap() {
                   <span className={`text-[9px] font-bold ${sentColor(sh.sentimiento)}`}>{sh.sentimiento.substring(0, 3)}</span>
                   <div className="flex gap-px">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <div key={i} className={`w-1 h-2.5 rounded-full ${i < Math.ceil(sh.influencia / 2) ? 'bg-violet-400' : 'bg-slate-200'}`} />
+                      <div key={`${_}-${i}`} className={`w-1 h-2.5 rounded-full ${i < Math.ceil(sh.influencia / 2) ? 'bg-violet-400' : 'bg-slate-200'}`} />
                     ))}
                   </div>
                   {isExp ? <ChevronUp className="w-3 h-3 text-slate-400" /> : <ChevronDown className="w-3 h-3 text-slate-400" />}
@@ -131,7 +131,7 @@ export function MobileRelationshipMap() {
             <ShieldAlert className="w-3 h-3" /> Competitive Threats
           </h4>
           {MOCK_THREATS.map((t, i) => (
-            <div key={i} className="flex items-center justify-between text-xs py-1">
+            <div key={`${t}-${i}`} className="flex items-center justify-between text-xs py-1">
               <span className="text-slate-700 font-medium">{t.competidor}</span>
               <span className={`text-[9px] font-bold ${t.sev === 'HIGH' ? 'text-red-600' : 'text-amber-600'}`}>{t.sev}</span>
             </div>
@@ -145,7 +145,7 @@ export function MobileRelationshipMap() {
           <AlertTriangle className="w-3 h-3" /> Gaps
         </h4>
         {MOCK_GAPS.map((g, i) => (
-          <p key={i} className="text-[10px] text-slate-600 py-0.5">• {g}</p>
+          <p key={`${g}-${i}`} className="text-[10px] text-slate-600 py-0.5">• {g}</p>
         ))}
       </div>
     </div>

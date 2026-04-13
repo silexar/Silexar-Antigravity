@@ -58,9 +58,11 @@ ${context.additionalContext ? `
  */
 export function wrapUserInput(raw: string): string {
   const sanitized = raw
+    .replace(/&/g, '&amp;')        // MUST be first
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/&(?!(?:amp|lt|gt|quot|apos);)/g, '&amp;')
+    .replace(/<!\[/g, '&lt;![')    // CDATA
+    .replace(/<\?/g, '&lt;?')      // Processing instructions
   return `<user_input>${sanitized}</user_input>`
 }
 

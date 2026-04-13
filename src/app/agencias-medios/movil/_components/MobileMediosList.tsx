@@ -38,6 +38,7 @@ export const MobileMediosList: React.FC<ListProps> = ({
           </div>
           <input
             type="text"
+            aria-label="Buscar por nombre o código"
             className="block w-full pl-11 pr-4 py-3.5 bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-slate-800 placeholder-slate-400 font-medium transition-all"
             placeholder="Buscar por nombre o código..."
             value={searchTerm}

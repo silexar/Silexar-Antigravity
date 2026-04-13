@@ -170,10 +170,11 @@ spec:
           timeoutSeconds: 3
           failureThreshold: 30
         
-        # Security context
+        # Security context — UID 1001 matches Dockerfile USER silexar (non-root)
         securityContext:
           runAsNonRoot: true
-          runAsUser: 1000
+          runAsUser: 1001
+          runAsGroup: 1001
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           capabilities:
@@ -193,9 +194,11 @@ spec:
       - name: cache
         emptyDir: {}
       
-      # Security
+      # Security — unified UID/GID 1001 across all K8s manifests
       securityContext:
-        fsGroup: 1000
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault

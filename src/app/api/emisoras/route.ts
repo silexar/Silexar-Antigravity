@@ -1,5 +1,5 @@
 /**
- * 🌐 SILEXAR PULSE - API Routes Emisoras
+ * 🌐 SILEXAR PULSE - API Routes Emisoras TIER 0
  * 
  * @description API REST endpoints para el módulo de Emisoras
  * 
@@ -9,10 +9,9 @@
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import { apiSuccess, apiValidationError, apiServerError, getUserContext, apiForbidden} from '@/lib/api/response';
+import { apiSuccess, apiValidationError, apiServerError } from '@/lib/api/response';
 import { logger } from '@/lib/observability';
-import { checkPermission } from '@/lib/security/rbac';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // Zod schema for input validation
@@ -90,74 +89,102 @@ const mockEmisoras = [
   }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search') || '';
-    const ciudad = searchParams.get('ciudad') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '20', 10);
+/**
+ * GET - Listar emisoras
+ * Requiere: emisoras:read
+ */
+export const GET = withApiRoute(
+  { resource: 'emisoras', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const search = searchParams.get('search') || '';
+        const ciudad = searchParams.get('ciudad') || '';
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-    let filtered = [...mockEmisoras];
+        let filtered = [...mockEmisoras];
 
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(e => 
-        e.nombre.toLowerCase().includes(searchLower) ||
-        e.codigo.toLowerCase().includes(searchLower) ||
-        e.frecuencia?.includes(search)
-      );
+        if (search) {
+          const searchLower = search.toLowerCase();
+          filtered = filtered.filter(e => 
+            e.nombre.toLowerCase().includes(searchLower) ||
+            e.codigo.toLowerCase().includes(searchLower) ||
+            e.frecuencia?.includes(search)
+          );
+        }
+
+        if (ciudad) {
+          filtered = filtered.filter(e => e.ciudad?.toLowerCase() === ciudad.toLowerCase());
+        }
+
+        const total = filtered.length;
+        const totalPages = Math.ceil(total / limit);
+        const offset = (page - 1) * limit;
+        const data = filtered.slice(offset, offset + limit);
+
+        return apiSuccess(data, 200, {
+          pagination: { total, page, limit, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
+          consultadoPor: ctx.userId
+        });
+      });
+    } catch (error) {
+      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { 
+        module: 'emisoras',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError(error instanceof Error ? error.message : 'Error al obtener emisoras');
     }
-
-    if (ciudad) {
-      filtered = filtered.filter(e => e.ciudad?.toLowerCase() === ciudad.toLowerCase());
-    }
-
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / limit);
-    const offset = (page - 1) * limit;
-    const data = filtered.slice(offset, offset + limit);
-
-    return apiSuccess(data, 200, {
-      pagination: { total, page, limit, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 }
-    });
-  } catch (error) {
-    logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { module: 'emisoras' });
-    return apiServerError(error instanceof Error ? error.message : 'Error al obtener emisoras');
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
+/**
+ * POST - Crear emisora
+ * Requiere: emisoras:create
+ */
+export const POST = withApiRoute(
+  { resource: 'emisoras', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const body = await req.json();
 
-    // Validate input with Zod
-    const parsed = createEmisoraSchema.safeParse(body);
-    if (!parsed.success) {
-      return apiValidationError(parsed.error.flatten().fieldErrors);
+        // Validate input with Zod
+        const parsed = createEmisoraSchema.safeParse(body);
+        if (!parsed.success) {
+          return apiValidationError(parsed.error.flatten().fieldErrors);
+        }
+
+        const newEmisora = {
+          id: `emi-${Date.now()}`,
+          codigo: `EMI-${(mockEmisoras.length + 1).toString().padStart(3, '0')}`,
+          nombre: parsed.data.nombre,
+          nombreComercial: parsed.data.nombreComercial ?? '',
+          tipoFrecuencia: parsed.data.tipoFrecuencia ?? 'fm',
+          frecuencia: parsed.data.frecuencia ?? '',
+          ciudad: parsed.data.ciudad ?? '',
+          streamUrl: parsed.data.streamUrl ?? '',
+          formatoExportacion: parsed.data.formatoExportacion ?? 'json',
+          estado: 'activa',
+          activa: true,
+          programasCount: 0,
+          fechaCreacion: new Date().toISOString(),
+          creadoPor: ctx.userId
+        };
+
+        mockEmisoras.push(newEmisora as typeof mockEmisoras[0]);
+
+        return apiSuccess(newEmisora, 201, { message: 'Emisora creada exitosamente' });
+      });
+    } catch (error) {
+      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { 
+        module: 'emisoras',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError(error instanceof Error ? error.message : 'Error al crear emisora');
     }
-
-    const newEmisora = {
-      id: `emi-${Date.now()}`,
-      codigo: `EMI-${(mockEmisoras.length + 1).toString().padStart(3, '0')}`,
-      nombre: parsed.data.nombre,
-      nombreComercial: parsed.data.nombreComercial ?? '',
-      tipoFrecuencia: parsed.data.tipoFrecuencia ?? 'fm',
-      frecuencia: parsed.data.frecuencia ?? '',
-      ciudad: parsed.data.ciudad ?? '',
-      streamUrl: parsed.data.streamUrl ?? '',
-      formatoExportacion: parsed.data.formatoExportacion ?? 'json',
-      estado: 'activa',
-      activa: true,
-      programasCount: 0,
-      fechaCreacion: new Date().toISOString()
-    };
-
-    mockEmisoras.push(newEmisora as typeof mockEmisoras[0]);
-
-    return apiSuccess(newEmisora, 201, { message: 'Emisora creada exitosamente' });
-  } catch (error) {
-    logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { module: 'emisoras' });
-    return apiServerError(error instanceof Error ? error.message : 'Error al crear emisora');
   }
-}
+);

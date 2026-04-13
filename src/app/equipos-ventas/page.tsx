@@ -11,24 +11,40 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { DashboardEjecutivo } from './components/DashboardEjecutivo';
-import { DashboardManager } from './components/DashboardManager';
-import { DashboardVP } from './components/DashboardVP';
-import { WizardCrearEquipo } from './components/WizardCrearEquipo';
-import { MobileSalesCommand } from './components/MobileSalesCommand';
-import { NotificationsCenter } from './components/NotificationsCenter';
-import { CommandPalette } from './components/CommandPalette';
-import { DealRoom } from './components/DealRoom';
-import { SmartMessaging } from './components/SmartMessaging';
-import { DealUrgencyBoard } from './components/DealUrgencyBoard';
-import { MeetingPrepAI } from './components/MeetingPrepAI';
-import { ActivityHeatmap } from './components/ActivityHeatmap';
-import { ObjectionHandler } from './components/ObjectionHandler';
-import { KAMDashboard } from './components/KAMDashboard';
-import { RelationshipMapPanel } from './components/RelationshipMapPanel';
-import { AccountHealthPanel } from './components/AccountHealthPanel';
-import { SuccessionFlightRiskPanel } from './components/SuccessionFlightRiskPanel';
+import dynamic from 'next/dynamic';
 import { useDarkMode } from './hooks/useDarkMode';
+
+// Safe dynamic import helper using Map to prevent object injection
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const lazyPanel = (loader: () => Promise<Record<string, React.ComponentType<any>>>, name: string): React.ComponentType<any> =>
+  dynamic(() => loader().then((m) => {
+    // Safe property access using Object.entries
+    const entries = Object.entries(m);
+    const found = entries.find(([key]) => key === name);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return { default: found ? (found[1] as React.ComponentType<any>) : (() => null) };
+  }), {
+    loading: () => <div className="h-48 animate-pulse bg-[#E8E5E0] rounded-2xl" />,
+    ssr: false,
+  });
+
+const DashboardEjecutivo = lazyPanel(() => import('./components/DashboardEjecutivo'), 'DashboardEjecutivo');
+const DashboardManager = lazyPanel(() => import('./components/DashboardManager'), 'DashboardManager');
+const DashboardVP = lazyPanel(() => import('./components/DashboardVP'), 'DashboardVP');
+const WizardCrearEquipo = lazyPanel(() => import('./components/WizardCrearEquipo'), 'WizardCrearEquipo');
+const MobileSalesCommand = lazyPanel(() => import('./components/MobileSalesCommand'), 'MobileSalesCommand');
+const NotificationsCenter = lazyPanel(() => import('./components/NotificationsCenter'), 'NotificationsCenter');
+const CommandPalette = lazyPanel(() => import('./components/CommandPalette'), 'CommandPalette');
+const DealRoom = lazyPanel(() => import('./components/DealRoom'), 'DealRoom');
+const SmartMessaging = lazyPanel(() => import('./components/SmartMessaging'), 'SmartMessaging');
+const DealUrgencyBoard = lazyPanel(() => import('./components/DealUrgencyBoard'), 'DealUrgencyBoard');
+const MeetingPrepAI = lazyPanel(() => import('./components/MeetingPrepAI'), 'MeetingPrepAI');
+const ActivityHeatmap = lazyPanel(() => import('./components/ActivityHeatmap'), 'ActivityHeatmap');
+const ObjectionHandler = lazyPanel(() => import('./components/ObjectionHandler'), 'ObjectionHandler');
+const KAMDashboard = lazyPanel(() => import('./components/KAMDashboard'), 'KAMDashboard');
+const RelationshipMapPanel = lazyPanel(() => import('./components/RelationshipMapPanel'), 'RelationshipMapPanel');
+const AccountHealthPanel = lazyPanel(() => import('./components/AccountHealthPanel'), 'AccountHealthPanel');
+const SuccessionFlightRiskPanel = lazyPanel(() => import('./components/SuccessionFlightRiskPanel'), 'SuccessionFlightRiskPanel');
 import {
   Shield, Plus, Smartphone, X, Lock, Clock, AlertTriangle,
   Fingerprint, Search, Moon, Sun
@@ -89,7 +105,7 @@ export default function SalesPage() {
 
   return (
     <div className={isDark ? 'dark' : ''}>
-      <div className={`min-h-screen p-8 pb-24 transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-200' : 'bg-gradient-to-br from-slate-100 via-white to-slate-50 text-slate-900 bg-fixed'}`}>
+      <div className={`min-h-screen p-8 pb-24 transition-colors duration-300 ${isDark ? 'bg-[#F0EDE8] text-slate-200' : 'bg-gradient-to-br from-slate-100 via-white to-slate-50 text-slate-900 bg-fixed'}`}>
         <div className="max-w-7xl mx-auto space-y-6">
 
           {/* ──── SESSION TIMEOUT WARNING ──── */}
@@ -256,7 +272,7 @@ export default function SalesPage() {
         <CommandPalette
           isOpen={showCommandPalette}
           onClose={() => setShowCommandPalette(false)}
-          onSelect={(item) => {
+          onSelect={(item: { id: string; [k: string]: unknown }) => {
             // Mitigando leak de informacion en command palette
             // In production: navigate to section/deal/contact
             if (item.id === 'act-dark-mode') toggleDark();

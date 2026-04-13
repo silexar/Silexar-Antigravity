@@ -42,7 +42,9 @@ export function SmartMessaging() {
     fetch('/api/equipos-ventas/deals?tipo=templates')
       .then(r => r.json())
       .then(d => { if (d.success) setTemplates(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[SmartMessaging] Failed to load templates:', error);
+      });
   }, []);
 
   const filtered = catFilter ? templates.filter(t => t.categoria === catFilter) : templates;

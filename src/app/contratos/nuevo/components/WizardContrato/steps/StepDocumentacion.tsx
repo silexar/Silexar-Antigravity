@@ -85,9 +85,9 @@ const DocumentoCard: React.FC<{
         <div className="mb-4">
           <p className="text-xs text-slate-500 mb-2">Firmantes:</p>
           <div className="flex flex-wrap gap-2">
-            {documento.firmantes.map((firmante, idx) => (
+            {documento.firmantes.map((firmante) => (
               <div
-                key={idx}
+                key={firmante.nombre}
                 className={`
                   flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
                   ${firmante.estado === 'firmado' ? 'bg-emerald-50 text-emerald-700' : 
@@ -185,8 +185,8 @@ const ContratoPreview: React.FC<{
         <div>
           <p className="text-slate-400 text-xs mb-2">ESPECIFICACIONES ({state.lineasEspecificacion.length})</p>
           <div className="space-y-1">
-            {state.lineasEspecificacion.slice(0, 3).map((linea, idx) => (
-              <div key={idx} className="flex justify-between text-xs bg-white p-2 rounded">
+            {state.lineasEspecificacion.slice(0, 3).map((linea) => (
+              <div key={linea.medioNombre} className="flex justify-between text-xs bg-white p-2 rounded">
                 <span>{linea.medioNombre}</span>
                 <span className="font-semibold">{formatCurrency(linea.totalNeto)}</span>
               </div>

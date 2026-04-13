@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { 
   Plus, Copy, Download, Upload, Save, RefreshCw, Settings, 

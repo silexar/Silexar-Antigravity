@@ -42,8 +42,7 @@ export const usePredictiveAlerting = (): UsePredictiveAlertingResult => {
     }, []);
 
     const acknowledge = useCallback(async (alertId: string) => {
-        console.log('Acknowledging alert:', alertId);
-    }, []);
+        }, []);
 
     const dismiss = useCallback(async (alertId: string) => {
         setAlerts(prev => prev.filter(a => a.id !== alertId));

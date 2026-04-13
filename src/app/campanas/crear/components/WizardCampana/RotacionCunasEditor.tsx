@@ -364,6 +364,7 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
                   <Label className="text-xs">Desde</Label>
                   <Input
                     type="date"
+                    aria-label="Fecha desde"
                     value={cuna.fechaInicio || ''}
                     onChange={(e) => actualizarFecha(cuna.cunaId, 'fechaInicio', e.target.value)}
                     className="h-8"
@@ -373,6 +374,7 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
                   <Label className="text-xs">Hasta</Label>
                   <Input
                     type="date"
+                    aria-label="Fecha hasta"
                     value={cuna.fechaFin || ''}
                     onChange={(e) => actualizarFecha(cuna.cunaId, 'fechaFin', e.target.value)}
                     className="h-8"

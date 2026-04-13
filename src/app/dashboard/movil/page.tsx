@@ -76,7 +76,7 @@ function StatusDot({ status }: { status: string }) {
 }
 
 function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse bg-slate-700/50 rounded-xl ${className}`} />
+  return <div className={`animate-pulse bg-[#D4D1CC]/50 rounded-xl ${className}`} />
 }
 
 // ---- Main Component --------------------------------------------------------
@@ -166,15 +166,15 @@ export default function MobileDashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Sticky Header with Blur */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/70 border-b border-slate-700/50 px-4 py-3 safe-area-inset-top">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#F0EDE8]/70 border-b border-[#D4D1CC]/50 px-4 py-3 safe-area-inset-top">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-orange-500/10">
               <Zap className="w-5 h-5 text-orange-400" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-white leading-tight">Dashboard</h1>
-              <p className="text-xs text-slate-500 leading-tight">
+              <h1 className="text-base font-bold text-[#2C2C2A] leading-tight">Dashboard</h1>
+              <p className="text-xs text-[#888780] leading-tight">
                 {user ? `${user.name || user.email}` : 'Silexar Pulse'}
               </p>
             </div>
@@ -187,7 +187,7 @@ export default function MobileDashboardPage() {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="p-2 bg-slate-800/80 border border-slate-700/50 rounded-xl text-slate-400 active:scale-95 transition-transform disabled:opacity-50"
+              className="p-2 bg-[#E8E5E0]/80 border border-[#D4D1CC]/50 rounded-xl text-[#888780] active:scale-95 transition-transform disabled:opacity-50"
               aria-label="Actualizar"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -209,8 +209,8 @@ export default function MobileDashboardPage() {
             className="flex items-center justify-between w-full"
           >
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-slate-400" />
-              <span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+              <Activity className="w-4 h-4 text-[#888780]" />
+              <span className="text-sm font-semibold text-[#5F5E5A] uppercase tracking-wider">
                 Sistema
               </span>
             </div>
@@ -227,7 +227,7 @@ export default function MobileDashboardPage() {
                 </span>
               )}
               <ChevronDown
-                className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                className={`w-4 h-4 text-[#888780] transition-transform duration-200 ${
                   systemExpanded ? 'rotate-180' : ''
                 }`}
               />
@@ -245,14 +245,14 @@ export default function MobileDashboardPage() {
                 <>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.entries(health.checks).map(([key, check]) => (
-                      <div key={key} className="p-2.5 bg-slate-700/30 rounded-lg">
+                      <div key={key} className="p-2.5 bg-[#D4D1CC]/30 rounded-lg">
                         <div className="flex items-center gap-1.5 mb-1">
-                          {key === 'database' && <Database className="w-3 h-3 text-slate-400" />}
-                          {key === 'environment' && <Shield className="w-3 h-3 text-slate-400" />}
+                          {key === 'database' && <Database className="w-3 h-3 text-[#888780]" />}
+                          {key === 'environment' && <Shield className="w-3 h-3 text-[#888780]" />}
                           {!['database', 'environment'].includes(key) && (
-                            <Activity className="w-3 h-3 text-slate-400" />
+                            <Activity className="w-3 h-3 text-[#888780]" />
                           )}
-                          <span className="text-xs text-slate-400 capitalize">{key}</span>
+                          <span className="text-xs text-[#888780] capitalize">{key}</span>
                         </div>
                         <StatusDot status={check.status} />
                         {check.latencyMs !== undefined && (
@@ -269,14 +269,14 @@ export default function MobileDashboardPage() {
                       <AlertTriangle className="w-3.5 h-3.5 text-yellow-400 shrink-0 mt-0.5" />
                       <p className="text-yellow-400 text-xs leading-relaxed">
                         Base de datos no conectada. Configura{' '}
-                        <code className="bg-slate-700 px-1 rounded text-yellow-300">DATABASE_URL</code>{' '}
-                        en <code className="bg-slate-700 px-1 rounded text-yellow-300">.env.local</code>.
+                        <code className="bg-[#D4D1CC] px-1 rounded text-yellow-300">DATABASE_URL</code>{' '}
+                        en <code className="bg-[#D4D1CC] px-1 rounded text-yellow-300">.env.local</code>.
                       </p>
                     </div>
                   )}
                 </>
               ) : (
-                <p className="text-slate-500 text-xs text-center py-3">
+                <p className="text-[#888780] text-xs text-center py-3">
                   No se pudo obtener el estado del sistema
                 </p>
               )}
@@ -286,7 +286,7 @@ export default function MobileDashboardPage() {
 
         {/* Metric Cards - Stacked */}
         <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-1">
+          <h2 className="text-xs font-semibold text-[#888780] uppercase tracking-wider px-1">
             Modulos
           </h2>
 
@@ -312,10 +312,10 @@ export default function MobileDashboardPage() {
                         <Icon className={`w-5 h-5 text-${item.color}-400`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-400">{item.label}</p>
-                        <p className="text-xl font-bold text-white">{item.value}</p>
+                        <p className="text-xs text-[#888780]">{item.label}</p>
+                        <p className="text-xl font-bold text-[#2C2C2A]">{item.value}</p>
                         {item.sub && (
-                          <p className="text-xs text-slate-500 mt-0.5">{item.sub}</p>
+                          <p className="text-xs text-[#888780] mt-0.5">{item.sub}</p>
                         )}
                       </div>
                       <ArrowUpRight className="w-4 h-4 text-slate-600 shrink-0" />
@@ -327,7 +327,7 @@ export default function MobileDashboardPage() {
 
         {/* Quick Links */}
         <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-1">
+          <h2 className="text-xs font-semibold text-[#888780] uppercase tracking-wider px-1">
             Accesos Rapidos
           </h2>
 
@@ -342,12 +342,12 @@ export default function MobileDashboardPage() {
               aria-label={label}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-slate-700/50 shrink-0">
-                  <Icon className="w-4 h-4 text-slate-300" />
+                <div className="p-2 rounded-lg bg-[#D4D1CC]/50 shrink-0">
+                  <Icon className="w-4 h-4 text-[#5F5E5A]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white">{label}</p>
-                  <p className="text-xs text-slate-500">{desc}</p>
+                  <p className="text-sm font-medium text-[#2C2C2A]">{label}</p>
+                  <p className="text-xs text-[#888780]">{desc}</p>
                 </div>
                 <ArrowUpRight className="w-4 h-4 text-slate-600 shrink-0" />
               </div>

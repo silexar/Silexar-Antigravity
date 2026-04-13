@@ -90,7 +90,7 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
         setAnalysis(data.data);
       }
     } catch (error) {
-      /* console.error('Error analyzing validity:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -167,8 +167,9 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
                   value={fechaInicio}
                   onChange={(e) => onChange('fechaInicioVigencia', e.target.value)}
                   disabled={disabled}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white 
-                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
+                  aria-label="Fecha de inicio"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white
+                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
                     disabled:bg-slate-100 disabled:cursor-not-allowed transition-all"
                 />
               </div>
@@ -179,8 +180,9 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
                   value={horaInicio}
                   onChange={(e) => onChange('horaInicioVigencia', e.target.value)}
                   disabled={disabled}
-                  className="w-full pl-10 pr-2 py-2.5 rounded-lg border border-slate-200 bg-white 
-                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
+                  aria-label="Hora de inicio"
+                  className="w-full pl-10 pr-2 py-2.5 rounded-lg border border-slate-200 bg-white
+                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
                     disabled:bg-slate-100 transition-all"
                 />
               </div>
@@ -210,8 +212,9 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
                   onChange={(e) => onChange('fechaFinVigencia', e.target.value)}
                   disabled={disabled}
                   min={fechaInicio}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white 
-                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
+                  aria-label="Fecha de término"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white
+                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
                     disabled:bg-slate-100 transition-all"
                 />
               </div>
@@ -222,8 +225,9 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
                   value={horaFin}
                   onChange={(e) => onChange('horaFinVigencia', e.target.value)}
                   disabled={disabled}
-                  className="w-full pl-10 pr-2 py-2.5 rounded-lg border border-slate-200 bg-white 
-                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
+                  aria-label="Hora de término"
+                  className="w-full pl-10 pr-2 py-2.5 rounded-lg border border-slate-200 bg-white
+                    focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
                     disabled:bg-slate-100 transition-all"
                 />
               </div>

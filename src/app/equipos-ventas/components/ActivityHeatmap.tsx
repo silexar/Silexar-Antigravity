@@ -30,7 +30,9 @@ export function ActivityHeatmap() {
     fetch('/api/equipos-ventas/deals?tipo=activity-log')
       .then(r => r.json())
       .then(d => { if (d.success) setLogs(d.data); })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('[ActivityHeatmap] Failed to load activity log:', error);
+      });
   }, []);
 
   const maxTotal = Math.max(...logs.map(l => l.total), 1);
@@ -49,6 +51,18 @@ export function ActivityHeatmap() {
     vie: Math.floor(Math.random() * 8),
   }));
   const maxHour = Math.max(...hoursData.flatMap(h => [h.lun, h.mar, h.mie, h.jue, h.vie]), 1);
+
+  // Safe getter to prevent object injection
+  const getHourValue = (data: typeof hoursData[0], dia: 'lun' | 'mar' | 'mie' | 'jue' | 'vie'): number => {
+    switch (dia) {
+      case 'lun': return data.lun;
+      case 'mar': return data.mar;
+      case 'mie': return data.mie;
+      case 'jue': return data.jue;
+      case 'vie': return data.vie;
+      default: return 0;
+    }
+  };
 
   const getIntensity = (val: number, max: number) => {
     const pct = val / max;
@@ -99,7 +113,7 @@ export function ActivityHeatmap() {
           <p className="text-xs font-bold text-slate-400 mb-2">Actividad Diaria</p>
           <div className="flex gap-1 flex-wrap">
             {logs.map((l, i) => (
-              <div key={i} className={`w-8 h-8 rounded-md ${getIntensity(l.total, maxTotal)} relative group cursor-pointer transition hover:scale-110`}>
+              <div key={`${l}-${i}`} className={`w-8 h-8 rounded-md ${getIntensity(l.total, maxTotal)} relative group cursor-pointer transition hover:scale-110`}>
                 <div className="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-1 p-2 bg-slate-800 text-white text-[9px] rounded-lg whitespace-nowrap z-10">
                   <p className="font-bold">{l.fecha}</p>
                   <p>📞 {l.llamadas} · ✉️ {l.emails} · 📅 {l.reuniones} · 💼 {l.deals}</p>
@@ -132,11 +146,11 @@ export function ActivityHeatmap() {
               </thead>
               <tbody>
                 {hoursData.map((h, i) => (
-                  <tr key={i}>
-                    <td className="text-slate-400 font-bold pr-1">{HORAS_LABEL[i]}</td>
-                    {['lun', 'mar', 'mie', 'jue', 'vie'].map(dia => (
+                  <tr key={`${h}-${i}`}>
+                    <td className="text-slate-400 font-bold pr-1">{HORAS_LABEL.at(i) ?? ''}</td>
+                    {(['lun', 'mar', 'mie', 'jue', 'vie'] as const).map(dia => (
                       <td key={dia} className="p-0.5">
-                        <div className={`w-full h-5 rounded ${getIntensity(h[dia as keyof typeof h] as number, maxHour)}`} />
+                        <div className={`w-full h-5 rounded ${getIntensity(getHourValue(h, dia), maxHour)}`} />
                       </td>
                     ))}
                   </tr>

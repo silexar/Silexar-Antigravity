@@ -524,8 +524,8 @@ export function TicketInbox() {
       case 'in_progress': return 'bg-yellow-500/20 text-yellow-400'
       case 'waiting_response': return 'bg-purple-500/20 text-purple-400'
       case 'resolved': return 'bg-green-500/20 text-green-400'
-      case 'closed': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'closed': return 'bg-slate-500/20 text-[#888780]'
+      default: return 'bg-slate-500/20 text-[#888780]'
     }
   }
 
@@ -535,7 +535,7 @@ export function TicketInbox() {
       case 'high': return 'bg-orange-500/20 text-orange-400'
       case 'medium': return 'bg-yellow-500/20 text-yellow-400'
       case 'low': return 'bg-green-500/20 text-green-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      default: return 'bg-slate-500/20 text-[#888780]'
     }
   }
 
@@ -565,7 +565,7 @@ export function TicketInbox() {
   const getSenderBadge = (sender: string) => {
     switch (sender) {
       case 'ai': return <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded ml-1">AI</span>
-      case 'system': return <span className="text-xs px-1.5 py-0.5 bg-slate-500/20 text-slate-400 rounded ml-1">SYS</span>
+      case 'system': return <span className="text-xs px-1.5 py-0.5 bg-slate-500/20 text-[#888780] rounded ml-1">SYS</span>
       default: return null
     }
   }
@@ -574,7 +574,7 @@ export function TicketInbox() {
     if (status === 'closed' || status === 'resolved') return null
     if (days >= 7) return { text: `⚠️ ${days}d`, style: 'text-red-400 font-medium' }
     if (days >= 3) return { text: `${days}d`, style: 'text-yellow-400' }
-    return { text: `${days}d`, style: 'text-slate-400' }
+    return { text: `${days}d`, style: 'text-[#888780]' }
   }
 
   const getAgentStatus = (status: string) => {
@@ -611,7 +611,7 @@ export function TicketInbox() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Ticket Inbox...</p>
+          <p className="text-[#888780]">Cargando Ticket Inbox...</p>
         </div>
       </div>
     )
@@ -621,7 +621,7 @@ export function TicketInbox() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+        <h3 className="text-lg font-bold text-[#2C2C2A] flex items-center gap-2">
           <Inbox className="w-5 h-5 text-orange-400" />
           Ticket Inbox
           {criticalCount > 0 && (
@@ -644,54 +644,54 @@ export function TicketInbox() {
 
       {/* Stats */}
       <div className="grid grid-cols-7 gap-2">
-        <div className="p-2 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-xl font-bold text-white">{tickets.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-2 bg-[#E8E5E0]/50 rounded-lg text-center">
+          <p className="text-xl font-bold text-[#2C2C2A]">{tickets.length}</p>
+          <p className="text-xs text-[#888780]">Total</p>
         </div>
         <div className="p-2 bg-blue-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('open')}>
           <p className="text-xl font-bold text-blue-400">{openCount}</p>
-          <p className="text-xs text-slate-400">Abiertos</p>
+          <p className="text-xs text-[#888780]">Abiertos</p>
         </div>
         <div className="p-2 bg-red-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('critical')}>
           <p className="text-xl font-bold text-red-400">{criticalCount}</p>
-          <p className="text-xs text-slate-400">Críticos</p>
+          <p className="text-xs text-[#888780]">Críticos</p>
         </div>
         <div className={`p-2 rounded-lg text-center cursor-pointer ${breachedCount > 0 ? 'bg-red-500/10' : 'bg-green-500/10'}`} onClick={() => setFilter('sla_breach')}>
           <p className={`text-xl font-bold ${breachedCount > 0 ? 'text-red-400' : 'text-green-400'}`}>{breachedCount}</p>
-          <p className="text-xs text-slate-400">SLA!</p>
+          <p className="text-xs text-[#888780]">SLA!</p>
         </div>
         <div className="p-2 bg-orange-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('auto')}>
           <p className="text-xl font-bold text-orange-400">{autoCount}</p>
-          <p className="text-xs text-slate-400">Auto</p>
+          <p className="text-xs text-[#888780]">Auto</p>
         </div>
         <div className="p-2 bg-green-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('chat')}>
           <p className="text-xl font-bold text-green-400">{chatActiveCount}</p>
-          <p className="text-xs text-slate-400">Chat</p>
+          <p className="text-xs text-[#888780]">Chat</p>
         </div>
         <div className="p-2 bg-purple-500/10 rounded-lg text-center">
           <p className="text-xl font-bold text-purple-400">{avgResponse.toFixed(1)}h</p>
-          <p className="text-xs text-slate-400">Resp</p>
+          <p className="text-xs text-[#888780]">Resp</p>
         </div>
       </div>
 
       {/* Search and Filter */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888780]" />
           <input
             type="text"
             placeholder="Buscar por ticket, cliente o asunto..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+            className="w-full pl-10 pr-3 py-2 bg-[#E8E5E0] border border-[#D4D1CC] rounded text-[#2C2C2A]"
           />
         </div>
-        <div className="flex bg-slate-800 rounded-lg p-0.5">
+        <div className="flex bg-[#E8E5E0] rounded-lg p-0.5">
           {(['all', 'open', 'critical', 'auto', 'chat'] as const).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-2 py-1 text-xs rounded ${filter === f ? 'bg-orange-500 text-white' : 'text-slate-400'}`}
+              className={`px-2 py-1 text-xs rounded ${filter === f ? 'bg-orange-500 text-[#2C2C2A]' : 'text-[#888780]'}`}
             >
               {f === 'all' ? 'Todos' : f === 'open' ? 'Abiertos' : f === 'critical' ? 'Críticos' : f === 'auto' ? 'Auto' : 'Chat'}
             </button>
@@ -702,7 +702,7 @@ export function TicketInbox() {
       <div className="grid grid-cols-2 gap-4">
         {/* Tickets List */}
         <NeuromorphicCard variant="embossed" className="p-4 max-h-[500px] overflow-y-auto">
-          <h4 className="text-white font-medium mb-3">Tickets ({filteredTickets.length})</h4>
+          <h4 className="text-[#2C2C2A] font-medium mb-3">Tickets ({filteredTickets.length})</h4>
           <div className="space-y-2">
             {filteredTickets.map(ticket => {
               const daysWarning = getDaysWarning(ticket.daysOpen, ticket.status)
@@ -712,8 +712,8 @@ export function TicketInbox() {
                   onClick={() => setSelectedTicket(ticket)}
                   className={`p-3 rounded-lg cursor-pointer transition-colors ${
                     selectedTicket?.id === ticket.id 
-                      ? 'bg-slate-800 border border-orange-500/50' 
-                      : 'bg-slate-800/50 hover:bg-slate-800'
+                      ? 'bg-[#E8E5E0] border border-orange-500/50' 
+                      : 'bg-[#E8E5E0]/50 hover:bg-[#E8E5E0]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -734,11 +734,11 @@ export function TicketInbox() {
                     </div>
                     <span className="text-xs text-orange-400 font-mono">{ticket.ticketNumber.slice(-10)}</span>
                   </div>
-                  <p className="text-white text-sm font-medium mb-1 line-clamp-1">{ticket.subject}</p>
+                  <p className="text-[#2C2C2A] text-sm font-medium mb-1 line-clamp-1">{ticket.subject}</p>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-blue-400">{ticket.tenantName}</span>
                     <div className="flex items-center gap-2">
-                      {ticket.assignedTo && <span className="text-slate-400">👤 {ticket.assignedTo.split(' ')[0]}</span>}
+                      {ticket.assignedTo && <span className="text-[#888780]">👤 {ticket.assignedTo.split(' ')[0]}</span>}
                       {daysWarning && <span className={daysWarning.style}>{daysWarning.text}</span>}
                     </div>
                   </div>
@@ -753,12 +753,12 @@ export function TicketInbox() {
           {selectedTicket ? (
             <>
               {/* Header */}
-              <div className="border-b border-slate-700 pb-3 mb-3">
+              <div className="border-b border-[#D4D1CC] pb-3 mb-3">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-mono text-orange-400">{selectedTicket.ticketNumber}</span>
-                    <button onClick={() => copyTicketNumber(selectedTicket.ticketNumber)} className="p-1 hover:bg-slate-700 rounded">
-                      <Copy className="w-3 h-3 text-slate-400" />
+                    <button onClick={() => copyTicketNumber(selectedTicket.ticketNumber)} className="p-1 hover:bg-[#D4D1CC] rounded">
+                      <Copy className="w-3 h-3 text-[#888780]" />
                     </button>
                   </div>
                   <div className="flex items-center gap-1">
@@ -768,7 +768,7 @@ export function TicketInbox() {
                           <Wifi className="w-3 h-3" />Conectado
                         </button>
                       ) : (
-                        <button onClick={() => connectToChat(selectedTicket.id)} className="flex items-center gap-1 px-2 py-1 bg-slate-700 text-slate-400 rounded text-xs hover:bg-green-500/20 hover:text-green-400">
+                        <button onClick={() => connectToChat(selectedTicket.id)} className="flex items-center gap-1 px-2 py-1 bg-[#D4D1CC] text-[#888780] rounded text-xs hover:bg-green-500/20 hover:text-green-400">
                           <WifiOff className="w-3 h-3" />Conectar
                         </button>
                       )
@@ -777,8 +777,8 @@ export function TicketInbox() {
                     <span className={`text-xs px-2 py-0.5 rounded ${getPriorityStyle(selectedTicket.priority)}`}>{selectedTicket.priority}</span>
                   </div>
                 </div>
-                <h4 className="text-white font-medium mb-1">{selectedTicket.subject}</h4>
-                <div className="flex flex-wrap gap-2 text-xs text-slate-400">
+                <h4 className="text-[#2C2C2A] font-medium mb-1">{selectedTicket.subject}</h4>
+                <div className="flex flex-wrap gap-2 text-xs text-[#888780]">
                   <span className="text-blue-400">🏢 {selectedTicket.tenantName}</span>
                   <span><Calendar className="w-3 h-3 inline" /> {selectedTicket.createdAt.toLocaleDateString()}</span>
                   <span><Clock className="w-3 h-3 inline" /> {selectedTicket.daysOpen}d</span>
@@ -794,18 +794,18 @@ export function TicketInbox() {
                       <UserPlus className="w-4 h-4 mr-1" />Asignar
                     </NeuromorphicButton>
                     {showAgentPanel && (
-                      <div className="absolute top-full left-0 mt-1 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10 p-2">
+                      <div className="absolute top-full left-0 mt-1 w-48 bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg shadow-xl z-10 p-2">
                         {agents.filter(a => a.status !== 'offline').map(agent => (
                           <button
                             key={agent.id}
                             onClick={() => assignTicket(selectedTicket.id, agent)}
-                            className="w-full p-2 flex items-center justify-between hover:bg-slate-700 rounded text-sm"
+                            className="w-full p-2 flex items-center justify-between hover:bg-[#D4D1CC] rounded text-sm"
                           >
                             <div className="flex items-center gap-2">
                               <div className={`w-2 h-2 rounded-full ${getAgentStatus(agent.status)}`} />
-                              <span className="text-white">{agent.name}</span>
+                              <span className="text-[#2C2C2A]">{agent.name}</span>
                             </div>
-                            <span className="text-xs text-slate-400">{agent.activeTickets}</span>
+                            <span className="text-xs text-[#888780]">{agent.activeTickets}</span>
                           </button>
                         ))}
                       </div>
@@ -836,8 +836,8 @@ export function TicketInbox() {
 
               {/* System Info */}
               {selectedTicket.systemInfo && (
-                <div className="p-2 bg-slate-900/50 rounded text-xs mb-3">
-                  <div className="grid grid-cols-2 gap-1 text-slate-400">
+                <div className="p-2 bg-[#F0EDE8]/50 rounded text-xs mb-3">
+                  <div className="grid grid-cols-2 gap-1 text-[#888780]">
                     <span><Globe className="w-3 h-3 inline" /> {selectedTicket.systemInfo.browser}</span>
                     <span><Monitor className="w-3 h-3 inline" /> {selectedTicket.systemInfo.os}</span>
                   </div>
@@ -857,18 +857,18 @@ export function TicketInbox() {
                       <span className={`text-xs font-medium ${
                         msg.sender === 'ai' ? 'text-purple-400' :
                         msg.sender === 'support' ? 'text-orange-400' :
-                        msg.sender === 'system' ? 'text-slate-400' : 'text-blue-400'
+                        msg.sender === 'system' ? 'text-[#888780]' : 'text-blue-400'
                       }`}>
                         {msg.senderName}
                         {getSenderBadge(msg.sender)}
                       </span>
-                      <span className="text-xs text-slate-500">{msg.timestamp.toLocaleTimeString()}</span>
+                      <span className="text-xs text-[#888780]">{msg.timestamp.toLocaleTimeString()}</span>
                     </div>
-                    <div className="text-white text-sm whitespace-pre-wrap">{msg.content}</div>
+                    <div className="text-[#2C2C2A] text-sm whitespace-pre-wrap">{msg.content}</div>
                     {msg.attachments && msg.attachments.length > 0 && (
                       <div className="flex gap-1 mt-1">
                         {msg.attachments.map(att => (
-                          <span key={att.id} className="text-xs text-slate-400 flex items-center gap-1">
+                          <span key={att.id} className="text-xs text-[#888780] flex items-center gap-1">
                             <Paperclip className="w-3 h-3" />{att.name}
                           </span>
                         ))}
@@ -881,7 +881,7 @@ export function TicketInbox() {
 
               {/* Reply */}
               {selectedTicket.status !== 'closed' && (
-                <div className="space-y-2 pt-2 border-t border-slate-700">
+                <div className="space-y-2 pt-2 border-t border-[#D4D1CC]">
                   {/* Quick Responses */}
                   <div className="relative">
                     <button 
@@ -892,11 +892,11 @@ export function TicketInbox() {
                       Respuestas Rápidas
                     </button>
                     {showQuickResponses && (
-                      <div className="absolute bottom-full left-0 mb-1 w-full bg-slate-800 border border-slate-700 rounded-lg p-2 shadow-xl z-10">
+                      <div className="absolute bottom-full left-0 mb-1 w-full bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg p-2 shadow-xl z-10">
                         <div className="grid grid-cols-3 gap-1">
                           {aiQuickResponses.map((r, i) => (
                             <button
-                              key={i}
+                              key={r.label}
                               onClick={() => handleQuickResponse(r.text)}
                               className="px-2 py-1 text-xs bg-purple-500/10 text-purple-300 rounded hover:bg-purple-500/20"
                             >
@@ -916,10 +916,10 @@ export function TicketInbox() {
                       value={newReply}
                       onChange={(e) => setNewReply(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && sendReply()}
-                      className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+                      className="flex-1 px-3 py-2 bg-[#E8E5E0] border border-[#D4D1CC] rounded text-[#2C2C2A]"
                     />
-                    <button onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-slate-700 rounded">
-                      <Paperclip className="w-4 h-4 text-slate-400" />
+                    <button onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-[#D4D1CC] rounded">
+                      <Paperclip className="w-4 h-4 text-[#888780]" />
                     </button>
                     <NeuromorphicButton variant="primary" size="sm" onClick={() => sendReply()}>
                       <Send className="w-4 h-4" />
@@ -928,8 +928,8 @@ export function TicketInbox() {
                   {pendingAttachments.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {pendingAttachments.map(att => (
-                        <div key={att.id} className="flex items-center gap-1 px-2 py-0.5 bg-slate-800 rounded text-xs">
-                          <span className="text-white">{att.name}</span>
+                        <div key={att.id} className="flex items-center gap-1 px-2 py-0.5 bg-[#E8E5E0] rounded text-xs">
+                          <span className="text-[#2C2C2A]">{att.name}</span>
                           <button onClick={() => setPendingAttachments(prev => prev.filter(a => a.id !== att.id))}>
                             <XCircle className="w-3 h-3 text-red-400" />
                           </button>
@@ -941,7 +941,7 @@ export function TicketInbox() {
               )}
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
+            <div className="flex-1 flex flex-col items-center justify-center text-[#888780]">
               <Inbox className="w-12 h-12 mb-2" />
               <p>Selecciona un ticket</p>
             </div>
@@ -951,20 +951,20 @@ export function TicketInbox() {
 
       {/* Agents Panel */}
       <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+        <h4 className="text-[#2C2C2A] font-medium mb-3 flex items-center gap-2">
           <Users className="w-4 h-4 text-blue-400" />
           Equipo de Soporte
         </h4>
         <div className="grid grid-cols-4 gap-3">
           {agents.map(agent => (
-            <div key={agent.id} className="p-3 bg-slate-800/50 rounded-lg">
+            <div key={agent.id} className="p-3 bg-[#E8E5E0]/50 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${getAgentStatus(agent.status)}`} />
-                  <span className="text-white font-medium text-sm">{agent.name}</span>
+                  <span className="text-[#2C2C2A] font-medium text-sm">{agent.name}</span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-1 text-xs text-slate-400">
+              <div className="grid grid-cols-2 gap-1 text-xs text-[#888780]">
                 <span>Activos: {agent.activeTickets}</span>
                 <span>Hoy: {agent.resolvedToday}</span>
               </div>

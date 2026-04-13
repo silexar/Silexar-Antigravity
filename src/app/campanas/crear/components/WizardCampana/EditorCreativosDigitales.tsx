@@ -42,6 +42,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import type { FormatoBanner } from './types/CampanaHibrida.types';
+import Image from 'next/image';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -88,18 +89,24 @@ const FORMATOS_BANNER: { id: FormatoBanner; label: string; desc: string }[] = [
   { id: '970x250', label: '970×250', desc: 'Billboard' }
 ];
 
-const FORMATOS_ACEPTADOS: Record<TipoCreativo, string[]> = {
-  banner: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'html', 'zip'],
-  audio: ['mp3', 'aac', 'wav', 'ogg'],
-  video: ['mp4', 'webm', 'mov'],
-  html5: ['html', 'zip']
+const FORMATOS_ACEPTADOS = (tipo: TipoCreativo): string[] => {
+  switch (tipo) {
+    case 'banner': return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'html', 'zip'];
+    case 'audio': return ['mp3', 'aac', 'wav', 'ogg'];
+    case 'video': return ['mp4', 'webm', 'mov'];
+    case 'html5': return ['html', 'zip'];
+    default: return [];
+  }
 };
 
-const MIME_TYPES: Record<TipoCreativo, string> = {
-  banner: 'image/*,.html,.zip',
-  audio: 'audio/*',
-  video: 'video/*',
-  html5: '.html,.zip'
+const MIME_TYPES = (tipo: TipoCreativo): string => {
+  switch (tipo) {
+    case 'banner': return 'image/*,.html,.zip';
+    case 'audio': return 'audio/*';
+    case 'video': return 'video/*';
+    case 'html5': return '.html,.zip';
+    default: return '';
+  }
 };
 
 const DISPOSITIVOS_PREVIEW = [
@@ -139,7 +146,7 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
   const validarArchivo = useCallback((file: File): { valido: boolean; errores: string[] } => {
     const errores: string[] = [];
     const extension = file.name.split('.').pop()?.toLowerCase() || '';
-    const formatosPermitidos = FORMATOS_ACEPTADOS[tipoCreativo];
+    const formatosPermitidos = FORMATOS_ACEPTADOS(tipoCreativo);
 
     // Validar formato
     if (!formatosPermitidos.includes(extension)) {
@@ -200,7 +207,7 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
 
     if (tipoCreativo === 'banner') {
       // Obtener dimensiones de imagen
-      const img = new Image();
+      const img = new window.Image();
       img.src = url;
       await new Promise<void>((resolve) => {
         img.onload = () => {
@@ -303,19 +310,27 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
   // RENDER
   // ═════════════════════════════════════════════════════════════
 
-  const IconoTipo = {
-    banner: FileImage,
-    audio: FileAudio,
-    video: FileVideo,
-    html5: FileCode
-  }[tipoCreativo];
+  const getIconoTipo = (t: TipoCreativo) => {
+    switch (t) {
+      case 'banner': return FileImage;
+      case 'audio': return FileAudio;
+      case 'video': return FileVideo;
+      case 'html5': return FileCode;
+      default: return FileImage;
+    }
+  };
+  const IconoTipo = getIconoTipo(tipoCreativo);
 
-  const etiquetaTipo = {
-    banner: '🖼️ Banner',
-    audio: '🔊 Audio Ad',
-    video: '🎬 Video Ad',
-    html5: '✨ HTML5'
-  }[tipoCreativo];
+  const getEtiquetaTipo = (t: TipoCreativo) => {
+    switch (t) {
+      case 'banner': return '🖼️ Banner';
+      case 'audio': return '🔊 Audio Ad';
+      case 'video': return '🎬 Video Ad';
+      case 'html5': return '✨ HTML5';
+      default: return '';
+    }
+  };
+  const etiquetaTipo = getEtiquetaTipo(tipoCreativo);
 
   return (
     <Card className="p-4 border-green-200 bg-gradient-to-br from-green-50/50 to-white">
@@ -328,7 +343,7 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
           <div>
             <h4 className="font-bold text-gray-800">{etiquetaTipo}</h4>
             <p className="text-xs text-gray-500">
-              Formatos: {FORMATOS_ACEPTADOS[tipoCreativo].join(', ')}
+              Formatos: {FORMATOS_ACEPTADOS(tipoCreativo).join(', ')}
             </p>
           </div>
         </div>
@@ -372,7 +387,7 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
           <input
             ref={inputFileRef}
             type="file"
-            accept={MIME_TYPES[tipoCreativo]}
+            accept={MIME_TYPES(tipoCreativo)}
             onChange={handleFileSelect}
             className="hidden"
           />
@@ -481,11 +496,13 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
               <TabsContent value="preview">
                 <div className="border rounded-lg overflow-hidden bg-gray-100">
                   {tipoCreativo === 'banner' && (
-                    <div className="flex items-center justify-center p-4 min-h-[200px]">
-                      <img
+                    <div className="flex items-center justify-center p-4 min-h-[200px] relative">
+                      <Image
                         src={creativoActual.url}
                         alt={creativoActual.nombre}
-                        className="max-w-full max-h-[300px] object-contain"
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 400px"
                       />
                     </div>
                   )}
@@ -575,12 +592,14 @@ export const EditorCreativosDigitales: React.FC<EditorCreativosProps> = ({
                       <div className="bg-gray-100 h-6 flex items-center justify-center gap-1">
                         <div className="w-2 h-2 rounded-full bg-gray-300"></div>
                       </div>
-                      <div className="p-2 bg-white min-h-[200px] flex items-center justify-center">
+                      <div className="p-2 bg-white min-h-[200px] flex items-center justify-center relative">
                         {tipoCreativo === 'banner' && (
-                          <img
+                          <Image
                             src={creativoActual.url}
                             alt={creativoActual.nombre}
-                            className="max-w-full object-contain"
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 768px) 100vw, 300px"
                           />
                         )}
                         {tipoCreativo === 'audio' && (

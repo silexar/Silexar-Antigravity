@@ -43,6 +43,7 @@ export function MobileContratosView() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar contrato, cliente..."
+            aria-label="Buscar contrato o cliente"
             className="w-full pl-10 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 font-bold focus:ring-2 focus:ring-indigo-400 outline-none text-base"
           />
         </div>

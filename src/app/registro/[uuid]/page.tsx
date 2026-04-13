@@ -73,7 +73,7 @@ export default function SmartPreviewPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#F0EDE8] flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center animate-in zoom-in duration-500">
             <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Lock className="w-10 h-10 text-indigo-600" />
@@ -82,12 +82,13 @@ export default function SmartPreviewPage() {
             <p className="text-slate-500 mb-8">Esta evidencia está protegida. Ingrese la clave de 6 dígitos enviada a su correo.</p>
 
             <div className="mb-6">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     maxLength={6}
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value.replace(/\D/g,''))}
                     placeholder="000000"
+                    aria-label="Código de acceso de 6 dígitos"
                     className="w-full text-center text-3xl font-mono font-bold tracking-[0.5em] py-4 border-b-2 border-slate-200 focus:border-indigo-600 outline-none transition-colors text-slate-800"
                 />
             </div>
@@ -114,7 +115,7 @@ export default function SmartPreviewPage() {
        <div className="bg-white rounded-3xl shadow-xl max-w-4xl w-full overflow-hidden flex flex-col md:flex-row animate-in fade-in duration-700">
            
            {/* LEFT: VISUAL / PLAYER */}
-           <div className="w-full md:w-1/2 p-8 bg-slate-900 text-white flex flex-col justify-between relative overflow-hidden">
+           <div className="w-full md:w-1/2 p-8 bg-[#F0EDE8] text-white flex flex-col justify-between relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20 pointer-events-none" />
                
                <div>
@@ -186,7 +187,7 @@ export default function SmartPreviewPage() {
                     </div>
 
                     <div className="pt-6 border-t border-slate-100">
-                        <button className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2 group">
+                        <button className="w-full py-4 bg-[#F0EDE8] text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2 group">
                             <Download className="w-5 h-5 group-hover:-translate-y-1 transition-transform" /> 
                             Descargar Evidencia Original
                         </button>

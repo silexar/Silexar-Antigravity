@@ -249,7 +249,7 @@ export function withApiRoute(
     if (resource && action && ctx.userId) {
       const hasPermission = checkPermission(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        { userId: ctx.userId, role: ctx.role as any, tenantId: ctx.tenantId },
+        { userId: ctx.userId, role: ctx.role as unknown, tenantId: ctx.tenantId },
         resource,
         action
       )

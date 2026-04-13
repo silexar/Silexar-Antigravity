@@ -208,7 +208,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
       <motion.div
         className={cn(
           "relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
-          "border border-slate-700 rounded-2xl p-6",
+          "border border-[#D4D1CC] rounded-2xl p-6",
           "shadow-2xl shadow-slate-900/50",
           "before:absolute before:inset-0 before:rounded-2xl",
           "before:bg-gradient-to-br before:from-white/5 before:to-transparent",
@@ -246,8 +246,8 @@ export const NeuromorphicMasterCommand: React.FC = () => {
               {icon}
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-300">{title}</p>
-              {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+              <p className="text-sm font-medium text-[#5F5E5A]">{title}</p>
+              {subtitle && <p className="text-xs text-[#888780]">{subtitle}</p>}
             </div>
           </div>
           <div className="text-right">
@@ -299,8 +299,8 @@ export const NeuromorphicMasterCommand: React.FC = () => {
           <div className="flex items-center space-x-3">
             {getTierIcon(client.tier)}
             <div>
-              <h3 className="font-semibold text-white">{client.name}</h3>
-              <p className="text-sm text-slate-400 capitalize">{client.tier}</p>
+              <h3 className="font-semibold text-[#2C2C2A]">{client.name}</h3>
+              <p className="text-sm text-[#888780] capitalize">{client.tier}</p>
             </div>
           </div>
           <Badge 
@@ -318,13 +318,13 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <p className="text-xs text-slate-400">Revenue</p>
+            <p className="text-xs text-[#888780]">Revenue</p>
             <p className="text-lg font-bold text-green-400">
               ${(client.revenue / 1000000).toFixed(1)}M
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-400">Users</p>
+            <p className="text-xs text-[#888780]">Users</p>
             <p className="text-lg font-bold text-blue-400">
               {(client.users / 1000000).toFixed(1)}M
             </p>
@@ -333,13 +333,13 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400">Engagement</span>
+            <span className="text-xs text-[#888780]">Engagement</span>
             <span className="text-sm font-medium text-blue-400">{client.engagement}%</span>
           </div>
-          <Progress value={client.engagement} className="h-1 bg-slate-700" />
+          <Progress value={client.engagement} className="h-1 bg-[#D4D1CC]" />
           
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400">Risk Level</span>
+            <span className="text-xs text-[#888780]">Risk Level</span>
             <span className={cn("text-sm font-medium capitalize", getRiskColor(client.riskLevel))}>
               {client.riskLevel}
             </span>
@@ -350,13 +350,13 @@ export const NeuromorphicMasterCommand: React.FC = () => {
         
         <div className="mt-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-slate-400" />
-            <span className="text-sm text-slate-400">{client.campaigns} campaigns</span>
+            <Activity className="w-4 h-4 text-[#888780]" />
+            <span className="text-sm text-[#888780]">{client.campaigns} campaigns</span>
           </div>
           <div className="flex space-x-1">
             {[1, 2, 3, 4, 5].map((i) => (
               <div
-                key={i}
+                key={`star-${i}`}
                 className={cn(
                   "w-1 h-4 rounded-full",
                   i <= (client.riskLevel === 'low' ? 1 : client.riskLevel === 'medium' ? 3 : 5)
@@ -409,14 +409,14 @@ export const NeuromorphicMasterCommand: React.FC = () => {
             </div>
             <div>
               <p className="font-medium capitalize">{threat.type.replace('_', ' ')}</p>
-              <p className="text-sm text-slate-400">{threat.location}</p>
+              <p className="text-sm text-[#888780]">{threat.location}</p>
             </div>
           </div>
           <div className="text-right">
             <Badge variant="outline" className={cn("uppercase", `border-${getThreatColor()}-500 text-${getThreatColor()}-400`)}>
               {threat.severity}
             </Badge>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#888780] mt-1">
               {new Date(threat.timestamp).toLocaleTimeString()}
             </p>
           </div>
@@ -442,7 +442,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 NEUROMORPHIC COMMAND CENTER
               </h1>
-              <p className="text-slate-400">SILEXAR PULSE QUANTUM - TIER 0 SUPREMACY</p>
+              <p className="text-[#888780]">SILEXAR PULSE QUANTUM - TIER 0 SUPREMACY</p>
             </div>
           </div>
           
@@ -452,7 +452,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
                 "w-3 h-3 rounded-full animate-pulse",
                 isSystemLocked ? 'bg-red-500' : 'bg-green-500'
               )} />
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-[#888780]">
                 SYSTEM {isSystemLocked ? 'LOCKED' : 'ACTIVE'}
               </span>
             </div>
@@ -462,8 +462,8 @@ export const NeuromorphicMasterCommand: React.FC = () => {
               size="sm"
               onClick={() => setIsSystemLocked(!isSystemLocked)}
               className={cn(
-                "border-slate-600 bg-slate-900/50",
-                "hover:bg-slate-800/50 transition-colors"
+                "border-[#CCCAC5] bg-[#F0EDE8]/50",
+                "hover:bg-[#E8E5E0]/50 transition-colors"
               )}
             >
               {isSystemLocked ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
@@ -474,7 +474,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
       {/* Sistema de Tabs Neuromórfico */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-slate-900/50 border border-slate-700 p-1">
+        <TabsList className="bg-[#F0EDE8]/50 border border-[#D4D1CC] p-1">
           <TabsTrigger 
             value="overview" 
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-900 data-[state=active]:to-purple-900"
@@ -554,11 +554,11 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
           <NeuromorphicCard glowColor="purple">
             <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
+              <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                 <BrainCircuit className="w-5 h-5 text-purple-400" />
                 Neurological Activity Monitor
               </CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-[#888780]">
                 Real-time neural pulse monitoring across all system components
               </CardDescription>
             </CardHeader>
@@ -568,7 +568,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
                   <NeuralPulse key={pulse.id} pulse={pulse} />
                 ))}
                 {neurologicalPulses.length === 0 && (
-                  <div className="text-center text-slate-400 py-8">
+                  <div className="text-center text-[#888780] py-8">
                     <BrainCircuit className="w-12 h-12 mx-auto mb-2 opacity-50" />
                     <p>Neural system initializing...</p>
                   </div>
@@ -594,26 +594,26 @@ export const NeuromorphicMasterCommand: React.FC = () => {
             >
               <NeuromorphicCard glowColor="blue">
                 <CardHeader>
-                  <CardTitle className="text-white">Client Control Panel</CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardTitle className="text-[#2C2C2A]">Client Control Panel</CardTitle>
+                  <CardDescription className="text-[#888780]">
                     Advanced controls for {clients.find(c => c.id === selectedClient)?.name}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Button variant="outline" className="bg-slate-900/50 border-slate-600">
+                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
                       <Settings className="w-4 h-4 mr-2" />
                       Configure
                     </Button>
-                    <Button variant="outline" className="bg-slate-900/50 border-slate-600">
+                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
                       <Activity className="w-4 h-4 mr-2" />
                       Monitor
                     </Button>
-                    <Button variant="outline" className="bg-slate-900/50 border-slate-600">
+                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
                       <Power className="w-4 h-4 mr-2" />
                       Control
                     </Button>
-                    <Button variant="outline" className="bg-slate-900/50 border-slate-600">
+                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
                       <BarChart3 className="w-4 h-4 mr-2" />
                       Analyze
                     </Button>
@@ -629,11 +629,11 @@ export const NeuromorphicMasterCommand: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <NeuromorphicCard glowColor="red">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <AlertTriangle className="w-5 h-5 text-red-400" />
                   Active Threats
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   Real-time global security threats
                 </CardDescription>
               </CardHeader>
@@ -648,30 +648,30 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
             <NeuromorphicCard glowColor="green">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <ShieldCheck className="w-5 h-5 text-green-400" />
                   Security Metrics
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   System security status
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Encryption Level</span>
+                    <span className="text-[#5F5E5A]">Encryption Level</span>
                     <span className="text-green-400 font-bold">QUANTUM</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Threat Detection</span>
+                    <span className="text-[#5F5E5A]">Threat Detection</span>
                     <span className="text-green-400 font-bold">ACTIVE</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Access Control</span>
+                    <span className="text-[#5F5E5A]">Access Control</span>
                     <span className="text-green-400 font-bold">ZERO-TRUST</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Audit Trail</span>
+                    <span className="text-[#5F5E5A]">Audit Trail</span>
                     <span className="text-green-400 font-bold">IMMUTABLE</span>
                   </div>
                 </div>
@@ -685,30 +685,30 @@ export const NeuromorphicMasterCommand: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <NeuromorphicCard glowColor="purple">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <BrainCircuit className="w-5 h-5 text-purple-400" />
                   Cortex Processing
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   AI decision engine status
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Model Version</span>
+                    <span className="text-[#5F5E5A]">Model Version</span>
                     <span className="text-purple-400 font-bold">v2.1.1</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Inference Speed</span>
+                    <span className="text-[#5F5E5A]">Inference Speed</span>
                     <span className="text-purple-400 font-bold">23ms</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Accuracy</span>
+                    <span className="text-[#5F5E5A]">Accuracy</span>
                     <span className="text-purple-400 font-bold">97.3%</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Learning Rate</span>
+                    <span className="text-[#5F5E5A]">Learning Rate</span>
                     <span className="text-purple-400 font-bold">0.01</span>
                   </div>
                 </div>
@@ -717,30 +717,30 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
             <NeuromorphicCard glowColor="emerald">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <Network className="w-5 h-5 text-emerald-400" />
                   Neural Networks
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   Federated learning status
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Active Devices</span>
+                    <span className="text-[#5F5E5A]">Active Devices</span>
                     <span className="text-emerald-400 font-bold">2.5M</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Model Updates</span>
+                    <span className="text-[#5F5E5A]">Model Updates</span>
                     <span className="text-emerald-400 font-bold">15,234</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Privacy Level</span>
+                    <span className="text-[#5F5E5A]">Privacy Level</span>
                     <span className="text-emerald-400 font-bold">MAXIMUM</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Aggregation</span>
+                    <span className="text-[#5F5E5A]">Aggregation</span>
                     <span className="text-emerald-400 font-bold">SECURE</span>
                   </div>
                 </div>
@@ -757,7 +757,7 @@ export const NeuromorphicMasterCommand: React.FC = () => {
         transition={{ delay: 0.5 }}
         className="mt-8 text-center"
       >
-        <div className="flex items-center justify-center space-x-2 text-slate-400">
+        <div className="flex items-center justify-center space-x-2 text-[#888780]">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
           <span className="text-sm">NEUROMORPHIC SYSTEM ACTIVE</span>
           <span className="text-slate-600">•</span>

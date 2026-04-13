@@ -187,7 +187,7 @@ export const AlertasIntegradas: React.FC<AlertasIntegradasProps> = ({
     return (
       <div className={`space-y-2 ${className}`}>
         {[...Array(3)].map((_, index) => (
-          <div key={index} className="border-l-4 border-l-gray-300 bg-gray-50 p-4 animate-pulse">
+          <div key={`${_}-${index}`} className="border-l-4 border-l-gray-300 bg-gray-50 p-4 animate-pulse">
             <div className="flex items-start">
               <div className="w-5 h-5 bg-gray-300 rounded mr-3"></div>
               <div className="flex-1">

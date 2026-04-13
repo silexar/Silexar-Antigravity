@@ -17,8 +17,8 @@ Sentry.init({
   tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.05 : 1.0,
 
   integrations: [
-    // Auto-instrument database queries
-    Sentry.prismaIntegration(),
+    // WHY: Proyecto usa Drizzle ORM, no Prisma — prismaIntegration() removida
+    // Las queries de DB se instrumentan via tracing manual en los repositories
   ],
 
   // Filter errors not worth alerting

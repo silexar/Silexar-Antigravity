@@ -141,7 +141,7 @@ const NeuromorphicCard: React.FC<{
     <motion.div
       className={cn(
         "relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
-        "border border-slate-700 rounded-2xl p-6",
+        "border border-[#D4D1CC] rounded-2xl p-6",
         "shadow-2xl shadow-slate-900/50",
         "before:absolute before:inset-0 before:rounded-2xl",
         "before:bg-gradient-to-br before:from-white/5 before:to-transparent",
@@ -174,13 +174,13 @@ const MetricDisplay: React.FC<{
   const trendColor = trend === 'up' ? 'text-green-400' : trend === 'down' ? 'text-red-400' : 'text-yellow-400';
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+    <div className="flex items-center justify-between p-4 rounded-xl bg-[#E8E5E0]/50 border border-[#D4D1CC]">
       <div className="flex items-center space-x-3">
         <div className={cn("p-2 rounded-lg bg-gradient-to-br", `from-${color}-900 to-${color}-700`)}>
           {icon}
         </div>
         <div>
-          <p className="text-sm text-slate-400">{label}</p>
+          <p className="text-sm text-[#888780]">{label}</p>
           <p className={cn("text-xl font-bold", `text-${color}-400`)}>{value}</p>
         </div>
       </div>
@@ -235,8 +235,8 @@ const SDKKeyCard: React.FC<{
             {getPlatformIcon(sdkKey.platform)}
           </div>
           <div>
-            <h3 className="font-semibold text-white">{sdkKey.name}</h3>
-            <p className="text-sm text-slate-400 capitalize">{sdkKey.platform}</p>
+            <h3 className="font-semibold text-[#2C2C2A]">{sdkKey.name}</h3>
+            <p className="text-sm text-[#888780] capitalize">{sdkKey.platform}</p>
           </div>
         </div>
         <Badge 
@@ -252,18 +252,18 @@ const SDKKeyCard: React.FC<{
 
       <div className="space-y-3">
         <div>
-          <Label className="text-slate-400 text-sm">API Key</Label>
+          <Label className="text-[#888780] text-sm">API Key</Label>
           <div className="flex items-center space-x-2 mt-1">
             <Input
               value={maskKey(sdkKey.key)}
               readOnly
-              className="bg-slate-800 border-slate-600 text-slate-300 font-mono text-sm"
+              className="bg-[#E8E5E0] border-[#CCCAC5] text-[#5F5E5A] font-mono text-sm"
             />
             <Button
               size="sm"
               variant="outline"
               onClick={() => setShowKey(!showKey)}
-              className="bg-slate-900/50 border-slate-600"
+              className="bg-[#F0EDE8]/50 border-[#CCCAC5]"
             >
               {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </Button>
@@ -271,7 +271,7 @@ const SDKKeyCard: React.FC<{
               size="sm"
               variant="outline"
               onClick={() => onCopy(sdkKey.key)}
-              className="bg-slate-900/50 border-slate-600"
+              className="bg-[#F0EDE8]/50 border-[#CCCAC5]"
             >
               {copiedKey === sdkKey.key ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </Button>
@@ -280,20 +280,20 @@ const SDKKeyCard: React.FC<{
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label className="text-slate-400 text-sm">Usage</Label>
-            <p className="text-white font-semibold">{(sdkKey.usageCount / 1000).toFixed(0)}K</p>
+            <Label className="text-[#888780] text-sm">Usage</Label>
+            <p className="text-[#2C2C2A] font-semibold">{(sdkKey.usageCount / 1000).toFixed(0)}K</p>
           </div>
           <div>
-            <Label className="text-slate-400 text-sm">Rate Limit</Label>
-            <p className="text-white font-semibold">{sdkKey.rateLimit.toLocaleString()}/min</p>
+            <Label className="text-[#888780] text-sm">Rate Limit</Label>
+            <p className="text-[#2C2C2A] font-semibold">{sdkKey.rateLimit.toLocaleString()}/min</p>
           </div>
         </div>
 
         <div>
-          <Label className="text-slate-400 text-sm">Permissions</Label>
+          <Label className="text-[#888780] text-sm">Permissions</Label>
           <div className="flex flex-wrap gap-2 mt-1">
             {sdkKey.permissions.map((permission) => (
-              <Badge key={permission} variant="secondary" className="text-xs bg-slate-700">
+              <Badge key={permission} variant="secondary" className="text-xs bg-[#D4D1CC]">
                 {permission}
               </Badge>
             ))}
@@ -302,23 +302,23 @@ const SDKKeyCard: React.FC<{
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <p className="text-slate-400">Created</p>
-            <p className="text-slate-300">{sdkKey.createdAt.toLocaleDateString()}</p>
+            <p className="text-[#888780]">Created</p>
+            <p className="text-[#5F5E5A]">{sdkKey.createdAt.toLocaleDateString()}</p>
           </div>
           <div>
-            <p className="text-slate-400">Last Used</p>
-            <p className="text-slate-300">
+            <p className="text-[#888780]">Last Used</p>
+            <p className="text-[#5F5E5A]">
               {sdkKey.lastUsed ? sdkKey.lastUsed.toLocaleDateString() : 'Never'}
             </p>
           </div>
         </div>
 
-        <div className="flex space-x-2 pt-4 border-t border-slate-700">
+        <div className="flex space-x-2 pt-4 border-t border-[#D4D1CC]">
           <Button
             size="sm"
             variant="outline"
             onClick={() => onEdit(sdkKey)}
-            className="bg-slate-900/50 border-slate-600 flex-1"
+            className="bg-[#F0EDE8]/50 border-[#CCCAC5] flex-1"
           >
             <Edit className="w-4 h-4 mr-1" />
             Edit
@@ -342,6 +342,7 @@ const SDKKeyCard: React.FC<{
 const NeuromorphicSDKPortal: React.FC = () => {
   const [sdkKeys, setSdkKeys] = useState<SDKKey[]>(mockSDKKeys);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [editingKey, setEditingKey] = useState<SDKKey | null>(null);
 
   // Función para copiar al portapapeles
   const copyToClipboard = async (text: string) => {
@@ -350,13 +351,41 @@ const NeuromorphicSDKPortal: React.FC = () => {
       setCopiedKey(text);
       setTimeout(() => setCopiedKey(null), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
+      }
   };
 
   // Función para eliminar clave SDK
   const deleteSDKKey = (id: string) => {
     setSdkKeys(sdkKeys.filter(key => key.id !== id));
+  };
+
+  // Función para generar nueva clave SDK
+  const generateNewKey = () => {
+    const newKey: SDKKey = {
+      id: `sdk-${Date.now()}`,
+      name: `New SDK Key ${sdkKeys.length + 1}`,
+      platform: 'react-native',
+      key: `spx_sk_live_${Math.random().toString(36).substring(2, 15)}_${Math.random().toString(36).substring(2, 15)}`,
+      status: 'active',
+      createdAt: new Date(),
+      lastUsed: null,
+      usageCount: 0,
+      permissions: ['context-detection'],
+      rateLimit: 5000,
+      clientId: `client-${Date.now()}`
+    };
+    setSdkKeys([...sdkKeys, newKey]);
+  };
+
+  // Función para editar clave SDK
+  const editSDKKey = (key: SDKKey) => {
+    setEditingKey(key);
+    // En una implementación real, esto abriría un modal de edición
+    const newName = window.prompt('Enter new name for SDK Key:', key.name);
+    if (newName && newName.trim()) {
+      setSdkKeys(sdkKeys.map(k => k.id === key.id ? { ...k, name: newName.trim() } : k));
+    }
+    setEditingKey(null);
   };
 
   return (
@@ -376,12 +405,12 @@ const NeuromorphicSDKPortal: React.FC = () => {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 SDK INTEGRATION PORTAL
               </h1>
-              <p className="text-slate-400">Neuromorphic Mobile SDK Management - TIER 0</p>
+              <p className="text-[#888780]">Neuromorphic Mobile SDK Management - TIER 0</p>
             </div>
           </div>
           
           <Button
-            onClick={() => {}}
+            onClick={generateNewKey}
             className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -443,7 +472,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
 
       {/* Tabs principales */}
       <Tabs defaultValue="keys" className="space-y-6">
-        <TabsList className="bg-slate-900/50 border border-slate-700 p-1">
+        <TabsList className="bg-[#F0EDE8]/50 border border-[#D4D1CC] p-1">
           <TabsTrigger 
             value="keys"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-900 data-[state=active]:to-cyan-900"
@@ -482,7 +511,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
                 key={sdkKey.id}
                 sdkKey={sdkKey}
                 onCopy={copyToClipboard}
-                onEdit={() => {}}
+                onEdit={editSDKKey}
                 onDelete={deleteSDKKey}
                 copiedKey={copiedKey}
               />
@@ -496,19 +525,19 @@ const NeuromorphicSDKPortal: React.FC = () => {
             {/* iOS SDK */}
             <NeuromorphicCard glowColor="blue">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <Smartphone className="w-5 h-5 text-blue-400" />
                   iOS SDK
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   Native iOS integration with Swift
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-800/50">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-[#E8E5E0]/50">
                   <div>
-                    <p className="text-slate-300 font-semibold">Version 2.1.1</p>
-                    <p className="text-slate-400 text-sm">Latest stable release</p>
+                    <p className="text-[#5F5E5A] font-semibold">Version 2.1.1</p>
+                    <p className="text-[#888780] text-sm">Latest stable release</p>
                   </div>
                   <Badge className="bg-blue-900/50 border-blue-500 text-blue-400">
                     Stable
@@ -520,15 +549,15 @@ const NeuromorphicSDKPortal: React.FC = () => {
                     <Download className="w-4 h-4 mr-2" />
                     Download iOS SDK
                   </Button>
-                  <Button variant="outline" className="w-full bg-slate-900/50 border-slate-600">
+                  <Button variant="outline" className="w-full bg-[#F0EDE8]/50 border-[#CCCAC5]">
                     <Code className="w-4 h-4 mr-2" />
                     View Integration Guide
                   </Button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-700">
-                  <h4 className="text-white font-semibold mb-2">Features</h4>
-                  <ul className="space-y-1 text-sm text-slate-400">
+                <div className="pt-4 border-t border-[#D4D1CC]">
+                  <h4 className="text-[#2C2C2A] font-semibold mb-2">Features</h4>
+                  <ul className="space-y-1 text-sm text-[#888780]">
                     <li>• Context-aware advertising</li>
                     <li>• Federated learning support</li>
                     <li>• Privacy-first architecture</li>
@@ -541,19 +570,19 @@ const NeuromorphicSDKPortal: React.FC = () => {
             {/* Android SDK */}
             <NeuromorphicCard glowColor="green">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
+                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                   <Tablet className="w-5 h-5 text-green-400" />
                   Android SDK
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#888780]">
                   Native Android integration with Kotlin
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-800/50">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-[#E8E5E0]/50">
                   <div>
-                    <p className="text-slate-300 font-semibold">Version 2.1.1</p>
-                    <p className="text-slate-400 text-sm">Latest stable release</p>
+                    <p className="text-[#5F5E5A] font-semibold">Version 2.1.1</p>
+                    <p className="text-[#888780] text-sm">Latest stable release</p>
                   </div>
                   <Badge className="bg-green-900/50 border-green-500 text-green-400">
                     Stable
@@ -565,15 +594,15 @@ const NeuromorphicSDKPortal: React.FC = () => {
                     <Download className="w-4 h-4 mr-2" />
                     Download Android SDK
                   </Button>
-                  <Button variant="outline" className="w-full bg-slate-900/50 border-slate-600">
+                  <Button variant="outline" className="w-full bg-[#F0EDE8]/50 border-[#CCCAC5]">
                     <Code className="w-4 h-4 mr-2" />
                     View Integration Guide
                   </Button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-700">
-                  <h4 className="text-white font-semibold mb-2">Features</h4>
-                  <ul className="space-y-1 text-sm text-slate-400">
+                <div className="pt-4 border-t border-[#D4D1CC]">
+                  <h4 className="text-[#2C2C2A] font-semibold mb-2">Features</h4>
+                  <ul className="space-y-1 text-sm text-[#888780]">
                     <li>• Context-aware advertising</li>
                     <li>• Federated learning support</li>
                     <li>• Privacy-first architecture</li>
@@ -591,18 +620,18 @@ const NeuromorphicSDKPortal: React.FC = () => {
             {platformStats.map((stat) => (
               <NeuromorphicCard key={stat.platform} glowColor="purple">
                 <CardHeader>
-                  <CardTitle className="text-white capitalize">{stat.platform} Analytics</CardTitle>
+                  <CardTitle className="text-[#2C2C2A] capitalize">{stat.platform} Analytics</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-slate-400 text-sm">Installations</p>
+                      <p className="text-[#888780] text-sm">Installations</p>
                       <p className="text-xl font-bold text-blue-400">
                         {(stat.installations / 1000000).toFixed(1)}M
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-400 text-sm">Active Users</p>
+                      <p className="text-[#888780] text-sm">Active Users</p>
                       <p className="text-xl font-bold text-green-400">
                         {(stat.activeUsers / 1000000).toFixed(1)}M
                       </p>
@@ -611,16 +640,16 @@ const NeuromorphicSDKPortal: React.FC = () => {
                   
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Data Quality</span>
+                      <span className="text-[#888780]">Data Quality</span>
                       <span className="text-yellow-400 font-bold">{stat.dataQuality}%</span>
                     </div>
-                    <Progress value={stat.dataQuality} className="h-2 bg-slate-700" />
+                    <Progress value={stat.dataQuality} className="h-2 bg-[#D4D1CC]" />
                     
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Model Accuracy</span>
+                      <span className="text-[#888780]">Model Accuracy</span>
                       <span className="text-emerald-400 font-bold">{stat.modelAccuracy}%</span>
                     </div>
-                    <Progress value={stat.modelAccuracy} className="h-2 bg-slate-700" />
+                    <Progress value={stat.modelAccuracy} className="h-2 bg-[#D4D1CC]" />
                   </div>
                 </CardContent>
               </NeuromorphicCard>
@@ -632,37 +661,37 @@ const NeuromorphicSDKPortal: React.FC = () => {
         <TabsContent value="docs" className="space-y-6">
           <NeuromorphicCard glowColor="yellow">
             <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
+              <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
                 <FileText className="w-5 h-5 text-yellow-400" />
                 Integration Documentation
               </CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-[#888780]">
                 Complete guides for implementing Silexar Pulse SDK
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <Code className="w-4 h-4 mr-2" />
                   Quick Start Guide
                 </Button>
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <Shield className="w-4 h-4 mr-2" />
                   Privacy & Security
                 </Button>
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <Activity className="w-4 h-4 mr-2" />
                   Context Detection API
                 </Button>
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Federated Learning
                 </Button>
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <Settings className="w-4 h-4 mr-2" />
                   Configuration Options
                 </Button>
-                <Button variant="outline" className="bg-slate-900/50 border-slate-600 justify-start">
+                <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5] justify-start">
                   <Users className="w-4 h-4 mr-2" />
                   Best Practices
                 </Button>
@@ -679,7 +708,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
         transition={{ delay: 0.5 }}
         className="mt-8 text-center"
       >
-        <div className="flex items-center justify-center space-x-2 text-slate-400">
+        <div className="flex items-center justify-center space-x-2 text-[#888780]">
           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
           <span className="text-sm">SDK SYSTEM ACTIVE</span>
           <span className="text-slate-600">•</span>

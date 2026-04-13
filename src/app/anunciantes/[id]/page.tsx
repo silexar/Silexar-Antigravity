@@ -181,7 +181,7 @@ export default function AnuncianteDetallePage({ params }: { params: Promise<{ id
           setAnunciante(data.data);
         }
       } catch (error) {
-        /* console.error('Error fetching anunciante:', error) */;
+        /* */;
       } finally {
         setLoading(false);
       }
@@ -202,7 +202,7 @@ export default function AnuncianteDetallePage({ params }: { params: Promise<{ id
         setAnunciante(data.data);
       }
     } catch (error) {
-      /* console.error('Error toggling anunciante:', error) */;
+      /* */;
     }
   };
 
@@ -213,7 +213,7 @@ export default function AnuncianteDetallePage({ params }: { params: Promise<{ id
       await fetch(`/api/anunciantes/${anunciante.id}`, { method: 'DELETE' });
       router.push('/anunciantes');
     } catch (error) {
-      /* console.error('Error deleting anunciante:', error) */;
+      /* */;
     }
   };
 

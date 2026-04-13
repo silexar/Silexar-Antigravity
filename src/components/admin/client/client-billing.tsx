@@ -15,8 +15,9 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
+import { formatCurrency } from '@/lib/utils'
+import {
+  NeuromorphicCard,
   NeuromorphicButton 
 } from '@/components/ui/neuromorphic'
 import {
@@ -101,10 +102,6 @@ export function ClientBilling() {
     ])
 
     setIsLoading(false)
-  }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount)
   }
 
   const getPlanIcon = (plan: string) => {

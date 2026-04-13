@@ -70,7 +70,6 @@ export function MetricsFilters({
       if ((error as Error).name === 'AbortError') {
         
       } else {
-        console.error('Error fetching contracts:', error);
         setContracts([]);
       }
     } finally {
@@ -185,9 +184,9 @@ export function MetricsFilters({
             <Calendar
               initialFocus
               mode="range"
-              locale={es as any}
+              locale={es as unknown}
               selected={dateRange}
-              onSelect={handleDateSelect as any}
+              onSelect={handleDateSelect as unknown}
               numberOfMonths={2}
             />
           </PopoverContent>

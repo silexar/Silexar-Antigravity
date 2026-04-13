@@ -175,7 +175,7 @@ export default function ActivosDigitalesPage() {
         setMetricas(data.metricas);
       }
     } catch (error) {
-      /* console.error('Error:', error) */;
+      /* */;
     } finally {
       setLoading(false);
     }
@@ -297,10 +297,10 @@ export default function ActivosDigitalesPage() {
                   {/* Segmentación */}
                   <div className="hidden xl:flex gap-2 px-4 max-w-[300px]">
                     {activo.segmentacionResumen.geografica.slice(0, 2).map((s, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">{s}</span>
+                      <span key={`${s}-${i}`} className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">{s}</span>
                     ))}
                     {activo.segmentacionResumen.dispositivos.slice(0, 1).map((s, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">{s}</span>
+                      <span key={`${s}-${i}`} className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">{s}</span>
                     ))}
                   </div>
 

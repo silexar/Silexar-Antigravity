@@ -12,6 +12,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
 import { auditLogger } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { withApiRoute } from '@/lib/api/with-api-route';
 
 // Mock de datos
 const mockVendedores = [
@@ -85,87 +86,93 @@ const mockVendedores = [
   }
 ];
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search') || '';
-    const equipo = searchParams.get('equipo') || '';
-    const estado = searchParams.get('estado') || '';
+export const GET = withApiRoute(
+  { resource: 'equipos-ventas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const search = searchParams.get('search') || '';
+      const equipo = searchParams.get('equipo') || '';
+      const estado = searchParams.get('estado') || '';
 
-    let filtered = [...mockVendedores];
+      let filtered = [...mockVendedores];
 
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(v => 
-        v.nombreCompleto.toLowerCase().includes(searchLower) ||
-        v.codigo.toLowerCase().includes(searchLower) ||
-        v.email.toLowerCase().includes(searchLower)
-      );
+      if (search) {
+        const searchLower = search.toLowerCase();
+        filtered = filtered.filter(v => 
+          v.nombreCompleto.toLowerCase().includes(searchLower) ||
+          v.codigo.toLowerCase().includes(searchLower) ||
+          v.email.toLowerCase().includes(searchLower)
+        );
+      }
+
+      if (equipo) {
+        filtered = filtered.filter(v => v.equipoNombre?.toLowerCase().includes(equipo.toLowerCase()));
+      }
+
+      if (estado) {
+        filtered = filtered.filter(v => v.estado === estado);
+      }
+
+      // Estadísticas
+      const stats = {
+        total: mockVendedores.length,
+        activos: mockVendedores.filter(v => v.activo).length,
+        ventasTotales: mockVendedores.reduce((sum, v) => sum + v.ventasRealizadas, 0),
+        cumplimientoPromedio: Math.round(mockVendedores.reduce((sum, v) => sum + v.cumplimientoActual, 0) / mockVendedores.length)
+      };
+
+      return NextResponse.json({
+        success: true,
+        data: filtered,
+        stats,
+        pagination: { total: filtered.length, page: 1, limit: 20, totalPages: 1 }
+      });
+    } catch (error) {
+      logger.error('[API/Vendedores] Error:', error instanceof Error ? error : undefined, { module: 'vendedores' });
+      return NextResponse.json({ success: false, error: 'Error al obtener vendedores' }, { status: 500 });
     }
-
-    if (equipo) {
-      filtered = filtered.filter(v => v.equipoNombre?.toLowerCase().includes(equipo.toLowerCase()));
-    }
-
-    if (estado) {
-      filtered = filtered.filter(v => v.estado === estado);
-    }
-
-    // Estadísticas
-    const stats = {
-      total: mockVendedores.length,
-      activos: mockVendedores.filter(v => v.activo).length,
-      ventasTotales: mockVendedores.reduce((sum, v) => sum + v.ventasRealizadas, 0),
-      cumplimientoPromedio: Math.round(mockVendedores.reduce((sum, v) => sum + v.cumplimientoActual, 0) / mockVendedores.length)
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      stats,
-      pagination: { total: filtered.length, page: 1, limit: 20, totalPages: 1 }
-    });
-  } catch (error) {
-    logger.error('[API/Vendedores] Error:', error instanceof Error ? error : undefined, { module: 'vendedores' });
-    return NextResponse.json({ success: false, error: 'Error al obtener vendedores' }, { status: 500 });
   }
-}
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.nombres?.trim() || !body.apellidos?.trim()) {
-      return NextResponse.json({ success: false, error: 'Nombres y apellidos son requeridos' }, { status: 400 });
+export const POST = withApiRoute(
+  { resource: 'equipos-ventas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      const body = await req.json();
+      
+      if (!body.nombres?.trim() || !body.apellidos?.trim()) {
+        return NextResponse.json({ success: false, error: 'Nombres y apellidos son requeridos' }, { status: 400 });
+      }
+      
+      if (!body.email?.trim()) {
+        return NextResponse.json({ success: false, error: 'El email es requerido' }, { status: 400 });
+      }
+
+      const newVendedor = {
+        id: `ven-${Date.now()}`,
+        codigo: `VEN-${(mockVendedores.length + 1).toString().padStart(3, '0')}`,
+        nombreCompleto: `${body.nombres} ${body.apellidos}`,
+        email: body.email,
+        telefono: body.telefono || null,
+        tipoVendedor: body.tipoVendedor || 'ejecutivo',
+        equipoNombre: body.equipoNombre || null,
+        equipoColor: '#6B7280',
+        estado: 'activo',
+        activo: true,
+        metaActual: body.metaMensual || 15000000,
+        cumplimientoActual: 0,
+        ventasRealizadas: 0,
+        clientesAsignados: 0,
+        fechaCreacion: new Date().toISOString()
+      };
+
+      mockVendedores.push(newVendedor);
+
+      return NextResponse.json({ success: true, data: newVendedor, message: 'Vendedor creado exitosamente' }, { status: 201 });
+    } catch (error) {
+      logger.error('[API/Vendedores] Error:', error instanceof Error ? error : undefined, { module: 'vendedores' });
+      return NextResponse.json({ success: false, error: 'Error al crear vendedor' }, { status: 500 });
     }
-    
-    if (!body.email?.trim()) {
-      return NextResponse.json({ success: false, error: 'El email es requerido' }, { status: 400 });
-    }
-
-    const newVendedor = {
-      id: `ven-${Date.now()}`,
-      codigo: `VEN-${(mockVendedores.length + 1).toString().padStart(3, '0')}`,
-      nombreCompleto: `${body.nombres} ${body.apellidos}`,
-      email: body.email,
-      telefono: body.telefono || null,
-      tipoVendedor: body.tipoVendedor || 'ejecutivo',
-      equipoNombre: body.equipoNombre || null,
-      equipoColor: '#6B7280',
-      estado: 'activo',
-      activo: true,
-      metaActual: body.metaMensual || 15000000,
-      cumplimientoActual: 0,
-      ventasRealizadas: 0,
-      clientesAsignados: 0,
-      fechaCreacion: new Date().toISOString()
-    };
-
-    mockVendedores.push(newVendedor);
-
-    return NextResponse.json({ success: true, data: newVendedor, message: 'Vendedor creado exitosamente' }, { status: 201 });
-  } catch (error) {
-    logger.error('[API/Vendedores] Error:', error instanceof Error ? error : undefined, { module: 'vendedores' });
-    return NextResponse.json({ success: false, error: 'Error al crear vendedor' }, { status: 500 });
   }
-}
+);

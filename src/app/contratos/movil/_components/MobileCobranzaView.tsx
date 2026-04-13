@@ -94,6 +94,7 @@ export function MobileCobranzaView() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar cliente..."
+          aria-label="Buscar cliente"
           className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-red-400 outline-none"
         />
       </div>

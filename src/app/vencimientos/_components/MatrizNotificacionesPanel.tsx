@@ -69,11 +69,12 @@ export default function MatrizNotificacionesPanel() {
 
           <div className="mt-4 flex items-center gap-4 bg-[#ECEFF8] p-4 rounded-lg border border-slate-800">
             <span className="text-sm font-semibold text-gray-600">Horas de gracia por defecto:</span>
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={r1Config.horas}
               onChange={e => setR1Config(prev => ({ ...prev, horas: Number(e.target.value) }))}
-              className="bg-white/80 border border-slate-700 rounded text-center w-20 py-1 text-gray-800 outline-none focus:border-red-500" 
+              aria-label="Horas de gracia por defecto"
+              className="bg-white/80 border border-slate-700 rounded text-center w-20 py-1 text-gray-800 outline-none focus:border-red-500"
             />
             <span className="text-sm text-gray-500">horas (recomendado: 48h)</span>
           </div>

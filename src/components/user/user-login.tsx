@@ -1,16 +1,20 @@
 'use client'
 
 /**
+ * ⚠️ DEVELOPMENT ONLY — Mock Login Component
+ * Contains hardcoded test credentials. MUST NOT be deployed to production.
+ * Production uses Better Auth with real backend.
+ *
  * 🔐 SILEXAR PULSE - User Login Component
  * Autenticación para usuarios operadores
- * 
+ *
  * @description Login Features:
  * - Autenticación con email y contraseña
  * - 2FA support
  * - Remember me
  * - Forgot password
  * - Redirección según rol/permisos
- * 
+ *
  * @version 2025.1.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -84,6 +88,11 @@ const MOCK_USERS: Record<string, { password: string; user: AuthenticatedUser }> 
 }
 
 export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
+  // ⚠️ DEVELOPMENT ONLY: Must never run in production
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('MockLogin: Development only component - must not run in production');
+  }
+
   const [step, setStep] = useState<'credentials' | '2fa' | 'success'>('credentials')
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
@@ -144,37 +153,45 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
 
   const verify2FA = async () => {
     setError(null)
-    
-    if (twoFactorCode.length !== 6) {
-      setError('El código debe tener 6 dígitos')
+
+    if (!/^\d{6}$/.test(twoFactorCode)) {
+      setError('El código debe tener exactamente 6 dígitos numéricos')
       return
     }
+
+    if (!pendingUser) return
 
     setIsLoading(true)
-    await new Promise(r => setTimeout(r, 1000))
 
-    // Mock 2FA verification (accept any 6 digits)
-    if (!/^\d{6}$/.test(twoFactorCode)) {
-      setError('Código inválido')
-      setIsLoading(false)
-      return
-    }
+    try {
+      const res = await fetch('/api/auth/verify-2fa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: pendingUser.id, code: twoFactorCode }),
+      })
 
-    if (pendingUser) {
+      const data = await res.json() as { success: boolean; error?: string }
+
+      if (!data.success) {
+        setError(data.error ?? 'Código inválido')
+        setIsLoading(false)
+        return
+      }
+
       completeLogin(pendingUser)
+    } catch {
+      setError('Error al verificar el código. Intenta nuevamente.')
+      setIsLoading(false)
     }
   }
 
   const completeLogin = (user: AuthenticatedUser) => {
     setStep('success')
     setIsLoading(false)
-    
-    // Store in localStorage if rememberMe
-    if (credentials.rememberMe) {
-      localStorage.setItem('silexar_user', JSON.stringify(user))
-    } else {
-      sessionStorage.setItem('silexar_user', JSON.stringify(user))
-    }
+
+    // NOTE: user data is only kept in component state — never persisted to
+    // localStorage/sessionStorage (tokens live in httpOnly cookies via the
+    // real auth flow; this mock only triggers onLogin for dev UI testing).
 
     // Callback after animation
     setTimeout(() => {
@@ -203,10 +220,10 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 mb-4">
-            <Zap className="w-8 h-8 text-white" />
+            <Zap className="w-8 h-8 text-[#2C2C2A]" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Silexar Pulse</h1>
-          <p className="text-slate-400 text-sm mt-1">Accede a tu cuenta</p>
+          <h1 className="text-2xl font-bold text-[#2C2C2A]">Silexar Pulse</h1>
+          <p className="text-[#888780] text-sm mt-1">Accede a tu cuenta</p>
         </div>
 
         <NeuromorphicCard variant="glow" className="p-6">
@@ -214,31 +231,33 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
           {step === 'credentials' && (
             <div className="space-y-4">
               <div>
-                <label className="text-slate-400 text-xs block mb-1">Email</label>
+                <label className="text-[#888780] text-xs block mb-1">Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#888780]" />
                   <input
                     type="email"
                     placeholder="tu@empresa.com"
+                    aria-label="Email"
                     value={credentials.email}
                     onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
-                    className="w-full pl-11 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-orange-500 focus:outline-none"
+                    className="w-full pl-11 pr-4 py-3 bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg text-[#2C2C2A] focus:border-orange-500 focus:outline-none"
                     autoComplete="email"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-400 text-xs block mb-1">Contraseña</label>
+                <label className="text-[#888780] text-xs block mb-1">Contraseña</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#888780]" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
+                    aria-label="Contraseña"
                     value={credentials.password}
                     onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                     onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                    className="w-full pl-11 pr-12 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-orange-500 focus:outline-none"
+                    className="w-full pl-11 pr-12 py-3 bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg text-[#2C2C2A] focus:border-orange-500 focus:outline-none"
                     autoComplete="current-password"
                   />
                   <button
@@ -247,9 +266,9 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                     aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5 text-slate-500" />
+                      <EyeOff className="w-5 h-5 text-[#888780]" />
                     ) : (
-                      <Eye className="w-5 h-5 text-slate-500" />
+                      <Eye className="w-5 h-5 text-[#888780]" />
                     )}
                   </button>
                 </div>
@@ -261,9 +280,9 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                     type="checkbox"
                     checked={credentials.rememberMe}
                     onChange={(e) => setCredentials({ ...credentials, rememberMe: e.target.checked })}
-                    className="w-4 h-4 rounded bg-slate-700 border-slate-600"
+                    className="w-4 h-4 rounded bg-[#D4D1CC] border-[#CCCAC5]"
                   />
-                  <span className="text-slate-400 text-sm">Recordarme</span>
+                  <span className="text-[#888780] text-sm">Recordarme</span>
                 </label>
                 <button className="text-orange-400 text-sm hover:underline">
                   ¿Olvidaste tu contraseña?
@@ -293,8 +312,8 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                 )}
               </NeuromorphicButton>
 
-              <div className="text-center pt-4 border-t border-slate-700">
-                <p className="text-slate-500 text-xs">
+              <div className="text-center pt-4 border-t border-[#D4D1CC]">
+                <p className="text-[#888780] text-xs">
                   ¿No tienes acceso? Contacta a tu administrador
                 </p>
               </div>
@@ -308,8 +327,8 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 mb-3">
                   <Smartphone className="w-6 h-6 text-blue-400" />
                 </div>
-                <h3 className="text-white font-medium">Verificación en dos pasos</h3>
-                <p className="text-slate-400 text-sm mt-1">
+                <h3 className="text-[#2C2C2A] font-medium">Verificación en dos pasos</h3>
+                <p className="text-[#888780] text-sm mt-1">
                   Ingresa el código de 6 dígitos de tu app
                 </p>
               </div>
@@ -318,10 +337,11 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                 <input
                   type="text"
                   placeholder="000000"
+                  aria-label="Código de verificación 2FA"
                   value={twoFactorCode}
                   onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   onKeyPress={(e) => e.key === 'Enter' && verify2FA()}
-                  className="w-full px-4 py-4 bg-slate-800 border border-slate-700 rounded-lg text-white text-center text-2xl tracking-widest focus:border-orange-500 focus:outline-none"
+                  className="w-full px-4 py-4 bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg text-[#2C2C2A] text-center text-2xl tracking-widest focus:border-orange-500 focus:outline-none"
                   maxLength={6}
                   autoComplete="one-time-code"
                 />
@@ -352,7 +372,7 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
 
               <button 
                 onClick={() => { setStep('credentials'); setError(null) }}
-                className="w-full text-slate-400 text-sm hover:text-white"
+                className="w-full text-[#888780] text-sm hover:text-[#2C2C2A]"
               >
                 ← Volver al login
               </button>
@@ -365,39 +385,39 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
                 <CheckCircle className="w-8 h-8 text-green-400" />
               </div>
-              <h3 className="text-white font-medium text-lg mb-1">¡Bienvenido!</h3>
-              <p className="text-slate-400 mb-4">{pendingUser.name}</p>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-800 rounded-full">
+              <h3 className="text-[#2C2C2A] font-medium text-lg mb-1">¡Bienvenido!</h3>
+              <p className="text-[#888780] mb-4">{pendingUser.name}</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#E8E5E0] rounded-full">
                 <span>{getCategoryInfo(pendingUser.category).icon}</span>
-                <span className="text-white text-sm">{getCategoryInfo(pendingUser.category).name}</span>
+                <span className="text-[#2C2C2A] text-sm">{getCategoryInfo(pendingUser.category).name}</span>
               </div>
               <div className="mt-6">
                 <Loader className="w-6 h-6 animate-spin text-orange-400 mx-auto" />
-                <p className="text-slate-500 text-sm mt-2">Cargando tu portal...</p>
+                <p className="text-[#888780] text-sm mt-2">Cargando tu portal...</p>
               </div>
             </div>
           )}
         </NeuromorphicCard>
 
         {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-          <p className="text-slate-400 text-xs text-center mb-3">Usuarios de prueba:</p>
+        <div className="mt-6 p-4 bg-[#E8E5E0]/50 rounded-lg border border-[#D4D1CC]">
+          <p className="text-[#888780] text-xs text-center mb-3">Usuarios de prueba:</p>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-slate-900/50 rounded">
+            <div className="p-2 bg-[#F0EDE8]/50 rounded">
               <p className="text-orange-400">👑 Super User</p>
-              <p className="text-slate-500">maria@empresa.com</p>
+              <p className="text-[#888780]">maria@empresa.com</p>
             </div>
-            <div className="p-2 bg-slate-900/50 rounded">
+            <div className="p-2 bg-[#F0EDE8]/50 rounded">
               <p className="text-blue-400">👔 Ejecutivo</p>
-              <p className="text-slate-500">carlos@empresa.com</p>
+              <p className="text-[#888780]">carlos@empresa.com</p>
             </div>
-            <div className="p-2 bg-slate-900/50 rounded">
+            <div className="p-2 bg-[#F0EDE8]/50 rounded">
               <p className="text-green-400">💰 Vendedor</p>
-              <p className="text-slate-500">ana@empresa.com</p>
+              <p className="text-[#888780]">ana@empresa.com</p>
             </div>
-            <div className="p-2 bg-slate-900/50 rounded">
+            <div className="p-2 bg-[#F0EDE8]/50 rounded">
               <p className="text-purple-400">📊 Tráfico</p>
-              <p className="text-slate-500">pedro@empresa.com</p>
+              <p className="text-[#888780]">pedro@empresa.com</p>
             </div>
           </div>
           <p className="text-slate-600 text-xs text-center mt-2">Contraseña: [Rol]123!</p>

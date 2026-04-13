@@ -165,7 +165,7 @@ export default function CentroMandoDigitalPage() {
       setIsLoading(false)
 
     } catch (error) {
-      /* console.error('❌ Error inicializando Centro de Mando Digital:', error) */
+      /* */
       setIsLoading(false)
     }
   }
@@ -284,8 +284,8 @@ export default function CentroMandoDigitalPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {platformStatus.map((platform, index) => (
-              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+            {platformStatus.map((platform) => (
+              <div key={platform.platform} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex items-center gap-3">
                   {getStatusIcon(platform.status)}
                   <div>

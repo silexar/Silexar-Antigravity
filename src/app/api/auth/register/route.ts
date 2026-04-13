@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { logger } from '@/lib/observability';
 import { z } from 'zod';
-import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 
 import { signToken, signRefreshToken } from '@/lib/api/jwt';
@@ -11,6 +10,7 @@ import { users } from '@/lib/db/users-schema';
 import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types';
 import { authRateLimiter } from '@/lib/security/rate-limiter';
+import { PasswordSecurityEngine } from '@/lib/security/password-security';
 
 const registerSchema = z.object({
   email: z.string().email().max(255).trim().toLowerCase(),
@@ -55,8 +55,19 @@ export async function POST(request: NextRequest) {
       return apiError('CONFLICT', 'A user with this email already exists', 409);
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12);
+    // Check if password appears in known data breaches (HaveIBeenPwned k-anonymity)
+    const breachCheck = await PasswordSecurityEngine.checkBreached(password)
+    if (breachCheck.breached) {
+      return apiError(
+        'COMPROMISED_PASSWORD',
+        `Esta contraseña aparece en ${breachCheck.count.toLocaleString()} filtraciones de datos conocidas. ` +
+          'Por favor elige una contraseña diferente.',
+        422
+      )
+    }
+
+    // Hash password — use centralized PasswordSecurityEngine (Argon2id, not raw bcrypt)
+    const passwordHash = await PasswordSecurityEngine.hashPassword(password);
 
     // Insert new user
     const [newUser] = await db
@@ -110,7 +121,7 @@ export async function OPTIONS() {
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_APP_URL || 'https://app.silexar.com',
       'Access-Control-Allow-Methods': 'POST',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },

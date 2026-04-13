@@ -60,7 +60,7 @@ export default function MobileSecurityComplianceDashboard() {
                      { time: "09:55", action: "LOGIN_FAIL", desc: "Intento desde IP 192...", hash: "0x00fa", alert: true },
                      { time: "09:30", action: "SYNC_OK", desc: "Validación Dual Automática", hash: "0xff11" }
                   ].map((log, i) => (
-                     <div key={i} className={`p-2 rounded border flex flex-col gap-1 ${log.alert ? 'bg-red-950/20 border-red-500/30' : 'bg-[#ECEFF8]/50 border-gray-200/50'}`}>
+                     <div key={`${log}-${i}`} className={`p-2 rounded border flex flex-col gap-1 ${log.alert ? 'bg-red-950/20 border-red-500/30' : 'bg-[#ECEFF8]/50 border-gray-200/50'}`}>
                         <div className="flex justify-between items-center border-b border-gray-200/50 pb-1">
                            <span className={`${log.alert ? 'text-red-600' : 'text-emerald-600'} font-bold`}>[{log.action}]</span>
                            <span className="text-gray-500">{log.time}</span>

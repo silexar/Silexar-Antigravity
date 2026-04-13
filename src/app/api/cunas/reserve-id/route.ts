@@ -10,8 +10,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
 
 // ═══════════════════════════════════════════════════════════════
@@ -69,7 +69,7 @@ function cleanExpiredReservations(): void {
       reservedIds.delete(key);
       // Log de expiración
       operationalLogs.push({
-        id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `log-${crypto.randomUUID()}`,
         action: 'id_expired',
         spxCodigo: reservation.spxCodigo,
         userId: reservation.reservadoPor,
@@ -82,38 +82,47 @@ function cleanExpiredReservations(): void {
 
 // ═══════════════════════════════════════════════════════════════
 // POST - Reservar nuevo ID
+// Requiere: cunas:create
 // ═══════════════════════════════════════════════════════════════
 
-export async function POST(request: NextRequest) {
-  try {
-    // Limpiar reservas expiradas primero
-    cleanExpiredReservations();
-    
-    const body = await request.json();
-    
-    const userId = body.userId || 'user-anonymous';
-    const context = body.context || 'manual'; // 'manual', 'contract', 'vencimientos', 'inbox'
-    const tipoCuna = body.tipoCuna || 'audio';
-    
-    // Incrementar secuencia
-    secuenciaActual += 1;
-    const spxCodigo = generateSpxCodigo(secuenciaActual);
-    
-    // Verificar que no esté ya reservado (doble check)
-    if (reservedIds.has(spxCodigo)) {
-      // Generar otro
-      secuenciaActual += 1;
-      const newSpxCodigo = generateSpxCodigo(secuenciaActual);
-      return createReservation(newSpxCodigo, secuenciaActual, userId, context, tipoCuna);
+export const POST = withApiRoute(
+  { resource: 'cunas', action: 'create' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        // Limpiar reservas expiradas primero
+        cleanExpiredReservations();
+        
+        const body = await req.json();
+        
+        const context = body.context || 'manual'; // 'manual', 'contract', 'vencimientos', 'inbox'
+        const tipoCuna = body.tipoCuna || 'audio';
+        
+        // Incrementar secuencia
+        secuenciaActual += 1;
+        const spxCodigo = generateSpxCodigo(secuenciaActual);
+        
+        // Verificar que no esté ya reservado (doble check)
+        if (reservedIds.has(spxCodigo)) {
+          // Generar otro
+          secuenciaActual += 1;
+          const newSpxCodigo = generateSpxCodigo(secuenciaActual);
+          return createReservation(newSpxCodigo, secuenciaActual, ctx.userId, context, tipoCuna);
+        }
+        
+        return createReservation(spxCodigo, secuenciaActual, ctx.userId, context, tipoCuna);
+      });
+    } catch (error) {
+      logger.error('[API/Reserve-ID] Error POST:', error instanceof Error ? error : undefined, { 
+        module: 'reserve-id', 
+        action: 'POST',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    return createReservation(spxCodigo, secuenciaActual, userId, context, tipoCuna);
-    
-  } catch (error) {
-    logger.error('[API/Reserve-ID] Error POST:', error instanceof Error ? error : undefined, { module: 'reserve-id', action: 'POST' });
-    return apiServerError()
   }
-}
+);
 
 function createReservation(
   spxCodigo: string, 
@@ -140,7 +149,7 @@ function createReservation(
   
   // Log de auditoría
   const logEntry: OperationalLog = {
-    id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: `log-${crypto.randomUUID()}`,
     action: 'id_generated',
     spxCodigo,
     userId,
@@ -175,150 +184,170 @@ function createReservation(
 
 // ═══════════════════════════════════════════════════════════════
 // PUT - Confirmar o liberar ID reservado
+// Requiere: cunas:update
 // ═══════════════════════════════════════════════════════════════
 
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    const { spxCodigo, action } = body;
-    
-    if (!spxCodigo) {
-      return NextResponse.json(
-        { success: false, error: 'spxCodigo es requerido' },
-        { status: 400 }
-      );
+export const PUT = withApiRoute(
+  { resource: 'cunas', action: 'update' },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const body = await req.json();
+        
+        const { spxCodigo, action } = body;
+        
+        if (!spxCodigo) {
+          return NextResponse.json(
+            { success: false, error: 'spxCodigo es requerido' },
+            { status: 400 }
+          );
+        }
+        
+        const reservation = reservedIds.get(spxCodigo);
+        
+        if (!reservation) {
+          return NextResponse.json(
+            { success: false, error: 'ID no encontrado o expirado' },
+            { status: 404 }
+          );
+        }
+        
+        if (action === 'confirm') {
+          // Marcar como confirmado (la cuña fue creada)
+          reservation.locked = false;
+          reservedIds.delete(spxCodigo); // Ya no necesitamos la reserva
+          
+          operationalLogs.push({
+            id: `log-${crypto.randomUUID()}`,
+            action: 'id_confirmed',
+            spxCodigo,
+            userId: ctx.userId,
+            context: reservation.contexto,
+            timestamp: new Date().toISOString()
+          });
+          
+          return NextResponse.json({
+            success: true,
+            message: 'ID confirmado exitosamente'
+          });
+          
+        } else if (action === 'release') {
+          // Liberar el ID (usuario canceló)
+          reservedIds.delete(spxCodigo);
+          
+          operationalLogs.push({
+            id: `log-${crypto.randomUUID()}`,
+            action: 'id_released',
+            spxCodigo,
+            userId: ctx.userId,
+            context: reservation.contexto,
+            timestamp: new Date().toISOString()
+          });
+          
+          return NextResponse.json({
+            success: true,
+            message: 'ID liberado exitosamente'
+          });
+        }
+        
+        return NextResponse.json(
+          { success: false, error: 'Acción no válida. Use "confirm" o "release"' },
+          { status: 400 }
+        );
+      });
+    } catch (error) {
+      logger.error('[API/Reserve-ID] Error PUT:', error instanceof Error ? error : undefined, { 
+        module: 'reserve-id', 
+        action: 'PUT',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    const reservation = reservedIds.get(spxCodigo);
-    
-    if (!reservation) {
-      return NextResponse.json(
-        { success: false, error: 'ID no encontrado o expirado' },
-        { status: 404 }
-      );
-    }
-    
-    if (action === 'confirm') {
-      // Marcar como confirmado (la cuña fue creada)
-      reservation.locked = false;
-      reservedIds.delete(spxCodigo); // Ya no necesitamos la reserva
-      
-      operationalLogs.push({
-        id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        action: 'id_confirmed',
-        spxCodigo,
-        userId: reservation.reservadoPor,
-        context: reservation.contexto,
-        timestamp: new Date().toISOString()
-      });
-      
-      return NextResponse.json({
-        success: true,
-        message: 'ID confirmado exitosamente'
-      });
-      
-    } else if (action === 'release') {
-      // Liberar el ID (usuario canceló)
-      reservedIds.delete(spxCodigo);
-      
-      operationalLogs.push({
-        id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        action: 'id_released',
-        spxCodigo,
-        userId: reservation.reservadoPor,
-        context: reservation.contexto,
-        timestamp: new Date().toISOString()
-      });
-      
-      return NextResponse.json({
-        success: true,
-        message: 'ID liberado exitosamente'
-      });
-    }
-    
-    return NextResponse.json(
-      { success: false, error: 'Acción no válida. Use "confirm" o "release"' },
-      { status: 400 }
-    );
-    
-  } catch (error) {
-    logger.error('[API/Reserve-ID] Error PUT:', error instanceof Error ? error : undefined, { module: 'reserve-id', action: 'PUT' });
-    return apiServerError()
   }
-}
+);
 
 // ═══════════════════════════════════════════════════════════════
 // GET - Obtener estado de reserva / Logs
+// Requiere: cunas:read
 // ═══════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const spxCodigo = searchParams.get('spxCodigo');
-    const getLogs = searchParams.get('logs') === 'true';
-    
-    // Si pide logs
-    if (getLogs) {
-      const limit = parseInt(searchParams.get('limit') || '50', 10);
-      const recentLogs = operationalLogs.slice(-limit).reverse();
-      
-      return NextResponse.json({
-        success: true,
-        data: {
-          logs: recentLogs,
-          total: operationalLogs.length
+export const GET = withApiRoute(
+  { resource: 'cunas', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
+    try {
+      return await withTenantContext(ctx.tenantId, async () => {
+        const { searchParams } = new URL(req.url);
+        const spxCodigo = searchParams.get('spxCodigo');
+        const getLogs = searchParams.get('logs') === 'true';
+        
+        // Si pide logs
+        if (getLogs) {
+          const limit = parseInt(searchParams.get('limit') || '50', 10);
+          const recentLogs = operationalLogs.slice(-limit).reverse();
+          
+          return NextResponse.json({
+            success: true,
+            data: {
+              logs: recentLogs,
+              total: operationalLogs.length
+            }
+          });
         }
-      });
-    }
-    
-    // Si pide estado de una reserva específica
-    if (spxCodigo) {
-      cleanExpiredReservations();
-      const reservation = reservedIds.get(spxCodigo);
-      
-      if (!reservation) {
+        
+        // Si pide estado de una reserva específica
+        if (spxCodigo) {
+          cleanExpiredReservations();
+          const reservation = reservedIds.get(spxCodigo);
+          
+          if (!reservation) {
+            return NextResponse.json({
+              success: true,
+              data: {
+                exists: false,
+                available: true
+              }
+            });
+          }
+          
+          return NextResponse.json({
+            success: true,
+            data: {
+              exists: true,
+              available: false,
+              reservation: {
+                spxCodigo: reservation.spxCodigo,
+                locked: reservation.locked,
+                expiresAt: reservation.expiresAt,
+                contexto: reservation.contexto
+              }
+            }
+          });
+        }
+        
+        // Estadísticas generales
+        cleanExpiredReservations();
+        
         return NextResponse.json({
           success: true,
           data: {
-            exists: false,
-            available: true
+            secuenciaActual,
+            proximoId: generateSpxCodigo(secuenciaActual + 1),
+            reservasActivas: reservedIds.size,
+            totalLogsHoy: operationalLogs.filter(
+              log => new Date(log.timestamp).toDateString() === new Date().toDateString()
+            ).length
           }
         });
-      }
-      
-      return NextResponse.json({
-        success: true,
-        data: {
-          exists: true,
-          available: false,
-          reservation: {
-            spxCodigo: reservation.spxCodigo,
-            locked: reservation.locked,
-            expiresAt: reservation.expiresAt,
-            contexto: reservation.contexto
-          }
-        }
       });
+    } catch (error) {
+      logger.error('[API/Reserve-ID] Error GET:', error instanceof Error ? error : undefined, { 
+        module: 'reserve-id', 
+        action: 'GET',
+        userId: ctx.userId,
+        tenantId: ctx.tenantId
+      });
+      return apiServerError();
     }
-    
-    // Estadísticas generales
-    cleanExpiredReservations();
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        secuenciaActual,
-        proximoId: generateSpxCodigo(secuenciaActual + 1),
-        reservasActivas: reservedIds.size,
-        totalLogsHoy: operationalLogs.filter(
-          log => new Date(log.timestamp).toDateString() === new Date().toDateString()
-        ).length
-      }
-    });
-    
-  } catch (error) {
-    logger.error('[API/Reserve-ID] Error GET:', error instanceof Error ? error : undefined, { module: 'reserve-id', action: 'GET' });
-    return apiServerError()
   }
-}
+);

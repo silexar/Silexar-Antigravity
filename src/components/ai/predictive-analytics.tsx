@@ -86,7 +86,6 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
       setModelPerformance(performanceData);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading predictive data:', error);
       setIsLoading(false);
     }
   };
@@ -104,7 +103,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
       case 'HIGH': return 'text-orange-600 bg-orange-50';
       case 'MEDIUM': return 'text-yellow-600 bg-yellow-50';
       case 'LOW': return 'text-blue-600 bg-blue-50';
-      default: return 'text-gray-600 bg-gray-50';
+      default: return 'text-gray-600 bg-[#F0EDE8]';
     }
   };
 
@@ -118,7 +117,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
 
   if (isLoading) {
     return (
-      <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+      <div className={`bg-white rounded-lg shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] p-6 ${className}`}>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
           <span className="ml-3 text-gray-600">Cargando análisis predictivo...</span>
@@ -128,7 +127,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg ${className}`}>
+    <div className={`bg-white rounded-lg shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 p-6">
         <div className="flex items-center justify-between">
@@ -149,14 +148,14 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 autoRefresh 
                   ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
+                  : 'bg-[#F0EDE8] text-gray-800'
               }`}
             >
               {autoRefresh ? 'Auto-refresh ON' : 'Auto-refresh OFF'}
             </button>
             <button
               onClick={loadPredictiveData}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
             >
               Actualizar Predicciones
             </button>
@@ -213,7 +212,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as unknown)}
               className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === id
                   ? 'border-purple-500 text-purple-600'
@@ -232,7 +231,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
         {activeTab === 'overview' && predictions && (
           <div className="space-y-6">
             {/* AI Insights */}
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg">
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-full">
               <h3 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
                 <Lightbulb className="h-5 w-5 mr-2" />
                 Insights de IA en Tiempo Real
@@ -276,7 +275,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
             {/* Quick Predictions Overview */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Performance Quick View */}
-              <div className="bg-blue-50 p-6 rounded-lg">
+              <div className="bg-blue-50 p-6 rounded-full">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-blue-900">Rendimiento</h3>
                   <Gauge className="h-5 w-5 text-blue-600" />
@@ -304,7 +303,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
               </div>
 
               {/* Security Quick View */}
-              <div className="bg-red-50 p-6 rounded-lg">
+              <div className="bg-red-50 p-6 rounded-full">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-red-900">Seguridad</h3>
                   <Shield className="h-5 w-5 text-red-600" />
@@ -336,7 +335,7 @@ export default function PredictiveAnalyticsComponent({ className = '' }: Predict
               </div>
 
               {/* Business Quick View */}
-              <div className="bg-green-50 p-6 rounded-lg">
+              <div className="bg-green-50 p-6 rounded-full">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-green-900">Negocio</h3>
                   <DollarSign className="h-5 w-5 text-green-600" />
@@ -400,7 +399,7 @@ function PerformancePredictionView({ prediction }: { prediction: PerformancePred
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Next Hour */}
-        <div className="bg-blue-50 p-6 rounded-lg">
+        <div className="bg-blue-50 p-6 rounded-full">
           <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
             <Clock className="h-5 w-5 mr-2" />
             Próxima Hora
@@ -426,7 +425,7 @@ function PerformancePredictionView({ prediction }: { prediction: PerformancePred
         </div>
 
         {/* Next 24 Hours */}
-        <div className="bg-indigo-50 p-6 rounded-lg">
+        <div className="bg-indigo-50 p-6 rounded-full">
           <h3 className="font-semibold text-indigo-900 mb-4 flex items-center">
             <Activity className="h-5 w-5 mr-2" />
             Próximas 24 Horas
@@ -452,7 +451,7 @@ function PerformancePredictionView({ prediction }: { prediction: PerformancePred
         </div>
 
         {/* Next Week */}
-        <div className="bg-purple-50 p-6 rounded-lg">
+        <div className="bg-purple-50 p-6 rounded-full">
           <h3 className="font-semibold text-purple-900 mb-4 flex items-center">
             <TrendingUp className="h-5 w-5 mr-2" />
             Próxima Semana
@@ -492,7 +491,7 @@ function SecurityPredictionView({ prediction }: { prediction: SecurityPrediction
   return (
     <div className="space-y-6">
       {/* Threat Level Overview */}
-      <div className="bg-red-50 p-6 rounded-lg">
+      <div className="bg-red-50 p-6 rounded-full">
         <h3 className="font-semibold text-red-900 mb-4 flex items-center">
           <Shield className="h-5 w-5 mr-2" />
           Estado de Seguridad Actual
@@ -520,14 +519,14 @@ function SecurityPredictionView({ prediction }: { prediction: SecurityPrediction
       </div>
 
       {/* Predicted Threats */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white border border-gray-200 rounded-full p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
           <AlertTriangle className="h-5 w-5 mr-2 text-orange-500" />
           Amenazas Predichas
         </h3>
         <div className="space-y-4">
           {prediction.predictedThreats.map((threat, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-4">
+            <div key={`${threat}-${index}`} className="border border-gray-200 rounded-full p-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-gray-900">{threat.type}</h4>
                 <div className="flex items-center space-x-2">
@@ -561,14 +560,14 @@ function SecurityPredictionView({ prediction }: { prediction: SecurityPrediction
       </div>
 
       {/* Recommended Actions */}
-      <div className="bg-blue-50 p-6 rounded-lg">
+      <div className="bg-blue-50 p-6 rounded-full">
         <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
           <CheckCircle className="h-5 w-5 mr-2" />
           Acciones Recomendadas
         </h3>
         <div className="space-y-2">
           {prediction.recommendedActions.map((action, index) => (
-            <div key={index} className="flex items-center space-x-2">
+            <div key={`${action}-${index}`} className="flex items-center space-x-2">
               <CheckCircle className="h-4 w-4 text-blue-600" />
               <span className="text-blue-800">{action}</span>
             </div>
@@ -584,7 +583,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
   return (
     <div className="space-y-6">
       {/* Revenue Predictions */}
-      <div className="bg-green-50 p-6 rounded-lg">
+      <div className="bg-green-50 p-6 rounded-full">
         <h3 className="font-semibold text-green-900 mb-4 flex items-center">
           <DollarSign className="h-5 w-5 mr-2" />
           Predicciones de Revenue
@@ -617,7 +616,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
       </div>
 
       {/* User Growth */}
-      <div className="bg-blue-50 p-6 rounded-lg">
+      <div className="bg-blue-50 p-6 rounded-full">
         <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
           <Users className="h-5 w-5 mr-2" />
           Crecimiento de Usuarios
@@ -651,7 +650,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
       </div>
 
       {/* Market Trends */}
-      <div className="bg-purple-50 p-6 rounded-lg">
+      <div className="bg-purple-50 p-6 rounded-full">
         <h3 className="font-semibold text-purple-900 mb-4 flex items-center">
           <BarChart3 className="h-5 w-5 mr-2" />
           Tendencias de Mercado
@@ -674,7 +673,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
             <h4 className="font-medium text-purple-800 mb-2">Análisis de Competencia:</h4>
             <div className="space-y-1">
               {prediction.marketTrends.competitorAnalysis.map((analysis, index) => (
-                <div key={index} className="text-sm text-purple-700">• {analysis}</div>
+                <div key={`${analysis}-${index}`} className="text-sm text-purple-700">• {analysis}</div>
               ))}
             </div>
           </div>
@@ -684,7 +683,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
               <h4 className="font-medium text-purple-800 mb-2">Oportunidades:</h4>
               <div className="space-y-1">
                 {prediction.marketTrends.opportunities.map((opportunity, index) => (
-                  <div key={index} className="text-sm text-green-700">• {opportunity}</div>
+                  <div key={`${opportunity}-${index}`} className="text-sm text-green-700">• {opportunity}</div>
                 ))}
               </div>
             </div>
@@ -692,7 +691,7 @@ function BusinessPredictionView({ prediction }: { prediction: BusinessPrediction
               <h4 className="font-medium text-purple-800 mb-2">Riesgos:</h4>
               <div className="space-y-1">
                 {prediction.marketTrends.risks.map((risk, index) => (
-                  <div key={index} className="text-sm text-red-700">• {risk}</div>
+                  <div key={`${risk}-${index}`} className="text-sm text-red-700">• {risk}</div>
                 ))}
               </div>
             </div>
@@ -708,7 +707,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
   return (
     <div className="space-y-6">
       {/* Scaling Recommendations */}
-      <div className="bg-blue-50 p-6 rounded-lg">
+      <div className="bg-blue-50 p-6 rounded-full">
         <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
           <Server className="h-5 w-5 mr-2" />
           Recomendaciones de Escalamiento
@@ -736,7 +735,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
         
         <div className="space-y-3">
           {prediction.scaling.recommendedActions.map((action, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg border border-blue-200">
+            <div key={`${action}-${index}`} className="bg-white p-4 rounded-lg border border-blue-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900">{action.component}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -763,14 +762,14 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
       </div>
 
       {/* Maintenance Predictions */}
-      <div className="bg-orange-50 p-6 rounded-lg">
+      <div className="bg-orange-50 p-6 rounded-full">
         <h3 className="font-semibold text-orange-900 mb-4 flex items-center">
           <Cpu className="h-5 w-5 mr-2" />
           Mantenimiento Predictivo
         </h3>
         <div className="space-y-4">
           {prediction.maintenance.predictedFailures.map((failure, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg border border-orange-200">
+            <div key={`${failure}-${index}`} className="bg-white p-4 rounded-lg border border-orange-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900">{failure.component}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -809,7 +808,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
           ))}
         </div>
         
-        <div className="mt-4 p-4 bg-green-100 rounded-lg">
+        <div className="mt-4 p-4 bg-green-100 rounded-full">
           <div className="text-center">
             <div className="text-lg font-bold text-green-800 mb-1">
               ${prediction.maintenance.costOptimization.toLocaleString()}/mes
@@ -820,7 +819,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
       </div>
 
       {/* Capacity Analysis */}
-      <div className="bg-purple-50 p-6 rounded-lg">
+      <div className="bg-purple-50 p-6 rounded-full">
         <h3 className="font-semibold text-purple-900 mb-4 flex items-center">
           <Database className="h-5 w-5 mr-2" />
           Análisis de Capacidad
@@ -864,7 +863,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
             <h4 className="font-medium text-purple-800 mb-3">Cuellos de Botella Identificados</h4>
             <div className="space-y-2">
               {prediction.capacity.bottlenecks.map((bottleneck, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={`${bottleneck}-${index}`} className="flex items-center space-x-2">
                   <AlertTriangle className="h-4 w-4 text-orange-500" />
                   <span className="text-sm text-purple-700">{bottleneck}</span>
                 </div>
@@ -872,7 +871,7 @@ function InfrastructurePredictionView({ prediction }: { prediction: Infrastructu
             </div>
             
             <div className="mt-4">
-              <div className={`p-3 rounded-lg ${
+              <div className={`p-3 rounded-full ${
                 prediction.capacity.expansionNeeded 
                   ? 'bg-red-100 border border-red-200' 
                   : 'bg-green-100 border border-green-200'
@@ -906,7 +905,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
   return (
     <div className="space-y-6">
       {/* Engagement Metrics */}
-      <div className="bg-blue-50 p-6 rounded-lg">
+      <div className="bg-blue-50 p-6 rounded-full">
         <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
           <Users className="h-5 w-5 mr-2" />
           Métricas de Engagement
@@ -962,7 +961,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
       </div>
 
       {/* User Preferences */}
-      <div className="bg-green-50 p-6 rounded-lg">
+      <div className="bg-green-50 p-6 rounded-full">
         <h3 className="font-semibold text-green-900 mb-4 flex items-center">
           <Target className="h-5 w-5 mr-2" />
           Preferencias de Usuario
@@ -972,7 +971,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-green-800 mb-3">Features Populares</h4>
             <div className="space-y-2">
               {prediction.preferences.popularFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={`${feature}-${index}`} className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-600 rounded-full"></div>
                   <span className="text-sm text-green-700">{feature}</span>
                 </div>
@@ -984,7 +983,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-green-800 mb-3">Patrones de Uso</h4>
             <div className="space-y-2">
               {prediction.preferences.usagePatterns.map((pattern, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={`${pattern}-${index}`} className="flex items-center space-x-2">
                   <Clock className="h-4 w-4 text-green-600" />
                   <span className="text-sm text-green-700">{pattern}</span>
                 </div>
@@ -998,7 +997,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-green-800 mb-3">Preferencias de Dispositivo</h4>
             <div className="space-y-2">
               {prediction.preferences.devicePreferences.map((device, index) => (
-                <div key={index} className="text-sm text-green-700">{device}</div>
+                <div key={`${device}-${index}`} className="text-sm text-green-700">{device}</div>
               ))}
             </div>
           </div>
@@ -1007,7 +1006,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-green-800 mb-3">Patrones Temporales</h4>
             <div className="space-y-2">
               {prediction.preferences.timePatterns.map((pattern, index) => (
-                <div key={index} className="text-sm text-green-700">{pattern}</div>
+                <div key={`${pattern}-${index}`} className="text-sm text-green-700">{pattern}</div>
               ))}
             </div>
           </div>
@@ -1015,7 +1014,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
       </div>
 
       {/* Churn Analysis */}
-      <div className="bg-red-50 p-6 rounded-lg">
+      <div className="bg-red-50 p-6 rounded-full">
         <h3 className="font-semibold text-red-900 mb-4 flex items-center">
           <AlertTriangle className="h-5 w-5 mr-2" />
           Análisis de Churn
@@ -1040,7 +1039,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-red-800 mb-3">Factores de Riesgo</h4>
             <div className="space-y-2">
               {prediction.churn.riskFactors.map((factor, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={`${factor}-${index}`} className="flex items-center space-x-2">
                   <AlertTriangle className="h-4 w-4 text-red-600" />
                   <span className="text-sm text-red-700">{factor}</span>
                 </div>
@@ -1052,7 +1051,7 @@ function UserBehaviorPredictionView({ prediction }: { prediction: UserBehaviorPr
             <h4 className="font-medium text-red-800 mb-3">Estrategias de Retención</h4>
             <div className="space-y-2">
               {prediction.churn.retentionStrategies.map((strategy, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={`${strategy}-${index}`} className="flex items-center space-x-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span className="text-sm text-red-700">{strategy}</span>
                 </div>

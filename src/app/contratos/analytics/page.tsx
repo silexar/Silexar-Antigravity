@@ -258,9 +258,9 @@ const AlertaCard: React.FC<{ alerta: AlertaCritica }> = ({ alerta }) => {
       </div>
       {alerta.acciones.length > 0 && (
         <div className="flex gap-2 mt-3 pl-8">
-          {alerta.acciones.map((accion, idx) => (
+          {alerta.acciones.map((accion) => (
             <button
-              key={idx}
+              key={accion.label}
               onClick={accion.onClick}
               className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-sm font-medium text-slate-700 flex items-center gap-1.5 hover:bg-slate-50"
             >
