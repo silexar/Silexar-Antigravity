@@ -79,40 +79,42 @@ Write-Success "Dependencias instaladas correctamente"
 # ============================================================================
 Write-Header "PASO 2: Actualizando PATCH releases seguras"
 
-npm install --legacy-peer-deps $(
-    @("@azure/keyvault-secrets", "@sentry/nextjs", "@supabase/supabase-js", 
-      "@tanstack/react-query", "@tanstack/react-query-devtools",
-      "@vitest/coverage-v8", "@vitest/ui", "vitest",
-      "dotenv", "isomorphic-dompurify", "postcss", "postgres", "prettier",
-      "react", "react-dom", "typescript-eslint", "undici")
-    | ForEach-Object { "$_@latest" }
+$patchList = @(
+    "@azure/keyvault-secrets@latest", "@sentry/nextjs@latest", "@supabase/supabase-js@latest",
+    "@tanstack/react-query@latest", "@tanstack/react-query-devtools@latest",
+    "@vitest/coverage-v8@latest", "@vitest/ui@latest", "vitest@latest",
+    "dotenv@latest", "isomorphic-dompurify@latest", "postcss@latest", "postgres@latest", "prettier@latest",
+    "react@latest", "react-dom@latest", "typescript-eslint@latest", "undici@latest"
 )
+
+npm install --legacy-peer-deps @patchList
 
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "Algunas patches no se pudieron instalar, continuando..."
+} else {
+    Write-Success "Patches actualizadas"
 }
-Write-Success "Patches actualizadas"
 
 # ============================================================================
 # PASO 3: Actualizar MINOR releases (generalmente seguras)
 # ============================================================================
 Write-Header "PASO 3: Actualizando MINOR releases"
 
-$minorPackages = @(
-    "jose", "jsonwebtoken", "better-auth",
-    "@playwright/test", "@radix-ui/react-dialog", "@radix-ui/react-popover",
-    "@radix-ui/react-select", "@radix-ui/react-slot", "@radix-ui/react-tabs",
-    "@radix-ui/react-toast", "@tanstack/react-virtual",
-    "@testing-library/jest-dom", "@testing-library/react", "@testing-library/user-event",
-    "@trpc/client", "@trpc/react-query", "@trpc/server",
-    "@types/react", "@types/react-dom",
-    "class-variance-authority", "d3", "framer-motion", "ioredis",
-    "react-day-picker", "react-hook-form", "tailwind-merge", "web-vitals", "zod", "zustand"
+$minorList = @(
+    "jose@latest", "jsonwebtoken@latest", "better-auth@latest",
+    "@playwright/test@latest", "@radix-ui/react-dialog@latest", "@radix-ui/react-popover@latest",
+    "@radix-ui/react-select@latest", "@radix-ui/react-slot@latest", "@radix-ui/react-tabs@latest",
+    "@radix-ui/react-toast@latest", "@tanstack/react-virtual@latest",
+    "@testing-library/jest-dom@latest", "@testing-library/react@latest", "@testing-library/user-event@latest",
+    "@trpc/client@latest", "@trpc/react-query@latest", "@trpc/server@latest",
+    "@types/react@latest", "@types/react-dom@latest",
+    "class-variance-authority@latest", "d3@latest", "framer-motion@latest", "ioredis@latest",
+    "react-day-picker@latest", "react-hook-form@latest", "tailwind-merge@latest", "web-vitals@latest", "zod@latest", "zustand@latest"
 )
 
-foreach ($pkg in $minorPackages) {
+foreach ($pkg in $minorList) {
     Write-Host "Actualizando $pkg..." -NoNewline
-    npm install --legacy-peer-deps "$pkg@latest" >$null 2>&1
+    npm install --legacy-peer-deps "$pkg" >$null 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host " OK" -ForegroundColor Green
     } else {
@@ -147,35 +149,35 @@ if ($LASTEXITCODE -ne 0) {
 # ============================================================================
 Write-Header "PASO 4: MAJOR releases pendientes (requieren migracion manual)"
 
-$majors = @(
-    [PSCustomObject]@{ Package="tailwindcss"; From="3.x"; To="4.x"; Risk="MUY ALTO - Reescritura total de configuracion"; Action="Migrar tailwind.config.js a CSS-based config" },
-    [PSCustomObject]@{ Package="next"; From="15.x"; To="16.x"; Risk="ALTO - Cambios de runtime y App Router"; Action="Revisar breaking changes oficiales de Next.js" },
-    [PSCustomObject]@{ Package="eslint"; From="9.x"; To="10.x"; Risk="ALTO - Cambios en flat config y plugins"; Action="Esperar a que eslint-plugin-react-hooks soporte v10" },
-    [PSCustomObject]@{ Package="typescript"; From="5.x"; To="6.x"; Risk="MEDIO-ALTO - Type checking mas estricto"; Action="Actualizar tras arreglar todos los errores de TS 5.x" },
-    [PSCustomObject]@{ Package="vite"; From="6.x"; To="8.x"; Risk="ALTO - Saltos de 2 majors, revisar plugins"; Action="Actualizar plugins de Vite primero" },
-    [PSCustomObject]@{ Package="@types/node"; From="22.x"; To="25.x"; Risk="MEDIO - Tipos mas estrictos"; Action="Actualizar cuando suba Node.js en produccion" },
-    [PSCustomObject]@{ Package="redis"; From="4.x"; To="5.x"; Risk="MEDIO - Cambios en API de cliente"; Action="Revisar usos de redis en src/lib/cache/" },
-    [PSCustomObject]@{ Package="storybook"; From="8.x"; To="10.x"; Risk="ALTO - Migracion de addons"; Action="Solo si se usa Storybook activamente" },
-    [PSCustomObject]@{ Package="@eslint/js"; From="9.x"; To="10.x"; Risk="ALTO - Ligado a ESLint major"; Action="Actualizar junto con eslint" },
-    [PSCustomObject]@{ Package="eslint-plugin-react-hooks"; From="5.x"; To="7.x"; Risk="ALTO - Peer deps con ESLint 9/10"; Action="Verificar compatibilidad antes" },
-    [PSCustomObject]@{ Package="lucide-react"; From="0.511.x"; To="1.x"; Risk="MEDIO - Cambio de versionado"; Action="Buscar iconos renombrados" },
-    [PSCustomObject]@{ Package="recharts"; From="2.x"; To="3.x"; Risk="MEDIO - Cambios en tipos y APIs"; Action="Revisar dashboards que usen graficos" },
-    [PSCustomObject]@{ Package="date-fns"; From="2.x"; To="4.x"; Risk="MEDIO - Cambios en imports tree-shaking"; Action="Revisar todos los `import { format } from 'date-fns'`" }
-)
-
-$majors | Format-Table Package, From, To, Risk, Action -AutoSize
+Write-Host ""
+Write-Host "1. tailwindcss          3.x -> 4.x   | MUY ALTO  | Reescritura total de configuracion" -ForegroundColor Red
+Write-Host "2. next                 15.x -> 16.x  | ALTO      | Cambios de runtime y App Router" -ForegroundColor Red
+Write-Host "3. eslint               9.x -> 10.x   | ALTO      | Cambios en flat config y plugins" -ForegroundColor Red
+Write-Host "4. typescript           5.x -> 6.x    | MEDIO-ALTO| Type checking mas estricto" -ForegroundColor Yellow
+Write-Host "5. vite                 6.x -> 8.x    | ALTO      | Saltos de 2 majors, revisar plugins" -ForegroundColor Red
+Write-Host "6. @types/node          22.x -> 25.x  | MEDIO     | Tipos mas estrictos" -ForegroundColor Yellow
+Write-Host "7. redis                4.x -> 5.x    | MEDIO     | Cambios en API de cliente" -ForegroundColor Yellow
+Write-Host "8. storybook            8.x -> 10.x   | ALTO      | Migracion de addons" -ForegroundColor Red
+Write-Host "9. @eslint/js           9.x -> 10.x   | ALTO      | Ligado a ESLint major" -ForegroundColor Red
+Write-Host "10. eslint-plugin-react-hooks  5.x -> 7.x   | ALTO | Peer deps con ESLint 9/10" -ForegroundColor Red
+Write-Host "11. lucide-react        0.511.x -> 1.x | MEDIO     | Cambio de versionado" -ForegroundColor Yellow
+Write-Host "12. recharts            2.x -> 3.x    | MEDIO     | Cambios en tipos y APIs" -ForegroundColor Yellow
+Write-Host "13. date-fns            2.x -> 4.x    | MEDIO     | Cambios en imports tree-shaking" -ForegroundColor Yellow
+Write-Host ""
 
 Write-Header "RESUMEN"
 Write-Success "Patches y minors actualizadas automaticamente"
 Write-Warning "Majors listadas arriba requieren migracion manual paso a paso"
-Write-Host "`nRecomendacion: hacer commit del estado actual, luego atacar majors UNA POR UNA." -ForegroundColor Cyan
-Write-Host "No actualizar todas las majors de golpe." -ForegroundColor Red
+Write-Host ""
+Write-Host "Recomendacion: hacer commit del estado actual, luego atacar majors UNA POR UNA." -ForegroundColor Cyan
+Write-Host "NO actualizar todas las majors de golpe." -ForegroundColor Red
+Write-Host ""
 
 # Guardar reporte
 $reportPath = "$projectPath\dependency-update-report.txt"
 "DEPENDENCY UPDATE REPORT - $(Get-Date)" | Out-File $reportPath
 "Patches y minors: ACTUALIZADAS" | Add-Content $reportPath
-"Majors pendientes: $($majors.Count)" | Add-Content $reportPath
-$majors | Out-String | Add-Content $reportPath
+"Majors pendientes: 13" | Add-Content $reportPath
+"Recomendacion: actualizar una major por semana" | Add-Content $reportPath
 
-Write-Host "`nReporte guardado en: $reportPath" -ForegroundColor Cyan
+Write-Host "Reporte guardado en: $reportPath" -ForegroundColor Cyan
