@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 /**
  * Incident Response Playbook — Suspicious Agent Output (L6 block)

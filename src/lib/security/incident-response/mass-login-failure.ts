@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 /**
  * Incident Response Playbook — Mass Login Failure (Credential Stuffing)

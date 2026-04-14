@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import { toast } from '@/components/ui/use-toast'
 import { logger } from '@/lib/observability';

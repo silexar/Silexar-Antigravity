@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 /**
  * Incident Response Playbook — Prompt Injection Attack (L2/L5 detection)

@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 /**
  * Incident Response Playbook — Cross-Tenant Data Access Attempt

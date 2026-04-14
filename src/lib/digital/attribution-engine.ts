@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 /**
  * ATTRIBUTION ENGINE - TIER 0 Digital Revolution
