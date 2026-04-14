@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerPronosticoVentasQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly entidadId: string, // Vendedor o Equipo
     public readonly tipoEntidad: 'VENDEDOR' | 'EQUIPO',

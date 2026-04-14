@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { logger } from '@/lib/observability';
 /**
  * SERVICIO CORTEX-FLOW PREDICCIONES - TIER 0

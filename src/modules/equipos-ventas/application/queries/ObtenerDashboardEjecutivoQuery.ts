@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerDashboardEjecutivoQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly tenantId: string,
     public readonly periodo: string, // Ej: '2025-Q1'

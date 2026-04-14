@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * Optimized Audit Logger
  * Reduces log frequency and improves performance

@@ -16,7 +16,6 @@
  * @last_modified 2025-02-08
  */
 
-import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -29,27 +28,6 @@ const Tier0MonitoringDashboard = dynamic(
     ssr: false,
   }
 );
-
-export const metadata: Metadata = {
-  title: 'TIER 0 Monitoring Dashboard | Silexar Pulse Quantum',
-  description: 'Pentagon++ quantum-enhanced monitoring dashboard with consciousness-level system observability and transcendent performance insights.',
-  keywords: [
-    'monitoring',
-    'observability',
-    'performance metrics',
-    'system health',
-    'quantum enhancement',
-    'Pentagon++ security',
-    'TIER 0 supremacy',
-    'consciousness-level insights'
-  ],
-  robots: 'index, follow',
-  openGraph: {
-    title: 'TIER 0 Monitoring Dashboard',
-    description: 'Consciousness-level system monitoring with quantum enhancement',
-    type: 'website',
-  },
-};
 
 /**
  * TIER 0 Monitoring Dashboard Page Component

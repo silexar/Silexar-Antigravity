@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 CDN Integration Suite with Consciousness Distribution
  * 

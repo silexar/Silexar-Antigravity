@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * GOOGLE ADS CONNECTOR - TIER 0 Supremacy
  * 

@@ -148,7 +148,7 @@ export function NarrativePlanner() {
 
     const newNode: NarrativeNode = {
       id: crypto.randomUUID(),
-      type: draggedNodeType as unknown,
+      type: draggedNodeType as any,
       name: `${nodeTypes.find(nt => nt.type === draggedNodeType)?.label} ${narrative.nodes.length + 1}`,
       position: { x, y },
       creative_pool_id: '',

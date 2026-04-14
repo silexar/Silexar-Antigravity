@@ -347,7 +347,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
             <select
               className="bg-[#E8E5E0] border border-[#D4D1CC] rounded-lg px-3 py-2 text-[#2C2C2A] text-sm"
               value={selectedTimeRange}
-              onChange={(e) => setSelectedTimeRange(e.target.value as unknown)}
+              onChange={(e) => setSelectedTimeRange(e.target.value as any)}
             >
               <option value="1h">Last Hour</option>
               <option value="6h">Last 6 Hours</option>
@@ -490,7 +490,7 @@ const RealTimeMonitoringDashboard: React.FC = () => {
                 <select
                   className="bg-[#E8E5E0] border border-[#D4D1CC] rounded px-3 py-1 text-[#2C2C2A] text-sm"
                   value={alertsFilter}
-                  onChange={(e) => setAlertsFilter(e.target.value as unknown)}
+                  onChange={(e) => setAlertsFilter(e.target.value as any)}
                 >
                   <option value="all">All Alerts</option>
                   <option value="unacknowledged">Unacknowledged</option>

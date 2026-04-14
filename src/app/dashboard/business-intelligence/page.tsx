@@ -184,7 +184,7 @@ export default function BusinessIntelligencePage() {
     <div className="container mx-auto p-6 space-y-6">
       <DashboardHeader />
       
-      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as unknown)}>
+      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as any)}>
         <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-2" />

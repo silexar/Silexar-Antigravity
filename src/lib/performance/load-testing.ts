@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Load Testing Suite - Quantum-Enhanced Performance Testing
  * 

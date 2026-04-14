@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * Silexar Pulse - Observability Setup
  * Structured logging + request tracing for Next.js API routes

@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerPerformanceEquipoQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly equipoId: string,
     public readonly periodo: string

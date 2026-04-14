@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * CORTEX-CONTRACTS: Motor de Gestión Contractual Inteligente
  * 

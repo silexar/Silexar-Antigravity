@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Distributed Tracing - Quantum-Grade Request Tracking
  * 

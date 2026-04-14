@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerHistorialComisionesQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly vendedorId: string,
     public readonly anio: number

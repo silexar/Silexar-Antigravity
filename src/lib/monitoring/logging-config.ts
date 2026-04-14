@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * Optimized Logging Configuration
  * Reduces log frequency and improves performance

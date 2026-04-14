@@ -11,7 +11,7 @@
 'use client';
 
 import React, { useRef, useCallback } from 'react';
-import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual';
+import { useVirtualizer, VirtualItem, Virtualizer } from '@tanstack/react-virtual';
 import { cn } from '@/lib/utils';
 
 interface VirtualListProps<T> {
@@ -72,7 +72,7 @@ export function VirtualList<T>({
   emptyComponent,
   isLoading,
   loadingComponent,
-}: VirtualListProps<T>): JSX.Element {
+}: VirtualListProps<T>): React.ReactElement {
   const parentRef = useRef<HTMLDivElement>(null);
   
   const virtualizer = useVirtualizer({
@@ -80,7 +80,7 @@ export function VirtualList<T>({
     getScrollElement: () => parentRef.current,
     estimateSize: () => itemHeight,
     overscan,
-    onChange: useCallback((instance) => {
+    onChange: useCallback((instance: Virtualizer<HTMLDivElement, Element>) => {
       if (!onEndReached) return;
       
       const lastItem = instance.getVirtualItems().at(-1);

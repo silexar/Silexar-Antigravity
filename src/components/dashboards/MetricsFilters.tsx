@@ -184,9 +184,9 @@ export function MetricsFilters({
             <Calendar
               initialFocus
               mode="range"
-              locale={es as unknown}
+              locale={es as any}
               selected={dateRange}
-              onSelect={handleDateSelect as unknown}
+              onSelect={handleDateSelect as any}
               numberOfMonths={2}
             />
           </PopoverContent>

@@ -722,7 +722,7 @@ export class PredictiveAnalyticsManager {
     
     for (const type of insightTypes) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const insight = await this.generateInsight(type as unknown, dataSource);
+      const insight = await this.generateInsight(type as any, dataSource);
       insights.push(insight);
     }
     
@@ -955,7 +955,7 @@ export class PredictiveAnalyticsManager {
     return {
       id: insightId,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: type as unknown,
+      type: type as any,
       title: insightData.title,
       description: insightData.description,
       severity: insightData.severity,

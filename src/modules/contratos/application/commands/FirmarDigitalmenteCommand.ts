@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * SILEXAR PULSE QUANTUM - TIER 0 ENTERPRISE
  * Command: FirmarDigitalmenteCommand

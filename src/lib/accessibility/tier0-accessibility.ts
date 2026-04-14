@@ -109,7 +109,7 @@ export class Tier0AccessibilitySystem {
       this.consciousnessAnalyzer = {
         analyzeUserExperience: (element: Element) => this.analyzeConsciousnessUX(element),
         optimizeTranscendence: (violations: AccessibilityViolation[]) => this.optimizeTranscendentAccess(violations),
-        validateUniversalAccess: (dom: Document) => this.validateUniversalAccess(dom)
+        validateUniversalAccess: (dom: Document | Element) => this.validateUniversalAccess(dom as Document)
       };
 
       this.isInitialized = true;

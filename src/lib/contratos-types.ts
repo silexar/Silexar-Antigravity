@@ -75,36 +75,36 @@ export interface DrizzleContratoRepository {
 }
 
 // Value Object Factory Stubs
-export const NumeroContrato: {
+export declare const NumeroContrato: {
   generate(): NumeroContrato
 }
 
-export const TotalesContrato: {
+export declare const TotalesContrato: {
   create(bruto: number, neto: number): TotalesContrato
 }
 
-export const TerminosPago: {
+export declare const TerminosPago: {
   create(dias: number): TerminosPago
 }
 
-export const RiesgoCredito: {
+export declare const RiesgoCredito: {
   create(nivel: number): RiesgoCredito
 }
 
-export const MetricasRentabilidad: {
+export declare const MetricasRentabilidad: {
   create(metrics: Partial<MetricasRentabilidad>): MetricasRentabilidad
 }
 
-export const EstadoContrato: {
+export declare const EstadoContrato: {
   borrador(): EstadoContrato
 }
 
 // Entity Factory Stub
-export const Contrato: {
+export declare const Contrato: {
   create(data: Record<string, unknown>): Contrato
 }
 
 // Repository Constructor Stub
-export const DrizzleContratoRepository: {
+export declare const DrizzleContratoRepository: {
   new(tenantId: string): DrizzleContratoRepository
 }

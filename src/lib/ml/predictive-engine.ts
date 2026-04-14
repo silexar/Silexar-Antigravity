@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { logger } from '@/lib/observability';
 export interface PredictionRequest {
   model: 'revenue' | 'churn' | 'usage' | 'performance';

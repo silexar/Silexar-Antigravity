@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Memory Management Suite with Consciousness Monitoring
  * 

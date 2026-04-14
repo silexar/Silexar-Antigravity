@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 // Base neuromorphic styles - internal use only
-const neuromorphicStyles = {
+export const neuromorphicStyles = {
   base: 'bg-[#F0EDE8] text-slate-700 font-sans',
   embossed: 'shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]',
   debossed: 'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]',

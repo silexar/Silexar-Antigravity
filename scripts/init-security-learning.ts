@@ -94,7 +94,7 @@ async function initializeSecurityLearning() {
           message: `Auto-fixed: ${fixType}`,
           confidence: 1.0,
           originalCode: '// Original code',
-          suggestion: fix.fix,
+          suggestedFix: fix.fix,
         }
         
         // Record the success in the learning system

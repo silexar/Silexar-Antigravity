@@ -232,7 +232,7 @@ const CommandCenter: React.FC = () => {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as unknown)}
+              onClick={() => setActiveTab(tab.id as any)}
               className={cn(
                 'flex items-center space-x-2 px-4 py-3 font-medium transition-all duration-200',
                 'border-b-2',

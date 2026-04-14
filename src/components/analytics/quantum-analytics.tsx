@@ -61,12 +61,12 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
     document.head.appendChild(script);
 
     // Initialize gtag
-    (window as unknown).dataLayer = (window as unknown).dataLayer || [];
+    (window as any).dataLayer = (window as any).dataLayer || [];
     function gtag(...args: unknown[]) {
-      (window as unknown).dataLayer.push(args);
+      (window as any).dataLayer.push(args);
     }
     
-    (window as unknown).gtag = gtag;
+    (window as any).gtag = gtag;
     
     gtag('js', new Date());
     gtag('config', trackingId, {
@@ -103,7 +103,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
 
         // Send to Google Analytics
         if (typeof window !== 'undefined' && 'gtag' in window) {
-          (window as unknown).gtag('event', metric.name, {
+          (window as any).gtag('event', metric.name, {
             event_category: 'Web Vitals',
             event_label: metric.id,
             value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
@@ -127,7 +127,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
 
       // Initialize Core Web Vitals tracking
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const analyticsCallback = sendToAnalytics as unknown as (metric: unknown) => void;
+      const analyticsCallback = sendToAnalytics as any as (metric: unknown) => void;
       onCLS(analyticsCallback);
       onINP(analyticsCallback);
       onFCP(analyticsCallback);
@@ -188,7 +188,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
               };
 
               if (typeof window !== 'undefined' && 'gtag' in window) {
-                (window as unknown).gtag('event', 'slow_resource', {
+                (window as any).gtag('event', 'slow_resource', {
                   event_category: 'Performance',
                   event_label: resourceEntry.name,
                   value: Math.round(resourceEntry.duration),
@@ -229,7 +229,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
         // Track milestone scroll depths
         if ([25, 50, 75, 90, 100].includes(scrollDepth)) {
           if (typeof window !== 'undefined' && 'gtag' in window) {
-            (window as unknown).gtag('event', 'scroll_depth', {
+            (window as any).gtag('event', 'scroll_depth', {
               event_category: 'Engagement',
               event_label: `${scrollDepth}%`,
               value: scrollDepth,
@@ -246,7 +246,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
       const timeOnPage = Math.round((Date.now() - startTime) / 1000);
       
       if (typeof window !== 'undefined' && 'gtag' in window) {
-        (window as unknown).gtag('event', 'time_on_page', {
+        (window as any).gtag('event', 'time_on_page', {
           event_category: 'Engagement',
           event_label: 'seconds',
           value: timeOnPage,
@@ -264,7 +264,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
             const elementId = element.id || element.className || element.tagName;
             
             if (typeof window !== 'undefined' && 'gtag' in window) {
-              (window as unknown).gtag('event', 'element_view', {
+              (window as any).gtag('event', 'element_view', {
                 event_category: 'Visibility',
                 event_label: elementId,
                 custom_parameter_1: 'TRANSCENDENT'
@@ -376,7 +376,7 @@ export const QuantumAnalytics: React.FC<QuantumAnalyticsConfig> = ({
       }
 
       if (typeof window !== 'undefined' && 'gtag' in window) {
-        (window as unknown).gtag('event', 'connection_status', {
+        (window as any).gtag('event', 'connection_status', {
           event_category: 'System',
           event_label: status,
           custom_parameter_1: 'TRANSCENDENT'

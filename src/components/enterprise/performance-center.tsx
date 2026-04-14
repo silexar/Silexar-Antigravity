@@ -534,7 +534,7 @@ export default function PerformanceCenter() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as unknown)}
+                onClick={() => setViewMode(mode.id as any)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
                     ? 'bg-white text-blue-600 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]'

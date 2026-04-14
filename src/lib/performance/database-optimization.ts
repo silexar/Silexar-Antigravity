@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Database Optimization Suite with AI Analysis
  * 

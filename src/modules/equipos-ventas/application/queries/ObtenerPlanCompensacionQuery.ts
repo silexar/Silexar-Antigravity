@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerPlanCompensacionQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly vendedorId: string
   ) {}

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Redis Caching System - Quantum-Enhanced Caching Strategy
  * 

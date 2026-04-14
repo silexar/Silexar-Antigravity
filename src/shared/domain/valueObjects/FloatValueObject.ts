@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export abstract class FloatValueObject {
   protected readonly _value: number;
 

@@ -582,7 +582,7 @@ export function NarrativeEngagementDashboard() {
       )}
 
       {/* Visualizaciones principales */}
-      <Tabs value={viewMode} onValueChange={(value: 'flow' | 'funnel' | 'trends') => setViewMode(value)} className="space-y-4">
+      <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)} className="space-y-4">
         <TabsList>
           <TabsTrigger value="flow">Diagrama de Flujo</TabsTrigger>
           <TabsTrigger value="funnel">Embudo de Conversión</TabsTrigger>

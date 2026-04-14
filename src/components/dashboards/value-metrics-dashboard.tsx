@@ -156,7 +156,7 @@ export function ValueMetricsDashboard() {
     return {
       campaign_id: campaignId,
       campaign_name: campaign?.name || 'Campaña Desconocida',
-      billing_model: campaign?.model as unknown || 'CPVI',
+      billing_model: (campaign?.model as any) || 'CPVI',
       period: {
         start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         end_date: new Date().toISOString().split('T')[0]

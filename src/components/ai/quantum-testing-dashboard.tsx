@@ -312,7 +312,7 @@ export default function UserProfile({ userId }) {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as unknown)}
+              onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center px-4 py-2 rounded-md font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-white text-purple-600 shadow'

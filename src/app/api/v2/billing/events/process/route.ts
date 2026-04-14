@@ -4,6 +4,7 @@ import { logger } from '@/lib/observability';
 import { apiSuccess, apiUnauthorized, apiServerError, apiValidationError, getUserContext, apiForbidden } from '@/lib/api/response';
 import { checkPermission } from '@/lib/security/rbac';
 import { auditLogger } from '@/lib/security/audit-logger';
+import { AuditEventType } from '@/lib/security/audit-types';
 
 // Schema estricto — NUNCA reflejar body sin validar (reflection attack)
 const BillingEventSchema = z.object({
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Respuesta con solo campos controlados — sin ...body (reflection eliminado)
     const eventId = `evt_${crypto.randomUUID()}`;
-    await auditLogger.log({ type: 'DATA_CREATE', userId: ctx.userId, metadata: { module: 'billing-events', eventId, eventType: parsed.data.eventType, campaignId: parsed.data.campaignId } });
+    await auditLogger.log({ type: AuditEventType.DATA_CREATE, userId: ctx.userId, metadata: { module: 'billing-events', eventId, eventType: parsed.data.eventType, campaignId: parsed.data.campaignId } });
     return apiSuccess({ eventId, processed: true, eventType: parsed.data.eventType });
   } catch (error) {
     logger.error('[API/V2/Billing/Events/Process] Error:', error instanceof Error ? error : undefined);

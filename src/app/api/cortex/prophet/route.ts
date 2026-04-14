@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       // Verify JWT token — NEVER use a fallback secret; fail fast if env var is missing
       const jwtSecret = process.env.JWT_SECRET
       if (!jwtSecret || jwtSecret.length < 32) {
-        logger.error('JWT_SECRET not configured or too short — refusing to verify token', { correlationId })
+        logger.error('JWT_SECRET not configured or too short — refusing to verify token', undefined, { correlationId })
         return NextResponse.json(
           { success: false, error: { code: 'SERVER_MISCONFIGURATION', message: 'Authentication service unavailable' }, metadata: { correlationId, timestamp: new Date().toISOString() } },
           { status: 503, headers: securityHeaders }
@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
             result = await cortexProphet.predictMarketTrend(
               sp('industry'),
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              sp('timeframe') as unknown,
+              sp('timeframe') as any,
               spa('factors')
             )
             break

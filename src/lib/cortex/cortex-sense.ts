@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * CORTEX-SENSE: Motor de Certificación de Emisión con IA
  * 

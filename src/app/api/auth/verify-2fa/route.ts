@@ -39,11 +39,11 @@ export async function POST(request: NextRequest) {
 
   // ── Rate-limit: 5 attempts / minute per IP ─────────────────────────────────
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-  const limited = await authRateLimiter.isRateLimited(`verify-2fa:${ip}`)
-  if (limited) {
+  const rateLimitResult = await authRateLimiter.checkRateLimit(request)
+  if (!rateLimitResult.success) {
     return NextResponse.json(
       { success: false, error: 'Demasiados intentos. Espera un momento.' },
-      { status: 429, headers: { 'Retry-After': '60' } }
+      { status: 429, headers: { 'Retry-After': String(rateLimitResult.retryAfter) } }
     )
   }
 

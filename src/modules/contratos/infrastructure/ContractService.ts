@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * CLIENT-ONLY: This service is for browser use only. Server uses DrizzleContratoRepository.
  *

@@ -44,7 +44,7 @@ interface CSPProviderProps {
  * Wraps the application to provide CSP nonce to all child components.
  * The nonce is read from the X-CSP-Nonce header injected by middleware.
  */
-export function CSPProvider({ children, initialNonce = '' }: CSPProviderProps): JSX.Element {
+export function CSPProvider({ children, initialNonce = '' }: CSPProviderProps): React.ReactElement {
   const [nonce, setNonce] = useState<string>(initialNonce);
   const [isStrictMode, setIsStrictMode] = useState<boolean>(false);
 
@@ -93,7 +93,7 @@ export interface NoncedStyleProps {
  * Component that renders a style tag with nonce
  * Use for dynamic inline styles that need CSP compliance
  */
-export function NoncedStyle({ css, children, className }: NoncedStyleProps): JSX.Element {
+export function NoncedStyle({ css, children, className }: NoncedStyleProps): React.ReactElement {
   const { nonce } = useCSP();
 
   return (
@@ -115,7 +115,7 @@ export function NoncedStyle({ css, children, className }: NoncedStyleProps): JSX
 export function withCSPNonce<P extends object>(
   Component: React.ComponentType<P & { nonce?: string }>
 ): React.FC<P> {
-  return function WrappedComponent(props: P): JSX.Element {
+  return function WrappedComponent(props: P): React.ReactElement {
     const { nonce } = useCSP();
     return <Component {...props} nonce={nonce} />;
   };

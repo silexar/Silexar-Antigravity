@@ -15,7 +15,7 @@ import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types'
 import { authRateLimiter } from '@/lib/security/rate-limiter'
 import { sessionStore } from '@/lib/security/session-store'
-import { PasswordSecurityManager } from '@/lib/security/password-security'
+import { PasswordSecurityEngine } from '@/lib/security/password-security'
 import { logger } from '@/lib/observability';
 
 // ─── Validation ─────────────────────────────────────────────
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
     // 8. Check if password appears in known data breaches (non-blocking — warn in response)
     let passwordBreached = false
     try {
-      const breachResult = await PasswordSecurityManager.checkBreached(password)
+      const breachResult = await PasswordSecurityEngine.checkBreached(password)
       passwordBreached = breachResult.breached
       if (breachResult.breached) {
         logger.warn('[Login] Breached password used', { userId: user.id, breachCount: breachResult.count })

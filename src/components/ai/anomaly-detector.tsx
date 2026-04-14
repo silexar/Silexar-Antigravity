@@ -37,7 +37,7 @@ import {
   DollarSign,
   Lightbulb
 } from 'lucide-react';
-import { QuantumAnomalyDetector } from '@/lib/ai/anomaly-detector';
+import { getAnomalyData } from '@/app/actions/anomaly-actions';
 import type { 
   AnomalyDetection,
   DetectedAnomaly, 
@@ -80,9 +80,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
 
   const loadAnomalyData = async () => {
     try {
-      const detector = QuantumAnomalyDetector.getInstance();
-      
-      const [
+      const {
         latestDetection,
         allAnomalies,
         patternAnalysis,
@@ -90,15 +88,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
         allRecommendations,
         healthScore,
         stats
-      ] = await Promise.all([
-        detector.getLatestDetection() || detector.forceDetection(),
-        detector.getAllAnomalies(),
-        detector.getPatternAnalysis(),
-        detector.getAllAlerts(),
-        detector.getRecommendations(),
-        detector.getCurrentSystemHealth(),
-        detector.getAnomalyStatistics()
-      ]);
+      } = await getAnomalyData();
 
       setDetection(latestDetection);
       setAnomalies(allAnomalies);

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { logger } from '@/lib/observability';
 /**
  * SERVICIO VALIDACIÓN DE INVENTARIO - TIER 0

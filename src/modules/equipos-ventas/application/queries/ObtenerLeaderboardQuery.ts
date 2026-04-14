@@ -8,6 +8,7 @@
 import { IQuery } from '@/lib/cqrs';
 
 export class ObtenerLeaderboardQuery implements IQuery {
+  readonly _result?: unknown
   constructor(
     public readonly criterio: 'VENTAS' | 'PUNTOS' | 'DEALS_CERRADOS',
     public readonly periodoInicio: Date,

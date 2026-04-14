@@ -399,7 +399,7 @@ export default function MicroservicesMonitor() {
             ].map((mode) => (
               <button
                 key={mode.id}
-                onClick={() => setViewMode(mode.id as unknown)}
+                onClick={() => setViewMode(mode.id as any)}
                 className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium ${
                   viewMode === mode.id
                     ? 'bg-white text-blue-600 shadow-sm'

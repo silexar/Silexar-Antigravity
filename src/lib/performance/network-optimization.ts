@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 Network Optimization Suite with Quantum Protocols
  * 

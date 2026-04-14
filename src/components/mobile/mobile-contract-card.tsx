@@ -108,7 +108,7 @@ function MobileContractCardBase({
 
           <div className="mt-1.5 flex items-center justify-between">
             <span className="text-base font-bold text-[#2C2C2A]">
-              {formatCurrency(montoNeto, moneda)}
+              {formatCurrency(montoNeto)}
             </span>
 
             <div className="flex items-center gap-1 text-xs">

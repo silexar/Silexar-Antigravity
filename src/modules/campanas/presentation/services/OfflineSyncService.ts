@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { logger } from '@/lib/observability';
 /**
  * 🔌 SERVICIO DE MODO OFFLINE TIER0

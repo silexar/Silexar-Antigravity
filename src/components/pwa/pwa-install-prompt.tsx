@@ -61,7 +61,7 @@ export const PWAInstallPrompt: React.FC = () => {
   const checkIfInstalled = () => {
     // Check if running in standalone mode
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = (window.navigator as unknown).standalone === true;
+    const isIOSStandalone = (window.navigator as any).standalone === true;
     
     return isStandalone || isIOSStandalone;
   };
@@ -124,7 +124,7 @@ export const PWAInstallPrompt: React.FC = () => {
         
         // Track installation analytics
         if (typeof window !== 'undefined' && 'gtag' in window) {
-          (window as unknown).gtag('event', 'pwa_install', {
+          (window as any).gtag('event', 'pwa_install', {
             event_category: 'engagement',
             event_label: 'accepted',
             value: 1
@@ -155,7 +155,7 @@ export const PWAInstallPrompt: React.FC = () => {
     
     // Track dismissal analytics
     if (typeof window !== 'undefined' && 'gtag' in window) {
-      (window as unknown).gtag('event', 'pwa_install', {
+      (window as any).gtag('event', 'pwa_install', {
         event_category: 'engagement',
         event_label: 'dismissed',
         value: 0

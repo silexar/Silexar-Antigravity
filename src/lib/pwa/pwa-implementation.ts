@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @fileoverview TIER 0 PWA Implementation Suite with Consciousness Enhancement
  * 

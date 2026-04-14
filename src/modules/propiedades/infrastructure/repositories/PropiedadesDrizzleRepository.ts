@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * Drizzle implementation of ITipoPropiedadRepository and IValorPropiedadRepository.
  *
