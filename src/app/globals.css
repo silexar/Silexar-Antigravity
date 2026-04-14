@@ -1,9 +1,168 @@
-/* stylelint-disable at-rule-no-unknown */
-/* postcss-disable */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* postcss-enable */
+@import "tailwindcss";
+
+@theme {
+  /* ─── Colors ───────────────────────────────────────────────────────── */
+  --color-surface-base:   #F0EDE8;
+  --color-surface-raised: #F5F2EE;
+  --color-surface-inset:  #E8E5E0;
+
+  --color-shadow-light: #FFFFFF;
+  --color-shadow-dark:  #D4D1CC;
+
+  --color-primary-50:  #EEF3FD;
+  --color-primary-100: #D5E4FB;
+  --color-primary-200: #AACAF7;
+  --color-primary-300: #7FAFF3;
+  --color-primary-400: #5495EF;
+  --color-primary-500: #1D5AE8;
+  --color-primary-600: #1648BA;
+  --color-primary-700: #10368C;
+  --color-primary-800: #0B245E;
+  --color-primary-900: #051230;
+
+  --color-success-50:  #EAF2E3;
+  --color-success-100: #C6DDB0;
+  --color-success-200: #9DC87A;
+  --color-success-300: #74B244;
+  --color-success-400: #4E901E;
+  --color-success-500: #3B6D11;
+
+  --color-warning-50:  #FEF6E8;
+  --color-warning-100: #FDE4B5;
+  --color-warning-200: #FBD07E;
+  --color-warning-300: #F9BC47;
+  --color-warning-400: #F4AB1E;
+  --color-warning-500: #EF9F27;
+
+  --color-danger-50:  #F7E6E6;
+  --color-danger-100: #EDB5B5;
+  --color-danger-200: #E08080;
+  --color-danger-300: #D44B4B;
+  --color-danger-400: #BF3535;
+  --color-danger-500: #A32D2D;
+
+  --color-ai-50:  #EDEAFF;
+  --color-ai-100: #D3CFFE;
+  --color-ai-200: #A49FFD;
+  --color-ai-300: #766FFC;
+  --color-ai-400: #6A60E8;
+  --color-ai-500: #534AB7;
+
+  --color-text-primary:   #2C2C2A;
+  --color-text-secondary: #5F5E5A;
+  --color-text-tertiary:  #888780;
+
+  /* Neuromorphic shorthand backgrounds */
+  --color-neu-base:   #F0EDE8;
+  --color-neu-raised: #F5F2EE;
+  --color-neu-inset:  #E8E5E0;
+
+  /* ─── Box Shadows ──────────────────────────────────────────────────── */
+  --shadow-neu-raised:    6px 6px 14px #D4D1CC, -6px -6px 14px #FFFFFF;
+  --shadow-neu-raised-sm: 4px 4px 10px #D4D1CC, -4px -4px 10px #FFFFFF;
+  --shadow-neu-raised-xs: 2px 2px 6px #D4D1CC,  -2px -2px 6px #FFFFFF;
+  --shadow-neu-inset:     inset 3px 3px 8px #D4D1CC, inset -3px -3px 8px #FFFFFF;
+  --shadow-neu-inset-sm:  inset 2px 2px 5px #D4D1CC, inset -2px -2px 5px #FFFFFF;
+  --shadow-neu-pressed:   inset 2px 2px 5px #D4D1CC, inset -2px -2px 5px #FFFFFF;
+  --shadow-neu-focus:     0 0 0 3px rgba(29, 90, 232, 0.25), 4px 4px 10px #D4D1CC, -4px -4px 10px #FFFFFF;
+  --shadow-neu-flat:      0 0 0 transparent;
+  --shadow-neu-dark-raised:  6px 6px 14px #0a0a0a, -6px -6px 14px #2a2a2a;
+  --shadow-neu-dark-inset:   inset 3px 3px 8px #0a0a0a, inset -3px -3px 8px #2a2a2a;
+  --shadow-neu-dark-pressed: inset 2px 2px 5px #0a0a0a, inset -2px -2px 5px #2a2a2a;
+
+  /* ─── Border Radius ────────────────────────────────────────────────── */
+  --radius-neu:    16px;
+  --radius-neu-sm: 12px;
+  --radius-neu-xs: 8px;
+  --radius-neu-lg: 24px;
+  --radius-neu-xl: 32px;
+
+  /* ─── Typography ───────────────────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:   0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm:   0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg:   1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl:   1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl:  1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl:  1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl:  2.25rem;
+  --text-4xl--line-height: 2.5rem;
+
+  /* ─── Spacing ──────────────────────────────────────────────────────── */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-72: 18rem;
+  --spacing-84: 21rem;
+  --spacing-96: 24rem;
+
+  /* ─── Transitions ──────────────────────────────────────────────────── */
+  --transition-duration-150: 150ms;
+  --transition-duration-200: 200ms;
+  --transition-duration-300: 300ms;
+  --transition-duration-400: 400ms;
+  --transition-timing-neu: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ─── Z-Index ──────────────────────────────────────────────────────── */
+  --z-index-nav:     100;
+  --z-index-modal:   200;
+  --z-index-tooltip: 300;
+  --z-index-toast:   400;
+  --z-index-overlay: 500;
+
+  /* ─── Animations ───────────────────────────────────────────────────── */
+  --animate-fade-in:    fadeIn 0.2s ease-out forwards;
+  --animate-slide-up:   slideUp 0.3s ease-out forwards;
+  --animate-slide-down: slideDown 0.3s ease-out forwards;
+  --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
+
+  /* ─── Breakpoints ──────────────────────────────────────────────────── */
+  --breakpoint-xs: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* Legacy keyframes referenced by @theme animations */
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  0%   { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* Container utility (v4 does not include center/padding by default) */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 
 /* Light Neuromorphic OS Tier 0 palette */
 :root {
