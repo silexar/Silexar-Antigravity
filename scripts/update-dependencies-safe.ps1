@@ -58,18 +58,23 @@ if (Test-Path "package-lock.json") {
     Write-Success "package-lock.json eliminado"
 }
 
-Write-Warning "Restaurando package-lock.json desde git..."
-git checkout HEAD -- package-lock.json
+Write-Warning "Restaurando package.json desde git (por si quedo modificado)..."
+git checkout HEAD -- package.json
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "No se pudo restaurar package-lock.json desde git"
+    Write-Error "No se pudo restaurar package.json desde git"
     exit 1
 }
-Write-Success "package-lock.json restaurado"
+Write-Success "package.json restaurado"
 
-Write-Warning "Instalando dependencias actuales (npm ci)..."
-npm ci --legacy-peer-deps
+if (Test-Path "package-lock.json") {
+    Remove-Item "package-lock.json" -Force
+    Write-Success "package-lock.json eliminado para regeneracion"
+}
+
+Write-Warning "Regenerando package-lock.json e instalando dependencias (npm install)..."
+npm install --legacy-peer-deps
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "npm ci fallo. El entorno no esta limpio."
+    Write-Error "npm install fallo. Revisa los errores de compatibilidad arriba."
     exit 1
 }
 Write-Success "Dependencias instaladas correctamente"
