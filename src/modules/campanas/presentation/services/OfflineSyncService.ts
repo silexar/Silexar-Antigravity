@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { logger } from '@/lib/observability';
 /**
  * 🔌 SERVICIO DE MODO OFFLINE TIER0
@@ -32,10 +30,10 @@ export class OfflineSyncService {
     private readonly SYNC_INTERVAL = 30000; // 30 segundos
 
     private queue: OfflineQueueItem[] = [];
-    private isOnline: boolean = navigator.onLine;
+    private isOnline: boolean = typeof navigator !== 'undefined' ? navigator.onLine : false;
     private isSyncing: boolean = false;
     private lastSync: Date | null = null;
-    private syncInterval: NodeJS.Timeout | null = null;
+    private syncInterval: ReturnType<typeof setInterval> | null = null;
     private listeners: Set<(status: SyncStatus) => void> = new Set();
 
     constructor() {
@@ -96,7 +94,7 @@ export class OfflineSyncService {
             if (stored) {
                 this.queue = JSON.parse(stored).map((item: Record<string, unknown>) => ({
                     ...item,
-                    timestamp: new Date(item.timestamp)
+                    timestamp: new Date(item.timestamp as string | number | Date)
                 }));
                 logger.info(`📥 Cola cargada: ${this.queue.length} items pendientes`);
             }
@@ -128,7 +126,7 @@ export class OfflineSyncService {
         data: Record<string, unknown>
     ): Promise<string> {
         const item: OfflineQueueItem = {
-            id: `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            id: `offline_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
             timestamp: new Date(),
             action,
             entity,
@@ -217,7 +215,7 @@ export class OfflineSyncService {
     private async executeSync(item: OfflineQueueItem): Promise<void> {
         // Simulación de sincronización
         // En producción, hacer llamada real a API
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise<void>(resolve => setTimeout(resolve, 500));
 
         // Simular 10% de fallos para testing
         if (Math.random() < 0.1) {

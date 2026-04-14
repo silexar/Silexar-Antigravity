@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * Silexar Pulse - Tenant Context for RLS
  * Sets PostgreSQL session variables for Row Level Security enforcement

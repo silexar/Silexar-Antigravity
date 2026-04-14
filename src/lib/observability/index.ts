@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * Silexar Pulse - Observability Setup
  * Structured logging + request tracing for Next.js API routes
@@ -53,7 +51,7 @@ function emit(entry: LogEntry): void {
           void import('@sentry/nextjs').then((Sentry) => {
             Sentry.captureMessage(entry.message, {
               level: 'error',
-              extra: entry as Record<string, unknown>,
+              extra: entry as unknown as Record<string, unknown>,
             })
           })
         } catch {
