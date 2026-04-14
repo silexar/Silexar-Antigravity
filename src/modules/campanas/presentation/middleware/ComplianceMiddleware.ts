@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * Compliance utilities for Next.js handlers (framework-agnostic)
  */

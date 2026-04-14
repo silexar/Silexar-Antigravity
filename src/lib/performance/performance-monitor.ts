@@ -178,8 +178,8 @@ class PerformanceMonitor {
         let clsValue = 0
         const entries = list.getEntries()
         entries.forEach(entry => {
-          if (!(entry as unknown).hadRecentInput) {
-            clsValue += (entry as unknown).value
+          if (!(entry as any).hadRecentInput) {
+            clsValue += (entry as any).value
           }
         })
         this.metrics.set('cls', clsValue)
@@ -195,10 +195,10 @@ class PerformanceMonitor {
    * Setup memory monitoring
    */
   private setupMemoryMonitoring(): void {
-    if (typeof (performance as unknown).memory === 'undefined') return
+    if (typeof (performance as any).memory === 'undefined') return
 
     setInterval(() => {
-      const memory = (performance as unknown).memory
+      const memory = (performance as any).memory
       this.metrics.set('memory', {
         usedJSHeapSize: memory.usedJSHeapSize,
         totalJSHeapSize: memory.totalJSHeapSize,

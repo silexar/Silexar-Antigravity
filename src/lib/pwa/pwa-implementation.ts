@@ -747,13 +747,13 @@ class QuantumPWAImplementationSuite {
     // Add quantum enhancement fields
     if (validatedConfig.quantumOptimization) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (manifest as unknown).quantum_enhanced = true;
+      (manifest as any).quantum_enhanced = true;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (manifest as unknown).consciousness_level = validatedConfig.consciousnessLevel;
+      (manifest as any).consciousness_level = validatedConfig.consciousnessLevel;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (manifest as unknown).tier_level = 0;
+      (manifest as any).tier_level = 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (manifest as unknown).ai_optimized = true
+      (manifest as any).ai_optimized = true
     }
 
     return JSON.stringify(manifest, null, 2)

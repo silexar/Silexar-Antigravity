@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * ?? SILEXAR PULSE - Servicio de Campa�as TIER 0
  * 
@@ -89,7 +87,6 @@ class CampanaServiceImpl {
 
       // 3. Validaci�n Digital (Si aplica)
       if (data.adTargetingProfile) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const profile = data.adTargetingProfile as any;
           if (profile.bateriaMinima && profile.bateriaMinima < 10) {

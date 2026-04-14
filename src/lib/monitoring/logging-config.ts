@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * Optimized Logging Configuration
  * Reduces log frequency and improves performance
@@ -28,7 +26,7 @@ export interface LoggingConfig {
 
 export const defaultLoggingConfig: LoggingConfig = {
   enabled: true,
-  environment: (process.env.NODE_ENV as unknown) || 'development',
+  environment: (process.env.NODE_ENV as any) || 'development',
   levels: {
     initialization: process.env.ENABLE_AI_INITIALIZATION_LOGS === 'true' || process.env.NODE_ENV === 'development',
     routine: process.env.ENABLE_AI_ROUTINE_LOGS === 'true' || false,

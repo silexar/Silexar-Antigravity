@@ -139,9 +139,9 @@ class SystemMonitor {
   private collectMemoryMetrics(): SystemMetrics['memory'] {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ('memory' in performance && typeof (performance as unknown).memory === 'object') {
+      if ('memory' in performance && typeof (performance as any).memory === 'object') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const memory = (performance as unknown).memory
+        const memory = (performance as any).memory
         const used = memory.usedJSHeapSize || 0
         const total = memory.totalJSHeapSize || 0
         const limit = memory.jsHeapSizeLimit || 0
