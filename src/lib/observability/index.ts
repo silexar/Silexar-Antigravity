@@ -73,22 +73,44 @@ function emit(entry: LogEntry): void {
   }
 }
 
-export const logger = {
+interface Logger {
+  debug: (message: string, metadata?: Record<string, unknown>) => void
+  info: (message: string, metadata?: Record<string, unknown>) => void
+  warn: (message: string, metadata?: Record<string, unknown>) => void
+  error: {
+    (message: string, metadata: Record<string, unknown>): void
+    (message: string, error?: Error, metadata?: Record<string, unknown>): void
+  }
+}
+
+function logError(message: string, metadata: Record<string, unknown>): void
+function logError(message: string, error?: Error, metadata?: Record<string, unknown>): void
+function logError(
+  message: string,
+  errorOrMetadata?: Error | Record<string, unknown>,
+  metadata?: Record<string, unknown>
+): void {
+  const isError = errorOrMetadata instanceof Error
+  const error = isError ? errorOrMetadata : undefined
+  const meta = isError ? metadata : errorOrMetadata
+  emit(
+    createLogEntry('error', message, {
+      ...meta,
+      errorName: error?.name,
+      errorMessage: error?.message,
+      errorStack: process.env.NODE_ENV === 'development' ? error?.stack : undefined,
+    })
+  )
+}
+
+export const logger: Logger = {
   debug: (message: string, metadata?: Record<string, unknown>) =>
     emit(createLogEntry('debug', message, metadata)),
   info: (message: string, metadata?: Record<string, unknown>) =>
     emit(createLogEntry('info', message, metadata)),
   warn: (message: string, metadata?: Record<string, unknown>) =>
     emit(createLogEntry('warn', message, metadata)),
-  error: (message: string, error?: Error, metadata?: Record<string, unknown>) =>
-    emit(
-      createLogEntry('error', message, {
-        ...metadata,
-        errorName: error?.name,
-        errorMessage: error?.message,
-        errorStack: process.env.NODE_ENV === 'development' ? error?.stack : undefined,
-      })
-    ),
+  error: logError,
 }
 
 // ─── Request Tracing ─────────────────────────────────────────

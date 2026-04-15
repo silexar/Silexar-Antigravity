@@ -772,7 +772,7 @@ export class AttributionEngine {
         }
 
         // Agrupar por plataforma y calcular métricas
-        const platformMetrics: Record<string, unknown> = {}
+        const platformMetrics: Record<string, { events: number; journeys: number; conversions: number; conversion_rate: number; avg_value: number }> = {}
         const crossPlatformJourneys = this.findCrossPlatformJourneys()
 
         digitalPlatforms.forEach(platform => {
@@ -795,8 +795,7 @@ export class AttributionEngine {
 
         // Encontrar la plataforma con mejor performance
         const bestPlatform = Object.entries(platformMetrics)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .sort(([, a], [, b]) => (b as unknown).conversion_rate - (a as unknown).conversion_rate)[0]
+            .sort(([, a], [, b]) => b.conversion_rate - a.conversion_rate)[0]
 
         if (!bestPlatform) {
             return null
@@ -819,7 +818,7 @@ export class AttributionEngine {
             },
             recommendations: [
                 {
-                    action: `Incrementar inversión en ${bestPlatform[0]} que muestra ${Math.round((bestPlatform[1] as unknown).conversion_rate)}% de conversión`,
+                    action: `Incrementar inversión en ${bestPlatform[0]} que muestra ${Math.round(bestPlatform[1].conversion_rate)}% de conversión`,
                     priority: 'HIGH',
                     estimated_impact: 35
                 },

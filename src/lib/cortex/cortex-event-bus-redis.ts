@@ -94,11 +94,11 @@ export class RedisEventBus implements CortexEventBus {
       };
 
       // Crear cliente para publicar
-      this.publisher = redis.createClient(clientOptions) as unknown as RedisClientType;
+      this.publisher = redis.createClient(clientOptions as any) as unknown as RedisClientType;
       await this.publisher.connect();
 
       // Crear cliente separado para suscripciones
-      this.subscriber = redis.createClient(clientOptions) as unknown as RedisClientType;
+      this.subscriber = redis.createClient(clientOptions as any) as unknown as RedisClientType;
       await this.subscriber.connect();
 
       // Configurar manejo de errores

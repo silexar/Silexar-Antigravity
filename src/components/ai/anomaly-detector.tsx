@@ -264,7 +264,7 @@ export default function AnomalyDetectorComponent({ className = '' }: AnomalyDete
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as unknown)}
+              onClick={() => setActiveTab(id as 'overview' | 'anomalies' | 'patterns' | 'alerts' | 'recommendations')}
               className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === id
                   ? 'border-red-500 text-red-600'

@@ -9,6 +9,7 @@
  *   npx tsx scripts/init-security-learning.ts
  */
 
+import crypto from 'crypto'
 import { promises as fs } from 'fs'
 import { resolve } from 'path'
 import { SecurityLearning } from '../src/lib/security/auto-fix/SecurityLearning'
@@ -85,6 +86,7 @@ async function initializeSecurityLearning() {
       try {
         // Create a mock issue for learning
         const issue: SecurityIssue = {
+          id: crypto.randomUUID(),
           type: issueType,
           filePath: fix.file,
           severity: fixType === 'console-log' ? 'LOW' : 

@@ -87,8 +87,8 @@ export function VirtualList<T>({
       if (!lastItem) return;
       
       const totalSize = instance.getTotalSize();
-      const scrollOffset = instance.scrollOffset;
-      const scrollHeight = instance.scrollRect.height;
+      const scrollOffset = instance.scrollOffset ?? 0;
+      const scrollHeight = instance.scrollRect?.height ?? 0;
       
       if (totalSize - scrollOffset - scrollHeight < endReachedThreshold) {
         onEndReached();
