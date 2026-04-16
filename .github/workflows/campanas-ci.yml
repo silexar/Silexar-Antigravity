@@ -23,8 +23,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: NODE_OPTIONS="--max-old-space-size=8192" npm run type-check
-      - run: npm run test:campanas
+      - run: NODE_OPTIONS="--max-old-space-size=8192" npm run check
+      - run: npm run test -- --run
   api-tests:
     runs-on: ubuntu-latest
     steps:
@@ -34,4 +34,4 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: npm run test:api:campanas || echo "API tests are optional in CI (Next runtime mocks required)"
+      - run: echo "API tests are optional in CI (Next runtime mocks required)"
