@@ -17,10 +17,58 @@ import { campanas } from './campanas-schema';
 import { contratos } from './contratos-schema';
 
 // ═══════════════════════════════════════════════════════════════
-// ENUMS
+// ENUMS — UNIFIED (Radio Tradicional + Digital)
 // ═══════════════════════════════════════════════════════════════
 
-export const tipoCunaEnum = pgEnum('tipo_cuna', ['spot', 'mencion', 'auspicio', 'jingle', 'promo', 'institucional']);
+/**
+ * TipoMaterial unificado que cubre:
+ * - RADIO TRADICIONAL (FM): spot, mencion, auspicio, jingle, promo, institucional
+ *   + legacy frontend aliases: audio, presentacion, cierre, promo_ida
+ * - DIGITAL AUDIO: audio_streaming, audio_podcast
+ * - DIGITAL VIDEO: video_preroll, video_midroll, video_bumper, video_outstream, video_vertical
+ * - DIGITAL DISPLAY: banner_static, banner_animated, banner_html5, banner_responsive
+ * - DIGITAL SOCIAL: story_ad, reel_ad, carousel_ad, native_ad
+ * - DIGITAL INTERACTIVO: playable_ad, ar_experience, lead_form
+ */
+export const tipoMaterialEnum = pgEnum('tipo_material', [
+  // Radio tradicional (FM)
+  'spot',
+  'mencion',
+  'auspicio',
+  'jingle',
+  'promo',
+  'institucional',
+  // Legacy frontend aliases (mapped to canonical types)
+  'audio',
+  'presentacion',
+  'cierre',
+  'promo_ida',
+  // Digital Audio
+  'audio_streaming',
+  'audio_podcast',
+  // Digital Video
+  'video_preroll',
+  'video_midroll',
+  'video_bumper',
+  'video_outstream',
+  'video_vertical',
+  // Digital Display
+  'banner_static',
+  'banner_animated',
+  'banner_html5',
+  'banner_responsive',
+  // Digital Social
+  'story_ad',
+  'reel_ad',
+  'carousel_ad',
+  'native_ad',
+  // Digital Interactivo
+  'playable_ad',
+  'ar_experience',
+  'lead_form'
+]);
+
+export const tipoCunaEnum = tipoMaterialEnum; // Alias for backward compatibility
 export const estadoCunaEnum = pgEnum('estado_cuna', ['borrador', 'pendiente_aprobacion', 'aprobada', 'en_aire', 'pausada', 'finalizada', 'rechazada']);
 export const formatoAudioEnum = pgEnum('formato_audio', ['mp3', 'wav', 'aac', 'flac', 'ogg']);
 
@@ -33,22 +81,22 @@ export const cunas = pgTable('cunas', {
   id: uuid('id').primaryKey().defaultRandom(),
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   codigo: varchar('codigo', { length: 30 }).notNull(), // Código único ej: "CUN-2025-0001"
-  
+
   // Relaciones Globales (Ecosistema)
   anuncianteId: uuid('anunciante_id').references(() => anunciantes.id).notNull(),
   campanaId: uuid('campana_id').references(() => campanas.id), // Conexión directa a Campaña
   contratoId: uuid('contrato_id').references(() => contratos.id), // Conexión a Contrato
-  
+
   // Información de la cuña
   nombre: varchar('nombre', { length: 255 }).notNull(), // Nombre descriptivo
-  tipoCuna: tipoCunaEnum('tipo_cuna').default('spot').notNull(),
+  tipoCuna: tipoMaterialEnum('tipo_cuna').default('spot').notNull(),
   descripcion: text('descripcion'),
-  
+
   // Conexión a Productos (Futuro Módulo)
   productoId: uuid('producto_id'), // Placeholder: references(() => productos.id)
   productoNombre: varchar('producto', { length: 255 }), // Fallback visual
   campanaNombre: varchar('campana', { length: 255 }), // Legacy/Fallback visual
-  
+
   // Información del archivo de audio
   pathAudio: text('path_audio').notNull(), // Ruta en Google Cloud Storage
   nombreArchivoOriginal: varchar('nombre_archivo_original', { length: 255 }),
@@ -58,30 +106,30 @@ export const cunas = pgTable('cunas', {
   tamanoBytes: integer('tamano_bytes'),
   bitrate: integer('bitrate'), // Kbps
   sampleRate: integer('sample_rate'), // Hz
-  
+
   // Versionado
   version: integer('version').default(1).notNull(),
   esVersionActual: boolean('es_version_actual').default(true).notNull(),
   versionAnteriorId: uuid('version_anterior_id'), // Para historial de versiones
-  
+
   // Vigencia
   fechaInicioVigencia: timestamp('fecha_inicio_vigencia'),
   fechaFinVigencia: timestamp('fecha_fin_vigencia'),
-  
+
   // Estado y aprobación
   estado: estadoCunaEnum('estado').default('borrador').notNull(),
   aprobadoPorId: uuid('aprobado_por_id').references(() => users.id),
   fechaAprobacion: timestamp('fecha_aprobacion'),
   motivoRechazo: text('motivo_rechazo'),
-  
+
   // Metadatos adicionales
   fingerprint: varchar('fingerprint', { length: 64 }), // Audio fingerprint para detección
   transcripcion: text('transcripcion'), // Transcripción del audio (Speech-to-Text)
   idioma: varchar('idioma', { length: 10 }).default('es'),
-  
+
   // Notas
   notas: text('notas'),
-  
+
   // Auditoría
   subidoPorId: uuid('subido_por_id').references(() => users.id).notNull(),
   fechaSubida: timestamp('fecha_subida').defaultNow().notNull(),
@@ -117,22 +165,22 @@ export const reproduccionesCuna = pgTable('reproducciones_cuna', {
   id: uuid('id').primaryKey().defaultRandom(),
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   cunaId: uuid('cuna_id').references(() => cunas.id, { onDelete: 'cascade' }).notNull(),
-  
+
   // Información de reproducción
   fechaHoraReproduccion: timestamp('fecha_hora_reproduccion').notNull(),
   emisoraId: uuid('emisora_id'), // Referencia a la tabla emisoras
   programaId: uuid('programa_id'),
   bloqueId: uuid('bloque_id'),
-  
+
   // Detección
   detectadoPorShazam: boolean('detectado_por_shazam').default(false),
   confianzaDeteccion: integer('confianza_deteccion'), // Porcentaje 0-100
-  
+
   // Verificación
   verificado: boolean('verificado').default(false),
   verificadoPorId: uuid('verificado_por_id').references(() => users.id),
   fechaVerificacion: timestamp('fecha_verificacion'),
-  
+
   // Auditoría
   fechaRegistro: timestamp('fecha_registro').defaultNow().notNull()
 }, (table) => ({
@@ -187,7 +235,8 @@ export const reproduccionesCunaRelations = relations(reproduccionesCuna, ({ one 
 export type Cuna = typeof cunas.$inferSelect;
 export type NewCuna = typeof cunas.$inferInsert;
 export type ReproduccionCuna = typeof reproduccionesCuna.$inferSelect;
-export type TipoCuna = 'spot' | 'mencion' | 'auspicio' | 'jingle' | 'promo' | 'institucional';
+export type TipoMaterial = typeof tipoMaterialEnum.enumValues[number];
+export type TipoCuna = TipoMaterial; // Alias for backward compatibility
 export type EstadoCuna = 'borrador' | 'pendiente_aprobacion' | 'aprobada' | 'en_aire' | 'pausada' | 'finalizada' | 'rechazada';
 export type FormatoAudio = 'mp3' | 'wav' | 'aac' | 'flac' | 'ogg';
 
@@ -253,3 +302,76 @@ export function isCunaVigente(cuna: { fechaInicioVigencia: Date | null; fechaFin
   if (cuna.fechaFinVigencia && now > cuna.fechaFinVigencia) return false;
   return true;
 }
+
+/**
+ * Mapea tipos legacy del frontend a tipos canónicos del DB.
+ * - audio → spot
+ * - presentacion → spot
+ * - cierre → spot
+ * - promo_ida → promo
+ */
+export function mapLegacyTipo(tipo: string): TipoMaterial {
+  const legacyMap: Record<string, TipoMaterial> = {
+    audio: 'spot',
+    presentacion: 'spot',
+    cierre: 'spot',
+    promo_ida: 'promo',
+  };
+  return legacyMap[tipo] ?? (tipo as TipoMaterial);
+}
+
+/**
+ * Categoriza un tipo de material en su dominio (radio, digital-audio, etc.)
+ */
+export function getCategoriaTipo(tipo: TipoMaterial): 'radio' | 'digital_audio' | 'digital_video' | 'digital_display' | 'digital_social' | 'digital_interactivo' {
+  const categories: Record<TipoMaterial, ReturnType<typeof getCategoriaTipo>> = {
+    spot: 'radio', mencion: 'radio', auspicio: 'radio', jingle: 'radio',
+    promo: 'radio', institucional: 'radio',
+    audio: 'radio', presentacion: 'radio', cierre: 'radio', promo_ida: 'radio',
+    audio_streaming: 'digital_audio', audio_podcast: 'digital_audio',
+    video_preroll: 'digital_video', video_midroll: 'digital_video',
+    video_bumper: 'digital_video', video_outstream: 'digital_video',
+    video_vertical: 'digital_video',
+    banner_static: 'digital_display', banner_animated: 'digital_display',
+    banner_html5: 'digital_display', banner_responsive: 'digital_display',
+    story_ad: 'digital_social', reel_ad: 'digital_social',
+    carousel_ad: 'digital_social', native_ad: 'digital_social',
+    playable_ad: 'digital_interactivo', ar_experience: 'digital_interactivo',
+    lead_form: 'digital_interactivo',
+  };
+  return categories[tipo];
+}
+
+/**
+ * Etiquetas legibles para cada tipo de material
+ */
+export const TIPO_MATERIAL_LABELS: Record<TipoMaterial, string> = {
+  spot: 'Spot',
+  mencion: 'Mención',
+  auspicio: 'Auspicio',
+  jingle: 'Jingle',
+  promo: 'Promo',
+  institucional: 'Institucional',
+  audio: 'Audio',
+  presentacion: 'Presentación',
+  cierre: 'Cierre',
+  promo_ida: 'Promo IDA',
+  audio_streaming: 'Audio Streaming',
+  audio_podcast: 'Audio Podcast',
+  video_preroll: 'Video Pre-roll',
+  video_midroll: 'Video Mid-roll',
+  video_bumper: 'Video Bumper',
+  video_outstream: 'Video Outstream',
+  video_vertical: 'Video Vertical',
+  banner_static: 'Banner Static',
+  banner_animated: 'Banner Animado',
+  banner_html5: 'Banner HTML5',
+  banner_responsive: 'Banner Responsive',
+  story_ad: 'Story Ad',
+  reel_ad: 'Reel Ad',
+  carousel_ad: 'Carousel Ad',
+  native_ad: 'Native Ad',
+  playable_ad: 'Playable Ad',
+  ar_experience: 'AR Experience',
+  lead_form: 'Lead Form',
+};

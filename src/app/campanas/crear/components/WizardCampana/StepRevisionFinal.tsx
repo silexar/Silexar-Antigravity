@@ -14,7 +14,7 @@
 'use client'
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { WizardStepProps } from './types/wizard.types'
+import { WizardStepProps, EspecificacionDigitalData } from './types/wizard.types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-interface RevisionData {
+interface RevisionData extends Partial<EspecificacionDigitalData> {
   nombre?: string
   anunciante?: string
   producto?: string
@@ -50,6 +50,7 @@ interface RevisionData {
   tipoPedido?: string
   tipoPauta?: string
   categoria?: string
+  medio?: 'fm' | 'digital' | 'hibrido'
 }
 
 interface StepRevisionProps extends WizardStepProps {
@@ -127,7 +128,8 @@ export const StepRevisionFinal: React.FC<StepRevisionProps> = ({
           fechaInicio: data.fechaInicio,
           fechaFin: data.fechaFin,
           presupuestoTotal: data.valorBruto || 0,
-          propiedades: propiedades
+          propiedades: propiedades,
+          medio: data.medio || 'fm'
         })
       });
 
@@ -139,7 +141,34 @@ export const StepRevisionFinal: React.FC<StepRevisionProps> = ({
 
       setCreado(true)
       setMostrarConfirmacion(false)
-      
+
+      // Crear especificación digital si aplica (no bloquear redirección en caso de error)
+      if (
+        data.medio !== 'fm' &&
+        (data.plataformas?.length || data.presupuestoDigital || data.objetivos)
+      ) {
+        try {
+          await fetch('/api/digital/especificaciones', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              campanaId: result.data?.id,
+              plataformas: data.plataformas || [],
+              presupuestoDigital: data.presupuestoDigital,
+              moneda: data.moneda || 'CLP',
+              tipoPresupuesto: data.tipoPresupuesto || 'total',
+              objetivos: data.objetivos || {},
+              trackingLinks: data.trackingLinks || [],
+              configuracionTargeting: data.configuracionTargeting || {},
+              estado: 'borrador',
+              notas: data.notas || '',
+            }),
+          })
+        } catch {
+          // Silencioso: no bloquear redirección
+        }
+      }
+
       setTimeout(() => {
         router.push(`/campanas?success=true&id=${result.data?.id || 'CMP-2025-NEW'}`)
       }, 1500)

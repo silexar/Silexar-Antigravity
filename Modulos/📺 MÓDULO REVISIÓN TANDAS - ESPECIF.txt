@@ -1,0 +1,773 @@
+📺 MÓDULO REVISIÓN TANDAS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO REVISIÓN TANDAS?
+El Módulo Revisión Tandas es el cerebro de optimización final de programación radial de Silexar Pulse. Basado en la interfaz familiar tipo MediaSales pero potenciado con IA, presenta al programador una pauta pre-optimizada al 99% donde cada bloque de 300 segundos está perfectamente distribuido en tandas (Prime, Auspicio, Menciones, etc.) con rotación automática diaria. El sistema es tan robusto que el usuario solo interviene en casos excepcionales (<1%), mientras que Cortex-Scheduling maneja distribución, rotación y optimización automática.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Traffic Manager/Programador, este módulo es mi estación de control final:
+
+Reviso tandas pre-optimizadas por IA en interfaz familiar pero inteligente
+Veo código de colores automático: Rojo=Prime, Azul=Auspicio, Verde=Repartido
+Realizo ajustes mínimos solo cuando aparecen alertas rojas de conflicto
+Muevo spots entre tandas con drag & drop y validación automática de segundos
+Garantizo rotación diaria automática sin spots "pegados" en misma posición
+
+Como Supervisor de Programación, superviso automatización:
+
+Verifico que algoritmos de rotación estén distribuyendo equitativamente
+Valido que bloques de 300 segundos estén optimizados automáticamente
+Superviso métricas de eficiencia: >99% automatización exitosa
+Confirmo que separaciones comerciales se respetan automáticamente
+
+Como Director de Operaciones, confío en robustez:
+
+Recibo reportes que muestran <1% intervención manual requerida
+Valido que calidad de programación sea superior con automatización
+Superviso satisfacción comercial mejorada por rotación equitativa
+Garantizo operación 24/7 sin dependencia de micromanagement
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Esqueleto de Emisión: Distribución automática en estructura 300s predefinida
+Módulo Campañas: Herencia de reglas de posición fija y exclusividades
+Módulo Propiedades: Aplicación de configuraciones específicas por emisora
+Cortex-Scheduling: IA que optimiza 99% automáticamente antes de vista humana
+Cortex-Rotation: IA que garantiza que spots rotan posición diariamente
+Cortex-Conflict: IA que detecta y resuelve conflictos comerciales automáticamente
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/revision-tandas/
+├── domain/
+│   ├── entities/
+│   │   ├── RevisionTandaDiaria.ts (Entidad principal estilo MediaSales)
+│   │   ├── BloqueEmision300s.ts (Bloque exacto 300 segundos)
+│   │   ├── TandaEspecifica.ts (Prime, Auspicio, Repartido, etc.)
+│   │   ├── SpotEnTanda.ts (Spot con posición y rotación)
+│   │   ├── RotacionDiariaAutomatica.ts (Sistema anti-pegado spots)
+│   │   ├── OptimizacionPrevia99.ts (Resultado pre-optimización IA)
+│   │   ├── ConflictoComercialDetectado.ts (Competencia identificada)
+│   │   ├── ExclusividadAutomatica.ts (Separaciones auto-aplicadas)
+│   │   ├── SaturacionSegundos300.ts (Control capacidad exacta)
+│   │   ├── MovimientoSpotInteligente.ts (Drag&drop con validación)
+│   │   ├── ValidacionMovimientoAvanzada.ts (Pre-validación automática)
+│   │   ├── AlertaConflictoVisual.ts (Indicadores rojos/amarillos)
+│   │   ├── HistorialRotacionCompleto.ts (Tracking posiciones diarias)
+│   │   ├── ExcepcionPosicionFija.ts (Iniciadores tanda, etc.)
+│   │   ├── MetricasRobustez.ts (KPIs de automatización)
+│   │   ├── ConfiguracionTandasVisual.ts (Setup códigos color)
+│   │   ├── AlgoritmoDistribucionIA.ts (Lógica pre-optimización)
+│   │   ├── ValidadorIntegridadCompleta.ts (Verificación 300s exactos)
+│   │   ├── BackupEstadoSeguro.ts (Respaldo antes cualquier cambio)
+│   │   ├── AuditoriaMovimientosDetallada.ts (Log toda modificación)
+│   │   ├── ReporteOptimizacionDiario.ts (Performance automatización)
+│   │   ├── InterfaceMediaSalesStyle.ts (Vista familiar mejorada)
+│   │   ├── GridVisualizacionBloques.ts (Vista izquierda bloques)
+│   │   ├── PanelDetalleBloque.ts (Vista derecha detalle)
+│   │   └── SistemaCodigosColor.ts (Prime=Rojo, Auspicio=Azul, etc.)
+│   ├── value-objects/
+│   │   ├── BloqueHorario300s.ts (06:29:00, 07:29:00, etc.)
+│   │   ├── TipoTandaConColor.ts (Prime=Rojo, Auspicio=Azul, etc.)
+│   │   ├── PosicionRotativa.ts (1°→2°→3° automáticamente)
+│   │   ├── Segundos300Exactos.ts (Control precisión bloque)
+│   │   ├── SegundosDisponiblesReal.ts (300 - ocupados)
+│   │   ├── FechaRevisionSiguiente.ts (Mañana por defecto)
+│   │   ├── EmisoraSeleccionada.ts (Radio seleccionada)
+│   │   ├── EstadoOptimizacion99.ts (99% auto, 1% manual)
+│   │   ├── TipoMovimientoValidado.ts (Mismo bloque, otro bloque)
+│   │   ├── NivelConflictoVisual.ts (Rojo=Crítico, Amarillo=Medio)
+│   │   ├── ModoRotacionDiaria.ts (Automático siempre activo)
+│   │   ├── PrioridadSpotComercial.ts (Cliente AAA, A, B)
+│   │   ├── ExclusividadCategoriaAuto.ts (Auto-separación)
+│   │   ├── DiasRotacionCompleta.ts (Ciclo completo rotación)
+│   │   ├── PorcentajeRobustez.ts (% automatización exitosa)
+│   │   ├── ResultadoValidacionIA.ts (IA pre-valida movimientos)
+│   │   ├── ConfiguracionRotacionIA.ts (Parámetros auto-rotación)
+│   │   ├── EstadoTandaVisual.ts (Verde=OK, Amarillo=Atención, Rojo=Problema)
+│   │   ├── IndicadorVariedadDiaria.ts (Métrica anti-repetición)
+│   │   ├── ScoreOptimizacionIA.ts (Calidad pre-optimización)
+│   │   ├── CodigoSPUnico.ts (SP62577, SP60677, etc.)
+│   │   ├── TituloSpotCompleto.ts (Descripción completa spot)
+│   │   ├── CuentaCliente.ts (Cuenta asignada como en MediaSales)
+│   │   ├── HoraExactaEmision.ts (Hora precisa emisión)
+│   │   └── EstadoDragDrop.ts (Estado arrastrar y soltar)
+│   └── repositories/
+│       ├── IRevisionTandaRepository.ts
+│       ├── IBloqueEmision300sRepository.ts
+│       ├── ITandaEspecificaRepository.ts
+│       ├── ISpotEnTandaRepository.ts
+│       ├── IRotacionDiariaRepository.ts
+│       ├── IOptimizacion99Repository.ts
+│       ├── IConflictoComercialRepository.ts
+│       ├── IMovimientoSpotRepository.ts
+│       ├── IHistorialRotacionRepository.ts
+│       ├── IConfiguracionTandasRepository.ts
+│       ├── IMetricasRobustezRepository.ts
+│       ├── IAuditoriaMovimientosRepository.ts
+│       ├── IInterfaceVisualRepository.ts
+│       └── ISistemaCodigosColorRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── GenerarRevisionTandaDiariaCommand.ts
+│   │   ├── PreOptimizar99PorCientoCommand.ts
+│   │   ├── EjecutarRotacionDiariaCommand.ts
+│   │   ├── MoverSpotDragDropCommand.ts
+│   │   ├── ValidarMovimientoPreCommand.ts
+│   │   ├── ResolverConflictoAutomaticoCommand.ts
+│   │   ├── AplicarExclusividadesAutoCommand.ts
+│   │   ├── RecalcularSegundos300Command.ts
+│   │   ├── CrearBackupEstadoCommand.ts
+│   │   ├── RestaurarBackupCommand.ts
+│   │   ├── ConfigurarRotacionDiariaCommand.ts
+│   │   ├── OptimizarDistribucionIACommand.ts
+│   │   ├── ValidarIntegridad300sCommand.ts
+│   │   ├── GenerarReporteRobustezCommand.ts
+│   │   ├── ConfigurarExcepcionesFijasCommand.ts
+│   │   ├── SincronizarEsqueletoEmisionCommand.ts
+│   │   ├── ProcesarCambioManualCommand.ts
+│   │   ├── ActualizarCodigosColorCommand.ts
+│   │   ├── GenerarVistaMediaSalesCommand.ts
+│   │   ├── RefrescarGridBloquesCommand.ts
+│   │   ├── ActualizarPanelDetalleCommand.ts
+│   │   ├── ProcesarSeleccionBloqueCommand.ts
+│   │   ├── ValidarCapacidadTandaCommand.ts
+│   │   └── OptimizarVariedadDiariaCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerRevisionTandaDiariaQuery.ts
+│   │   ├── CargarBloques300sQuery.ts
+│   │   ├── ObtenerDetallesBloqueQuery.ts
+│   │   ├── ValidarEstadoOptimizacionQuery.ts
+│   │   ├── ObtenerConflictosActivosQuery.ts
+│   │   ├── GenerarVistaGridBloquesQuery.ts
+│   │   ├── ObtenerPanelDetalleQuery.ts
+│   │   ├── ValidarSaturacionTandasQuery.ts
+│   │   ├── ObtenerHistorialRotacionQuery.ts
+│   │   ├── GenerarMetricasRobustezQuery.ts
+│   │   ├── ObtenerConfiguracionVisualQuery.ts
+│   │   ├── ValidarMovimientoPosibleQuery.ts
+│   │   ├── ObtenerEmisorasDisponiblesQuery.ts
+│   │   ├── CargarFechasRevisionQuery.ts
+│   │   ├── GenerarReporteDiarioQuery.ts
+│   │   ├── ObtenerAlertasConflictoQuery.ts
+│   │   ├── ValidarIntegridadSistemaQuery.ts
+│   │   ├── ObtenerEstadisticasRotacionQuery.ts
+│   │   ├── GenerarAnalisisVariedadQuery.ts
+│   │   ├── ObtenerBackupsDisponiblesQuery.ts
+│   │   ├── ValidarCoherenciaHorariosQuery.ts
+│   │   ├── GenerarVistaComparativaQuery.ts
+│   │   └── ObtenerProyeccionOptimizacionQuery.ts
+│   └── handlers/
+│       ├── RevisionTandaCommandHandler.ts
+│       ├── OptimizacionPreviaHandler.ts
+│       ├── RotacionDiariaHandler.ts
+│       ├── MovimientoSpotHandler.ts
+│       ├── ConflictoResolutionHandler.ts
+│       ├── ValidacionIntegridadHandler.ts
+│       ├── InterfaceVisualHandler.ts
+│       ├── GridVisualizacionHandler.ts
+│       ├── PanelDetalleHandler.ts
+│       ├── CodigosColorHandler.ts
+│       ├── BackupRecoveryHandler.ts
+│       ├── MetricasRobustezHandler.ts
+│       ├── AuditoriaHandler.ts
+│       ├── ConfiguracionHandler.ts
+│       └── OptimizacionIAHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaRevisionTandaRepository.ts
+│   │   ├── PrismaBloqueEmisionRepository.ts
+│   │   ├── PrismaTandaEspecificaRepository.ts
+│   │   ├── PrismaSpotEnTandaRepository.ts
+│   │   ├── PrismaRotacionRepository.ts
+│   │   ├── PrismaOptimizacionRepository.ts
+│   │   ├── PrismaConflictoRepository.ts
+│   │   ├── PrismaMovimientoRepository.ts
+│   │   ├── PrismaConfiguracionRepository.ts
+│   │   ├── PrismaMetricasRepository.ts
+│   │   ├── PrismaAuditoriaRepository.ts
+│   │   └── PrismaInterfaceRepository.ts
+│   ├── external/
+│   │   ├── CortexSchedulingAdvancedService.ts (IA pre-optimización)
+│   │   ├── CortexRotationDailyService.ts (IA rotación automática)
+│   │   ├── CortexConflictDetectionService.ts (IA detección conflictos)
+│   │   ├── MediaSalesStyleRenderService.ts (Render estilo familiar)
+│   │   ├── DragDropValidationService.ts (Validación arrastrar)
+│   │   ├── GridVisualizationService.ts (Render grid bloques)
+│   │   ├── PanelDetailRenderService.ts (Render panel detalle)
+│   │   ├── ColorCodingSystemService.ts (Sistema códigos color)
+│   │   ├── ConflictAlertingService.ts (Alertas visuales)
+│   │   ├── RotationTrackingService.ts (Tracking rotaciones)
+│   │   ├── BackupAutomationService.ts (Backups automáticos)
+│   │   ├── IntegrityValidationService.ts (Validación integridad)
+│   │   ├── MetricsCollectionService.ts (Recolección métricas)
+│   │   ├── ReportGenerationService.ts (Generación reportes)
+│   │   ├── NotificationAdvancedService.ts (Notificaciones avanzadas)
+│   │   ├── PerformanceMonitoringService.ts (Monitoreo performance)
+│   │   ├── AuditTrailAdvancedService.ts (Auditoría avanzada)
+│   │   ├── ConfigurationManagerService.ts (Gestión configuración)
+│   │   ├── DataSynchronizationService.ts (Sincronización datos)
+│   │   └── OptimizationEngineService.ts (Motor optimización)
+│   └── messaging/
+│       ├── RevisionTandaEventPublisher.ts
+│       ├── OptimizacionCompletadaPublisher.ts
+│       ├── RotacionEjecutadaPublisher.ts
+│       ├── ConflictoDetectadoPublisher.ts
+│       ├── MovimientoRealizadoPublisher.ts
+│       ├── AlertaCriticaPublisher.ts
+│       ├── BackupCreadoPublisher.ts
+│       ├── IntegridadValidadaPublisher.ts
+│       ├── MetricasActualizadasPublisher.ts
+│       └── ReporteGeneradoPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── RevisionTandaController.ts
+    │   ├── BloqueEmisionController.ts
+    │   ├── TandaEspecificaController.ts
+    │   ├── MovimientoSpotController.ts
+    │   ├── ConflictoController.ts
+    │   ├── RotacionController.ts
+    │   ├── OptimizacionController.ts
+    │   ├── ConfiguracionController.ts
+    │   ├── ReportesController.ts
+    │   ├── MetricasController.ts
+    │   ├── InterfaceVisualController.ts
+    │   ├── GridController.ts
+    │   ├── PanelDetalleController.ts
+    │   ├── BackupController.ts
+    │   ├── AuditoriaController.ts
+    │   ├── NotificacionesController.ts
+    │   ├── ValidacionController.ts
+    │   ├── MobileRevisionController.ts
+    │   └── APIExternaRevisionController.ts
+    ├── dto/
+    │   ├── CargarRevisionTandaDto.ts
+    │   ├── MoverSpotDto.ts
+    │   ├── ValidarMovimientoDto.ts
+    │   ├── ConfigurarRotacionDto.ts
+    │   ├── GenerarReporteDto.ts
+    │   ├── ActualizarConfiguracionDto.ts
+    │   ├── CrearBackupDto.ts
+    │   └── ProcessarOptimizacionDto.ts
+    └── middleware/
+        ├── RevisionTandaAuthorizationMiddleware.ts
+        ├── IntegridadDataMiddleware.ts
+        ├── BackupProtectionMiddleware.ts
+        ├── AuditTrailMiddleware.ts
+        ├── PerformanceMiddleware.ts
+        └── ConflictPreventionMiddleware.ts
+🎨 PANTALLA PRINCIPAL - INTERFAZ ESTILO MEDIASALES MEJORADA
+HEADER DE CONTROL INTELIGENTE:
+Barra superior con controles familiares potenciados:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📺 REVISIÓN TANDAS - SILEXAR PULSE (Estilo MediaSales Pro)      │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔧 [Nuevo] [Guardar] [Deshacer] [Eliminar] [Actualizar] [Validar]│
+│                                                                 │
+│ 📻 Emisora: [T13 RADIO ▼]  📅 Fecha: [09/08/2025 ▼] ⚡ Mañana  │
+│ 🔄 Última optimización: 02:15 AM  🎯 Estado: 99.2% Automatizado │
+│ 📊 Bloque: [06:29:00 ▼]  🚨 Conflictos: 0  ✅ Rotación: Activa │
+│                                                                 │
+│ 🤖 [IA Pre-Optimizar] [🔄 Rotar Posiciones] [⚙️ Configurar]    │
+└─────────────────────────────────────────────────────────────────┘
+LAYOUT PRINCIPAL TIPO MEDIASALES MEJORADO:
+División familiar: Grid izquierda + Panel derecha:
+┌─────────────────────────────────────────────────────────────────┐
+│ GRID BLOQUES (Izquierda)         │ PANEL DETALLE (Derecha)       │
+├─────────────────────────────────┬───────────────────────────────┤
+│ 🕐 Bloques Programación         │ 📋 Detalle Bloque Seleccionado│
+│                                 │                               │
+│ ⏰ 06:29:00 (300s) ✅           │ 🎯 Bloque: 06:29:00           │
+│ ├─ 🔴 PRIME: 115s (38%)         │ 📊 Total: 300s / Usado: 296s │
+│ ├─ 🔵 AUSPICIO: 75s (25%)       │ 🟢 Disponible: 4s            │
+│ ├─ 🟢 REPARTIDO: 90s (30%)      │                               │
+│ └─ 🟡 MENCIONES: 16s (5%)       │ 📝 Contenido detallado:      │
+│                                 │                               │
+│ ⏰ 07:26:00 (300s) ⚠️           │ 🔴 PRIME (115s):              │
+│ ├─ 🔴 PRIME: 144s (48%) 🚨      │ 1. SP62577 - BANCO CHILE (30s)│
+│ ├─ 🔵 AUSPICIO: 75s (25%)       │ 2. SP61857 - SEGUROS (16s)    │
+│ ├─ 🟢 REPARTIDO: 60s (20%)      │ 3. SP60608 - DENTAL (15s)     │
+│ └─ 🟡 MENCIONES: 15s (5%)       │ 4. SP62614 - SOFTWARE (15s)   │
+│                                 │ ... [Ver todos] ...           │
+│ ⏰ 08:26:00 (300s) ✅           │                               │
+│ ├─ 🔴 PRIME: 105s (35%)         │ 🔵 AUSPICIO (75s):            │
+│ ├─ 🔵 AUSPICIO: 90s (30%)       │ 1. SP60732 - CLINICA (15s)    │
+│ ├─ 🟢 REPARTIDO: 85s (28%)      │ 2. SP62601 - CUMBRE (30s)     │
+│ └─ 🟡 MENCIONES: 20s (7%)       │ 3. SP62275 - BANCO EST (27s)  │
+│                                 │ ... [Ver todos] ...           │
+│ [+ Ver más bloques]             │                               │
+│                                 │ 🎯 ALERTAS INTELIGENTES:      │
+│                                 │ ⚠️ PRIME saturado en 07:26:00 │
+│                                 │ 🤖 IA sugiere mover a 08:26   │
+│                                 │                               │
+│                                 │ [🔄 Optimizar IA] [✏️ Manual] │
+└─────────────────────────────────┴───────────────────────────────┘
+CÓDIGOS DE COLOR AUTOMÁTICOS:
+Sistema visual inteligente:
+
+🔴 PRIME: Rojo intenso (horarios estelares 07:00-10:00, 18:00-22:00)
+🔵 AUSPICIO: Azul profesional (marcas premium, patrocinios)
+🟢 REPARTIDO: Verde estándar (distribución general durante día)
+🟡 MENCIONES: Amarillo vibrante (menciones en vivo, promocionales)
+🟠 TEMPERATURA: Naranja cálido (informativos, clima, hora)
+🟣 MICRO: Morado distintivo (spots muy cortos 10-15s)
+⚫ NOCHE: Negro elegante (programación nocturna/madrugada)
+
+🚀 PROCESO DE REVISIÓN INTELIGENTE
+STEP 1: "CARGA AUTOMÁTICA OPTIMIZADA" - IA PREVIA
+El usuario ve el resultado, no el proceso:
+┌─────────────────────────────────────────┐
+│ ⚡ CARGA AUTOMÁTICA COMPLETADA           │
+│                                         │
+│ 📅 Fecha cargada: Mañana (09/08/2025)  │
+│ 📻 Emisora: T13 Radio                   │
+│                                         │
+│ 🤖 CORTEX-SCHEDULING EJECUTÓ:           │
+│ ✅ Pre-optimización: 99.2% automatizada │
+│ ✅ Rotación diaria: Aplicada            │
+│ ✅ Resolución conflictos: Automática    │
+│ ✅ Distribución 300s: Balanceada        │
+│                                         │
+│ 📊 RESULTADO:                           │
+│ • Total bloques: 48 (00:00-23:59)      │
+│ • Spots programados: 1,247             │
+│ • Conflictos resueltos: 23             │
+│ • Rotaciones aplicadas: 156            │
+│ • Intervención manual requerida: 0.8%  │
+│                                         │
+│ 🎯 CASOS REQUIEREN ATENCIÓN:           │
+│ • Bloque 07:26:00: PRIME saturado      │
+│ • Bloque 19:29:00: Conflicto automotriz│
+│                                         │
+│ ✅ Sistema listo para revisión          │
+└─────────────────────────────────────────┘
+STEP 2: "VISTA GRID BLOQUES" - CONTROL VISUAL
+Grid izquierda con indicadores inteligentes:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 GRID BLOQUES - T13 RADIO (09/08/2025)                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🕐 Hora    │Seg│Used│%  │ Estado │ Tandas Principales           │
+├────────────┼───┼────┼───┼────────┼─────────────────────────────┤
+│ 06:29:00   │300│296 │99%│ ✅ OK  │🔴PRIME(115) 🔵AUSP(75) 🟢REP(90)│
+│ 06:50:00   │300│284 │95%│ ✅ OK  │🔵AUSP(120) 🟢REP(104) 🟡MENC(60)│
+│ 06:56:00   │300│300 │100│ ✅ OK  │🔴PRIME(180) 🟢REP(75) 🟡MENC(45)│
+│ 07:26:00   │300│315 │105│🚨 OVER │🔴PRIME(144) 🔵AUSP(75) 🟢REP(60)│
+│ 07:29:00   │300│289 │96%│ ✅ OK  │🔴PRIME(105) 🔵AUSP(90) 🟢REP(85)│
+│ 08:26:00   │300│274 │91%│ ✅ OK  │🔵AUSP(120) 🟢REP(89) 🟡MENC(65)│
+│ 08:29:00   │300│298 │99%│ ✅ OK  │🔴PRIME(110) 🔵AUSP(95) 🟢REP(93)│
+│ 09:29:00   │300│305 │102│⚠️ ATTN │🔴PRIME(125) 🔵AUSP(85) 🟢REP(80)│
+│ [...]      │   │    │   │        │                             │
+├────────────┼───┼────┼───┼────────┼─────────────────────────────┤
+│ 🚨 ALERTAS AUTOMÁTICAS:                                        │
+│ • Bloque 07:26:00: OVERSATURATED (+15s) - Mover spots         │
+│ • Bloque 09:29:00: WARNING (+5s) - Optimizar distribución     │
+│ • 2 conflictos automotriz detectados - IA puede resolver      │
+│                                                                 │
+│ 🤖 ACCIONES IA DISPONIBLES:                                    │
+│ [🔄 Auto-resolver] [🎯 Optimizar todo] [⚡ Aplicar rotación]   │
+└─────────────────────────────────────────────────────────────────┘
+STEP 3: "PANEL DETALLE INTELIGENTE" - VISTA ESPECÍFICA
+Panel derecha con detalle completo del bloque seleccionado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 DETALLE BLOQUE: 07:26:00 (T13 RADIO) - 🚨 REQUIERE ATENCIÓN │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 RESUMEN BLOQUE:                                              │
+│ • Total segundos: 300s                                         │
+│ • Usado actual: 315s (🚨 +15s OVERFLOW)                        │
+│ • Disponible: -15s (NECESITA OPTIMIZACIÓN)                     │
+│                                                                 │
+│ 🔴 TANDA PRIME (144s de 120s max) - 🚨 SATURADA:               │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Pos│Código SP │Cliente           │Título            │Seg│Rot│ │
+│ ├───┼──────────┼──────────────────┼──────────────────┼───┼───┤ │
+│ │ 1°│SP62576   │MEV FIESTAS PATRIAS│AEP CONFIANZA     │15s│Day│ │
+│ │ 2°│SP61028   │MEV INVERSIONES   │PRINCIPAL MUTU    │15s│3  │ │
+│ │ 3°│SP61289   │MEV MEGAVISION    │SOQUI SALUD SPA   │15s│1  │ │
+│ │ 4°│SP62310   │MEV UNIVERSIDAD   │ANDRES BELLO TEC  │15s│2  │ │
+│ │ 5°│SP62334   │MEV CLINICA       │JAIMES EMBARAZO   │15s│5  │ │
+│ │ 6°│SP60458   │MEV SEGURO        │AUTO HDI          │15s│4  │ │
+│ │ 7°│SP60960   │BANCO CHILE       │TARJETA JOVEN     │30s│🔄 │ │
+│ │ 8°│SP61205   │TOYOTA            │NUEVO COROLLA     │30s│⚠️ │ │
+│ │ 🚨│SP61344   │CHEVROLET         │ONIX PROMOCIÓN    │30s│❌ │ │
+│ └───┴──────────┴──────────────────┴──────────────────┴───┴───┘ │
+│                                                                 │
+│ 🚨 CONFLICTOS DETECTADOS:                                       │
+│ • Toyota vs Chevrolet: Exclusividad automotriz violada         │
+│ • Sobresaturación: +15 segundos sobre límite                   │
+│                                                                 │
+│ 🤖 SOLUCIONES AUTOMÁTICAS IA:                                  │
+│ 1. Mover SP61344 (Chevrolet) a bloque 08:26:00                │
+│ 2. Intercambiar SP60960 (Banco) con bloque posterior          │
+│ 3. Optimizar distribución completa automáticamente            │
+│                                                                 │
+│ [🚀 Aplicar Solución 1] [🎯 Optimizar Auto] [✏️ Manual]        │
+└─────────────────────────────────────────────────────────────────┘
+STEP 4: "DRAG & DROP INTELIGENTE" - MOVIMIENTO ASISTIDO
+Sistema de arrastrar y soltar con validación automática:
+┌─────────────────────────────────────────┐
+│ 🎯 MOVIENDO SPOT: SP61344 (CHEVROLET)   │
+│                                         │
+│ 📍 ORIGEN:                              │
+│ Bloque: 07:26:00                        │
+│ Tanda: PRIME (Posición 9°)              │
+│ Duración: 30 segundos                   │
+│                                         │
+│ 🎯 DESTINO PROPUESTO:                   │
+│ Bloque: 08:26:00                        │
+│ Tanda: PRIME                            │
+│                                         │
+│ 🤖 VALIDACIÓN AUTOMÁTICA:               │
+│ ✅ Segundos disponibles: 26s            │
+│ ✅ No conflictos automotriz             │
+│ ✅ Horario compatible (Prime válido)    │
+│ ✅ Exclusividades respetadas            │
+│ ✅ Rotación mantenida                   │
+│                                         │
+│ 📊 IMPACTO DEL MOVIMIENTO:              │
+│ • Origen queda: 285s/300s (✅ OK)       │
+│ • Destino queda: 300s/300s (✅ Full)    │
+│ • Conflicto resuelto: ✅ Automáticamente│
+│ • Rotación: Posición 4° en destino     │
+│                                         │
+│ [✅ CONFIRMAR MOVIMIENTO] [❌ Cancelar]  │
+└─────────────────────────────────────────┘
+STEP 5: "ROTACIÓN DIARIA AUTOMÁTICA" - ANTI-PEGADO
+Sistema que garantiza variedad automáticamente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔄 SISTEMA ROTACIÓN DIARIA AUTOMÁTICA                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 OBJETIVO: Ningún spot en misma posición días consecutivos    │
+│                                                                 │
+│ 📊 EJEMPLO ROTACIÓN BANCO CHILE (SP60960):                     │
+│                                                                 │
+│ Lunes 07/08:    Bloque 07:26 - PRIME - Posición 1° (Primero)  │
+│ Martes 08/08:   Bloque 07:26 - PRIME - Posición 4° (Medio)    │
+│ ⭐ Miércoles 09/08: Bloque 07:26 - PRIME - Posición 7° (Final)    │
+│ Jueves 10/08:   Bloque 07:26 - PRIME - Posición 2° (Segundo)  │
+│ Viernes 11/08:  Bloque 07:26 - PRIME - Posición 5° (Medio)    │
+│                                                                 │
+│ 🎯 LÓGICA INTELIGENTE:                                         │
+│ • Rotación dentro de misma tanda (PRIME mantiene categoría)    │
+│ • Posiciones distribuidas equitativamente                      │
+│ • Respeto de spots con "posición fija" (iniciadores)          │
+│ • Balance comercial para todos los clientes                   │
+│                                                                 │
+│ 🚨 EXCEPCIONES AUTOMÁTICAS:                                    │
+│ • SP99999 - BANCO ESTADO: "INICIADOR TANDA" (Siempre 1°)     │
+│ • SP88888 - TOYOTA PREMIUM: "POSICIÓN FIJA 3°" (Nunca rota)  │
+│ • SP77777 - COCA COLA: "PREFERENCIA INICIO" (Posiciones 1-3)  │
+│                                                                 │
+│ 📈 MÉTRICAS ROTACIÓN:                                          │
+│ • Variedad lograda: 94.8% (Excelente)                         │
+│ • Spots que rotan: 1,156 de 1,247 (92.7%)                    │
+│ • Excepciones fijas: 91 spots (7.3%)                          │
+│ • Distribución equitativa: ✅ Cumplida                         │
+│                                                                 │
+│ [📊 Ver Rotación Completa] [⚙️ Configurar] [🔄 Forzar Rotación]│
+└─────────────────────────────────────────────────────────────────┘
+📊 DASHBOARD DE CONTROL Y MÉTRICAS
+PANEL DE ROBUSTEZ DEL SISTEMA:
+Métricas que demuestran la automatización:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 MÉTRICAS DE ROBUSTEZ - ÚLTIMOS 7 DÍAS                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 AUTOMATIZACIÓN LOGRADA:                                     │
+│ • Promedio automatización: 99.2% ⭐                            │
+│ • Intervención manual: 0.8% (Meta: <1%)                       │
+│ • Conflictos auto-resueltos: 97.3%                            │
+│ • Rotaciones exitosas: 100%                                   │
+│                                                                 │
+│ 📊 DISTRIBUCIÓN DE SEGUNDOS:                                   │
+│ • Bloques optimizados: 334/336 (99.4%)                        │
+│ • Promedio uso: 297.8s/300s (99.3%)                          │
+│ • Saturaciones detectadas: 12                                 │
+│ • Saturaciones resueltas auto: 11 (91.7%)                     │
+│                                                                 │
+│ 🔄 ROTACIÓN DIARIA:                                            │
+│ • Spots rotados diariamente: 8,729                            │
+│ • Variedad promedio lograda: 94.6%                            │
+│ • Excepciones respetadas: 100%                                │
+│ • Satisfacción comercial: 96.8% ⭐                            │
+│                                                                 │
+│ 🚨 CONFLICTOS COMERCIALES:                                     │
+│ • Detectados automáticamente: 161                             │
+│ • Resueltos por IA: 157 (97.5%)                              │
+│ • Requirieron intervención: 4 (2.5%)                          │
+│ • Tiempo promedio resolución: 0.3 segundos                    │
+│                                                                 │
+│ 🎯 CASOS INTERVENCIÓN MANUAL (0.8%):                          │
+│ • Solicitudes específicas cliente: 60%                        │
+│ • Conflictos complejos únicos: 25%                            │
+│ • Cambios last-minute: 15%                                    │
+│                                                                 │
+│ 📈 TENDENCIA: ⬆️ Mejora continua                               │
+│ • Semana pasada: 98.8% automatización                         │
+│ • Esta semana: 99.2% automatización                           │
+│ • Proyección: 99.5% próxima semana                            │
+│                                                                 │
+│ [📊 Detalle Completo] [🎯 Optimizar Más] [⚙️ Configurar]       │
+└─────────────────────────────────────────────────────────────────┘
+ALERTAS INTELIGENTES Y PROACTIVAS:
+Sistema de alertas que minimiza intervención:
+┌─────────────────────────────────────────┐
+│ 🚨 ALERTAS INTELIGENTES ACTIVAS         │
+│                                         │
+│ 🔴 CRÍTICAS (Acción inmediata):         │
+│ ┌─────────────────────────────────────┐ │
+│ │ 📍 Bloque 19:29:00 - CONFLICTO      │ │
+│ │ 🚗 Toyota vs Ford: Misma tanda      │ │
+│ │ 💡 IA sugiere: Mover Ford a 20:29   │ │
+│ │ ⏱️ Detectado: hace 2 minutos        │ │
+│ │ [🤖 Auto-resolver] [✏️ Manual]       │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 🟡 PREVENTIVAS (Monitoreo):            │
+│ ┌─────────────────────────────────────┐ │
+│ │ 📊 Bloque 21:26:00 - SATURACIÓN     │ │
+│ │ 📈 298s/300s (99% utilizado)        │ │
+│ │ ⚠️ Agregar 1 spot más = overflow    │ │
+│ │ 💡 IA monitoreando automáticamente  │ │
+│ │ [👁️ Ver detalles] [📊 Analizar]     │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 🟢 INFORMATIVAS (Todo OK):             │
+│ ┌─────────────────────────────────────┐ │
+│ │ ✅ Rotación diaria ejecutada         │ │
+│ │ 🎯 1,247 spots rotados exitosamente │ │
+│ │ 📊 Variedad: 94.8% lograda          │ │
+│ │ ⏰ Próxima rotación: mañana 02:00    │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 🤖 ACCIONES AUTOMÁTICAS PENDIENTES:    │
+│ • Auto-resolver conflicto Toyota/Ford  │
+│ • Optimizar 3 bloques con saturación   │
+│ • Aplicar rotación nocturna            │
+│                                         │
+│ [🚀 Ejecutar Todo] [⚙️ Configurar]     │
+└─────────────────────────────────────────┘
+🔧 CONFIGURACIÓN AVANZADA DE ROBUSTEZ
+CONFIGURADOR DE AUTOMATIZACIÓN:
+Setup para minimizar intervención humana:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚙️ CONFIGURACIÓN ROBUSTEZ DEL SISTEMA                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 NIVEL DE AUTOMATIZACIÓN:                                    │
+│                                                                 │
+│ ⚫ MÁXIMA ROBUSTEZ (99%+ automático - Recomendado)             │
+│   • IA resuelve todos los conflictos automáticamente           │
+│   • Rotación diaria 100% automática                           │
+│   • Optimización bloques continua                             │
+│   • Usuario solo interviene en excepciones <1%                │
+│                                                                 │
+│ ⚪ ALTA ROBUSTEZ (95-99% automático)                           │
+│   • IA sugiere, usuario aprueba cambios críticos              │
+│   • Rotación automática con confirmación                      │
+│   • Alertas preventivas más frecuentes                        │
+│                                                                 │
+│ ⚪ ROBUSTEZ ESTÁNDAR (85-95% automático)                       │
+│   • IA asiste, usuario controla decisiones importantes        │
+│   • Rotación semi-automática                                  │
+│   • Mayor control manual disponible                           │
+│                                                                 │
+│ 🎯 REGLAS DE ROTACIÓN AUTOMÁTICA:                              │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Frecuencia rotación: [Diaria ▼] (Diaria/Semanal/Manual)    │ │
+│ │ Hora ejecución: [02:00 AM ▼] (Horario low-traffic)         │ │
+│ │ Respetar posiciones fijas: [✅ Sí]                         │ │
+│ │ Notificar cambios: [❌ No] (Solo errores)                  │ │
+│ │ Backup antes rotar: [✅ Sí] (Seguridad)                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🚨 RESOLUCIÓN CONFLICTOS AUTOMÁTICA:                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Exclusividades automotriz: [✅ Auto-resolver]               │ │
+│ │ Saturación bloques: [✅ Auto-redistribuir]                 │ │
+│ │ Conflictos competencia: [✅ Auto-separar]                   │ │
+│ │ Timing problemas: [✅ Auto-optimizar]                      │ │
+│ │ Casos complejos: [⚫ Escalar a humano] [⚪ Forzar IA]      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 OPTIMIZACIÓN CONTINUA:                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Monitoreo tiempo real: [✅ Habilitado]                      │ │
+│ │ Ajustes automáticos: [✅ Cada 15 minutos]                  │ │
+│ │ Machine learning: [✅ Aprender patrones]                   │ │
+│ │ Feedback comercial: [✅ Incluir satisfacción cliente]      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [💾 Guardar Configuración] [🧪 Test 24h] [🔄 Restaurar]        │
+└─────────────────────────────────────────────────────────────────┘
+EXCEPCIONES Y CASOS ESPECIALES:
+Configuración de spots con comportamiento especial:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 CONFIGURACIÓN EXCEPCIONES ESPECIALES                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔒 SPOTS CON POSICIÓN FIJA (No rotan):                         │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SP99999 - BANCO ESTADO                                      │ │
+│ │ 📋 Tipo: INICIADOR DE TANDA                                 │ │
+│ │ 📍 Posición: Siempre 1° en PRIME                           │ │
+│ │ 🎯 Motivo: Contrato especial - Posición preferencial       │ │
+│ │ ⏰ Bloques: Todos los PRIME (07:26, 08:26, 19:26, 20:26)  │ │
+│ │ [✏️ Editar] [❌ Quitar excepción] [📋 Ver contrato]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SP88888 - TOYOTA PREMIUM                                    │ │
+│ │ 📋 Tipo: POSICIÓN FIJA ESPECÍFICA                          │ │
+│ │ 📍 Posición: Siempre 3° en PRIME                           │ │
+│ │ 🎯 Motivo: Sponsor principal - Visibilidad garantizada     │ │
+│ │ ⏰ Bloques: Solo prime vespertino (19:26, 20:26, 21:26)   │ │
+│ │ [✏️ Editar] [❌ Quitar excepción] [📋 Ver contrato]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 SPOTS CON ROTACIÓN CONTROLADA:                              │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SP77777 - COCA COLA PREMIUM                                 │ │
+│ │ 📋 Tipo: PREFERENCIA INICIO                                │ │
+│ │ 📍 Posiciones: Solo 1°, 2° o 3° (Nunca al final)          │ │
+│ │ 🎯 Motivo: Contrato premium - Visibilidad alta             │ │
+│ │ 🔄 Rotación: Sí, pero limitada a posiciones 1-3           │ │
+│ │ [✏️ Editar] [❌ Quitar excepción] [📋 Ver contrato]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🚨 EXCLUSIVIDADES ESPECIALES:                                  │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ CATEGORÍA: AUTOMOTRIZ                                       │ │
+│ │ 🚗 Separación mínima: 60 segundos                          │ │
+│ │ 🎯 Aplicar en: Misma tanda y tandas consecutivas           │ │
+│ │ 📝 Clientes incluidos: Toyota, Ford, Chevrolet, Nissan     │ │
+│ │ 🤖 Resolución automática: ✅ Habilitada                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [➕ Agregar Excepción] [📊 Ver Todas] [🔄 Aplicar Cambios]     │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL REVISIÓN TANDAS
+INTERFAZ MÓVIL PARA SUPERVISIÓN:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR TANDAS MÓVIL                 │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Operativo                  │
+│ • Automatización hoy: 99.2%             │
+│ • Bloques optimizados: 334/336          │
+│ • Rotaciones ejecutadas: ✅             │
+│ • Conflictos auto-resueltos: 23         │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [📊 Ver Estado General]                 │
+│ [🚨 Alertas Activas (2)]                │
+│ [🔄 Forzar Rotación]                    │
+│ [🎯 Optimizar Todo]                     │
+│ [⚙️ Config Emergencia]                  │
+│                                         │
+│ 🚨 ALERTAS CRÍTICAS:                   │
+│ • Bloque 19:26: Conflicto automotriz    │
+│   [🤖 Auto-resolver] [👁️ Ver]          │
+│ • Bloque 21:29: Saturación 99%         │
+│   [📊 Monitorear] [⚙️ Ajustar]         │
+│                                         │
+│ 📊 EMISORAS STATUS:                    │
+│ • T13 Radio: 99.2% ✅                   │
+│ • Play FM: 98.8% ✅                     │
+│ • Sonar FM: 97.9% ⚠️                    │
+│                                         │
+│ 🎯 PRÓXIMAS ACCIONES AUTO:             │
+│ • Rotación nocturna: 02:00 AM           │
+│ • Optimización bloques: Continua        │
+│ • Backup diario: 01:30 AM               │
+│                                         │
+│ [📊 Métricas] [🔧 Acciones] [⚙️ Config] │
+├─────────────────────────────────────────┤
+│ [🏠] [📺] [📊] [⚙️] [🚨]                │
+└─────────────────────────────────────────┘
+🔐 SEGURIDAD Y AUDITORÍA AVANZADA
+PROTECCIÓN DE INTEGRIDAD OPERATIVA:
+Seguridad nivel crítico para automatización:
+
+Backup automático: Respaldo antes de cada optimización automática
+Rollback inteligente: Reversión automática si detecta problemas
+Validación continua: Verificación de integridad cada 15 minutos
+Audit trail completo: Log inmutable de toda acción automática y manual
+Trazabilidad total: Seguimiento de cada spot desde programación a emisión
+
+Control de acceso granular:
+Traffic Manager Senior:
+
+✅ Acceso completo revisión tandas
+✅ Override decisiones IA cuando necesario
+✅ Configuración parámetros automatización
+✅ Gestión excepciones y casos especiales
+
+Programador:
+
+✅ Revisión y supervisión tandas
+✅ Movimientos manuales básicos
+❌ Configuración algoritmos IA
+❌ Modificación excepciones especiales
+
+Supervisor Operaciones:
+
+✅ Monitoreo métricas robustez
+✅ Reportes y analytics
+❌ Modificación programación
+❌ Acceso configuración técnica
+
+🚀 INNOVACIONES TIER 0 ESPECÍFICAS
+1. CORTEX-SCHEDULING ULTRA-AVANZADO:
+IA que optimiza antes que el humano vea:
+
+Pre-optimización 99%+ automática antes de carga interfaz
+Machine learning entrenado con millones de configuraciones históricas
+Predicción de problemas y resolución proactiva automática
+Aprendizaje continuo de decisiones humanas para mejorar automatización
+
+2. ROTATION INTELLIGENCE ENGINE:
+Sistema anti-pegado ultra-sofisticado:
+
+Algoritmo que garantiza que ningún spot esté en misma posición días consecutivos
+Distribución equitativa matemáticamente perfecta
+Respeto automático de excepciones contractuales
+Optimización de satisfacción comercial vs. operativa
+
+3. CONFLICT PREVENTION MATRIX:
+Prevención de conflictos en tiempo real:
+
+Detección de conflictos antes que ocurran
+Resolución automática sin intervención humana
+Machine learning de patrones de conflicto
+Escalamiento inteligente solo cuando IA no puede resolver
+
+4. VISUAL OPTIMIZATION INTERFACE:
+Interfaz que muestra resultados, no procesos:
+
+Usuario ve pauta ya optimizada al 99%
+Códigos de color automáticos para identificación rápida
+Drag & drop con validación automática pre-movimiento
+Alertas solo para casos que realmente requieren atención
+
+🎯 CONCLUSIÓN: REVISIÓN TANDAS MÁS ROBUSTA DE LA INDUSTRIA
+PARA EL TRAFFIC MANAGER:
+
+Automatización extrema: 99%+ del trabajo hecho por IA antes de revisión
+Control total: Mantiene control cuando realmente necesita intervenir
+Eficiencia máxima: Solo dedica tiempo a casos excepcionales (<1%)
+Calidad garantizada: IA evita errores humanos de distribución y rotación
+Interfaz familiar: Evolución natural de MediaSales pero inteligente
+
+PARA EL SUPERVISOR DE PROGRAMACIÓN:
+
+Supervisión automática: Sistema se supervisa a sí mismo continuamente
+Métricas transparentes: Visibilidad total de performance automatización
+Calidad consistente: Estándar alto mantenido automáticamente 24/7
+Escalabilidad total: Maneja múltiples emisoras sin aumentar staff
+Confiabilidad absoluta: Backup y rollback automático garantizan seguridad
+
+PARA LA ORGANIZACIÓN:
+
+Excelencia operativa: Estándar industria en automatización programación
+Eficiencia extrema: 90%+ reducción tiempo gestión tandas
+Calidad superior: Rotación perfecta y distribución equitativa automática
+Satisfacción comercial: Clientes reciben variedad y posicionamiento óptimo
+Competitividad: Diferenciación técnica imposible de igualar
+
+El Módulo Revisión Tandas TIER 0 de Silexar Pulse es la evolución definitiva de MediaSales: mantiene la familiaridad visual que los programadores conocen, pero añade un nivel de automatización e inteligencia artificial que transforma un proceso tradicionalmente manual y propenso a errores en un sistema completamente automatizado que funciona con precisión de relojería suiza. El resultado es un sistema tan robusto que prácticamente se programa solo, dejando a los humanos supervisar la excelencia en lugar de crearla manualmente.

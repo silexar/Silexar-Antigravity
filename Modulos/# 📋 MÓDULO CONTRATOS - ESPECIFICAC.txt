@@ -1,0 +1,680 @@
+MÓDULO CONTRATOS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO CONTRATOS?
+El Módulo Contratos es el corazón comercial y operativo de Silexar Pulse. Funciona como el sistema nervioso central que transforma oportunidades de venta en acuerdos ejecutables, gestionando todo el ciclo desde la cotización inicial hasta la facturación final, con inteligencia artificial que optimiza, valida y automatiza cada paso del proceso.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Ejecutivo de Ventas, vivo en este módulo el 70% de mi día laboral:
+
+Creo contratos desde reuniones con clientes usando móvil
+El sistema valida automáticamente disponibilidad de inventario
+Cortex-Risk me sugiere términos de pago óptimos instantáneamente
+Envío contratos para firma digital desde cualquier lugar
+Recibo alertas push cuando hay aprobaciones o rechazos
+
+Como Gerente Comercial, superviso desde el dashboard:
+
+Pipeline visual de todos los contratos en proceso
+Aprobaciones pendientes que requieren mi decisión
+Alertas de contratos en riesgo o bloqueados
+Métricas predictivas de cierre de mes/trimestre
+Performance del equipo en tiempo real
+
+Como Programador/Traffic, uso este módulo para:
+
+Recibir automáticamente órdenes de pauta aprobadas
+Validar que existe material creativo disponible
+Programar automáticamente en sistemas de emisión
+Monitorear cumplimiento vs lo contratado
+
+INTEGRACIÓN ECOSYSTEM SILEXAR:
+
+Módulo Anunciantes: Hereda datos de riesgo y términos preferenciales automáticamente
+Módulo Cuñas: Valida existencia de material creativo antes de aprobar
+Módulo Vencimientos: Verifica exclusividades y conflictos de programación
+Módulo Facturación: Crea automáticamente plan de facturación al aprobar
+Cortex-Risk: Análisis continuo de riesgo crediticio y sugerencias de términos
+Cortex-Flow: Predicciones de renovación y optimización de pricing
+
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/contratos/
+├── domain/
+│   ├── entities/
+│   │   ├── Contrato.ts (Contrato principal)
+│   │   ├── LineaEspecificacion.ts (Líneas de pauta específicas)
+│   │   ├── PlanPagos.ts (Plan de pagos/cuotas)
+│   │   ├── ProductoContrato.ts (Productos asociados)
+│   │   ├── AprobacionContrato.ts (Flujo de aprobaciones multinivel)
+│   │   ├── DocumentoContrato.ts (Documentos y firmas digitales)
+│   │   ├── OrdenPauta.ts (Órdenes generadas automáticamente)
+│   │   ├── AlertaSeguimiento.ts (Sistema de alertas automáticas)
+│   │   ├── ValidacionInventario.ts (Validación disponibilidad)
+│   │   └── AnalisisPredictivo.ts (Insights de renovación)
+│   ├── value-objects/
+│   │   ├── NumeroContrato.ts (Número único generado CON-YYYY-XXXXX)
+│   │   ├── EstadoContrato.ts (Estados con flujo inteligente)
+│   │   ├── TerminosPago.ts (Términos con validación de riesgo)
+│   │   ├── TasaComision.ts (Comisiones con cálculo automático)
+│   │   ├── TotalesContrato.ts (Valores con recálculo automático)
+│   │   ├── RiesgoCredito.ts (Score dinámico integrado)
+│   │   └── MetricasRentabilidad.ts (Análisis de margen)
+│   └── repositories/
+│       ├── IContratoRepository.ts
+│       ├── IProductoContratoRepository.ts
+│       ├── IPlanPagosRepository.ts
+│       ├── IAprobacionRepository.ts
+│       └── IDocumentoRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearContratoCommand.ts
+│   │   ├── ActualizarContratoCommand.ts
+│   │   ├── AprobarTerminosPagoCommand.ts
+│   │   ├── AgregarLineaEspecificacionCommand.ts
+│   │   ├── CambiarEstadoContratoCommand.ts
+│   │   ├── GenerarOrdenPautaCommand.ts
+│   │   ├── SolicitarAprobacionCommand.ts
+│   │   ├── FirmarDigitalmenteCommand.ts
+│   │   ├── ValidarInventarioCommand.ts
+│   │   └── RenovarContratoCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerDetalleContratoQuery.ts
+│   │   ├── BuscarContratosQuery.ts
+│   │   ├── ObtenerContratosPorAnuncianteQuery.ts
+│   │   ├── ObtenerAprobacionesPendientesQuery.ts
+│   │   ├── ObtenerPipelineVentasQuery.ts
+│   │   ├── GenerarPrediccionRenovacionQuery.ts
+│   │   ├── AnalizarRentabilidadQuery.ts
+│   │   └── ObtenerMetricasEjecutivoQuery.ts
+│   └── handlers/
+│       ├── ContratoCommandHandler.ts
+│       ├── AprobacionWorkflowHandler.ts
+│       ├── CalculoContratoHandler.ts
+│       ├── ValidacionInventarioHandler.ts
+│       ├── GeneracionDocumentosHandler.ts
+│       ├── IntegracionSistemasHandler.ts
+│       └── AnalisisPredictivosHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaContratoRepository.ts
+│   │   ├── PrismaProductoContratoRepository.ts
+│   │   └── PrismaAprobacionRepository.ts
+│   ├── external/
+│   │   ├── InventarioValidationService.ts (Validación disponibilidad)
+│   │   ├── PricingOptimizationService.ts (Optimización tarifas)
+│   │   ├── CortexRiskIntegrationService.ts (Análisis riesgo)
+│   │   ├── CortexFlowPredictionService.ts (Predicciones IA)
+│   │   ├── DigitalSignatureService.ts (Firmas DocuSign/Adobe)
+│   │   ├── WideOrbitIntegrationService.ts (Exportación)
+│   │   ├── SaraIntegrationService.ts (Programación)
+│   │   ├── DaletIntegrationService.ts (Sistemas emisión)
+│   │   ├── WhatsAppBusinessService.ts (Integración móvil)
+│   │   ├── EmailParsingService.ts (Procesamiento órdenes)
+│   │   └── PDFGeneratorAdvancedService.ts (Documentos dinámicos)
+│   └── messaging/
+│       ├── ContratoEventPublisher.ts
+│       ├── AprobacionAlertPublisher.ts
+│       └── RenovacionPredictionPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── ContratoController.ts
+    │   ├── ProductoContratoController.ts
+    │   ├── AprobacionController.ts
+    │   ├── DocumentoController.ts
+    │   ├── PipelineController.ts
+    │   ├── MobileController.ts (API específica móvil)
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearContratoDto.ts
+    │   ├── ActualizarContratoDto.ts
+    │   ├── CrearProductoContratoDto.ts
+    │   ├── SolicitudAprobacionDto.ts
+    │   └── OrdenPautaDto.ts
+    └── middleware/
+        ├── ContratoAuthorizationMiddleware.ts
+        ├── AprobacionSecurityMiddleware.ts
+        └── MobileAccessMiddleware.ts
+
+🎨 PANTALLA PRINCIPAL - CENTRO DE COMANDO COMERCIAL
+VISTA INICIAL PARA GESTIÓN COMERCIAL DIARIA:
+Header ejecutivo con métricas críticas:
+
+Título: "📋 Centro de Comando Comercial"
+Breadcrumb: "Dashboard > Contratos"
+Panel de control en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ESTADO COMERCIAL TIEMPO REAL                                 │
+│                                                                 │
+│ 47 Contratos Activos    $2.8M Pipeline    8 Esperando Aprobación│
+│ 12 Firmados Hoy        85% Tasa Cierre    3 Vencen Esta Semana │
+│ 💰 Meta Mensual: $1.2M (78% completado)  🎯 Faltan: $264K     │
+│ 🚨 Próxima Acción: Banco XYZ - Decisión en 2 horas            │
+└─────────────────────────────────────────────────────────────────┘
+
+
+BARRA DE HERRAMIENTAS COMERCIAL AVANZADA:
+Búsqueda comercial inteligente:
+
+Placeholder: "🔍 CON-2025-0123, SuperMax, '$50K-100K', 'aprobación pendiente'..."
+IA Contextual: Reconoce patrones comerciales típicos
+Sugerencias predictivas:
+
+"Contratos que cierran esta semana"
+"Pipeline de Carlos Mendoza"
+"Renovaciones automáticas próximas"
+"Clientes con riesgo de cancelación"
+
+
+
+Filtros de gestión comercial:
+
+Estado Comercial:
+
+🆕 Nuevo/Borrador (azul claro)
+🔄 En Negociación (amarillo)
+⏳ Esperando Aprobación (naranja)
+✅ Aprobado/Firmado (verde)
+🚫 Rechazado/Cancelado (rojo)
+🔄 En Renovación (púrpura)
+
+
+Valor Comercial:
+
+"$0-10K", "$10K-50K", "$50K-100K", "$100K-500K", "$500K+"
+
+
+Urgencia de Acción:
+
+🚨 Crítico (decisión <24h)
+⚡ Urgente (decisión <48h)
+📅 Esta Semana
+📋 Sin Prisa
+
+
+
+Acciones comerciales rápidas:
+
+"➕ Nuevo Contrato" (wizard inteligente)
+"🎯 Pipeline Visual" (vista Kanban)
+"📊 Dashboard Ejecutivo" (métricas detalladas)
+"🤖 Predicciones IA" (Cortex-Flow insights)
+"📱 Modo Móvil" (interfaz ejecutivos en terreno)
+
+TABLA COMERCIAL - OPTIMIZADA PARA GESTIÓN DE VENTAS:
+1. Columna "Estado/Urgencia" (120px):
+┌─────────────────┐
+│ 🚨 CON-2025-123 │
+│ ⏰ 4h restantes │
+│ 💰 $125,000     │
+│ 👤 Ana García   │
+└─────────────────┘
+
+Estado: Semáforo visual con urgencia
+ID: Link directo al detalle
+Valor: Monto del contrato
+Ejecutivo: Responsable asignado
+
+2. Columna "Cliente/Oportunidad" (280px):
+┌─────────────────────────────────┐
+│ 🏢 SuperMax SpA                 │
+│    Campaña Navidad Premium      │
+│    📊 Score: 750/1000 • Bajo Riesgo│
+│    🎯 Renovación: 85% probable   │
+└─────────────────────────────────┘
+
+Cliente: Logo + nombre + RUT
+Campaña: Descripción comercial
+Riesgo: Score de Cortex-Risk actualizado
+Predicción: Probabilidad de renovación IA
+
+3. Columna "Fechas/Timeline" (150px):
+┌─────────────────┐
+│ 📅 15 Dic - 15 Mar│
+│ ████████████░░  │
+│ 85% tiempo usado│
+│ ⏰ Vence: 45 días│
+└─────────────────┘
+
+Vigencia: Período del contrato
+Progreso: Barra temporal visual
+Tiempo restante: Días/semanas restantes
+
+4. Columna "Valores/Rentabilidad" (140px):
+┌─────────────────┐
+│ 💰 Bruto: $125K │
+│ 💵 Neto: $105K  │
+│ 📊 Margen: 35%  │
+│ 💳 3/5 Cuotas   │
+└─────────────────┘
+
+Valores: Bruto, neto, margen
+Rentabilidad: Porcentaje calculado automáticamente
+Facturación: Estado de cuotas pagadas
+
+5. Columna "Validaciones" (120px):
+┌─────────────────┐
+│ ✅ Inventario   │
+│ ✅ Riesgo OK    │
+│ ⚠️ Sin Material │
+│ 🔄 Procesando   │
+└─────────────────┘
+
+Inventario: Disponibilidad confirmada
+Riesgo: Validación crediticia
+Material: Estado de creatividades
+Proceso: Validaciones en curso
+
+6. Columna "Acciones Comerciales" (160px):
+┌─────────────────┐
+│ [👁️] [✏️] [✅] │
+│ [📞] [📧] [📋] │
+│ [🔄] [📊] [🚀] │
+└─────────────────┘
+
+👁️ Ver: Detalle completo con timeline
+✏️ Editar: Modificación rápida
+✅ Aprobar: Flujo de aprobación
+📞 Llamar: Integración telefónica
+📧 Email: Cliente + documentos
+📋 Duplicar: Para renovaciones
+🔄 Renovar: Proceso automático
+📊 Analizar: Métricas de performance
+🚀 Activar: Iniciar campañas
+
+
+➕ CREACIÓN INTELIGENTE DE CONTRATOS - WIZARD TIER 0
+INICIO CONTEXTUAL AUTOMÁTICO:
+Detección automática del origen:
+
+Desde Anunciante: Pre-llena datos del cliente automáticamente
+Desde Oportunidad: Hereda información comercial completa
+Desde Renovación: Copia configuración exitosa anterior
+Desde WhatsApp/Email: Parser automático de órdenes recibidas
+
+Selector de tipo de contrato inteligente:
+┌─────────────────────────────────────────┐
+│ 🎯 ¿QUÉ TIPO DE CONTRATO CREARÁS?       │
+│                                         │
+│ [🆕] Nuevo Contrato                     │
+│      Cliente nuevo o campaña nueva      │
+│      🤖 IA sugerirá términos óptimos    │
+│                                         │
+│ [🔄] Renovación Automática              │
+│      Basado en contrato existente       │
+│      ✅ Términos pre-validados          │
+│                                         │
+│ [📊] Contrato Programático              │
+│      Para campañas de alto volumen      │
+│      🎯 Optimización automática         │
+│                                         │
+│ [🏢] Contrato Marco Anual               │
+│      Cliente corporativo recurrente     │
+│      💼 Términos preferenciales         │
+│                                         │
+│ [📱] Contrato Express (Móvil)          │
+│      Creación rápida desde terreno      │
+│      ⚡ Validación instantánea           │
+└─────────────────────────────────────────┘
+PASO 1: "INFORMACIÓN FUNDAMENTAL" - AUTO-INTELIGENTE
+Generación automática de ID con lógica comercial:
+ID generado: CON-2025-00847
+Lógica: CON-[AÑO]-[SECUENCIA ÚNICA]
+Bloqueo inmediato: Evita duplicados en creación concurrente
+Auditoría: Registra usuario, timestamp, contexto de origen
+Campo "Anunciante" con inteligencia comercial:
+
+Auto-detección: Si viene de contexto, se pre-llena automáticamente
+Validación integral: Verifica estado activo, límite de crédito, términos preferenciales
+Score dinámico: Muestra score de Cortex-Risk actualizado en tiempo real
+Alertas automáticas: Si cliente tiene restricciones o problemas de pago
+
+Integración avanzada con Módulo Anunciantes:
+
+Datos automáticos: Hereda términos de pago preferenciales, límites de crédito, ejecutivo asignado
+Validación cruzada: Verifica que no hay contratos duplicados o conflictivos
+Historial inteligente: Muestra performance de contratos anteriores
+Sugerencias IA: Cortex recomienda productos y términos basado en historial
+
+Campo "Producto" con creación inteligente:
+
+Sugerencias automáticas: Basadas en industria del cliente y estacionalidad
+Creación express: Modal simplificado para productos nuevos
+Validación de coherencia: Verifica que producto es coherente con cliente
+Pricing dinámico: Sugerencias de precios basadas en mercado y historial
+
+PASO 2: "TÉRMINOS COMERCIALES" - OPTIMIZACIÓN IA
+Análisis automático de riesgo crediticio:
+┌─────────────────────────────────────────┐
+│ 🛡️ ANÁLISIS CORTEX-RISK AUTOMÁTICO     │
+│                                         │
+│ Cliente: SuperMax SpA                   │
+│ Score actual: 750/1000 (BAJO RIESGO)   │
+│                                         │
+│ ✅ Recomendaciones automáticas:         │
+│ • Términos de pago: 30 días ✅          │
+│ • Límite sugerido: $50,000             │
+│ • Garantías: No requeridas              │
+│ • Descuento máximo: 15%                │
+│                                         │
+│ 📊 Factores considerados:               │
+│ • Historial pagos: 100% puntual        │
+│ • Facturación empresa: Creciendo       │
+│ • Industria: Retail (estable)          │
+│ • Contratos anteriores: 8 exitosos     │
+└─────────────────────────────────────────┘
+Sistema de términos de pago inteligente:
+
+Sugerencias automáticas: Cortex-Risk calcula términos óptimos automáticamente
+Validación contra política: Verifica que términos cumplen políticas corporativas
+Alertas de riesgo: Si términos exceden límites, solicita aprobación automáticamente
+Benchmarking: Compara términos con clientes similares
+
+Configuración de facturación avanzada:
+
+Modo inteligente: IA sugiere si facturar por hitos o cuotas según tipo de campaña
+Validación fiscal: Integración con SII para validar datos tributarios
+Dirección automática: Detecta si requiere carta de tercerización para agencias
+Alertas legales: Advierte sobre requisitos documentales específicos
+
+PASO 3: "ESPECIFICACIONES AVANZADAS" - VALIDACIÓN INTEGRAL
+Validación de inventario en tiempo real:
+┌─────────────────────────────────────────┐
+│ 📊 VALIDACIÓN DE INVENTARIO AUTOMÁTICA  │
+│                                         │
+│ 🔍 Verificando disponibilidad...        │
+│                                         │
+│ ✅ Radio Corazón Prime: Disponible      │
+│    Horarios 07:00-09:00 ✅ 85% libre   │
+│    Fechas 15 Jun-30 Ago ✅ Sin conflictos│
+│                                         │
+│ ⚠️ FM Dos Repartido: Saturado          │
+│    Disponibilidad: Solo 60%             │
+│    Sugerencia: Mover a horario 14-16h   │
+│                                         │
+│ ❌ La Clave Prime: No disponible        │
+│    Conflicto: Exclusividad Banco XYZ    │
+│    Alternativa: Horario Tarde libre     │
+│                                         │
+│ [🔄 Re-validar] [✏️ Ajustar] [💡 Sugerencias]│
+└─────────────────────────────────────────┘
+Integración con sistemas de emisión:
+
+Validación cruzada: Verifica disponibilidad en WideOrbit, Sara, Dalet simultáneamente
+Reserva automática: Opcional para bloquear espacios durante negociación
+Alertas de cambios: Notifica si inventario cambia durante creación del contrato
+Sugerencias optimización: IA sugiere horarios alternativos con mejor performance
+
+Sistema de validación de material creativo:
+
+Check automático: Verifica si existen cuñas activas para el anunciante
+Análisis de coherencia: Valida que material existente es apropiado para campaña
+Alertas de faltante: Lista material que falta crear
+Integración directa: Botón para crear cuñas directamente desde contrato
+
+PASO 4: "FLUJO DE APROBACIONES" - AUTOMATIZACIÓN TOTAL
+Sistema de aprobaciones multinivel automático:
+Configuración automática basada en valor y riesgo:
+
+$0-10K + Riesgo Bajo = Aprobación automática
+$10K-50K + Riesgo Bajo = Supervisor (2h límite)
+$50K-100K = Gerente Comercial (4h límite)
+$100K-500K = Gerente General (24h límite)
+$500K+ = Directorio (48h límite)
+
+Factores que escalan automáticamente:
+- Descuentos >20%
+- Términos de pago >45 días
+- Clientes con score <600
+- Nuevos clientes sin historial
+- Exclusividades o términos especiales
+Notificaciones push críticas:
+
+Aprobadores: Reciben notificación inmediata en móvil y email
+Ejecutivo: Alertas de progreso de aprobación en tiempo real
+Escalamiento: Si no hay respuesta en tiempo límite, escala automáticamente
+Contexto completo: Cada notificación incluye toda la información para decidir
+
+PASO 5: "DOCUMENTACIÓN Y FIRMA" - DIGITAL FIRST
+Generación automática de documentos:
+
+Plantillas dinámicas: Documentos se generan automáticamente con datos del contrato
+Personalización: Logos, términos específicos, clausulas especiales automáticas
+Multi-idioma: Soporte para contratos en español, inglés según cliente
+Versionado: Control de versiones automático con track de cambios
+
+Integración de firma digital:
+
+DocuSign/Adobe Sign: Integración nativa para firmas legalmente válidas
+Flujo automático: Envío secuencial a firmantes según orden configurado
+Tracking completo: Estado de cada firma en tiempo real
+Recordatorios: Automáticos cada 24h hasta completar firmas
+
+
+📊 DASHBOARD EJECUTIVO - CENTRO DE CONTROL COMERCIAL
+VISTA KANBAN INTERACTIVA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 PIPELINE COMERCIAL VISUAL - TIEMPO REAL                      │
+├─────────────────────────────────────────────────────────────────┤
+│ 📋 BORRADOR    📝 NEGOCIACIÓN   ⏳ APROBACIÓN   ✅ FIRMADO      │
+│ ($45K)        ($280K)         ($125K)        ($340K)         │
+│                                                                 │
+│ ┌───────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐    │
+│ │SuperMax   │ │Banco XYZ   │ │AutoMax     │ │TechCorp    │    │
+│ │$15K       │ │$85K        │ │$35K        │ │$95K        │    │
+│ │Ana G.     │ │Carlos M.   │ │Roberto S.  │ │Ana G.      │    │
+│ │[Editar]   │ │🚨 2h       │ │⏰ 1 día    │ │✅ Hoy      │    │
+│ └───────────┘ └────────────┘ └────────────┘ └────────────┘    │
+│                                                                 │
+│ ┌───────────┐ ┌────────────┐                ┌────────────┐    │
+│ │Retail Plus│ │Farmacia XYZ│                │Inmobiliaria│    │
+│ │$8K        │ │$45K        │                │$120K       │    │
+│ │Carlos M.  │ │Ana G.      │                │Roberto S.  │    │
+│ │[Nuevo]    │ │📞 Llamar   │                │💰 Pagado   │    │
+│ └───────────┘ └────────────┘                └────────────┘    │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Acciones rápidas:                                           │
+│ [➕ Nuevo] [🔄 Refresh] [📊 Métricas] [📱 Vista Móvil]        │
+└─────────────────────────────────────────────────────────────────┘
+Funcionalidades Kanban avanzadas:
+
+Drag & Drop: Arrastrar contratos entre estados con validaciones automáticas
+Colores dinámicos: Visual según urgencia, valor, riesgo del cliente
+Filtros en tiempo real: Por ejecutivo, período, valor, estado
+Métricas por columna: Valor total, cantidad, tiempo promedio en cada estado
+
+MÉTRICAS PREDICTIVAS CON IA:
+────────────────────────────────────────────────────────────────┐
+│ 🤖 ANÁLISIS PREDICTIVO CORTEX-FLOW                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 PREDICCIONES MES ACTUAL:                                    │
+│ • Probabilidad cierre meta: 87% ✅ Alta                        │
+│ • Valor probable cierre: $1.05M de $1.2M meta                 │
+│ • Contratos en riesgo: 3 (Requieren atención)                 │
+│ • Renovaciones próximas: 8 (Probabilidad: 75% promedio)       │
+│                                                                 │
+│ 🎯 INSIGHTS AUTOMÁTICOS:                                       │
+│ • Banco XYZ: 92% probabilidad firma en 24h                    │
+│ • SuperMax: Retrasará decisión 3-5 días (patrón histórico)    │
+│ • AutoMax: Solicitará descuento adicional (predicción 78%)    │
+│                                                                 │
+│ 💡 RECOMENDACIONES IA:                                         │
+│ • Contactar TechCorp HOY para acelerar firma                  │
+│ • Preparar contra-oferta para AutoMax (descuento 12%)         │
+│ • Iniciar proceso renovación FarmaciaXYZ (vence en 30 días)   │
+│                                                                 │
+│ 🚨 ALERTAS CRÍTICAS:                                           │
+│ • 2 contratos requieren acción inmediata para cerrar mes      │
+│ • Ejecutivo Carlos M. sobrecargado (8 contratos en negoc.)    │
+│ • Inventario Radio Corazón Prime agotándose (solo 5% libre)   │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Análisis Completo] [🎯 Plan Acción] [📧 Alertar Equipo]    │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE ALERTAS OPERATIVAS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚨 CENTRO DE ALERTAS - REQUIEREN ACCIÓN INMEDIATA              │
+├─────────────────────────────────────────────────────────────────┤
+│ ⚠️ CRÍTICAS (2):                                               │
+│ • Banco XYZ: Aprobación vence en 2 horas                      │
+│   👤 Esperando: María Silva (Gerente)                          │
+│   💰 Valor: $85,000 • 🎯 Acción: [📞 Llamar] [📧 Recordar]    │
+│                                                                 │
+│ • AutoMax: Cliente solicita cambios mayores                    │
+│   👤 Ejecutivo: Roberto Silva                                  │
+│   🔄 Acción: [✏️ Revisar] [📞 Negociar] [❌ Rechazar]          │
+│                                                                 │
+│ 🟡 IMPORTANTES (5):                                            │
+│ • TechCorp: Pendiente firma digital desde hace 24h            │
+│ • SuperMax: Inventario reservado vence mañana                 │
+│ • FarmaciaXYZ: Proceso renovación debe iniciarse             │
+│ • RetailPlus: Material creativo faltante bloquea aprobación   │
+│ • InmobiliariaABC: Términos de pago requieren validación      │
+│                                                                 │
+│ 📊 INFORMATIVAS (8):                                           │
+│ • 3 contratos próximos a vencer en 7 días                     │
+│ • 2 ejecutivos superaron meta mensual                         │
+│ • 5 renovaciones automáticas procesadas exitosamente          │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔄 Actualizar] [📋 Resolver Todas] [⚙️ Configurar Alertas]    │
+└─────────────────────────────────────────────────────────────────┘
+
+📱 MÓDULO MÓVIL - EJECUTIVOS EN TERRENO
+APP MÓVIL NATIVA OPTIMIZADA:
+Interface móvil específica para ventas:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR CONTRATOS MÓVIL              │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Ejecutivo                  │
+│ • Mi pipeline: 5 contratos activos      │
+│ • Acciones hoy: 3 pendientes           │
+│ • Meta mes: $85K (78% completado)      │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [📋 Nuevo Contrato Express]             │
+│ [📞 Llamadas Pendientes (2)]            │
+│ [✅ Aprobaciones Recibidas (1)]         │
+│ [📧 Enviar Propuesta]                   │
+│                                         │
+│ 🚨 ALERTAS:                             │
+│ • Banco XYZ: Respuesta requerida HOY    │
+│ • SuperMax: Reunión mañana 10:00       │
+│                                         │
+│ 📊 MIS CONTRATOS:                       │
+│ [Ver Pipeline] [Búsqueda] [Filtros]     │
+├─────────────────────────────────────────┤
+│ [🏠] [📋] [📞] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+CREACIÓN EXPRESS DESDE MÓVIL:
+Wizard optimizado para móvil:
+
+Reconocimiento de voz: Dictar detalles del contrato
+Cámara integrada: Fotografiar briefings o órdenes físicas
+Geolocalización: Auto-detecta ubicación del cliente
+Modo offline: Funciona sin conexión, sincroniza al reconectar
+Templates móviles: Contratos pre-configurados para creación rápida
+
+INTEGRACIÓN WHATSAPP BUSINESS:
+Procesamiento automático de órdenes:
+Flujo automático:
+1. Cliente envía orden por WhatsApp
+2. IA extrae datos automáticamente
+3. Crea borrador de contrato
+4. Notifica al ejecutivo asignado
+5. Ejecutivo valida y ajusta desde móvil
+6. Envía propuesta de vuelta por WhatsApp
+Parser inteligente de mensajes:
+
+Extracción de datos: Cliente, productos, fechas, valores automáticamente
+Validación cruzada: Verifica datos contra base de anunciantes
+Sugerencias: Completa información faltante basado en historial
+Alertas: Notifica inconsistencias o datos faltantes
+
+
+🔄 SISTEMA DE RENOVACIONES AUTOMÁTICAS
+PREDICCIÓN INTELIGENTE DE RENOVACIONES:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔮 MOTOR PREDICTIVO DE RENOVACIONES CORTEX-FLOW                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS CONTRATOS PRÓXIMOS A VENCER (30 días):             │
+│                                                                 │
+│ ✅ ALTA PROBABILIDAD RENOVACIÓN (85%+):                        │
+│ • SuperMax - Vence: 15 Dic • Prob: 92% • Valor prev: $125K    │
+│   🎯 Acción: Contactar 7 días antes con oferta mejorada        │
+│                                                                 │
+│ • Banco XYZ - Vence: 20 Dic • Prob: 88% • Valor prev: $85K    │
+│   🎯 Acción: Proponer extensión anual con descuento 5%         │
+│                                                                 │
+│ ⚠️ RIESGO MEDIO (50-70%):                                       │
+│ • AutoMax - Vence: 25 Dic • Prob: 65% • Valor prev: $45K      │
+│   🎯 Acción: Reunión presencial + análisis de competencia      │
+│                                                                 │
+│ ❌ RIESGO ALTO (30-50%):                                        │
+│ • TechCorp - Vence: 30 Dic • Prob: 35% • Valor prev: $95K     │
+│   🎯 Acción: Intervención gerencial + oferta defensiva         │
+│                                                                 │
+│ 🤖 FACTORES ANALIZADOS POR IA:                                 │
+│ • Performance de campaña actual                                │
+│ • Satisfacción del cliente (NPS)                              │
+│ • Actividad de competencia                                     │
+│ • Ciclo presupuestario del cliente                            │
+│ • Historial de renovaciones similar                           │
+│ • Cambios en el equipo del cliente                            │
+├─────────────────────────────────────────────────────────────────┤
+│ [🎯 Generar Plan Acción] [📧 Alertar Ejecutivos] [📊 Detalles] │
+└─────────────────────────────────────────────────────────────────┘
+AUTOMATIZACIÓN DE PROCESO DE RENOVACIÓN:
+Workflows automáticos:
+
+30 días antes: IA analiza probabilidad y genera recomendaciones
+21 días antes: Alerta automática al ejecutivo con estrategia sugerida
+14 días antes: Si no hay acción, escala a supervisor
+7 días antes: Generación automática de propuesta de renovación
+1 día antes: Alerta crítica a gerencia si no hay progreso
+
+Generación automática de propuestas:
+
+Análisis de performance: Métricas de la campaña actual
+Benchmarking: Comparación con mercado y competencia
+Optimización de precios: Sugerencias basadas en valor entregado
+Términos mejorados: Propuestas de mejores condiciones según historial
+
+
+🔐 SEGURIDAD TIER 0 - NIVEL PENTÁGONO
+SEGURIDAD ANTI-HACKER AVANZADA:
+Protección de datos comerciales críticos:
+
+Encriptación cuántica: Resistente a computación cuántica futura
+Zero-trust architecture: Validación continua de cada acceso
+Behavioral analytics: Detección de patrones anómalos de uso
+Data loss prevention: Prevención de filtración de información comercial
+
+Auditoría inmutable:
+
+Blockchain logging: Logs inmutables de cada transacción comercial
+Digital forensics: Capacidad de investigación forense completa
+Compliance automático: Cumplimiento SOX, GDPR, regulaciones locales
+Retention inteligente: Retención automática según regulaciones por país
+
+CONTROLES DE ACCESO GRANULARES:
+Matriz de permisos por rol:
+Ejecutivo Junior:
+- Crear contratos hasta $25K
+- Ver solo sus contratos asignados
+- No puede aprobar descuentos >10%
+- Requiere supervisión para términos especiales
+
+Ejecutivo Senior:
+- Crear contratos hasta $100K
+- Ver contratos de su cartera completa
+- Aprobar descuentos hasta 20%
+- Términos de pago hasta 45 días
+
+Supervisor:
+- Aprobar contratos hasta $500K
+- Ver contratos de su equipo
+- Autorizar términos especiales
+- Acceso a métricas de equipo
+
+Gerente Comercial:
+- Sin límite de valor
+- Acceso total a pipeline comercial
+- Override de validaciones automáticas
+- Configuración de políticas de crédito

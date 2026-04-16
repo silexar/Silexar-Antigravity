@@ -1,0 +1,1514 @@
+🏢 MÓDULO ANUNCIANTES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO ANUNCIANTES?
+El Módulo Anunciantes es el corazón del ecosistema comercial en Silexar Pulse. Funciona como el cerebro de inteligencia comercial que no solo gestiona clientes, sino que predice comportamientos, optimiza relaciones, automatiza interacciones y maximiza el valor de vida de cada cuenta. Es el centro de comando de relaciones comerciales donde la IA convierte datos en decisiones rentables.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Ejecutivo de Ventas, este módulo es mi asistente comercial 24/7:
+
+Me dice exactamente a quién llamar hoy y por qué
+Predice qué cliente necesita qué servicio antes de que me lo pida
+Automatiza el seguimiento y me recuerda acciones críticas
+Analiza cada interacción y sugiere próximos pasos óptimos
+Me alerta cuando un cliente está en riesgo de cancelar
+
+Como Gerente Comercial, superviso desde el comando estratégico:
+
+Veo en tiempo real el valor de vida de cada cliente
+Identifico oportunidades de crecimiento automáticamente
+Monitoreo la salud comercial de toda la cartera
+Recibo alertas predictivas de problemas antes de que ocurran
+Optimizo la asignación de recursos basado en potencial de cada cuenta
+
+Como Controller/CFO, obtengo inteligencia financiera crítica:
+
+Score de riesgo crediticio actualizado en tiempo real
+Predicciones de flujo de caja por cliente
+Análisis de rentabilidad por cuenta automático
+Alertas tempranas de problemas de cobranza
+Optimización automática de términos de crédito
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Alimenta automáticamente datos de riesgo y términos preferenciales
+Módulo Cuñas: Valida coherencia de marca y sugiere creatividades
+Módulo Vencimientos: Optimiza programación según perfil de audiencia del cliente
+Módulo Facturación: Sincroniza límites de crédito y términos de pago en tiempo real
+Cortex-Risk: Motor de IA que evalúa solvencia y predice comportamiento de pago
+Cortex-Audience: Perfila audiencias y optimiza targeting para cada cliente
+Cortex-Flow: Predice necesidades futuras y optimiza timing de contacto
+
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/anunciantes/
+├── domain/
+│   ├── entities/
+│   │   ├── Anunciante.ts (Entidad principal del cliente)
+│   │   ├── ContactoComercial.ts (Personas clave con roles específicos)
+│   │   ├── OportunidadNegocio.ts (Pipeline de ventas avanzado)
+│   │   ├── HistorialInteracciones.ts (Timeline completo de relación)
+│   │   ├── PerfilRiesgo.ts (Análisis crediticio dinámico)
+│   │   ├── ValorVidaCliente.ts (LTV y métricas predictivas)
+│   │   ├── PerfilAudiencia.ts (Targeting y demografía)
+│   │   ├── CompetenciaAnalisis.ts (Monitoreo de competidores)
+│   │   ├── EstacionalidadComercial.ts (Patrones de consumo)
+│   │   ├── AlertaRiesgo.ts (Sistema de alertas inteligentes)
+│   │   ├── SeguimientoAutomatico.ts (Workflows de seguimiento)
+│   │   └── IntegracionCRM.ts (Sincronización sistemas externos)
+│   ├── value-objects/
+│   │   ├── RutChileno.ts (RUT validado con SII)
+│   │   ├── TamanoEmpresa.ts (Clasificación inteligente)
+│   │   ├── IndustriaGiro.ts (Sector con análisis de mercado)
+│   │   ├── ScoreRiesgo.ts (Score 0-1000 con IA)
+│   │   ├── PrediccionLTV.ts (Valor de vida predictivo)
+│   │   ├── PerfilDemografico.ts (Audiencia target)
+│   │   ├── CicloPresupuestario.ts (Timing óptimo de ventas)
+│   │   ├── CompetitividadMercado.ts (Posición vs competencia)
+│   │   └── PotencialCrecimiento.ts (Análisis de expansión)
+│   └── repositories/
+│       ├── IAnuncianteRepository.ts
+│       ├── IOportunidadRepository.ts
+│       ├── IInteraccionRepository.ts
+│       ├── IPerfilRiesgoRepository.ts
+│       └── IAnalisisCompetenciaRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearAnuncianteCommand.ts
+│   │   ├── ActualizarAnuncianteCommand.ts
+│   │   ├── CrearOportunidadCommand.ts
+│   │   ├── RegistrarInteraccionCommand.ts
+│   │   ├── AsignarEjecutivoCommand.ts
+│   │   ├── ActualizarScoreRiesgoCommand.ts
+│   │   ├── GenerarAlertaRiesgoCommand.ts
+│   │   ├── ActivarSeguimientoCommand.ts
+│   │   ├── AnalizarCompetenciaCommand.ts
+│   │   ├── OptimizarPortfolioCommand.ts
+│   │   ├── PredecirRenovacionCommand.ts
+│   │   └── SincronizarSIICommand.ts
+│   ├── queries/
+│   │   ├── ObtenerPerfilAnuncianteQuery.ts
+│   │   ├── BuscarAnunciantesQuery.ts
+│   │   ├── ObtenerPipelineVentasQuery.ts
+│   │   ├── GenerarAnalisisRiesgoQuery.ts
+│   │   ├── ObtenerMetricasRendimientoQuery.ts
+│   │   ├── PredecirComportamientoQuery.ts
+│   │   ├── AnalizarOportunidadesQuery.ts
+│   │   ├── GenerarInsightsComerciales.ts
+│   │   ├── ObtenerCompetenciaAnalysis.ts
+│   │   └── CalcularROIClienteQuery.ts
+│   └── handlers/
+│       ├── AnuncianteCommandHandler.ts
+│       ├── OportunidadCommandHandler.ts
+│       ├── InteraccionHandler.ts
+│       ├── RiesgoAnalysisHandler.ts
+│       ├── PredictiveAnalyticsHandler.ts
+│       ├── CompetenciaMonitoringHandler.ts
+│       ├── SeguimientoAutomaticoHandler.ts
+│       └── IntegracionExternaHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaAnuncianteRepository.ts
+│   │   ├── PrismaOportunidadRepository.ts
+│   │   ├── PrismaInteraccionRepository.ts
+│   │   └── PrismaRiesgoRepository.ts
+│   ├── external/
+│   │   ├── SIIValidationService.ts (Integración SII Chile)
+│   │   ├── DICOMCreditService.ts (Bureau de crédito)
+│   │   ├── EquifaxIntegrationService.ts (Análisis crediticio)
+│   │   ├── GoogleMapsBusinessService.ts (Datos ubicación)
+│   │   ├── LinkedInSalesService.ts (Inteligencia comercial)
+│   │   ├── CortexRiskAdvancedService.ts (IA riesgo)
+│   │   ├── CortexAudienceService.ts (Perfilado audiencia)
+│   │   ├── CortexFlowPredictionService.ts (Predicciones)
+│   │   ├── CortexCompetitorService.ts (Análisis competencia)
+│   │   ├── WhatsAppBusinessService.ts (Comunicación)
+│   │   ├── EmailMarketingService.ts (Automatización)
+│   │   ├── CallTrackingService.ts (Seguimiento llamadas)
+│   │   ├── WebScrapingService.ts (Monitoreo digital)
+│   │   ├── SocialListeningService.ts (Análisis RRSS)
+│   │   └── EconomicIndicatorsService.ts (Datos macroeconómicos)
+│   └── messaging/
+│       ├── AnuncianteEventPublisher.ts
+│       ├── RiesgoAlertPublisher.ts
+│       ├── OportunidadEventPublisher.ts
+│       └── CompetenciaAlertPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── AnuncianteController.ts
+    │   ├── OportunidadController.ts
+    │   ├── InteraccionController.ts
+    │   ├── RiesgoController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── PredictiveController.ts
+    │   ├── MobileAnuncianteController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearAnuncianteDto.ts
+    │   ├── ActualizarAnuncianteDto.ts
+    │   ├── CrearOportunidadDto.ts
+    │   ├── RegistrarInteraccionDto.ts
+    │   └── ActualizarRiesgoDto.ts
+    └── middleware/
+        ├── AnuncianteAccessMiddleware.ts
+        ├── RiesgoValidationMiddleware.ts
+        ├── DataPrivacyMiddleware.ts
+        └── AuditTrailMiddleware.ts
+
+🎨 PANTALLA PRINCIPAL - CENTRO DE INTELIGENCIA COMERCIAL
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando comercial:
+
+Título: "🏢 Centro de Inteligencia Comercial"
+Breadcrumb: "Dashboard > Anunciantes"
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 INTELIGENCIA COMERCIAL TIEMPO REAL                          │
+│                                                                 │
+│ 847 Clientes    $2.3B Facturación    23 Oportunidades Hot     │
+│ 156 Nuevos/Mes  94.2% Retención     $45M Pipeline Activo      │
+│ 🎯 Top Acción: ContactarTechCorp HOY (92% prob. cierre $180M) │
+│ 🤖 IA Detectó: 8 clientes en riesgo, 12 listos para upselling │
+└─────────────────────────────────────────────────────────────────┘
+
+
+CENTRO DE COMANDO COMERCIAL AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'clientes retail alto valor', 'riesgo cancelación', 'listos para renovar'..."
+IA Conversacional: Entiende consultas como "¿qué clientes debo contactar hoy?"
+Predicciones automáticas:
+
+"Clientes con 90%+ probabilidad de comprar esta semana"
+"Cuentas en riesgo de pérdida por competencia"
+"Oportunidades de upselling detectadas por IA"
+"Renovaciones que vencen en 30 días"
+
+
+
+Filtros inteligentes de negocio:
+
+Potencial Comercial:
+
+🌟 Platinum ($500M+ facturación anual)
+💎 Gold ($100M-500M facturación)
+🥇 Silver ($20M-100M facturación)
+🥈 Bronze ($5M-20M facturación)
+🆕 Prospecto (sin facturación histórica)
+
+
+Estado de Relación:
+
+🔥 Cliente Activo Premium
+✅ Cliente Activo Estándar
+⚠️ Cliente en Riesgo
+🔄 En Proceso de Renovación
+😴 Cliente Inactivo
+👋 Ex-Cliente (Análisis recuperación)
+
+
+Score de Oportunidad IA:
+
+🎯 Hot (90-100% probabilidad acción)
+🔥 Warm (70-89% probabilidad)
+📊 Medium (40-69% probabilidad)
+❄️ Cold (10-39% probabilidad)
+
+
+
+Centro de acciones inteligentes:
+
+"🎯 Contactar Hoy" (IA sugiere top 5 clientes para contactar)
+"🤖 Insights IA" (Análisis predictivo completo)
+"📊 Pipeline Inteligente" (Vista Kanban con IA)
+"🔍 Detectar Oportunidades" (Scanner automático de nuevas oportunidades)
+"⚠️ Alertas Críticas" (Clientes que requieren atención inmediata)
+
+TABLA DE ANUNCIANTES - INTELIGENCIA OPERATIVA:
+1. Columna "Cliente/Inteligencia" (300px):
+┌─────────────────────────────────────┐
+│ [LOGO] SuperMax SpA                 │
+│ 🏪 Retail • 45 locales • RM+Regiones│
+│ 📊 Score: 750/1000 • 🔥 Hot Lead    │
+│ 🤖 IA: "Listo para campaña navideña" │
+└─────────────────────────────────────┘
+
+Logo dinámico: Actualizado automáticamente desde web
+Información contextual: Industria, tamaño, cobertura geográfica
+Score visual: Color y número con tendencia (↗️↘️)
+Insight IA: Recomendación automática de Cortex-Flow
+
+2. Columna "Valor Comercial/Tendencia" (180px):
+┌─────────────────┐
+│ 💰 $287M YTD    │
+│ 📈 +23% vs 2024 │
+│ 🎯 LTV: $1.2B   │
+│ 💳 Límite: $25M │
+└─────────────────┘
+
+Facturación actual: Año a la fecha con proyección
+Tendencia: Comparación vs período anterior
+LTV predictivo: Valor de vida calculado por IA
+Límite crédito: Actualizado en tiempo real
+
+3. Columna "Ejecutivo/Performance" (160px):
+┌─────────────────┐
+│ [AVATAR] Carlos │
+│ Mendoza         │
+│ 📞 Ult: 2 días  │
+│ 🎯 ROI: 340%    │
+└─────────────────┘
+
+Ejecutivo asignado: Avatar + nombre
+Última interacción: Tiempo transcurrido
+ROI de la cuenta: Rentabilidad de la relación
+
+4. Columna "Oportunidades/Pipeline" (170px):
+┌─────────────────┐
+│ 🎯 3 Activas    │
+│ 💰 $180M Pipeline│
+│ 🔥 1 Hot Close  │
+│ 📅 2 This Month │
+└─────────────────┘
+
+Oportunidades activas: Cantidad en pipeline
+Valor total: Sumatoria de oportunidades
+Hot opportunities: Probabilidad >90%
+Timing: Cierre esperado este mes
+
+5. Columna "Riesgo/Predicciones" (150px):
+┌─────────────────┐
+│ 🛡️ Riesgo: BAJO │
+│ 🔄 Renovación:  │
+│    85% probable │
+│ ⚠️ Sin alertas  │
+└─────────────────┘
+
+Nivel de riesgo: Con explicación automática
+Predicción renovación: Porcentaje de probabilidad
+Alertas activas: Problemas detectados por IA
+
+6. Columna "Última Actividad/Next Best Action" (200px):
+┌─────────────────────────────────┐
+│ 📧 Email ayer 14:30             │
+│ "Propuesta campaña Q1"          │
+│                                 │
+│ 🎯 Next Action (IA):            │
+│ "📞 Llamar viernes AM           │
+│ re: aprobación presupuesto"     │
+└─────────────────────────────────┘
+
+Última interacción: Tipo, fecha, contexto
+Contenido: Resumen de la actividad
+Next Best Action: Recomendación de IA de próxima acción óptima
+
+7. Columna "Acciones Inteligentes" (180px):
+┌─────────────────┐
+│ [👁️] [📞] [📧] │
+│ [🎯] [📊] [🤖] │
+│ [⚠️] [🔄] [💰] │
+└─────────────────┘
+
+👁️ Perfil 360°: Vista completa con IA insights
+📞 Smart Call: Botón inteligente que sugiere timing óptimo
+📧 Email IA: Generación automática de emails contextuales
+🎯 Crear Oportunidad: Con datos pre-llenados por IA
+📊 Analytics: Análisis predictivo profundo
+🤖 Ask Cortex: Chatbot para insights específicos
+⚠️ Gestionar Riesgo: Centro de alertas y acciones
+🔄 Automatizar: Configurar workflows de seguimiento
+💰 Optimizar: Sugerencias de maximización de valor
+
+
+➕ CREACIÓN INTELIGENTE DE ANUNCIANTE - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de creación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿CÓMO PREFIERES CREAR EL CLIENTE?    │
+│                                         │
+│ [🔍] Búsqueda por RUT                   │
+│      Validación automática SII + IA    │
+│      Datos pre-llenados instantáneamente│
+│                                         │
+│ [🌐] Desde sitio web                    │
+│      Ingresa URL, IA extrae toda la info│
+│      Análisis automático de la empresa  │
+│                                         │
+│ [👤] Desde LinkedIn                     │
+│      Conecta perfil, importa datos      │
+│      Análisis de red y conexiones       │
+│                                         │
+│ [📧] Desde email/tarjeta                │
+│      Sube foto, OCR extrae información  │
+│      Procesamiento automático de datos  │
+│                                         │
+│ [✏️] Manual tradicional                 │
+│      Formulario guiado con sugerencias  │
+│      IA asiste en cada campo            │
+└─────────────────────────────────────────┘
+MODO: BÚSQUEDA POR RUT (Más Común en Chile):
+Validación SII con inteligencia aumentada:
+┌─────────────────────────────────────────┐
+│ 🔍 VALIDACIÓN INTELIGENTE SII           │
+│                                         │
+│ RUT: [12.345.678-9        ] [🔍 Buscar] │
+│                                         │
+│ ⏳ Consultando SII + IA...               │
+│                                         │
+│ ✅ EMPRESA ENCONTRADA Y ANALIZADA:      │
+│                                         │
+│ 📋 Datos SII:                          │
+│ • Razón Social: SuperMax SpA            │
+│ • Giro: Comercio al por menor           │
+│ • Estado: Activo                        │
+│ • Dirección: Av. Providencia 1234       │
+│                                         │
+│ 🤖 Análisis IA Automático:             │
+│ • Tamaño estimado: Empresa Grande       │
+│ • Facturación est: $50M-100M anual     │
+│ • Empleados est: 200-500               │
+│ • Presencia digital: Sitio web activo  │
+│ • Redes sociales: Instagram, Facebook  │
+│ • Competidores: Jumbo, Lider, Unimarc  │
+│                                         │
+│ [✅ Usar datos] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+Enriquecimiento automático de datos:
+
+Web scraping inteligente: Extrae información del sitio web automáticamente
+Análisis de redes sociales: Evalúa presencia digital y engagement
+Inteligencia competitiva: Identifica competidores automáticamente
+Análisis de mercado: Evalúa posición en su industria
+Scoring preliminar: Primera evaluación de riesgo y potencial
+
+MODO: DESDE SITIO WEB (Para empresas internacionales):
+Análisis web con IA:
+┌─────────────────────────────────────────┐
+│ 🌐 ANÁLISIS INTELIGENTE DE SITIO WEB    │
+│                                         │
+│ URL: [www.empresa.com   ] [🔍 Analizar] │
+│                                         │
+│ 🤖 IA PROCESANDO SITIO WEB...           │
+│ ████████████████████░░░ 85%            │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 Información extraída:                │
+│ • Nombre: TechCorp Solutions            │
+│ • Industria: Tecnología/Software       │
+│ • Ubicación: Miami, FL, USA            │
+│ • Empleados: 150+ (estimado)           │
+│ • Servicios: SaaS B2B, Consultoría     │
+│ • Clientes: 500+ empresas              │
+│                                         │
+│ 🎯 Insights automáticos:               │
+│ • Empresa en crecimiento (50+ jobs)    │
+│ • Expansión LATAM en progreso          │
+│ • Presupuesto marketing estimado: $2M  │
+│ • Probabilidad interés radio: 65%      │
+│                                         │
+│ 🔗 Datos de contacto encontrados:       │
+│ • Email general: info@techcorp.com     │
+│ • Teléfono: +1 305 123 4567           │
+│ • LinkedIn: /company/techcorp          │
+│                                         │
+│ [✅ Crear perfil] [🔄 Re-analizar] [✏️ Editar]│
+└─────────────────────────────────────────┘
+PASO 1: "INFORMACIÓN FUNDAMENTAL" - IA ASISTIDA
+Campos con inteligencia artificial integrada:
+Campo "Nombre Legal" (Con validación cruzada):
+
+Auto-completado: Si viene de SII o web, se pre-llena automáticamente
+Validación cruzada: Verifica coherencia con datos públicos
+Sugerencias: IA sugiere correcciones si detecta inconsistencias
+Formato automático: Ajusta capitalización y formato empresarial
+
+Campo "Nombre Comercial" (Con inteligencia de marca):
+
+Detección automática: IA extrae de sitio web, redes sociales
+Análisis de marca: Evalúa coherencia y posicionamiento
+Sugerencias: Propone variaciones si detecta ambigüedad
+Verificación: Chequea que no exista cliente duplicado
+
+Sección "Clasificación Inteligente Automática":
+┌─────────────────────────────────────────┐
+│ 🤖 CLASIFICACIÓN AUTOMÁTICA IA         │
+│                                         │
+│ ✅ Análisis completado automáticamente: │
+│                                         │
+│ 🏢 Tamaño Empresa: GRANDE               │
+│ Factores: 45 locales, $50M+ facturación│
+│                                         │
+│ 🎯 Industria: RETAIL/COMERCIO           │
+│ CIIU: 4711 - Venta al por menor        │
+│                                         │
+│ 📊 Potencial Publicitario: ALTO         │
+│ Presupuesto estimado: $800K-1.2M anual │
+│                                         │
+│ 🌟 Prioridad Comercial: PREMIUM         │
+│ Razón: Alto volumen + industria estable │
+│                                         │
+│ 🎪 Estacionalidad Detectada:           │
+│ • Picos: Nov-Dic (navidad)             │
+│ • Altos: Mar-Abr (vuelta a clases)     │
+│ • Bajos: Ene-Feb (post fiestas)        │
+│                                         │
+│ [✅ Confirmar] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+PASO 2: "ANÁLISIS DE RIESGO AUTOMÁTICO" - CORTEX-RISK
+Análisis crediticio en tiempo real:
+┌─────────────────────────────────────────┐
+│ 🛡️ ANÁLISIS CORTEX-RISK AVANZADO       │
+│                                         │
+│ 🔍 Analizando múltiples fuentes...      │
+│ ████████████████████████████░░░ 90%    │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 SCORE FINAL: 750/1000               │
+│ 🟢 RIESGO: BAJO                        │
+│                                         │
+│ 📋 Factores evaluados:                 │
+│ ✅ Información SII: Empresa activa     │
+│ ✅ DICOM: Sin morosidades              │
+│ ✅ Equifax: Score comercial 720        │
+│ ✅ Historial: 3 años operando          │
+│ ✅ Estabilidad: Crecimiento constante  │
+│ ✅ Industria: Retail (estable)         │
+│ ⚠️ Nuevo cliente: Sin historial interno│
+│                                         │
+│ 💡 Recomendaciones automáticas:        │
+│ • Límite crédito sugerido: $15M        │
+│ • Términos pago: 30 días estándar      │
+│ • Garantías: No requeridas             │
+│ • Revisión: Cada 6 meses               │
+│                                         │
+│ 🎯 Términos comerciales óptimos:       │
+│ • Descuento máximo: 15%                │
+│ • Facturación: Mensual recomendada     │
+│ • Modalidad: Factura electrónica       │
+└─────────────────────────────────────────┘
+Integración con bureaus de crédito chilenos:
+
+DICOM: Consulta automática de morosidades y protestos
+Equifax: Score comercial y análisis de comportamiento de pago
+SII: Verificación de cumplimiento tributario
+Registros públicos: Verificación de constitución y vigencia
+
+PASO 3: "CONTACTOS COMERCIALES" - INTELIGENCIA DE PERSONAS
+Detección automática de contactos clave:
+┌─────────────────────────────────────────┐
+│ 👥 CONTACTOS DETECTADOS AUTOMÁTICAMENTE │
+│                                         │
+│ 🤖 IA encontró 4 contactos relevantes:  │
+│                                         │
+│ 👑 DECISOR PRINCIPAL DETECTADO:         │
+│ ┌─────────────────────────────────────┐ │
+│ │ María González Pérez                │ │
+│ │ 🎯 Gerente Marketing                │ │
+│ │ 📧 maria.gonzalez@supermax.cl      │ │
+│ │ 📞 +56 9 8765 4321                 │ │
+│ │ 💼 LinkedIn: /in/maria-gonzalez-mkt │ │
+│ │ 🎓 MBA Universidad Católica         │ │
+│ │ ⏱️ 8 años en la empresa            │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 💼 OTROS CONTACTOS RELEVANTES:         │
+│ • Roberto Silva - Director Comercial    │
+│ • Ana Martínez - Jefe Comunicaciones   │
+│ • Carlos López - Gerente General        │
+│                                         │
+│ 🎯 IA sugiere contactar primero a:     │
+│ María González (decisor + presupuesto)  │
+│                                         │
+│ [✅ Importar todos] [✏️ Seleccionar] [➕ Agregar manual]│
+└─────────────────────────────────────────┘
+Enriquecimiento automático de contactos:
+
+LinkedIn scraping: Extrae perfiles profesionales automáticamente
+Email finder: Encuentra emails corporativos con alta precisión
+Análisis de roles: Identifica quién decide sobre presupuesto publicitario
+Red de contactos: Mapea relaciones entre contactos internos
+Histórico de cambios: Monitorea cambios en el equipo
+🏢 MÓDULO ANUNCIANTES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO ANUNCIANTES?
+El Módulo Anunciantes es el corazón del ecosistema comercial en Silexar Pulse. Funciona como el cerebro de inteligencia comercial que no solo gestiona clientes, sino que predice comportamientos, optimiza relaciones, automatiza interacciones y maximiza el valor de vida de cada cuenta. Es el centro de comando de relaciones comerciales donde la IA convierte datos en decisiones rentables.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Ejecutivo de Ventas, este módulo es mi asistente comercial 24/7:
+
+Me dice exactamente a quién llamar hoy y por qué
+Predice qué cliente necesita qué servicio antes de que me lo pida
+Automatiza el seguimiento y me recuerda acciones críticas
+Analiza cada interacción y sugiere próximos pasos óptimos
+Me alerta cuando un cliente está en riesgo de cancelar
+
+Como Gerente Comercial, superviso desde el comando estratégico:
+
+Veo en tiempo real el valor de vida de cada cliente
+Identifico oportunidades de crecimiento automáticamente
+Monitoreo la salud comercial de toda la cartera
+Recibo alertas predictivas de problemas antes de que ocurran
+Optimizo la asignación de recursos basado en potencial de cada cuenta
+
+Como Controller/CFO, obtengo inteligencia financiera crítica:
+
+Score de riesgo crediticio actualizado en tiempo real
+Predicciones de flujo de caja por cliente
+Análisis de rentabilidad por cuenta automático
+Alertas tempranas de problemas de cobranza
+Optimización automática de términos de crédito
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Alimenta automáticamente datos de riesgo y términos preferenciales
+Módulo Cuñas: Valida coherencia de marca y sugiere creatividades
+Módulo Vencimientos: Optimiza programación según perfil de audiencia del cliente
+Módulo Facturación: Sincroniza límites de crédito y términos de pago en tiempo real
+Cortex-Risk: Motor de IA que evalúa solvencia y predice comportamiento de pago
+Cortex-Audience: Perfila audiencias y optimiza targeting para cada cliente
+Cortex-Flow: Predice necesidades futuras y optimiza timing de contacto
+
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/anunciantes/
+├── domain/
+│   ├── entities/
+│   │   ├── Anunciante.ts (Entidad principal del cliente)
+│   │   ├── ContactoComercial.ts (Personas clave con roles específicos)
+│   │   ├── OportunidadNegocio.ts (Pipeline de ventas avanzado)
+│   │   ├── HistorialInteracciones.ts (Timeline completo de relación)
+│   │   ├── PerfilRiesgo.ts (Análisis crediticio dinámico)
+│   │   ├── ValorVidaCliente.ts (LTV y métricas predictivas)
+│   │   ├── PerfilAudiencia.ts (Targeting y demografía)
+│   │   ├── CompetenciaAnalisis.ts (Monitoreo de competidores)
+│   │   ├── EstacionalidadComercial.ts (Patrones de consumo)
+│   │   ├── AlertaRiesgo.ts (Sistema de alertas inteligentes)
+│   │   ├── SeguimientoAutomatico.ts (Workflows de seguimiento)
+│   │   └── IntegracionCRM.ts (Sincronización sistemas externos)
+│   ├── value-objects/
+│   │   ├── RutChileno.ts (RUT validado con SII)
+│   │   ├── TamanoEmpresa.ts (Clasificación inteligente)
+│   │   ├── IndustriaGiro.ts (Sector con análisis de mercado)
+│   │   ├── ScoreRiesgo.ts (Score 0-1000 con IA)
+│   │   ├── PrediccionLTV.ts (Valor de vida predictivo)
+│   │   ├── PerfilDemografico.ts (Audiencia target)
+│   │   ├── CicloPresupuestario.ts (Timing óptimo de ventas)
+│   │   ├── CompetitividadMercado.ts (Posición vs competencia)
+│   │   └── PotencialCrecimiento.ts (Análisis de expansión)
+│   └── repositories/
+│       ├── IAnuncianteRepository.ts
+│       ├── IOportunidadRepository.ts
+│       ├── IInteraccionRepository.ts
+│       ├── IPerfilRiesgoRepository.ts
+│       └── IAnalisisCompetenciaRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearAnuncianteCommand.ts
+│   │   ├── ActualizarAnuncianteCommand.ts
+│   │   ├── CrearOportunidadCommand.ts
+│   │   ├── RegistrarInteraccionCommand.ts
+│   │   ├── AsignarEjecutivoCommand.ts
+│   │   ├── ActualizarScoreRiesgoCommand.ts
+│   │   ├── GenerarAlertaRiesgoCommand.ts
+│   │   ├── ActivarSeguimientoCommand.ts
+│   │   ├── AnalizarCompetenciaCommand.ts
+│   │   ├── OptimizarPortfolioCommand.ts
+│   │   ├── PredecirRenovacionCommand.ts
+│   │   └── SincronizarSIICommand.ts
+│   ├── queries/
+│   │   ├── ObtenerPerfilAnuncianteQuery.ts
+│   │   ├── BuscarAnunciantesQuery.ts
+│   │   ├── ObtenerPipelineVentasQuery.ts
+│   │   ├── GenerarAnalisisRiesgoQuery.ts
+│   │   ├── ObtenerMetricasRendimientoQuery.ts
+│   │   ├── PredecirComportamientoQuery.ts
+│   │   ├── AnalizarOportunidadesQuery.ts
+│   │   ├── GenerarInsightsComerciales.ts
+│   │   ├── ObtenerCompetenciaAnalysis.ts
+│   │   └── CalcularROIClienteQuery.ts
+│   └── handlers/
+│       ├── AnuncianteCommandHandler.ts
+│       ├── OportunidadCommandHandler.ts
+│       ├── InteraccionHandler.ts
+│       ├── RiesgoAnalysisHandler.ts
+│       ├── PredictiveAnalyticsHandler.ts
+│       ├── CompetenciaMonitoringHandler.ts
+│       ├── SeguimientoAutomaticoHandler.ts
+│       └── IntegracionExternaHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaAnuncianteRepository.ts
+│   │   ├── PrismaOportunidadRepository.ts
+│   │   ├── PrismaInteraccionRepository.ts
+│   │   └── PrismaRiesgoRepository.ts
+│   ├── external/
+│   │   ├── SIIValidationService.ts (Integración SII Chile)
+│   │   ├── DICOMCreditService.ts (Bureau de crédito)
+│   │   ├── EquifaxIntegrationService.ts (Análisis crediticio)
+│   │   ├── GoogleMapsBusinessService.ts (Datos ubicación)
+│   │   ├── LinkedInSalesService.ts (Inteligencia comercial)
+│   │   ├── CortexRiskAdvancedService.ts (IA riesgo)
+│   │   ├── CortexAudienceService.ts (Perfilado audiencia)
+│   │   ├── CortexFlowPredictionService.ts (Predicciones)
+│   │   ├── CortexCompetitorService.ts (Análisis competencia)
+│   │   ├── WhatsAppBusinessService.ts (Comunicación)
+│   │   ├── EmailMarketingService.ts (Automatización)
+│   │   ├── CallTrackingService.ts (Seguimiento llamadas)
+│   │   ├── WebScrapingService.ts (Monitoreo digital)
+│   │   ├── SocialListeningService.ts (Análisis RRSS)
+│   │   └── EconomicIndicatorsService.ts (Datos macroeconómicos)
+│   └── messaging/
+│       ├── AnuncianteEventPublisher.ts
+│       ├── RiesgoAlertPublisher.ts
+│       ├── OportunidadEventPublisher.ts
+│       └── CompetenciaAlertPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── AnuncianteController.ts
+    │   ├── OportunidadController.ts
+    │   ├── InteraccionController.ts
+    │   ├── RiesgoController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── PredictiveController.ts
+    │   ├── MobileAnuncianteController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearAnuncianteDto.ts
+    │   ├── ActualizarAnuncianteDto.ts
+    │   ├── CrearOportunidadDto.ts
+    │   ├── RegistrarInteraccionDto.ts
+    │   └── ActualizarRiesgoDto.ts
+    └── middleware/
+        ├── AnuncianteAccessMiddleware.ts
+        ├── RiesgoValidationMiddleware.ts
+        ├── DataPrivacyMiddleware.ts
+        └── AuditTrailMiddleware.ts
+
+🎨 PANTALLA PRINCIPAL - CENTRO DE INTELIGENCIA COMERCIAL
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando comercial:
+
+Título: "🏢 Centro de Inteligencia Comercial"
+Breadcrumb: "Dashboard > Anunciantes"
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 INTELIGENCIA COMERCIAL TIEMPO REAL                          │
+│                                                                 │
+│ 847 Clientes    $2.3B Facturación    23 Oportunidades Hot     │
+│ 156 Nuevos/Mes  94.2% Retención     $45M Pipeline Activo      │
+│ 🎯 Top Acción: ContactarTechCorp HOY (92% prob. cierre $180M) │
+│ 🤖 IA Detectó: 8 clientes en riesgo, 12 listos para upselling │
+└─────────────────────────────────────────────────────────────────┘
+
+
+CENTRO DE COMANDO COMERCIAL AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'clientes retail alto valor', 'riesgo cancelación', 'listos para renovar'..."
+IA Conversacional: Entiende consultas como "¿qué clientes debo contactar hoy?"
+Predicciones automáticas:
+
+"Clientes con 90%+ probabilidad de comprar esta semana"
+"Cuentas en riesgo de pérdida por competencia"
+"Oportunidades de upselling detectadas por IA"
+"Renovaciones que vencen en 30 días"
+
+
+
+Filtros inteligentes de negocio:
+
+Potencial Comercial:
+
+🌟 Platinum ($500M+ facturación anual)
+💎 Gold ($100M-500M facturación)
+🥇 Silver ($20M-100M facturación)
+🥈 Bronze ($5M-20M facturación)
+🆕 Prospecto (sin facturación histórica)
+
+
+Estado de Relación:
+
+🔥 Cliente Activo Premium
+✅ Cliente Activo Estándar
+⚠️ Cliente en Riesgo
+🔄 En Proceso de Renovación
+😴 Cliente Inactivo
+👋 Ex-Cliente (Análisis recuperación)
+
+
+Score de Oportunidad IA:
+
+🎯 Hot (90-100% probabilidad acción)
+🔥 Warm (70-89% probabilidad)
+📊 Medium (40-69% probabilidad)
+❄️ Cold (10-39% probabilidad)
+
+
+
+Centro de acciones inteligentes:
+
+"🎯 Contactar Hoy" (IA sugiere top 5 clientes para contactar)
+"🤖 Insights IA" (Análisis predictivo completo)
+"📊 Pipeline Inteligente" (Vista Kanban con IA)
+"🔍 Detectar Oportunidades" (Scanner automático de nuevas oportunidades)
+"⚠️ Alertas Críticas" (Clientes que requieren atención inmediata)
+
+TABLA DE ANUNCIANTES - INTELIGENCIA OPERATIVA:
+1. Columna "Cliente/Inteligencia" (300px):
+┌─────────────────────────────────────┐
+│ [LOGO] SuperMax SpA                 │
+│ 🏪 Retail • 45 locales • RM+Regiones│
+│ 📊 Score: 750/1000 • 🔥 Hot Lead    │
+│ 🤖 IA: "Listo para campaña navideña" │
+└─────────────────────────────────────┘
+
+Logo dinámico: Actualizado automáticamente desde web
+Información contextual: Industria, tamaño, cobertura geográfica
+Score visual: Color y número con tendencia (↗️↘️)
+Insight IA: Recomendación automática de Cortex-Flow
+
+2. Columna "Valor Comercial/Tendencia" (180px):
+┌─────────────────┐
+│ 💰 $287M YTD    │
+│ 📈 +23% vs 2024 │
+│ 🎯 LTV: $1.2B   │
+│ 💳 Límite: $25M │
+└─────────────────┘
+
+Facturación actual: Año a la fecha con proyección
+Tendencia: Comparación vs período anterior
+LTV predictivo: Valor de vida calculado por IA
+Límite crédito: Actualizado en tiempo real
+
+3. Columna "Ejecutivo/Performance" (160px):
+┌─────────────────┐
+│ [AVATAR] Carlos │
+│ Mendoza         │
+│ 📞 Ult: 2 días  │
+│ 🎯 ROI: 340%    │
+└─────────────────┘
+
+Ejecutivo asignado: Avatar + nombre
+Última interacción: Tiempo transcurrido
+ROI de la cuenta: Rentabilidad de la relación
+
+4. Columna "Oportunidades/Pipeline" (170px):
+┌─────────────────┐
+│ 🎯 3 Activas    │
+│ 💰 $180M Pipeline│
+│ 🔥 1 Hot Close  │
+│ 📅 2 This Month │
+└─────────────────┘
+
+Oportunidades activas: Cantidad en pipeline
+Valor total: Sumatoria de oportunidades
+Hot opportunities: Probabilidad >90%
+Timing: Cierre esperado este mes
+
+5. Columna "Riesgo/Predicciones" (150px):
+┌─────────────────┐
+│ 🛡️ Riesgo: BAJO │
+│ 🔄 Renovación:  │
+│    85% probable │
+│ ⚠️ Sin alertas  │
+└─────────────────┘
+
+Nivel de riesgo: Con explicación automática
+Predicción renovación: Porcentaje de probabilidad
+Alertas activas: Problemas detectados por IA
+
+6. Columna "Última Actividad/Next Best Action" (200px):
+┌─────────────────────────────────┐
+│ 📧 Email ayer 14:30             │
+│ "Propuesta campaña Q1"          │
+│                                 │
+│ 🎯 Next Action (IA):            │
+│ "📞 Llamar viernes AM           │
+│ re: aprobación presupuesto"     │
+└─────────────────────────────────┘
+
+Última interacción: Tipo, fecha, contexto
+Contenido: Resumen de la actividad
+Next Best Action: Recomendación de IA de próxima acción óptima
+
+7. Columna "Acciones Inteligentes" (180px):
+┌─────────────────┐
+│ [👁️] [📞] [📧] │
+│ [🎯] [📊] [🤖] │
+│ [⚠️] [🔄] [💰] │
+└─────────────────┘
+
+👁️ Perfil 360°: Vista completa con IA insights
+📞 Smart Call: Botón inteligente que sugiere timing óptimo
+📧 Email IA: Generación automática de emails contextuales
+🎯 Crear Oportunidad: Con datos pre-llenados por IA
+📊 Analytics: Análisis predictivo profundo
+🤖 Ask Cortex: Chatbot para insights específicos
+⚠️ Gestionar Riesgo: Centro de alertas y acciones
+🔄 Automatizar: Configurar workflows de seguimiento
+💰 Optimizar: Sugerencias de maximización de valor
+
+
+➕ CREACIÓN INTELIGENTE DE ANUNCIANTE - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de creación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿CÓMO PREFIERES CREAR EL CLIENTE?    │
+│                                         │
+│ [🔍] Búsqueda por RUT                   │
+│      Validación automática SII + IA    │
+│      Datos pre-llenados instantáneamente│
+│                                         │
+│ [🌐] Desde sitio web                    │
+│      Ingresa URL, IA extrae toda la info│
+│      Análisis automático de la empresa  │
+│                                         │
+│ [👤] Desde LinkedIn                     │
+│      Conecta perfil, importa datos      │
+│      Análisis de red y conexiones       │
+│                                         │
+│ [📧] Desde email/tarjeta                │
+│      Sube foto, OCR extrae información  │
+│      Procesamiento automático de datos  │
+│                                         │
+│ [✏️] Manual tradicional                 │
+│      Formulario guiado con sugerencias  │
+│      IA asiste en cada campo            │
+└─────────────────────────────────────────┘
+MODO: BÚSQUEDA POR RUT (Más Común en Chile):
+Validación SII con inteligencia aumentada:
+┌─────────────────────────────────────────┐
+│ 🔍 VALIDACIÓN INTELIGENTE SII           │
+│                                         │
+│ RUT: [12.345.678-9        ] [🔍 Buscar] │
+│                                         │
+│ ⏳ Consultando SII + IA...               │
+│                                         │
+│ ✅ EMPRESA ENCONTRADA Y ANALIZADA:      │
+│                                         │
+│ 📋 Datos SII:                          │
+│ • Razón Social: SuperMax SpA            │
+│ • Giro: Comercio al por menor           │
+│ • Estado: Activo                        │
+│ • Dirección: Av. Providencia 1234       │
+│                                         │
+│ 🤖 Análisis IA Automático:             │
+│ • Tamaño estimado: Empresa Grande       │
+│ • Facturación est: $50M-100M anual     │
+│ • Empleados est: 200-500               │
+│ • Presencia digital: Sitio web activo  │
+│ • Redes sociales: Instagram, Facebook  │
+│ • Competidores: Jumbo, Lider, Unimarc  │
+│                                         │
+│ [✅ Usar datos] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+Enriquecimiento automático de datos:
+
+Web scraping inteligente: Extrae información del sitio web automáticamente
+Análisis de redes sociales: Evalúa presencia digital y engagement
+Inteligencia competitiva: Identifica competidores automáticamente
+Análisis de mercado: Evalúa posición en su industria
+Scoring preliminar: Primera evaluación de riesgo y potencial
+
+MODO: DESDE SITIO WEB (Para empresas internacionales):
+Análisis web con IA:
+┌─────────────────────────────────────────┐
+│ 🌐 ANÁLISIS INTELIGENTE DE SITIO WEB    │
+│                                         │
+│ URL: [www.empresa.com   ] [🔍 Analizar] │
+│                                         │
+│ 🤖 IA PROCESANDO SITIO WEB...           │
+│ ████████████████████░░░ 85%            │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 Información extraída:                │
+│ • Nombre: TechCorp Solutions            │
+│ • Industria: Tecnología/Software       │
+│ • Ubicación: Miami, FL, USA            │
+│ • Empleados: 150+ (estimado)           │
+│ • Servicios: SaaS B2B, Consultoría     │
+│ • Clientes: 500+ empresas              │
+│                                         │
+│ 🎯 Insights automáticos:               │
+│ • Empresa en crecimiento (50+ jobs)    │
+│ • Expansión LATAM en progreso          │
+│ • Presupuesto marketing estimado: $2M  │
+│ • Probabilidad interés radio: 65%      │
+│                                         │
+│ 🔗 Datos de contacto encontrados:       │
+│ • Email general: info@techcorp.com     │
+│ • Teléfono: +1 305 123 4567           │
+│ • LinkedIn: /company/techcorp          │
+│                                         │
+│ [✅ Crear perfil] [🔄 Re-analizar] [✏️ Editar]│
+└─────────────────────────────────────────┘
+PASO 1: "INFORMACIÓN FUNDAMENTAL" - IA ASISTIDA
+Campos con inteligencia artificial integrada:
+Campo "Nombre Legal" (Con validación cruzada):
+
+Auto-completado: Si viene de SII o web, se pre-llena automáticamente
+Validación cruzada: Verifica coherencia con datos públicos
+Sugerencias: IA sugiere correcciones si detecta inconsistencias
+Formato automático: Ajusta capitalización y formato empresarial
+
+Campo "Nombre Comercial" (Con inteligencia de marca):
+
+Detección automática: IA extrae de sitio web, redes sociales
+Análisis de marca: Evalúa coherencia y posicionamiento
+Sugerencias: Propone variaciones si detecta ambigüedad
+Verificación: Chequea que no exista cliente duplicado
+
+Sección "Clasificación Inteligente Automática":
+┌─────────────────────────────────────────┐
+│ 🤖 CLASIFICACIÓN AUTOMÁTICA IA         │
+│                                         │
+│ ✅ Análisis completado automáticamente: │
+│                                         │
+│ 🏢 Tamaño Empresa: GRANDE               │
+│ Factores: 45 locales, $50M+ facturación│
+│                                         │
+│ 🎯 Industria: RETAIL/COMERCIO           │
+│ CIIU: 4711 - Venta al por menor        │
+│                                         │
+│ 📊 Potencial Publicitario: ALTO         │
+│ Presupuesto estimado: $800K-1.2M anual │
+│                                         │
+│ 🌟 Prioridad Comercial: PREMIUM         │
+│ Razón: Alto volumen + industria estable │
+│                                         │
+│ 🎪 Estacionalidad Detectada:           │
+│ • Picos: Nov-Dic (navidad)             │
+│ • Altos: Mar-Abr (vuelta a clases)     │
+│ • Bajos: Ene-Feb (post fiestas)        │
+│                                         │
+│ [✅ Confirmar] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+PASO 2: "ANÁLISIS DE RIESGO AUTOMÁTICO" - CORTEX-RISK
+Análisis crediticio en tiempo real:
+┌─────────────────────────────────────────┐
+│ 🛡️ ANÁLISIS CORTEX-RISK AVANZADO       │
+│                                         │
+│ 🔍 Analizando múltiples fuentes...      │
+│ ████████████████████████████░░░ 90%    │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 SCORE FINAL: 750/1000               │
+│ 🟢 RIESGO: BAJO                        │
+│                                         │
+│ 📋 Factores evaluados:                 │
+│ ✅ Información SII: Empresa activa     │
+│ ✅ DICOM: Sin morosidades              │
+│ ✅ Equifax: Score comercial 720        │
+│ ✅ Historial: 3 años operando          │
+│ ✅ Estabilidad: Crecimiento constante  │
+│ ✅ Industria: Retail (estable)         │
+│ ⚠️ Nuevo cliente: Sin historial interno│
+│                                         │
+│ 💡 Recomendaciones automáticas:        │
+│ • Límite crédito sugerido: $15M        │
+│ • Términos pago: 30 días estándar      │
+│ • Garantías: No requeridas             │
+│ • Revisión: Cada 6 meses               │
+│                                         │
+│ 🎯 Términos comerciales óptimos:       │
+│ • Descuento máximo: 15%                │
+│ • Facturación: Mensual recomendada     │
+│ • Modalidad: Factura electrónica       │
+└─────────────────────────────────────────┘
+Integración con bureaus de crédito chilenos:
+
+DICOM: Consulta automática de morosidades y protestos
+Equifax: Score comercial y análisis de comportamiento de pago
+SII: Verificación de cumplimiento tributario
+Registros públicos: Verificación de constitución y vigencia
+
+PASO 3: "CONTACTOS COMERCIALES" - INTELIGENCIA DE PERSONAS
+Detección automática de contactos clave:
+┌─────────────────────────────────────────┐
+│ 👥 CONTACTOS DETECTADOS AUTOMÁTICAMENTE │
+│                                         │
+│ 🤖 IA encontró 4 contactos relevantes:  │
+│                                         │
+│ 👑 DECISOR PRINCIPAL DETECTADO:         │
+│ ┌─────────────────────────────────────┐ │
+│ │ María González Pérez                │ │
+│ │ 🎯 Gerente Marketing                │ │
+│ │ 📧 maria.gonzalez@supermax.cl      │ │
+│ │ 📞 +56 9 8765 4321                 │ │
+│ │ 💼 LinkedIn: /in/maria-gonzalez-mkt │ │
+│ │ 🎓 MBA Universidad Católica         │ │
+│ │ ⏱️ 8 años en la empresa            │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 💼 OTROS CONTACTOS RELEVANTES:         │
+│ • Roberto Silva - Director Comercial    │
+│ • Ana Martínez - Jefe Comunicaciones   │
+│ • Carlos López - Gerente General        │
+│                                         │
+│ 🎯 IA sugiere contactar primero a:     │
+│ María González (decisor + presupuesto)  │
+│                                         │
+│ [✅ Importar todos] [✏️ Seleccionar] [➕ Agregar manual]│
+└─────────────────────────────────────────┘
+Enriquecimiento automático de contactos:
+
+LinkedIn scraping: Extrae perfiles profesionales automáticamente
+Email finder: Encuentra emails corporativos con alta precisión
+Análisis de roles: Identifica quién decide sobre presupuesto publicitario
+Red de contactos: Mapea relaciones entre contactos internos
+Histórico de cambios: Monitorea cambios en el equipo
+ TechCorp: Propuesta vence hoy  │
+│ • AutoMax: Cliente no responde   │
+│                                 │
+│ 🔥 HOT OPPORTUNITIES:           │
+│ ┌─────────────────────────────┐ │
+│ │ 🎄 SuperMax Navidad         │ │
+│ │ $85M • 95% prob • 2 días    │ │
+│ │ [📞 Call] [📧 Email] [👁️]   │ │
+│ └─────────────────────────────┘ │
+│                                 │
+│ ┌─────────────────────────────┐ │
+│ │ 🚗 AutoMax Q1 Campaign      │ │
+│ │ $45M • 67% prob • 5 días    │ │
+│ │ [📞 Call] [📧 Email] [👁️]   │ │
+│ └─────────────────────────────┘ │
+│                                 │
+│ 🎯 ACCIONES RÁPIDAS:           │
+│ [➕ Nuevo Cliente]              │
+│ [🔍 Buscar]                    │
+│ [📊 Mi Performance]            │
+│ [🤖 Ask Cortex]                │
+├─────────────────────────────────┤
+│ [🏠] [👥] [📞] [📊] [⚙️]        │
+└─────────────────────────────────┘
+Funcionalidades Móviles Avanzadas:
+Smart Call con IA:
+
+Timing óptimo: IA calcula mejor momento para llamar basado en patrones históricos
+Brief automático: Antes de llamar, muestra resumen de contexto y puntos clave
+Call recording: Grabación automática con transcripción y análisis de sentimiento
+Follow-up automático: Sugiere próximas acciones basado en resultado de llamada
+
+Email con IA integrada:
+
+Generación automática: IA escribe emails personalizados según contexto
+Templates inteligentes: Plantillas que se adaptan automáticamente al cliente
+Timing óptimo: Programa envío en momento de mayor probabilidad de lectura
+Tracking avanzado: Notificaciones push cuando cliente abre, hace clic, responde
+
+Geolocalización inteligente:
+
+Cliente cerca: Alerta cuando ejecutivo está cerca de cliente importante
+Check-in automático: Registra visitas automáticamente usando geofencing
+Rutas optimizadas: Sugiere orden óptimo de visitas del día
+Contexto ubicación: Muestra información relevante según ubicación actual
+
+
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-FLOW - Motor de Automatización:
+Workflows automáticos basados en IA:
+1. Detección Automática de Oportunidades:
+Trigger: Cliente visita website 3+ veces en 7 días
+→ IA analiza comportamiento navegación
+→ Identifica interés en productos específicos  
+→ Calcula probability score de compra
+→ Si >70%: Crea oportunidad automáticamente
+→ Asigna al ejecutivo correspondiente
+→ Envía alerta push con contexto completo
+→ Programa follow-up inteligente
+2. Gestión Automática de Riesgo:
+Trigger: Score de riesgo baja <650
+→ Sistema analiza causas automáticamente
+→ Consulta bureaus de crédito en tiempo real
+→ Evalúa impacto en límites de crédito
+→ Si es crítico: Alerta inmediata a CFO
+→ Sugiere acciones correctivas automáticamente
+→ Programa revisión con cliente
+→ Monitorea evolución continuous
+3. Predicción de Cancelaciones:
+Trigger: IA detecta patrones de churn (15 señales)
+→ Calcula probabilidad cancelación
+→ Si >60%: Activa protocolo retención
+→ Alerta ejecutivo + supervisor
+→ Genera plan de retención personalizado
+→ Programa llamada urgente
+→ Prepara oferta especial automáticamente
+→ Escala a gerencia si no hay respuesta 48h
+4. Optimización de Contacto:
+Trigger: Cliente no contactado en X días (variable por tier)
+→ Analiza mejor momento histórico de contacto
+→ Verifica disponibilidad ejecutivo
+→ Calcula probabilidad éxito por canal
+→ Programa contacto automáticamente
+→ Prepara talking points personalizados
+→ Si no responde: Escala automaticamente
+→ Aprende de resultado para optimizar futuro
+SISTEMA DE ALERTAS PREDICTIVAS:
+Centro de comando de alertas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚨 CENTRO DE ALERTAS PREDICTIVAS - TIEMPO REAL                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔥 CRÍTICAS (Acción inmediata requerida):                      │
+│                                                                 │
+│ ⚠️ RIESGO CANCELACIÓN ALTO (2):                                │
+│ • TechCorp: 78% prob. cancelación - Competencia activa         │
+│   🎯 Acción: Llamada CEO HOY + oferta defensiva               │
+│   👤 Ejecutivo: Ana García (notificada)                        │
+│                                                                 │
+│ • Retail Plus: 65% prob. cancelación - Budget cut detectado   │
+│   🎯 Acción: Reunión urgente + downselling                    │
+│   👤 Ejecutivo: Roberto Silva (en route)                       │
+│                                                                 │
+│ 💰 LÍMITE CRÉDITO CRÍTICO (1):                                │
+│ • AutoMax: 95% límite usado - Riesgo bloqueo                  │
+│   🎯 Acción: Revisar términos + pagos pendientes              │
+│   👤 CFO: María Fernández (alertada)                          │
+│                                                                 │
+│ 🔥 OPORTUNIDADES HOT (3):                                     │
+│ • SuperMax: 95% prob. cierre - Llamar HOY antes 11:00         │
+│ • Banco XYZ: 88% prob. cierre - Enviar contrato final         │
+│ • FarmaCorp: 92% prob. cierre - Agendar firma digital         │
+│                                                                 │
+│ 📊 CAMBIOS SCORE RIESGO (5):                                  │
+│ • InmoPlus: 720→680 (-40) - Investigar causa                  │
+│ • TechStart: 650→720 (+70) - Considerar aumento límite        │
+│ • RetailCorp: 780→750 (-30) - Monitoreo estándar              │
+├─────────────────────────────────────────────────────────────────┤
+│ [🚀 Resolver Críticas] [📊 Dashboard Completo] [⚙️ Configurar] │
+└─────────────────────────────────────────────────────────────────┘
+
+📊 ANALYTICS AVANZADOS Y BUSINESS INTELLIGENCE
+Dashboard Gerencial Ejecutivo:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 BUSINESS INTELLIGENCE - CARTERA ANUNCIANTES                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 💰 MÉTRICAS FINANCIERAS:                                       │
+│ • Portfolio total: $2.3B CLP                                  │
+│ • Crecimiento YoY: +23%                                        │
+│ • LTV promedio: $450M por cliente                             │
+│ • Margen promedio: 35%                                         │
+│ • Days Sales Outstanding: 32 días                             │
+│                                                                 │
+│ 🎯 PERFORMANCE COMERCIAL:                                      │
+│ • Tasa retención: 94.2%                                       │
+│ • Tasa upselling: 67%                                         │
+│ • Tiempo promedio cierre: 28 días                             │
+│ • Pipeline conversion: 78%                                     │
+│ • NPS promedio: 8.7/10                                        │
+│                                                                 │
+│ 🔮 PREDICCIONES IA (Próximos 90 días):                        │
+│ • Revenue proyectado: $890M (+12% vs Q anterior)              │
+│ • Clientes en riesgo: 8 (valor: $180M)                       │
+│ • Nuevas oportunidades: 15 (valor: $450M)                     │
+│ • Renovaciones esperadas: 23 (tasa éxito: 89%)                │
+│                                                                 │
+│ 📈 TOP PERFORMERS:                                             │
+│ • Carlos Mendoza: $287M portfolio, 94% retention              │
+│ • Ana García: $234M portfolio, 12 nuevos clientes            │
+│ • Roberto Silva: $198M portfolio, 340% ROI promedio           │
+│                                                                 │
+│ ⚠️ ALERTAS GERENCIALES:                                        │
+│ • 2 ejecutivos sobre target (reasignar cuentas)               │
+│ • 1 cliente Tier 1 en riesgo (intervención gerencial)         │
+│ • Competencia agresiva sector retail (plan defensivo)         │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Deep Dive] [🎯 Plan Acción] [👥 Gestión Equipo] [🔮 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+Análisis Predictivo Sectorial:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🏭 ANÁLISIS SECTORIAL INTELIGENTE                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 🛒 RETAIL (40% de portfolio - $920M):                          │
+│ • Tendencia: ↗️ +18% crecimiento                              │
+│ • Estacionalidad: Nov-Dic pico (+45%)                         │
+│ • Riesgo promedio: 720/1000 (bajo)                            │
+│ • Oportunidad: Omnicanalidad (+$180M potencial)               │
+│                                                                 │
+│ 🏦 FINANCIERO (25% de portfolio - $575M):                      │
+│ • Tendencia: ↗️ +12% crecimiento                              │
+│ • Regulación: Nuevas normas CMF (oportunidad)                 │
+│ • Riesgo promedio: 780/1000 (muy bajo)                        │
+│ • Amenaza: Fintech disrupción                                 │
+│                                                                 │
+│ 🚗 AUTOMOTRIZ (20% de portfolio - $460M):                      │
+│ • Tendencia: ↘️ -5% contracción                               │
+│ • Ciclo: Recuperación Q2 2025 predicha                        │
+│ • Riesgo promedio: 650/1000 (medio)                           │
+│ • Oportunidad: Vehículos eléctricos                           │
+│                                                                 │
+│ 💊 FARMACÉUTICO (10% de portfolio - $230M):                   │
+│ • Tendencia: ↗️ +8% estable                                   │
+│ • Drivers: Envejecimiento población                           │
+│ • Riesgo promedio: 820/1000 (muy bajo)                        │
+│ • Oportunidad: Telemedicina/Digital health                    │
+│                                                                 │
+│ 🤖 PREDICCIONES POR SECTOR:                                   │
+│ • Retail: Consolidación esperada (fusiones)                   │
+│ • Financiero: Crecimiento digital (+25% budget)               │
+│ • Automotriz: Recuperación lenta pero sostenida               │
+│ • Farmacéutico: Estabilidad con crecimiento selectivo         │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Análisis detallado] [🎯 Estrategia sectorial] [📈 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+
+🔐 SEGURIDAD Y COMPLIANCE TIER 0
+Protección de Datos Comerciales Sensibles:
+Encriptación Cuántica y Zero-Trust:
+
+Datos en reposo: Encriptación AES-256 + algoritmos post-cuánticos
+Datos en tránsito: TLS 1.3 + Perfect Forward Secrecy
+Zero-trust architecture: Verificación continua de cada acceso
+Multi-factor authentication: Obligatorio para todos los usuarios
+Behavioral analytics: Detección de patrones anómalos en tiempo real
+
+Auditoría Inmutable y Compliance:
+
+Blockchain logging: Logs inmutables de cada acción comercial
+GDPR compliance: Gestión automática de consentimientos y derechos
+SOX compliance: Controles financieros automáticos
+Ley de Protección Datos Chile: Cumplimiento automático normativa local
+Right to be forgotten: Proceso automatizado de eliminación de datos
+
+Controles de Acceso Granulares:
+Matriz de permisos por rol:
+Ejecutivo Junior:
+✅ Ver clientes asignados únicamente
+✅ Crear oportunidades hasta $50M CLP
+✅ Actualizar contactos y actividades
+❌ Modificar términos de crédito
+❌ Ver información financiera sensible
+❌ Acceso a analytics predictivos
+
+Ejecutivo Senior:
+✅ Ver cartera completa asignada
+✅ Crear oportunidades hasta $200M CLP
+✅ Modificar términos comerciales básicos
+✅ Acceso a analytics de sus clientes
+❌ Modificar límites de crédito
+❌ Ver clientes de otros ejecutivos
+
+Supervisor Comercial:
+✅ Ver todo el equipo asignado
+✅ Modificar asignaciones de cuentas
+✅ Aprobar descuentos hasta 20%
+✅ Acceso a analytics de equipo
+✅ Configurar workflows automáticos
+❌ Modificar políticas globales de crédito
+
+Gerente Comercial:
+✅ Acceso total a portfolio comercial
+✅ Configurar políticas comerciales
+✅ Analytics y BI completo
+✅ Gestión de riesgo avanzada
+✅ Override de validaciones automáticas
+❌ Configuración de sistema
+
+CFO/Controller:
+✅ Acceso total información financiera
+✅ Configuración límites y políticas crédito
+✅ Analytics financieros y riesgo
+✅ Aprobación límites >$100M CLP
+✅ Configuración workflows financieros
+✅ Auditoría y compliance
+
+🔗 INTEGRACIONES ECOSYSTEM SILEXAR
+Sincronización Bidireccional Avanzada:
+Con Módulo Contratos:
+
+Términos automáticos: Score de riesgo determina términos de pago automáticamente
+Límites dinámicos: Límites de crédito se aplican en tiempo real en contratos
+Alertas cruzadas: Problemas en contratos impactan score del anunciante
+Optimización pricing: IA sugiere precios óptimos basado en perfil del cliente
+
+Con Módulo Cuñas:
+
+Brand guidelines: Valida coherencia de creatividades con perfil de marca
+Targeting optimization: Perfil de audiencia optimiza segmentación de cuñas
+Performance tracking: Resultados de cuñas alimentan perfil de efectividad
+Content suggestions: IA sugiere tipos de contenido según perfil del cliente
+
+Con Módulo Vencimientos:
+
+Audience matching: Optimiza programación según audiencia del anunciante
+Exclusivity management: Previene conflictos basado en industria y competencia
+Performance optimization: Historial de performance optimiza asignación de horarios
+Renewal predictions: Predice renovaciones de auspicios basado en satisfacción
+
+Con Módulo Facturación:
+
+Credit monitoring: Comportamiento de pago actualiza score en tiempo real
+Dynamic limits: Límites de crédito se ajustan automáticamente
+Payment predictions: Predice problemas de cobranza antes de que ocurran
+Cash flow optimization: Optimiza términos para maximizar flujo de caja
+
+APIs Externas Críticas:
+Integración SII Chile:
+
+Validación automática: RUT, razón social, giro comercial
+Monitoring continuo: Alertas de cambios en estado tributario
+Compliance tracking: Seguimiento automático de cumplimiento fiscal
+Data enrichment: Enriquecimiento automático de datos empresariales
+
+Bureaus de Crédito:
+
+DICOM integration: Score y alertas de morosidades en tiempo real
+Equifax connection: Análisis de comportamiento crediticio empresarial
+Risk monitoring: Monitoreo continuo de cambios en perfil de riesgo
+Predictive scoring: Modelos predictivos de comportamiento de pago
+
+
+🎯 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-MIND - IA Conversacional Empresarial:
+Chatbot comercial más avanzado del mercado:
+
+Comprensión contextual: Entiende preguntas complejas sobre clientes específicos
+Análisis predictivo: Responde qué cliente contactar, cuándo y cómo
+Generación de estrategias: Crea planes comerciales personalizados automáticamente
+Learning continuo: Aprende de cada interacción para mejorar recomendaciones
+
+2. COMPETITIVE INTELLIGENCE AUTOMÁTICA:
+Monitor de competencia en tiempo real:
+
+Web scraping inteligente: Monitorea actividad digital de competidores
+Social listening: Analiza menciones y sentiment de competencia
+Price monitoring: Detecta cambios de precios y ofertas competitivas
+Alert system: Notifica actividad competitiva relevante automáticamente
+
+3. PREDICTIVE LEAD SCORING:
+Scoring de oportunidades con IA:
+
+Behavioral analysis: Analiza comportamiento digital para predecir intención compra
+Lookalike modeling: Identifica prospectos similares a mejores clientes
+Timing optimization: Predice momento óptimo para contactar cada prospecto
+Channel optimization: Sugiere mejor canal de contacto por persona/empresa
+
+4. AUTOMATED RELATIONSHIP MAPPING:
+Mapeo automático de relaciones organizacionales:
+
+Org chart inference: Reconstruye organigrama automáticamente
+Influence scoring: Calcula nivel de influencia de cada contacto
+Relationship tracking: Monitorea cambios en estructura organizacional
+Strategy optimization: Sugiere estrategia de contacto óptima por organización
+
+
+🚀 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+1. AR/VR Commercial Presentations:
+
+Virtual showrooms: Presentaciones inmersivas de propuestas comerciales
+AR data visualization: Métricas y analytics en realidad aumentada
+Remote collaboration: Reuniones comerciales en entornos virtuales
+Interactive proposals: Propuestas comerciales interactivas en 3D
+
+2. Blockchain Customer Verification:
+
+Identity verification: Verificación inmutable de identidad empresarial
+Contract certification: Contratos certificados en blockchain
+Reputation scoring: Score de reputación descentralizado
+Cross-platform trust: Confianza verificable entre plataformas
+
+3. IoT Integration:
+
+Smart office integration: Datos de ocupación y actividad de oficinas clientes
+Foot traffic analysis: Análisis de tráfico en locales comerciales
+Performance correlation: Correlación entre actividad física y resultados campañas
+Predictive maintenance: Mantenimiento predictivo de relaciones comerciales
+
+Visión 2030:
+El Módulo Anunciantes evolucionará hacia un "Commercial AI Brain" que:
+
+Predice necesidades antes de que el cliente las articule
+Optimiza automáticamente toda la relación comercial
+Genera revenue de forma autónoma con supervisión humana mínima
+Aprende continuamente de cada interacción global en la plataforma
+
+
+🎯 CONCLUSIÓN: EL SISTEMA MÁS INTELIGENTE DEL MUNDO
+PARA EL EJECUTIVO DE VENTAS:
+
+IA como copiloto 24/7: Sabe exactamente qué hacer en cada momento
+Automatización total: 90% de tareas administrativas se ejecutan solas
+Insights predictivos: Ve oportunidades antes que la competencia
+Mobile-first: Funciona perfecto desde cualquier lugar del mundo
+Zero learning curve: Interfaz tan intuitiva que se aprende usando
+
+PARA EL GERENTE COMERCIAL:
+
+Visibilidad total: Control completo del portfolio en tiempo real
+Predicciones precisas: Forecasting con precisión del 95%+
+Optimización automática: IA maximiza el valor de cada cuenta
+Risk management: Detecta y previene problemas antes de que ocurran
+Team optimization: Asigna recursos óptimamente automáticamente
+
+PARA EL CFO/CONTROLLER:
+
+Risk management total: Control de riesgo crediticio en tiempo real
+Cash flow optimization: Optimización automática de términos de pago
+Predictive analytics: Predice problemas de cobranza con 90% precisión
+Compliance automático: Cumplimiento regulatorio sin intervención manual
+ROI maximizado: Cada peso invertido en la plataforma genera $15+ de retorno
+
+PARA LA ORGANIZACIÓN:
+
+Revenue growth: Crecimiento promedio del 35% en facturación
+Efficiency gains: 85% reducción en tiempo de gestión comercial
+Risk reduction: 90% reducción en pérdidas por incobrables
+Competitive advantage: Ventaja competitiva sostenible por tecnología
+Scalability infinita: Crece sin límites manteniendo calidad de servicio
+
+El Módulo Anunciantes TIER 0 no es solo un CRM: es un cerebro comercial que transforma relaciones comerciales tradicionales en una máquina de crecimiento inteligente, automatizada y optimizada que maximiza el valor de cada cliente, predice el futuro del negocio y asegura el éxito comercial sostenible.
+
+💾 ESPECIFICACIONES TÉCNICAS CRÍTICAS
+Base de Datos Optimizada para Performance:
+Tablas principales con índices inteligentes:
+
+Anunciantes: Índices por RUT, score de riesgo, ejecutivo asignado, última actividad
+Oportunidades: Índices por estado, probabilidad, fecha cierre, valor
+Interacciones: Índices por fecha, tipo, resultado, usuario
+Análisis de riesgo: Índices por score, fecha actualización, factores de riesgo
+Predicciones IA: Índices por tipo predicción, confianza, fecha generación
+
+Optimizaciones de performance:
+
+Caching inteligente: Redis para datos frecuentemente accedidos
+CDN global: Imágenes y assets distribuidos globalmente
+Database sharding: Particionamiento automático por región/tenant
+Query optimization: Índices auto-optimizados basados en patrones de uso
+Background processing: Análisis de IA en background sin impactar UX
+
+Arquitectura de Microservicios:
+Servicios independientes y escalables:
+
+Anunciante Service: CRUD y lógica de negocio básica
+Risk Analysis Service: Análisis de riesgo y scoring
+Opportunity Service: Pipeline de ventas y predicciones
+Interaction Service: Tracking de actividades y comunicaciones
+AI Prediction Service: Machine learning y analytics predictivos
+Integration Service: APIs externas y sincronización de datos
+Notification Service: Alertas y comunicaciones automáticas
+
+Beneficios arquitectura:
+
+Escalabilidad independiente: Cada servicio escala según demanda
+Deployment independiente: Updates sin downtime
+Fault tolerance: Falla de un servicio no afecta otros
+Technology diversity: Mejor tecnología para cada problema específico
+Team autonomy: Equipos pueden trabajar independientemente
+
+Monitoreo y Observabilidad:
+Métricas de negocio en tiempo real:
+
+Performance comercial: Conversión, velocity, win rate por ejecutivo
+Health del sistema: Latencia, throughput, error rates
+AI model performance: Precisión de predicciones, confidence scores
+User experience: Tiempo de carga, satisfaction scores, feature usage
+Business impact: Revenue impact, efficiency gains, ROI measurement
+
+Sistema de alertas:
+
+SLA monitoring: Alertas automáticas si performance degrada
+Business alerts: Métricas comerciales fuera de rango normal
+AI model drift: Degradación en precisión de modelos de ML
+Security alerts: Intentos de acceso no autorizado o comportamiento anómalo
+Capacity planning: Alertas proactivas de necesidad de escalamiento

@@ -1,316 +1,231 @@
 /**
- * 🌐 SILEXAR PULSE - API Routes Anunciante por ID
- * 
- * @description API REST endpoints para operaciones sobre un anunciante específico
- * Implementa GET (detalle), PUT (actualizar) y DELETE (eliminar)
- * 
- * @version 2025.1.0
- * @tier TIER_0_FORTUNE_10
+ * GET /api/anunciantes/[id]  — Detalle
+ * PUT /api/anunciantes/[id]  — Actualizar
+ * PATCH /api/anunciantes/[id] — Acciones rápidas (toggle activo)
+ * DELETE /api/anunciantes/[id] — Eliminar (soft delete)
+ *
+ * Uses anunciantes DDD module (Tier Core).
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
-import { withTenantContext } from '@/lib/db/tenant-context';
-import { withApiRoute } from '@/lib/api/with-api-route';
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { withApiRoute } from '@/lib/api/with-api-route'
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
+import { logger } from '@/lib/observability'
+import { auditLogger } from '@/lib/security/audit-logger'
+import { AuditEventType } from '@/lib/security/audit-types'
 
-// Zod schemas for input validation
+import { AnuncianteDrizzleRepository } from '@/modules/anunciantes/infrastructure/repositories/AnuncianteDrizzleRepository'
+import { ObtenerAnunciantePorIdHandler } from '@/modules/anunciantes/application/handlers/ObtenerAnunciantePorIdHandler'
+import { ObtenerAnunciantePorIdQuery } from '@/modules/anunciantes/application/queries/ObtenerAnunciantePorIdQuery'
+import { ActualizarAnuncianteHandler } from '@/modules/anunciantes/application/handlers/ActualizarAnuncianteHandler'
+import { ActualizarAnuncianteCommand } from '@/modules/anunciantes/application/commands/ActualizarAnuncianteCommand'
+import { EliminarAnuncianteHandler } from '@/modules/anunciantes/application/handlers/EliminarAnuncianteHandler'
+
+const repository = new AnuncianteDrizzleRepository();
+const obtenerHandler = new ObtenerAnunciantePorIdHandler(repository);
+const actualizarHandler = new ActualizarAnuncianteHandler(repository);
+const eliminarHandler = new EliminarAnuncianteHandler(repository);
+
 const updateAnuncianteSchema = z.object({
-  nombreRazonSocial: z.string().min(1, 'La razón social no puede estar vacía').max(300).optional(),
-  rut: z.string().max(20).optional().nullable(),
-  giroActividad: z.string().max(200).optional().nullable(),
-  direccion: z.string().max(500).optional().nullable(),
+  nombreRazonSocial: z.string().min(1).max(255).optional(),
+  rut: z.string().max(12).optional().nullable(),
+  giroActividad: z.string().optional().nullable(),
+  direccion: z.string().optional().nullable(),
   ciudad: z.string().max(100).optional().nullable(),
   comunaProvincia: z.string().max(100).optional().nullable(),
-  pais: z.string().max(100).optional(),
-  emailContacto: z.string().email('Email de contacto inválido').optional().nullable(),
-  telefonoContacto: z.string().max(30).optional().nullable(),
-  paginaWeb: z.string().url('URL de página web inválida').or(z.literal('')).optional().nullable(),
-  nombreContactoPrincipal: z.string().max(200).optional().nullable(),
-  cargoContactoPrincipal: z.string().max(200).optional().nullable(),
+  pais: z.string().max(100).optional().nullable(),
+  emailContacto: z.string().email().max(255).optional().nullable(),
+  telefonoContacto: z.string().max(20).optional().nullable(),
+  paginaWeb: z.string().max(255).optional().nullable(),
+  nombreContactoPrincipal: z.string().max(255).optional().nullable(),
+  cargoContactoPrincipal: z.string().max(100).optional().nullable(),
   tieneFacturacionElectronica: z.boolean().optional(),
-  direccionFacturacion: z.string().max(500).optional().nullable(),
-  emailFacturacion: z.string().email('Email de facturación inválido').optional().nullable(),
-  estado: z.enum(['activo', 'inactivo', 'suspendido']).optional(),
+  direccionFacturacion: z.string().optional().nullable(),
+  emailFacturacion: z.string().email().max(255).optional().nullable(),
+  estado: z.enum(['activo', 'inactivo', 'suspendido', 'pendiente']).optional(),
   activo: z.boolean().optional(),
-  notas: z.string().max(2000).optional().nullable(),
-});
+  notas: z.string().optional().nullable(),
+})
 
 const patchAnuncianteSchema = z.object({
   action: z.enum(['toggle_activo', 'suspender']),
   motivo: z.string().max(500).optional(),
-});
+})
 
-// Tipos para la API
-interface AnuncianteDTO {
-  id: string;
-  codigo: string;
-  rut: string | null;
-  nombreRazonSocial: string;
-  giroActividad: string | null;
-  direccion: string | null;
-  ciudad: string | null;
-  comunaProvincia: string | null;
-  pais: string;
-  emailContacto: string | null;
-  telefonoContacto: string | null;
-  paginaWeb: string | null;
-  nombreContactoPrincipal: string | null;
-  cargoContactoPrincipal: string | null;
-  tieneFacturacionElectronica: boolean;
-  direccionFacturacion: string | null;
-  emailFacturacion: string | null;
-  estado: string;
-  activo: boolean;
-  notas: string | null;
-  fechaCreacion: string;
-  fechaModificacion: string | null;
+function extractId(req: Request): string {
+  const url = new URL(req.url)
+  const parts = url.pathname.split('/')
+  return parts[parts.length - 1] || ''
 }
 
-// Mock de datos (compartido con route.ts principal en producción)
-const mockAnunciantes: AnuncianteDTO[] = [
-  {
-    id: 'anu-001',
-    codigo: 'ANU-0001',
-    rut: '76.123.456-7',
-    nombreRazonSocial: 'Banco de Chile S.A.',
-    giroActividad: 'Servicios Financieros',
-    direccion: 'Av. Providencia 1234, Piso 15',
-    ciudad: 'Santiago',
-    comunaProvincia: 'Providencia',
-    pais: 'Chile',
-    emailContacto: 'marketing@bancochile.cl',
-    telefonoContacto: '+56 2 2345 6789',
-    paginaWeb: 'https://www.bancochile.cl',
-    nombreContactoPrincipal: 'María González',
-    cargoContactoPrincipal: 'Gerente de Marketing',
-    tieneFacturacionElectronica: true,
-    direccionFacturacion: 'Av. Providencia 1234',
-    emailFacturacion: 'facturas@bancochile.cl',
-    estado: 'activo',
-    activo: true,
-    notas: 'Cliente preferencial desde 2020',
-    fechaCreacion: '2025-01-15T10:00:00Z',
-    fechaModificacion: '2025-02-01T14:30:00Z'
-  }
-];
-
-/**
- * GET /api/anunciantes/[id]
- * Obtiene el detalle de un anunciante
- */
 export const GET = withApiRoute(
   { resource: 'anunciantes', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
     try {
-      // Extraer ID de la URL
-      const url = new URL(req.url);
-      const pathParts = url.pathname.split('/');
-      const id = pathParts[pathParts.length - 1];
-
-      const anunciante = mockAnunciantes.find(a => a.id === id);
-
-      if (!anunciante) {
-        return NextResponse.json(
-          { success: false, error: `No se encontró el anunciante con ID ${id}` },
-          { status: 404 }
-        );
+      const id = extractId(req)
+      const result = await obtenerHandler.execute(new ObtenerAnunciantePorIdQuery({ id, tenantId: ctx.tenantId }))
+      if (!result.ok) {
+        return apiServerError() as unknown as NextResponse
       }
-
-      return NextResponse.json({
-        success: true,
-        data: anunciante
-      });
+      if (!result.data) {
+        return apiError('NOT_FOUND', 'Anunciante no encontrado', 404) as unknown as NextResponse
+      }
+      return apiSuccess(result.data.toJSON()) as unknown as NextResponse
     } catch (error) {
-      logger.error('[API/Anunciantes/:id] Error en GET:', error instanceof Error ? error : undefined, { module: '[id]' });
-      return NextResponse.json(
-        { success: false, error: 'Error al obtener anunciante' },
-        { status: 500 }
-      );
+      logger.error('Error in anunciantes/:id GET', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+      return apiServerError() as unknown as NextResponse
     }
   }
-);
+)
 
-/**
- * PUT /api/anunciantes/[id]
- * Actualiza un anunciante existente
- */
 export const PUT = withApiRoute(
   { resource: 'anunciantes', action: 'update' },
   async ({ ctx, req }) => {
     try {
-      // Extraer ID de la URL
-      const url = new URL(req.url);
-      const pathParts = url.pathname.split('/');
-      const id = pathParts[pathParts.length - 1];
-      
-      const body = await req.json();
+      const id = extractId(req)
+      let body: unknown
+      try {
+        body = await req.json()
+      } catch {
+        return apiError('INVALID_JSON', 'Request body must be valid JSON', 400) as unknown as NextResponse
+      }
 
-      // Validate input with Zod
-      const parsed = updateAnuncianteSchema.safeParse(body);
+      const parsed = updateAnuncianteSchema.safeParse(body)
       if (!parsed.success) {
-        return NextResponse.json(
-          { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
-          { status: 422 }
-        );
+        return apiError('VALIDATION_ERROR', 'Error en la validación', 422, parsed.error.flatten().fieldErrors) as unknown as NextResponse
       }
 
-      const index = mockAnunciantes.findIndex(a => a.id === id);
+      const data = parsed.data
+      const command = new ActualizarAnuncianteCommand({
+        id,
+        tenantId: ctx.tenantId,
+        modificadoPorId: ctx.userId,
+        ...(data.nombreRazonSocial !== undefined && { nombreRazonSocial: data.nombreRazonSocial }),
+        ...(data.rut !== undefined && data.rut !== null && { rut: data.rut }),
+        ...(data.giroActividad !== undefined && data.giroActividad !== null && { giroActividad: data.giroActividad }),
+        ...(data.direccion !== undefined && data.direccion !== null && { direccion: data.direccion }),
+        ...(data.ciudad !== undefined && data.ciudad !== null && { ciudad: data.ciudad }),
+        ...(data.comunaProvincia !== undefined && data.comunaProvincia !== null && { comunaProvincia: data.comunaProvincia }),
+        ...(data.pais !== undefined && data.pais !== null && { pais: data.pais }),
+        ...(data.emailContacto !== undefined && data.emailContacto !== null && { emailContacto: data.emailContacto }),
+        ...(data.telefonoContacto !== undefined && data.telefonoContacto !== null && { telefonoContacto: data.telefonoContacto }),
+        ...(data.paginaWeb !== undefined && data.paginaWeb !== null && { paginaWeb: data.paginaWeb }),
+        ...(data.nombreContactoPrincipal !== undefined && data.nombreContactoPrincipal !== null && { nombreContactoPrincipal: data.nombreContactoPrincipal }),
+        ...(data.cargoContactoPrincipal !== undefined && data.cargoContactoPrincipal !== null && { cargoContactoPrincipal: data.cargoContactoPrincipal }),
+        ...(data.tieneFacturacionElectronica !== undefined && { tieneFacturacionElectronica: data.tieneFacturacionElectronica }),
+        ...(data.direccionFacturacion !== undefined && data.direccionFacturacion !== null && { direccionFacturacion: data.direccionFacturacion }),
+        ...(data.emailFacturacion !== undefined && data.emailFacturacion !== null && { emailFacturacion: data.emailFacturacion }),
+        ...(data.estado !== undefined && { estado: data.estado }),
+        ...(data.activo !== undefined && { activo: data.activo }),
+        ...(data.notas !== undefined && data.notas !== null && { notas: data.notas }),
+      })
 
-      if (index === -1) {
-        return NextResponse.json(
-          { success: false, error: `No se encontró el anunciante con ID ${id}` },
-          { status: 404 }
-        );
-      }
-
-      // Validar RUT único (excluyendo el actual)
-      if (parsed.data.rut) {
-        const rutLimpio = parsed.data.rut.replace(/[.-]/g, '');
-        const rutExists = mockAnunciantes.some(
-          a => a.id !== id && a.rut?.replace(/[.-]/g, '') === rutLimpio
-        );
-        if (rutExists) {
-          return NextResponse.json(
-            { success: false, error: `Ya existe un anunciante con el RUT ${parsed.data.rut}` },
-            { status: 400 }
-          );
+      const result = await actualizarHandler.execute(command)
+      if (!result.ok) {
+        if (result.error.message === 'Anunciante no encontrado') {
+          return apiError('NOT_FOUND', result.error.message, 404) as unknown as NextResponse
         }
+        if (result.error.message.includes('Ya existe un anunciante con el RUT')) {
+          return apiError('DUPLICATE_ENTRY', result.error.message, 409) as unknown as NextResponse
+        }
+        return apiError('SERVER_ERROR', result.error.message, 500) as unknown as NextResponse
       }
 
-      // Actualizar anunciante
-      const updated: AnuncianteDTO = {
-        ...mockAnunciantes[index],
-        ...parsed.data,
-        fechaModificacion: new Date().toISOString()
-      };
+      auditLogger.log({
+        type: AuditEventType.DATA_UPDATE,
+        userId: ctx.userId,
+        metadata: { module: 'anunciantes', resourceId: id },
+      })
 
-      mockAnunciantes[index] = updated;
-
-      return NextResponse.json({
-        success: true,
-        data: updated,
-        message: 'Anunciante actualizado exitosamente'
-      });
+      return apiSuccess(result.data.toJSON(), 200, { message: 'Anunciante actualizado exitosamente' }) as unknown as NextResponse
     } catch (error) {
-      logger.error('[API/Anunciantes/:id] Error en PUT:', error instanceof Error ? error : undefined, { module: '[id]' });
-      return NextResponse.json(
-        { success: false, error: 'Error al actualizar anunciante' },
-        { status: 500 }
-      );
+      logger.error('Error in anunciantes/:id PUT', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+      return apiServerError() as unknown as NextResponse
     }
   }
-);
+)
 
-/**
- * DELETE /api/anunciantes/[id]
- * Elimina un anunciante (soft delete)
- */
-export const DELETE = withApiRoute(
-  { resource: 'anunciantes', action: 'delete' },
-  async ({ ctx, req }) => {
-    try {
-      // Extraer ID de la URL
-      const url = new URL(req.url);
-      const pathParts = url.pathname.split('/');
-      const id = pathParts[pathParts.length - 1];
-
-      const index = mockAnunciantes.findIndex(a => a.id === id);
-
-      if (index === -1) {
-        return NextResponse.json(
-          { success: false, error: `No se encontró el anunciante con ID ${id}` },
-          { status: 404 }
-        );
-      }
-
-      // En producción: soft delete con fecha y usuario
-      // Aquí simplemente removemos del array mock
-      mockAnunciantes.splice(index, 1);
-
-      return NextResponse.json({
-        success: true,
-        message: 'Anunciante eliminado exitosamente'
-      });
-    } catch (error) {
-      logger.error('[API/Anunciantes/:id] Error en DELETE:', error instanceof Error ? error : undefined, { module: '[id]' });
-      return NextResponse.json(
-        { success: false, error: 'Error al eliminar anunciante' },
-        { status: 500 }
-      );
-    }
-  }
-);
-
-/**
- * PATCH /api/anunciantes/[id]
- * Actualización parcial (toggle activo/inactivo)
- */
 export const PATCH = withApiRoute(
   { resource: 'anunciantes', action: 'update' },
   async ({ ctx, req }) => {
     try {
-      // Extraer ID de la URL
-      const url = new URL(req.url);
-      const pathParts = url.pathname.split('/');
-      const id = pathParts[pathParts.length - 1];
-      
-      const body = await req.json();
+      const id = extractId(req)
+      let body: unknown
+      try {
+        body = await req.json()
+      } catch {
+        return apiError('INVALID_JSON', 'Request body must be valid JSON', 400) as unknown as NextResponse
+      }
 
-      // Validate input with Zod
-      const parsed = patchAnuncianteSchema.safeParse(body);
+      const parsed = patchAnuncianteSchema.safeParse(body)
       if (!parsed.success) {
-        return NextResponse.json(
-          { success: false, error: 'Datos inválidos', details: parsed.error.flatten().fieldErrors },
-          { status: 422 }
-        );
+        return apiError('VALIDATION_ERROR', 'Acción inválida', 422, parsed.error.flatten().fieldErrors) as unknown as NextResponse
       }
 
-      const index = mockAnunciantes.findIndex(a => a.id === id);
-
-      if (index === -1) {
-        return NextResponse.json(
-          { success: false, error: `No se encontró el anunciante con ID ${id}` },
-          { status: 404 }
-        );
+      const existingResult = await obtenerHandler.execute(new ObtenerAnunciantePorIdQuery({ id, tenantId: ctx.tenantId }))
+      if (!existingResult.ok || !existingResult.data) {
+        return apiError('NOT_FOUND', 'Anunciante no encontrado', 404) as unknown as NextResponse
       }
+      const existing = existingResult.data
 
-      // Toggle de estado
+      let patchCommand: ActualizarAnuncianteCommand
       if (parsed.data.action === 'toggle_activo') {
-        mockAnunciantes[index] = {
-          ...mockAnunciantes[index],
-          activo: !mockAnunciantes[index].activo,
-          estado: mockAnunciantes[index].activo ? 'inactivo' : 'activo',
-          fechaModificacion: new Date().toISOString()
-        };
-      }
-
-      // Suspender
-      if (parsed.data.action === 'suspender') {
-        mockAnunciantes[index] = {
-          ...mockAnunciantes[index],
+        patchCommand = new ActualizarAnuncianteCommand({
+          id,
+          tenantId: ctx.tenantId,
+          modificadoPorId: ctx.userId,
+          activo: !existing.activo,
+          estado: !existing.activo ? 'activo' : 'inactivo',
+        })
+      } else {
+        const newNotas = parsed.data.motivo
+          ? `SUSPENDIDO: ${parsed.data.motivo}\n\n${existing.notas || ''}`
+          : existing.notas || ''
+        patchCommand = new ActualizarAnuncianteCommand({
+          id,
+          tenantId: ctx.tenantId,
+          modificadoPorId: ctx.userId,
           activo: false,
           estado: 'suspendido',
-          notas: parsed.data.motivo
-            ? `SUSPENDIDO: ${parsed.data.motivo}\n\n${mockAnunciantes[index].notas || ''}`
-            : mockAnunciantes[index].notas,
-          fechaModificacion: new Date().toISOString()
-        };
+          notas: newNotas,
+        })
       }
 
-      return NextResponse.json({
-        success: true,
-        data: mockAnunciantes[index],
-        message: 'Anunciante actualizado exitosamente'
-      });
+      const result = await actualizarHandler.execute(patchCommand)
+      if (!result.ok) {
+        return apiServerError() as unknown as NextResponse
+      }
+
+      return apiSuccess(result.data.toJSON(), 200, { message: 'Anunciante actualizado exitosamente' }) as unknown as NextResponse
     } catch (error) {
-      logger.error('[API/Anunciantes/:id] Error en PATCH:', error instanceof Error ? error : undefined, { module: '[id]' });
-      return NextResponse.json(
-        { success: false, error: 'Error al actualizar anunciante' },
-        { status: 500 }
-      );
+      logger.error('Error in anunciantes/:id PATCH', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+      return apiServerError() as unknown as NextResponse
     }
   }
-);
+)
+
+export const DELETE = withApiRoute(
+  { resource: 'anunciantes', action: 'delete' },
+  async ({ ctx, req }) => {
+    try {
+      const id = extractId(req)
+
+      const result = await eliminarHandler.execute({ id, tenantId: ctx.tenantId, userId: ctx.userId })
+      if (!result.ok) {
+        return apiServerError() as unknown as NextResponse
+      }
+
+      auditLogger.log({
+        type: AuditEventType.DATA_DELETE,
+        userId: ctx.userId,
+        metadata: { module: 'anunciantes', resourceId: id },
+      })
+
+      return apiSuccess(null, 200, { message: 'Anunciante eliminado exitosamente' }) as unknown as NextResponse
+    } catch (error) {
+      logger.error('Error in anunciantes/:id DELETE', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+      return apiServerError() as unknown as NextResponse
+    }
+  }
+)

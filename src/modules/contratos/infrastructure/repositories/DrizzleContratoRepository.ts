@@ -365,6 +365,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
       // Estado y clasificación
       estado: snapshot.estado.valor as EstadoContratoEnum,
       tipoContrato: 'campaña', // default fallback based on mapping requirement
+      medio: (snapshot.medio ?? 'fm') as 'fm' | 'digital' | 'hibrido',
       
       // Términos comerciales
       diasCredito: snapshot.terminosPago.dias,
@@ -408,6 +409,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
       estado,
       prioridad: 'normal' as 'baja' | 'media' | 'alta' | 'critica',
       tipoContrato: (data.tipoContrato as string) as 'A' | 'B' | 'C',
+      medio: (data.medio as string ?? 'fm') as 'fm' | 'digital' | 'hibrido',
       terminosPago,
       modalidadFacturacion: 'mensual' as 'cuotas' | 'hitos',
       tipoFactura: 'normal' as 'posterior' | 'adelantado',

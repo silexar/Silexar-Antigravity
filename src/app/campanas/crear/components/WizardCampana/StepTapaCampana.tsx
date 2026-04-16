@@ -6,15 +6,17 @@
  */
 
 import React, { useEffect } from 'react';
-import { WizardStepProps } from './types/wizard.types';
+import { WizardStepProps, EspecificacionDigitalData } from './types/wizard.types';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CalendarIcon, Building, User, FileText, Tag } from 'lucide-react';
 import { PanelPropiedadesWizard } from './PanelPropiedadesWizard';
+import { PanelEspecificacionesDigitales } from './PanelEspecificacionesDigitales';
 
-interface TapaData {
+interface TapaData extends Partial<EspecificacionDigitalData> {
+  medio?: 'fm' | 'digital' | 'hibrido';
   nombre?: string;
   anunciante?: string;
   producto?: string;
@@ -310,6 +312,14 @@ export const StepTapaCampana: React.FC<StepTapaProps> = ({
           />
         </div>
       </div>
+
+      {/* Panel de Especificaciones Digitales */}
+      {data.medio !== 'fm' && (
+        <PanelEspecificacionesDigitales
+          data={data}
+          onUpdate={(digitalData) => onUpdate(digitalData)}
+        />
+      )}
     </div>
   );
 };

@@ -16,6 +16,7 @@ export interface CrearContratoCommand {
     fechaFin: string;
     tenantId: string;
     creadoPor: string;
+    medio?: 'fm' | 'digital' | 'hibrido';
 }
 
 export interface ContratoDto {
@@ -57,6 +58,7 @@ export class ContratoCommandHandler {
             fechaFin: new Date(command.fechaFin),
             prioridad: 'media',
             tipoContrato: 'A',
+            medio: command.medio ?? 'fm',
             terminosPago: TerminosPago.create(30),
             modalidadFacturacion: 'cuotas',
             tipoFactura: 'posterior',

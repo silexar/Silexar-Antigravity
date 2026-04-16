@@ -15,6 +15,7 @@ const navItems: NavItem[] = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/campanas', label: 'Campañas' },
     { href: '/contratos', label: 'Contratos' },
+    { href: '/rrss', label: 'RRSS' },
 ];
 
 export const UnifiedNavigation: React.FC<{ className?: string }> = ({ className = '' }) => (

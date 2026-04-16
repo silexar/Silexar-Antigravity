@@ -1,0 +1,1069 @@
+🔄 MÓDULO CONCILIACIÓN - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO CONCILIACIÓN?
+El Módulo Conciliación es el cerebro de verificación y recuperación automática de emisiones radiales de Silexar Pulse. Funciona como un sistema de auditoría inteligente que compara lo programado vs. lo realmente emitido al aire, utilizando los logs de Dalet Galaxy como fuente de verdad absoluta. Cuando detecta discrepancias, el sistema puede automáticamente re-ingestar los spots no emitidos, redistribuyéndolos inteligentemente durante el día para garantizar el cumplimiento contractual con los anunciantes.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Programador/Traffic Manager, este módulo es mi control de calidad automático:
+
+Verifico automáticamente que todos los spots programados se emitieron correctamente
+Recibo alertas inmediatas de spots no emitidos por fallas técnicas
+Re-programo automáticamente spots perdidos con distribución inteligente
+Mantengo trazabilidad completa de recuperaciones para reportes comerciales
+Garantizo cumplimiento 100% de contratos publicitarios
+
+Como Ejecutivo Comercial, valido cumplimiento de servicios:
+
+Verifico que todos los spots de mis clientes se emitieron según programado
+Recibo reportes automáticos de recuperaciones realizadas
+Tengo evidencia documental para cualquier reclamo de cliente
+Garantizo transparencia total en el cumplimiento de servicios
+
+Como Controller/Operaciones, superviso la operación técnica:
+
+Monitorio eficiencia de emisión por emisora en tiempo real
+Detecto patrones de fallas técnicas para mejora operacional
+Superviso procesos de recuperación automática
+Genero reportes de compliance para clientes y auditores
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Campañas: Validación automática de cumplimiento contractual
+Módulo Propiedades: Verificación de emisión por emisora específica
+Módulo Facturación: Respaldo documental para facturación de servicios entregados
+Dalet Galaxy: Integración nativa con logs reales de emisión
+Cortex-Compliance: IA que predice problemas y optimiza recuperaciones
+Cortex-Scheduling: IA que redistribuye spots con algoritmos avanzados
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/conciliacion/
+├── domain/
+│   ├── entities/
+│   │   ├── ConciliacionDiaria.ts (Entidad principal de conciliación)
+│   │   ├── RegistroEmisionProgramada.ts (Lo que debía emitirse)
+│   │   ├── RegistroEmisionReal.ts (Lo que realmente se emitió)
+│   │   ├── DiscrepanciaEmision.ts (Diferencias detectadas)
+│   │   ├── SpotNoEmitido.ts (Spots perdidos por recuperar)
+│   │   ├── RecuperacionAutomatica.ts (Re-ingesta automática)
+│   │   ├── RecuperacionManual.ts (Re-ingesta manual)
+│   │   ├── LogDaletGalaxy.ts (Parsing de archivos Dalet)
+│   │   ├── ConfiguracionRutas.ts (Rutas archivos por emisora)
+│   │   ├── AlgoritmoDistribucion.ts (Lógica redistribución)
+│   │   ├── ValidadorIntegridad.ts (Verificación de datos)
+│   │   ├── ReporteCumplimiento.ts (Reportes para clientes)
+│   │   ├── AuditoriaRecuperacion.ts (Logs de recuperaciones)
+│   │   ├── NotificacionDiscrepancia.ts (Alertas automáticas)
+│   │   ├── MetricasEmision.ts (KPIs de cumplimiento)
+│   │   ├── ConfiguracionHorarios.ts (Franjas para redistribución)
+│   │   ├── ExcepcionRecuperacion.ts (Casos especiales)
+│   │   ├── TrazabilidadSpot.ts (Seguimiento completo spot)
+│   │   ├── ValidacionComercial.ts (Reglas comerciales)
+│   │   └── BackupSeguridad.ts (Respaldos antes de cambios)
+│   ├── value-objects/
+│   │   ├── CodigoSP.ts (Código único spot publicitario)
+│   │   ├── FechaConciliacion.ts (Fecha específica a conciliar)
+│   │   ├── HorarioEmision.ts (Hora programada vs real)
+│   │   ├── EstadoEmision.ts (Emitido, NoEmitido, Recuperado)
+│   │   ├── TipoDiscrepancia.ts (Falla técnica, error programación)
+│   │   ├── EmisoraTarget.ts (Emisora específica a conciliar)
+│   │   ├── DuracionSpot.ts (20s, 30s, 60s)
+│   │   ├── FranjaHoraria.ts (Prime, Repartido, Madrugada)
+│   │   ├── PrioridadRecuperacion.ts (Alta, Media, Baja)
+│   │   ├── ModoRecuperacion.ts (Automático, Manual, Mixto)
+│   │   ├── RutaArchivoDalet.ts (Path específico por emisora)
+│   │   ├── FormatoArchivoDalet.ts (CSV, XML, TXT)
+│   │   ├── EstadoConciliacion.ts (Pendiente, Procesando, Completado)
+│   │   ├── TipoRecuperacion.ts (Original, Recuperación)
+│   │   ├── ValidadorFormato.ts (Validación estructura archivo)
+│   │   ├── ConfiguracionDistribucion.ts (Parámetros algoritmo)
+│   │   ├── MetricaCumplimiento.ts (Porcentaje cumplimiento)
+│   │   ├── AlertaUrgencia.ts (Nivel urgencia discrepancia)
+│   │   ├── BackupState.ts (Estado backup antes cambios)
+│   │   └── TrazabilidadCompleta.ts (Audit trail completo)
+│   └── repositories/
+│       ├── IConciliacionDiariaRepository.ts
+│       ├── IRegistroEmisionRepository.ts
+│       ├── IDiscrepanciaRepository.ts
+│       ├── ISpotNoEmitidoRepository.ts
+│       ├── IRecuperacionRepository.ts
+│       ├── ILogDaletGalaxyRepository.ts
+│       ├── IConfiguracionRutasRepository.ts
+│       ├── IAuditoriaRecuperacionRepository.ts
+│       ├── IMetricasEmisionRepository.ts
+│       └── IReporteCumplimientoRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── IniciarConciliacionDiariaCommand.ts
+│   │   ├── ProcesarArchivoDaletCommand.ts
+│   │   ├── DetectarDiscrepanciasCommand.ts
+│   │   ├── RecuperarSpotsAutomaticoCommand.ts
+│   │   ├── RecuperarSpotsManualCommand.ts
+│   │   ├── ConfigurarRutasEmisortasCommand.ts
+│   │   ├── ValidarIntegridadDatosCommand.ts
+│   │   ├── GenerarReporteCumplimientoCommand.ts
+│   │   ├── NotificarDiscrepanciasCommand.ts
+│   │   ├── CrearBackupSeguridadCommand.ts
+│   │   ├── RestaurarBackupCommand.ts
+│   │   ├── OptimizarDistribucionCommand.ts
+│   │   ├── ValidarRecuperacionCommand.ts
+│   │   ├── ProcesarConciliacionMasivaCommand.ts
+│   │   ├── ConfigurarAlgoritmosCommand.ts
+│   │   ├── SincronizarDaletGalaxyCommand.ts
+│   │   ├── ValidarCumplimientoComercialCommand.ts
+│   │   ├── GenerarAuditoriaCommand.ts
+│   │   ├── ConfigurarNotificacionesCommand.ts
+│   │   └── OptimizarRendimientoCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerConciliacionDiariaQuery.ts
+│   │   ├── BuscarDiscrepanciasQuery.ts
+│   │   ├── ObtenerSpotsNoEmitidosQuery.ts
+│   │   ├── ObtenerHistorialRecuperacionesQuery.ts
+│   │   ├── GenerarReporteEmisionQuery.ts
+│   │   ├── ObtenerMetricasCumplimientoQuery.ts
+│   │   ├── ValidarEstadoEmisionQuery.ts
+│   │   ├── ObtenerConfiguracionRutasQuery.ts
+│   │   ├── GenerarAnalisisTendenciasQuery.ts
+│   │   ├── ObtenerAuditoriaRecuperacionQuery.ts
+│   │   ├── ValidarIntegridadSistemaQuery.ts
+│   │   ├── ObtenerEstadisticasEmisionQuery.ts
+│   │   ├── GenerarReporteComercialQuery.ts
+│   │   ├── ObtenerLogsDaletQuery.ts
+│   │   ├── ValidarConfiguracionQuery.ts
+│   │   ├── ObtenerProyeccionRecuperacionQuery.ts
+│   │   ├── GenerarDashboardOperativOQuery.ts
+│   │   ├── ObtenerAlertasActivasQuery.ts
+│   │   ├── ValidarBackupsQuery.ts
+│   │   └── GenerarReporteEjecutivoQuery.ts
+│   └── handlers/
+│       ├── ConciliacionCommandHandler.ts
+│       ├── ProcesarArchivosHandler.ts
+│       ├── DeteccionDiscrepanciasHandler.ts
+│       ├── RecuperacionAutomaticaHandler.ts
+│       ├── RecuperacionManualHandler.ts
+│       ├── ValidacionIntegridadHandler.ts
+│       ├── GeneracionReportesHandler.ts
+│       ├── NotificacionesHandler.ts
+│       ├── BackupRecoveryHandler.ts
+│       ├── OptimizacionHandler.ts
+│       ├── AuditoriaHandler.ts
+│       ├── IntegracionDaletHandler.ts
+│       ├── ConfiguracionHandler.ts
+│       ├── MetricasHandler.ts
+│       └── ComplianceHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaConciliacionRepository.ts
+│   │   ├── PrismaRegistroEmisionRepository.ts
+│   │   ├── PrismaDiscrepanciaRepository.ts
+│   │   ├── PrismaRecuperacionRepository.ts
+│   │   ├── PrismaConfiguracionRepository.ts
+│   │   └── PrismaAuditoriaRepository.ts
+│   ├── external/
+│   │   ├── DaletGalaxyParserService.ts (Parser archivos Dalet)
+│   │   ├── FileSystemWatcherService.ts (Monitor rutas archivos)
+│   │   ├── ArchiveProcessorService.ts (Procesamiento archivos)
+│   │   ├── CortexSchedulingService.ts (IA redistribución)
+│   │   ├── CortexComplianceService.ts (IA cumplimiento)
+│   │   ├── CortexPredictionService.ts (IA predicción problemas)
+│   │   ├── EmailNotificationService.ts (Notificaciones email)
+│   │   ├── SMSAlertService.ts (Alertas SMS críticas)
+│   │   ├── SlackIntegrationService.ts (Alertas Slack)
+│   │   ├── ReportGeneratorService.ts (Generación reportes)
+│   │   ├── BackupAutomationService.ts (Backups automáticos)
+│   │   ├── SecurityValidationService.ts (Validaciones seguridad)
+│   │   ├── PerformanceMonitorService.ts (Monitoreo rendimiento)
+│   │   ├── DataIntegrityService.ts (Integridad datos)
+│   │   ├── LoggingAdvancedService.ts (Logs avanzados)
+│   │   ├── MetricsCollectionService.ts (Recolección métricas)
+│   │   ├── DistributionAlgorithmService.ts (Algoritmos distribución)
+│   │   ├── ValidationEngineService.ts (Motor validaciones)
+│   │   ├── RecoveryOrchestrationService.ts (Orquestación recuperación)
+│   │   └── ComplianceAuditService.ts (Auditoría compliance)
+│   └── messaging/
+│       ├── ConciliacionEventPublisher.ts
+│       ├── DiscrepanciaDetectadaPublisher.ts
+│       ├── RecuperacionCompletadaPublisher.ts
+│       ├── AlertaCriticaPublisher.ts
+│       ├── CumplimientoValidadoPublisher.ts
+│       ├── BackupCreadoPublisher.ts
+│       ├── ErrorProcesamientoPublisher.ts
+│       └── MetricasActualizadasPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── ConciliacionController.ts
+    │   ├── DiscrepanciasController.ts
+    │   ├── RecuperacionController.ts
+    │   ├── ConfiguracionController.ts
+    │   ├── ReportesController.ts
+    │   ├── MetricasController.ts
+    │   ├── AuditoriaController.ts
+    │   ├── NotificacionesController.ts
+    │   ├── BackupController.ts
+    │   ├── MobileConciliacionController.ts
+    │   └── APIExternaConciliacionController.ts
+    ├── dto/
+    │   ├── IniciarConciliacionDto.ts
+    │   ├── ProcesarArchivoDto.ts
+    │   ├── RecuperarSpotsDto.ts
+    │   ├── ConfigurarRutasDto.ts
+    │   ├── GenerarReporteDto.ts
+    │   ├── ConfigurarNotificacionesDto.ts
+    │   └── ValidarIntegridadDto.ts
+    └── middleware/
+        ├── ConciliacionAuthorizationMiddleware.ts
+        ├── DataIntegrityMiddleware.ts
+        ├── BackupProtectionMiddleware.ts
+        ├── AuditTrailMiddleware.ts
+        └── PerformanceMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE COMANDO CONCILIACIÓN
+DASHBOARD PRINCIPAL DE CONCILIACIÓN:
+Header de comando operativo:
+
+Título: "🔄 Centro de Comando Conciliación"
+Breadcrumb: "Dashboard > Operaciones > Conciliación"
+
+Panel de métricas críticas en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 ESTADO CONCILIACIÓN TIEMPO REAL                              │
+│                                                                 │
+│ ✅ Hoy: 98.7% Cumplimiento   ⚠️ Pendientes: 23 spots           │
+│ 🔄 Última sync: 14:23       📊 Procesados: 2,847 spots        │
+│ 🎯 Recuperados automático: 45   👤 Recuperados manual: 3       │
+│ 🤖 IA predice: 2 fallas probables próximas 2 horas             │
+│ 📻 Emisoras: Radio Corazón ✅ Play FM ✅ Sonar FM ⚠️           │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO CONCILIACIÓN:
+Selector de fecha y emisora para conciliación:
+┌─────────────────────────────────────────┐
+│ 📅 CONCILIACIÓN ESPECÍFICA              │
+│                                         │
+│ 🗓️ Fecha a conciliar:                  │
+│ [20/08/2025 ▼] [Hoy] [Ayer] [Rango]   │
+│                                         │
+│ 📻 Emisora(s):                         │
+│ [✅] Radio Corazón (T13 Radio)         │
+│ [✅] Play FM                           │
+│ [✅] Sonar FM                          │
+│ [❌] 13C Radio                         │
+│                                         │
+│ 📁 Método obtención datos:             │
+│ ⚫ Buscar automático en rutas          │
+│ ⚪ Subir archivo manualmente           │
+│                                         │
+│ 🤖 Modo conciliación:                  │
+│ ⚫ Automático (recomendado)            │
+│ ⚪ Semi-automático                     │
+│ ⚪ Solo detección (sin recuperación)   │
+│                                         │
+│ [🚀 INICIAR CONCILIACIÓN]              │
+└─────────────────────────────────────────┘
+Búsqueda y filtros inteligentes:
+
+Placeholder: "🔍 'SP123456', 'Banco Chile', 'no emitido', 'recuperado'..."
+IA Conversacional: "¿Qué spots de Coca Cola no se emitieron ayer?"
+Filtros automáticos:
+
+"Spots recuperados automáticamente"
+"Discrepancias sin resolver"
+"Fallas técnicas recurrentes"
+"Cumplimiento por cliente"
+
+
+
+Centro de acciones operativas:
+
+"▶️ Conciliación Express" (fecha actual)
+"📊 Dashboard Cumplimiento" (métricas detalladas)
+"🔧 Configurar Rutas" (setup inicial)
+"📈 Analytics Recuperación" (insights IA)
+"🚨 Monitor Tiempo Real" (vista operativa)
+
+TABLA DE CONCILIACIONES - VISTA OPERATIVA:
+1. Columna "Fecha/Estado" (150px):
+┌─────────────────┐
+│ 📅 20/08/2025   │
+│ 🕐 14:23:45     │
+│ ✅ Completado   │
+│ 🎯 98.7% OK     │
+└─────────────────┘
+
+Fecha conciliación: Día específico procesado
+Hora proceso: Timestamp último procesamiento
+Estado: Completado, En proceso, Error
+Porcentaje cumplimiento: Métrica visual
+
+2. Columna "Emisoras/Archivos" (180px):
+┌─────────────────────────────────────┐
+│ 📻 Radio Corazón: ✅ Procesado      │
+│ 📁 radio_corazon_20250820.csv      │
+│ 📊 2,847 registros • 14:20         │
+│ 🔄 Auto-sync: Habilitado           │
+└─────────────────────────────────────┘
+
+Emisora: Nombre emisora procesada
+Archivo fuente: Nombre archivo Dalet Galaxy
+Cantidad registros: Total spots en archivo
+Modo sync: Automático o manual
+
+3. Columna "Resultados Conciliación" (200px):
+┌─────────────────────────────────────┐
+│ ✅ Emitidos: 2,824 (99.2%)          │
+│ ❌ No emitidos: 23 (0.8%)           │
+│ 🔄 Recuperados auto: 20             │
+│ 👤 Pendientes manual: 3             │
+└─────────────────────────────────────┘
+
+Spots emitidos: Cantidad y porcentaje exitoso
+Spots no emitidos: Cantidad encontrada de faltantes
+Recuperados automático: Re-programados por IA
+Pendientes manual: Requieren intervención
+
+4. Columna "Discrepancias/Tipos" (220px):
+┌─────────────────────────────────────┐
+│ 🔧 Falla técnica: 15 spots          │
+│ ⏰ Error timing: 5 spots            │
+│ 📻 Cambio programación: 3 spots     │
+│ 🎯 Próxima validación: 16:00        │
+└─────────────────────────────────────┘
+
+Falla técnica: Problema equipos o software
+Error timing: Spots en horario incorrecto
+Cambio programación: Modificaciones last-minute
+Próxima validación: Cuándo revisar nuevamente
+
+5. Columna "Impacto Comercial" (180px):
+┌─────────────────────────────────────┐
+│ 🏢 Clientes afectados: 8             │
+│ 💰 Valor recuperado: $450K          │
+│ ⚠️ Riesgo contractual: Bajo         │
+│ 📧 Notificados: ✅ Ejecutivos       │
+└─────────────────────────────────────┘
+
+Clientes afectados: Cantidad anunciantes con spots perdidos
+Valor recuperado: Monto publicitario recuperado
+Riesgo contractual: Evaluación impacto comercial
+Notificaciones: Si se alertó a ejecutivos
+
+6. Columna "Acciones" (160px):
+┌─────────────────┐
+│ [👁️] [🔄] [📊] │
+│ [📧] [📄] [⚙️] │
+│ [🚨] [📈] [🔧] │
+└─────────────────┘
+
+👁️ Ver Detalle: Análisis completo discrepancias
+🔄 Re-procesar: Volver a ejecutar conciliación
+📊 Analytics: Métricas específicas del día
+📧 Notificar: Enviar reportes a stakeholders
+📄 Exportar: Generar reportes comerciales
+⚙️ Configurar: Ajustar parámetros específicos
+🚨 Alertar: Crear alertas personalizadas
+📈 Tendencias: Ver patrones históricos
+🔧 Diagnosticar: Análisis técnico profundo
+
+🚀 PROCESO DE CONCILIACIÓN - WIZARD INTELIGENTE
+PASO 1: "CONFIGURACIÓN INICIAL" - SETUP INTELIGENTE
+Configuración automática de rutas y parámetros:
+┌─────────────────────────────────────────┐
+│ ⚙️ CONFIGURACIÓN CONCILIACIÓN           │
+│                                         │
+│ 📅 Fecha objetivo: [20/08/2025]        │
+│                                         │
+│ 📻 EMISORAS Y RUTAS:                   │
+│                                         │
+│ ✅ Radio Corazón:                      │
+│ 📁 Ruta: \\dalet\exports\radio_corazon\│
+│ 📄 Patrón: radio_corazon_YYYYMMDD.csv  │
+│ 🕐 Última sync: 14:20 (hace 3 min)     │
+│ ✅ Archivo encontrado automáticamente   │
+│                                         │
+│ ✅ Play FM:                            │
+│ 📁 Ruta: \\dalet\exports\play_fm\      │
+│ 📄 Patrón: playfm_YYYYMMDD.csv         │
+│ 🕐 Última sync: 14:18 (hace 5 min)     │
+│ ✅ Archivo encontrado automáticamente   │
+│                                         │
+│ ⚠️ Sonar FM:                           │
+│ 📁 Ruta: \\dalet\exports\sonar_fm\     │
+│ 📄 Patrón: sonar_YYYYMMDD.csv          │
+│ 🕐 Última sync: 13:45 (hace 38 min)    │
+│ ❌ Archivo no encontrado - Subir manual │
+│                                         │
+│ 🤖 CONFIGURACIÓN IA:                   │
+│ Recuperación automática: [✅ Habilitado]│
+│ Distribución inteligente: [✅ Habilitado]│
+│ Notificaciones: [✅ Email + Slack]     │
+│ Backup automático: [✅ Antes cambios]  │
+│                                         │
+│ [📁 Subir Archivo Manual] [⚙️ Config Rutas]│
+│ [🚀 INICIAR PROCESO] [❌ Cancelar]      │
+└─────────────────────────────────────────┘
+PASO 2: "PROCESAMIENTO ARCHIVOS DALET" - PARSING INTELIGENTE
+Análisis automático de archivos Dalet Galaxy:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📄 PROCESANDO ARCHIVOS DALET GALAXY                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔄 Estado procesamiento en tiempo real:                        │
+│                                                                 │
+│ 📻 RADIO CORAZÓN:                                              │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📁 Archivo: radio_corazon_20250820.csv                     │ │
+│ │ 📊 Procesando... ████████████████████░░░ 94% (2,681/2,847) │ │
+│ │ ✅ Registros válidos: 2,681                                │ │
+│ │ ⚠️ Registros con errores: 3                                │ │
+│ │ 🎯 Formato detectado: Dalet Galaxy v8.2                   │ │
+│ │ 🕐 Rango temporal: 00:00:15 - 23:59:42                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📻 PLAY FM:                                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📁 Archivo: playfm_20250820.csv                            │ │
+│ │ ✅ Completado: 1,456 registros procesados                  │ │
+│ │ 🎯 Spots publicitarios: 234 identificados                  │ │
+│ │ 🎵 Contenido musical: 1,222 registros                      │ │
+│ │ ⚡ Tiempo procesamiento: 2.3 segundos                      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🤖 VALIDACIONES AUTOMÁTICAS:                                   │
+│ • ✅ Formato archivo correcto                                  │
+│ • ✅ Codificación UTF-8 válida                                │
+│ • ✅ Estructura columnas esperada                              │
+│ • ✅ Rangos horarios coherentes                               │
+│ • ⚠️ 3 registros con códigos SP malformados                   │
+│                                                                 │
+│ 📊 PREVIEW DATOS EXTRAÍDOS:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Hora      │ Código SP    │ Duración │ Cliente              │ │
+│ │ 06:15:30  │ SP123456     │ 20s      │ Banco Chile          │ │
+│ │ 06:45:15  │ SP789012     │ 30s      │ Coca Cola            │ │
+│ │ 07:30:00  │ SP345678     │ 20s      │ Entel                │ │
+│ │ ...       │ ...          │ ...      │ ...                  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [⏸️ Pausar] [👁️ Ver Errores] [📊 Estadísticas Completas]       │
+└─────────────────────────────────────────────────────────────────┘
+PASO 3: "COMPARACIÓN Y DETECCIÓN" - ANÁLISIS DISCREPANCIAS
+Motor de comparación inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 ANÁLISIS DE DISCREPANCIAS - COMPARACIÓN INTELIGENTE          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 Cortex-Compliance ejecutando análisis avanzado...           │
+│                                                                 │
+│ 📊 PROGRESO COMPARACIÓN:                                        │
+│ ████████████████████████████████████████░░░░░░░░ 89% Completado│
+│                                                                 │
+│ ✅ SPOTS VERIFICADOS EXITOSAMENTE:                             │
+│ • Radio Corazón: 189/195 spots (96.9%)                        │
+│ • Play FM: 147/152 spots (96.7%)                              │
+│ • Sonar FM: 89/94 spots (94.7%)                               │
+│                                                                 │
+│ ❌ DISCREPANCIAS DETECTADAS:                                    │
+│                                                                 │
+│ 🔴 CRÍTICAS (Acción inmediata requerida):                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SP123456 - Banco Chile                                      │ │
+│ │ 📻 Radio Corazón • 🕐 Programado: 06:15:30                 │ │
+│ │ ❌ Estado: NO EMITIDO                                       │ │
+│ │ 🎯 Valor: $85,000 • Duración: 20s                         │ │
+│ │ 📋 Campaña: Promoción Tarjeta Joven                        │ │
+│ │ 🤖 IA recomienda: Recuperación automática 16:45-17:00      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SP789012 - Coca Cola                                        │ │
+│ │ 📻 Play FM • 🕐 Programado: 08:22:15                       │ │
+│ │ ❌ Estado: NO EMITIDO                                       │ │
+│ │ 🎯 Valor: $120,000 • Duración: 30s                        │ │
+│ │ 📋 Campaña: Lanzamiento Coca Cola Zero                     │ │
+│ │ 🤖 IA recomienda: Recuperación automática 19:30-20:00      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🟡 MENORES (Revisión recomendada):                            │
+│ • SP345678: Emitido 15 segundos después (timing menor)        │
+│ • SP901234: Duración real 32s vs programado 30s               │
+│                                                                 │
+│ 📈 ANÁLISIS AUTOMÁTICO COMPLETADO:                             │
+│ • Total discrepancias: 23 spots                               │
+│ • Recuperación automática posible: 20 spots                   │
+│ • Revisión manual requerida: 3 spots                          │
+│ • Impacto comercial estimado: $2.1M valor publicitario       │
+│                                                                 │
+│ [🚀 PROCEDER RECUPERACIÓN] [👁️ Ver Detalle] [📊 Analytics]     │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "DECISIÓN DE RECUPERACIÓN" - MODO INTELIGENTE
+Selector de modo de recuperación:
+┌─────────────────────────────────────────┐
+│ 🤖 CONFIGURACIÓN RECUPERACIÓN INTELIGENTE│
+│                                         │
+│ 📊 Spots no emitidos detectados: 23     │
+│ 🎯 Valor comercial: $2.1M              │
+│                                         │
+│ 🚀 MODO DE RECUPERACIÓN:                │
+│                                         │
+│ ⚫ AUTOMÁTICO INTELIGENTE (Recomendado) │
+│    🤖 IA redistribuye optimalmente     │
+│    ⚡ Proceso inmediato                 │
+│    🎯 Sin modificar valores            │
+│    📊 Distribución horaria inteligente │
+│                                         │
+│ ⚪ SEMI-AUTOMÁTICO                     │
+│    🤖 IA sugiere + Usuario aprueba     │
+│    👤 Revisión manual previa           │
+│    ⚙️ Ajustes personalizados          │
+│                                         │
+│ ⚪ MANUAL COMPLETO                     │
+│    👤 Usuario programa cada spot       │
+│    🔧 Control total del proceso        │
+│    📅 Programación horario específico  │
+│                                         │
+│ ⚪ SOLO REPORTAR                       │
+│    📊 Generar reporte únicamente       │
+│    📧 Notificar a ejecutivos           │
+│    🚫 Sin recuperación automática      │
+│                                         │
+│ 🎯 CONFIGURACIÓN AUTOMÁTICO:           │
+│ Distribución en: [Repartido ▼]         │
+│ Horario inicio: [16:00]                │
+│ Horario fin: [22:00]                   │
+│ Espaciado mínimo: [15 minutos]         │
+│                                         │
+│ 🔔 NOTIFICACIONES:                     │
+│ [✅] Email ejecutivos responsables     │
+│ [✅] Slack canal #traffic              │
+│ [✅] SMS casos críticos                │
+│                                         │
+│ [🚀 EJECUTAR RECUPERACIÓN] [⚙️ Config] │
+└─────────────────────────────────────────┘
+PASO 5: "RECUPERACIÓN AUTOMÁTICA" - IA EN ACCIÓN
+Motor de redistribución inteligente en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 CORTEX-SCHEDULING EJECUTANDO RECUPERACIÓN AUTOMÁTICA        │
+├─────────────────────────────────────────────────────────────────┤
+│ ⚡ PROCESAMIENTO EN TIEMPO REAL:                               │
+│                                                                 │
+│ 🔄 Analizando disponibilidad horaria...                       │
+│ ████████████████████████████████████████████████████░░░ 96%   │
+│                                                                 │
+│ 📻 RADIO CORAZÓN - Recuperando 6 spots:                       │
+│                                                                 │
+│ ✅ SP123456 - Banco Chile                                      │
+│ 🕐 Nuevo horario: 16:45:30 (Repartido)                        │
+│ 🎯 Estado: PROGRAMADO • Validación: OK                        │
+│ 📋 Marcado como: [RECUPERACIÓN - NO EMITIDO 20/08]            │
+│                                                                 │
+│ ✅ SP234567 - Entel                                           │
+│ 🕐 Nuevo horario: 17:15:45 (Repartido)                        │
+│ 🎯 Estado: PROGRAMADO • Validación: OK                        │
+│ 📋 Marcado como: [RECUPERACIÓN - NO EMITIDO 20/08]            │
+│                                                                 │
+│ 📻 PLAY FM - Recuperando 8 spots:                             │
+│                                                                 │
+│ ✅ SP789012 - Coca Cola                                       │
+│ 🕐 Nuevo horario: 18:22:15 (Prime Vespertino)                 │
+│ 🎯 Estado: PROGRAMADO • Validación: OK                        │
+│ 📋 Marcado como: [RECUPERACIÓN - NO EMITIDO 20/08]            │
+│                                                                 │
+│ 🤖 OPTIMIZACIONES IA APLICADAS:                               │
+│ • Distribución equitativa en franjas disponibles              │
+│ • Respeto de exclusividades por categoría                     │
+│ • Optimización para horarios similares a originales           │
+│ • Separación mínima 15 min entre spots mismo cliente          │
+│                                                                 │
+│ ⚠️ CASOS REQUIEREN ATENCIÓN MANUAL:                           │
+│                                                                 │
+│ 🔴 SP901234 - Toyota                                          │
+│ ❌ Problema: Exclusividad automotriz saturada                  │
+│ 🎯 Acción: Revisar disponibilidad mañana                      │
+│                                                                 │
+│ 🔴 SP567890 - Movistar                                        │
+│ ❌ Problema: Conflicto competencia con Entel programado        │
+│ 🎯 Acción: Ajuste manual horarios requerido                   │
+│                                                                 │
+│ 📊 RESUMEN RECUPERACIÓN:                                       │
+│ • ✅ Recuperados automáticamente: 20/23 spots (87%)           │
+│ • ⚠️ Requieren atención manual: 3 spots                       │
+│ • ⏱️ Tiempo total proceso: 3.2 minutos                        │
+│ • 💰 Valor recuperado: $1.8M de $2.1M total                  │
+│                                                                 │
+│ [✅ CONFIRMAR CAMBIOS] [👁️ Revisar Manual] [📊 Ver Detalle]    │
+└─────────────────────────────────────────────────────────────────┘
+PASO 6: "CONFIRMACIÓN Y AUDITORÍA" - RESULTADO FINAL
+Resultado completo con trazabilidad:
+┌─────────────────────────────────────────┐
+│ ✅ CONCILIACIÓN COMPLETADA EXITOSAMENTE │
+│                                         │
+│ 🎉 Proceso finalizado: 20/08/2025 15:47│
+│                                         │
+│ 📊 RESUMEN EJECUTIVO:                   │
+│ • Total spots verificados: 441          │
+│ • Spots emitidos correctamente: 418     │
+│ • Spots no emitidos: 23                 │
+│ • Recuperados automáticamente: 20       │
+│ • Pendientes manual: 3                  │
+│ • Cumplimiento final: 99.3%             │
+│                                         │
+│ 💰 IMPACTO COMERCIAL:                   │
+│ • Valor total verificado: $12.8M        │
+│ • Valor recuperado: $1.8M               │
+│ • Pendiente recuperación: $300K         │
+│ • Clientes afectados: 8                 │
+│                                         │
+│ 📧 NOTIFICACIONES ENVIADAS:             │
+│ • ✅ Ejecutivos comerciales (8)         │
+│ • ✅ Canal Slack #traffic               │
+│ • ✅ Controller financiero              │
+│ • ✅ Gerencia operaciones               │
+│                                         │
+│ 📋 AUDITORÍA CREADA:                    │
+│ • ID Proceso: CONC-20250820-001         │
+│ • Backup pre-cambios: ✅ Creado        │
+│ • Log detallado: ✅ Guardado           │
+│ • Trazabilidad completa: ✅ Disponible │
+│                                         │
+│ 🎯 PRÓXIMAS ACCIONES:                   │
+│ • Revisar 3 spots pendientes manual    │
+│ • Monitorear emisión spots recuperados │
+│ • Seguimiento satisfacción clientes    │
+│                                         │
+│ [👁️ Ver Reporte Completo] [📧 Enviar]  │
+│ [🔄 Nueva Conciliación] [🏠 Dashboard] │
+└─────────────────────────────────────────┘
+📊 DASHBOARD DETALLADO DE DISCREPANCIAS
+VISTA ESPECÍFICA SPOTS NO EMITIDOS:
+Lista detallada con acciones específicas:
+┌─────────────────────────────────────────────────────────────────┐
+│ ❌ SPOTS NO EMITIDOS - DETALLE COMPLETO                         │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 Filtros: [Todos ▼] [Por Emisora ▼] [Por Cliente ▼] [Críticos]│
+│                                                                 │
+│ 🔴 SPOT #1 - RECUPERACIÓN AUTOMÁTICA PROGRAMADA:               │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎯 Código: SP123456                                        │ │
+│ │ 🏢 Cliente: Banco Chile                                    │ │
+│ │ 📋 Campaña: Promoción Tarjeta Joven                        │ │
+│ │ 📻 Emisora: Radio Corazón                                  │ │
+│ │ 🕐 Programado original: 06:15:30                           │ │
+│ │ ⏱️ Duración: 20 segundos                                   │ │
+│ │ 💰 Valor: $85,000                                         │ │
+│ │ 👤 Ejecutivo: Ana García                                   │ │
+│ │                                                             │ │
+│ │ 🤖 RECUPERACIÓN AUTOMÁTICA:                                │ │
+│ │ ✅ Nuevo horario: 16:45:30 (Repartido)                    │ │
+│ │ 🎯 Estado: PROGRAMADO EN SISTEMA                           │ │
+│ │ 📝 Detalle: [RECUPERACIÓN - NO EMITIDO 20/08/2025]        │ │
+│ │ 🔔 Notificado: Ana García (15:48)                         │ │
+│ │                                                             │ │
+│ │ [✏️ Ajustar Horario] [📧 Notificar Cliente] [👁️ Historial]│ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🔴 SPOT #2 - REQUIERE ATENCIÓN MANUAL:                        │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎯 Código: SP901234                                        │ │
+│ │ 🏢 Cliente: Toyota                                         │ │
+│ │ 📋 Campaña: Nuevo Corolla Híbrido                          │ │
+│ │ 📻 Emisora: Play FM                                        │ │
+│ │ 🕐 Programado original: 09:30:45                           │ │
+│ │ ⏱️ Duración: 30 segundos                                   │ │
+│ │ 💰 Valor: $150,000                                        │ │
+│ │ 👤 Ejecutivo: Carlos Ruiz                                  │ │
+│ │                                                             │ │
+│ │ ⚠️ PROBLEMA DETECTADO:                                      │ │
+│ │ 🚫 Exclusividad automotriz saturada en horarios           │ │
+│ │ 🎯 Chevrolet programado 09:15-09:45                       │ │
+│ │ 🎯 Ford programado 09:48-10:15                            │ │
+│ │                                                             │ │
+│ │ 🤖 OPCIONES IA:                                            │ │
+│ │ 1. Programar mañana 21/08 mismo horario                   │ │
+│ │ 2. Buscar hueco en tarde (después 18:00)                  │ │
+│ │ 3. Negociar con cliente cambio horario                    │ │
+│ │                                                             │ │
+│ │ [🛠️ PROGRAMAR MANUAL] [📞 Contactar Cliente] [⏰ Mañana]   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 RESUMEN ACCIONES PENDIENTES:                                │
+│ • ✅ Recuperación automática: 20/23 completada                │
+│ • ⚠️ Atención manual requerida: 3 spots                       │
+│ • 📧 Notificaciones enviadas: 8 ejecutivos                    │
+│ • ⏰ Tiempo estimado resolución: 2 horas                       │
+│                                                                 │
+│ [📊 Analytics Completo] [📧 Reporte Gerencia] [⚙️ Configurar] │
+└─────────────────────────────────────────────────────────────────┘
+📈 ANALYTICS Y MÉTRICAS AVANZADAS
+DASHBOARD DE CUMPLIMIENTO:
+Vista ejecutiva de performance:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANALYTICS CUMPLIMIENTO EMISIÓN - ÚLTIMOS 30 DÍAS            │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 MÉTRICAS GENERALES:                                         │
+│                                                                 │
+│ 📈 Cumplimiento promedio: 98.4% (▲1.2% vs mes anterior)       │
+│ ⚡ Spots totales analizados: 67,234                            │
+│ ❌ Spots no emitidos: 1,076 (1.6%)                            │
+│ 🔄 Recuperación automática: 94.3% exitosa                     │
+│ 👤 Intervención manual requerida: 5.7%                        │
+│                                                                 │
+│ 📻 PERFORMANCE POR EMISORA:                                    │
+│                                                                 │
+│ 🥇 Radio Corazón: 99.1% cumplimiento                          │
+│ • Spots analizados: 28,456                                    │
+│ • No emitidos: 256 (0.9%)                                     │
+│ • Principal causa: Fallas técnicas sistema                    │
+│                                                                 │
+│ 🥈 Play FM: 98.2% cumplimiento                                │
+│ • Spots analizados: 23,112                                    │
+│ • No emitidos: 416 (1.8%)                                     │
+│ • Principal causa: Cambios programación                       │
+│                                                                 │
+│ 🥉 Sonar FM: 97.8% cumplimiento                               │
+│ • Spots analizados: 15,666                                    │
+│ • No emitidos: 344 (2.2%)                                     │
+│ • Principal causa: Conflictos timing                          │
+│                                                                 │
+│ 📊 TENDENCIAS DETECTADAS:                                      │
+│ • Mejoría sostenida últimas 2 semanas                         │
+│ • Reducción 40% fallas técnicas vs Q1                         │
+│ • Optimización algoritmo recuperación (+15% efectividad)      │
+│                                                                 │
+│ 🚨 ALERTAS PROACTIVAS IA:                                      │
+│ • Patrón fallas técnicas Sonar FM viernes 14:00-16:00         │
+│ • Incremento conflictos exclusividad sector automotriz        │
+│ • Recomendación: Mantenimiento preventivo equipos             │
+│                                                                 │
+│ [📊 Reportes Detallados] [📈 Proyecciones] [⚙️ Optimizar]      │
+└─────────────────────────────────────────────────────────────────┘
+ANÁLISIS DE CAUSAS RAÍZ:
+Inteligencia operativa para mejora continua:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 ANÁLISIS CAUSAS RAÍZ - SPOTS NO EMITIDOS                    │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 DISTRIBUCIÓN POR TIPO DE CAUSA (Últimos 30 días):           │
+│                                                                 │
+│ 🔧 FALLAS TÉCNICAS (45% - 485 spots):                         │
+│ • Sistema Dalet Galaxy: 234 spots (21.8%)                     │
+│ • Cortes energía: 89 spots (8.3%)                             │
+│ • Problemas audio: 67 spots (6.2%)                            │
+│ • Fallas transmisión: 45 spots (4.2%)                         │
+│ • Otros técnicos: 50 spots (4.6%)                             │
+│                                                                 │
+│ ⏰ ERRORES PROGRAMACIÓN (32% - 344 spots):                     │
+│ • Cambios last-minute: 156 spots (14.5%)                      │
+│ • Conflictos timing: 89 spots (8.3%)                          │
+│ • Errores exclusividad: 67 spots (6.2%)                       │
+│ • Duplicaciones: 32 spots (3.0%)                              │
+│                                                                 │
+│ 👤 ERRORES HUMANOS (18% - 194 spots):                         │
+│ • Error carga programación: 89 spots (8.3%)                   │
+│ • Modificaciones incorrectas: 56 spots (5.2%)                 │
+│ • Olvido activación: 34 spots (3.2%)                          │
+│ • Otros humanos: 15 spots (1.4%)                              │
+│                                                                 │
+│ 📻 DECISIONES EDITORIALES (5% - 53 spots):                    │
+│ • Noticias urgentes: 34 spots (3.2%)                          │
+│ • Contenido especial: 19 spots (1.8%)                         │
+│                                                                 │
+│ 🎯 RECOMENDACIONES IA PARA MEJORA:                             │
+│                                                                 │
+│ 🔧 TÉCNICAS:                                                   │
+│ • Implementar redundancia sistema Dalet                       │
+│ • UPS backup para equipos críticos                            │
+│ • Monitoreo proactivo calidad audio                           │
+│                                                                 │
+│ ⏰ OPERACIONALES:                                               │
+│ • Workflow aprobación cambios <2h emisión                     │
+│ • Validación automática conflictos exclusividad               │
+│ • Double-check duplicaciones en programación                  │
+│                                                                 │
+│ 👤 CAPACITACIÓN:                                               │
+│ • Entrenamiento avanzado equipo traffic                       │
+│ • Procedimientos estandarizados carga                         │
+│ • Alertas automáticas pre-emisión                             │
+│                                                                 │
+│ 📈 IMPACTO PROYECTADO MEJORAS:                                 │
+│ • Reducción 60% fallas técnicas                               │
+│ • Mejora cumplimiento a 99.2%                                 │
+│ • Ahorro $2.4M anual en recuperaciones                        │
+│                                                                 │
+│ [🚀 Implementar Plan] [📊 Simular Impacto] [📧 Reporte]        │
+└─────────────────────────────────────────────────────────────────┘
+⚙️ CONFIGURACIÓN AVANZADA RUTAS Y FORMATOS
+CONFIGURADOR DE EMISORAS Y RUTAS:
+Setup técnico específico por emisora:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚙️ CONFIGURACIÓN RUTAS Y FORMATOS DALET GALAXY                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 📻 EMISORA: RADIO CORAZÓN                                      │
+│                                                                 │
+│ 📁 CONFIGURACIÓN ARCHIVOS:                                     │
+│ Ruta base: [\\dalet-server\exports\radio_corazon\           ]  │
+│ Patrón nombre: [radio_corazon_YYYYMMDD.csv                  ]  │
+│ Backup ruta: [\\backup\dalet\radio_corazon\                ]  │
+│                                                                 │
+│ 🕐 CONFIGURACIÓN HORARIOS:                                     │
+│ Frecuencia sync: [Cada 15 minutos ▼]                          │
+│ Horario inicio: [00:00] Horario fin: [23:59]                  │
+│ Tolerancia delay: [30 minutos]                                │
+│                                                                 │
+│ 📊 FORMATO ARCHIVO DALET:                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Separador: [; ▼] (Punto y coma)                            │ │
+│ │ Codificación: [UTF-8 ▼]                                    │ │
+│ │ Header línea: [✅] Sí tiene encabezados                    │ │
+│ │                                                             │ │
+│ │ MAPEO DE COLUMNAS:                                          │ │
+│ │ Columna 1: [DateTime] → Fecha/Hora emisión                 │ │
+│ │ Columna 2: [Title] → Título/Descripción                    │ │
+│ │ Columna 3: [Duration] → Duración en segundos               │ │
+│ │ Columna 4: [Type] → Tipo contenido (AD=Publicidad)         │ │
+│ │ Columna 5: [Code] → Código SP                              │ │
+│ │ Columna 6: [Client] → Cliente anunciante                   │ │
+│ │ Columna 7: [Campaign] → Campaña                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 FILTROS DE PROCESAMIENTO:                                   │
+│ [✅] Solo procesar Type = "AD" (publicidad)                   │
+│ [✅] Ignorar registros sin código SP                          │
+│ [✅] Validar duración entre 10-120 segundos                   │
+│ [❌] Incluir jingles y promocionales                          │
+│                                                                 │
+│ 🤖 CONFIGURACIÓN IA:                                           │
+│ [✅] Recuperación automática habilitada                       │
+│ [✅] Distribución inteligente                                 │
+│ [✅] Validación conflictos exclusividad                       │
+│ [✅] Notificaciones automáticas                               │
+│                                                                 │
+│ 🔔 CONFIGURACIÓN ALERTAS:                                      │
+│ Email principal: [traffic@radiocorazon.cl               ]     │
+│ CC operaciones: [ops@radiocorazon.cl                   ]     │
+│ Slack channel: [#radio-corazon-alerts                  ]     │
+│ SMS crítico: [+56912345678                             ]     │
+│                                                                 │
+│ [🧪 Test Conexión] [💾 Guardar Config] [📋 Duplicar Config]   │
+└─────────────────────────────────────────────────────────────────┘
+VALIDADOR DE ARCHIVOS DALET:
+Herramienta de validación previa:
+┌─────────────────────────────────────────┐
+│ 🔍 VALIDADOR ARCHIVOS DALET GALAXY      │
+│                                         │
+│ 📁 Archivo a validar:                   │
+│ [📎 Subir archivo] [📂 Seleccionar ruta]│
+│                                         │
+│ 📋 VALIDACIONES AUTOMÁTICAS:           │
+│                                         │
+│ ✅ ESTRUCTURA ARCHIVO:                 │
+│ • Codificación: UTF-8 ✅               │
+│ • Separadores: Consistentes ✅         │
+│ • Columnas esperadas: 7/7 ✅           │
+│ • Total registros: 2,847               │
+│                                         │
+│ ✅ CONTENIDO VALIDADO:                 │
+│ • Fechas válidas: 2,847/2,847 ✅       │
+│ • Códigos SP válidos: 234/237 ⚠️       │
+│ • Duraciones coherentes: 237/237 ✅    │
+│ • Tipos reconocidos: 2,847/2,847 ✅    │
+│                                         │
+│ ⚠️ ADVERTENCIAS DETECTADAS:            │
+│ • 3 códigos SP con formato incorrecto   │
+│   - Línea 234: "SP1234X6" (X inválida) │
+│   - Línea 456: "SP" (incompleto)       │
+│   - Línea 789: "SP123456789" (muy largo)│
+│                                         │
+│ 🎯 RECOMENDACIONES:                    │
+│ • Archivo procesable con advertencias   │
+│ • Corregir 3 códigos SP antes proceso  │
+│ • Verificar con emisora formato códigos │
+│                                         │
+│ [✅ Procesar con Advertencias]          │
+│ [✏️ Corregir Errores] [❌ Cancelar]     │
+└─────────────────────────────────────────┘
+🔄 ALGORITMOS DE RECUPERACIÓN AVANZADOS
+CORTEX-SCHEDULING - IA DE REDISTRIBUCIÓN:
+Motor inteligente de re-programación:
+Algoritmo de Distribución Inteligente:
+
+Análisis de disponibilidad horaria
+
+Escaneo de grid de programación tiempo real
+Identificación de huecos disponibles
+Validación de restricciones comerciales
+
+
+Optimización de horarios
+
+Preferencia por horarios similares a originales
+Distribución equitativa en franjas objetivo
+Respeto de separaciones mínimas
+
+
+Validación de conflictos
+
+Exclusividades por categoría
+Competencias directas
+Límites de spots por hora
+
+
+Asignación inteligente
+
+Algoritmo de optimización multiobjetivo
+Machine learning para mejora continua
+Feedback loop de performance
+
+
+
+Configuración de parámetros:
+┌─────────────────────────────────────────┐
+│ 🤖 CONFIGURACIÓN CORTEX-SCHEDULING      │
+│                                         │
+│ 🎯 PARÁMETROS DISTRIBUCIÓN:            │
+│                                         │
+│ ⏰ Franjas horarias preferidas:         │
+│ [✅] Prime Matinal (06:00-10:00)       │
+│ [✅] Repartido Día (10:00-18:00)       │
+│ [✅] Prime Vespertino (18:00-22:00)    │
+│ [❌] Madrugada (22:00-06:00)           │
+│                                         │
+│ 📊 Pesos de optimización:               │
+│ Horario similar original: [80%]         │
+│ Distribución equitativa: [70%]          │
+│ Evitar conflictos: [95%]                │
+│ Satisfacción cliente: [85%]             │
+│                                         │
+│ 🚫 RESTRICCIONES:                      │
+│ Separación mínima mismo cliente: [15 min]│
+│ Máx spots por hora: [8 spots]          │
+│ Tolerancia timing original: [±2 horas] │
+│                                         │
+│ 🎯 EXCLUSIVIDADES:                     │
+│ [✅] Automotriz: 30 min separación     │
+│ [✅] Telecomunicaciones: 15 min        │
+│ [✅] Bancos: 20 min separación         │
+│ [✅] Retail: 10 min separación         │
+│                                         │
+│ [💾 Guardar] [🧪 Test] [🔄 Reset]       │
+└─────────────────────────────────────────┘
+📱 MÓDULO MÓVIL CONCILIACIÓN
+INTERFAZ MÓVIL OPERATIVA:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR CONCILIACIÓN MÓVIL           │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Operativo                  │
+│ • Cumplimiento hoy: 98.7%               │
+│ • Spots no emitidos: 23                 │
+│ • Recuperados auto: 20                  │
+│ • Pendientes manual: 3                  │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🔄 Conciliación Express]              │
+│ [👁️ Ver Discrepancias]                 │
+│ [🛠️ Recuperación Manual]               │
+│ [📊 Métricas del Día]                  │
+│ [⚙️ Configurar Alertas]                │
+│                                         │
+│ 🚨 ALERTAS ACTIVAS:                    │
+│ • Sonar FM: 3 spots Toyota pendientes  │
+│ • Play FM: Falla técnica detectada     │
+│ • Radio Corazón: Todo operativo ✅     │
+│                                         │
+│ 📊 EMISORAS STATUS:                    │
+│ • Radio Corazón: 99.1% ✅              │
+│ • Play FM: 96.8% ⚠️                    │
+│ • Sonar FM: 94.2% 🔴                   │
+│                                         │
+│ 🎯 ACCIONES PENDIENTES:                │
+│ • Toyota: Programar manual (Urgente)   │
+│ • Movistar: Resolver conflicto         │
+│ • Banco Estado: Confirmar horario      │
+│                                         │
+│ [📧 Notificar] [🔧 Acciones] [📊 Reports]│
+├─────────────────────────────────────────┤
+│ [🏠] [🔄] [📊] [⚙️] [🚨]                │
+└─────────────────────────────────────────┘
+🔐 SEGURIDAD Y AUDITORÍA AVANZADA
+PROTECCIÓN DE INTEGRIDAD OPERATIVA:
+Seguridad nivel crítico para operaciones:
+
+Backup automático: Respaldo antes de cualquier cambio en programación
+Auditoría completa: Log inmutable de todas las modificaciones
+Validación doble: Confirmación humana para cambios críticos
+Rollback seguro: Capacidad de reversión completa en caso de error
+Trazabilidad total: Seguimiento completo de cada spot desde origen
+
+Control de acceso granular:
+Traffic Manager:
+
+✅ Acceso completo conciliación
+✅ Recuperación automática y manual
+✅ Configuración de rutas y parámetros
+❌ Modificación de configuraciones críticas
+
+Programador Senior:
+
+✅ Conciliación y recuperación
+✅ Configuración horarios
+❌ Modificación algoritmos IA
+❌ Acceso configuración técnica
+
+Ejecutivo Comercial:
+
+✅ Consulta reportes y métricas
+✅ Ver discrepancias de sus clientes
+❌ Modificación de programación
+❌ Acceso configuración sistema
+
+🚀 INNOVACIONES TIER 0 ESPECÍFICAS
+1. CORTEX-PREDICTION - PREDICCIÓN DE FALLAS:
+IA que predice problemas antes que ocurran:
+
+Machine learning entrenado con patrones históricos de fallas
+Predicción de problemas técnicos con 48h anticipación
+Alertas proactivas para prevención de spots perdidos
+Optimización automática de programación para evitar conflictos
+
+2. REAL-TIME SYNC ENGINE:
+Sincronización tiempo real con Dalet Galaxy:
+
+API nativa con sistemas Dalet Galaxy
+Monitoreo continuo estado de emisión
+Detección inmediata de discrepancias (<30 segundos)
+Recuperación automática en tiempo casi real
+
+3. INTELLIGENT RECOVERY ORCHESTRATOR:
+Orquestación inteligente de recuperaciones:
+
+Análisis multivariable para optimizar redistribución
+Aprendizaje continuo de preferencias por cliente
+Optimización de satisfacción comercial vs. eficiencia operativa
+Integración con sistemas CRM para personalización
+
+4. ADVANCED CONFLICT RESOLUTION:
+Resolución automática de conflictos complejos:
+
+Motor de reglas para exclusividades dinámicas
+Negociación automática de horarios alternativos
+Escalamiento inteligente a supervisión humana
+Optimización global considerando múltiples variables
+
+🎯 CONCLUSIÓN: CONCILIACIÓN MÁS AVANZADA DE LA INDUSTRIA
+PARA EL TRAFFIC MANAGER:
+
+Control total operativo: Visibilidad 360° de cumplimiento emisión
+Recuperación inteligente: 95%+ spots recuperados automáticamente
+Predicción proactiva: Prevención de problemas antes que ocurran
+Eficiencia máxima: 90% reducción tiempo gestión discrepancias
+Compliance garantizado: 99%+ cumplimiento contractual automático
+
+PARA EL EJECUTIVO COMERCIAL:
+
+Transparencia total: Evidencia documental de cada emisión
+Satisfacción cliente: Recuperación automática sin impacto comercial
+Reportes instantáneos: Métricas de cumplimiento en tiempo real
+Gestión proactiva: Alertas antes que clientes detecten problemas
+Credibilidad comercial: Respaldo técnico para relaciones cliente
+
+PARA LA ORGANIZACIÓN:
+
+Excelencia operativa: Estándar industria en cumplimiento emisión
+Automatización total: Proceso manual convertido en automático
+Calidad servicio: 99%+ cumplimiento contratos publicitarios
+Eficiencia operativa: -85% tiempo gestión discrepancias
+Competitividad: Diferenciación técnica versus competencia
+
+El Módulo Conciliación TIER 0 de Silexar Pulse es la solución más avanzada de la industria para garantizar cumplimiento perfecto entre programación y emisión real. Transforma un proceso tradicionalmente manual, tedioso y propenso a errores en un sistema completamente automatizado, inteligente y proactivo que garantiza la excelencia operativa y la satisfacción total de clientes anunciantes.

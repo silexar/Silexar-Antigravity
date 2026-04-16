@@ -1,0 +1,873 @@
+👑 MÓDULO VENDEDORES & KEY ACCOUNT MANAGEMENT - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO VENDEDORES & KAM?
+El Módulo Vendedores & KAM es el cerebro de capital humano comercial en Silexar Pulse. Funciona como la plataforma integral de gestión de fuerza de ventas que no solo administra vendedores individuales, sino que orquesta ecosistemas completos de Key Account Management, transformando representantes de ventas tradicionales en Account Managers estratégicos que maximizan lifetime value, desarrollan relaciones profundas y ejecutan growth strategies sofisticadas a través de intelligence artificial y automation avanzada.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como VP de Ventas/Chief Revenue Officer, este módulo es mi command center de talento:
+
+Diseño org charts dinámicos que se adaptan automáticamente al crecimiento
+Gestiono career progression pathways con IA predictiva
+Optimizo account assignments basado en skill matching y performance data
+Monitoreo health de relationships key accounts en tiempo real
+Ejecuto talent development programs con personalization a escala
+Recibo alertas de flight risk y succession planning automático
+
+Como Director de Key Accounts, es mi guerra room estratégica:
+
+Gestiono portfolio de cuentas estratégicas con visibility 360°
+Coordino account teams multifuncionales con collaboration tools avanzados
+Monitoreo account health scores y expansion opportunities automáticamente
+Ejecuto strategic account planning con competitive intelligence
+Gestiono executive relationships con executive briefing automation
+Optimizo account penetration strategies basado en data e insights
+
+Como Sales Manager/Team Leader, tengo control operativo total:
+
+Gestiono development individual de cada vendedor con coaching IA
+Asigno accounts basado en fit score y capacity optimization
+Monitoreo performance vs targets con early warning systems
+Ejecuto skill assessments y training recommendations automáticas
+Gestiono territory coverage con gap analysis automático
+Coordino handoffs y account transitions seamlessly
+
+Como Key Account Manager, tengo herramientas enterprise:
+
+Gestiono strategic accounts con account planning templates avanzados
+Accedo a competitive intelligence y market insights en tiempo real
+Coordino con internal stakeholders através de collaboration workflows
+Ejecuto QBRs y EBCs con executive presentation automation
+Monitoreo account expansion opportunities con predictive analytics
+Gestiono relationship mapping con stakeholder intelligence automática
+
+Como Individual Contributor/Hunter, tengo clarity y tools:
+
+Veo mis accounts assignments con territory intelligence completa
+Accedo a account research automático y competitive positioning
+Recibo coaching personalizado basado en mi performance patterns
+Entiendo career path hacia KAM roles con skill development tracking
+Colaboro con account teams através de integrated workflows
+Acceso a sales enablement content personalizado por vertical
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Anunciantes: Account assignment automático y relationship mapping
+Módulo Contratos: Deal attribution y commission calculation automática
+Módulo Equipos de Ventas: Org structure synchronization y reporting hierarchy
+Módulo Campañas: Account-based campaign coordination y performance tracking
+Módulo Facturación: Revenue attribution y account profitability analysis
+Cortex-Talent: IA que optimiza people-account fit y predice success
+Cortex-Relationship: Relationship intelligence y stakeholder mapping automático
+Cortex-Growth: Account expansion predictions y revenue optimization
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/vendedores-kam/
+├── domain/
+│   ├── entities/
+│   │   ├── Vendedor.ts (Entidad principal del vendedor)
+│   │   ├── KeyAccountManager.ts (Especialización KAM)
+│   │   ├── PerfilProfesional.ts (Skills, experience, certifications)
+│   │   ├── AsignacionCuenta.ts (Account assignments y territory mapping)
+│   │   ├── RelacionshipMapping.ts (Stakeholder relationships y influence)
+│   │   ├── AccountPlan.ts (Strategic account planning y execution)
+│   │   ├── PerformanceProfile.ts (Performance tracking y analytics)
+│   │   ├── SkillAssessment.ts (Competency evaluation y development)
+│   │   ├── CareerProgression.ts (Career pathing y promotion tracking)
+│   │   ├── CoachingProgram.ts (Individual development plans)
+│   │   ├── TerritoryIntelligence.ts (Territory analysis y optimization)
+│   │   ├── CompetitivePosition.ts (Competitive positioning y battle cards)
+│   │   ├── StakeholderNetwork.ts (Executive relationships y mapping)
+│   │   ├── AccountHealthScore.ts (Account relationship health tracking)
+│   │   ├── ExpansionOpportunity.ts (Growth opportunities identification)
+│   │   ├── SuccessionPlan.ts (Succession planning y knowledge transfer)
+│   │   ├── OnboardingJourney.ts (New hire onboarding automation)
+│   │   ├── CertificationTracking.ts (Training y certification management)
+│   │   ├── PerformanceImprovement.ts (PIP y development programs)
+│   │   └── TalentPipeline.ts (Talent development y internal mobility)
+│   ├── value-objects/
+│   │   ├── RutVendedor.ts (RUT validado con verificaciones)
+│   │   ├── TipoVendedor.ts (Hunter, Farmer, KAM, Inside, Field)
+│   │   ├── NivelSeniority.ts (Junior, Semi-Senior, Senior, Principal, Director)
+│   │   ├── EspecializacionVertical.ts (Industry expertise y focus)
+│   │   ├── TipoTerritory.ts (Geographic, Vertical, Strategic, Named)
+│   │   ├── StatusVendedor.ts (Active, Ramping, PIP, On Leave, Alumni)
+│   │   ├── TipoRelacionship.ts (Champion, Influencer, Decision Maker, Blocker)
+│   │   ├── AccountTier.ts (Strategic, Enterprise, Commercial, SMB)
+│   │   ├── SkillLevel.ts (Beginner, Intermediate, Advanced, Expert)
+│   │   ├── CertificationStatus.ts (In Progress, Certified, Expired, Required)
+│   │   ├── CoachingStatus.ts (Not Started, In Progress, Completed, Ongoing)
+│   │   ├── PerformanceRating.ts (Exceeds, Meets, Below, Needs Improvement)
+│   │   ├── RiskLevel.ts (Low, Medium, High, Critical)
+│   │   └── OpportunitySize.ts (Small, Medium, Large, Mega)
+│   └── repositories/
+│       ├── IVendedorRepository.ts
+│       ├── IKeyAccountManagerRepository.ts
+│       ├── IPerfilProfesionalRepository.ts
+│       ├── IAsignacionCuentaRepository.ts
+│       ├── IAccountPlanRepository.ts
+│       ├── IPerformanceRepository.ts
+│       ├── ISkillAssessmentRepository.ts
+│       └── IRelationshipRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearVendedorCommand.ts
+│   │   ├── ActualizarVendedorCommand.ts
+│   │   ├── AsignarCuentaCommand.ts
+│   │   ├── CrearAccountPlanCommand.ts
+│   │   ├── ActualizarSkillsCommand.ts
+│   │   ├── IniciarCoachingCommand.ts
+│   │   ├── PromoverVendedorCommand.ts
+│   │   ├── TransferirCuentaCommand.ts
+│   │   ├── CertificarVendedorCommand.ts
+│   │   ├── OptimizarTerritorioCommand.ts
+│   │   ├── EjecutarSuccessionPlanCommand.ts
+│   │   ├── OnboardNuevoVendedorCommand.ts
+│   │   ├── ActivarPIPCommand.ts
+│   │   ├── MapearRelationshipCommand.ts
+│   │   ├── IdentificarExpansionCommand.ts
+│   │   ├── GenerarAccountHealthCommand.ts
+│   │   ├── OptimizarAsignacionesCommand.ts
+│   │   └── ArchivarVendedorCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerPerfilVendedorQuery.ts
+│   │   ├── BuscarVendedoresQuery.ts
+│   │   ├── ObtenerAccountPlansQuery.ts
+│   │   ├── GenerarTerritoryAnalysisQuery.ts
+│   │   ├── ObtenerPerformanceMetricsQuery.ts
+│   │   ├── AnalisisSkillGapQuery.ts
+│   │   ├── ObtenerRelationshipMapQuery.ts
+│   │   ├── GenerarAccountHealthQuery.ts
+│   │   ├── IdentificarExpansionOppsQuery.ts
+│   │   ├── ObtenerSuccessionCandidatesQuery.ts
+│   │   ├── AnalisisTalentPipelineQuery.ts
+│   │   ├── GenerarCoachingRecommendationsQuery.ts
+│   │   ├── BenchmarkPerformanceQuery.ts
+│   │   ├── ObtenerCareerPathQuery.ts
+│   │   ├── AnalisisCapacidadQuery.ts
+│   │   └── ReporteComplianceQuery.ts
+│   └── handlers/
+│       ├── VendedorCommandHandler.ts
+│       ├── AccountManagementHandler.ts
+│       ├── PerformanceAnalysisHandler.ts
+│       ├── SkillDevelopmentHandler.ts
+│       ├── TerritoryOptimizationHandler.ts
+│       ├── RelationshipIntelligenceHandler.ts
+│       ├── CareerDevelopmentHandler.ts
+│       ├── SuccessionPlanningHandler.ts
+│       ├── OnboardingAutomationHandler.ts
+│       ├── CoachingAutomationHandler.ts
+│       ├── TalentAnalyticsHandler.ts
+│       ├── AccountHealthHandler.ts
+│       ├── ExpansionOpportunityHandler.ts
+│       └── ComplianceAuditHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaVendedorRepository.ts
+│   │   ├── PrismaAccountPlanRepository.ts
+│   │   ├── PrismaPerformanceRepository.ts
+│   │   ├── PrismaSkillAssessmentRepository.ts
+│   │   └── PrismaRelationshipRepository.ts
+│   ├── external/
+│   │   ├── LinkedInSalesNavigatorService.ts (Prospecting y research)
+│   │   ├── SalesforceIntegrationService.ts (CRM data synchronization)
+│   │   ├── ZoomInfoService.ts (Contact y company intelligence)
+│   │   ├── OutreachSequenceService.ts (Sales engagement automation)
+│   │   ├── GongCallAnalysisService.ts (Call recording y analysis)
+│   │   ├── CortexTalentService.ts (IA de talent optimization)
+│   │   ├── CortexRelationshipService.ts (Relationship intelligence)
+│   │   ├── CortexGrowthService.ts (Account expansion predictions)
+│   │   ├── SuccessFactorsService.ts (HR performance integration)
+│   │   ├── WorkdayHRService.ts (Employee lifecycle management)
+│   │   ├── LearningManagementService.ts (Training y certification)
+│   │   ├── SlackMSTeamsService.ts (Communication y collaboration)
+│   │   ├── CalendlySchedulingService.ts (Meeting coordination)
+│   │   ├── DocuSignContractService.ts (Contract y NDA management)
+│   │   ├── TableauAnalyticsService.ts (Advanced reporting y BI)
+│   │   ├── CompetitiveIntelService.ts (Market y competitive data)
+│   │   ├── EmailParsingService.ts (Communication analysis)
+│   │   ├── MobileOptimizationService.ts (Mobile app integration)
+│   │   ├── VideoConferencingService.ts (Meeting y presentation tools)
+│   │   └── ComplianceAuditService.ts (Regulatory compliance tracking)
+│   └── messaging/
+│       ├── VendedorEventPublisher.ts
+│       ├── AccountAssignmentPublisher.ts
+│       ├── PerformanceAlertPublisher.ts
+│       ├── SkillDevelopmentPublisher.ts
+│       ├── RelationshipChangePublisher.ts
+│       ├── CareerProgressionPublisher.ts
+│       └── AccountHealthPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── VendedorController.ts
+    │   ├── KeyAccountController.ts
+    │   ├── PerformanceController.ts
+    │   ├── SkillsController.ts
+    │   ├── TerritoryController.ts
+    │   ├── RelationshipController.ts
+    │   ├── AccountPlanController.ts
+    │   ├── CoachingController.ts
+    │   ├── CareerController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── OnboardingController.ts
+    │   ├── MobileKAMController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearVendedorDto.ts
+    │   ├── ActualizarVendedorDto.ts
+    │   ├── AsignarCuentaDto.ts
+    │   ├── CrearAccountPlanDto.ts
+    │   ├── ActualizarSkillsDto.ts
+    │   ├── IniciarCoachingDto.ts
+    │   └── MapearRelationshipDto.ts
+    └── middleware/
+        ├── VendedorAuthorizationMiddleware.ts
+        ├── AccountAccessMiddleware.ts
+        ├── PerformanceSecurityMiddleware.ts
+        ├── SkillsValidationMiddleware.ts
+        └── RelationshipPrivacyMiddleware.ts
+👥 PANTALLA PRINCIPAL - CENTRO DE GESTIÓN DE TALENTO COMERCIAL
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando de talento:
+
+Título: "👑 Centro de Gestión de Talento Comercial & KAM"
+Breadcrumb: "Dashboard > Vendedores & Key Accounts"
+
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 INTELIGENCIA DE CAPITAL HUMANO COMERCIAL TIEMPO REAL         │
+│                                                                 │
+│ 89 Vendedores    24 KAMs    $847M ARR Managed    234 Key Accounts│
+│ 94% Retention    $2.3M ARR/Rep    67% Internal Promotion       │
+│ 🎯 Top Acción: Ana García ready for KAM promotion (97% score)   │
+│ 🤖 IA Detectó: 5 vendedores flight risk, 12 expansion opportunities│
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO DE TALENTO AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'KAMs enterprise', 'vendedores junior', 'especialistas tech'..."
+IA Conversacional: Entiende consultas como "¿quién puede manejar cuenta Coca-Cola?"
+Predicciones automáticas:
+
+"Vendedores listos para promotion a KAM"
+"Account assignments óptimos por skill match"
+"Succession candidates para roles críticos"
+"Training needs automáticamente identificadas"
+
+
+
+Filtros inteligentes de talento:
+Tipo de Rol:
+
+👑 Key Account Managers (Strategic)
+🎯 Enterprise Account Executives
+🚀 Field Sales Representatives
+📞 Inside Sales Representatives
+🌱 Business Development Reps
+🎓 Sales Development Reps
+
+Nivel de Performance:
+
+🌟 Top Performers (>150% quota)
+💎 High Performers (120-150% quota)
+✅ Core Performers (90-120% quota)
+🔄 Developing (70-90% quota)
+⚠️ Needs Coaching (<70% quota)
+
+Specialization:
+
+🏢 Enterprise B2B
+🏪 Mid-Market Commercial
+🌐 Digital/SaaS
+🏦 Financial Services
+🏥 Healthcare/Pharma
+🏭 Manufacturing/Industrial
+
+Centro de acciones inteligentes:
+
+"🎯 Talent Reviews Automáticas" (IA analiza readiness para promotions)
+"🤖 Account Optimization" (Re-assignment suggestions basado en fit)
+"📊 Performance Dashboard" (Vista 360° con predictive insights)
+"🔍 Succession Planning" (Identificar y desarrollar successors)
+"⚠️ Retention Alerts" (Flight risk prediction y retention strategies)
+
+TABLA DE VENDEDORES - ENTERPRISE TALENT MANAGEMENT:
+1. Columna "Vendedor/Especialización" (280px):
+┌─────────────────────────────────────┐
+│ [AVATAR] Ana García Rodríguez       │
+│ 👑 Senior KAM • 8 años exp         │
+│ 🎯 Enterprise Specialist • B2B Tech │
+│ 📊 Score: 94/100 • 🌟 Top Performer│
+│ 🏆 $847K ARR • 156% Quota          │
+│ ✅ Active • Team: Enterprise West   │
+└─────────────────────────────────────┘
+
+Avatar profesional: Foto de perfil con status indicator
+Información contextual: Rol, experiencia, specialization
+Score performance: Rating con trending indicator
+Key metrics: ARR managed, quota attainment
+Status y team assignment claramente visible
+
+2. Columna "Accounts/Portfolio" (200px):
+┌─────────────────┐
+│ 🏢 8 Accounts   │
+│ 💰 $847K ARR    │
+│ 🎯 3 Strategic  │
+│ 📈 +23% Growth  │
+└─────────────────┘
+
+Account count: Número total de cuentas asignadas
+Revenue managed: ARR total del portfolio
+Strategic accounts: Cuentas tier 1 bajo management
+Growth performance: Crecimiento vs período anterior
+
+3. Columna "Performance/Health" (170px):
+┌─────────────────┐
+│ 📊 156% Quota   │
+│ 🎯 94% Health   │
+│ 💚 Low Risk     │
+│ 🚀 Promotion    │
+│     Ready       │
+└─────────────────┘
+
+Quota attainment: Performance vs target
+Account health: Score promedio de accounts managed
+Flight risk: Retention risk assessment
+Career status: Readiness para next level
+
+4. Columna "Skills/Development" (190px):
+┌─────────────────┐
+│ 🏆 Expert:      │
+│   • Negotiation │
+│   • Consulting  │
+│ 🔄 Developing:  │
+│   • Digital     │
+│ 📚 Next: C-Suite│
+│     Engagement  │
+└─────────────────┘
+
+Expert skills: Competencias avanzadas
+Development areas: Skills en progreso
+Next development: Próxima área de focus
+
+5. Columna "Territory/Assignments" (200px):
+┌─────────────────────────────────┐
+│ 🗺️ Santiago Metro + Regiones    │
+│ 🏢 Enterprise Tech (>$50M)      │
+│ 👑 Strategic: Banco Chile,      │
+│     Falabella, LATAM Airlines   │
+│ 🎯 Coverage: 94% optimal        │
+└─────────────────────────────────┘
+
+Geographic territory: Cobertura geográfica
+Vertical specialization: Industry focus
+Key accounts: Cuentas strategic nombradas
+Territory optimization: Efficiency score
+
+6. Columna "Relationships/Network" (220px):
+┌─────────────────────────────────┐
+│ 🤝 47 Stakeholders mapped       │
+│ 👑 8 C-Level relationships      │
+│ 🌟 Champion strength: 87%      │
+│                                 │
+│ 🔥 Recent: New CMO intro        │
+│     Banco Chile (warm)          │
+└─────────────────────────────────┘
+
+Stakeholder network: Total relationships mapped
+Executive relationships: C-level connections
+Champion strength: Relationship quality score
+Recent activity: Latest relationship developments
+
+7. Columna "Acciones Inteligentes" (200px):
+┌─────────────────┐
+│ [👁️] [📞] [📊] │
+│ [🎯] [🤝] [📚] │
+│ [⚠️] [🔄] [🚀] │
+└─────────────────┘
+
+👁️ Profile 360°: Vista completa con career insights
+📞 Contact: Integration con communication tools
+📊 Performance: Deep dive analytics y trends
+🎯 Account Plan: Strategic account planning tools
+🤝 Relationships: Stakeholder mapping y intelligence
+📚 Development: Skill assessment y training recommendations
+⚠️ Alerts: Performance issues o opportunities
+🔄 Reassign: Territory o account optimization
+🚀 Promote: Career advancement workflows
+
+➕ CREACIÓN INTELIGENTE DE VENDEDOR - WIZARD ENTERPRISE
+PASO 1: "PERFIL PROFESIONAL" - IA ASISTIDA
+Wizard de onboarding enterprise:
+┌─────────────────────────────────────────┐
+│ 🎯 CREACIÓN DE PERFIL PROFESIONAL       │
+│                                         │
+│ Información Básica:                     │
+│ RUT: [12.345.678-9] (Validación SII)   │
+│ Nombre: [Ana García Rodríguez]          │
+│ Email: [ana.garcia@company.com]         │
+│ Teléfono: [+56 9 8765 4321]            │
+│                                         │
+│ 💼 CLASIFICACIÓN AUTOMÁTICA IA:         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Basado en LinkedIn y experience:    │ │
+│ │ • Level sugerido: Senior KAM        │ │
+│ │ • Especialización: Enterprise B2B   │ │
+│ │ • Experience: 8 años sales          │ │
+│ │ • Strengths: Relationship building  │ │
+│ │ • Industry: Technology/SaaS         │ │
+│ │ • Languages: ES nativo, EN advanced │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ Tipo de Vendedor:                       │
+│ ○ Hunter (New Business Focus)           │
+│ ○ Farmer (Account Growth Focus)         │
+│ ● Key Account Manager (Strategic)       │
+│ ○ Inside Sales Representative           │
+│ ○ Field Sales Representative            │
+│                                         │
+│ [Siguiente: Asignaciones Estratégicas]  │
+└─────────────────────────────────────────┘
+PASO 2: "ASIGNACIONES ESTRATÉGICAS" - OPTIMIZATION IA
+Assignment intelligence engine:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 ASIGNACIONES ESTRATÉGICAS CON IA                             │
+├─────────────────────────────────────────────────────────────────┤
+│ Equipo de Ventas: [Enterprise West ▼]                          │
+│                                                                 │
+│ 🤖 JEFE RECOMENDADO POR IA:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ⭐ Carlos López (Optimal Match - 96%)                       │ │
+│ │    👑 Regional VP Enterprise                                │ │
+│ │    📊 Management Style: Coaching/Collaborative             │ │
+│ │    🎯 Track Record: 94% team quota attainment             │ │
+│ │    💼 Experience: 12 años leading KAMs                     │ │
+│ │    🏆 Team NPS: 91 (Excellent leadership)                  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🗺️ TERRITORIO ÓPTIMO SUGERIDO:                                │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ SANTIAGO METRO + VALPARAÍSO                                 │ │
+│ │ • Geographic fit: 97% (based on location)                  │ │
+│ │ • Industry match: Enterprise Tech/SaaS                     │ │
+│ │ • Account potential: $2.3M ARR opportunity                 │ │
+│ │ • Travel optimization: 1.2h avg per account               │ │
+│ │ • Competitive landscape: Medium intensity                   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 ACCOUNTS INICIALES SUGERIDAS:                               │
+│ • Banco de Chile (Strategic) - $340K ARR potential            │
+│ • Falabella Tech (Enterprise) - $280K ARR potential           │
+│ • LATAM Airlines (Strategic) - $190K ARR potential            │
+│ • 12 additional mid-market prospects identified               │
+│                                                                 │
+│ [✅ Confirmar Asignaciones] [🔄 Re-optimizar] [✏️ Override Manual]│
+└─────────────────────────────────────────────────────────────────┘
+PASO 3: "DESARROLLO PROFESIONAL" - CAREER PATHING
+Career development roadmap:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📚 PLAN DE DESARROLLO PROFESIONAL                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 ASSESSMENT INICIAL:                                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ FORTALEZAS IDENTIFICADAS:                                   │ │
+│ │ ✅ Relationship Building (9/10)                             │ │
+│ │ ✅ Strategic Thinking (8/10)                                │ │
+│ │ ✅ Negotiation (8/10)                                       │ │
+│ │                                                             │ │
+│ │ ÁREAS DE DESARROLLO:                                        │ │
+│ │ 🔄 Digital Selling (6/10) - Priority 1                     │ │
+│ │ 🔄 C-Suite Engagement (7/10) - Priority 2                  │ │
+│ │ 🔄 Financial Analysis (5/10) - Priority 3                  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📅 ROADMAP 90 DÍAS:                                            │
+│ Week 1-2: Digital Selling Certification                        │
+│ Week 3-4: C-Suite Engagement Workshop                          │
+│ Week 5-6: Strategic Account Planning Training                  │
+│ Week 7-8: Financial Business Case Development                  │
+│ Week 9-12: Applied Practice + Manager Coaching                 │
+│                                                                 │
+│ 🏆 CERTIFICATION TRACK:                                        │
+│ • Challenger Customer Methodology (Required)                   │
+│ • Strategic Account Management (Required)                      │
+│ • Industry Specialization: Technology (Optional)              │
+│                                                                 │
+│ 🚀 NEXT CAREER LEVEL:                                          │
+│ Principal KAM → Projected Timeline: 18-24 months               │
+│ Requirements: $3M+ ARR managed, 2+ strategic wins             │
+│                                                                 │
+│ [📋 Start Development] [📅 Schedule Training] [🎯 Set Goals]    │
+└─────────────────────────────────────────────────────────────────┘
+📊 DASHBOARD KAM - CENTRO DE ACCOUNT INTELLIGENCE
+VISTA STRATEGIC ACCOUNTS MANAGEMENT:
+┌─────────────────────────────────────────────────────────────────┐
+│ 👑 KEY ACCOUNT MANAGEMENT DASHBOARD                             │
+├─────────────────────────────────────────────────────────────────┤
+│ ANA GARCÍA - SENIOR KAM                                         │
+│                                                                 │
+│ 💰 PORTFOLIO PERFORMANCE:                                      │
+│ Total ARR Managed: $847K    Growth YoY: +23%    Health: 94%   │
+│ Strategic Accounts: 3       Enterprise: 5        SMB: 0        │
+│                                                                 │
+│ 🏢 STRATEGIC ACCOUNTS STATUS:                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏦 BANCO CHILE - $340K ARR                                  │ │
+│ │    Health: 🟢 97%  Trend: ↗️ Growing  Risk: 🟢 Low        │ │
+│ │    Next: QBR Dec 15   Expansion Opp: Digital transformation│ │
+│ │    Stakeholders: 12 mapped   Champion: CTO (Strong)        │ │
+│ │                                                             │ │
+│ │ 🛒 FALABELLA - $280K ARR                                    │ │
+│ │    Health: 🟡 84%  Trend: ↗️ Stable   Risk: 🟡 Medium     │ │
+│ │    Next: Contract renewal Q1   Expansion: E-commerce       │ │
+│ │    Stakeholders: 8 mapped    Champion: CMO (Developing)    │ │
+│ │                                                             │ │
+│ │ ✈️ LATAM AIRLINES - $190K ARR                               │ │
+│ │    Health: 🟢 91%  Trend: ↗️ Growing  Risk: 🟢 Low        │ │
+│ │    Next: C-Suite presentation   Expansion: International   │ │
+│ │    Stakeholders: 15 mapped   Champion: CEO (Champion)      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 ACTION ITEMS IA-GENERATED:                                  │
+│ • Schedule Banco Chile QBR - 3 weeks overdue                  │
+│ • Falabella renewal risk - competitor activity detected       │
+│ • LATAM expansion proposal - window closing in 2 weeks        │
+│                                                                 │
+│ 🚀 EXPANSION OPPORTUNITIES:                                    │
+│ • Banco Chile: Digital transformation ($180K potential)       │
+│ • Falabella: International expansion ($120K potential)        │
+│ • LATAM: Cross-selling opportunity ($95K potential)           │
+│                                                                 │
+│ [📋 Account Plans] [🤝 Relationship Map] [📊 Health Reports] [🎯 Expansion]│
+└─────────────────────────────────────────────────────────────────┘
+RELATIONSHIP MAPPING INTELLIGENCE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤝 RELATIONSHIP INTELLIGENCE - BANCO CHILE                      │
+├─────────────────────────────────────────────────────────────────┤
+│                    [CEO] Juan Pérez                             │
+│                       Champion                                  │
+│                         🟢                                      │
+│                         │                                       │
+│              ┌──────────┼──────────┐                           │
+│             📊         🎯         💻                           │
+│         [CFO]       [CTO]       [CMO]                          │
+│      María López  Carlos Chen  Ana Silva                       │
+│      Influencer   Champion    Neutral                          │
+│         🟡         🟢          ⚪                              │
+│                                                                 │
+│ RELATIONSHIP STRENGTH:                                          │
+│ • Champion Depth: 87% (Strong)                                │
+│ • Coverage: 75% of buying committee                            │
+│ • Influence Network: 94% mapped                               │
+│ • Executive Access: Direct to CEO                             │
+│                                                                 │
+│ 🎯 RELATIONSHIP ACTIONS:                                       │
+│ • Strengthen CMO relationship (Currently neutral)              │
+│ • Map additional stakeholders in IT department                │
+│ • Schedule quarterly executive dinner                          │
+│ • Introduce CEO to our CEO (mutual value discussion)          │
+│                                                                 │
+│ 🚨 COMPETITIVE THREATS:                                        │
+│ • Microsoft rep met with CTO last week                        │
+│ • AWS proposal under review by IT committee                   │
+│ • Oracle pushing aggressive renewal terms                     │
+│                                                                 │
+│ [🎯 Strengthen Relations] [📅 Plan Engagement] [⚠️ Counter Threats]│
+└─────────────────────────────────────────────────────────────────┘
+🎓 SISTEMA DE DESARROLLO DE TALENTO AVANZADO
+SKILL DEVELOPMENT MATRIX:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 SKILL DEVELOPMENT MATRIX - ANA GARCÍA                        │
+├─────────────────────────────────────────────────────────────────┤
+│ CORE COMPETENCIES:                                              │
+│                                                                 │
+│ 🎯 Strategic Selling                                           │
+│ Current: ████████░░ 8/10    Target: ██████████ 10/10          │
+│ Gap: Advanced negotiation techniques, C-suite positioning      │
+│ Training: Challenger Customer program (In Progress)            │
+│                                                                 │
+│ 🤝 Relationship Management                                      │
+│ Current: ██████████ 10/10   Target: ██████████ 10/10          │
+│ Status: ✅ Mastered - Mentor others                            │
+│                                                                 │
+│ 💻 Digital Transformation Consulting                           │
+│ Current: ██████░░░░ 6/10    Target: █████████░ 9/10           │
+│ Gap: Cloud architecture, AI/ML business cases                  │
+│ Training: Digital Strategy Certification (Assigned)           │
+│                                                                 │
+│ 📊 Financial Business Case Development                         │
+│ Current: █████░░░░░ 5/10    Target: ████████░░ 8/10           │
+│ Gap: ROI modeling, TCO analysis, CFO presentations            │
+│ Training: Financial Analysis for Sales (Required)             │
+│                                                                 │
+│ 🌐 Industry Specialization: Financial Services                │
+│ Current: ███████░░░ 7/10    Target: ██████████ 10/10          │
+│ Gap: Regulatory compliance, fintech trends                    │
+│ Training: Industry certification + conference attendance      │
+│                                                                 │
+│ 🎯 DEVELOPMENT PRIORITY MATRIX:                                │
+│ 1. Digital Transformation (High Impact, Medium Effort)        │
+│ 2. Financial Analysis (High Impact, High Effort)              │
+│ 3. Industry Specialization (Medium Impact, Low Effort)        │
+│                                                                 │
+│ [📚 Start Training] [🎯 Set Learning Goals] [👥 Find Mentor]   │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - KAM ON-THE-GO
+APP MÓVIL KEY ACCOUNT MANAGER:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR KAM COMMAND MÓVIL            │
+├─────────────────────────────────────────┤
+│ 🏠 My Accounts Dashboard                │
+│ • 8 Strategic accounts managed          │
+│ • $847K ARR in portfolio               │
+│ • 97% account health average           │
+│ • 3 expansion opps identified          │
+│                                         │
+│ ⚡ TODAY'S ACTIONS:                      │
+│ [🤝 Banco Chile QBR Prep]               │
+│ [📞 Falabella CMO Call (2PM)]           │
+│ [📊 LATAM Proposal Review]              │
+│ [⚠️ Competitive Alert (2)]              │
+│                                         │
+│ 🚨 CRITICAL ALERTS:                     │
+│ • Falabella contract renewal risk       │
+│ • New stakeholder at Banco Chile       │
+│ • LATAM expansion window closing        │
+│                                         │
+│ 📊 MY PERFORMANCE:                      │
+│ [Portfolio Health] [Expansion Tracker]  │
+├─────────────────────────────────────────┤
+│ [🏠] [🏢] [🤝] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+Funcionalidades Mobile KAM:
+
+Account Health Monitoring: Real-time alerts de account status
+Relationship Intelligence: Stakeholder updates y competitive threats
+Meeting Preparation: Auto-generated briefings y talking points
+Expansion Tracking: Opportunity pipeline y next best actions
+
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-TALENT - Motor de Optimización de Talento:
+1. Talent Assessment Automático:
+Trigger: Performance review cycle o milestone achievement
+→ Cortex analiza performance data, skill assessments, account results
+→ Identifica strengths, gaps, y career readiness automáticamente
+→ Compara vs benchmark de high performers en similar roles
+→ Genera development plan personalizado con timeline específico
+→ Asigna training modules y mentorship automáticamente
+→ Programa check-ins y progress reviews automáticos
+→ Trackea skill improvement y ajusta recommendations
+2. Account Assignment Optimization:
+Trigger: New account, territory change, o performance review
+→ Cortex analiza account characteristics vs vendedor profiles
+→ Calcula fit score basado en industry expertise, relationship style
+→ Considera capacity, geographic location, y workload balance
+→ Si optimal match >90%: Sugiere re-assignment automáticamente
+→ Genera transition plan con knowledge transfer requirements
+→ Monitorea performance post-assignment para validate decision
+→ Aprende de outcomes para optimizar future assignments
+3. Career Progression Tracking:
+Trigger: Quarterly talent review o achievement milestone
+→ Evalúa readiness para promotion basado en performance + skills
+→ Identifica succession candidates para roles críticos
+→ Calcula career progression timeline con development requirements
+→ Si promotion ready >85%: Genera recommendation automáticamente
+→ Notifica management con business case para advancement
+→ Programa development activities para close remaining gaps
+→ Trackea progress y ajusta timeline según development velocity
+💰 SISTEMA DE TERRITORY INTELLIGENCE
+TERRITORY OPTIMIZATION ENGINE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🗺️ TERRITORY INTELLIGENCE - SANTIAGO METRO                     │
+├─────────────────────────────────────────────────────────────────┤
+│ TERRITORY ANALYTICS:                                           │
+│                                                                 │
+│ 📊 MARKET POTENTIAL:                                           │
+│ • Total Addressable Market: $12.3M ARR                        │
+│ • Penetrated Market: $4.1M ARR (33% market share)             │
+│ • White Space Opportunity: $8.2M ARR                          │
+│ • Competitive Intensity: Medium (3.2/5.0)                     │
+│                                                                 │
+│ 🎯 ACCOUNT DISTRIBUTION:                                       │
+│ • Strategic (>$500K): 3 accounts, $2.1M ARR                   │
+│ • Enterprise ($100-500K): 8 accounts, $1.6M ARR               │
+│ • Commercial ($50-100K): 15 accounts, $0.9M ARR               │
+│ • Prospects Identified: 47 companies, $3.8M potential         │
+│                                                                 │
+│ 🚀 EXPANSION OPPORTUNITIES:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ HIGH PRIORITY:                                              │ │
+│ │ • Banco Estado: $450K potential (warm introduction)        │ │
+│ │ • Cencosud: $380K potential (RFP in process)              │ │
+│ │ • Entel: $290K potential (competitive displacement)        │ │
+│ │                                                             │ │
+│ │ MEDIUM PRIORITY:                                            │ │
+│ │ • Sodimac: $180K potential (relationship building)         │ │
+│ │ • BCI: $160K potential (long sales cycle)                 │ │
+│ │ • Copec: $140K potential (budget timing)                   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 TERRITORY OPTIMIZATION SCORE: 87/100                       │
+│ • Coverage: 94% optimal                                        │
+│ • Account Balance: 91% optimal                                │
+│ • Growth Potential: 83% captured                              │
+│                                                                 │
+│ 🚨 COMPETITIVE THREATS:                                        │
+│ • Microsoft aggressive pricing in enterprise segment          │
+│ • New startup gaining traction in SMB market                  │
+│ • Oracle partnership with local integrator                    │
+│                                                                 │
+│ [🎯 Execute Plan] [📊 Deep Analysis] [🔄 Rebalance] [📈 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+📊 ANALYTICS Y REPORTING AVANZADO
+TALENT ANALYTICS DASHBOARD:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 TALENT ANALYTICS - ENTERPRISE INSIGHTS                      │
+├─────────────────────────────────────────────────────────────────┤
+│ 👥 WORKFORCE COMPOSITION:                                      │
+│ • Total Sales Professionals: 89                               │
+│   - Key Account Managers: 24 (27%)                            │
+│   - Enterprise AEs: 31 (35%)                                  │
+│   - Commercial AEs: 23 (26%)                                  │
+│   - Inside Sales: 11 (12%)                                    │
+│                                                                 │
+│ 📈 PERFORMANCE DISTRIBUTION:                                   │
+│ • Top Performers (>150% quota): 23 people (26%)               │
+│ • High Performers (120-150%): 31 people (35%)                 │
+│ • Core Performers (90-120%): 25 people (28%)                  │
+│ • Developing (<90%): 10 people (11%)                          │
+│                                                                 │
+│ 💰 REVENUE METRICS:                                            │
+│ • Total ARR Managed: $89.7M                                   │
+│ • Average ARR per Rep: $1.01M                                 │
+│ • Top Quartile Average: $2.34M                                │
+│ • Bottom Quartile Average: $0.41M                             │
+│ • Growth YoY: +34% (vs industry avg +18%)                     │
+│                                                                 │
+│ 🎯 TALENT DEVELOPMENT:                                         │
+│ • Internal Promotion Rate: 67%                                │
+│ • Certification Completion: 94%                               │
+│ • Average Ramp Time: 4.2 months (target: 6 months)           │
+│ • Retention Rate: 94% (vs industry avg 78%)                   │
+│ • High Performer Retention: 98%                               │
+│                                                                 │
+│ 🔮 PREDICTIVE INSIGHTS:                                        │
+│ • Promotion Ready (next 6 months): 12 people                  │
+│ • Flight Risk (next 12 months): 3 people                      │
+│ • Hiring Need (growth projection): +15 people by Q2           │
+│ • Skills Gap Analysis: Digital selling (priority 1)           │
+│                                                                 │
+│ [📊 Detailed Reports] [🎯 Action Plans] [👥 Succession] [📈 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+🔐 SEGURIDAD TIER 0 - PROTECCIÓN DE TALENTO
+PROTECCIÓN DE DATOS DE PERSONAL Y PERFORMANCE:
+Encriptación y Control de Acceso:
+
+Personal data encriptada con AES-256 + biometric access controls
+Performance data segregated por management hierarchy
+Salary y compensation data con financial-grade security
+Career development plans con individual privacy controls
+
+Controles de Acceso Granulares:
+Individual Contributor:
+
+✅ Ver su propio profile, performance, y development plan
+✅ Acceso a assigned accounts y territory information
+✅ Training materials y certification tracking
+❌ Peer performance data o compensation information
+❌ Account assignments de otros vendedores
+
+Team Manager:
+
+✅ Performance data completa de direct reports
+✅ Territory management para su team
+✅ Career development y coaching tools
+✅ Account assignment optimization
+❌ Compensation planning o salary information
+
+Sales Director:
+
+✅ Analytics completos de sales organization
+✅ Succession planning y talent pipeline management
+✅ Territory optimization across todos los teams
+✅ Performance benchmarking y best practice sharing
+❌ Individual compensation details (HR only)
+
+HR/People Operations:
+
+✅ Complete employee lifecycle management
+✅ Compensation y benefits administration
+✅ Compliance tracking y audit trails
+✅ Talent analytics y workforce planning
+✅ Career progression y promotion workflows
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-MATCH - IA de Account-Person Fit:
+Algoritmo de matching perfecto:
+
+Analiza personality traits vs account culture fit
+Match de industry expertise con account vertical
+Relationship style compatibility con buying committee
+Geographic optimization para account coverage
+Learning continuo de successful assignments
+
+2. PREDICTIVE CAREER PATHING:
+IA de desarrollo profesional:
+
+Predice optimal career progression timeline
+Identifica skill development priorities automáticamente
+Sugiere stretch assignments para accelerated growth
+Match de mentorship basado en career goals
+Success prediction modeling para promotions
+
+3. RELATIONSHIP INTELLIGENCE AUTOMATION:
+Mapeo automático de stakeholders:
+
+LinkedIn network analysis para relationship discovery
+Email pattern analysis para stakeholder identification
+Meeting attendance tracking para influence mapping
+Competitive intelligence integration para threat assessment
+Relationship strength scoring con predictive decay modeling
+
+4. TERRITORY INTELLIGENCE CONTINUOUS:
+Optimización territorial continua:
+
+Real-time market opportunity identification
+Competitive activity monitoring y threat assessment
+Account potential scoring con expansion probability
+Travel optimization y account visit planning
+White space analysis con prospect prioritization
+
+
+🎯 CONCLUSIÓN: LA PLATAFORMA DE TALENT & ACCOUNT MANAGEMENT MÁS AVANZADA DEL MUNDO
+PARA EL INDIVIDUAL CONTRIBUTOR:
+
+Career clarity: Path to success clearly mapped con skill development
+Account intelligence: Complete account insight para maximum effectiveness
+Relationship tools: Advanced stakeholder mapping y engagement tools
+Performance visibility: Real-time feedback y coaching recommendations
+Growth acceleration: Personalized development plans y mentor matching
+
+PARA EL SALES MANAGER:
+
+Team optimization: Data-driven decisions para team performance
+Talent development: Automated coaching recommendations y skill tracking
+Territory management: Intelligent account assignments y coverage optimization
+Succession planning: Pipeline visibility para future leadership needs
+Performance coaching: AI-powered insights para individual development
+
+PARA SALES LEADERSHIP:
+
+Strategic talent planning: Workforce optimization y capacity modeling
+Performance excellence: Benchmark insights y best practice identification
+Account portfolio optimization: Strategic account management across organization
+Competitive advantage: Intelligence integration para market leadership
+Scalable growth: Systematic approach para sustainable revenue expansion
+
+PARA LA ORGANIZACIÓN:
+
+Revenue optimization: 40% improvement en account penetration y expansion
+Talent retention: 60% improvement en high performer retention
+Time to productivity: 50% faster onboarding y ramp time
+Account health: 35% improvement en customer satisfaction y loyalty
+Competitive positioning: Market-leading account management capabilities
+
+El Módulo Vendedores & KAM TIER 0 no es solo un directorio de empleados: es un cerebro de capital humano que transforma individuals en account strategists, teams en revenue engines, y organizations en market leaders través de intelligent talent optimization, strategic account management, y continuous performance enhancement que maximiza el potential de cada person, account, y relationship.

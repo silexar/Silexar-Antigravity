@@ -1,0 +1,155 @@
+EJEMPLO DE ESTRUCTURA PARA EL SISTEMA COMPLETO.
+
+ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/configuracion/
+├── domain/
+│   ├── entities/
+│   │   ├── Tenant.ts (Organización cliente)
+│   │   ├── Usuario.ts (Usuario con roles avanzados)
+│   │   ├── Rol.ts (Roles con permisos granulares)
+│   │   ├── Emisora.ts (Propiedades radiales)
+│   │   ├── PropiedadDigital.ts (Assets digitales)
+│   │   ├── EspacioPublicitario.ts (Inventario de atención)
+│   │   ├── PoliticaNegocio.ts (Reglas automatizadas)
+│   │   ├── ConfiguracionIA.ts (Modos Cortex)
+│   │   ├── ReglasCompliance.ts (Brand safety y legal)
+│   │   ├── SelloConfianza.ts (Certificación Silexar)
+│   │   ├── MonitoreoSalud.ts (Health checks)
+│   │   ├── IntegracionSistema.ts (APIs externas)
+│   │   ├── ConfiguracionGlobal.ts (Solo CEO Silexar)
+│   │   └── AnalyticsConfiguracion.ts (Métricas de uso)
+│   ├── value-objects/
+│   │   ├── TenantId.ts (ID único del cliente)
+│   │   ├── PermisoGranular.ts (Permisos específicos)
+│   │   ├── ConfiguracionRegional.ts (Localización)
+│   │   ├── NivelSeguridad.ts (Clearance levels)
+│   │   ├── ModoOperativo.ts (Copiloto/Autónomo)
+│   │   ├── MetricasUso.ts (Analytics de configuración)
+│   │   ├── EstadoSalud.ts (Health status)
+│   │   ├── ConfiguracionCompliance.ts (Reglas legales)
+│   │   └── SelloCalidad.ts (Niveles de certificación)
+│   └── repositories/
+│       ├── ITenantRepository.ts
+│       ├── IUsuarioRepository.ts
+│       ├── IRolRepository.ts
+│       ├── IEmisoraRepository.ts
+│       ├── IPoliticaRepository.ts
+│       ├── IComplianceRepository.ts
+│       └── IConfiguracionGlobalRepository.ts (Solo CEO)
+├── application/
+│   ├── commands/
+│   │   ├── CrearTenantCommand.ts
+│   │   ├── ActualizarConfiguracionCommand.ts
+│   │   ├── CrearUsuarioCommand.ts
+│   │   ├── AsignarRolCommand.ts
+│   │   ├── ConfigurarEmisoraCommand.ts
+│   │   ├── CrearPoliticaNegocioCommand.ts
+│   │   ├── CambiarModoOperativoCommand.ts
+│   │   ├── ConfigurarComplianceCommand.ts
+│   │   ├── ActivarSelloConfianzaCommand.ts
+│   │   ├── ValidarIntegracionCommand.ts
+│   │   ├── ConfigurarMonitoreoCommand.ts
+│   │   ├── OverrideConfiguracionCommand.ts (Solo CEO)
+│   │   └── OptimizarConfiguracionCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerEstadoTenantQuery.ts
+│   │   ├── BuscarUsuariosQuery.ts
+│   │   ├── ObtenerConfiguracionCompletaQuery.ts
+│   │   ├── GenerarAuditoriaQuery.ts
+│   │   ├── ObtenerMetricasUsoQuery.ts
+│   │   ├── ValidarComplianceQuery.ts
+│   │   ├── ObtenerSaludSistemaQuery.ts
+│   │   ├── GenerarReporteGlobalQuery.ts (Solo CEO)
+│   │   ├── Analizar​ConfiguracionOptimalQuery.ts
+│   │   └── PredecirProblemasQuery.ts
+│   └── handlers/
+│       ├── ConfiguracionCommandHandler.ts
+│       ├── UsuarioManagementHandler.ts
+│       ├── RolPermisosHandler.ts
+│       ├── EmisoraConfigHandler.ts
+│       ├── PoliticasAutomatizacionHandler.ts
+│       ├── ComplianceValidationHandler.ts
+│       ├── SaludMonitoringHandler.ts
+│       ├── IntegracionSystemHandler.ts
+│       ├── ConfiguracionGlobalHandler.ts (Solo CEO)
+│       └── OptimizacionIAHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaTenantRepository.ts
+│   │   ├── PrismaUsuarioRepository.ts
+│   │   ├── PrismaRolRepository.ts
+│   │   ├── PrismaEmisoraRepository.ts
+│   │   ├── PrismaPoliticaRepository.ts
+│   │   └── PrismaConfiguracionGlobalRepository.ts
+│   ├── external/
+│   │   ├── ActiveDirectoryService.ts (SSO empresarial)
+│   │   ├── SAMLAuthenticationService.ts (Enterprise auth)
+│   │   ├── GoogleWorkspaceService.ts (Integración GSuite)
+│   │   ├── MicrosoftGraphService.ts (Office 365)
+│   │   ├── LDAPDirectoryService.ts (Directorios corporativos)
+│   │   ├── ComplianceValidationService.ts (Verificaciones legales)
+│   │   ├── BrandSafetyService.ts (IAS, DoubleVerify)
+│   │   ├── CortexCentralService.ts (IA configuración)
+│   │   ├── HealthMonitoringService.ts (Monitoreo sistema)
+│   │   ├── AuditTrailService.ts (Auditoría inmutable)
+│   │   ├── EncryptionService.ts (Encriptación cuántica)
+│   │   ├── BackupRestoreService.ts (Respaldo configuración)
+│   │   ├── GlobalAnalyticsService.ts (Solo CEO)
+│   │   ├── TenantProvisioningService.ts (Solo CEO)
+│   │   └── SystemOptimizationService.ts (Solo CEO)
+│   └── messaging/
+│       ├── ConfiguracionEventPublisher.ts
+│       ├── UsuarioEventPublisher.ts
+│       ├── ComplianceAlertPublisher.ts
+│       ├── SaludSystemEventPublisher.ts
+│       └── GlobalSystemEventPublisher.ts (Solo CEO)
+└── presentation/
+    ├── controllers/
+    │   ├── ConfiguracionController.ts
+    │   ├── UsuarioController.ts
+    │   ├── RolController.ts
+    │   ├── EmisoraController.ts
+    │   ├── PoliticaController.ts
+    │   ├── ComplianceController.ts
+    │   ├── MonitoreoController.ts
+    │   ├── GlobalConfigController.ts (Solo CEO)
+    │   └── AnalyticsController.ts
+    ├── dto/
+    │   ├── CrearTenantDto.ts
+    │   ├── ActualizarConfiguracionDto.ts
+    │   ├── CrearUsuarioDto.ts
+    │   ├── AsignarRolDto.ts
+    │   ├── ConfigurarEmisoraDto.ts
+    │   ├── CrearPoliticaDto.ts
+    │   └── ConfigurarComplianceDto.ts
+    └── middleware/
+        ├── TenantAccessMiddleware.ts
+        ├── SuperAdminMiddleware.ts (Solo CEO)
+        ├── AuditLoggingMiddleware.ts
+        ├── SecurityValidationMiddleware.ts
+        └── ConfigurationLockMiddleware.ts
+
+🎛️ CENTRO DE COMANDO SUPREMO - VISTA CEO SILEXAR
+DASHBOARD GLOBAL DE CONTROL ABSOLUTO:
+Solo accesible para CEO Silexar - Máximo nivel de privilegios:
+┌─────────────────────────────────────────────────────────────────┐
+│ 👑 SILEXAR PULSE - CENTRO DE COMANDO SUPREMO                    │
+│ CEO Dashboard - Control Total de la Plataforma                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 🌍 ESTADO GLOBAL TIEMPO REAL                                   │
+│                                                                 │
+│ 🏢 47 Clientes Activos    📊 99.97% Uptime    🚀 2.3M Requests/h│
+│ 👥 15,647 Usuarios       💰 $45M ARR YTD     📈 +23% Growth    │
+│ 🎵 856K Cuñas Procesadas  📻 234 Emisoras    🌐 1.2K Propiedades│
+│                                                                 │
+│ 🚨 ALERTAS CRÍTICAS CEO (2):                                   │
+│ • MegaMedia: 94% capacidad - Requiere upgrade                  │
+│ • RadioCorp: Anomalía en facturación - Investigar             │
+│                                                                 │
+│ 🎯 OPORTUNIDADES DETECTADAS (5):                               │
+│ • 3 clientes listos para plan Enterprise                       │
+│ • Nuevo mercado identificado: Brasil (12 prospects)            │
+│ • Feature request recurrente: Mobile app (8 clientes)          │
+├─────────────────────────────────────────────────────────────────┤
+│ [🌍 Mapa Global] [📊 Analytics] [⚙️ Config Global] [🚨 Alertas] │
+└─────────────────────────────────────────────────────────────────┘

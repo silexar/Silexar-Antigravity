@@ -1,0 +1,831 @@
+🏢 MÓDULO AGENCIAS DE MEDIOS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO AGENCIAS DE MEDIOS?
+El Módulo Agencias de Medios es el centro de inteligencia de partnerships comerciales en Silexar Pulse. Funciona como el hub estratégico que gestiona, optimiza y potencia las relaciones con agencias de medios, transformando partnerships tradicionales en alianzas inteligentes que maximizan el valor mutuo a través de automatización, analytics predictivos y colaboración digital avanzada.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Gerente Comercial, este módulo es mi centro de control de partnerships:
+
+Veo el performance de cada agencia en tiempo real
+Analizo qué agencias generan más valor y rentabilidad
+Detecto automáticamente oportunidades de colaboración
+Gestiono comisiones y términos comerciales centralizadamente
+Recibo alertas de agencias que necesitan atención estratégica
+
+Como Ejecutivo de Ventas, es mi puente inteligente con agencias:
+
+Accedo instantáneamente a la cartera de anunciantes de cada agencia
+Recibo briefs automáticamente procesados por IA
+Colaboro en tiempo real en propuestas conjuntas
+Tengo visibilidad del pipeline compartido con cada agencia
+Automatizo el seguimiento de campañas colaborativas
+
+Como Controller/CFO, obtengo control financiero total:
+
+Monitoreo automático de comisiones y pagos
+Análisis de rentabilidad por agencia y anunciante
+Proyecciones de ingresos colaborativos
+Alertas de incumplimientos o desviaciones
+Optimización automática de términos comerciales
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Anunciantes: Mapeo automático de relaciones agencia-cliente
+Módulo Contratos: Integración de comisiones y términos preferenciales
+Módulo Campañas: Colaboración en tiempo real en planificación
+Módulo Facturación: Automatización completa de comisiones
+Cortex-Partnership: IA que optimiza relaciones y detecta oportunidades
+Cortex-Flow: Automatización de workflows colaborativos
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/agencias/
+├── domain/
+│   ├── entities/
+│   │   ├── AgenciaMedios.ts (Entidad principal de la agencia)
+│   │   ├── ContactoAgencia.ts (Personas clave con roles específicos)
+│   │   ├── RelacionAnunciante.ts (Mapeo agencia-cliente)
+│   │   ├── EstructuraComisiones.ts (Esquemas de comisiones dinámicos)
+│   │   ├── PortfolioClientes.ts (Cartera de anunciantes)
+│   │   ├── PerformanceAgencia.ts (Métricas de rendimiento)
+│   │   ├── ColaboracionCampana.ts (Proyectos conjuntos)
+│   │   ├── ContratosMarco.ts (Acuerdos comerciales generales)
+│   │   ├── InteligenciaCompetitiva.ts (Análisis vs otras agencias)
+│   │   ├── HistorialTransacciones.ts (Timeline de colaboraciones)
+│   │   ├── AlertasEstrategicas.ts (Sistema de alertas inteligentes)
+│   │   └── CertificacionesAgencia.ts (Badges, certificaciones, especializaciones)
+│   ├── value-objects/
+│   │   ├── RutAgencia.ts (RUT validado con SII)
+│   │   ├── TipoAgencia.ts (Full service, Boutique, Especializada, Digital)
+│   │   ├── EspecializacionVertical.ts (FMCG, Finance, Tech, Pharma, etc.)
+│   │   ├── EstructuraComision.ts (%, fixed fee, performance-based)
+│   │   ├── ScorePartnership.ts (Score 0-1000 con IA)
+│   │   ├── NivelColaboracion.ts (Estratégico, Preferencial, Estándar, Transaccional)
+│   │   ├── CapacidadesDigitales.ts (Programmatic, Social, Search, etc.)
+│   │   ├── CertificacionesPlataforma.ts (Google Premier, Meta Business, etc.)
+│   │   └── VolumetriaEsperada.ts (Proyección de volumen anual)
+│   └── repositories/
+│       ├── IAgenciaRepository.ts
+│       ├── IContactoAgenciaRepository.ts
+│       ├── IRelacionAnuncianteRepository.ts
+│       ├── IPerformanceRepository.ts
+│       └── IColaboracionRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearAgenciaCommand.ts
+│   │   ├── ActualizarAgenciaCommand.ts
+│   │   ├── AsignarAnuncianteCommand.ts
+│   │   ├── ConfigurarComisionesCommand.ts
+│   │   ├── IniciarColaboracionCommand.ts
+│   │   ├── ActualizarPerformanceCommand.ts
+│   │   ├── GenerarContratoMarcoCommand.ts
+│   │   ├── ActivarAlertasCommand.ts
+│   │   ├── CertificarCapacidadesCommand.ts
+│   │   ├── OptimizarPartnershipCommand.ts
+│   │   ├── SincronizarPortfolioCommand.ts
+│   │   └── EvaluarRenovacionCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerPerfilAgenciaQuery.ts
+│   │   ├── BuscarAgenciasQuery.ts
+│   │   ├── ObtenerPortfolioClientesQuery.ts
+│   │   ├── AnalisisPerfomanceQuery.ts
+│   │   ├── ObtenerComisionesQuery.ts
+│   │   ├── GenerarReporteColaboracionQuery.ts
+│   │   ├── BuscarOportunidadesQuery.ts
+│   │   ├── CompararAgenciasQuery.ts
+│   │   ├── ProyectarIngresos.ts
+│   │   └── AnalisisCompetitivo.ts
+│   └── handlers/
+│       ├── AgenciaCommandHandler.ts
+│       ├── ColaboracionWorkflowHandler.ts
+│       ├── PerformanceAnalysisHandler.ts
+│       ├── ComisionAutomationHandler.ts
+│       ├── PartnershipOptimizationHandler.ts
+│       ├── InteligenciaCompetitivaHandler.ts
+│       ├── AlertasEstrategicasHandler.ts
+│       └── IntegracionExternaHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaAgenciaRepository.ts
+│   │   ├── PrismaContactoRepository.ts
+│   │   ├── PrismaPerformanceRepository.ts
+│   │   └── PrismaColaboracionRepository.ts
+│   ├── external/
+│   │   ├── SIIValidationService.ts (Validación datos tributarios)
+│   │   ├── GoogleAdsPartnerService.ts (API Google Partners)
+│   │   ├── MetaBusinessService.ts (Meta Business Partners)
+│   │   ├── LinkedInSalesService.ts (Prospección ejecutivos)
+│   │   ├── CortexPartnershipService.ts (IA de partnerships)
+│   │   ├── CortexIntelligenceService.ts (Inteligencia competitiva)
+│   │   ├── WebScrapingService.ts (Monitoreo público)
+│   │   ├── EmailParsingService.ts (Procesamiento briefs)
+│   │   ├── WhatsAppBusinessService.ts (Comunicación directa)
+│   │   ├── CalendlyIntegrationService.ts (Scheduling reuniones)
+│   │   ├── SlackIntegrationService.ts (Colaboración en tiempo real)
+│   │   ├── TrelloAsanaService.ts (Project management)
+│   │   ├── DocuSignService.ts (Firmas digitales)
+│   │   ├── BankingAPIService.ts (Pagos y comisiones)
+│   │   └── ReportingAdvancedService.ts (Analytics avanzados)
+│   └── messaging/
+│       ├── AgenciaEventPublisher.ts
+│       ├── ColaboracionEventPublisher.ts
+│       ├── PerformanceAlertPublisher.ts
+│       └── PartnershipOptimizationPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── AgenciaController.ts
+    │   ├── ColaboracionController.ts
+    │   ├── PerformanceController.ts
+    │   ├── ComisionesController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── PartnershipController.ts
+    │   ├── MobileAgenciaController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearAgenciaDto.ts
+    │   ├── ActualizarAgenciaDto.ts
+    │   ├── ConfigurarComisionDto.ts
+    │   ├── IniciarColaboracionDto.ts
+    │   └── PerformanceMetricsDto.ts
+    └── middleware/
+        ├── AgenciaAuthorizationMiddleware.ts
+        ├── PartnershipSecurityMiddleware.ts
+        ├── DataPrivacyMiddleware.ts
+        └── PerformanceAuditMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE INTELIGENCIA DE PARTNERSHIPS
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando de partnerships:
+
+Título: "🏢 Centro de Inteligencia de Partnerships"
+Breadcrumb: "Dashboard > Agencias de Medios"
+
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤝 INTELIGENCIA DE PARTNERSHIPS TIEMPO REAL                     │
+│                                                                 │
+│ 24 Agencias    $1.8B Revenue Colaborativo    15 Partnerships Activos │
+│ 89% Satisfacción    $234M Comisiones YTD    12 Oportunidades Hot  │
+│ 🎯 Top Acción: Renovar Starcom HOY (94% prob. éxito $45M)      │
+│ 🤖 IA Detectó: 5 agencias subutilizadas, 8 oportunidades nuevas │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO DE PARTNERSHIPS AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'agencias retail', 'performance bajo', 'oportunidades digitales'..."
+IA Conversacional: Entiende consultas como "¿qué agencias están subperformando?"
+Predicciones automáticas:
+
+"Agencias con potencial de crecimiento 40%+"
+"Partnerships en riesgo de terminación"
+"Nuevas agencias para prospección"
+"Oportunidades de expansión digital"
+
+
+
+Filtros inteligentes de negocio:
+Nivel de Partnership:
+
+🌟 Estratégico ($100M+ revenue anual)
+💎 Preferencial ($50M-100M revenue)
+🥇 Estándar ($10M-50M revenue)
+🥈 Transaccional ($1M-10M revenue)
+🆕 Prospecto (sin revenue histórico)
+
+Performance Status:
+
+🚀 Sobre Performance (+20% vs target)
+✅ Performance Estándar (±10% vs target)
+⚠️ Bajo Performance (-10% a -20%)
+🔴 Critical Performance (-20% o más)
+📈 Crecimiento Acelerado (+50% YoY)
+
+Especialización:
+
+📱 Digital Specialists
+🏪 Retail Experts
+🏦 Financial Services
+🏥 Healthcare & Pharma
+🎯 Full Service
+🎨 Creative Boutiques
+
+Centro de acciones inteligentes:
+
+"🎯 Partnership Reviews Hoy" (IA sugiere reuniones prioritarias)
+"🤖 Insights Partnership" (Análisis predictivo completo)
+"📊 Performance Dashboard" (Vista ejecutiva con IA)
+"🔍 Detectar Oportunidades" (Scanner automático de nuevos partners)
+"⚠️ Alertas Críticas" (Partnerships que requieren atención inmediata)
+
+TABLA DE AGENCIAS - INTELIGENCIA OPERATIVA:
+1. Columna "Agencia/Inteligencia" (320px):
+┌─────────────────────────────────────┐
+│ [LOGO] Starcom MediaVest Group      │
+│ 🎯 Full Service • 45 clientes • Global│
+│ 📊 Score: 890/1000 • 🌟 Estratégico  │
+│ 🤖 IA: "Expandir partnership digital" │
+│ 🏆 Google Premier • Meta Preferred   │
+└─────────────────────────────────────┘
+
+Logo dinámico: Actualizado automáticamente desde web
+Información contextual: Tipo, especialización, alcance
+Score visual: Color y número con tendencia (↗️↘️)
+Insight IA: Recomendación automática de Cortex-Partnership
+Badges de certificación: Plataformas digitales certificadas
+
+2. Columna "Valor Partnership/Tendencia" (200px):
+┌─────────────────┐
+│ 💰 $187M YTD    │
+│ 📈 +34% vs 2024 │
+│ 🎯 Comisión: 12%│
+│ 💎 45 Clientes  │
+└─────────────────┘
+
+Revenue colaborativo: Año a la fecha con proyección
+Tendencia: Comparación vs período anterior
+Estructura de comisión: Porcentaje promedio
+Cartera: Número de anunciantes activos
+
+3. Columna "Contacto Principal/Performance" (180px):
+┌─────────────────┐
+│ [AVATAR] María  │
+│ Gonzalez - CMD  │
+│ 📞 Ult: 1 día    │
+│ 🎯 NPS: 9.2/10  │
+└─────────────────┘
+
+Contacto principal: Avatar + nombre + cargo
+Última interacción: Tiempo transcurrido
+Net Promoter Score: Satisfacción de la relación
+
+4. Columna "Pipeline/Oportunidades" (190px):
+┌─────────────────┐
+│ 🎯 8 Activas    │
+│ 💰 $45M Pipeline│
+│ 🔥 3 Hot Close  │
+│ 📅 5 This Month │
+└─────────────────┘
+
+Colaboraciones activas: Cantidad en pipeline
+Valor total: Sumatoria de oportunidades
+Hot opportunities: Probabilidad >85%
+Timing: Cierre esperado este mes
+
+5. Columna "Performance/Alertas" (170px):
+┌─────────────────┐
+│ 📈 Performance: │
+│    EXCELENTE    │
+│ 🔄 Renovación:  │
+│    92% probable │
+│ ✅ Sin alertas  │
+└─────────────────┘
+
+Nivel de performance: Con explicación automática
+Predicción renovación: Porcentaje de probabilidad IA
+Alertas activas: Problemas detectados automáticamente
+
+6. Columna "Última Actividad/Next Best Action" (220px):
+┌─────────────────────────────────┐
+│ 📧 Brief recibido ayer 16:45    │
+│ "Campaña Black Friday - Ripley" │
+│                                 │
+│ 🎯 Next Action (IA):            │
+│ "📞 Llamar hoy antes 11:00      │
+│ para coordinar propuesta conjunta"│
+└─────────────────────────────────┘
+
+Última interacción: Tipo, fecha, contexto
+Contenido: Resumen de la actividad
+Next Best Action: Recomendación de IA de próxima acción óptima
+
+7. Columna "Acciones Inteligentes" (200px):
+┌─────────────────┐
+│ [👁️] [📞] [📧] │
+│ [🎯] [📊] [🤝] │
+│ [⚠️] [🔄] [💰] │
+└─────────────────┘
+
+👁️ Perfil 360°: Vista completa con partnership insights
+📞 Smart Call: Timing óptimo basado en patrones
+📧 Email IA: Generación automática contextual
+🎯 Nueva Colaboración: Wizard inteligente
+📊 Analytics: Análisis predictivo profundo
+🤝 Partnership Review: Evaluación completa
+⚠️ Gestionar Alertas: Centro de alertas y acciones
+🔄 Optimizar: Sugerencias de mejora IA
+💰 Comisiones: Gestión financiera automática
+
+➕ CREACIÓN INTELIGENTE DE AGENCIA - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de creación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿CÓMO PREFIERES CREAR LA AGENCIA?    │
+│                                         │
+│ [🔍] Búsqueda por RUT                   │
+│      Validación automática SII + IA    │
+│      Datos pre-llenados instantáneamente│
+│                                         │
+│ [🌐] Desde sitio web                    │
+│      Ingresa URL, IA extrae toda la info│
+│      Análisis automático de capacidades │
+│                                         │
+│ [👤] Desde LinkedIn Company            │
+│      Conecta perfil, importa datos      │
+│      Análisis de equipo y clientes      │
+│                                         │
+│ [📧] Desde email/tarjeta                │
+│      Sube foto, OCR extrae información  │
+│      Procesamiento automático de datos  │
+│                                         │
+│ [🏢] Desde directorio público           │
+│      Google Partners, Meta, etc.       │
+│      Importación de certificaciones     │
+│                                         │
+│ [✏️] Manual tradicional                 │
+│      Formulario guiado con sugerencias  │
+│      IA asiste en cada campo            │
+└─────────────────────────────────────────┘
+MODO: BÚSQUEDA POR RUT (Más Común en Chile):
+Validación SII con inteligencia aumentada:
+┌─────────────────────────────────────────┐
+│ 🔍 VALIDACIÓN INTELIGENTE SII + IA      │
+│                                         │
+│ RUT: [76.123.456-7        ] [🔍 Buscar] │
+│                                         │
+│ ⏳ Consultando SII + IA...               │
+│                                         │
+│ ✅ AGENCIA ENCONTRADA Y ANALIZADA:      │
+│                                         │
+│ 📋 Datos SII:                          │
+│ • Razón Social: Starcom MediaVest SpA   │
+│ • Giro: Publicidad y marketing          │
+│ • Estado: Activo                        │
+│ • Dirección: Las Condes 12345           │
+│                                         │
+│ 🤖 Análisis IA Automático:             │
+│ • Tipo estimado: Full Service Agency    │
+│ • Facturación est: $500M-1B anual      │
+│ • Empleados est: 200-500               │
+│ • Especializaciones: Digital + TV       │
+│ • Clientes principales: FMCG, Retail    │
+│ • Certificaciones: Google Premier       │
+│                                         │
+│ [✅ Usar datos] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+PASO 1: "INFORMACIÓN FUNDAMENTAL" - IA ASISTIDA
+Sección "Clasificación Inteligente Automática":
+┌─────────────────────────────────────────┐
+│ 🤖 CLASIFICACIÓN AUTOMÁTICA IA         │
+│                                         │
+│ ✅ Análisis completado automáticamente: │
+│                                         │
+│ 🏢 Tipo Agencia: FULL SERVICE           │
+│ Factores: 200+ empleados, multi-canal   │
+│                                         │
+│ 🎯 Especializaciones: DIGITAL + TRADICIONAL│
+│ Certificaciones: Google, Meta, LinkedIn │
+│                                         │
+│ 📊 Tamaño Portfolio: GRANDE             │
+│ Clientes estimados: 40-60 activos       │
+│                                         │
+│ 🌟 Nivel Partnership: ESTRATÉGICO       │
+│ Razón: Volumen + reputación + capacidad │
+│                                         │
+│ 🎪 Expertise Detectada:                │
+│ • Retail & FMCG (fortaleza principal)  │
+│ • Finance & Insurance (experiencia)     │
+│ • Digital Transformation (innovación)   │
+│ • Brand Building (especialización)      │
+│                                         │
+│ [✅ Confirmar] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+PASO 2: "ANÁLISIS DE CAPACIDADES" - CORTEX-PARTNERSHIP
+Evaluación automática de capacidades:
+┌─────────────────────────────────────────┐
+│ 🚀 ANÁLISIS CORTEX-PARTNERSHIP AVANZADO│
+│                                         │
+│ 🔍 Analizando capacidades digitales...  │
+│ ████████████████████████████░░░ 90%    │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 SCORE PARTNERSHIP: 890/1000         │
+│ 🟢 CLASIFICACIÓN: PREMIER PARTNER      │
+│                                         │
+│ 💪 Capacidades Verificadas:            │
+│ ✅ Google Ads: Premier Partner          │
+│ ✅ Meta Business: Marketing Partner     │
+│ ✅ LinkedIn: Marketing Partner          │
+│ ✅ Programmatic: DV360 Certified        │
+│ ✅ Analytics: GA4 + Adobe Certified     │
+│ ⚠️ TikTok: Basic Partner (oportunidad) │
+│                                         │
+│ 🎯 Especializaciones Detectadas:       │
+│ • Performance Marketing (Advanced)      │
+│ • Brand Strategy (Expert)               │
+│ • E-commerce (Intermediate)            │
+│ • B2B Marketing (Advanced)             │
+│                                         │
+│ 💡 Recomendaciones automáticas:        │
+│ • Partnership Level: Estratégico        │
+│ • Comisión sugerida: 12-15%            │
+│ • Vertical focus: Retail + Finance      │
+│ • Certificaciones pendientes: TikTok   │
+│                                         │
+│ 🎯 Potencial colaborativo:             │
+│ • Revenue estimado: $150-300M anual    │
+│ • Clientes objetivo: 25-45 activos     │
+│ • Crecimiento proyectado: +25% anual   │
+└─────────────────────────────────────────┘
+PASO 3: "CONTACTOS CLAVE" - INTELIGENCIA DE PERSONAS
+Detección automática de contactos clave:
+┌─────────────────────────────────────────┐
+│ 👥 CONTACTOS DETECTADOS AUTOMÁTICAMENTE │
+│                                         │
+│ 🤖 IA encontró 6 contactos relevantes:  │
+│                                         │
+│ 👑 CEO/COUNTRY MANAGER DETECTADO:       │
+│ ┌─────────────────────────────────────┐ │
+│ │ María González Pérez                │ │
+│ │ 🎯 Country Manager Chile            │ │
+│ │ 📧 maria.gonzalez@starcom.cl       │ │
+│ │ 📞 +56 9 8765 4321                 │ │
+│ │ 💼 LinkedIn: /in/maria-gonzalez-cmd │ │
+│ │ 🎓 MBA + 15 años experiencia        │ │
+│ │ ⭐ Decision Maker Level: HIGH       │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 💼 OTROS CONTACTOS KEY:                │
+│ • Roberto Silva - Client Service Dir.   │
+│ • Ana Martínez - Digital Planning Dir.  │
+│ • Carlos López - New Business Dir.      │
+│ • Sofia Chen - Strategy Planning Dir.   │
+│ • Diego Rojas - Media Planning Dir.     │
+│                                         │
+│ 🎯 IA sugiere contacto principal:      │
+│ María González (decisiones + presupuesto)│
+│                                         │
+│ [✅ Importar todos] [✏️ Seleccionar] [➕ Agregar manual]│
+└─────────────────────────────────────────┘
+PASO 4: "CONFIGURACIÓN COMERCIAL" - TÉRMINOS INTELIGENTES
+Estructura de comisiones inteligente:
+┌─────────────────────────────────────────┐
+│ 💰 CONFIGURACIÓN COMERCIAL INTELIGENTE  │
+│                                         │
+│ 🤖 Cortex-Partnership recomienda:       │
+│                                         │
+│ 📊 Estructura de Comisiones Óptima:    │
+│ • Medios Tradicionales: 15%            │
+│ • Medios Digitales: 12%                │
+│ • Programmatic: 10%                    │
+│ • Producción/Creative: 8%              │
+│                                         │
+│ 🎯 Términos de Pago Sugeridos:         │
+│ • Neto 30 días (basado en score)       │
+│ • Descuentos por pronto pago: 2%       │
+│ • Límite mensual: $50M CLP             │
+│                                         │
+│ 🏆 Incentivos Propuestos:              │
+│ • Bonus por crecimiento >20%: +1%      │
+│ • Bonus nuevos clientes: $500K/cliente │
+│ • Bonus performance digital: +0.5%     │
+│                                         │
+│ 📋 Exclusividades:                     │
+│ ⚠️ No exclusividades (Full Service)    │
+│ ✅ Preferencia en grandes cuentas       │
+│ ✅ First look en nuevas oportunidades   │
+│                                         │
+│ [✅ Aceptar sugerencias] [✏️ Personalizar] [🔄 Recalcular]│
+└─────────────────────────────────────────┘
+📊 DASHBOARD PARTNERSHIPS - CENTRO DE INTELIGENCIA
+VISTA KANBAN INTERACTIVA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤝 PIPELINE PARTNERSHIPS - TIEMPO REAL                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🆕 PROSPECCIÓN   🤝 NEGOCIACIÓN   📋 CONTRACTING   ✅ ACTIVAS   │
+│ ($12M potencial) ($45M pipeline)  ($23M pending)   ($1.8B)     │
+│                                                                 │
+│ ┌───────────┐   ┌────────────┐   ┌────────────┐   ┌──────────┐ │
+│ │WPP Chile  │   │Publicis    │   │Havas Media │   │Starcom   │ │
+│ │$25M pot   │   │$18M        │   │$12M        │   │$187M     │ │
+│ │Digital    │   │MultiChannel│   │Automotive  │   │Premium   │ │
+│ │[Contact]  │   │🚨 7 días   │   │⏰ 3 días   │   │✅ Activo │ │
+│ └───────────┘   └────────────┘   └────────────┘   └──────────┘ │
+│                                                                 │
+│ ┌───────────┐   ┌────────────┐                   ┌──────────┐ │
+│ │Dentsu     │   │Mindshare   │                   │Zenith    │ │
+│ │$8M pot    │   │$15M        │                   │$134M     │ │
+│ │Boutique   │   │FMCG Focus  │                   │Finance   │ │
+│ │[Research] │   │📞 Call Now │                   │💰 Top    │ │
+│ └───────────┘   └────────────┘                   └──────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Acciones rápidas:                                           │
+│ [➕ Nueva Agencia] [🔄 Refresh] [📊 Analytics] [📱 Móvil]      │
+└─────────────────────────────────────────────────────────────────┘
+MÉTRICAS PREDICTIVAS CON IA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 ANÁLISIS PREDICTIVO CORTEX-PARTNERSHIP                      │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 PREDICCIONES TRIMESTRE ACTUAL:                              │
+│ • Revenue collaborativo proyectado: $654M (+18% vs Q anterior) │
+│ • Nuevas partnerships probables: 3 (85% confidence)           │
+│ • Renovaciones esperadas: 16 de 18 (89% rate)                 │
+│ • Partnerships en riesgo: 2 (Requieren intervención)          │
+│                                                                 │
+│ 🎯 INSIGHTS AUTOMÁTICOS POR AGENCIA:                          │
+│ • Starcom: Oportunidad expansión digital (+$45M potencial)    │
+│ • Zenith: Performance excepcional - aumentar collaboration    │
+│ • Publicis: Retrasará renovación 2 semanas (patrón histórico) │
+│ • Havas: Interés en vertical automotive (predicción 78%)      │
+│                                                                 │
+│ 💡 RECOMENDACIONES ESTRATÉGICAS:                               │
+│ • Priorizar digital partnerships para Q2                      │
+│ • Revisar términos con agencias "bajo performance"            │
+│ • Explorar partnerships boutique para nichos específicos      │
+│ • Implementar programa de incentivos por performance           │
+│                                                                 │
+│ 🚨 ALERTAS CRÍTICAS:                                           │
+│ • Competidor ofreció mejores términos a 2 agencias top        │
+│ • Nueva agencia disruptiva entrando al mercado                │
+│ • Regulación nueva puede impactar partnerships digitales      │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Deep Analysis] [🎯 Action Plan] [📧 Alert Team] [🔮 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - PARTNERSHIPS ON-THE-GO
+APP MÓVIL PARTNERSHIP MANAGER:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR PARTNERSHIPS MÓVIL           │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Partnerships               │
+│ • 24 Agencias activas                   │
+│ • $1.8B Revenue colaborativo YTD       │
+│ • 15 Meetings esta semana              │
+│ • 89% Satisfaction score promedio       │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🤝 Nueva Colaboración Express]         │
+│ [📞 Calls Programadas (3)]              │
+│ [✅ Partnership Reviews (2)]            │
+│ [📧 Briefs Recibidos (5)]               │
+│                                         │
+│ 🚨 ALERTAS HOY:                         │
+│ • Starcom: Brief urgente Black Friday   │
+│ • Zenith: Renovación vence en 5 días   │
+│ • Publicis: Performance review 15:00    │
+│                                         │
+│ 📊 MIS PARTNERSHIPS:                    │
+│ [Ver Dashboard] [Analytics] [Calendar]   │
+├─────────────────────────────────────────┤
+│ [🏠] [🤝] [📞] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+FUNCIONALIDADES MÓVILES AVANZADAS:
+Partnership Quick Actions:
+
+Smart Meetings: IA calcula mejor momento para reuniones based en patrones
+Brief Processing: OCR + IA para procesar briefs recibidos por WhatsApp/email
+Collaborative Proposals: Creación conjunta de propuestas en tiempo real
+Performance Alerts: Notificaciones push cuando partnerships requieren atención
+
+WhatsApp Business Integration:
+
+Brief Automation: Recepción automática de briefs con parsing IA
+Status Updates: Updates automáticos de estado de campañas colaborativas
+Quick Approvals: Aprobaciones rápidas de propuestas via WhatsApp
+Performance Sharing: Reportes automáticos de performance por WhatsApp
+
+🔄 SISTEMA DE COLABORACIÓN AVANZADA
+WORKSPACE COLABORATIVO EN TIEMPO REAL:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤝 WORKSPACE COLABORATIVO - STARCOM x SILEXAR                   │
+├─────────────────────────────────────────────────────────────────┤
+│ 📋 PROYECTO: Campaña Black Friday Retail Coalition             │
+│ 🎯 Cliente: Grupo de 8 retailers   💰 Budget: $280M           │
+│ 📅 Timeline: 15 Oct - 15 Dic      👥 Team: 12 personas        │
+│                                                                 │
+│ 🔄 ESTADO COLABORACIÓN:                                        │
+│ ✅ Brief recibido y procesado (Starcom)                       │
+│ 🔄 Análisis de inventario en progreso (Silexar)               │
+│ ⏳ Propuesta multimedia pendiente (Ambos)                      │
+│ 📊 Performance targets definidos (Starcom)                    │
+│                                                                 │
+│ 💬 CHAT COLABORATIVO EN TIEMPO REAL:                          │
+│ ┌───────────────────────────────────────────────────────────┐ │
+│ │ María (Starcom) 14:23: "¿Disponibilidad prime matinal?"  │ │
+│ │ Juan (Silexar) 14:24: "85% libre Nov, 60% Dic"         │ │
+│ │ Ana (Starcom) 14:25: "Perfect! ¿Y digital inventory?"    │ │
+│ │ 🤖 Cortex 14:25: "Programmatic disponible 100%"         │ │
+│ └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 TRACKING COLABORATIVO:                                      │
+│ • Tasks completadas: 15/28                                     │
+│ • Milestones on track: 4/6                                     │
+│ • Budget utilizado: 23% ($64M)                                │
+│ • Performance vs target: +12%                                  │
+│                                                                 │
+│ 🎯 PRÓXIMAS ACCIONES:                                          │
+│ • [Starcom] Finalizar creatividades video (Viernes)           │
+│ • [Silexar] Reservar inventario premium (Mañana)              │
+│ • [Ambos] Reunión performance review (Lunes 10:00)           │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Dashboard] [💬 Chat] [📁 Files] [📅 Calendar] [🎯 Tasks]   │
+└─────────────────────────────────────────────────────────────────┘
+🔐 SEGURIDAD TIER 0 - NIVEL MILITAR
+PROTECCIÓN DE DATOS COMERCIALES SENSIBLES:
+Encriptación Cuántica y Zero-Trust:
+
+Datos de partnerships encriptados con AES-256 + post-quantum
+Separación total de datos por agencia (multi-tenant security)
+Auditoría inmutable de todas las interacciones comerciales
+Zero-trust verification para cada acceso a data sensible
+
+Controles de Acceso Granulares:
+Partnership Manager:
+
+✅ Ver todas las agencias y partnerships
+✅ Crear/editar agencias hasta nivel "Estándar"
+✅ Configurar comisiones hasta 15%
+❌ Acceso a datos financieros detallados
+❌ Modificar partnerships "Estratégicas"
+
+Gerente Comercial:
+
+✅ Acceso completo a partnerships y performance
+✅ Configurar términos comerciales avanzados
+✅ Override de límites estándar
+✅ Acceso a analytics predictivos completos
+❌ Configuración de políticas globales
+
+CEO/Director:
+
+✅ Acceso total a inteligencia de partnerships
+✅ Configuración de políticas estratégicas
+✅ Analytics competitivos completos
+✅ Override de todas las validaciones
+✅ Configuración de workflows críticos
+
+🤖 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-PARTNERSHIP - Motor de Automatización:
+1. Detección Automática de Oportunidades:
+Trigger: Nueva actividad publicitaria detectada de agencia no-partner
+→ Cortex analiza volumen y expertise
+→ Calcula probability score de partnership exitoso
+→ Si >75%: Crea oportunidad automáticamente
+→ Asigna al partnership manager apropiado
+→ Genera brief automático con intelligence
+→ Programa secuencia de outreach personalizada
+2. Performance Monitoring Automático:
+Trigger: Fin de cada mes
+→ Cortex calcula performance vs targets por agencia
+→ Identifica over/under performers automáticamente
+→ Genera insights de causas raíz
+→ Si critical: Alerta inmediata a management
+→ Sugiere acciones correctivas específicas
+→ Programa partnership reviews según urgencia
+3. Renewal Optimization:
+Trigger: Partnership vence en 90 días
+→ Cortex analiza satisfacción + performance histórica
+→ Calcula probability de renovación
+→ Si >85%: Genera propuesta de renovación mejorada
+→ Si 50-85%: Activa proceso de retención
+→ Si <50%: Alerta para intervención gerencial
+→ Programa reuniones estratégicas automáticamente
+📊 ANALYTICS AVANZADOS Y BUSINESS INTELLIGENCE
+DASHBOARD GERENCIAL EJECUTIVO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 PARTNERSHIP INTELLIGENCE - PORTFOLIO COMPLETO               │
+├─────────────────────────────────────────────────────────────────┤
+│ 💰 MÉTRICAS FINANCIERAS:                                       │
+│ • Revenue colaborativo total: $1.8B CLP                       │
+│ • Crecimiento YoY: +34%                                        │
+│ • Margen promedio partnerships: 42%                           │
+│ • Comisiones pagadas YTD: $234M                               │
+│ • ROI promedio partnerships: 340%                             │
+│                                                                 │
+│ 🎯 PERFORMANCE PARTNERSHIPS:                                   │
+│ • Satisfaction score promedio: 89%                            │
+│ • Partnerships renovadas: 94%                                 │
+│ • Tiempo promedio onboarding: 21 días                         │
+│ • Revenue per partnership: $75M promedio                      │
+│ • Partner retention rate: 91%                                 │
+│                                                                 │
+│ 🔮 PREDICCIONES IA (Próximos 90 días):                        │
+│ • Revenue proyectado: $587M (+22% vs Q anterior)              │
+│ • Nuevas partnerships probables: 4 (valor: $89M)              │
+│ • Renovaciones esperadas: 16 (tasa éxito: 91%)                │
+│ • Partnerships en riesgo: 2 (intervención requerida)          │
+│                                                                 │
+│ 📈 TOP PERFORMING PARTNERSHIPS:                                │
+│ • Starcom: $187M revenue, 94% satisfaction, 15% growth        │
+│ • Zenith: $134M revenue, 91% satisfaction, 28% growth         │
+│ • Mindshare: $98M revenue, 87% satisfaction, 31% growth       │
+│                                                                 │
+│ ⚠️ ALERTAS ESTRATÉGICAS:                                       │
+│ • Competidor ofrece términos 20% mejores (2 agencias risk)    │
+│ • Nueva regulación digital impacta programmatic partnerships   │
+│ • Oportunidad de consolidación: 3 boutiques disponibles       │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Deep Dive] [🎯 Strategy Plan] [👥 Team Management] [🔮 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-MATCHMAKER - IA de Partnerships Perfectos:
+Algoritmo de matching avanzado:
+
+Analiza necesidades específicas del anunciante
+Compara capabilities de todas las agencias
+Sugiere el partner óptimo para cada brief
+Predice success probability del partnership
+Optimiza continuamente basado en resultados
+
+2. PARTNERSHIP PERFORMANCE PREDICTOR:
+Modelo predictivo avanzado:
+
+Predice performance de nuevas partnerships
+Identifica partnerships en riesgo antes de que fallen
+Sugiere optimizaciones basadas en data histórica
+Benchmark automático vs industry standards
+
+3. AUTOMATED BRIEF INTELLIGENCE:
+Procesamiento automático de briefs:
+
+OCR + NLP para extraer requirements automáticamente
+Matching automático con inventory disponible
+Generación de propuestas base automáticas
+Collaborative editing en tiempo real
+
+4. REVENUE OPTIMIZATION ENGINE:
+Optimización automática de comisiones:
+
+Análisis continuo de market rates
+Suggestions de ajustes de comisiones por performance
+Modeling de impacto de cambios de términos
+Automated negotiation support con data-driven insights
+
+📈 INTEGRACIONES ECOSYSTEM SILEXAR
+Sincronización Bidireccional Avanzada:
+Con Módulo Anunciantes:
+
+Mapeo automático de relaciones agencia-cliente
+Sync de datos de contacto y preferences
+Tracking de satisfacción cross-referenciado
+Intelligence compartida sobre client behavior
+
+Con Módulo Contratos:
+
+Aplicación automática de comisiones por agencia
+Terms preferenciales basados en partnership level
+Automated contract generation para partnerships
+Performance tracking tied to commercial results
+
+Con Módulo Campañas:
+
+Collaborative planning en tiempo real
+Shared performance dashboards
+Joint optimization recommendations
+Integrated reporting para stakeholders
+
+Con Módulo Facturación:
+
+Automated commission calculations
+Split billing para collaborative campaigns
+Partnership-specific payment terms
+Automated reconciliation de shared revenues
+
+APIs Externas Críticas:
+Plataformas de Certificación:
+
+Google Partners API: Verificación automática de certificaciones
+Meta Business Partners: Status y capabilities sync
+LinkedIn Marketing Partners: Verification y badging
+Programmatic Platforms: Certification tracking
+
+Intelligence Platforms:
+
+Agency scope tracking para competitive intelligence
+New business alerts para partnership opportunities
+Market share analysis para strategic planning
+Performance benchmarking vs industry standards
+
+
+🎯 CONCLUSIÓN: EL PARTNERSHIP ENGINE MÁS AVANZADO DEL MUNDO
+PARA EL PARTNERSHIP MANAGER:
+
+IA como copiloto 24/7: Sabe exactamente qué partnerships priorizar y cuándo
+Automatización total: 85% de tasks administrativas se ejecutan automáticamente
+Intelligence predictiva: Ve oportunidades y riesgos antes que ocurran
+Collaboration seamless: Workflows integrados con agencias top tier
+Mobile-first: Gestión completa desde cualquier lugar del mundo
+
+PARA EL GERENTE COMERCIAL:
+
+Visibilidad total: Control completo del portfolio de partnerships
+Revenue optimization: Maximización automática de valor por partnership
+Risk management: Detección y prevención de partnership failures
+Strategic planning: Data-driven decisions para growth strategy
+Performance tracking: Metrics que importan en tiempo real
+
+PARA EL CEO/DIRECTOR:
+
+Strategic intelligence: Insights que impactan bottom line directamente
+Competitive advantage: Partnerships que competidores no pueden replicar
+Revenue growth: Crecimiento promedio 30%+ en partnerships revenue
+Market positioning: Leadership position en el ecosistema de partnerships
+Future-ready: Platform que evoluciona con industry changes
+
+El Módulo Agencias de Medios TIER 0 no es solo un directorio de partners: es un cerebro estratégico que transforma partnerships tradicionales en alianzas inteligentes, automatizadas y optimizadas que maximizan el valor mutuo, predicen oportunidades futuras y aseguran el éxito colaborativo sostenible.

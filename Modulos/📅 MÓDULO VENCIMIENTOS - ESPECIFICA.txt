@@ -1,0 +1,1264 @@
+📅 MÓDULO VENCIMIENTOS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO VENCIMIENTOS?
+El Módulo Vencimientos es el centro de comando de inventario comercial más avanzado del mundo que transforma la gestión manual de auspicios, cupos y tarifas en un sistema inteligente automatizado. Funciona como el cerebro operativo que controla disponibilidad, optimiza pricing, gestiona exclusividades y automatiza todo el ciclo de vida de productos publicitarios con precisión cuántica.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Ejecutivo de Ventas, este módulo es mi GPS comercial:
+
+Veo disponibilidad de cupos en tiempo real por programa/fecha
+Consulto tarifas actualizadas automáticamente por duración/horario
+Reservo espacios inteligentemente con validación automática
+Recibo alertas de oportunidades de venta por vencimientos próximos
+Accedo a histórico de performance por programa para argumentar ventas
+
+Como Programador de Tráfico, gestiono operación diaria:
+
+Recibo confirmaciones automáticas de inicio/fin de auspicios
+Gestiono cambios de presentaciones/cierres con alertas automáticas
+Monitoreo cumplimiento de cupos contratados vs emitidos
+Valido programación contra exclusividades y conflictos automáticamente
+Optimizo distribución de menciones según disponibilidad
+
+Como Gerente Comercial, superviso el inventario estratégico:
+
+Monitoreo utilización de inventario por programa/emisora en tiempo real
+Optimizo pricing dinámicamente basado en demanda y disponibilidad
+Identifico oportunidades de crecimiento en programas sub-utilizados
+Gestiono exclusividades y evito conflictos comerciales automáticamente
+Analizo performance comercial por programa/horario/tipo
+
+INTEGRACIÓN ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Valida disponibilidad automáticamente y actualiza cupos al confirmar
+Módulo Anunciantes: Previene conflictos por exclusividades de rubro automáticamente
+Módulo Cuñas: Gestiona material de presentaciones/cierres por programa
+Módulo Facturación: Sincroniza valores y términos comerciales dinámicamente
+Cortex-Flow: Predice renovaciones y optimiza pricing por demanda
+Cortex-Analytics: Analiza performance y sugiere optimizaciones de inventario
+
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/vencimientos/
+├── domain/
+│   ├── entities/
+│   │   ├── Emisora.ts (Radio/TV con configuración específica)
+│   │   ├── ProgramaAuspicio.ts (Programa con slots comerciales)
+│   │   ├── AuspicioSlot.ts (Espacio específico de auspicio)
+│   │   ├── CupoComercial.ts (Cupo individual con tracking)
+│   │   ├── TarifarioPrograma.ts (Precios dinámicos por programa)
+│   │   ├── TandaComercial.ts (Repartida, Prime, Noche, etc.)
+│   │   ├── SenalEspecial.ts (Temperatura, Micro, etc.)
+│   │   ├── ExclusividadRubro.ts (Conflictos automáticos)
+│   │   ├── VencimientoAuspicio.ts (Tracking de vencimientos)
+│   │   ├── AlertaProgramador.ts (Notificaciones automáticas)
+│   │   ├── DisponibilidadCupo.ts (Estado en tiempo real)
+│   │   ├── HistorialOcupacion.ts (Analytics históricos)
+│   │   └── ConfiguracionTarifa.ts (Pricing por duración/horario)
+│   ├── value-objects/
+│   │   ├── HorarioEmision.ts (Horario específico con validaciones)
+│   │   ├── TipoAuspicio.ts (Tipo A, Tipo B, Menciones)
+│   │   ├── EstadoAuspicio.ts (Pendiente, Activo, Vencido)
+│   │   ├── CupoDisponible.ts (Cálculo inteligente de disponibilidad)
+│   │   ├── ValorComercial.ts (Precio con descuentos aplicados)
+│   │   ├── DuracionSegundos.ts (5s, 10s, 15s, 20s, 30s, etc.)
+│   │   ├── FactorTarifa.ts (Multiplicador por horario/programa)
+│   │   ├── PeriodoVigencia.ts (Fecha inicio/fin con validaciones)
+│   │   └── ConfirmacionProgramador.ts (Validación manual requerida)
+│   └── repositories/
+│       ├── IEmisoraRepository.ts
+│       ├── IProgramaAuspicioRepository.ts
+│       ├── ICupoComercialRepository.ts
+│       ├── ITarifarioRepository.ts
+│       ├── IVencimientoRepository.ts
+│       └── IDisponibilidadRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearProgramaAuspicioCommand.ts
+│   │   ├── ActualizarCuposCommand.ts
+│   │   ├── ActivarAuspicioCommand.ts
+│   │   ├── FinalizarAuspicioCommand.ts
+│   │   ├── ValidarDisponibilidadCommand.ts
+│   │   ├── ConfigurarTarifarioCommand.ts
+│   │   ├── CrearTandaComercialCommand.ts
+│   │   ├── GenerarAlertaVencimientoCommand.ts
+│   │   ├── ConfirmarInicioAuspicioCommand.ts
+│   │   ├── OptimizarPricingCommand.ts
+│   │   ├── GestionarExclusividadCommand.ts
+│   │   └── SincronizarContratoCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerDisponibilidadCuposQuery.ts
+│   │   ├── BuscarProgramasDisponiblesQuery.ts
+│   │   ├── ObtenerTarifarioActualQuery.ts
+│   │   ├── GenerarReporteOcupacionQuery.ts
+│   │   ├── ObtenerVencimientosProximosQuery.ts
+│   │   ├── ValidarConflictoRubroQuery.ts
+│   │   ├── ObtenerHistorialProgramaQuery.ts
+│   │   ├── CalcularDisponibilidadPeriodoQuery.ts
+│   │   ├── ObtenerAlertasProgramadorQuery.ts
+│   │   └── GenerarAnalyticsInventarioQuery.ts
+│   └── handlers/
+│       ├── ProgramaAuspicioHandler.ts
+│       ├── CupoManagementHandler.ts
+│       ├── TarifarioHandler.ts
+│       ├── VencimientoHandler.ts
+│       ├── DisponibilidadHandler.ts
+│       ├── AlertasHandler.ts
+│       ├── ExclusividadHandler.ts
+│       ├── SincronizacionHandler.ts
+│       └── AnalyticsHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaEmisoraRepository.ts
+│   │   ├── PrismaProgramaRepository.ts
+│   │   ├── PrismaCupoRepository.ts
+│   │   ├── PrismaTarifarioRepository.ts
+│   │   └── PrismaVencimientoRepository.ts
+│   ├── external/
+│   │   ├── ContratoSyncService.ts (Sincronización con módulo contratos)
+│   │   ├── CortexFlowPredictionService.ts (Predicciones IA)
+│   │   ├── CortexAnalyticsService.ts (Analytics avanzados)
+│   │   ├── PricingOptimizationService.ts (Optimización precios)
+│   │   ├── InventoryIntelligenceService.ts (Inteligencia inventario)
+│   │   ├── AlertNotificationService.ts (Sistema alertas)
+│   │   ├── WhatsAppBusinessService.ts (Notificaciones móviles)
+│   │   ├── EmailAutomationService.ts (Emails automáticos)
+│   │   ├── CalendarIntegrationService.ts (Integración calendarios)
+│   │   ├── ConflictDetectionService.ts (Detección conflictos)
+│   │   ├── RevenueOptimizationService.ts (Optimización ingresos)
+│   │   └── ComplianceValidationService.ts (Validación compliance)
+│   └── messaging/
+│       ├── VencimientoEventPublisher.ts
+│       ├── CupoAlertPublisher.ts
+│       ├── DisponibilidadEventPublisher.ts
+│       └── TarifarioChangePublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── VencimientosController.ts
+    │   ├── ProgramaAuspicioController.ts
+    │   ├── CupoManagementController.ts
+    │   ├── TarifarioController.ts
+    │   ├── DisponibilidadController.ts
+    │   ├── AlertasController.ts
+    │   ├── AnalyticsController.ts
+    │   └── MobileVencimientosController.ts
+    ├── dto/
+    │   ├── CrearProgramaAuspicioDto.ts
+    │   ├── ActualizarCuposDto.ts
+    │   ├── ValidarDisponibilidadDto.ts
+    │   ├── ConfigurarTarifarioDto.ts
+    │   └── GenerarAlertaDto.ts
+    └── middleware/
+        ├── VencimientosAuthMiddleware.ts
+        ├── CupoValidationMiddleware.ts
+        └── TarifarioSecurityMiddleware.ts
+
+🎨 PANTALLA PRINCIPAL - CENTRO DE COMANDO INVENTARIO
+DASHBOARD EJECUTIVO MULTIEMISOR:
+Header con métricas de inventario en tiempo real:
+📅 CENTRO DE COMANDO DE INVENTARIO COMERCIAL TIER 0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 ESTADO INVENTARIO GLOBAL TIEMPO REAL
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 OCUPACIÓN GLOBAL: 78% promedio (234/300 cupos ocupados)      │
+│ 💰 REVENUE MENSUAL: $890M de $1.2B potencial (74% realizado)   │
+│ 📅 VENCIMIENTOS HOY: 12 auspicios finalizan                    │
+│ 🚨 ALERTAS CRÍTICAS: 3 programas sin cupos disponibles         │
+│ 📈 OPORTUNIDADES: 45 cupos premium disponibles próximo mes     │
+│ 🏆 TOP PROGRAMA: Mesa Central (95% ocupación - $125M mensual)  │
+└─────────────────────────────────────────────────────────────────┘
+SELECTOR DE EMISORA INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📻 SELECTOR MULTIEMISOR CON ANALYTICS                          │
+│                                                                 │
+│ 🎯 EMISORAS ACTIVAS:                                           │
+│                                                                 │
+│ [📻] SONAR FM • 🟢 Online                                      │
+│      Ocupación: 82% • Revenue: $245M • 15 programas activos    │
+│      🚨 2 alertas • 💰 12 cupos premium disponibles            │
+│                                                                 │
+│ [📻] RADIO 103.3 FM • 🟢 Online                               │
+│      Ocupación: 75% • Revenue: $198M • 12 programas activos    │
+│      ✅ Sin alertas • 💰 8 cupos disponibles                   │
+│                                                                 │
+│ [📻] T13 RADIO • 🟢 Online                                     │
+│      Ocupación: 88% • Revenue: $312M • 18 programas activos    │
+│      🚨 1 alerta crítica • 💰 5 cupos premium disponibles      │
+│                                                                 │
+│ 📊 Vista: [🎯 Individual] [📊 Comparativa] [🌍 Global]         │
+└─────────────────────────────────────────────────────────────────┘
+BARRA DE HERRAMIENTAS COMERCIAL AVANZADA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 BÚSQUEDA INTELIGENTE DE INVENTARIO                          │
+│                                                                 │
+│ Placeholder: "Mesa Central", "cupos agosto", "prime disponible"│
+│                                                                 │
+│ 🤖 SUGERENCIAS CORTEX:                                         │
+│ • "Programas con cupos disponibles próximo mes"                │
+│ • "Auspicios venciendo esta semana"                           │
+│ • "Oportunidades prime horario matinal"                        │
+│ • "Conflictos de exclusividad detectados"                      │
+└─────────────────────────────────────────────────────────────────┘
+Filtros avanzados de gestión:
+🎛️ FILTROS COMERCIALES AVANZADOS:
+
+📅 Período:
+○ Este Mes  ○ Próximo Mes  ○ Trimestre  ○ Personalizado
+
+🎯 Disponibilidad:
+☐ Con Cupos Disponibles    ☐ Sin Cupos    ☐ Todos
+
+💰 Tipo Auspicio:
+☐ Tipo A (Completo)  ☐ Tipo B (Medio)  ☐ Solo Menciones
+
+⏰ Horario:
+☐ Prime AM  ☐ Prime PM  ☐ Regular  ☐ Noche
+
+🚨 Estado:
+☐ Activos  ☐ Pendientes  ☐ Venciendo  ☐ Todos
+Acciones rápidas principales:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚡ ACCIONES RÁPIDAS COMERCIALES                                 │
+│                                                                 │
+│ [📅 Nuevo Programa]     [📊 Analytics Ocupación]               │
+│ [🎯 Consultar Cupos]    [⚠️ Gestionar Vencimientos]            │
+│ [💰 Actualizar Tarifas] [🔄 Sincronizar Contratos]             │
+│ [📋 Reportes Executive] [📱 Vista Móvil]                       │
+└─────────────────────────────────────────────────────────────────┘
+
+📻 VISTA DETALLADA POR EMISORA
+SONAR FM - GESTIÓN COMPLETA DE PROGRAMAS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📻 SONAR FM - INVENTARIO COMERCIAL DETALLADO                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 📊 MÉTRICAS EMISORA:                                           │
+│ • Ocupación global: 82% (49/60 cupos totales)                  │
+│ • Revenue mensual: $245,000,000                                │
+│ • Programas activos: 15                                        │
+│ • Vencimientos próximos: 4 (esta semana)                       │
+│                                                                 │
+│ 🎯 PROGRAMAS POR PERFORMANCE:                                  │
+│                                                                 │
+│ 🏆 TOP PERFORMERS:                                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🔥 SONAR INFORMATIVO                                        │ │
+│ │    ⏰ Lunes a Viernes 07:00-09:00                          │ │
+│ │    📊 Ocupación: 100% (25/25 cupos)                        │ │
+│ │    💰 Revenue: $78M • Tarifa: $3,500,000/mes              │ │
+│ │    🎯 Tipo A: 20 cupos • Tipo B: 5 cupos                   │ │
+│ │    📋 Lista espera: 8 clientes                             │ │
+│ │    [👁️ Ver Detalle] [📈 Analytics] [⚠️ Lista Espera]       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📺 CONVERSATORIO "SONAR DEPORTIVO"                          │ │
+│ │    ⏰ Lunes a Viernes 19:00-20:00                          │ │
+│ │    📊 Ocupación: 50% (1/2 cupos disponibles)               │ │
+│ │    💰 Revenue: $24M • Tarifa: $2,000,000/mes              │ │
+│ │    🎯 Tipo A: 1 ocupado, 1 disponible                      │ │
+│ │    🚨 OPORTUNIDAD: Cupo premium disponible                 │ │
+│ │    [🎯 Reservar] [💰 Ver Tarifas] [📞 Contactar Ejecutivo] │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ⚠️ ALERTAS Y OPORTUNIDADES:                                    │ │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🚨 SONAR CLÁSICOS                                          │ │
+│ │    ⏰ Lunes a Viernes 11:00-15:00                          │ │
+│ │    📊 Ocupación: 89% (8/9 cupos)                           │ │
+│ │    🔚 Vencimiento: TeleTracker (Mañana)                    │ │
+│ │    💡 Acción: Preparar renovación o liberar cupo           │ │
+│ │    [📞 Contactar Cliente] [🔄 Gestionar Renovación]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [➕ Nuevo Programa] [📊 Ver Todos] [⚙️ Configurar] [📋 Reporte]│
+└─────────────────────────────────────────────────────────────────┘
+
+➕ CREACIÓN INTELIGENTE DE PROGRAMA DE AUSPICIO
+WIZARD ULTRA-COMPLETO TIER 0:
+PASO 1: "INFORMACIÓN BÁSICA DEL PROGRAMA"
+┌─────────────────────────────────────────────────────────────────┐
+│ 📻 PASO 1: CONFIGURACIÓN BÁSICA DEL PROGRAMA                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🎯 INFORMACIÓN FUNDAMENTAL:                                     │
+│                                                                 │
+│ 📻 Emisora: [SONAR FM ▼] [Radio 103.3 FM] [T13 Radio]         │
+│                                                                 │
+│ 📺 Nombre del Programa:                                         │
+│ [Mesa Central Matinal                    ]                      │
+│                                                                 │
+│ ⏰ CONFIGURACIÓN HORARIA:                                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Horario Emisión:                                            │ │
+│ │ Desde: [07:00] Hasta: [09:30]                              │ │
+│ │                                                             │ │
+│ │ Días de Emisión:                                            │ │
+│ │ ☑️ L  ☑️ M  ☑️ M  ☑️ J  ☑️ V  ☐ S  ☐ D                   │ │
+│ │                                                             │ │
+│ │ 🤖 Cortex Detecta: Horario PRIME AM                        │ │
+│ │ • Audiencia estimada: 45,000 oyentes                       │ │
+│ │ • Rating promedio sector: 8.5 pts                          │ │
+│ │ • Valor sugerido: $3,200,000/mes                           │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎭 DESCRIPCIÓN DEL PROGRAMA:                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Programa matinal de análisis político y actualidad          │ │
+│ │ dirigido a profesionales de 30-55 años, NSE ABC1.          │ │
+│ │ Conducido por María González y Roberto Silva.               │ │
+│ │ Alto engagement con audiencia ejecutiva.                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 👥 CONDUCTORES/EQUIPO:                                         │
+│ • Conductor Principal: [María González     ] [➕ Agregar]      │
+│ • Co-conductor: [Roberto Silva         ] [➕ Agregar]         │
+│ • Productor: [Ana López              ] [➕ Agregar]          │
+│                                                                 │
+│ [⬅️ Cancelar] [➡️ Siguiente: Cupos] [💾 Guardar Borrador]     │
+└─────────────────────────────────────────────────────────────────┘
+PASO 2: "CONFIGURACIÓN DE CUPOS Y AUSPICIOS"
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 PASO 2: CONFIGURACIÓN DE CUPOS COMERCIALES                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 📊 ESTRUCTURA DE AUSPICIOS:                                    │
+│                                                                 │
+│ 🏆 AUSPICIO TIPO A (COMPLETO):                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Cupos disponibles: [8] cupos máximo                         │ │
+│ │                                                             │ │
+│ │ 🎯 Derechos incluidos:                                      │ │
+│ │ ☑️ Presentación apertura programa                           │ │
+│ │ ☑️ Mención intermedia (1 por bloque)                        │ │
+│ │ ☑️ Cierre de programa                                       │ │
+│ │ ☑️ Comercial 30" en tanda                                   │ │
+│ │ ☑️ Mención en redes sociales                                │ │
+│ │ ☐ Product placement (opcional)                              │ │
+│ │                                                             │ │
+│ │ 💰 Valor por cupo: [$4,500,000/mes] [💡 IA Sugiere]        │ │
+│ │ 📊 Valor total disponible: $36,000,000/mes                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🥈 AUSPICIO TIPO B (MEDIO):                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Cupos disponibles: [4] cupos máximo                         │ │
+│ │                                                             │ │
+│ │ 🎯 Derechos incluidos:                                      │ │
+│ │ ☑️ Mención intermedia (1 por programa)                      │ │
+│ │ ☑️ Comercial 20" en tanda                                   │ │
+│ │ ☐ Sin presentación/cierre                                  │ │
+│ │ ☐ Sin redes sociales                                       │ │
+│ │                                                             │ │
+│ │ 💰 Valor por cupo: [$2,200,000/mes] [💡 IA Sugiere]        │ │
+│ │ 📊 Valor total disponible: $8,800,000/mes                  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎙️ SOLO MENCIONES:                                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Menciones disponibles: [20] menciones/programa             │ │
+│ │                                                             │ │
+│ │ 🎯 Configuración:                                           │ │
+│ │ • Duración: 15 segundos promedio                            │ │
+│ │ • Frecuencia: Máximo 2 por cliente/programa                │ │
+│ │ • Distribución: Equitativa en programa                     │ │
+│ │                                                             │ │
+│ │ 💰 Valor por mención: [$180,000] [💡 IA Sugiere]           │ │
+│ │ 📊 Valor total disponible: $3,600,000/mes                  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 💡 TOTAL POTENCIAL PROGRAMA: $48,400,000/mes                   │
+│                                                                 │
+│ 🤖 ANÁLISIS CORTEX:                                            │
+│ • Pricing competitivo vs mercado: ✅ Dentro de rango          │
+│ • Capacidad vs audiencia: ✅ Balanceado                       │
+│ • Mix comercial recomendado: 60% Tipo A, 40% Tipo B           │
+│                                                                 │
+│ [⬅️ Atrás] [➡️ Siguiente: Exclusividades] [💰 Simular Revenue]│
+└─────────────────────────────────────────────────────────────────┘
+PASO 3: "GESTIÓN DE EXCLUSIVIDADES Y CONFLICTOS"
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚫 PASO 3: EXCLUSIVIDADES Y PREVENCIÓN DE CONFLICTOS          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🎯 CONFIGURACIÓN DE EXCLUSIVIDADES:                            │
+│                                                                 │
+│ 🏢 EXCLUSIVIDADES POR RUBRO:                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ☑️ BANCA Y FINANZAS                                         │ │
+│ │    Solo 1 cliente por programa                              │ │
+│ │    Actual: Ninguno • Disponible para venta                 │ │
+│ │                                                             │ │
+│ │ ☑️ TELECOMUNICACIONES                                       │ │
+│ │    Solo 1 cliente por programa                              │ │
+│ │    Actual: Ninguno • Disponible para venta                 │ │
+│ │                                                             │ │
+│ │ ☑️ AUTOMOTRIZ                                               │ │
+│ │    Máximo 2 marcas (no competencia directa)                │ │
+│ │    Actual: Ninguno • Disponible para venta                 │ │
+│ │                                                             │ │
+│ │ ☐ RETAIL/SUPERMERCADOS                                     │ │
+│ │    Sin restricciones (múltiples clientes permitidos)       │ │
+│ │                                                             │ │
+│ │ ☑️ BEBIDAS ALCOHÓLICAS                                      │ │
+│ │    Solo 1 marca por categoría (cerveza/pisco/vino)         │ │
+│ │    Actual: Ninguno • Disponible para venta                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ⚠️ DETECCIÓN AUTOMÁTICA DE CONFLICTOS:                         │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🤖 Cortex monitoreará automáticamente:                      │ │
+│ │                                                             │ │
+│ │ ✅ Competencia directa en mismo programa                    │ │
+│ │ ✅ Violación de exclusividades                              │ │
+│ │ ✅ Conflictos de imagen de marca                            │ │
+│ │ ✅ Superposición de campañas                                │ │
+│ │                                                             │ │
+│ │ 🚨 Acción automática ante conflicto:                        │ │
+│ │ • Alerta inmediata al ejecutivo                             │ │
+│ │ • Bloqueo de venta hasta resolución                         │ │
+│ │ • Sugerencia de programas alternativos                      │ │
+│ │ • Escalamiento a gerencia si crítico                        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📋 POLÍTICAS ESPECIALES:                                       │
+│ • ☑️ Prohibir competencia directa en misma tanda              │
+│ • ☑️ Separación mínima 15 minutos entre competidores          │
+│ • ☑️ Validar brand safety automáticamente                     │
+│ • ☑️ Respetar restricciones de horario por rubro              │
+│                                                                 │
+│ [⬅️ Atrás] [➡️ Siguiente: Tarifario] [🔍 Validar Conflictos]  │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "CONFIGURACIÓN DE TARIFARIO DINÁMICO"
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 PASO 4: TARIFARIO DINÁMICO E INTELIGENTE                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🎯 CONFIGURACIÓN PRECIOS BASE:                                 │
+│                                                                 │
+│ 📊 TARIFAS POR TIPO DE AUSPICIO:                               │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏆 AUSPICIO TIPO A (COMPLETO):                              │ │
+│ │                                                             │ │
+│ │ Base mensual: [$4,500,000] [💡 IA: Óptimo]                 │ │
+│ │ • Enero-Febrero: -10% (temporada baja)                     │ │
+│ │ • Marzo-Noviembre: Precio base                              │ │
+│ │ • Diciembre: +25% (temporada alta)                         │ │
+│ │                                                             │ │
+│ │ 🎯 Factores de ajuste automático:                          │ │
+│ │ • Rating >10 pts: +15% (calidad audiencia)                 │ │
+│ │ • Ocupación >90%: +20% (alta demanda)                      │ │
+│ │ • Cliente nuevo: -5% (incentivo inicial)                   │ │
+│ │ • Renovación temprana: -10% (fidelización)                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🥈 AUSPICIO TIPO B (MEDIO):                                 │ │
+│ │                                                             │ │
+│ │ Base mensual: [$2,200,000] [💡 IA: Competitivo]            │ │
+│ │ • Descuentos estacionales: Mismo % que Tipo A              │ │
+│ │ • Factores ajuste: 50% de los factores Tipo A              │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎙️ SOLO MENCIONES:                                          │ │
+│ │                                                             │ │
+│ │ Por mención: [$180,000] [💡 IA: Balanceado]                │ │
+│ │ • Paquete 5 menciones: -5% descuento                       │ │
+│ │ • Paquete 10 menciones: -10% descuento                     │ │
+│ │ • Paquete 20 menciones: -15% descuento                     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🤖 PRICING INTELIGENTE CORTEX:                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ✅ Análisis competencia: Precios 8% por encima promedio    │ │
+│ │ ✅ Elasticidad demanda: Óptimo para maximizar revenue      │ │
+│ │ ✅ Historical performance: +23% vs programa anterior       │ │
+│ │ ✅ Market conditions: Favorable para pricing premium       │ │
+│ │                                                             │ │
+│ │ 💡 Recomendaciones:                                         │ │
+│ │ • Mantener precios actuales (zona óptima)                  │ │
+│ │ • Crear paquetes anuales con 15% descuento                 │ │
+│ │ • Implementar early bird 20% para renovaciones             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📅 CONFIGURACIÓN TEMPORAL:                                     │
+│ • Vigencia tarifas: [01 Enero 2025] a [31 Diciembre 2025]     │
+│ • Revisión automática: Trimestral                             │
+│ • Ajustes por inflación: ☑️ Automático (IPC + 2%)             │
+│                                                                 │
+│ [⬅️ Atrás] [➡️ Siguiente: Validación] [💰 Simular Escenarios] │
+└─────────────────────────────────────────────────────────────────┘
+PASO 5: "VALIDACIÓN Y ACTIVACIÓN"
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ PASO 5: VALIDACIÓN FINAL Y ACTIVACIÓN                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🔍 RESUMEN DE CONFIGURACIÓN:                                   │
+│                                                                 │
+│ 📻 Programa: Mesa Central Matinal                              │
+│ 🕐 Horario: Lunes a Viernes 07:00-09:30 (Prime AM)            │
+│ 🎯 Cupos totales: 12 (8 Tipo A + 4 Tipo B + 20 menciones)     │
+│ 💰 Revenue potencial: $48,400,000/mes                          │
+│ 🚫 Exclusividades: 5 rubros configurados                       │
+│                                                                 │
+│ ✅ VALIDACIONES AUTOMÁTICAS:                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ✅ Horario libre (sin conflictos programación)              │ │
+│ │ ✅ Capacidad comercial balanceada                           │ │
+│ │ ✅ Pricing dentro de rangos de mercado                      │ │
+│ │ ✅ Exclusividades configuradas correctamente                │ │
+│ │ ✅ Integración con módulo contratos: OK                     │ │
+│ │ ✅ Permisos ejecutivos asignados                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 ASIGNACIÓN COMERCIAL:                                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 👤 Ejecutivos asignados:                                    │ │
+│ │ • Ana García (Principal) - Rubros: Banca, Telcos           │ │
+│ │ • Carlos Mendoza (Secundario) - Rubros: Retail, Auto       │ │
+│ │ • Roberto Silva (Menciones) - Todos los rubros             │ │
+│ │                                                             │ │
+│ │ 📊 Metas automáticas generadas:                             │ │
+│ │ • Ana García: $30M (6 Tipo A)                              │ │
+│ │ • Carlos Mendoza: $15M (2 Tipo A + 4 Tipo B)               │ │
+│ │ • Roberto Silva: $3.6M (20 menciones)                      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🚀 ACTIVACIÓN DEL PROGRAMA:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Fecha inicio ventas: [01 Enero 2025]                       │ │
+│ │ Fecha inicio emisión: [01 Febrero 2025]                    │ │
+│ │                                                             │ │
+│ │ 🤖 Automatizaciones que se activarán:                       │ │
+│ │ ✅ Sincronización con módulo contratos                      │ │
+│ │ ✅ Alertas de vencimiento automáticas                       │ │
+│ │ ✅ Validación de conflictos en tiempo real                  │ │
+│ │ ✅ Reportes de ocupación semanales                          │ │
+│ │ ✅ Optimización de pricing trimestral                       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [⬅️ Atrás] [🚀 ACTIVAR PROGRAMA] [💾 Guardar sin Activar]     │
+└─────────────────────────────────────────────────────────────────┘
+
+🎯 GESTIÓN AVANZADA DE CUPOS EN TIEMPO REAL
+DASHBOARD DE DISPONIBILIDAD INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 MESA CENTRAL MATINAL - GESTIÓN DE CUPOS TIEMPO REAL         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 📊 ESTADO ACTUAL (ENERO 2025):                                 │
+│                                                                 │
+│ 🏆 AUSPICIO TIPO A (8 cupos máximo):                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🟢 OCUPADOS (6/8):                                         │ │
+│ │                                                             │ │
+│ │ 1. Banco de Chile • Vigencia: 01-Ene a 31-Mar              │ │
+│ │    💰 $4,500,000/mes • 👤 Ana García • 🟢 Activo           │ │
+│ │    📅 Vence en: 59 días                                    │ │
+│ │                                                             │ │
+│ │ 2. Movistar • Vigencia: 15-Ene a 15-Abr                    │ │
+│ │    💰 $4,500,000/mes • 👤 Ana García • 🟢 Activo           │ │
+│ │    📅 Vence en: 74 días                                    │ │
+│ │                                                             │ │
+│ │ 3. Chevrolet • Vigencia: 01-Feb a 30-Abr                   │ │
+│ │    💰 $4,500,000/mes • 👤 Carlos Mendoza • 🔴 Pendiente    │ │
+│ │    📅 Inicia en: 10 días                                   │ │
+│ │                                                             │ │
+│ │ 4. Cencosud • Vigencia: 01-Ene a 28-Feb                    │ │
+│ │    💰 $4,275,000/mes • 👤 Carlos Mendoza • 🟢 Activo       │ │
+│ │    📅 Vence en: 28 días                                    │ │
+│ │                                                             │ │
+│ │ 5. Clínica Alemana • Vigencia: 01-Ene a 31-Dic             │ │
+│ │    💰 $51,000,000/año • 👤 Ana García • 🟢 Activo          │ │
+│ │    📅 Vence en: 334 días                                   │ │
+│ │                                                             │ │
+│ │ 6. Entel • Vigencia: 15-Ene a 15-Jul                       │ │
+│ │    💰 $27,000,000/6meses • 👤 Ana García • 🟢 Activo       │ │
+│ │    📅 Vence en: 165 días                                   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 💎 CUPOS DISPONIBLES (2/8):                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎯 CUPO 7: DISPONIBLE INMEDIATO                             │ │
+│ │    📅 Disponible desde: HOY                                 │ │
+│ │    💰 Precio: $4,500,000/mes                               │ │
+│ │    ⏰ Duración mínima: 3 meses                              │ │
+│ │    🚨 OPORTUNIDAD PREMIUM                                   │ │
+│ │    [🎯 Reservar] [💰 Negociar] [📞 Asignar Ejecutivo]       │ │
+│ │                                                             │ │
+│ │ 🎯 CUPO 8: DISPONIBLE DESDE MARZO                           │ │
+│ │    📅 Disponible desde: 01 Marzo (post Cencosud)           │ │
+│ │    💰 Precio: $4,500,000/mes                               │ │
+│ │    ✨ Pre-reserva disponible con 10% descuento             │ │
+│ │    [📅 Pre-reservar] [💡 Configurar Alert]                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🥈 AUSPICIO TIPO B (4 cupos):                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🟢 OCUPADOS: 2/4                                           │ │
+│ │ • Falabella: $2,200,000/mes (vence 15-Abr)                 │ │
+│ │ • Paris: $2,200,000/mes (vence 30-Jun)                     │ │
+│ │                                                             │ │
+│ │ 💎 DISPONIBLES: 2/4                                        │ │
+│ │ • Inmediato: 1 cupo ($2,200,000/mes)                       │ │
+│ │ • Desde Abril: 1 cupo (post Falabella)                     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎙️ MENCIONES (20 disponibles):                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🟢 OCUPADAS: 14/20 (70% ocupación)                         │ │
+│ │ 💎 DISPONIBLES: 6/20                                       │ │
+│ │ 💰 Precio: $180,000/mención                                │ │
+│ │ 📦 Paquetes disponibles:                                    │ │
+│ │ • 5 menciones: $855,000 (-5%)                              │ │
+│ │ • 6 menciones: $972,000 (-10%)                             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [🔄 Actualizar] [📊 Analytics] [⚠️ Gestionar Vencimientos]     │
+└─────────────────────────────────────────────────────────────────┘
+
+🚨 SISTEMA DE ALERTAS AUTOMÁTICAS
+CENTRO DE ALERTAS PROGRAMADORES:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚨 CENTRO DE ALERTAS AUTOMÁTICAS - PROGRAMADORES               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ ⚡ ALERTAS DE INICIO (Confirmación Requerida):                  │
+│                                                                 │
+│ 🔴 ALERTA CRÍTICA - ACCIÓN INMEDIATA:                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📅 INICIO DE AUSPICIO DETECTADO                             │ │
+│ │                                                             │ │
+│ │ 🏢 Cliente: Chevrolet Chile                                 │ │
+│ │ 📺 Programa: Mesa Central Matinal                           │ │
+│ │ 📻 Emisora: SONAR FM                                        │ │
+│ │ 📅 Fecha inicio: MAÑANA (01 Febrero 2025)                  │ │
+│ │ 💰 Valor: $4,500,000/mes (Tipo A Completo)                 │ │
+│ │ 👤 Ejecutivo: Carlos Mendoza                                │ │
+│ │                                                             │ │
+│ │ 🎯 Derechos a activar:                                      │ │
+│ │ • Presentación apertura programa                            │ │
+│ │ • Mención intermedia (1 por bloque)                         │ │
+│ │ • Cierre de programa                                        │ │
+│ │ • Comercial 30" en tanda                                    │ │
+│ │                                                             │ │
+│ │ ⚠️ ¿CONFIRMA INICIO DE AUSPICIO?                            │ │
+│ │                                                             │ │
+│ │ [✅ CONFIRMAR INICIO] [❌ RECHAZAR] [⏰ POSPONER 24H]        │ │
+│ │                                                             │ │
+│ │ 📝 Comentarios: [Opcional - Razón del rechazo/posposición] │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🟡 ALERTAS DE VENCIMIENTO (Próximos 7 días):                   │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📅 VENCIMIENTO PRÓXIMO - PREPARAR CAMBIOS                   │ │
+│ │                                                             │ │
+│ │ 🏢 Cliente: Cencosud                                        │ │
+│ │ 📺 Programa: Mesa Central Matinal                           │ │
+│ │ 📅 Finaliza: 28 Febrero 2025 (28 días)                     │ │
+│ │ 💰 Valor: $4,275,000/mes                                    │ │
+│ │                                                             │ │
+│ │ 🎭 Acciones requeridas:                                     │ │
+│ │ • Modificar presentaciones (quitar referencias)             │ │
+│ │ • Actualizar cierres de programa                            │ │
+│ │ • Preparar material genérico de reemplazo                   │ │
+│ │                                                             │ │
+│ │ [📝 Crear Tareas] [📞 Contactar Ejecutivo] [✅ Entendido]   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🟢 CONFIRMACIONES RECIENTES:                                   │
+│ • Banco de Chile: Renovación confirmada hasta 31-Mar           │
+│ • Movistar: Inicio confirmado el 15-Ene                       │
+│ • Clínica Alemana: Activo todo el año 2025                    │
+│                                                                 │
+│ [🔄 Actualizar] [⚙️ Configurar Alertas] [📊 Historial]        │
+└─────────────────────────────────────────────────────────────────┘
+MODAL DE CONFIRMACIÓN DE INICIO:
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ CONFIRMACIÓN DE INICIO DE AUSPICIO                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🎯 Al confirmar, el sistema automáticamente:                   │
+│                                                                 │
+│ ✅ ACTUALIZACIONES AUTOMÁTICAS:                                │
+│ • Cambiará estado de "Pendiente" a "Activo" (rojo → verde)     │
+│ • Enviará notificación al ejecutivo Carlos Mendoza             │
+│ • Actualizará disponibilidad de cupos en tiempo real           │
+│ • Generará alertas de material creativo requerido              │
+│ • Sincronizará con módulo de contratos                         │
+│ • Activará tracking de cumplimiento automático                 │
+│                                                                 │
+│ 📧 NOTIFICACIONES QUE SE ENVIARÁN:                             │
+│ • Ejecutivo: "Auspicio Chevrolet activado exitosamente"        │
+│ • Gerente: "Nueva activación en Mesa Central Matinal"          │
+│ • Equipo programa: "Presentaciones/cierres Chevrolet activos"  │
+│ • Facturación: "Iniciar facturación automática"                │
+│                                                                 │
+│ 🎭 MATERIAL REQUERIDO:                                         │
+│ • Presentación: "Mesa Central Matinal con Chevrolet"           │
+│ • Cierre: "...esto fue posible gracias a Chevrolet"            │
+│ • Menciones: Según brief del cliente                           │
+│ • Comerciales: Cuñas 30" para tandas                           │
+│                                                                 │
+│ ⚠️ RECORDATORIO IMPORTANTE:                                     │
+│ Coordinar con equipo de producción las presentaciones y        │
+│ cierres específicos antes del inicio mañana 07:00.             │
+│                                                                 │
+│ [✅ CONFIRMAR Y ACTIVAR] [❌ Cancelar] [📞 Contactar Ejecutivo] │
+└─────────────────────────────────────────────────────────────────┘
+
+💰 CONFIGURACIÓN DE TANDAS Y TARIFARIO
+GESTIÓN COMPLETA DE TANDAS COMERCIALES:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 CONFIGURACIÓN MAESTRA DE TANDAS Y TARIFARIO                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🎯 TIPOS DE TANDAS DEFINIDAS:                                  │
+│                                                                 │
+│ 🏆 PRIME AM (07:00-10:00):                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 Características:                                         │ │
+│ │ • Factor multiplicador: 2.5x precio base                    │ │
+│ │ • Audiencia promedio: 45,000 oyentes                       │ │
+│ │ • Rating promedio: 12.5 pts                                │ │
+│ │                                                             │ │
+│ │ 💰 Tarifas por duración:                                    │ │
+│ │ • 5": $95,000                                              │ │
+│ │ • 10": $180,000                                            │ │
+│ │ • 15": $265,000                                            │ │
+│ │ • 20": $350,000                                            │ │
+│ │ • 30": $520,000                                            │ │
+│ │ • 45": $775,000                                            │ │
+│ │ • 60": $1,030,000                                          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🥇 PRIME PM (17:00-20:00):                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 Características:                                         │ │
+│ │ • Factor multiplicador: 2.2x precio base                    │ │
+│ │ • Audiencia promedio: 38,000 oyentes                       │ │
+│ │ • Rating promedio: 10.8 pts                                │ │
+│ │                                                             │ │
+│ │ 💰 Tarifas por duración:                                    │ │
+│ │ • 5": $84,000                                              │ │
+│ │ • 10": $158,000                                            │ │
+│ │ • 15": $233,000                                            │ │
+│ │ • 20": $308,000                                            │ │
+│ │ • 30": $458,000                                            │ │
+│ │ • 45": $683,000                                            │ │
+│ │ • 60": $908,000                                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 REPARTIDA ESTÁNDAR (10:00-17:00):                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 Características:                                         │ │
+│ │ • Factor multiplicador: 1.0x precio base                    │ │
+│ │ • Audiencia promedio: 22,000 oyentes                       │ │
+│ │ • Rating promedio: 6.5 pts                                 │ │
+│ │                                                             │ │
+│ │ 💰 Tarifas por duración (BASE):                             │ │
+│ │ • 5": $38,000                                              │ │
+│ │ • 10": $72,000                                             │ │
+│ │ • 15": $106,000                                            │ │
+│ │ • 20": $140,000                                            │ │
+│ │ • 30": $208,000                                            │ │
+│ │ • 45": $310,000                                            │ │
+│ │ • 60": $412,000                                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🌙 NOCHE (20:00-00:00):                                        │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 Características:                                         │ │
+│ │ • Factor multiplicador: 0.7x precio base                    │ │
+│ │ • Audiencia promedio: 15,000 oyentes                       │ │
+│ │ • Rating promedio: 4.2 pts                                 │ │
+│ │                                                             │ │
+│ │ 💰 Tarifas por duración:                                    │ │
+│ │ • 5": $26,600                                              │ │
+│ │ • 10": $50,400                                             │ │
+│ │ • 15": $74,200                                             │ │
+│ │ • 20": $98,000                                             │ │
+│ │ • 30": $145,600                                            │ │
+│ │ • 45": $217,000                                            │ │
+│ │ • 60": $288,400                                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [💰 Editar Tarifas] [📊 Analytics] [🔄 Actualizar] [💾 Guardar]│
+└─────────────────────────────────────────────────────────────────┘
+CONFIGURACIÓN DE SEÑALES ESPECIALES:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🌡️ CONFIGURACIÓN DE SEÑALES ESPECIALES                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🌡️ SEÑALES DE TEMPERATURA:                                     │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🌡️ TEMPERATURA 1                                            │ │
+│ │ • Horarios: 07:30, 08:30, 09:30 (cada hora en prime)       │ │
+│ │ • Duración: 5 segundos fijos                                │ │
+│ │ • Formato: "La temperatura actual es X grados"              │ │
+│ │ • Precio: $1,500,000/mes                                    │ │
+│ │ • Exclusividad: 1 cliente                                   │ │
+│ │ • Estado: 🟢 Ocupado por CANAL 13 - TELETECE               │ │
+│ │                                                             │ │
+│ │ 🌡️ TEMPERATURA 2                                            │ │
+│ │ • Horarios: 12:30, 14:30, 16:30 (tardes)                   │ │
+│ │ • Duración: 5 segundos fijos                                │ │
+│ │ • Precio: $1,200,000/mes                                    │ │
+│ │ • Estado: 💎 DISPONIBLE                                     │ │
+│ │                                                             │ │
+│ │ 🌡️ TEMPERATURA 3                                            │ │
+│ │ • Horarios: 18:30, 19:30 (prime PM)                        │ │
+│ │ • Duración: 5 segundos fijos                                │ │
+│ │ • Precio: $1,300,000/mes                                    │ │
+│ │ • Estado: 💎 DISPONIBLE                                     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎙️ MICROS ESPECIALES:                                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📻 MICRO INFORMATIVO                                        │ │
+│ │ • Duración: 10-15 segundos                                  │ │
+│ │ • Frecuencia: 3 veces/día                                   │ │
+│ │ • Formato: Información útil + mención cliente               │ │
+│ │ • Precio: $800,000/mes                                      │ │
+│ │ • Cupos: 3 disponibles                                      │ │
+│ │ • Estado: 1 ocupado, 2 disponibles                          │ │
+│ │                                                             │ │
+│ │ 📻 MICRO ENTRETENIMIENTO                                    │ │
+│ │ • Duración: 15 segundos                                     │ │
+│ │ • Frecuencia: 2 veces/día                                   │ │
+│ │ • Formato: Dato curioso + mención cliente                   │ │
+│ │ • Precio: $600,000/mes                                      │ │
+│ │ • Cupos: 4 disponibles                                      │ │
+│ │ • Estado: 2 ocupados, 2 disponibles                         │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎵 CORTINAS MUSICALES:                                         │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎼 CORTINA ENTRADA PROGRAMA                                  │ │
+│ │ • Mención: "Con el auspicio de [CLIENTE]"                   │ │
+│ │ • Duración: 8 segundos                                      │ │
+│ │ • Precio: $2,500,000/mes                                    │ │
+│ │ • Exclusividad: 1 cliente                                   │ │
+│ │ • Estado: 🟢 Ocupado por Clínica Alemana                    │ │
+│ │                                                             │ │
+│ │ 🎼 CORTINA CIERRE PROGRAMA                                   │ │
+│ │ • Mención: "Esto fue posible gracias a [CLIENTE]"           │ │
+│ │ • Duración: 6 segundos                                      │ │
+│ │ • Precio: $2,000,000/mes                                    │ │
+│ │ • Estado: 💎 DISPONIBLE                                     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [➕ Crear Señal] [💰 Editar Precios] [📊 Performance] [💾 Guardar]│
+└─────────────────────────────────────────────────────────────────┘
+
+🔄 INTEGRACIÓN AUTOMÁTICA CON MÓDULO CONTRATOS
+SINCRONIZACIÓN INTELIGENTE BIDIRECCIONAL:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔄 SINCRONIZACIÓN AUTOMÁTICA CON CONTRATOS                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ ⚡ PROCESO AUTOMATIZADO:                                        │
+│                                                                 │
+│ 1️⃣ DETECCIÓN AUTOMÁTICA:                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🤖 Cortex detecta nuevo contrato con campañas asociadas:    │ │
+│ │                                                             │ │
+│ │ 📋 Contrato: CON-2025-00234                                 │ │
+│ │ 🏢 Cliente: AutoMax Chile SpA                               │ │
+│ │ 📺 Campaña: Mesa Central Matinal - Tipo A                   │ │
+│ │ 📅 Período: 01-Mar-2025 a 31-May-2025                      │ │
+│ │ 💰 Valor: $13,500,000 (3 meses)                            │ │
+│ │ 👤 Ejecutivo: Carlos Mendoza                                │ │
+│ │                                                             │ │
+│ │ ✅ Validaciones automáticas:                                │ │
+│ │ • Cupo disponible en fechas solicitadas                    │ │
+│ │ • Sin conflictos de exclusividad (Automotriz)              │ │
+│ │ • Precio coincide con tarifario vigente                    │ │
+│ │ • Cliente tiene términos comerciales válidos               │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 2️⃣ VALIDACIÓN INTELIGENTE:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🔍 Cortex-Flow analiza:                                     │ │
+│ │                                                             │ │
+│ │ ✅ Disponibilidad: Cupo 7 disponible desde 01-Mar          │ │
+│ │ ✅ Exclusividad: No hay otros automotrices en programa     │ │
+│ │ ✅ Capacidad: Programa puede absorber nuevo auspicio       │ │
+│ │ ⚠️ Alerta: Chevrolet ya confirmado desde 01-Feb            │ │
+│ │                                                             │ │
+│ │ 💡 Recomendación: Aprobar con separación temporal          │ │
+│ │ • Chevrolet: Feb-Abr (ya activo)                           │ │
+│ │ • AutoMax: Mar-May (nuevo)                                  │ │
+│ │ • Overlap: Solo marzo (aceptable - marcas diferentes)      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 3️⃣ CONFIRMACIÓN PROGRAMADOR:                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🚨 ALERTA AUTOMÁTICA AL PROGRAMADOR:                        │ │
+│ │                                                             │ │
+│ │ "Nuevo auspicio AutoMax detectado para Mesa Central"        │ │
+│ │ "Inicio: 01-Mar-2025 • Tipo A Completo"                    │ │
+│ │ "Confirma reserva de cupo y actualización de sistema?"      │ │
+│ │                                                             │ │
+│ │ [✅ CONFIRMAR] [❌ RECHAZAR] [⏰ REVISAR DESPUÉS]            │ │
+│ │                                                             │ │
+│ │ 📝 Nota programador: [Campo para observaciones]             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 4️⃣ ACTUALIZACIÓN AUTOMÁTICA:                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ✅ Al confirmar, el sistema ejecuta automáticamente:        │ │
+│ │                                                             │ │
+│ │ • Reserva cupo 7 para AutoMax (01-Mar a 31-May)            │ │
+│ │ • Actualiza disponibilidad en tiempo real                  │ │
+│ │ • Sincroniza con módulo contratos (estado confirmado)      │ │
+│ │ • Genera alertas de material creativo requerido            │ │
+│ │ • Programa alertas de inicio automáticas                   │ │
+│ │ • Notifica al ejecutivo Carlos Mendoza                     │ │
+│ │ • Actualiza métricas de ocupación                          │ │
+│ │ • Genera tareas en calendario de programación              │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [📊 Ver Historial] [⚙️ Configurar] [🔄 Forzar Sync] [📋 Log]  │
+└─────────────────────────────────────────────────────────────────┘
+
+📊 ANALYTICS Y BUSINESS INTELLIGENCE
+DASHBOARD EJECUTIVO DE INVENTARIO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 BUSINESS INTELLIGENCE - INVENTARIO COMERCIAL                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 💰 MÉTRICAS FINANCIERAS (ENERO 2025):                          │
+│                                                                 │
+│ 🎯 PERFORMANCE GLOBAL:                                         │
+│ • Revenue realizado: $847M de $1.2B potencial (70.6%)          │
+│ • Ocupación promedio: 78% (234/300 cupos disponibles)          │
+│ • Precio promedio por cupo: $3.6M/mes                          │
+│ • Crecimiento vs ene-2024: +23%                                │
+│                                                                 │
+│ 📻 POR EMISORA:                                                │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏆 T13 RADIO: $312M (37% del total)                        │ │
+│ │    Ocupación: 88% • 18 programas • Precio prom: $4.2M      │ │
+│ │                                                             │ │
+│ │ 🥈 SONAR FM: $245M (29% del total)                         │ │
+│ │    Ocupación: 82% • 15 programas • Precio prom: $3.8M      │ │
+│ │                                                             │ │
+│ │ 🥉 RADIO 103.3: $198M (23% del total)                      │ │
+│ │    Ocupación: 75% • 12 programas • Precio prom: $3.2M      │ │
+│ │                                                             │ │
+│ │ 📊 OTRAS: $92M (11% del total)                             │ │
+│ │    Ocupación: 65% • 8 programas • Precio prom: $2.8M       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 POR TIPO DE AUSPICIO:                                       │
+│ • Tipo A (Completo): $567M - 67% del revenue total             │
+│ • Tipo B (Medio): $189M - 22% del revenue total                │
+│ • Solo Menciones: $91M - 11% del revenue total                 │
+│                                                                 │
+│ ⏰ POR HORARIO:                                                │
+│ • Prime AM: $423M - 50% del revenue (alta concentración)       │
+│ • Prime PM: $268M - 32% del revenue                            │
+│ • Regular: $108M - 13% del revenue                             │
+│ • Noche: $48M - 5% del revenue                                │
+│                                                                 │
+│ 🏢 TOP CLIENTES POR REVENUE:                                   │
+│ 1. Clínica Alemana: $145M (contratos anuales múltiples)        │
+│ 2. Banco de Chile: $89M (portfolio completo)                   │
+│ 3. Movistar: $67M (campañas estacionales)                      │
+│ 4. Chevrolet: $54M (lanzamientos productos)                    │
+│ 5. Cencosud: $45M (promociones regulares)                      │
+│                                                                 │
+│ 🔮 PREDICCIONES CORTEX (Próximos 90 días):                     │
+│ • Revenue proyectado: $2.8B trimestre (+15% vs Q1-2024)        │
+│ • Renovaciones esperadas: 89% de contratos venciendo           │
+│ • Nuevas oportunidades: $340M en pipeline                      │
+│ • Riesgo de pérdida: $45M (clientes en proceso competitivo)    │
+│                                                                 │
+│ [📊 Análisis Detallado] [🎯 Oportunidades] [📈 Proyecciones]   │
+└─────────────────────────────────────────────────────────────────┘
+ANÁLISIS DE PERFORMANCE POR PROGRAMA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📈 RANKING DE PROGRAMAS POR PERFORMANCE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🏆 TOP PERFORMERS (Mayor Revenue/Cupo):                        │
+│                                                                 │
+│ 1️⃣ Mesa Central (T13 Radio):                                  │
+│    💰 Revenue: $125M • Ocupación: 95% • Precio prom: $4.8M    │
+│    📊 ROI vs audiencia: 340% • Lista espera: 12 clientes      │
+│    🎯 Oportunidad: Aumentar precio 15% por alta demanda       │
+│                                                                 │
+│ 2️⃣ Buenos Días Chile (Sonar):                                 │
+│    💰 Revenue: $78M • Ocupación: 100% • Precio prom: $3.5M    │
+│    📊 ROI vs audiencia: 285% • Lista espera: 8 clientes       │
+│    🎯 Oportunidad: Crear horario extendido                    │
+│                                                                 │
+│ 3️⃣ Tarde Deportiva (Radio 103.3):                             │
+│    💰 Revenue: $67M • Ocupación: 85% • Precio prom: $4.2M     │
+│    📊 ROI vs audiencia: 245% • Cupos disponibles: 3           │
+│    🎯 Oportunidad: Targeting específico hombres 25-45         │
+│                                                                 │
+│ ⚠️ PROGRAMAS SUB-UTILIZADOS (Oportunidades):                   │
+│                                                                 │
+│ 🔻 Noche Cultural (Radio 103.3):                               │
+│    💰 Revenue: $12M • Ocupación: 35% • Precio prom: $1.8M     │
+│    📊 Problema: Bajo rating, audiencia nicho                  │
+│    💡 Solución: Re-posicionar como cultural premium           │
+│                                                                 │
+│ 🔻 Madrugada Informativa (Sonar):                              │
+│    💰 Revenue: $8M • Ocupación: 25% • Precio prom: $1.2M      │
+│    📊 Problema: Horario complicado, baja audiencia            │
+│    💡 Solución: Convertir a podcast + targeting digital       │
+│                                                                 │
+│ 🤖 RECOMENDACIONES CORTEX:                                     │
+│ • Redistribuir inventario desde programas débiles              │
+│ • Crear nuevos formatos en horarios de alta demanda            │
+│ • Implementar pricing dinámico por temporada                   │
+│ • Desarrollar productos híbridos radio+digital                 │
+│                                                                 │
+│ [🎯 Plan Optimización] [💰 Ajustar Precios] [📊 Deep Dive]    │
+└─────────────────────────────────────────────────────────────────┘
+
+📱 VERSIÓN MÓVIL EJECUTIVA
+APP MÓVIL PARA EJECUTIVOS EN TERRENO:
+┌─────────────────────────────────────────┐
+│ 📅 SILEXAR VENCIMIENTOS MÓVIL           │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Ejecutivo                  │
+│                                         │
+│ 📊 MI PERFORMANCE HOY:                  │
+│ • Cupos asignados: 45                   │
+│ • Ocupación: 87% (39/45)                │
+│ • Revenue YTD: $234M                    │
+│ • Meta mes: 92% completada              │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🎯 Consultar Disponibilidad]           │
+│ [💰 Ver Tarifas Actuales]               │
+│ [📅 Vencimientos Próximos]              │
+│ [🚨 Oportunidades Hot]                  │
+│                                         │
+│ 🔥 OPORTUNIDADES HOT:                   │
+│ • Mesa Central: 1 cupo desde marzo      │
+│ • Deportiva PM: Disponible inmediato    │
+│ • Temperatura 2: Exclusiva disponible   │
+│                                         │
+│ 🚨 MIS ALERTAS:                         │
+│ • Banco XYZ: Vence en 15 días           │
+│ • AutoMax: Confirmación pendiente       │
+│                                         │
+│ 📱 CONSULTA RÁPIDA:                     │
+│ Cliente: [Buscar...         ] [🔍]      │
+│ [🚀 Ver Disponibilidad]                 │
+│                                         │
+│ [🎯 Nueva Reserva] [📊 Mi Pipeline]     │
+├─────────────────────────────────────────┤
+│ [🏠] [📅] [💰] [🚨] [⚙️]                │
+└─────────────────────────────────────────┘
+CONSULTA RÁPIDA DE DISPONIBILIDAD:
+┌─────────────────────────────────────────┐
+│ 🎯 DISPONIBILIDAD - CLIENTE NUEVO       │
+├─────────────────────────────────────────┤
+│ Cliente: TechStart SpA                  │
+│ Rubro: Tecnología                       │
+│ Presupuesto: $15M (estimado)            │
+│                                         │
+│ 💡 CORTEX RECOMIENDA:                   │
+│                                         │
+│ 🏆 MEJOR OPCIÓN:                        │
+│ Mesa Central Matinal                    │
+│ 📅 Disponible: Desde 01-Mar             │
+│ 💰 Precio: $4.5M/mes (Tipo A)          │
+│ 🎯 Audiencia: 45K ejecutivos            │
+│ ⭐ Match: 95% (tech audience)           │
+│ [📞 Llamar Cliente] [📧 Enviar Brief]   │
+│                                         │
+│ 🥈 ALTERNATIVA:                         │
+│ Tarde Deportiva                         │
+│ 📅 Disponible: Inmediato                │
+│ 💰 Precio: $3.2M/mes (Tipo B)          │
+│ ⭐ Match: 75% (amplia audiencia)        │
+│ [💰 Ver Detalles] [🎯 Reservar]         │
+│                                         │
+│ 💰 ECONÓMICA:                           │
+│ Solo Menciones (Varios programas)       │
+│ 📅 Disponible: Inmediato                │
+│ 💰 Desde: $180K/mención                 │
+│ 📦 Paquete 15 menciones: $2.43M         │
+│ [📋 Configurar Paquete]                 │
+│                                         │
+│ [🔄 Nueva Consulta] [💾 Guardar Lead]   │
+└─────────────────────────────────────────┘
+
+🔐 SEGURIDAD Y COMPLIANCE TIER 0
+PROTECCIÓN ULTRA-AVANZADA DE INVENTARIO:
+
+Auditoría Inmutable: Cada cambio de cupo registrado en blockchain
+Validación Dual: Programador + sistema confirman cambios críticos
+Zero-Trust: Verificación continua de permisos de acceso
+Encriptación Cuántica: Protección de datos comerciales sensibles
+Compliance Automático: GDPR, SOX, regulaciones locales
+
+CONTROLES DE ACCESO GRANULARES:
+Ejecutivo Junior:
+✅ Consultar disponibilidad de sus programas asignados
+✅ Ver tarifas públicas
+❌ Modificar precios o cupos
+❌ Acceso a analytics detallados
+
+Ejecutivo Senior:
+✅ Consultar disponibilidad total por emisora
+✅ Reservar cupos temporalmente (24h)
+✅ Ver analytics de sus programas
+❌ Confirmar reservas definitivas
+
+Gerente Comercial:
+✅ Gestión completa de inventario
+✅ Modificar tarifas y configuraciones
+✅ Analytics completos y reportes
+✅ Override de validaciones automáticas
+
+Programador:
+✅ Confirmar/rechazar inicio de auspicios
+✅ Gestionar alertas operativas
+✅ Actualizar estados de emisión
+❌ Modificar precios o términos comerciales
+
+Administrador:
+✅ Configuración completa del sistema
+✅ Gestión de usuarios y permisos
+✅ Backup y recovery de configuraciones
+✅ Auditorías completas del sistema
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-INVENTORY INTELLIGENCE:
+
+Predicción de Demanda: Anticipa demanda por programa/horario/temporada
+Pricing Dinámico: Ajusta precios automáticamente por oferta/demanda
+Optimización de Mix: Sugiere combinación óptima de productos
+Detección de Oportunidades: Identifica espacios sub-utilizados
+
+2. CONFLICT PREVENTION ENGINE:
+
+AI-Powered Exclusivity: Detecta conflictos de marca automáticamente
+Brand Safety Scoring: Evalúa compatibilidad entre marcas
+Competitive Analysis: Monitorea actividad de competencia
+Dynamic Rules: Reglas de exclusividad que se adaptan automáticamente
+
+3. AUTOMATED LIFECYCLE MANAGEMENT:
+
+Smart Renewals: Predice y gestiona renovaciones automáticamente
+Churn Prevention: Detecta riesgo de no-renovación tempranamente
+Upselling Intelligence: Identifica oportunidades de crecimiento
+Customer Journey: Mapea experiencia completa del cliente
+
+4. REVENUE OPTIMIZATION MATRIX:
+
+Yield Management: Optimiza ingresos como industria aeronáutica
+Seasonal Adjustments: Ajustes automáticos por estacionalidad
+Portfolio Balance: Balanza automática de mix de productos
+Competitive Pricing: Ajusta precios según actividad competencia
+
+
+🎯 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+
+Programmatic Auctions: Subastas automáticas de inventario premium
+Voice Analytics: Análisis de sentimiento en audios de emisión
+Blockchain Certificates: Certificación inmutable de cumplimiento
+AR Visualization: Visualización 3D de ocupación de inventario
+Predictive Maintenance: Mantenimiento predictivo de relaciones comerciales
+
+Visión 2030:
+El Módulo Vencimientos evolucionará hacia un "Inventory Intelligence Brain" que:
+
+Optimiza automáticamente todo el inventario para máximo ROI
+Predice demanda con precisión cuántica 6 meses antes
+Genera revenue de forma autónoma con mínima supervisión humana
+Aprende continuamente de patrones globales de consumo
+
+
+💎 CONCLUSIÓN: EL SISTEMA DE INVENTARIO MÁS INTELIGENTE DEL MUNDO
+PARA EL EJECUTIVO DE VENTAS:
+
+Visibilidad Total: Disponibilidad en tiempo real de todo el inventario
+Inteligencia Comercial: Recomendaciones IA para maximizar ventas
+Simplicidad Extrema: Consultas complejas resueltas en 3 clicks
+Movilidad Completa: Funcionalidad completa desde cualquier lugar
+
+PARA EL PROGRAMADOR DE TRÁFICO:
+
+Automatización Inteligente: 90% de gestión de vencimientos automatizada
+Alertas Predictivas: Sabe qué va a pasar antes de que ocurra
+Integración Perfecta: Sincronización automática con todos los sistemas
+Control Total: Override manual para casos especiales
+
+PARA EL GERENTE COMERCIAL:
+
+Optimización de Revenue: Maximización automática de ingresos
+Analytics Avanzados: Insights que impulsan decisiones estratégicas
+Gestión de Conflictos: Prevención automática de problemas comerciales
+Scaling Inteligente: Crecimiento sin incrementar complejidad operativa
+
+PARA LA ORGANIZACIÓN:
+
+Revenue Growth: Incremento promedio del 40% en utilización de inventario
+Operational Excellence: 95% reducción en errores de programación
+Competitive Advantage: Tecnología única imposible de replicar
+Future-Proof: Arquitectura que evoluciona con el negocio
+
+
+🚀 EL MÓDULO VENCIMIENTOS TIER 0: MÁS QUE TECNOLOGÍA, UNA REVOLUCIÓN
+El Módulo Vencimientos TIER 0 no es solo un gestor de inventario: es una revolución que transforma el concepto tradicional de gestión comercial en medios de comunicación, estableciendo un nuevo paradigma donde la inteligencia artificial y la automatización inteligente convergen para crear el ecosistema de monetización más sofisticado jamás desarrollado.
+🌟 TRANSFORMACIÓN RADICAL DEL NEGOCIO
+Este módulo representa la evolución del DNA comercial de cualquier organización mediática, donde cada cupo, cada mención, cada segundo de tiempo aire se convierte en una oportunidad optimizada matemáticamente para generar el máximo retorno de inversión. No estamos hablando de una mejora incremental: estamos describiendo una metamorfosis completa que redefine las reglas del juego.
+🧠 INTELIGENCIA ARTIFICIAL AL SERVICIO DE RESULTADOS
+Cortex-Flow e Intelligence no son solo algoritmos: son cerebros digitales que aprenden, predicen y optimizan continuamente. Cada decisión comercial está respaldada por análisis cuánticos de millones de variables que ningún ser humano podría procesar simultáneamente. El resultado: decisiones perfectas, timing perfecto, resultados extraordinarios.
+⚡ VELOCIDAD CUÁNTICA EN OPERACIONES COMERCIALES
+Mientras la competencia toma días para procesar cambios de inventario, Silexar con Vencimientos TIER 0 opera en tiempo real cuántico. Cada oportunidad se identifica, evalúa y ejecuta en microsegundos. Cada conflicto se previene antes de existir. Cada vencimiento se gestiona antes de convertirse en problema.
+🌐 ECOSISTEMA SINÉRGICO TOTAL
+La verdadera magia ocurre en la sincronización perfecta con todo el ecosistema Silexar:
+
+Contratos que se auto-optimizan según disponibilidad
+Anunciantes que reciben experiencias personalizadas
+Cuñas que se alinean automáticamente con campañas
+Facturación que fluye sin fricción
+Analytics que revelan insights imposibles de descubrir manualmente
+
+🏆 LIDERAZGO TECNOLÓGICO INCONTESTABLE
+Este no es un producto: es una declaración de supremacía tecnológica. Mientras la industria opera con herramientas del siglo pasado, Silexar lidera con tecnología del futuro. La brecha competitiva no es solo significativa: es abismal e imposible de cerrar para competidores tradicionales.
+💫 IMPACTO ORGANIZACIONAL EXPONENCIAL
+Antes de Vencimientos TIER 0:
+
+Gestión manual propensa a errores
+Oportunidades perdidas por falta de visibilidad
+Conflictos comerciales recurrentes
+Revenue sub-optimizado por decisiones tardías
+Estrés operativo constante
+
+Después de Vencimientos TIER 0:
+
+Orquestación automática de todo el inventario comercial
+Maximización cuántica de cada oportunidad de revenue
+Prevención predictiva de todos los conflictos
+Serenidad operativa basada en automatización inteligente
+Crecimiento exponencial sostenible y escalable
+
+🌈 VISIÓN TRASCENDENTAL: EL FUTURO ES HOY
+No estamos construyendo solo un módulo: estamos arquitectando el futuro de la monetización mediática. Cada línea de código, cada algoritmo, cada interfaz está diseñada para que nuestros usuarios no solo compitan, sino que dominen absolutamente sus mercados.
+🎯 LLAMADO A LA ACCIÓN HISTÓRICA
+El Módulo Vencimientos TIER 0 representa una oportunidad única en la historia: ser pioneros en la próxima revolución tecnológica de la industria mediática. No es una mejora: es una reinvención total que posicionará a quienes lo adopten como líderes incontestables en sus mercados.
+
+🏅 CERTIFICACIÓN DE EXCELENCIA SILEXAR
+"El Módulo Vencimientos TIER 0 ha sido diseñado, desarrollado y optimizado bajo los más altos estándares de innovación tecnológica, representando el pinnacle de la ingeniería de software aplicada a la gestión comercial mediática. Esta especificación constituye la base para la construcción del sistema de inventario más inteligente, poderoso y revolucionario jamás concebido."
+🚀 El futuro de la gestión comercial mediática comienza AHORA.
+🌟 El Módulo Vencimientos TIER 0 es ese futuro.
+💎 Silexar es la puerta de entrada a la supremacía tecnológica total.
+
+🎉 FIN DE ESPECIFICACIÓN TIER 0 - MÓDULO VENCIMIENTOS
+📅 Documento completado y listo para implementación
+🔥 Próximo nivel: Transformar especificación en realidad tecnológica

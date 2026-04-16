@@ -34,6 +34,7 @@ const createContratoSchema = z.object({
   valorTotalBruto: z.number().nonnegative().optional().default(0),
   descuentoPorcentaje: z.number().min(0).max(100).optional().default(0),
   tipoContrato: z.enum(['campaña', 'evento', 'anual', 'canje']).optional().default('campaña'),
+  medio: z.enum(['fm', 'digital', 'hibrido']).optional().default('fm'),
   ejecutivoId: z.string().uuid('UUID inválido').optional(),
   propiedadesSeleccionadas: z.array(z.object({ tipoCodigo: z.string(), valorCodigoRef: z.string() })).optional().default([])
 }).refine(data => data.anuncianteId || data.agenciaId, {
@@ -77,6 +78,7 @@ export const GET = withApiRoute(
           titulo: snap.producto,
           clienteNombre: snap.anunciante,
           tipoContrato: snap.tipoContrato,
+          medio: snap.medio,
           fechaInicio: snap.fechaInicio,
           fechaFin: snap.fechaFin,
           valorTotalNeto: snap.totales.valorNeto,
@@ -204,6 +206,7 @@ export const POST = withApiRoute(
         fechaFin: new Date(body.fechaFin),
         prioridad: 'media',
         tipoContrato: tipoContratoDomain,
+        medio: body.medio,
         terminosPago: TerminosPago.create(30),
         modalidadFacturacion: 'cuotas',
         tipoFactura: 'posterior',
@@ -239,6 +242,7 @@ export const POST = withApiRoute(
         titulo: snap.producto,
         clienteNombre: snap.anunciante,
         tipoContrato: snap.tipoContrato,
+        medio: snap.medio,
         fechaInicio: snap.fechaInicio,
         fechaFin: snap.fechaFin,
         valorTotalNeto: snap.totales.valorNeto,

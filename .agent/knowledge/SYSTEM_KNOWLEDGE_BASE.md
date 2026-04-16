@@ -2,7 +2,7 @@
 ## Sistema de Auto-Aprendizaje y Memoria Organizacional
 
 > **Versión:** 1.0.0  
-> **Última actualización:** 2026-04-03  
+> **Última actualización:** 2026-04-15  
 > **Agente CEO Kimi:** Sistema de memoria para evolución continua
 
 ---
@@ -78,6 +78,40 @@ DESPUÉS: docs/MANIFIESTO_ARQUITECTURA_2025.md
 - ❌ `archivo con espacios.txt`
 - ❌ `# archivo-con-emojis !!.txt`
 - ❌ `Archivo.Con.Puntos.Multiples.txt`
+
+---
+
+### [E004] Construcción de Módulos Fuera del Estándar DDD
+**Fecha detectado:** 2026-04-15  
+**Detectado por:** Agente CEO Kimi  
+**Severidad:** 🟠 ALTO  
+**Recurrencia:** 1
+
+**Descripción:**
+Los módulos `anunciantes` y `facturacion` fueron construidos con un approach híbrido (`src/app/anunciantes/` + `src/app/api/anunciantes/`) en lugar del DDD completo en `src/modules/`. Aunque son funcionales y seguros, carecen de:
+- Entities con factory methods
+- Result Pattern en application layer
+- Separación estricta domain/infrastructure/presentation
+- Commands y Queries formales
+
+Esto genera deuda técnica y dificulta escalar la lógica de negocio.
+
+**Archivos afectados:**
+- `src/app/anunciantes/` (Tier Functional usado para módulo de negocio complejo)
+- `src/app/facturacion/` (Tier Functional usado para módulo de negocio complejo)
+- `src/app/api/anunciantes/`
+- `src/app/api/facturacion/`
+
+**Solución aplicada:**
+- Se documentó la desviación como deuda técnica aceptada
+- Se creó el skill `.agent/skills/silexar-module-builder/SKILL.md` para evitar futuras desviaciones
+- Se definieron 2 tiers de construcción: Tier Core (DDD completo) y Tier Functional (CRUD seguro)
+
+**Checklist preventivo:**
+- [ ] Antes de construir un módulo, leer `silexar-module-builder/SKILL.md`
+- [ ] Decidir Tier: Core (negocio complejo) vs Functional (CRUD simple)
+- [ ] Si el módulo tiene >3 entidades o reglas de negocio → FORZOSAMENTE Tier Core
+- [ ] Crear `implementation_plan.md` antes de escribir código
 
 ---
 
@@ -217,6 +251,28 @@ const result = await db.select().from(campanas);  // PELIGROSO
 
 ---
 
+### [P006] Tier de Construcción de Módulos (Core vs Functional)
+**Categoría:** Arquitectura  
+**Frecuencia de uso:** CADA nuevo módulo
+
+**Contexto:**
+No todos los módulos requieren DDD completo. Forzar `src/modules/{modulo}/` con 4 capas para un catálogo simple genera over-engineering. Sin embargo, poner módulos de negocio complejo en `src/app/` genera deuda técnica.
+
+**Decisión:**
+Usar 2 tiers oficiales:
+
+| Tier | Cuándo usar | Estructura | Ejemplos |
+|------|-------------|------------|----------|
+| **Tier Core** | Negocio complejo, múltiples entidades, reglas ricas, escalabilidad | `src/modules/{modulo}/` DDD completo | contratos, campañas, equipos-ventas, conciliacion |
+| **Tier Functional** | CRUD simple, catálogos, utilidades administrativas | `src/app/{modulo}/` + `src/app/api/{modulo}/` | configuraciones auxiliares, dashboards simples |
+
+**Regla de oro:**
+Si el módulo tiene **>3 entidades** o **lógica fiscal/legal/operativa crítica** (facturación, contratos, campañas) → **SIEMPRE Tier Core**.
+
+**Skill de referencia:** `.agent/skills/silexar-module-builder/SKILL.md`
+
+---
+
 ### [P005] API Response Standard
 **Categoría:** Backend  
 **Frecuencia de uso:** CADA endpoint API
@@ -280,6 +336,26 @@ Usar better-auth 1.4+ por:
 - Organizaciones/roles
 - 2FA/TOTP
 - Sin vendor lock-in
+
+---
+
+### [ADR004] Dos Tiers de Construcción de Módulos
+**Fecha:** 2026-04-15  
+**Estado:** ACEPTADO  
+**Contexto:**
+El proyecto tenía módulos de negocio complejo (anunciantes, facturación) construidos como CRUDs simples en `src/app/`, sin las capas DDD que el protocolo oficial exige. Esto generó inconsistencia arquitectónica.
+
+**Decisión:**
+Aprobar oficialmente dos tiers de construcción:
+1. **Tier Core**: DDD completo en `src/modules/`
+2. **Tier Functional**: CRUD seguro en `src/app/`
+
+Cualquier desviación requiere documentación en `SYSTEM_KNOWLEDGE_BASE.md`.
+
+**Consecuencias:**
+- ✅ Flexibilidad para utilidades simples
+- ✅ Rigor para módulos de negocio
+- ⚠️ Requiere evaluación consciente antes de cada nuevo módulo
 
 ---
 
@@ -373,6 +449,7 @@ Cuando encuentres un nuevo patrón o error:
 ## 🔗 ENLACES RÁPIDOS
 
 - [CLAUDE.md](../CLAUDE.md) - Fuente de verdad del sistema
+- [SKILL: Silexar Module Builder](../skills/silexar-module-builder/SKILL.md) - **Protocolo unificado de construcción de módulos**
 - [SKILL: QA TIER 0](../skills/quality-assurance-qc/SKILL.md) - Protocolo QC
 - [SKILL: DDD](../skills/architecture-ddd/SKILL.md) - Arquitectura DDD
 - [SKILL: Security](../skills/security-audit/SKILL.md) - Seguridad

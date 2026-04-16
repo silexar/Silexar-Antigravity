@@ -1,0 +1,2765 @@
+🎵 MÓDULO CUÑAS - ESPECIFICACIÓN TIER 0
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO CUÑAS?
+El Módulo Cuñas es el centro neurálgico de gestión de contenido publicitario en Silexar Pulse. Funciona como el repositorio inteligente donde convergen todos los activos creativos de audio, textos de locución, presentaciones, cierres y contenido promocional que alimentan las campañas publicitarias.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Programador/Traffic Manager, paso el 60% de mi día en este módulo:
+
+Recibo cuñas de clientes por email/WhatsApp y las subo al sistema
+Valido que las presentaciones coincidan con los auspicios en Vencimientos
+Programo horarios de emisión y verifico cumplimiento
+Genero menciones cuando no hay audio pregrabado
+Envío paquetes de cuñas a operadores de emisión
+
+Como Ejecutivo de Ventas, uso este módulo para:
+
+Mostrar al cliente las cuñas disponibles durante reuniones comerciales
+Crear presentaciones personalizadas para nuevos auspicios
+Validar que tenemos todo el material antes de confirmar contratos
+Enviar previews de cuñas a clientes para aprobación
+
+Como Gerente Comercial, superviso:
+
+Qué clientes no han entregado material creativo
+Cuáles cuñas están por vencer y necesitan renovación
+La calidad y consistencia del material publicitario
+El cumplimiento de entregas vs cronogramas de campaña
+
+INTEGRACIÓN CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Al crear un contrato, automáticamente se valida si existen cuñas activas para el anunciante
+Módulo Vencimientos: Las presentaciones y cierres se validan contra auspicios programados
+Módulo Emisoras: Las cuñas se exportan automáticamente a sistemas de aire (WideOrbit, Sara, Dalet)
+Módulo Facturación: Solo se factura lo que efectivamente tiene material para emitir
+Cortex-Sense: Verifica automáticamente que las cuñas se emitieron según lo programado
+
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/cunas/
+├── domain/
+│   ├── entities/
+│   │   ├── Cuna.ts (Cuña principal)
+│   │   ├── Audio.ts (Archivo de audio)
+│   │   ├── Mencion.ts (Texto de locución)
+│   │   ├── Presentacion.ts (Textos de entrada)
+│   │   ├── Cierre.ts (Textos de salida)
+│   │   ├── PromoIDA.ts (Contenido promocional variable)
+│   │   ├── CunaVersion.ts (Versionado y historial)
+│   │   ├── HistorialUso.ts (Tracking de uso en campañas)
+│   │   ├── GrupoDistribucion.ts (Grupos de envío)
+│   │   └── ValidacionVencimientos.ts (Validaciones cruzadas)
+│   ├── value-objects/
+│   │   ├── CunaId.ts (ID único SPX000000)
+│   │   ├── CalidadAudio.ts (Especificaciones técnicas)
+│   │   ├── Duracion.ts (Duración en segundos/frames)
+│   │   ├── TiempoLocucion.ts (Timing de menciones)
+│   │   ├── EstadoCuna.ts (Estados del activo)
+│   │   └── VariablePersonalizada.ts (Variables para IDAs)
+│   └── repositories/
+│       ├── ICunaRepository.ts
+│       ├── IAudioRepository.ts
+│       ├── IPresentacionRepository.ts
+│       └── IDistribucionRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearCunaCommand.ts
+│   │   ├── ActualizarCunaCommand.ts
+│   │   ├── ProcesarAudioCommand.ts
+│   │   ├── CrearPresentacionCommand.ts
+│   │   ├── ValidarVencimientosCommand.ts
+│   │   ├── EnviarGrupoDistribucionCommand.ts
+│   │   ├── GenerarMencionIACommand.ts
+│   │   ├── CopiarCunaCommand.ts
+│   │   ├── ProgramarVencimientoCommand.ts
+│   │   └── ExportarSistemasEmisionCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerDetalleCunaQuery.ts
+│   │   ├── BuscarCunasQuery.ts
+│   │   ├── ObtenerHistorialUsoQuery.ts
+│   │   ├── ObtenerPresentacionesFaltantesQuery.ts
+│   │   ├── ObtenerCunasPorVencerQuery.ts
+│   │   ├── ValidarMaterialContratoQuery.ts
+│   │   └── GenerarReporteDistribucionQuery.ts
+│   └── handlers/
+│       ├── CunaCommandHandler.ts
+│       ├── AudioProcessingHandler.ts
+│       ├── MencionTimingHandler.ts
+│       ├── VencimientosValidationHandler.ts
+│       ├── DistribucionHandler.ts
+│       └── EmisionExportHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaCunaRepository.ts
+│   │   ├── GoogleCloudAudioRepository.ts
+│   │   └── PrismaDistribucionRepository.ts
+│   ├── external/
+│   │   ├── AudioProcessingService.ts
+│   │   ├── SpeechTimingAnalysisService.ts
+│   │   ├── VencimientosValidationService.ts
+│   │   ├── EmailDistributionService.ts
+│   │   ├── WhatsAppDistributionService.ts
+│   │   ├── CortexVoiceService.ts
+│   │   ├── CortexSenseService.ts
+│   │   ├── WideOrbitExportService.ts
+│   │   ├── SaraExportService.ts
+│   │   └── DaletExportService.ts
+│   └── messaging/
+│       ├── CunaEventPublisher.ts
+│       └── VencimientoAlertPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── CunaController.ts
+    │   ├── AudioController.ts
+    │   ├── PresentacionController.ts
+    │   ├── DistribucionController.ts
+    │   └── ValidacionController.ts
+    ├── dto/
+    │   ├── CrearCunaDto.ts
+    │   ├── ActualizarCunaDto.ts
+    │   ├── CrearPresentacionDto.ts
+    │   └── EnviarDistribucionDto.ts
+    └── middleware/
+        ├── CunaAccessMiddleware.ts
+        └── AudioUploadMiddleware.ts
+
+🎨 PANTALLA PRINCIPAL - CENTRO DE OPERACIONES DIARIAS
+VISTA INICIAL PARA OPERACIÓN COTIDIANA:
+Header operativo con métricas en tiempo real:
+
+Título: "🎵 Centro de Cuñas y Material Publicitario"
+Breadcrumb: "Dashboard > Cuñas"
+Panel de estado operativo:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ESTADO OPERATIVO - TIEMPO REAL                               │
+│                                                                 │
+│ 1,847 Cuñas Total   734 Audios   512 Menciones   67 Vencen HOY │
+│ 23 Sin Validar      156 En Uso   12 Pendientes   8 Alertas     │
+│ 🎯 Próxima Emisión: 14:30 - SuperMax Promo (Radio Corazón)     │
+└─────────────────────────────────────────────────────────────────┘
+
+
+BARRA DE HERRAMIENTAS PARA OPERACIÓN DIARIA:
+Búsqueda operativa inteligente:
+
+Placeholder: "🔍 SPX000123, SuperMax, 'promoción verano', presentación lunes..."
+Búsqueda contextual: Reconoce patrones típicos de operación diaria
+Sugerencias operativas:
+
+"Cuñas que vencen esta semana"
+"Material sin validar contra vencimientos"
+"Audios subidos hoy"
+"Presentaciones pendientes de envío"
+
+
+
+Filtros de trabajo diario:
+
+Estado Operativo:
+
+✅ Listo para Emisión (verde)
+⚠️ Requiere Validación (amarillo)
+🔄 En Proceso (azul)
+❌ Con Problemas (rojo)
+⏰ Por Vencer Hoy (naranja)
+
+
+Tipo de Material:
+
+🎵 Audio Pregrabado
+🎙️ Mención/Guión
+📢 Presentación
+🔚 Cierre
+🎯 Promo/IDA
+
+
+Urgencia Operativa:
+
+🚨 Crítico (emite en <2 horas)
+⚡ Urgente (emite hoy)
+📅 Programado (emite esta semana)
+📋 Standby (material de reserva)
+
+
+
+Acciones rápidas operativas:
+
+"➕ Subir Material" (drag & drop masivo)
+"🤖 Generar con IA" (Cortex-Voice para menciones)
+"📤 Envío Express" (distribución inmediata)
+"🔍 Validar Todo" (validación masiva contra vencimientos)
+"📊 Dashboard Operativo" (vista para gerencia de tráfico)
+
+TABLA OPERATIVA - DISEÑADA PARA USO INTENSIVO:
+Estructura optimizada para operadores de tráfico:
+1. Columna "Estado/Urgencia" (100px):
+┌─────────────────┐
+│ 🚨 SPX000847    │
+│ ⏰ 2h restantes │
+│ 📻 Corazón FM   │
+└─────────────────┘
+
+Estado: Semáforo visual inmediato
+ID: Link rápido al detalle
+Urgencia: Tiempo restante para emisión
+Emisora: Dónde se emite
+
+2. Columna "Material" (280px):
+┌─────────────────────────────────┐
+│ 🎵 Promoción Verano SuperMax    │
+│    28s • MP3 • ✅ Validado      │
+│    📅 Emite: Hoy 15:30-17:00    │
+│    🎯 5 emisiones programadas    │
+└─────────────────────────────────┘
+
+Nombre: Título operativo claro
+Specs: Duración, formato, estado de validación
+Programación: Cuándo y cuántas veces se emite
+Status: Confirmación de programación
+
+3. Columna "Cliente/Programa" (200px):
+┌─────────────────────────────────┐
+│ [LOGO] SuperMax                 │
+│ 📻 Programa Mañana • Auspicio   │
+│ 👤 Carlos Mendoza • ✅ Pagado   │
+└─────────────────────────────────┘
+
+Cliente: Visual inmediato del anunciante
+Programa: En qué programa específico va
+Ejecutivo: Responsable comercial
+Estado: Situación de pago/contrato
+
+4. Columna "Validaciones" (140px):
+┌─────────────────┐
+│ ✅ Vencimientos │
+│ ✅ Calidad Audio│
+│ ⚠️ Falta Cierre │
+│ 📧 Enviado 14:20│
+└─────────────────┘
+
+Vencimientos: Validación contra módulo
+Calidad: Análisis técnico del audio
+Completitud: Material faltante
+Distribución: Estado de envíos
+
+5. Columna "Programación" (150px):
+┌─────────────────┐
+│ 📅 15:30 - 17:00│
+│ 🔄 Cada 30 min  │
+│ 📻 4 emisoras   │
+│ ⏭️ Próx: 15:30  │
+└─────────────────┘
+
+Horario: Ventana de emisión
+Frecuencia: Cada cuánto se repite
+Cobertura: En cuántas emisoras
+Próxima: Siguiente emisión programada
+
+6. Columna "Acciones Rápidas" (180px):
+┌─────────────────┐
+│ [▶️] [✏️] [📤] │
+│ [📋] [🔄] [⚠️]  │
+└─────────────────┘
+
+▶️ Reproducir: Player inline con waveform
+✏️ Editar: Modificación rápida
+📤 Enviar: Distribución inmediata
+📋 Copiar: Duplicar para nueva versión
+🔄 Renovar: Extender vigencia
+⚠️ Reportar: Problema técnico/comercial
+
+PANEL LATERAL DE ALERTAS OPERATIVAS:
+Siempre visible durante operación:
+┌─────────────────────────────────────────┐
+│ 🚨 ALERTAS DE OPERACIÓN                 │
+│                                         │
+│ ⏰ VENCEN HOY (3):                      │
+│ • SuperMax Promo (SPX000123)           │
+│ • Banco XYZ Mención (SPX000089)        │
+│ • Farmacia Spot (SPX000156)            │
+│                                         │
+│ ⚠️ SIN VALIDAR (5):                     │
+│ • 3 presentaciones sin programa        │
+│ • 2 audios sin análisis técnico        │
+│                                         │
+│ 📤 PENDIENTES ENVÍO (2):                │
+│ • Paquete Radio Corazón (8 cuñas)      │
+│ • Operador turno noche (3 menciones)   │
+│                                         │
+│ [🔄 Actualizar] [📋 Ver Todo]           │
+└─────────────────────────────────────────┘
+
+➕ CREACIÓN RÁPIDA DE CUÑA - FLUJO OPERATIVO
+ACCESO RÁPIDO DESDE MÚLTIPLES CONTEXTOS:
+1. Desde botón principal: "➕ Nueva Cuña"
+2. Desde contrato: "Agregar Material" (pre-llena anunciante)
+3. Desde vencimientos: "Crear Presentación" (pre-llena programa)
+4. Desde email/WhatsApp: Drag & drop directo de archivos
+WIZARD OPTIMIZADO PARA VELOCIDAD:
+Paso 0: Detección Automática del Contexto:
+typescriptconst detectCreationContext = () => {
+  // Si viene desde contrato
+  if (contractContext) {
+    return {
+      advertiser: contractContext.advertiser,
+      product: contractContext.product,
+      suggestedType: 'audio', // La mayoría son audios
+      autoFillData: contractContext
+    };
+  }
+  
+  // Si viene desde vencimientos
+  if (vencimientosContext) {
+    return {
+      advertiser: vencimientosContext.advertiser,
+      program: vencimientosContext.program,
+      suggestedType: 'presentacion',
+      autoFillData: vencimientosContext
+    };
+  }
+  
+  // Creación desde scratch
+  return { suggestedType: 'audio' };
+};
+Selector inicial inteligente:
+┌─────────────────────────────────────────┐
+│ 🎯 ¿QUÉ MATERIAL VAS A CARGAR?          │
+│                                         │
+│ [🎵] Audio Pregrabado (Cuña)            │
+│      Archivo MP3/WAV del cliente        │
+│      ⚡ Más común - Carga rápida        │
+│                                         │
+│ [🎙️] Texto para Mención                 │
+│      Guión para locutor en vivo         │
+│      🤖 Con generación IA disponible    │
+│                                         │
+│ [📢] Presentación de Auspicio           │
+│      Entrada a programa patrocinado     │
+│      🔍 Valida contra vencimientos      │
+│                                         │
+│ [🔚] Cierre de Auspicio                 │
+│      Salida de programa patrocinado     │
+│      🎯 Auto-asocia con presentación    │
+│                                         │
+│ [🎯] Promo/IDA Variable                 │
+│      Contenido con datos que cambian    │
+│      📝 Con plantillas personalizables  │
+└─────────────────────────────────────────┘
+GENERACIÓN AUTOMÁTICA DE ID CON LÓGICA OPERATIVA:
+typescriptconst generateOperationalId = async (type: CunaType, context: CreationContext) => {
+  // Obtener próximo número secuencial
+  const sequence = await getNextSequenceNumber();
+  
+  // Formato: SPX + 6 dígitos con padding
+  const baseId = `SPX${sequence.toString().padStart(6, '0')}`;
+  
+  // Lock inmediato para evitar colisiones en operación concurrente
+  await lockCunaId(baseId);
+  
+  // Log para auditoría operativa
+  await logOperationalEvent({
+    action: 'id_generated',
+    cunaId: baseId,
+    user: currentUser.id,
+    context: context.source, // 'manual', 'contract', 'vencimientos'
+    timestamp: new Date()
+  });
+  
+  return baseId;
+};
+Display operativo del ID:
+┌─────────────────────────────────────────┐
+│ 🆔 ID ASIGNADO AUTOMÁTICAMENTE          │
+│                                         │
+│         SPX001847                       │
+│    🔒 Bloqueado para Seguridad          │
+│                                         │
+│ ✅ Listo para operación                 │
+│ 📊 Número secuencial: 1,847            │
+│ 🕐 Generado: Hoy 14:25:33              │
+└─────────────────────────────────────────┘
+
+📄 PESTAÑA 1: "INFORMACIÓN BÁSICA" - OPTIMIZADA PARA VELOCIDAD
+FORMULARIO CON AUTO-COMPLETADO INTELIGENTE:
+Campo "Nombre de la Cuña" (Obligatorio):
+
+Auto-sugerencias operativas basadas en patrones reales
+Ejemplos: "Promoción Verano SuperMax 30s", "Mención Banco XYZ Crédito", "Presentación Lunes Programa Mañana"
+Validación: Mínimo 5 caracteres, máximo 100
+Shortcuts: Ctrl+Enter para auto-completar con patrón estándar
+
+Campo "Anunciante" (Integración Total):
+typescriptconst handleAdvertiserSelection = async (searchTerm: string) => {
+  // Búsqueda en tiempo real con scoring
+  const results = await searchAdvertisers({
+    query: searchTerm,
+    includeInactive: false,
+    orderBy: 'recent_activity', // Prioriza clientes activos
+    limit: 8
+  });
+  
+  // Enriquecer con data operativa
+  return results.map(adv => ({
+    ...adv,
+    activeContracts: adv.contractCount,
+    lastActivity: adv.lastInteraction,
+    hasActiveCunas: adv.activeCunasCount > 0,
+    riskLevel: adv.riskScore > 700 ? 'low' : 'medium'
+  }));
+};
+Selector visual de anunciante:
+┌─────────────────────────────────────────┐
+│ 🏢 ANUNCIANTE                           │
+│                                         │
+│ [SuperMax                         ▼]    │
+│                                         │
+│ Resultados:                             │
+│ ┌─────────────────────────────────────┐ │
+│ │ [LOGO] SuperMax SpA                 │ │
+│ │        ✅ Activo • 3 contratos      │ │
+│ │        📊 Riesgo: Bajo • 23 cuñas   │ │
+│ │        🕐 Última actividad: Hoy     │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ [➕ ¿Cliente nuevo? Crear anunciante]   │
+└─────────────────────────────────────────┘
+Campo "Producto" (Filtrado Inteligente):
+
+Auto-filtrado: Solo productos del anunciante seleccionado
+Creación rápida: Modal express para producto nuevo
+Sugerencias: Basadas en productos similares de la industria
+
+Campo "Duración" (Contextual y Automático):
+typescriptconst handleDurationField = (cunaType: CunaType) => {
+  switch (cunaType) {
+    case 'audio':
+      return {
+        editable: false,
+        placeholder: 'Se calculará automáticamente al subir audio',
+        helpText: 'La duración exacta se detecta al procesar el archivo'
+      };
+    
+    case 'mencion':
+      return {
+        editable: true,
+        placeholder: 'Ej: 15',
+        helpText: 'Puedes editarlo o dejar que la IA lo calcule del texto',
+        validator: (value) => value >= 5 && value <= 120
+      };
+    
+    case 'presentacion':
+    case 'cierre':
+      return {
+        editable: true,
+        placeholder: 'Ej: 8',
+        helpText: 'Tiempo estimado de locución',
+        autoCalculate: true
+      };
+  }
+};
+SISTEMA DE VIGENCIA CON ALERTAS OPERATIVAS:
+Configuración de fechas con lógica de negocio:
+┌─────────────────────────────────────────┐
+│ 📅 VIGENCIA Y PROGRAMACIÓN              │
+│                                         │
+│ Fecha Inicio: [📅 Hoy        ] [🕐 Ahora] │
+│ Fecha Término: [📅 30 Dic 2025] [🕐 23:59] │
+│                                         │
+│ ⏱️ Duración: 342 días restantes         │
+│                                         │
+│ 🔔 Alertas automáticas:                 │
+│ ☑️ Notificar 7 días antes del vencimiento│
+│ ☑️ Notificar 1 día antes (mediodía)     │
+│ ☑️ Alertar al ejecutivo responsable      │
+│                                         │
+│ 📊 Análisis inteligente:                │
+│ • Duración típica para este tipo: 90 días│
+│ • Recomendación: Vigencia adecuada ✅   │
+└─────────────────────────────────────────┘
+Sistema de alertas automáticas:
+typescriptconst createExpirationAlerts = async (cuna: Cuna) => {
+  const alerts = [
+    {
+      triggerDate: subDays(cuna.endDate, 7),
+      triggerTime: '09:00',
+      type: 'weekly_warning',
+      message: `La cuña "${cuna.name}" vence en 7 días`,
+      recipients: [cuna.assignedUser, cuna.salesRep],
+      actions: ['extend', 'replace', 'review']
+    },
+    {
+      triggerDate: subDays(cuna.endDate, 1),
+      triggerTime: '12:00',
+      type: 'urgent_warning',
+      message: `⚠️ URGENTE: La cuña "${cuna.name}" vence mañana`,
+      recipients: [cuna.assignedUser, cuna.supervisor, cuna.salesRep],
+      actions: ['extend_immediately', 'deactivate', 'emergency_replace'],
+      priority: 'high'
+    }
+  ];
+  
+  await scheduleMultipleAlerts(alerts);
+};
+Estado activo con herencia inteligente:
+┌─────────────────────────────────────────┐
+│ 🔛 ESTADO DE LA CUÑA                    │
+│                                         │
+│ [🟢 Activo] ← Heredado del anunciante   │
+│                                         │
+│ ℹ️ Esta cuña está activa porque:        │
+│ • El anunciante SuperMax está activo    │
+│ • Tiene contratos vigentes              │
+│ • No hay restricciones técnicas         │
+│                                         │
+│ ⚠️ Se desactivará automáticamente si:   │
+│ • El anunciante se desactiva            │
+│ • Vence la fecha límite                 │
+│ • Falla validación técnica              │
+└─────────────────────────────────────────┘
+
+🎵 PESTAÑA 2: "CONTENIDO" - CENTRO DE PROCESAMIENTO MULTIMEDIA
+PARA TIPO: AUDIO PREGRABADO - FLUJO PROFESIONAL
+Zona de carga optimizada para operación masiva:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎵 ZONA DE CARGA PROFESIONAL DE AUDIO                           │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │  🎧 Arrastra archivos aquí para procesamiento automático   │ │
+│ │     o haz clic para seleccionar desde tu equipo            │ │
+│ │                                                            │ │
+│ │  📁 Carga múltiple soportada                              │ │
+│ │  🎚️ Procesamiento en paralelo                             │ │
+│ │  ⚡ Análisis automático de calidad                        │ │
+│ │                                                            │ │
+│ │  Formatos: MP3, WAV, M4A, FLAC, AAC                       │ │
+│ │  Tamaño: Hasta 100MB por archivo                          │ │
+│ │  Calidad mínima: 128kbps (recomendado 320kbps)            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🔄 Cola de procesamiento: 0 archivos                           │
+│ 📊 Espacio usado: 2.3GB / 50GB disponibles                     │
+└─────────────────────────────────────────────────────────────────┘
+Procesamiento automático avanzado:
+typescriptconst processAudioFileAdvanced = async (file: File, cunaId: string) => {
+  const processingId = generateProcessingId();
+  
+  // UI: Mostrar progreso inmediatamente
+  showProcessingProgress(processingId, {
+    fileName: file.name,
+    fileSize: file.size,
+    status: 'uploading'
+  });
+  
+  try {
+    // 1. Upload con progress tracking
+    const uploadUrl = await uploadToGCS(file, {
+      onProgress: (percent) => updateProgress(processingId, 'uploading', percent)
+    });
+    
+    updateProgress(processingId, 'analyzing', 0);
+    
+    // 2. Análisis técnico completo
+    const technicalAnalysis = await analyzeAudioTechnical(uploadUrl);
+    const contentAnalysis = await analyzeAudioContent(uploadUrl);
+    
+    updateProgress(processingId, 'analyzing', 50);
+    
+    // 3. Validaciones automáticas
+    const qualityCheck = await validateAudioQuality(technicalAnalysis);
+    const brandSafetyCheck = await validateBrandSafety(contentAnalysis);
+    
+    updateProgress(processingId, 'analyzing', 100);
+    updateProgress(processingId, 'finalizing', 0);
+    
+    // 4. Generación de metadatos
+    const metadata = {
+      ...technicalAnalysis,
+      qualityScore: qualityCheck.score,
+      brandSafety: brandSafetyCheck.rating,
+      fingerprint: await generateAudioFingerprint(uploadUrl),
+      waveform: await generateWaveform(uploadUrl)
+    };
+    
+    // 5. Auto-actualización del formulario
+    await updateCunaFields({
+      id: cunaId,
+      duration: Math.ceil(technicalAnalysis.duration),
+      audioUrl: uploadUrl,
+      metadata: metadata,
+      status: qualityCheck.approved ? 'ready' : 'needs_review'
+    });
+    
+    updateProgress(processingId, 'complete', 100);
+    
+    // 6. Abrir editor automáticamente si se requiere
+    if (qualityCheck.needsEditing) {
+      openAudioEditor(uploadUrl, metadata);
+    }
+    
+    hideProcessingProgress(processingId);
+    showSuccessNotification("Audio procesado exitosamente", {
+      duration: metadata.duration,
+      quality: qualityCheck.rating,
+      actions: ['edit', 'preview', 'approve']
+    });
+    
+  } catch (error) {
+    hideProcessingProgress(processingId);
+    showErrorNotification(`Error procesando ${file.name}`, {
+      error: error.message,
+      actions: ['retry', 'skip', 'contact_support']
+    });
+  }
+};
+EDITOR DE AUDIO PROFESIONAL INTEGRADO:
+Interface tipo DAW (Digital Audio Workstation) simplificada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎛️ EDITOR PROFESIONAL - SPX001847_SuperMax_Promo.mp3           │
+├─────────────────────────────────────────────────────────────────┤
+│ Transport: [⏮️] [▶️] [⏸️] [⏹️] [⏭️]  🔊 Vol: █████████░░ 85%    │
+│ Timeline:  [00:00.0] ←─────────────────→ [00:28.5] / [00:30.0]  │
+├─────────────────────────────────────────────────────────────────┤
+│ Waveform Visual:                                               │
+│ L ████▄▄██████▄▄████████▄▄██████▄▄████████▄▄██████▄▄████████▄▄ │
+│ R ████▄▄██████▄▄████████▄▄██████▄▄████████▄▄██████▄▄████████▄▄ │
+│   │ │                                                     │ │ │
+│   0s 2s                                                  26s30s│
+│   ↑ Silencio inicial                          Silencio final ↑ │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎚️ Controles Rápidos:                                         │
+│ [✂️ Auto-Trim] [🔊 Normalizar] [🎵 Fade In/Out] [🔇 Denoise]   │
+│                                                                │
+│ 📊 Análisis en Tiempo Real:                                   │
+│ • Peak Level: -3.2 dB (✅ Óptimo)                             │
+│ • RMS Level: -18.7 dB (✅ Broadcast Safe)                     │
+│ • Freq Range: 80Hz - 15kHz (✅ Radio Ready)                   │
+│ • Dynamic Range: 12.3 dB (✅ Buena compresión)               │
+├─────────────────────────────────────────────────────────────────┤
+│ [💾 Aplicar y Guardar] [📥 Exportar Final] [🔄 Deshacer] [❌ Cancelar] │
+└─────────────────────────────────────────────────────────────────┘
+Funciones automáticas inteligentes:
+typescriptconst audioEditingTools = {
+  autoTrim: async (audioBuffer: AudioBuffer) => {
+    // Detecta y elimina silencios automáticamente
+    const silenceThreshold = -40; // dB
+    const { trimmedStart, trimmedEnd } = await detectSilence(audioBuffer, silenceThreshold);
+    
+    return {
+      newBuffer: trimmedBuffer,
+      removedStart: trimmedStart,
+      removedEnd: trimmedEnd,
+      newDuration: trimmedBuffer.duration
+    };
+  },
+  
+  normalizeAudio: async (audioBuffer: AudioBuffer) => {
+    // Ajusta volumen al estándar broadcasting
+    const targetLUFS = -23; // EBU R128 standard
+    const currentLUFS = await measureLUFS(audioBuffer);
+    const gain = targetLUFS - currentLUFS;
+    
+    return await applyGain(audioBuffer, gain);
+  },
+  
+  smartFades: async (audioBuffer: AudioBuffer) => {
+    // Aplica fades inteligentes basados en contenido
+    const fadeInDuration = detectOptimalFadeIn(audioBuffer); // 0.1-0.5s
+    const fadeOutDuration = detectOptimalFadeOut(audioBuffer); // 0.2-1.0s
+    
+    return await applySmartFades(audioBuffer, fadeInDuration, fadeOutDuration);
+  },
+  
+  broadcastCompliance: async (audioBuffer: AudioBuffer) => {
+    // Verifica cumplimiento de estándares de radio
+    const analysis = await analyzeBroadcastCompliance(audioBuffer);
+    
+    return {
+      peakLevel: analysis.peakdB, // Debe ser < -1dB
+      rmsLevel: analysis.rmsdB,   // -18 a -12 dB típico
+      frequencyResponse: analysis.freqAnalysis,
+      dynamicRange: analysis.dynamicRange,
+      compliance: analysis.passesStandards
+    };
+  }
+};
+Exportación con estándares profesionales:
+typescriptconst exportAudioProfessional = async (editedBuffer: AudioBuffer, cunaId: string) => {
+  const exportSettings = {
+    // Estándar profesional para radio
+    format: 'MP3',
+    bitrate: '320kbps',
+    sampleRate: '44100Hz',
+    bitDepth: '16bit',
+    channels: 'Stereo',
+    
+    // Metadatos embedded
+    metadata: {
+      title: cuna.name,
+      artist: cuna.advertiser.name,
+      album: `Silexar-${cunaId}`,
+      year: new Date().getFullYear(),
+      comment: `Generated by Silexar Pulse v${APP_VERSION}`,
+      
+      // Custom fields para tracking
+      silexarId: cunaId,
+      createdBy: currentUser.name,
+      exportDate: new Date().toISOString()
+    }
+  };
+  
+  // Proceso de exportación
+  const exportedBlob = await encodeToMP3(editedBuffer, exportSettings);
+  
+  // Generación de nombre inteligente
+  const timestamp = format(new Date(), 'yyyyMMdd_HHmm');
+  const cleanName = cuna.name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+  const filename = `${cunaId}_${cleanName}_${timestamp}.mp3`;
+  
+  // Guardado en múltiples ubicaciones
+  const cloudUrl = await saveToGoogleCloud(exportedBlob, filename);
+  const localDownload = createDownloadLink(exportedBlob, filename);
+  
+  // Actualización automática de la cuña
+  await updateCuna({
+    id: cunaId,
+    finalAudioUrl: cloudUrl,
+    finalDuration: editedBuffer.duration,
+    exportedAt: new Date(),
+    fileSize: exportedBlob.size,
+    status: 'ready_for_broadcast'
+  });
+  
+  return {
+    cloudUrl,
+    localDownload,
+    filename,
+    metadata: exportSettings.metadata
+  };
+};
+PARA TIPO: MENCIÓN/GUIÓN - ANÁLISIS INTELIGENTE DE LOCUCIÓN
+Editor de texto con análisis en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📝 EDITOR DE MENCIÓN CON ANÁLISIS INTELIGENTE                   │
+├─────────────────────────────────────────────────────────────────┤
+│ [B] [I] [U] | 🎯 [ÉNFASIS] 📏 [PAUSA] 🔤 [DELETREO] | WPM: 145 │
+├─────────────────────────────────────────────────────────────────┤
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Y ahora, escucha la mejor promoción del año en SuperMax.   │ │
+│ │ Del 15 al 30 de junio, [ÉNFASIS]descuentos increíbles      │ │
+│ │ [/ÉNFASIS] en toda la tienda. [PAUSA:1s] ¡No te lo        │ │
+│ │ pierdas! SuperMax, donde siempre ahorras más.              │ │
+│ │                                                            │ │
+│ │ Visítanos en Providencia 1234 o llama al                  │ │
+│ │ [DELETREO]6-0-0-2-0-0-0[/DELETREO] ya mismo.             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS AUTOMÁTICO DE LOCUCIÓN:                            │
+│                                                                │
+│ ⏱️ Tiempo estimado: 18-22 segundos (promedio: 20s)            │
+│ 📝 Palabras: 47 | Caracteres: 267 | Sílabas: 89              │
+│ 🎙️ Velocidad: 145 WPM (Óptima para radio comercial)          │
+│ 🔊 Elementos especiales: 2 énfasis, 1 pausa, 1 deletreo      │
+│ 🎯 Complejidad: Media (números y marcas presentes)            │
+│                                                                │
+│ 🤖 Sugerencias de Cortex-Voice:                               │
+│ • Pausa adicional antes de "¡No te lo pierdas!" (+0.5s)      │
+│ • Énfasis en "SuperMax" al final para brand recall           │
+│ • Velocidad óptima detectada: No requiere ajustes            │
+├─────────────────────────────────────────────────────────────────┤
+│ [🎙️ Generar Audio IA] [📏 Recalcular] [👁️ Preview] [💾 Guardar] │
+└─────────────────────────────────────────────────────────────────┘
+Motor de análisis de locución avanzado:
+typescriptconst analyzeTextForSpeech = async (text: string) => {
+  // Limpieza y normalización
+  const cleanText = text.replace(/\[.*?\]/g, ''); // Remover marcadores
+  const words = cleanText.split(/\s+/).filter(Boolean);
+  const syllables = await countSyllables(cleanText);
+  
+  // Análisis de complejidad
+  const complexityFactors = {
+    numbers: (text.match(/\d+/g) || []).length,
+    brands: await detectBrandNames(text),
+    foreignWords: await detectForeignWords(text),
+    acronyms: (text.match(/[A-Z]{2,}/g) || []).length,
+    punctuation: (text.match(/[.!?;,:]/g) || []).length
+  };
+  
+  // Cálculo de velocidad base
+  let baseWPM = 150; // Velocidad estándar radio comercial
+  
+  // Ajustes por complejidad
+  if (complexityFactors.numbers > 3) baseWPM -= 15;
+  if (complexityFactors.brands.length > 2) baseWPM -= 10;
+  if (complexityFactors.foreignWords.length > 0) baseWPM -= 20;
+  if (complexityFactors.acronyms > 1) baseWPM -= 10;
+  
+  // Análisis de elementos especiales
+  const specialElements = {
+    emphasis: (text.match(/\[ÉNFASIS\].*?\[\/ÉNFASIS\]/g) || []).length,
+    pauses: (text.match(/\[PAUSA:(\d+(?:\.\d+)?)s?\]/g) || []).length,
+    spelling: (text.match(/\[DELETREO\].*?\[\/DELETREO\]/g) || []).length
+  };
+  
+  // Cálculo de tiempo adicional por elementos especiales
+  let additionalTime = 0;
+  additionalTime += specialElements.emphasis * 0.5; // 0.5s por énfasis
+  additionalTime += specialElements.spelling * 3; // 3s por deletreo
+  
+  // Tiempo base de lectura
+  const baseReadingTime = (words.length / baseWPM) * 60;
+  
+  // Tiempo total estimado
+  const totalTime = baseReadingTime + additionalTime;
+  
+  // Rango de variación (±15% para variabilidad humana)
+  const minTime = Math.ceil(totalTime * 0.85);
+  const maxTime = Math.ceil(totalTime * 1.15);
+  
+  return {
+    wordCount: words.length,
+    characterCount: text.length,
+    syllableCount: syllables,
+    baseWPM,
+    adjustedWPM: Math.round((words.length / baseReadingTime) * 60),
+    estimatedSeconds: Math.ceil(totalTime),
+    timeRange: `${minTime}-${maxTime}s`,
+    complexityLevel: calculateComplexityLevel(complexityFactors),
+    specialElements,
+    suggestions: generateLocutionSuggestions(text, complexityFactors)
+  };
+};
+Generación de audio con IA (Cortex-Voice):
+typescriptconst generateAudioWithCortexVoice = async (text: string, voiceSettings: VoiceConfig) => {
+  showProgressModal("🤖 Generando audio profesional con IA...");
+  
+  try {
+    // Preprocessar texto para mejorar síntesis
+    const processedText = await preprocessForTTS(text);
+    
+    // Configuración profesional para radio
+    const synthesisConfig = {
+      text: processedText,
+      voice: voiceSettings.voice || 'es-CL-professional-male',
+      speed: voiceSettings.speed || 1.0,
+      pitch: voiceSettings.pitch || 0,
+      volume: voiceSettings.volume || 0.8,
+      
+      // Configuraciones avanzadas
+      ssmlEnabled: true,
+      emotionalTone: voiceSettings.emotion || 'enthusiastic',
+      backgroundNoise: 'studio-clean',
+      compression: 'radio-ready',
+      
+      // Metadatos para tracking
+      clientId: cuna.advertiserId,
+      cunaId: cuna.id,
+      generatedBy: currentUser.id
+    };
+    
+    // Llamada a Cortex-Voice
+    const audioResponse = await cortexVoiceService.synthesizeAdvanced(synthesisConfig);
+    
+    // Procesamiento post-síntesis
+    const processedAudio = await postProcessGeneratedAudio({
+      audioUrl: audioResponse.audioUrl,
+      normalizeVolume: true,
+      addRadioProcessing: true,
+      targetLUFS: -23
+    });
+    
+    // Actualizar formulario automáticamente
+    await updateCunaFields({
+      id: cuna.id,
+      audioUrl: processedAudio.finalUrl,
+      duration: Math.ceil(processedAudio.duration),
+      generatedWithIA: true,
+      voiceSettings: synthesisConfig
+    });
+    
+    hideProgressModal();
+    
+    // Abrir editor para ajustes finales
+    openAudioEditor(processedAudio.finalUrl, processedAudio.metadata);
+    
+    showSuccessNotification("Audio generado exitosamente", {
+      duration: `${Math.ceil(processedAudio.duration)}s`,
+      voice: synthesisConfig.voice,
+      actions: ['edit', 'regenerate', 'approve']
+    });
+    
+  } catch (error) {
+    hideProgressModal();
+    showErrorNotification("Error generando audio", {
+      error: error.message,
+      suggestions: ['Revisar texto', 'Cambiar configuración', 'Intentar más tarde']
+    });
+  }
+};
+PARA TIPO: PRESENTACIÓN DE AUSPICIO - INTEGRACIÓN TOTAL CON VENCIMIENTOS
+Editor especializado con validación cruzada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📢 PRESENTACIÓN DE AUSPICIO - VALIDACIÓN AUTOMÁTICA             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 Selección de Programa:                                      │
+│ [Radio Corazón - Programa Mañana (07:00-10:00)          ▼]    │
+│                                                                │
+│ ✅ Validación automática:                                      │
+│ • Anunciante: SuperMax ✅ Confirmado en vencimientos           │
+│ • Período: 15 Jun - 30 Ago ✅ Coincide con auspicio           │
+│ • Tipo: Presentación ✅ Configurado en programa               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📅 Configuración por Día de Semana:                           │
+│                                                                │
+│ Días activos: ☑️ L ☑️ M ☑️ M ☑️ J ☑️ V ⚪ S ⚪ D              │
+│                                                                │
+│ 📝 Textos personalizados:                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📅 LUNES:                                                  │ │
+│ │ "Inicia tu semana con energía junto a SuperMax, tu        │ │
+│ │ supermercado de confianza. Buenos días desde Radio        │ │
+│ │ Corazón."                                                  │ │
+│ │ ⏱️ Tiempo: ~8 segundos                                     │ │
+│ │                                                            │ │
+│ │ 📅 MARTES:                                                 │ │
+│ │ "Continúa tu semana ahorrando más en SuperMax. Radio      │ │
+│ │ Corazón y SuperMax, juntos por tu economía familiar."     │ │
+│ │ ⏱️ Tiempo: ~9 segundos                                     │ │
+│ │                                                            │ │
+│ │ [➕ Agregar variación para Miércoles]                      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Análisis de Coherencia:                                    │
+│ • Mensajes alineados con marca ✅                             │
+│ • Duración consistente (8-10s) ✅                             │
+│ • Menciona emisora correctamente ✅                           │
+│ • Llamada a acción presente ✅                                │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔍 Validar Completo] [💾 Guardar] [📤 Enviar a Programa]      │
+└─────────────────────────────────────────────────────────────────┘
+Sistema de validación avanzada contra vencimientos:
+typescriptconst validatePresentationAgainstVencimientos = async (presentationData: PresentationData) => {
+  // Validación principal
+  const baseValidation = await vencimientosService.validateSponsorshipPresentation({
+    advertiserId: presentationData.advertiserId,
+    programId: presentationData.programId,
+    startDate: presentationData.startDate,
+    endDate: presentationData.endDate,
+    presentationType: 'entrada'
+  });
+  
+  // Análisis profundo de coherencia
+  const coherenceAnalysis = await analyzeContentCoherence({
+    advertiserBrand: presentationData.advertiser.brand,
+    programStyle: presentationData.program.style,
+    targetAudience: presentationData.program.audience,
+    presentationTexts: presentationData.dailyTexts
+  });
+  
+  // Detección de presentaciones faltantes
+  const missingPresentations = await findMissingPresentations({
+    programId: presentationData.programId,
+    dateRange: { start: presentationData.startDate, end: presentationData.endDate },
+    excludeAdvertiser: presentationData.advertiserId
+  });
+  
+  // Análisis de saturación del programa
+  const saturationAnalysis = await analyzeProgramSaturation({
+    programId: presentationData.programId,
+    proposedDuration: presentationData.totalDuration,
+    existingSponsors: baseValidation.existingSponsors
+  });
+  
+  return {
+    isValid: baseValidation.isValid,
+    program: baseValidation.program,
+    sponsorship: baseValidation.sponsorship,
+    
+    // Análisis extendido
+    coherenceScore: coherenceAnalysis.score, // 0-100
+    brandAlignment: coherenceAnalysis.brandAlignment,
+    audienceMatch: coherenceAnalysis.audienceMatch,
+    
+    // Presentaciones faltantes
+    missingPresentations: missingPresentations.map(missing => ({
+      advertiser: missing.advertiser,
+      expiryDate: missing.expiryDate,
+      daysUntilExpiry: differenceInDays(missing.expiryDate, new Date()),
+      priority: missing.daysUntilExpiry <= 3 ? 'urgent' : 'normal'
+    })),
+    
+    // Análisis de saturación
+    programSaturation: {
+      currentLoad: saturationAnalysis.currentPercentage,
+      afterAddition: saturationAnalysis.projectedPercentage,
+      recommendedLimit: saturationAnalysis.recommendedLimit,
+      exceedsRecommendation: saturationAnalysis.projectedPercentage > saturationAnalysis.recommendedLimit
+    },
+    
+    // Recomendaciones automáticas
+    recommendations: generatePresentationRecommendations({
+      coherenceAnalysis,
+      missingPresentations,
+      saturationAnalysis
+    })
+  };
+};
+Modal de validación completa:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 VALIDACIÓN COMPLETA CONTRA VENCIMIENTOS                      │
+├─────────────────────────────────────────────────────────────────┤
+│ ✅ VALIDACIONES BÁSICAS:                                        │
+│ • Cliente existe en programa: SuperMax ✅                       │
+│ • Fechas coinciden con auspicio: 15 Jun - 30 Ago ✅           │
+│ • Tipo configurado correctamente: Presentación ✅               │
+│                                                                │
+│ 📊 ANÁLISIS DE COHERENCIA (85/100):                           │
+│ • Alineación con marca: 90% ✅ Excelente                       │
+│ • Match con audiencia: 80% ✅ Bueno                            │
+│ • Consistencia de mensaje: 85% ✅ Muy bueno                    │
+│                                                                │
+│ ⚠️ PRESENTACIONES FALTANTES (2):                               │
+│ • Banco Nacional: Vence en 2 días 🚨 URGENTE                  │
+│ • Farmacia Salud: Vence en 5 días ⚡ Prioridad alta           │
+│                                                                │
+│ 📈 SATURACIÓN DEL PROGRAMA:                                    │
+│ • Carga actual: 65% ✅ Saludable                               │
+│ • Después de agregar: 72% ⚠️ Aceptable                        │
+│ • Límite recomendado: 80%                                      │
+│                                                                │
+│ 🎯 RECOMENDACIONES:                                            │
+│ • Crear presentación para Banco Nacional inmediatamente        │
+│ • Programar recordatorio para Farmacia Salud mañana           │
+│ • Considerar rotación de presentaciones para variedad          │
+├─────────────────────────────────────────────────────────────────┤
+│ [✅ Crear Faltantes] [📅 Programar] [💾 Guardar] [❌ Cancelar]  │
+└─────────────────────────────────────────────────────────────────┘
+PARA TIPO: CIERRE DE AUSPICIO - AUTO-ASOCIACIÓN INTELIGENTE
+Editor con sugerencias automáticas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔚 CIERRE DE AUSPICIO - AUTO-ASOCIACIÓN INTELIGENTE             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔗 Presentación asociada detectada:                            │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📢 SPX001823 - Presentación SuperMax Programa Mañana       │ │
+│ │    📅 Lunes a Viernes | ⏱️ 8-10 segundos promedio          │ │
+│ │    [👁️ Ver] [🔗 Asociar automáticamente]                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                │
+│ 🎯 Sugerencias de cierre basadas en presentación:             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📝 OPCIÓN 1 (Recomendada):                                 │ │
+│ │ "Gracias por acompañarnos en Radio Corazón junto a        │ │
+│ │ SuperMax, donde siempre ahorras más. ¡Hasta mañana!"      │ │
+│ │ ⏱️ ~7 segundos                                              │ │
+│ │                                                            │ │
+│ │ 📝 OPCIÓN 2 (Alternativa):                                 │ │
+│ │ "SuperMax y Radio Corazón se despiden hasta mañana.       │ │
+│ │ Recuerda: en SuperMax, tu economía familiar es primero."  │ │
+│ │ ⏱️ ~8 segundos                                              │ │
+│ │                                                            │ │
+│ │ [✅ Usar Opción 1] [✅ Usar Opción 2] [✏️ Personalizar]     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│ [🤖 Generar más opciones] [🔗 Asociar presentación] [💾 Guardar] │
+└─────────────────────────────────────────────────────────────────┘
+PARA TIPO: PROMO/IDA - SISTEMA DE VARIABLES DINÁMICAS
+Editor avanzado con plantillas inteligentes:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 PROMO/IDA PERSONALIZADA - VARIABLES DINÁMICAS                │
+├─────────────────────────────────────────────────────────────────┤
+│ 📝 Plantilla base:                                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ¡No te pierdas {EVENTO} en {LUGAR} este {DIA} {FECHA}      │ │
+│ │ a las {HORA}! Entradas desde ${PRECIO} en {ANUNCIANTE}.    │ │
+│ │ Más información en {TELEFONO} o {WEB}.                     │ │
+│ │ ¡Solo quedan {DIAS_RESTANTES} días!                        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                │
+│ 🔧 Variables configuradas:                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ {EVENTO} = "Concierto de Año Nuevo"                         │ │
+│ │ {LUGAR} = "Teatro Municipal"                                │ │
+│ │ {DIA} = [Auto: día de la semana]                            │ │
+│ │ {FECHA} = [Auto: fecha del evento]                          │ │
+│ │ {HORA} = "21:00 horas"                                      │ │
+│ │ {PRECIO} = "15.000" [Numérico]                             │ │
+│ │ {ANUNCIANTE} = [Auto: nombre del cliente]                  │ │
+│ │ {TELEFONO} = "600-200-300"                                  │ │
+│ │ {WEB} = "www.teatromunicipal.cl"                           │ │
+│ │ {DIAS_RESTANTES} = [Auto: cálculo dinámico]                │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                │
+│ 👁️ Preview generado:                                          │
+│ "¡No te pierdas Concierto de Año Nuevo en Teatro Municipal    │
+│ este viernes 29 de diciembre a las 21:00 horas! Entradas     │
+│ desde $15.000 en SuperMax. Más información en 600-200-300    │
+│ o www.teatromunicipal.cl. ¡Solo quedan 8 días!"              │
+│                                                                │
+│ ⏱️ Duración estimada: 18-22 segundos                          │
+├─────────────────────────────────────────────────────────────────┤
+│ [➕ Nueva Variable] [🔄 Actualizar Preview] [💾 Guardar]        │
+└─────────────────────────────────────────────────────────────────┘
+Sistema de variables inteligentes:
+typescriptconst variableSystem = {
+  // Variables automáticas del sistema
+  autoVariables: {
+    '{DIA}': () => format(new Date(), 'EEEE', { locale: es }),
+    '{FECHA}': () => format(new Date(), 'dd \'de\' MMMM', { locale: es }),
+    '{HORA_ACTUAL}': () => format(new Date(), 'HH:mm'),
+    '{ANUNCIANTE}': (context) => context.advertiser.commercialName,
+    '{EJECUTIVO}': (context) => context.salesRep.name,
+    '{RADIO}': (context) => context.station.name
+  },
+  
+  // Variables calculadas dinámicamente
+  calculatedVariables: {
+    '{DIAS_RESTANTES}': (eventDate) => {
+      const days = differenceInDays(new Date(eventDate), new Date());
+      return days > 0 ? days.toString() : 'pocos';
+    },
+    '{SEMANAS_RESTANTES}': (eventDate) => {
+      const weeks = differenceInWeeks(new Date(eventDate), new Date());
+      return weeks > 0 ? weeks.toString() : 'pocas';
+    },
+    '{DESCUENTO_RESTANTE}': (originalPrice, currentPrice) => {
+     const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+     return `${discount}%`;
+   },
+   '{PRECIO_FORMATEADO}': (price) => {
+     return new Intl.NumberFormat('es-CL', {
+       style: 'currency',
+       currency: 'CLP',
+       minimumFractionDigits: 0
+     }).format(price);
+   }
+ },
+ 
+ // Validaciones de variables
+ validateVariable: (name, value, type) => {
+   const validators = {
+     'numeric': (val) => !isNaN(parseFloat(val)),
+     'date': (val) => isValid(parseISO(val)),
+     'phone': (val) => /^[0-9\-\s\+\(\)]{8,15}$/.test(val),
+     'url': (val) => /^https?:\/\/.+\..+/.test(val),
+     'text': (val) => val.length > 0 && val.length <= 100
+   };
+   
+   return validators[type] ? validators[type](value) : true;
+ }
+};
+PESTAÑA 3: "VALIDACIONES Y VERIFICACIONES" - CONTROL DE CALIDAD TOTAL
+PANEL CENTRAL DE VALIDACIONES:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 CENTRO DE VALIDACIONES Y CONTROL DE CALIDAD                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 Estado General: ⏳ Validando... (3 de 7 completadas)        │
+│                                                                 │
+│ ✅ VALIDACIONES COMPLETADAS:                                    │
+│ • Información básica: Todos los campos obligatorios ✅          │
+│ • Cliente válido: SuperMax existe y está activo ✅             │
+│ • Producto válido: Promoción Verano configurado ✅             │
+│                                                                 │
+│ ⏳ VALIDACIONES EN PROCESO:                                     │
+│ • Análisis técnico de audio: 75% completado                    │
+│ • Validación contra vencimientos: Consultando...               │
+│ • Verificación de marca: En análisis                           │
+│ • Compliance broadcasting: Pendiente                           │
+│                                                                 │
+│ ❌ VALIDACIONES FALLIDAS:                                       │
+│ • Ninguna hasta el momento                                      │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔄 Revalidar Todo] [👁️ Ver Detalles] [⚠️ Forzar Aprobación]   │
+└─────────────────────────────────────────────────────────────────┘
+VALIDACIÓN TÉCNICA DE AUDIO AVANZADA:
+typescriptconst comprehensiveAudioValidation = async (audioUrl: string, cunaId: string) => {
+  const validationResults = {
+    technical: null,
+    content: null,
+    broadcast: null,
+    brand: null
+  };
+  
+  // 1. Validación técnica básica
+  validationResults.technical = await validateAudioTechnical(audioUrl, {
+    checks: {
+      format: true,           // MP3, WAV válidos
+      duration: true,         // 5-120 segundos
+      bitrate: true,          // Mínimo 128kbps
+      sampleRate: true,       // 44.1kHz o 48kHz
+      channels: true,         // Mono o estéreo
+      fileSize: true,         // Máximo 50MB
+      corruption: true        // Archivo no corrupto
+    }
+  });
+  
+  // 2. Análisis de contenido con IA
+  validationResults.content = await analyzeAudioContent(audioUrl, {
+    transcription: true,      // Speech-to-text
+    sentiment: true,          // Análisis de sentimiento
+    language: true,           // Detección de idioma
+    profanity: true,          // Filtro de contenido inapropiado
+    compliance: true          // Cumplimiento regulatorio
+  });
+  
+  // 3. Validación broadcasting
+  validationResults.broadcast = await validateBroadcastCompliance(audioUrl, {
+    loudness: true,           // LUFS estándar
+    peakLevels: true,         // Sin clipping
+    frequencyResponse: true,  // Rango auditivo completo
+    dynamicRange: true,       // Compresión adecuada
+    phaseCoherence: true      // Compatibilidad mono
+  });
+  
+  // 4. Brand safety check
+  validationResults.brand = await validateBrandSafety(audioUrl, {
+    competitorMentions: true, // No menciona competencia
+    brandConsistency: true,   // Coherente con marca
+    messagingAlignment: true, // Alineado con valores
+    legalCompliance: true     // Sin claims problemáticos
+  });
+  
+  return validationResults;
+};
+Panel de resultados de validación técnica:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔧 VALIDACIÓN TÉCNICA DE AUDIO                                  │
+├─────────────────────────────────────────────────────────────────┤
+│ ✅ ESPECIFICACIONES TÉCNICAS:                                   │
+│ • Formato: MP3 320kbps ✅ Excelente                            │
+│ • Duración: 28.5s ✅ Dentro de rango                           │
+│ • Frecuencia: 44.1kHz ✅ Estándar broadcasting                 │
+│ • Canales: Estéreo ✅ Configuración correcta                   │
+│ • Tamaño: 1.2MB ✅ Óptimo para distribución                    │
+│                                                                 │
+│ ✅ CALIDAD DE BROADCAST:                                        │
+│ • Loudness: -23 LUFS ✅ Estándar EBU R128                     │
+│ • Peak Level: -1.2 dB ✅ Sin distorsión                       │
+│ • Rango dinámico: 8.5 dB ✅ Buena compresión                  │
+│ • Respuesta freq: 80Hz-15kHz ✅ Radio ready                    │
+│                                                                 │
+│ ✅ ANÁLISIS DE CONTENIDO:                                       │
+│ • Transcripción: "Promoción verano SuperMax..." ✅             │
+│ • Idioma: Español chileno ✅ Correcto                          │
+│ • Sentimiento: Positivo/Entusiasta ✅ Apropiado               │
+│ • Contenido: Sin problemas detectados ✅                       │
+│                                                                 │
+│ 🛡️ BRAND SAFETY:                                               │
+│ • Sin menciones de competencia ✅                              │
+│ • Alineado con valores de marca ✅                             │
+│ • Claims verificables ✅                                        │
+│ • Cumplimiento legal ✅                                         │
+├─────────────────────────────────────────────────────────────────┤
+│ 🏆 PUNTUACIÓN GENERAL: 96/100 (EXCELENTE)                      │
+│                                                                 │
+│ [📊 Ver Análisis Completo] [🔄 Re-analizar] [✅ Aprobar]       │
+└─────────────────────────────────────────────────────────────────┘
+VALIDACIÓN CRUZADA CON MÓDULO VENCIMIENTOS:
+typescriptconst validateAgainstVencimientos = async (cunaData: CunaValidationData) => {
+  // Búsqueda de asociaciones existentes
+  const associatedSponsorship = await vencimientosService.findSponsorship({
+    advertiserId: cunaData.advertiserId,
+    productId: cunaData.productId,
+    dateRange: {
+      start: cunaData.startDate,
+      end: cunaData.endDate
+    }
+  });
+  
+  if (!associatedSponsorship) {
+    return {
+      isValid: false,
+      error: 'no_sponsorship_found',
+      message: 'No se encontró auspicio activo para este cliente y período',
+      suggestions: ['Verificar fechas', 'Crear auspicio', 'Cambiar cliente']
+    };
+  }
+  
+  // Validación de coherencia temporal
+  const temporalValidation = validateTemporalCoherence({
+    cunaStart: cunaData.startDate,
+    cunaEnd: cunaData.endDate,
+    sponsorshipStart: associatedSponsorship.startDate,
+    sponsorshipEnd: associatedSponsorship.endDate
+  });
+  
+  // Validación de tipo de contenido
+  const contentTypeValidation = validateContentType({
+    cunaType: cunaData.type,
+    sponsorshipType: associatedSponsorship.type,
+    programRequirements: associatedSponsorship.program.requirements
+  });
+  
+  // Análisis de saturación
+  const saturationAnalysis = await analyzeProgramSaturation({
+    programId: associatedSponsorship.programId,
+    proposedDuration: cunaData.duration,
+    dateRange: { start: cunaData.startDate, end: cunaData.endDate }
+  });
+  
+  // Detección de contenido faltante
+  const missingContent = await detectMissingContent({
+    sponsorship: associatedSponsorship,
+    existingCunas: await getCunasForSponsorship(associatedSponsorship.id)
+  });
+  
+  return {
+    isValid: temporalValidation.isValid && contentTypeValidation.isValid,
+    sponsorship: associatedSponsorship,
+    temporalValidation,
+    contentTypeValidation,
+    saturationAnalysis,
+    missingContent,
+    recommendations: generateVencimientosRecommendations({
+      sponsorship: associatedSponsorship,
+      saturation: saturationAnalysis,
+      missing: missingContent
+    })
+  };
+};
+Panel de validación contra vencimientos:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔍 VALIDACIÓN CONTRA MÓDULO VENCIMIENTOS                        │
+├─────────────────────────────────────────────────────────────────┤
+│ ✅ AUSPICIO ENCONTRADO:                                         │
+│ • Cliente: SuperMax SpA ✅ Coincide                             │
+│ • Programa: Radio Corazón - Programa Mañana ✅                 │
+│ • Período: 15 Jun - 30 Ago ✅ Compatible                       │
+│ • Tipo: Auspicio comercial ✅ Correcto                         │
+│                                                                 │
+│ ⚠️ ANÁLISIS DE SATURACIÓN:                                      │
+│ • Carga actual programa: 68% ✅ Saludable                      │
+│ • Después de agregar: 75% ⚠️ Aceptable                         │
+│ • Límite recomendado: 80%                                      │
+│ • Tiempo disponible restante: 12 minutos/día                   │
+│                                                                 │
+│ 📋 CONTENIDO FALTANTE DETECTADO:                               │
+│ • Presentación para días L-V: ❌ Requerida                     │
+│ • Cierre para programa: ❌ Requerido                           │
+│ • Menciones especiales: ⚪ Opcional                            │
+│                                                                 │
+│ 🎯 RECOMENDACIONES AUTOMÁTICAS:                                │
+│ • Crear presentación estándar para entrada                     │
+│ • Generar cierre coordinado con presentación                   │
+│ • Programar recordatorio 7 días antes del vencimiento          │
+│                                                                 │
+│ [✅ Crear Faltantes] [📅 Programar] [⚠️ Ignorar] [💾 Continuar] │
+└─────────────────────────────────────────────────────────────────┘
+VALIDACIÓN DE COMPLIANCE Y REGULACIONES:
+typescriptconst validateRegulatoryCompliance = async (cunaData: CunaData) => {
+  const complianceChecks = {
+    // Regulaciones de broadcasting chilenas
+    chileanBroadcasting: await validateChileanBroadcasting({
+      content: cunaData.transcription,
+      duration: cunaData.duration,
+      advertiser: cunaData.advertiser,
+      claims: extractClaims(cunaData.transcription)
+    }),
+    
+    // Normas de publicidad CONAR
+    conarCompliance: await validateCONARCompliance({
+      content: cunaData.transcription,
+      industry: cunaData.advertiser.industry,
+      targetAudience: cunaData.targetAudience,
+      claims: extractAdvertisingClaims(cunaData.transcription)
+    }),
+    
+    // Regulaciones sectoriales específicas
+    sectorSpecific: await validateSectorSpecific({
+      industry: cunaData.advertiser.industry,
+      content: cunaData.transcription,
+      disclaimers: extractDisclaimers(cunaData.transcription)
+    }),
+    
+    // Protección del consumidor
+    consumerProtection: await validateConsumerProtection({
+      pricePromises: extractPricePromises(cunaData.transcription),
+      warranties: extractWarranties(cunaData.transcription),
+      conditions: extractConditions(cunaData.transcription)
+    })
+  };
+  
+  // Análisis de riesgo legal
+  const legalRiskAssessment = await assessLegalRisk(complianceChecks);
+  
+  return {
+    ...complianceChecks,
+    overallCompliance: calculateOverallCompliance(complianceChecks),
+    riskLevel: legalRiskAssessment.level, // low, medium, high, critical
+    recommendations: legalRiskAssessment.recommendations,
+    requiredActions: legalRiskAssessment.requiredActions
+  };
+};
+
+📤 PESTAÑA 4: "DISTRIBUCIÓN Y ENVÍOS" - GESTIÓN DE ENTREGA
+CENTRO DE DISTRIBUCIÓN OPERATIVA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📤 CENTRO DE DISTRIBUCIÓN Y ENVÍOS                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Destinatarios configurados para: SPX001847                   │
+│                                                                 │
+│ 📻 OPERADORES DE EMISIÓN:                                       │
+│ ☑️ Radio Corazón - Operador Turno Mañana                       │
+│    📧 operador.manana@radiocorazon.cl                          │
+│    📱 +56 9 8765 4321                                          │
+│    ⏰ Último envío: Ayer 18:30                                  │
+│                                                                 │
+│ ☑️ Radio Corazón - Operador Turno Tarde                        │
+│    📧 operador.tarde@radiocorazon.cl                           │
+│    📱 +56 9 8765 4322                                          │
+│    ⏰ Último envío: Ayer 18:30                                  │
+│                                                                 │
+│ 👥 EQUIPO COMERCIAL:                                            │
+│ ☑️ Carlos Mendoza - Ejecutivo responsable                       │
+│    📧 carlos.mendoza@megamedia.com                             │
+│    📱 +56 9 8765 4323                                          │
+│    ⏰ Notificado: Hoy 14:25                                     │
+│                                                                 │
+│ ☑️ María Silva - Supervisor comercial                           │
+│    📧 maria.silva@megamedia.com                                │
+│    ⏰ Notificado: Hoy 14:25                                     │
+├─────────────────────────────────────────────────────────────────┤
+│ [➕ Agregar Destinatario] [👥 Gestionar Grupos] [📤 Enviar Ya]  │
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA DE GRUPOS DE DISTRIBUCIÓN:
+typescriptconst distributionGroupManager = {
+  // Grupos predefinidos del sistema
+  systemGroups: {
+    'operadores_radio_corazon': {
+      name: 'Operadores Radio Corazón',
+      members: [
+        { email: 'operador.manana@radiocorazon.cl', role: 'operator', shift: 'morning' },
+        { email: 'operador.tarde@radiocorazon.cl', role: 'operator', shift: 'afternoon' },
+        { email: 'operador.noche@radiocorazon.cl', role: 'operator', shift: 'night' }
+      ],
+      autoAdd: true, // Se agregan automáticamente según emisora
+      description: 'Todos los operadores de Radio Corazón'
+    },
+    
+    'ejecutivos_comerciales': {
+      name: 'Equipo Comercial',
+      members: [], // Se puebla dinámicamente
+      autoAdd: false,
+      description: 'Ejecutivos y supervisores comerciales'
+    },
+    
+    'programacion_general': {
+      name: 'Equipo de Programación',
+      members: [
+        { email: 'jefe.programacion@megamedia.com', role: 'programming_manager' },
+        { email: 'coordinador.trafico@megamedia.com', role: 'traffic_coordinator' }
+      ],
+      autoAdd: true,
+      description: 'Responsables de programación y tráfico'
+    }
+  },
+  
+  // Grupos personalizados por usuario
+  createCustomGroup: async (groupData: CustomGroupData) => {
+    const group = {
+      id: generateGroupId(),
+      name: groupData.name,
+      description: groupData.description,
+      members: groupData.members,
+      createdBy: currentUser.id,
+      createdAt: new Date(),
+      isActive: true,
+      permissions: groupData.permissions || 'read'
+    };
+    
+    await saveDistributionGroup(group);
+    return group;
+  },
+  
+  // Auto-detección de destinatarios según contexto
+  autoDetectRecipients: async (cunaData: CunaData) => {
+    const recipients = [];
+    
+    // Operadores según emisoras donde se emitirá
+    if (cunaData.targetStations) {
+      for (const station of cunaData.targetStations) {
+        const operators = await getStationOperators(station.id);
+        recipients.push(...operators);
+      }
+    }
+    
+    // Equipo comercial responsable
+    if (cunaData.salesRep) {
+      recipients.push(cunaData.salesRep);
+      if (cunaData.salesRep.supervisor) {
+        recipients.push(cunaData.salesRep.supervisor);
+      }
+    }
+    
+    // Programadores de las emisoras
+    if (cunaData.targetStations) {
+      for (const station of cunaData.targetStations) {
+        const programmers = await getStationProgrammers(station.id);
+        recipients.push(...programmers);
+      }
+    }
+    
+    return deduplicateRecipients(recipients);
+  }
+};
+INTERFACE DE ENVÍO MASIVO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📧 ENVÍO MASIVO - CONFIGURACIÓN AVANZADA                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 📋 Contenido a enviar:                                         │
+│ ☑️ Archivo de audio (SPX001847_SuperMax_Promo.mp3)             │
+│ ☑️ Información de la cuña (nombre, duración, fechas)           │
+│ ☑️ Datos del anunciante (nombre, contacto, ejecutivo)          │
+│ ☑️ Instrucciones de programación                               │
+│ ⚪ Transcripción del audio (si disponible)                     │
+│ ⚪ Notas especiales del ejecutivo                              │
+│                                                                 │
+│ 📅 Programación del envío:                                     │
+│ ● Enviar inmediatamente                                        │
+│ ○ Programar para: [📅 __/__/__] [🕐 __:__]                    │
+│ ○ Enviar antes de cada emisión (automático)                    │
+│                                                                 │
+│ 📧 Plantilla de email:                                         │
+│ [Estándar comercial ▼] [👁️ Preview] [✏️ Personalizar]         │
+│                                                                 │
+│ 🔔 Confirmaciones:                                             │
+│ ☑️ Solicitar confirmación de recepción                         │
+│ ☑️ Notificar cuando se descargue el archivo                    │
+│ ☑️ Alertar si no se confirma en 2 horas                       │
+├─────────────────────────────────────────────────────────────────┤
+│ [📤 Enviar Ahora] [⏰ Programar] [💾 Guardar Configuración]     │
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA DE CONFIRMACIONES Y TRACKING:
+typescriptconst deliveryTrackingSystem = {
+  // Envío con tracking completo
+  sendWithTracking: async (distributionData: DistributionData) => {
+    const deliveryId = generateDeliveryId();
+    
+    // Crear registro de envío
+    const delivery = await createDeliveryRecord({
+      id: deliveryId,
+      cunaId: distributionData.cunaId,
+      recipients: distributionData.recipients,
+      content: distributionData.content,
+      scheduledAt: distributionData.scheduledAt || new Date(),
+      status: 'sending'
+    });
+    
+    // Envío por email con tracking
+    for (const recipient of distributionData.recipients) {
+      try {
+        const emailResult = await sendTrackedEmail({
+          to: recipient.email,
+          subject: `Nueva cuña: ${distributionData.cunaName}`,
+          template: distributionData.template,
+          attachments: distributionData.attachments,
+          trackingId: `${deliveryId}_${recipient.id}`,
+          
+          // Tracking pixels y links
+          trackOpens: true,
+          trackClicks: true,
+          trackDownloads: true
+        });
+        
+        await updateRecipientStatus(deliveryId, recipient.id, 'sent');
+        
+      } catch (error) {
+        await updateRecipientStatus(deliveryId, recipient.id, 'failed', error.message);
+      }
+    }
+    
+    // Programar alertas de seguimiento
+    await scheduleFollowUpAlerts(deliveryId, distributionData.confirmationRequirements);
+    
+    return delivery;
+  },
+  
+  // Procesamiento de confirmaciones automáticas
+  processConfirmation: async (trackingId: string, confirmationType: string) => {
+    const [deliveryId, recipientId] = trackingId.split('_');
+    
+    const confirmationData = {
+      deliveryId,
+      recipientId,
+      type: confirmationType, // 'opened', 'downloaded', 'confirmed'
+      timestamp: new Date(),
+      userAgent: request.headers['user-agent'],
+      ip: getClientIP(request)
+    };
+    
+    await recordConfirmation(confirmationData);
+    
+    // Actualizar estado del destinatario
+    if (confirmationType === 'confirmed') {
+      await updateRecipientStatus(deliveryId, recipientId, 'confirmed');
+      
+      // Cancelar alertas pendientes para este destinatario
+      await cancelPendingAlerts(deliveryId, recipientId);
+    }
+    
+    // Verificar si todos han confirmado
+    const allConfirmed = await checkAllRecipientsConfirmed(deliveryId);
+    if (allConfirmed) {
+      await updateDeliveryStatus(deliveryId, 'completed');
+      await notifyDeliveryComplete(deliveryId);
+    }
+  }
+};
+DASHBOARD DE SEGUIMIENTO DE ENVÍOS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 SEGUIMIENTO DE ENVÍOS EN TIEMPO REAL                         │
+├─────────────────────────────────────────────────────────────────┤
+│ 📤 Envío ID: DEL-2025-001847                                   │
+│ 🎵 Cuña: SPX001847 - Promoción Verano SuperMax                 │
+│ ⏰ Enviado: Hoy 14:30:25                                        │
+│                                                                 │
+│ 📊 Estado general: 4 de 6 confirmados (67%)                    │
+│ ████████████████░░░░░░░░                                        │
+│                                                                 │
+│ 👥 Destinatarios:                                              │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ✅ operador.manana@radiocorazon.cl                          │ │
+│ │    📧 Enviado: 14:30 • 👁️ Abierto: 14:35 • ✅ Confirmado: 14:40 │ │
+│ │                                                            │ │
+│ │ ✅ carlos.mendoza@megamedia.com                             │ │
+│ │    📧 Enviado: 14:30 • 👁️ Abierto: 14:32 • ✅ Confirmado: 14:33 │ │
+│ │                                                            │ │
+│ │ ⚠️ operador.tarde@radiocorazon.cl                           │ │
+│ │    📧 Enviado: 14:30 • 👁️ Abierto: 14:45 • ⏳ Sin confirmar   │ │
+│ │    🔔 Recordatorio enviado: 16:30                           │ │
+│ │                                                            │ │
+│ │ ❌ operador.noche@radiocorazon.cl                           │ │
+│ │    📧 Error envío: Buzón lleno • 🔄 Reintentando...         │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 Próximas acciones automáticas:                              │
+│ • 18:00 - Recordatorio a destinatarios sin confirmar           │
+│ • 19:00 - Alerta al ejecutivo por confirmaciones pendientes    │
+│ • 20:00 - Escalamiento al supervisor                           │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔄 Reenviar Fallidos] [📧 Recordatorio Manual] [📊 Ver Detalles] │
+└─────────────────────────────────────────────────────────────────┘
+
+📅 PESTAÑA 5: "PROGRAMACIÓN Y VENCIMIENTOS" - GESTIÓN TEMPORAL
+CONFIGURACIÓN DE FECHAS ESPECÍFICAS POR CLIENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📅 PROGRAMACIÓN Y VENCIMIENTOS ESPECÍFICOS                      │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Configuración para: SuperMax - Promoción Verano              │
+│                                                                 │
+│ 📅 FECHAS DE EMISIÓN PERSONALIZADAS:                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Fecha inicio: [15 Jun 2025] [06:00] ✅ Validado             │ │
+│ │ Fecha término: [30 Ago 2025] [23:59] ✅ Validado            │ │
+│ │                                                            │ │
+│ │ ⚠️ FECHAS CRÍTICAS ESPECÍFICAS:                            │ │
+│ │                                                            │ │
+│ │ 🔚 Vencimiento SuperMax:                                   │ │
+│ │ [📅 25 Ago 2025] [🕐 12:00] - Mediodía                    │ │
+│ │ 🔔 Alerta programada: 24 Ago 12:00                        │ │
+│ │                                                            │ │
+│ │ 📊 Días restantes: 87 días                                │ │
+│ │ ████████████████████████████████████░░░░                   │ │
+│ │ 91% del período completado                                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🔔 SISTEMA DE ALERTAS AUTOMÁTICAS:                             │
+│ ☑️ 7 días antes del vencimiento (18 Ago 12:00)                 │
+│ ☑️ 3 días antes del vencimiento (22 Ago 12:00)                 │
+│ ☑️ 1 día antes del vencimiento (24 Ago 12:00) - CRÍTICO       │
+│ ☑️ Día del vencimiento (25 Ago 08:00) - ÚLTIMO AVISO          │
+│                                                                 │
+│ 👥 Destinatarios de alertas:                                   │
+│ • Carlos Mendoza (Ejecutivo responsable)                       │
+│ • María Silva (Supervisor comercial)                          │
+│ • Operador Radio Corazón turno mañana                         │
+│ • Sistema de programación automática                           │
+├─────────────────────────────────────────────────────────────────┤
+│ [⚙️ Configurar Alertas] [📅 Modificar Fechas] [🔄 Renovar Auto] │
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA INTELIGENTE DE ALERTAS DE VENCIMIENTO:
+typescriptconst intelligentExpirationSystem = {
+  // Configuración de alertas por tipo de cuña
+  alertConfigurations: {
+'audio': {
+     defaultAlerts: [
+       { days: 7, time: '09:00', priority: 'medium', message: 'Audio vence en 7 días' },
+       { days: 3, time: '12:00', priority: 'high', message: 'Audio vence en 3 días - Revisar renovación' },
+       { days: 1, time: '12:00', priority: 'critical', message: 'URGENTE: Audio vence mañana' },
+       { days: 0, time: '08:00', priority: 'critical', message: 'ÚLTIMO DÍA: Audio vence hoy' }
+     ],
+     recipients: ['sales_rep', 'supervisor', 'traffic_coordinator']
+   },
+   
+   'presentacion': {
+     defaultAlerts: [
+       { days: 5, time: '10:00', priority: 'medium', message: 'Presentación vence en 5 días' },
+       { days: 2, time: '12:00', priority: 'high', message: 'Presentación vence en 2 días' },
+       { days: 1, time: '12:00', priority: 'critical', message: 'CRÍTICO: Presentación vence mañana' },
+       { days: 0, time: '07:00', priority: 'critical', message: 'HOY VENCE: Cambiar presentación' }
+     ],
+     recipients: ['sales_rep', 'programming_team', 'station_operators']
+   },
+   
+   'mencion': {
+     defaultAlerts: [
+       { days: 3, time: '11:00', priority: 'medium', message: 'Mención vence en 3 días' },
+       { days: 1, time: '12:00', priority: 'high', message: 'Mención vence mañana' },
+       { days: 0, time: '08:00', priority: 'critical', message: 'Mención vence HOY' }
+     ],
+     recipients: ['sales_rep', 'on_air_talent']
+   }
+ },
+ 
+ // Análisis predictivo de renovaciones
+ predictRenewalNeeds: async (cunaId: string) => {
+   const cuna = await getCunaById(cunaId);
+   const historicalData = await getHistoricalRenewals(cuna.advertiserId);
+   
+   // Factores de predicción
+   const factors = {
+     clientLoyalty: calculateClientLoyalty(historicalData),
+     campaignPerformance: await getCampaignPerformance(cunaId),
+     seasonality: analyzeSeasonality(cuna.startDate, cuna.endDate),
+     budgetCycle: analyzeBudgetCycle(cuna.advertiserId),
+     competitorActivity: await analyzeCompetitorActivity(cuna.advertiserId)
+   };
+   
+   // ML prediction score
+   const renewalProbability = await mlPredict('renewal_probability', factors);
+   
+   return {
+     probability: renewalProbability,
+     recommendedAction: renewalProbability > 0.7 ? 'proactive_renewal' : 'standard_followup',
+     bestContactDate: calculateOptimalContactDate(cuna.endDate, renewalProbability),
+     suggestedOffer: generateRenewalOffer(factors),
+     riskFactors: identifyRiskFactors(factors)
+   };
+ },
+ 
+ // Creación automática de alertas
+ createSmartAlerts: async (cuna: Cuna) => {
+   const config = this.alertConfigurations[cuna.type];
+   const renewalPrediction = await this.predictRenewalNeeds(cuna.id);
+   
+   // Ajustar alertas basado en predicción
+   const adjustedAlerts = config.defaultAlerts.map(alert => {
+     if (renewalPrediction.probability < 0.5) {
+       // Cliente en riesgo - alertas más tempranas
+       return { ...alert, days: alert.days + 2 };
+     }
+     return alert;
+   });
+   
+   // Programar alertas
+   for (const alert of adjustedAlerts) {
+     await scheduleAlert({
+       cunaId: cuna.id,
+       triggerDate: subDays(cuna.endDate, alert.days),
+       triggerTime: alert.time,
+       priority: alert.priority,
+       message: alert.message,
+       recipients: await resolveRecipients(config.recipients, cuna),
+       actions: generateAlertActions(alert.priority),
+       metadata: {
+         renewalProbability: renewalPrediction.probability,
+         riskLevel: renewalPrediction.riskFactors.length > 2 ? 'high' : 'low'
+       }
+     });
+   }
+ }
+};
+INTERFACE DE NOTIFICACIONES EN TIEMPO REAL:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔔 NOTIFICACIONES DE VENCIMIENTO - TIEMPO REAL                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 🚨 ALERTAS CRÍTICAS (3):                                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ⚠️ VENCE HOY - 12:00 PM                                    │ │
+│ │ 📢 Presentación Banco XYZ - Radio Corazón                  │ │
+│ │ 👤 Ejecutivo: Ana García                                   │ │
+│ │ 🎯 Acción: Cambiar antes del mediodía                      │ │
+│ │ [🔄 Extender] [✏️ Reemplazar] [📞 Llamar Cliente]          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🟡 ALERTAS PRÓXIMAS (5):                                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ⏰ VENCE MAÑANA                                             │ │
+│ │ 🎵 Audio Farmacia Salud - SPX001823                        │ │
+│ │ 👤 Ejecutivo: Roberto Silva                                │ │
+│ │ 📊 Renovación probable: 85% ✅                             │ │
+│ │ [📧 Contactar] [🔄 Renovar] [📋 Ver Historial]             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📋 ACCIONES SUGERIDAS POR IA:                                  │
+│ • Contactar Banco XYZ HOY antes de las 11:00                   │
+│ • Preparar renovación Farmacia Salud (alta probabilidad)       │
+│ • Revisar 3 cuñas que vencen esta semana                      │
+│                                                                 │
+│ [📊 Dashboard Completo] [⚙️ Configurar] [🔕 Silenciar 1h]      │
+└─────────────────────────────────────────────────────────────────┘
+
+📋 PESTAÑA 6: "HISTORIAL Y TRAZABILIDAD" - AUDITORÍA COMPLETA
+TIMELINE COMPLETO DE ACTIVIDAD:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 HISTORIAL COMPLETO - SPX001847                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📅 HOY - 25 Mayo 2025                                          │
+│                                                                 │
+│ 🕐 14:30 - 📤 ENVÍO DISTRIBUIDO                                │
+│ └─ Sistema envió a 6 destinatarios                             │
+│    ✅ 4 confirmados, ⏳ 2 pendientes                           │
+│    👤 Acción: Sistema automático                               │
+│                                                                 │
+│ 🕐 14:25 - ✅ VALIDACIÓN COMPLETADA                            │
+│ └─ Todas las validaciones pasaron exitosamente                 │
+│    🔍 Score técnico: 96/100                                    │
+│    👤 Acción: Sistema automático                               │
+│                                                                 │
+│ 🕐 14:20 - 🎵 AUDIO PROCESADO                                  │
+│ └─ Audio editado y exportado en calidad broadcast              │
+│    📊 Duración final: 28.5s                                    │
+│    👤 Acción: Carlos Mendoza                                   │
+│                                                                 │
+│ 🕐 14:15 - 📁 ARCHIVO SUBIDO                                   │
+│ └─ SuperMax_Promo_Verano.mp3 (1.8MB)                          │
+│    🔧 Procesamiento automático iniciado                        │
+│    👤 Acción: Carlos Mendoza                                   │
+│                                                                 │
+│ 🕐 14:10 - 🆔 CUÑA CREADA                                      │
+│ └─ ID asignado: SPX001847                                      │
+│    🏢 Cliente: SuperMax SpA                                    │
+│    👤 Acción: Carlos Mendoza                                   │
+│                                                                 │
+│ 📅 AYER - 24 Mayo 2025                                         │
+│                                                                 │
+│ 🕐 16:45 - 📋 SOLICITUD INICIAL                                │
+│ └─ Cliente solicitó nueva cuña para campaña verano             │
+│    📧 Email recibido de maria.gonzalez@supermax.cl             │
+│    👤 Acción: Sistema (email automático)                       │
+│                                                                 │
+│ [📊 Ver más historial] [🔍 Buscar evento] [📤 Exportar log]    │
+└─────────────────────────────────────────────────────────────────┘
+SEGUIMIENTO DE CAMBIOS DETALLADO:
+typescriptconst auditTrailSystem = {
+  // Captura automática de cambios
+  captureChange: async (changeData: ChangeData) => {
+    const auditEntry = {
+      id: generateAuditId(),
+      cunaId: changeData.cunaId,
+      timestamp: new Date(),
+      userId: changeData.userId,
+      userRole: changeData.userRole,
+      action: changeData.action, // 'create', 'update', 'delete', 'view', 'download'
+      
+      // Detalles del cambio
+      fieldChanged: changeData.fieldChanged,
+      oldValue: changeData.oldValue,
+      newValue: changeData.newValue,
+      
+      // Contexto técnico
+      ipAddress: changeData.ipAddress,
+      userAgent: changeData.userAgent,
+      sessionId: changeData.sessionId,
+      
+      // Metadatos de negocio
+      reason: changeData.reason,
+      justification: changeData.justification,
+      approvedBy: changeData.approvedBy,
+      
+      // Información del estado
+      cunaStatus: changeData.cunaStatus,
+      validationStatus: changeData.validationStatus,
+      distributionStatus: changeData.distributionStatus
+    };
+    
+    // Guardado inmutable
+    await saveAuditEntry(auditEntry);
+    
+    // Trigger para análisis de comportamiento
+    await analyzeUserBehavior(auditEntry);
+    
+    // Alertas de seguridad si es necesario
+    if (isSecurityRelevant(auditEntry)) {
+      await triggerSecurityAlert(auditEntry);
+    }
+    
+    return auditEntry;
+  },
+  
+  // Análisis de patrones de uso
+  analyzeUsagePatterns: async (cunaId: string) => {
+    const auditTrail = await getAuditTrail(cunaId);
+    
+    return {
+      totalActions: auditTrail.length,
+      uniqueUsers: [...new Set(auditTrail.map(entry => entry.userId))].length,
+      mostActiveUser: findMostActiveUser(auditTrail),
+      activityPeaks: findActivityPeaks(auditTrail),
+      securityEvents: auditTrail.filter(entry => entry.securityRelevant),
+      approvalChain: buildApprovalChain(auditTrail),
+      distributionHistory: buildDistributionHistory(auditTrail)
+    };
+  }
+};
+PANEL DE ANÁLISIS DE USO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANÁLISIS DE USO Y PERFORMANCE                                │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 SPX001847 - Promoción Verano SuperMax                       │
+│                                                                 │
+│ 📈 MÉTRICAS DE USO:                                            │
+│ • Total de emisiones: 156 veces                                │
+│ • Emisoras utilizadas: 3 (Radio Corazón, FM Dos, La Clave)    │
+│ • Período activo: 45 días                                      │
+│ • Promedio diario: 3.5 emisiones                              │
+│                                                                 │
+│ 👥 INTERACCIONES:                                              │
+│ • Usuarios que accedieron: 8                                   │
+│ • Descargas del archivo: 23                                    │
+│ • Modificaciones: 2                                            │
+│ • Distribuciones enviadas: 5                                   │
+│                                                                 │
+│ 📊 PERFORMANCE DE CAMPAÑA:                                     │
+│ • Reach estimado: 2.3M personas                               │
+│ • Frecuencia promedio: 8.5                                     │
+│ • GRP total: 145                                               │
+│ • CPM estimado: $2,850                                         │
+│                                                                 │
+│ 🎯 EMISIONES POR EMISORA:                                       │
+│ ████████████████████████████░░░░ Radio Corazón (72%)           │
+│ ████████████░░░░░░░░░░░░░░░░░░░░ FM Dos (18%)                  │
+│ ██████░░░░░░░░░░░░░░░░░░░░░░░░░░ La Clave (10%)                │
+│                                                                 │
+│ [📊 Reporte Completo] [📈 Comparar Campañas] [📤 Exportar]     │
+└─────────────────────────────────────────────────────────────────┘
+
+🔄 FUNCIÓN "COPIAR CUÑA" - OPTIMIZACIÓN OPERATIVA
+WIZARD DE COPIA INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 COPIAR CUÑA - OPTIMIZACIÓN PARA SERIES                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎵 Cuña original: SPX001847 - Promoción Verano SuperMax         │
+│                                                                 │
+│ 🆔 Nueva cuña: SPX001848 (generado automáticamente)            │
+│                                                                 │
+│ ✅ INFORMACIÓN COPIADA:                                         │
+│ • Anunciante: SuperMax SpA ✅                                  │
+│ • Producto: Campaña Verano 2025 ✅                             │
+│ • Duración: 28.5 segundos ✅                                   │
+│ • Fechas de vigencia: 15 Jun - 30 Ago ✅                      │
+│ • Configuración de distribución ✅                              │
+│ • Validaciones básicas ✅                                       │
+│                                                                 │
+│ ❌ CONTENIDO NO COPIADO (como solicitado):                     │
+│ • Archivo de audio: Requiere nuevo archivo                     │
+│ • Texto de mención: Campo vacío para nuevo contenido           │
+│ • Validaciones técnicas: Se ejecutarán al subir nuevo material │
+│                                                                 │
+│ ✏️ PERSONALIZACIÓN RÁPIDA:                                     │
+│ Nuevo nombre: [Promoción Verano SuperMax - Versión 2    ]     │
+│ Observaciones: [Segunda versión con nuevo mensaje       ]     │
+│                                                                 │
+│ 🎯 SUGERENCIAS INTELIGENTES:                                   │
+│ • Mantener misma estructura de validaciones                    │
+│ • Heredar configuración de alertas de vencimiento             │
+│ • Usar mismos grupos de distribución                          │
+│ • Aplicar misma configuración de horarios                     │
+├─────────────────────────────────────────────────────────────────┤
+│ [📁 Cargar Nuevo Audio] [📝 Crear Mención] [💾 Crear Copia]    │
+└─────────────────────────────────────────────────────────────────┘
+LÓGICA DE COPIA OPTIMIZADA:
+typescriptconst intelligentCopySystem = {
+  createCunaCopy: async (originalCunaId: string, copyOptions: CopyOptions) => {
+    const originalCuna = await getCunaById(originalCunaId);
+    
+    // Generar nuevo ID automáticamente
+    const newCunaId = await generateCreativeId();
+    
+    // Elementos que SÍ se copian
+    const copiedElements = {
+      // Información básica del cliente
+      advertiserId: originalCuna.advertiserId,
+      productId: originalCuna.productId,
+      
+      // Configuraciones operativas
+      startDate: originalCuna.startDate,
+      endDate: originalCuna.endDate,
+      isActive: originalCuna.isActive,
+      
+      // Configuraciones de distribución
+      distributionGroups: originalCuna.distributionGroups,
+      targetStations: originalCuna.targetStations,
+      
+      // Configuraciones de alertas
+      expirationAlerts: originalCuna.expirationAlerts,
+      
+      // Metadatos operativos
+      assignedUser: originalCuna.assignedUser,
+      salesRep: originalCuna.salesRep,
+      tags: originalCuna.tags
+    };
+    
+    // Elementos que NO se copian (como especificado)
+    const excludedElements = {
+      audioUrl: null,          // Sin archivo de audio
+      audioMetadata: null,     // Sin metadatos técnicos
+      mentionText: '',         // Campo vacío para nuevo texto
+      transcription: '',       // Sin transcripción
+      validationResults: null, // Validaciones se ejecutarán de nuevo
+      distributionHistory: [], // Sin historial de envíos
+      usageHistory: []         // Sin historial de uso
+    };
+    
+    // Crear nueva cuña
+    const newCuna = {
+      id: newCunaId,
+      ...copiedElements,
+      ...excludedElements,
+      
+      // Metadatos de copia
+      copiedFrom: originalCunaId,
+      copyCreatedAt: new Date(),
+      copyCreatedBy: currentUser.id,
+      
+      // Nombre automático con versión
+      name: generateVersionedName(originalCuna.name, copyOptions.version),
+      
+      // Estado inicial para nueva cuña
+      status: 'draft',
+      validationStatus: 'pending',
+      distributionStatus: 'not_sent'
+    };
+    
+    await saveCuna(newCuna);
+    
+    // Crear entrada de auditoría
+    await auditTrailSystem.captureChange({
+      cunaId: newCunaId,
+      action: 'copy_created',
+      userId: currentUser.id,
+      reason: 'copy_from_original',
+      metadata: {
+        originalCunaId,
+        elementsCopiied: Object.keys(copiedElements),
+        elementsExcluded: Object.keys(excludedElements)
+      }
+    });
+    
+    return newCuna;
+  },
+  
+  // Generación inteligente de nombre versionado
+  generateVersionedName: (originalName: string, version?: string) => {
+    if (version) {
+      return `${originalName} - ${version}`;
+    }
+    
+    // Auto-detectar si ya tiene versión
+    const versionMatch = originalName.match(/ - (V|Versión|v)(\d+)$/i);
+    if (versionMatch) {
+      const currentVersion = parseInt(versionMatch[2]);
+      const newVersion = currentVersion + 1;
+      return originalName.replace(versionMatch[0], ` - Versión ${newVersion}`);
+    }
+    
+    return `${originalName} - Versión 2`;
+  },
+  
+  // Sugerencias para la serie de cuñas
+  generateSeriesSuggestions: async (originalCunaId: string) => {
+    const original = await getCunaById(originalCunaId);
+    const existingCopies = await getCopiesOfCuna(originalCunaId);
+    
+    return {
+      suggestedNames: [
+        `${original.name} - Mañana`,
+        `${original.name} - Tarde`,
+        `${original.name} - Fin de Semana`,
+        `${original.name} - Versión Corta`,
+        `${original.name} - Versión Extendida`
+      ],
+      
+      suggestedDurations: [
+        { name: 'Versión 15s', duration: 15 },
+        { name: 'Versión 20s', duration: 20 },
+        { name: 'Versión 30s', duration: 30 },
+        { name: 'Versión 45s', duration: 45 }
+      ],
+      
+      suggestedSchedules: generateScheduleSuggestions(original.targetStations),
+      
+      seriesInsights: {
+        totalCopies: existingCopies.length,
+        mostSuccessfulVersion: findMostSuccessfulCopy(existingCopies),
+        averagePerformance: calculateAveragePerformance(existingCopies)
+      }
+    };
+  }
+};
+
+🔗 INTEGRACIÓN AVANZADA CON ECOSYSTEM SILEXAR
+CONEXIÓN CON MÓDULO CONTRATOS:
+typescriptconst contractIntegration = {
+  // Validación automática al crear contrato
+  validateMaterialAvailability: async (contractData: ContractData) => {
+    const existingCunas = await searchCunas({
+      advertiserId: contractData.advertiserId,
+      productId: contractData.productId,
+      isActive: true,
+      dateRange: {
+        start: contractData.startDate,
+        end: contractData.endDate
+      }
+    });
+    
+    return {
+      hasActiveMaterial: existingCunas.length > 0,
+      availableCunas: existingCunas,
+      missingMaterial: analyzeMissingMaterial(contractData, existingCunas),
+      recommendations: generateMaterialRecommendations(contractData, existingCunas)
+    };
+  },
+  
+  // Auto-creación de cuñas desde contrato
+  createCunasFromContract: async (contractId: string) => {
+    const contract = await getContractById(contractId);
+    const materialNeeds = await analyzeMaterialNeeds(contract);
+    
+    const createdCunas = [];
+    
+    for (const need of materialNeeds) {
+      const cunaTemplate = {
+        advertiserId: contract.advertiserId,
+        productId: contract.productId,
+        name: `${need.type} - ${contract.name}`,
+        type: need.type,
+        startDate: contract.startDate,
+        endDate: contract.endDate,
+        createdFromContract: contractId,
+        assignedUser: contract.salesRep,
+        status: 'awaiting_material'
+      };
+      
+      const cuna = await createCuna(cunaTemplate);
+      createdCunas.push(cuna);
+    }
+    
+    return createdCunas;
+  }
+};
+SINCRONIZACIÓN CON MÓDULO VENCIMIENTOS:
+typescriptconst vencimientosSync = {
+  // Sincronización bidireccional
+  syncWithVencimientos: async (cunaId: string) => {
+    const cuna = await getCunaById(cunaId);
+    
+    if (cuna.type === 'presentacion' || cuna.type === 'cierre') {
+      // Actualizar vencimientos con nueva presentación
+      await vencimientosService.updatePresentationStatus({
+        advertiserId: cuna.advertiserId,
+        programId: cuna.programId,
+        presentationType: cuna.type,
+        status: cuna.status,
+        cunaId: cuna.id
+      });
+    }
+    
+    // Verificar coherencia de fechas
+    const vencimientoData = await vencimientosService.getVencimiento({
+      advertiserId: cuna.advertiserId,
+      dateRange: { start: cuna.startDate, end: cuna.endDate }
+    });
+    
+    if (vencimientoData && vencimientoData.endDate !== cuna.endDate) {
+      // Alerta de desincronización
+      await createSyncAlert({
+        type: 'date_mismatch',
+        cunaId: cuna.id,
+        vencimientoId: vencimientoData.id,
+        expectedDate: vencimientoData.endDate,
+        actualDate: cuna.endDate
+      });
+    }
+  },
+  
+  // Monitoreo continuo de sincronización
+  continuousSync: async () => {
+    const presentaciones = await getCunasByType(['presentacion', 'cierre']);
+    
+    for (const presentacion of presentaciones) {
+      await this.syncWithVencimientos(presentacion.id);
+    }
+  }
+};
+EXPORTACIÓN A SISTEMAS DE EMISIÓN:
+typescriptconst broadcastSystemsExport = {
+  // Exportación universal a múltiples sistemas
+  exportToAllSystems: async (cunaId: string) => {
+    const cuna = await getCunaById(cunaId);
+    const targetStations = await getTargetStations(cunaId);
+    
+    const exportResults = [];
+    
+    for (const station of targetStations) {
+      const systemType = station.broadcastSystem; // 'wideorbit', 'sara', 'dalet', etc.
+      
+      try {
+        const exportResult = await this.exportToSystem(cuna, station, systemType);
+        exportResults.push({
+          station: station.name,
+          system: systemType,
+          status: 'success',
+          result: exportResult
+        });
+      } catch (error) {
+        exportResults.push({
+          station: station.name,
+          system: systemType,
+          status: 'error',
+          error: error.message
+        });
+      }
+    }
+    
+    return exportResults;
+  },
+  
+  // Exportadores específicos por sistema
+  exportToSystem: async (cuna: Cuna, station: Station, systemType: string) => {
+    const exporters = {
+      'wideorbit': () => this.exportToWideOrbit(cuna, station),
+      'sara': () => this.exportToSara(cuna, station),
+      'dalet': () => this.exportToDalet(cuna, station),
+      'marketron': () => this.exportToMarketron(cuna, station)
+    };
+    
+    if (!exporters[systemType]) {
+      throw new Error(`Sistema ${systemType} no soportado`);
+    }
+    
+    return await exporters[systemType]();
+  },
+  
+  // Formato WideOrbit
+  exportToWideOrbit: async (cuna: Cuna, station: Station) => {
+    const wideOrbitFormat = {
+      // Identificación
+      cartNumber: generateCartNumber(cuna.id),
+      title: cuna.name,
+      advertiser: cuna.advertiser.name,
+      
+      // Audio
+      audioFile: cuna.audioUrl,
+      duration: Math.ceil(cuna.duration * 1000), // milisegundos
+      
+      // Programación
+      startDate: format(cuna.startDate, 'MM/dd/yyyy'),
+      endDate: format(cuna.endDate, 'MM/dd/yyyy'),
+      dayparts: convertToWideOrbitDayparts(cuna.schedule),
+      
+      // Metadatos
+      category: mapCunaTypeToWideOrbit(cuna.type),
+      priority: cuna.priority || 'normal',
+      
+      // Tracking
+      silexarId: cuna.id,
+      lastModified: cuna.updatedAt
+    };
+    
+    return await wideOrbitAPI.importCart(wideOrbitFormat);
+  }
+};
+
+📊 DASHBOARD OPERATIVO GERENCIAL
+VISTA EJECUTIVA PARA GERENCIA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎛️ DASHBOARD OPERATIVO - GESTIÓN DE CUÑAS                      │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 MÉTRICAS CLAVE (Tiempo Real):                               │
+│                                                                 │
+│ 🎵 Material Activo:                                            │
+│ • Total cuñas activas: 1,847                                   │
+│ • Nuevas esta semana: 156 (+12% vs semana anterior)           │
+│ • Vencen próximos 7 días: 23 (🚨 Atención requerida)          │
+│ • Sin material: 8 contratos (⚠️ Riesgo operativo)             │
+│                                                                 │
+│ 👥 Performance del Equipo:                                     │
+│ • Carlos Mendoza: 23 cuñas creadas (Top performer)             │
+│ • Ana García: 18 cuñas procesadas                              │
+│ • Roberto Silva: 15 cuñas distribuidas                         │
+│ • Promedio respuesta: 2.3 horas                               │
+│                                                                 │
+│ 🔍 Validaciones y Calidad:                                     │
+│ • Tasa aprobación automática: 94%                             │
+│ • Cuñas con problemas técnicos: 3 (En revisión)               │
+│ • Score promedio calidad: 91/100                              │
+│ • Tiempo promedio validación: 8 minutos                       │
+│                                                                 │
+│ 📤 Distribución y Entregas:                                    │
+│ • Envíos exitosos hoy: 89 de 92 (97%)                         │
+│ • Confirmaciones pendientes: 12                               │
+│ • Promedio tiempo confirmación: 45 minutos 
+• Operadores más responsivos: Radio Corazón (15 min avg)       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🚨 ALERTAS CRÍTICAS QUE REQUIEREN ATENCIÓN:                    │
+│                                                                 │
+│ ⚠️ VENCIMIENTOS URGENTES (3):                                   │
+│ • Banco Nacional - Vence HOY 12:00 (Sin reemplazo)            │
+│ • SuperMax Promo - Vence mañana (Renovación en proceso)       │
+│ • Farmacia Plus - Vence en 2 días (Cliente no responde)       │
+│                                                                 │
+│ 🔧 PROBLEMAS TÉCNICOS (2):                                     │
+│ • SPX001834 - Audio corrupto (En re-procesamiento)            │
+│ • SPX001798 - Falla validación LUFS (Requiere edición)        │
+│                                                                 │
+│ 📋 MATERIAL FALTANTE (5):                                      │
+│ • Contrato CNT-2025-0234 - Sin cuñas (Cliente: TechCorp)      │
+│ • Contrato CNT-2025-0187 - Falta cierre (Cliente: AutoMax)    │
+│ • 3 contratos más requieren presentaciones                     │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 ANÁLISIS PREDICTIVO CORTEX:                                 │
+│                                                                 │
+│ 🎯 Predicciones próximas 48 horas:                             │
+│ • 15 cuñas requerirán renovación (Probabilidad: 78%)          │
+│ • 8 clientes contactarán para nuevas versiones                │
+│ • Peak de actividad esperado: Mañana 10:00-12:00              │
+│                                                                 │
+│ 💡 Recomendaciones IA:                                         │
+│ • Contactar Banco Nacional INMEDIATAMENTE                      │
+│ • Preparar plantillas para renovaciones masivas               │
+│ • Asignar recurso adicional turno mañana                      │
+│ • Revisar flujo validación técnica (cuello de botella)        │
+├─────────────────────────────────────────────────────────────────┤
+│ [🚨 Resolver Críticos] [📞 Contactar Equipo] [📊 Reporte Completo] │
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA DE ALERTAS GERENCIALES:
+typescriptconst managementAlertSystem = {
+  // Alertas escaladas automáticamente
+  escalatedAlerts: {
+    // Vencimientos críticos
+    criticalExpirations: {
+      trigger: 'same_day_expiration_without_replacement',
+      recipients: ['commercial_manager', 'operations_manager'],
+      priority: 'critical',
+      actions: ['emergency_contact_client', 'prepare_replacement', 'extend_deadline']
+    },
+    
+    // Problemas técnicos recurrentes
+    technicalIssues: {
+      trigger: 'technical_failure_rate_above_5_percent',
+      recipients: ['technical_manager', 'operations_manager'],
+      priority: 'high',
+      actions: ['review_process', 'additional_training', 'system_check']
+    },
+    
+    // Retrasos en confirmaciones
+    distributionDelays: {
+      trigger: 'confirmation_rate_below_80_percent',
+      recipients: ['operations_manager', 'station_managers'],
+      priority: 'medium',
+      actions: ['contact_operators', 'review_distribution_process']
+    },
+    
+    // Carga de trabajo desequilibrada
+    workloadImbalance: {
+      trigger: 'user_workload_variance_above_30_percent',
+      recipients: ['commercial_manager'],
+      priority: 'medium',
+      actions: ['redistribute_accounts', 'additional_resources']
+    }
+  },
+  
+  // Generación de alertas inteligentes
+  generateIntelligentAlerts: async () => {
+    const metrics = await getOperationalMetrics();
+    const alerts = [];
+    
+    // Análisis de vencimientos críticos
+    const criticalExpirations = await findCriticalExpirations();
+    if (criticalExpirations.length > 0) {
+      alerts.push({
+        type: 'critical_expirations',
+        count: criticalExpirations.length,
+        items: criticalExpirations,
+        suggestedActions: generateExpirationActions(criticalExpirations),
+        priority: 'critical'
+      });
+    }
+    
+    // Análisis de calidad técnica
+    const qualityIssues = await analyzeQualityTrends();
+    if (qualityIssues.failureRate > 0.05) {
+      alerts.push({
+        type: 'quality_degradation',
+        failureRate: qualityIssues.failureRate,
+        trendDirection: qualityIssues.trend,
+        mainCauses: qualityIssues.primaryCauses,
+        priority: 'high'
+      });
+    }
+    
+    // Análisis de performance del equipo
+    const teamPerformance = await analyzeTeamPerformance();
+    if (teamPerformance.hasImbalances) {
+      alerts.push({
+        type: 'workload_imbalance',
+        imbalanceLevel: teamPerformance.variancePercentage,
+        overloadedUsers: teamPerformance.overloaded,
+        underutilizedUsers: teamPerformance.underutilized,
+        priority: 'medium'
+      });
+    }
+    
+    return alerts;
+  }
+};
+REPORTES AUTOMÁTICOS EJECUTIVOS:
+typescriptconst executiveReporting = {
+  // Reporte diario automático
+  generateDailyReport: async () => {
+    const today = new Date();
+    const yesterday = subDays(today, 1);
+    
+    const report = {
+      period: format(today, 'dd/MM/yyyy'),
+      
+      // Métricas principales
+      keyMetrics: {
+        totalActiveCunas: await countActiveCunas(),
+        newCunasCreated: await countCunasCreatedSince(yesterday),
+        cunasExpired: await countCunasExpiredSince(yesterday),
+        averageProcessingTime: await calculateAverageProcessingTime(yesterday),
+        qualityScore: await calculateAverageQualityScore(yesterday),
+        distributionSuccessRate: await calculateDistributionSuccessRate(yesterday)
+      },
+      
+      // Análisis de tendencias
+      trends: {
+        weekOverWeek: await calculateWeekOverWeekChange(),
+        monthOverMonth: await calculateMonthOverMonthChange(),
+        seasonalPattern: await analyzeSeasonalPattern(),
+        predictedVolume: await predictNextWeekVolume()
+      },
+      
+      // Issues y alertas
+      issues: {
+        critical: await getCriticalIssues(),
+        medium: await getMediumPriorityIssues(),
+        resolved: await getResolvedIssuesCount(yesterday)
+      },
+      
+      // Performance del equipo
+      teamPerformance: {
+        topPerformers: await getTopPerformers(yesterday),
+        trainingNeeds: await identifyTrainingNeeds(),
+        workloadDistribution: await analyzeWorkloadDistribution()
+      },
+      
+      // Insights de IA
+      aiInsights: {
+        patterns: await identifyOperationalPatterns(),
+        recommendations: await generateOperationalRecommendations(),
+        predictiveAlerts: await generatePredictiveAlerts()
+      }
+    };
+    
+    return report;
+  },
+  
+  // Envío automático del reporte
+  autoSendReports: async () => {
+    const report = await this.generateDailyReport();
+    
+    // Formato ejecutivo
+    const executiveReport = await formatExecutiveReport(report);
+    
+    // Envío a gerencia
+    await emailService.send({
+      to: getManagementEmails(),
+      subject: `Reporte Diario Cuñas - ${format(new Date(), 'dd/MM/yyyy')}`,
+      template: 'daily_executive_report',
+      data: executiveReport,
+      attachments: [
+        await generateExcelReport(report),
+        await generatePowerBILink(report)
+      ]
+    });
+    
+    // Dashboard actualizado
+    await updateManagementDashboard(report);
+  }
+};
+
+🔧 CONFIGURACIONES AVANZADAS Y PERSONALIZACIÓN
+CONFIGURACIÓN POR TENANT/CLIENTE:
+typescriptconst tenantConfiguration = {
+  // Configuraciones específicas por cliente
+  clientConfigs: {
+    'megamedia': {
+      audioQualityStandards: {
+        minimumBitrate: '320kbps',
+        requiredSampleRate: '44100Hz',
+        maxDuration: 120, // segundos
+        lufsTarget: -23,
+        peakLimit: -1
+      },
+      
+      distributionSettings: {
+        autoDistribution: true,
+        confirmationRequired: true,
+        maxConfirmationTime: 2, // horas
+        escalationLevels: ['supervisor', 'manager', 'director']
+      },
+      
+      validationRules: {
+        requireVencimientosValidation: true,
+        brandSafetyRequired: true,
+        competitorMentionCheck: true,
+        legalComplianceCheck: true
+      },
+      
+      automationLevels: {
+        autoIdGeneration: true,
+        autoQualityCheck: true,
+        autoDistribution: false, // Requiere aprobación manual
+        autoRenewalAlerts: true
+      }
+    },
+    
+    'prisa': {
+      audioQualityStandards: {
+        minimumBitrate: '256kbps',
+        requiredSampleRate: '48000Hz',
+        maxDuration: 60,
+        lufsTarget: -16, // Estándar europeo
+        peakLimit: -0.5
+      },
+      
+      distributionSettings: {
+        autoDistribution: false, // Todo manual
+        confirmationRequired: true,
+        maxConfirmationTime: 4,
+        escalationLevels: ['coordinator', 'manager']
+      }
+    }
+  },
+  
+  // Aplicación de configuraciones
+  applyTenantConfig: async (tenantId: string, action: string, data: any) => {
+    const config = this.clientConfigs[tenantId];
+    if (!config) {
+      throw new Error(`Configuración no encontrada para tenant ${tenantId}`);
+    }
+    
+    switch (action) {
+      case 'validate_audio':
+        return this.validateAudioWithTenantStandards(data, config.audioQualityStandards);
+      case 'configure_distribution':
+        return this.setupDistributionWithTenantRules(data, config.distributionSettings);
+      case 'apply_validation_rules':
+        return this.applyValidationRules(data, config.validationRules);
+    }
+  }
+};
+PLANTILLAS Y AUTOMATIZACIONES PERSONALIZABLES:
+typescriptconst templateSystem = {
+  // Plantillas de cuñas por tipo de cliente
+  cunaTemplates: {
+    'retail': {
+      defaultDuration: 30,
+      suggestedStructure: 'hook_product_price_cta',
+      commonElements: ['precio', 'ubicacion', 'horarios'],
+      brandingRequirements: ['nombre_tienda', 'slogan']
+    },
+    
+    'servicios_financieros': {
+      defaultDuration: 45,
+      suggestedStructure: 'problema_solucion_beneficio_disclaimer',
+      commonElements: ['tasa_interes', 'condiciones', 'disclaimer_legal'],
+      brandingRequirements: ['nombre_banco', 'numero_contacto']
+    },
+    
+    'automotriz': {
+      defaultDuration: 35,
+      suggestedStructure: 'emocion_caracteristicas_precio_test_drive',
+      commonElements: ['modelo', 'precio_desde', 'concesionario'],
+      brandingRequirements: ['marca_vehiculo', 'concesionario']
+    }
+  },
+  
+  // Aplicación automática de plantillas
+  applyTemplate: async (cunaData: CunaData, templateType: string) => {
+    const template = this.cunaTemplates[templateType];
+    if (!template) return cunaData;
+    
+    return {
+      ...cunaData,
+      suggestedDuration: template.defaultDuration,
+      contentStructure: template.suggestedStructure,
+      requiredElements: template.commonElements,
+      brandingChecklist: template.brandingRequirements,
+      
+      // Validaciones específicas del template
+      customValidations: generateTemplateValidations(template)
+    };
+  }
+};
+
+🔮 INTEGRACIONES FUTURAS Y EXTENSIBILIDAD
+PREPARACIÓN PARA TECNOLOGÍAS EMERGENTES:
+typescriptconst futureIntegrations = {
+  // Preparación para IA generativa avanzada
+  aiGenerative: {
+    // GPT-4/Claude integration para generación de copy
+    generateCopyWithAI: async (briefing: string, brand: BrandGuidelines) => {
+      const prompt = `Crea una cuña de radio de 30 segundos para ${brand.name}
+        Briefing: ${briefing}
+        Tono de marca: ${brand.tone}
+        Público objetivo: ${brand.targetAudience}
+        Incluir: Llamada a la acción clara, nombre de marca, beneficio principal`;
+      
+      return await ai.generateContent(prompt);
+    },
+    
+    // Generación de variaciones automáticas
+    generateVariations: async (originalCopy: string, variations: number) => {
+      return await ai.generateVariations(originalCopy, variations);
+    }
+  },
+  
+  // Blockchain para certificación inmutable
+  blockchainCertification: {
+    // Certificación de emisión en blockchain
+    certifyBroadcast: async (cunaId: string, emissionData: EmissionData) => {
+      const certificate = {
+        cunaId,
+        emissionTimestamp: emissionData.timestamp,
+        stationId: emissionData.stationId,
+        audioFingerprint: emissionData.fingerprint,
+        verificationHash: generateVerificationHash(emissionData)
+      };
+      
+      return await blockchain.createCertificate(certificate);
+    }
+  },
+  
+  // AR/VR para previsualización
+  immersivePreview: {
+    // Vista previa en contexto virtual
+    generateVirtualPreview: async (cunaId: string, context: 'radio_booth' | 'car_stereo' | 'home') => {
+      return await vrService.generatePreview(cunaId, context);
+    }
+  },
+  
+  // IoT para tracking de dispositivos
+  iotTracking: {
+    // Monitoreo de dispositivos de emisión
+    trackPlayoutDevices: async (stationId: string) => {
+      return await iotService.getDeviceStatus(stationId);
+    }
+  }
+};
+API EXTENSIBLE PARA INTEGRACIONES EXTERNAS:
+typescriptconst externalAPI = {
+  // Endpoints para integraciones externas
+  endpoints: {
+    // Webhook para sistemas externos
+    '/api/cunas/webhook': {
+      method: 'POST',
+      description: 'Recibe notificaciones de sistemas externos',
+      handler: async (req, res) => {
+        const { source, event, data } = req.body;
+        
+        switch (source) {
+          case 'broadcasting_system':
+            await handleBroadcastingEvent(event, data);
+            break;
+          case 'client_dam':
+            await handleDAMEvent(event, data);
+            break;
+          case 'external_cms':
+            await handleCMSEvent(event, data);
+            break;
+        }
+        
+        res.json({ status: 'processed' });
+      }
+    },
+    
+    // API para sincronización bidireccional
+    '/api/cunas/sync': {
+      method: 'POST',
+      description: 'Sincronización con sistemas de gestión externos',
+      handler: async (req, res) => {
+        const syncResult = await performBidirectionalSync(req.body);
+        res.json(syncResult);
+      }
+    }
+  }
+};
+
+📱 EXPERIENCIA MÓVIL Y ACCESO REMOTO
+PWA OPTIMIZADA PARA OPERACIÓN MÓVIL:
+typescriptconst mobileOptimization = {
+  // Interface móvil específica
+  mobileInterface: {
+    // Carga rápida desde móvil
+    quickUpload: {
+      dragDropOptimized: true,
+      cameraIntegration: true, // Para fotos de briefings
+      voiceRecording: true,    // Para menciones rápidas
+      offlineQueueing: true    // Cola cuando no hay conexión
+    },
+    
+    // Gestos optimizados
+    gestureControls: {
+      swipeToApprove: true,
+      pullToRefresh: true,
+      longPressContextMenu: true,
+      pinchToZoomWaveform: true
+    },
+    
+    // Notificaciones push
+    pushNotifications: {
+      criticalAlerts: true,
+      assignmentUpdates: true,
+      confirmationRequests: true,
+      backgroundSync: true
+    }
+  },
+  
+  // Modo offline inteligente
+  offlineCapability: {
+    // Datos cached para uso offline
+    cachedData: [
+      'recent_cunas',
+      'client_list',
+      'distribution_groups',
+      'validation_rules'
+    ],
+    
+    // Acciones disponibles offline
+    offlineActions: [
+      'view_cunas',
+      'edit_metadata',
+      'prepare_distributions',
+      'queue_uploads'
+    ],
+    
+    // Sincronización al reconectar
+    syncOnReconnect: async () => {
+      const queuedActions = await getQueuedActions();
+      const syncResults = [];
+      
+      for (const action of queuedActions) {
+        try {
+          const result = await executeQueuedAction(action);
+          syncResults.push({ action: action.id, status: 'success', result });
+        } catch (error) {
+          syncResults.push({ action: action.id, status: 'error', error: error.message });
+        }
+      }
+      
+      return syncResults;
+    }
+  }
+};

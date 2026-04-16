@@ -2,7 +2,7 @@
  * GET /api/anunciantes  — List advertisers
  * POST /api/anunciantes — Create advertiser
  *
- * Security: withApiRoute enforces JWT auth, RBAC, rate limiting, CSRF, and audit logging.
+ * Uses anunciantes DDD module (Tier Core).
  */
 
 import { NextResponse } from 'next/server'
@@ -12,12 +12,16 @@ import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
 import { logger } from '@/lib/observability'
 import { auditLogger } from '@/lib/security/audit-logger'
 import { AuditEventType } from '@/lib/security/audit-types'
-import { withTenantContext } from '@/lib/db/tenant-context'
-import { getDB } from '@/lib/db'
-import { anunciantes } from '@/lib/db/schema'
-import { eq, and, desc, asc, ilike, or, count, ne } from 'drizzle-orm'
 
-// ─── Zod validation schema ────────────────────────────────────────────────────
+import { AnuncianteDrizzleRepository } from '@/modules/anunciantes/infrastructure/repositories/AnuncianteDrizzleRepository'
+import { BuscarAnunciantesHandler } from '@/modules/anunciantes/application/handlers/BuscarAnunciantesHandler'
+import { BuscarAnunciantesQuery } from '@/modules/anunciantes/application/queries/BuscarAnunciantesQuery'
+import { CrearAnuncianteHandler } from '@/modules/anunciantes/application/handlers/CrearAnuncianteHandler'
+import { CrearAnuncianteCommand } from '@/modules/anunciantes/application/commands/CrearAnuncianteCommand'
+
+const repository = new AnuncianteDrizzleRepository();
+const buscarHandler = new BuscarAnunciantesHandler(repository);
+const crearHandler = new CrearAnuncianteHandler(repository);
 
 const createAnuncianteSchema = z.object({
   nombreRazonSocial: z.string().min(1, 'La razón social es requerida').max(255),
@@ -38,112 +42,39 @@ const createAnuncianteSchema = z.object({
   notas: z.string().optional(),
 })
 
-// ─── GET /api/anunciantes ────────────────────────────────────────────────────
-
 export const GET = withApiRoute(
   { resource: 'anunciantes', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
     try {
       const { searchParams } = new URL(req.url)
-
       const search = searchParams.get('search') || ''
       const estado = searchParams.get('estado') || ''
       const activoParam = searchParams.get('activo')
       const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
       const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20', 10)), 100)
-      const sortBy = searchParams.get('sortBy') || 'fechaCreacion'
-      const sortOrder = searchParams.get('sortOrder') || 'desc'
-      const offset = (page - 1) * limit
 
-      const result = await withTenantContext(ctx.tenantId, async () => {
-        // Build filter conditions
-        const conditions = [
-          eq(anunciantes.tenantId, ctx.tenantId),
-          eq(anunciantes.eliminado, false),
-        ]
-
-        if (search) {
-          conditions.push(
-            or(
-              ilike(anunciantes.nombreRazonSocial, `%${search}%`),
-              ilike(anunciantes.rut, `%${search}%`),
-              ilike(anunciantes.emailContacto, `%${search}%`),
-              ilike(anunciantes.codigo, `%${search}%`),
-            ) as ReturnType<typeof eq>
-          )
-        }
-
-        if (estado) {
-          conditions.push(eq(anunciantes.estado, estado as 'activo' | 'inactivo' | 'suspendido' | 'pendiente'))
-        }
-
-        if (activoParam !== null && activoParam !== undefined && activoParam !== '') {
-          conditions.push(eq(anunciantes.activo, activoParam === 'true'))
-        }
-
-        const whereClause = and(...conditions)
-
-        // Determine sort column
-        const orderCol = (() => {
-          switch (sortBy) {
-            case 'nombreRazonSocial': return anunciantes.nombreRazonSocial
-            case 'rut':               return anunciantes.rut
-            case 'ciudad':            return anunciantes.ciudad
-            case 'estado':            return anunciantes.estado
-            case 'fechaCreacion':
-            default:                  return anunciantes.fechaCreacion
-          }
-        })()
-
-        const orderFn = sortOrder === 'asc' ? asc : desc
-
-        // Fetch page
-        const data = await getDB()
-          .select({
-            id:                    anunciantes.id,
-            codigo:                anunciantes.codigo,
-            rut:                   anunciantes.rut,
-            nombreRazonSocial:     anunciantes.nombreRazonSocial,
-            giroActividad:         anunciantes.giroActividad,
-            direccion:             anunciantes.direccion,
-            ciudad:                anunciantes.ciudad,
-            comunaProvincia:       anunciantes.comunaProvincia,
-            pais:                  anunciantes.pais,
-            emailContacto:         anunciantes.emailContacto,
-            telefonoContacto:      anunciantes.telefonoContacto,
-            paginaWeb:             anunciantes.paginaWeb,
-            nombreContactoPrincipal: anunciantes.nombreContactoPrincipal,
-            tieneFacturacionElectronica: anunciantes.tieneFacturacionElectronica,
-            estado:                anunciantes.estado,
-            activo:                anunciantes.activo,
-            fechaCreacion:         anunciantes.fechaCreacion,
-            fechaModificacion:     anunciantes.fechaModificacion,
-          })
-          .from(anunciantes)
-          .where(whereClause)
-          .orderBy(orderFn(orderCol))
-          .limit(limit)
-          .offset(offset)
-
-        // Total count for pagination
-        const [{ total }] = await getDB()
-          .select({ total: count() })
-          .from(anunciantes)
-          .where(whereClause)
-
-        return { data, total: Number(total) }
+      const query = new BuscarAnunciantesQuery({
+        tenantId: ctx.tenantId,
+        search: search || undefined,
+        estado: estado ? (estado as any) : undefined,
+        activo: activoParam !== null && activoParam !== '' ? activoParam === 'true' : undefined,
+        page,
+        limit,
       })
 
-      const totalPages = Math.ceil(result.total / limit)
+      const result = await buscarHandler.execute(query)
+      if (!result.ok) {
+        return apiError('SERVER_ERROR', result.error.message, 500) as unknown as NextResponse
+      }
 
-      return apiSuccess(result.data, 200, {
+      return apiSuccess(result.data.data.map((a: any) => a.toJSON()), 200, {
         pagination: {
-          total: result.total,
-          page,
-          limit,
-          totalPages,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1,
+          total: result.data.total,
+          page: result.data.page,
+          limit: result.data.limit,
+          totalPages: result.data.totalPages,
+          hasNextPage: result.data.page < result.data.totalPages,
+          hasPreviousPage: result.data.page > 1,
         },
       }) as unknown as NextResponse
     } catch (error) {
@@ -152,8 +83,6 @@ export const GET = withApiRoute(
     }
   }
 )
-
-// ─── POST /api/anunciantes ───────────────────────────────────────────────────
 
 export const POST = withApiRoute(
   { resource: 'anunciantes', action: 'create' },
@@ -176,88 +105,27 @@ export const POST = withApiRoute(
         ) as unknown as NextResponse
       }
 
-      const data = parsed.data
-
-      const newAnunciante = await withTenantContext(ctx.tenantId, async () => {
-        // RUT uniqueness check within the tenant
-        if (data.rut) {
-          const normalizedRut = data.rut.replace(/[.-]/g, '')
-          const existing = await getDB()
-            .select({ id: anunciantes.id })
-            .from(anunciantes)
-            .where(
-              and(
-                eq(anunciantes.tenantId, ctx.tenantId),
-                eq(anunciantes.eliminado, false),
-                ilike(anunciantes.rut, `%${normalizedRut}%`)
-              )
-            )
-            .limit(1)
-
-          if (existing.length > 0) {
-            return null // signal duplicate
-          }
-        }
-
-        // Generate correlative code
-        const [{ nextNum }] = await getDB()
-          .select({ nextNum: count() })
-          .from(anunciantes)
-          .where(
-            and(
-              eq(anunciantes.tenantId, ctx.tenantId),
-              ne(anunciantes.eliminado, true)
-            )
-          )
-
-        const codigo = `ANU-${(Number(nextNum) + 1).toString().padStart(4, '0')}`
-
-        const [inserted] = await getDB()
-          .insert(anunciantes)
-          .values({
-            tenantId:                    ctx.tenantId,
-            codigo,
-            rut:                         data.rut ?? null,
-            nombreRazonSocial:           data.nombreRazonSocial.trim(),
-            giroActividad:               data.giroActividad ?? null,
-            direccion:                   data.direccion ?? null,
-            ciudad:                      data.ciudad ?? null,
-            comunaProvincia:             data.comunaProvincia ?? null,
-            pais:                        data.pais ?? 'Chile',
-            emailContacto:               data.emailContacto ?? null,
-            telefonoContacto:            data.telefonoContacto ?? null,
-            paginaWeb:                   data.paginaWeb ?? null,
-            nombreContactoPrincipal:     data.nombreContactoPrincipal ?? null,
-            cargoContactoPrincipal:      data.cargoContactoPrincipal ?? null,
-            tieneFacturacionElectronica: data.tieneFacturacionElectronica ?? false,
-            direccionFacturacion:        data.direccionFacturacion ?? null,
-            emailFacturacion:            data.emailFacturacion ?? null,
-            notas:                       data.notas ?? null,
-            estado:                      'activo',
-            activo:                      true,
-            eliminado:                   false,
-            creadoPorId:                 ctx.userId,
-          })
-          .returning()
-
-        return inserted
+      const command = new CrearAnuncianteCommand({
+        tenantId: ctx.tenantId,
+        creadoPorId: ctx.userId,
+        ...parsed.data,
       })
 
-      if (newAnunciante === null) {
-        return apiError(
-          'DUPLICATE_ENTRY',
-          `Ya existe un anunciante con el RUT ${data.rut}`,
-          409
-        ) as unknown as NextResponse
+      const result = await crearHandler.execute(command)
+      if (!result.ok) {
+        if (result.error.message.includes('Ya existe un anunciante con el RUT')) {
+          return apiError('DUPLICATE_ENTRY', result.error.message, 409) as unknown as NextResponse
+        }
+        return apiError('SERVER_ERROR', result.error.message, 500) as unknown as NextResponse
       }
 
       auditLogger.log({
         type: AuditEventType.DATA_CREATE,
         userId: ctx.userId,
-        metadata: { module: 'anunciantes', resourceId: newAnunciante.id },
+        metadata: { module: 'anunciantes', resourceId: result.data.id },
       })
 
-      return apiSuccess(newAnunciante, 201, { message: 'Anunciante creado exitosamente' }) as unknown as NextResponse
+      return apiSuccess(result.data.toJSON(), 201, { message: 'Anunciante creado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes POST', error instanceof Error ? error : undefined, { module: 'anunciantes', action: 'POST' })
       return apiServerError() as unknown as NextResponse

@@ -1,0 +1,714 @@
+📻 MÓDULO EMISORAS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO EMISORAS?
+El Módulo Emisoras es el Catálogo Maestro del Inventario Broadcast en Silexar Pulse. Funciona como el registro central y centro de control técnico de todas las propiedades radiales y digitales, gestionando desde la configuración básica hasta la integración técnica con sistemas de automatización, tarifarios y exportación de archivos de programación.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Administrador del Sistema, este módulo es mi registro maestro:
+
+Centralizo toda la información técnica y comercial de mis emisoras
+Configuro integraciones técnicas con sistemas de automatización una sola vez
+Mantengo actualizadas las frecuencias y coberturas geográficas
+Controlo quién puede modificar qué información con auditoría completa
+
+Como Programador de Tráfico, accedo a información crítica:
+
+Consulto rápidamente frecuencias y coberturas para programación
+Verifico configuraciones de exportación antes de generar archivos
+Accedo a tarifarios asociados para validar coherencia comercial
+Monitoreo el estado de configuración técnica de cada emisora
+
+Como Ejecutivo Comercial, obtengo contexto de venta:
+
+Consulto áreas de cobertura para propuestas geográficas
+Accedo a tarifarios vigentes por emisora y programa
+Verifico disponibilidad técnica antes de confirmar propuestas
+Entiendo el reach potencial de cada propiedad
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Hereda automáticamente emisoras disponibles para especificaciones de pauta
+Módulo Cuñas: Valida que creatividades están configuradas para exportación en sistemas correctos
+Módulo Vencimientos: Sincroniza programas y tarifarios dinámicamente
+Módulo Facturación: Utiliza información de propietario para facturación correcta
+Módulo Configuración: Hereda plantillas de exportación configuradas globalmente
+Cortex-Inventory: Optimiza disponibilidad basado en capacidad técnica de cada emisora
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/emisoras/
+├── domain/
+│   ├── entities/
+│   │   ├── Emisora.ts (Entidad principal de la emisora)
+│   │   ├── FrecuenciaEmisora.ts (Frecuencias por ciudad)
+│   │   ├── ConfiguracionExportacion.ts (Configuración técnica de exportación)
+│   │   ├── TarifarioEmisora.ts (Tarifas asociadas por programa)
+│   │   ├── PropietarioEmisora.ts (Información del grupo propietario)
+│   │   ├── HistorialModificaciones.ts (Auditoría de cambios)
+│   │   └── IntegracionSistema.ts (Conexión con sistemas de automatización)
+│   ├── value-objects/
+│   │   ├── IdentificadorEmisora.ts (ID único del sistema)
+│   │   ├── FrecuenciaRadial.ts (Validación de frecuencias FM/AM)
+│   │   ├── AreaCobertura.ts (Cobertura geográfica con validación)
+│   │   ├── TipoCanal.ts (FM/AM/Digital con configuraciones específicas)
+│   │   ├── ConfiguracionSistemaAudio.ts (Dalet, Sara, WideOrbit, etc.)
+│   │   ├── RutaExportacion.ts (Directorios y configuraciones de exportación)
+│   │   └── EstadoEmisora.ts (Activa, Inactiva, En Configuración)
+│   └── repositories/
+│       ├── IEmisoraRepository.ts
+│       ├── IFrecuenciaRepository.ts
+│       ├── ITarifarioRepository.ts
+│       └── IConfiguracionExportacionRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearEmisoraCommand.ts
+│   │   ├── ActualizarEmisoraCommand.ts
+│   │   ├── AgregarFrecuenciaCommand.ts
+│   │   ├── ConfigurarExportacionCommand.ts
+│   │   ├── SincronizarTarifariosCommand.ts
+│   │   ├── ValidarConfiguracionTecnicaCommand.ts
+│   │   └── AuditarCambiosCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerEmisorasQuery.ts
+│   │   ├── BuscarEmisorasPorCriterioQuery.ts
+│   │   ├── ObtenerConfiguracionExportacionQuery.ts
+│   │   ├── ObtenerTarifariosPorEmisoraQuery.ts
+│   │   ├── ObtenerHistorialModificacionesQuery.ts
+│   │   └── ValidarDisponibilidadFrecuenciaQuery.ts
+│   └── handlers/
+│       ├── EmisoraCommandHandler.ts
+│       ├── FrecuenciaManagementHandler.ts
+│       ├── ConfiguracionExportacionHandler.ts
+│       ├── TarifarioSyncHandler.ts
+│       └── AuditoriaHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaEmisoraRepository.ts
+│   │   ├── PrismaFrecuenciaRepository.ts
+│   │   └── PrismaConfiguracionRepository.ts
+│   ├── external/
+│   │   ├── DaletGalaxyService.ts (Integración Dalet)
+│   │   ├── SaraAutomationService.ts (Integración Sara)
+│   │   ├── WideOrbitService.ts (Integración WideOrbit)
+│   │   ├── FileSystemExportService.ts (Manejo de directorios)
+│   │   ├── PlantillaExportacionService.ts (Generación de formatos)
+│   │   ├── VencimientosIntegrationService.ts (Sync con módulo vencimientos)
+│   │   └── GeoLocationValidationService.ts (Validación de coberturas)
+│   └── messaging/
+│       ├── EmisoraEventPublisher.ts
+│       ├── ConfiguracionCambiadaPublisher.ts
+│       └── TarifarioActualizadoPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── EmisoraController.ts
+    │   ├── FrecuenciaController.ts
+    │   ├── ConfiguracionController.ts
+    │   ├── TarifarioController.ts
+    │   └── AuditoriaController.ts
+    ├── dto/
+    │   ├── CrearEmisoraDto.ts
+    │   ├── ActualizarEmisoraDto.ts
+    │   ├── AgregarFrecuenciaDto.ts
+    │   └── ConfigurarExportacionDto.ts
+    └── middleware/
+        ├── EmisoraAccessMiddleware.ts
+        ├── ConfiguracionSecurityMiddleware.ts
+        └── AuditoriaMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE GESTIÓN DE EMISORAS
+VISTA INICIAL DEL MÓDULO
+Header ejecutivo con métricas críticas:
+
+Título: "📻 Centro de Gestión de Emisoras"
+Breadcrumb: "Dashboard > Configuración > Emisoras"
+
+Panel de control en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 INVENTARIO DE EMISORAS TIEMPO REAL                          │
+│                                                                 │
+│ 8 Emisoras Activas    15 Frecuencias    4 Sistemas Audio       │
+│ 12 Ciudades          3 Grupos Medios    2 Configs Pendientes   │
+│ 🔧 Última modificación: Radio Corazón por admin@empresa.com    │
+│ 🚨 Acción requerida: Completar exportación Sara FM             │
+└─────────────────────────────────────────────────────────────────┘
+BARRA DE HERRAMIENTAS PRINCIPAL
+Búsqueda inteligente avanzada:
+
+Campo de búsqueda principal con placeholder: "🔍 Buscar por nombre, dial (99.3), ciudad (Santiago)..."
+Auto-completado inteligente que sugiere:
+
+Nombres de emisoras existentes
+Frecuencias conocidas (formato ###.# automático)
+Ciudades/áreas de cobertura registradas
+Nombres de propietarios
+
+
+
+Filtros laterales desplegables:
+
+Por Estado: Activa (verde), Inactiva (gris), En Configuración (amarillo)
+Por Tipo: FM, AM, Digital, Streaming
+Por Propietario: Lista de grupos de medios registrados
+Por Sistema Audio: Dalet, Sara, WideOrbit, Sin configurar
+
+Botones de acción principales:
+
+"➕ Agregar Emisora" (botón primario azul, esquina superior derecha)
+"📊 Vista Dashboard" (alternar entre tabla y cards)
+"📤 Exportar Lista" (descarga Excel de todas las emisoras)
+"⚙️ Configuración Masiva" (solo administradores)
+
+TABLA PRINCIPAL DE EMISORAS - TIER 0
+Diseño de columnas optimizado:
+Columna 1: "Emisora/Estado" (280px)
+┌─────────────────────────────────────┐
+│ 📻 Radio Corazón FM                 │
+│ ID: 001 • 🟢 Activa                 │
+│ 🏢 Grupo MegaMedia                  │
+│ 🎵 FM • 4 frecuencias               │
+└─────────────────────────────────────┘
+
+Icono dinámico: 📻 para FM, 📡 para AM, 💻 para Digital
+Estado visual: Círculo de color con tooltip explicativo
+Link clickeable: Todo el área es clickeable para abrir detalle
+Información secundaria: Grupo propietario y resumen técnico
+
+Columna 2: "Cobertura/Frecuencias" (220px)
+┌─────────────────────────────────────┐
+│ 🌍 Nacional • 4 ciudades            │
+│ Santiago: 99.3 FM                   │
+│ Valparaíso: 101.7 FM                │
+│ Concepción: 99.5 FM                 │
+│ [Ver todas las frecuencias...]      │
+└─────────────────────────────────────┘
+
+Área principal: Texto descriptivo del área de cobertura
+Lista frecuencias: Máximo 3 visibles, con link "Ver todas" si hay más
+Formato inteligente: Detección automática de formato (XX.X FM)
+
+Columna 3: "Configuración Técnica" (180px)
+┌─────────────────────────────────────┐
+│ 🔧 Sistema: Dalet Galaxy            │
+│ 📤 Export: ✅ Configurado           │
+│ 📁 Ruta: /srv/audio/dalet/          │
+│ ⚙️ Tarifas: ✅ 12 programas         │
+└─────────────────────────────────────┘
+
+Sistema de audio: Icono + nombre del sistema configurado
+Estado exportación: Check verde/X roja/Warning amarillo
+Ruta truncada: Muestra inicio y final de la ruta
+Contador tarifas: Link directo a pestaña de tarifas
+
+Columna 4: "Última Modificación" (160px)
+┌─────────────────────────────────────┐
+│ 👤 admin@empresa.com                │
+│ 📅 15 Nov 2024 - 14:32             │
+│ 🔄 Actualización frecuencias       │
+│ 📋 Ver historial completo          │
+└─────────────────────────────────────┘
+
+Usuario responsable: Email con avatar pequeño
+Timestamp preciso: Fecha y hora de última modificación
+Tipo de cambio: Descripción breve del último cambio
+Link historial: Acceso directo a auditoría completa
+
+Columna 5: "Acciones Inteligentes" (140px)
+┌─────────────────────────────────────┐
+│ [👁️] [✏️] [📤] [🔧]                │
+│ [💰] [📊] [🔄] [⚠️]                │
+└─────────────────────────────────────┘
+
+👁️ Ver Detalle: Abre modal con información completa
+✏️ Editar: Modo edición rápida en modal
+📤 Test Export: Prueba de exportación inmediata
+🔧 Configurar: Acceso directo a pestaña configuración
+💰 Tarifas: Salta a pestaña de tarifarios
+📊 Analytics: Estadísticas de uso de la emisora
+🔄 Sincronizar: Refresh de configuración desde sistemas externos
+⚠️ Diagnóstico: Validación completa de configuración
+
+➕ CREACIÓN DE EMISORA - WIZARD INTELIGENTE TIER 0
+MODAL PRINCIPAL DE CREACIÓN
+Al hacer clic en "➕ Agregar Emisora" se abre modal fullscreen con:
+Encabezado del Modal:
+┌─────────────────────────────────────────────────────────────────┐
+│ ➕ NUEVA EMISORA - CONFIGURACIÓN COMPLETA                       │
+│ Paso 1 de 4: Información Básica                                │
+│ ████████░░░░░░░░░░░ 25%                                         │
+└─────────────────────────────────────────────────────────────────┘
+PASO 1: INFORMACIÓN BÁSICA
+Formulario principal con validaciones inteligentes:
+Campo "Nombre Emisora"
+
+Campo de texto con placeholder: "Ej: Radio Corazón FM"
+Validaciones automáticas:
+
+Mínimo 3 caracteres, máximo 50
+No permite nombres duplicados (validación en tiempo real)
+Sugiere formato estándar si detecta patrones (Radio XXX, FM XXX, etc.)
+
+
+
+Campo "ID Emisora"
+
+Campo numérico con auto-generación inteligente
+Botón "🔄 Auto-generar" que crea ID secuencial siguiente disponible
+Validación: Número único de 3 dígitos (001, 002, etc.)
+Preview: Muestra cómo se verá el ID completo: "EMI-001"
+
+Campo "Área de Cobertura"
+
+Campo de texto con autocompletado geográfico
+Sugerencias inteligentes: Nacional, Regional, Santiago, Valparaíso, etc.
+Validación: Mínimo 3 caracteres
+Ejemplos mostrados: "Nacional", "Región Metropolitana", "Santiago y Valparaíso"
+
+Campo "Nombre Propietario"
+
+Combo box editable con lista de propietarios existentes
+Auto-completado de grupos de medios ya registrados
+Opción: "➕ Agregar nuevo propietario" que abre sub-modal
+Validación: Requerido, mínimo 2 caracteres
+
+Campo "Tipo de Canal"
+
+Radio buttons visuales con iconos grandes:
+
+┌─ [📻] FM ─────────────┬─ [📡] AM ─────────────┬─ [💻] Digital ────┐
+│ • Frecuencia xxx.x    │ • Frecuencia xxxx     │ • Streaming       │
+│ • Estéreo             │ • Mono/Estéreo        │ • Internet only   │
+│ • Mayor alcance       │ • Mejor penetración   │ • Sin limitación  │
+└───────────────────────┴───────────────────────┴───────────────────┘
+Botones de navegación:
+
+"Cancelar" (secundario, izquierda)
+"➡️ Siguiente: Frecuencias" (primario, derecha) - Solo habilitado si formulario válido
+
+PASO 2: CONFIGURACIÓN DE FRECUENCIAS
+Encabezado dinámico:
+📻 Radio Corazón FM - Configuración de Frecuencias
+Configura las frecuencias de transmisión por ciudad/área
+Panel de Frecuencias Existentes (inicialmente vacío):
+┌─────────────────────────────────────────────────────────────────┐
+│ 📍 FRECUENCIAS CONFIGURADAS                                      │
+├─────────────────────────────────────────────────────────────────┤
+│ (Vacío - Agrega la primera frecuencia)                         │
+└─────────────────────────────────────────────────────────────────┘
+Formulario "Agregar Nueva Frecuencia":
+┌─────────────────────────────────────────────────────────────────┐
+│ ➕ AGREGAR NUEVA FRECUENCIA                                     │
+├─────────────────────────────────────────────────────────────────┤
+│ Ciudad/Área: [Santiago                 ▼] 🌍                    │
+│ Frecuencia:  [99.3] FM  (Auto-detectado por tipo de canal)     │
+│ Potencia:    [50] kW    (Opcional)                             │
+│ Cobertura:   [Radio 15 km aprox.] (Calculado automáticamente)  │
+│                                                                 │
+│ [➕ Agregar Frecuencia] [🧹 Limpiar Campos]                    │
+└─────────────────────────────────────────────────────────────────┘
+Validaciones Inteligentes:
+
+Ciudad/Área: Autocompletado de ciudades chilenas principales
+Frecuencia:
+
+FM: Rango 88.0-108.0, validación formato XX.X
+AM: Rango 520-1700, validación formato XXXX
+Digital: Campo libre para URL/identificador
+
+
+Duplicados: Alerta si frecuencia ya existe en esa ciudad
+Formato automático: Aplica formato correcto mientras el usuario escribe
+
+Lista Dinámica de Frecuencias Agregadas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📍 FRECUENCIAS CONFIGURADAS (3)                                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 🏙️ Santiago       │ 99.3 FM  │ 50 kW │ ~15km │ [✏️] [❌]       │
+│ 🌊 Valparaíso     │ 101.7 FM │ 30 kW │ ~12km │ [✏️] [❌]       │
+│ 🏔️ Concepción     │ 99.5 FM  │ 40 kW │ ~14km │ [✏️] [❌]       │
+└─────────────────────────────────────────────────────────────────┘
+
+Cada fila incluye:
+
+Icono de ciudad automático
+Información técnica completa
+[✏️ Editar]: Modal inline para modificar
+[❌ Eliminar]: Confirmación antes de borrar
+
+
+
+Botones de navegación:
+
+"⬅️ Anterior" (secundario)
+"➡️ Siguiente: Exportación" (primario) - Requiere mínimo 1 frecuencia
+
+PASO 3: CONFIGURACIÓN DE EXPORTACIÓN
+Encabezado:
+📤 Configuración de Exportación de Archivos
+Configura la integración con sistemas de automatización de audio
+Panel Principal dividido en 3 secciones:
+Sección A: "Directorio de Exportación"
+┌─────────────────────────────────────────────────────────────────┐
+│ 📁 DIRECTORIO DE EXPORTACIÓN                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Ruta de destino: [/srv/audio/dalet/corazon/    ] [📂 Examinar] │
+│                                                                 │
+│ ✅ Opciones de configuración:                                   │
+│ ☑️ Crear directorio automáticamente si no existe               │
+│ ☑️ Verificar permisos de escritura                             │
+│ ☑️ Backup de archivos existentes antes de sobrescribir         │
+│                                                                 │
+│ 🔍 Estado: [⚠️ Verificando permisos...] [🔄 Verificar ahora]   │
+└─────────────────────────────────────────────────────────────────┘
+
+Campo de ruta: Permite tanto escritura manual como selección por explorador
+Botón "📂 Examinar": Abre dialog nativo del SO para seleccionar carpeta
+Validación en tiempo real: Verifica que la ruta existe y tiene permisos
+Estados visuales:
+
+🟢 "Ruta válida y accesible"
+🟡 "Ruta existe pero sin permisos de escritura"
+🔴 "Ruta no existe o inaccesible"
+
+
+
+Sección B: "Sistema de Automatización"
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎛️ SISTEMA DE AUTOMATIZACIÓN DE AUDIO                          │
+├─────────────────────────────────────────────────────────────────┤
+│ Selecciona el sistema: [Dalet Galaxy        ▼]                 │
+│                                                                 │
+│ ℹ️ Sistema seleccionado: Dalet Galaxy v3.2                     │
+│ • Formato: Texto plano delimitado                              │
+│ • Extensión: .txt                                              │
+│ • Codificación: UTF-8                                          │
+│ • Separador: Tab                                               │
+│                                                                 │
+│ 🔧 Configuración avanzada:                                     │
+│ ☑️ Incluir header con información de emisora                   │
+│ ☑️ Generar archivo de control (.ctl)                          │
+│ ☐ Comprimir archivo final (.zip)                              │
+│                                                                 │
+│ [⚙️ Ver Plantilla] [📄 Ejemplo de Salida]                     │
+└─────────────────────────────────────────────────────────────────┘
+Dropdown "Sistema" incluye opciones:
+
+Dalet Galaxy (todas las versiones)
+Sara Automation Suite
+WideOrbit Automation for Radio
+RCS GSelector/Zetta
+Marketron Traffic
+Sistema Personalizado (permite configuración manual)
+
+Botón "⚙️ Ver Plantilla" abre modal que muestra:
+
+Estructura del archivo de exportación
+Campos incluidos y su formato
+Ejemplo con datos de muestra
+
+Sección C: "Configuración de Archivo"
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 CONFIGURACIÓN DE ARCHIVO                                    │
+├─────────────────────────────────────────────────────────────────┤
+│ Nombre archivo: [corazon_] [YYYYMMDD] [.txt]                  │
+│ Ejemplo: corazon_20241115.txt                                  │
+│                                                                 │
+│ 🕐 Programación de generación:                                 │
+│ ○ Manual (solo cuando se solicite)                            │
+│ ● Automática diaria a las [23:00] horas                       │
+│ ○ Automática cada [6] horas                                   │
+│                                                                 │
+│ 📧 Notificaciones:                                            │
+│ ☑️ Email a administrador cuando se genera archivo              │
+│ ☑️ Alerta si generación falla                                 │
+│ ☐ WhatsApp a programador principal                            │
+│                                                                 │
+│ 🧪 [Test de Exportación] - Genera archivo de prueba ahora     │
+└─────────────────────────────────────────────────────────────────┘
+Botón "🧪 Test de Exportación":
+
+Genera archivo con datos de muestra
+Lo guarda en la ruta configurada
+Muestra preview del contenido
+Valida que el sistema destino puede leerlo
+
+PASO 4: CONFIRMACIÓN Y CREACIÓN
+Resumen Completo:
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ RESUMEN - EMISORA LISTA PARA CREAR                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 📻 Nombre: Radio Corazón FM                                    │
+│ 🆔 ID: EMI-001                                                 │
+│ 🌍 Cobertura: Nacional                                         │
+│ 🏢 Propietario: Grupo MegaMedia                                │
+│ 📡 Tipo: FM                                                    │
+│                                                                 │
+│ 📍 Frecuencias configuradas: 3                                 │
+│ • Santiago: 99.3 FM                                            │
+│ • Valparaíso: 101.7 FM                                         │
+│ • Concepción: 99.5 FM                                          │
+│                                                                 │
+│ 📤 Exportación: Configurada                                    │
+│ • Sistema: Dalet Galaxy                                        │
+│ • Ruta: /srv/audio/dalet/corazon/                             │
+│ • Generación: Automática diaria 23:00                          │
+│                                                                 │
+│ ⚠️ Tareas pendientes después de crear:                         │
+│ • Sincronizar tarifarios desde módulo vencimientos             │
+│ • Configurar usuarios con acceso                               │
+│ • Realizar primera exportación de prueba                       │
+└─────────────────────────────────────────────────────────────────┘
+Botones finales:
+
+"⬅️ Anterior" (permite volver a editar cualquier paso)
+"✅ Crear Emisora" (botón primario, grande, call-to-action)
+
+Al hacer clic en "✅ Crear Emisora":
+
+Animación de loading con pasos: "Creando emisora... Configurando frecuencias... Preparando exportación..."
+Validaciones finales del backend
+Creación de registros en base de datos
+Configuración de jobs automáticos
+Success message con opciones de siguiente acción:
+
+🎉 ¡Emisora creada exitosamente!
+
+Radio Corazón FM está lista para operar
+ID asignado: EMI-001
+
+¿Qué deseas hacer ahora?
+[📊 Ver Dashboard] [➕ Crear Otra] [⚙️ Configurar Tarifas] [🏠 Ir al Inicio]
+📊 GESTIÓN DE EMISORA EXISTENTE - MODAL DETALLE
+MODAL FULLSCREEN DE EDICIÓN
+Al hacer clic en cualquier emisora de la tabla principal:
+Sistema de Pestañas Principales:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📻 Radio Corazón FM (EMI-001)                                  │
+├─────────────────────────────────────────────────────────────────┤
+│ [📋 General] [📍 Frecuencias] [📤 Exportación] [💰 Tarifas] [📊 Auditoría] │
+└─────────────────────────────────────────────────────────────────┘
+PESTAÑA 1: "📋 GENERAL"
+Información básica editable:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 INFORMACIÓN GENERAL                                          │
+├─────────────────────────────────────────────────────────────────┤
+│ Nombre emisora:    [Radio Corazón FM              ] [✏️]        │
+│ ID Emisora:        EMI-001 (No editable)                       │
+│ Área cobertura:    [Nacional                       ] [✏️]       │
+│ Propietario:       [Grupo MegaMedia               ] [✏️]       │
+│ Tipo canal:        [● FM  ○ AM  ○ Digital        ]            │
+│ Estado:            [● Activa  ○ Inactiva         ]             │
+│                                                                 │
+│ 📅 Información de registro:                                     │
+│ • Creada: 15 Nov 2024 a las 10:30 por admin@empresa.com       │
+│ • Modificada: 16 Nov 2024 a las 14:22 por prog@empresa.com    │
+│                                                                 │
+│ 🔧 Enlaces rápidos:                                            │
+│ [⚙️ Configurar Exportación] [💰 Ver Tarifarios] [📊 Analytics] │
+│                                                                 │
+│ [💾 Guardar Cambios] [❌ Cancelar] [🗑️ Eliminar Emisora]      │
+└─────────────────────────────────────────────────────────────────┘
+Comportamiento de campos:
+
+Campos con [✏️]: Edición inline activada por clic
+Validaciones: En tiempo real mientras se edita
+Auto-save: Guarda automáticamente cada 30 segundos si hay cambios
+Botón "🗑️ Eliminar": Solo visible para administradores, requiere confirmación doble
+
+PESTAÑA 2: "📍 FRECUENCIAS"
+Gestión de frecuencias por ciudad:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📍 GESTIÓN DE FRECUENCIAS                                      │
+├─────────────────────────────────────────────────────────────────┤
+│ ➕ Agregar nueva frecuencia:                                    │
+│ Ciudad: [              ▼] Frecuencia: [      ] [Agregar]      │
+│                                                                 │
+│ 📻 Frecuencias actuales (3):                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏙️ Santiago    │ 99.3 FM │ 50 kW │ ~15km │ [✏️] [❌] [📊] │ │
+│ │ 🌊 Valparaíso  │ 101.7 FM│ 30 kW │ ~12km │ [✏️] [❌] [📊] │ │
+│ │ 🏔️ Concepción  │ 99.5 FM │ 40 kW │ ~14km │ [✏️] [❌] [📊] │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🗺️ [Ver Mapa de Cobertura] [📋 Exportar Lista] [📡 Test Señal] │
+│                                                                 │
+│ ⚠️ Nota: Cambios en frecuencias requieren actualizar            │
+│    configuración de exportación                                │
+└─────────────────────────────────────────────────────────────────┘
+Funcionalidades especiales:
+
+[📊] Analytics por frecuencia: Métricas de audiencia si están disponibles
+[Ver Mapa]: Visualización geográfica de cobertura
+[Test Señal]: Integración con sistemas de monitoreo técnico
+Validaciones: No permite eliminar la última frecuencia
+
+PESTAÑA 3: "📤 EXPORTACIÓN"
+Configuración técnica avanzada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📤 CONFIGURACIÓN DE EXPORTACIÓN                                │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎛️ Sistema de audio configurado: Dalet Galaxy v3.2             │
+│ [🔄 Cambiar Sistema] [⚙️ Configurar Avanzado]                   │
+│                                                                 │
+│ 📁 Directorio exportación:                                     │
+│ /srv/audio/dalet/corazon/ [✏️] [📂] [🔍 Test Acceso]          │
+│                                                                 │
+│ 📋 Plantilla de exportación:                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ ID  │ FECHA    │ HORA  │ DURACION │ SPOT_ID  │ ANUNCIANTE │ │
+│ │ 001 │ 20241115 │ 08:00 │ 00:00:30 │ SP001234 │ COCA-COLA  │ │
+│ │ 002 │ 20241115 │ 08:05 │ 00:00:20 │ SP001235 │ BANCO-CHI  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│ [📄 Ver Plantilla Completa] [✏️ Editar Campos]                 │
+│                                                                 │
+│ 🕐 Programación automática:                                     │
+│ ● Diaria a las 23:00 horas                                    │
+│ ○ Cada 6 horas                                                │
+│ ○ Solo manual                                                 │
+│                                                                 │
+│ 📊 Historial de exportaciones (últimas 10):                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 15/11 23:00 │ ✅ Exitosa │ corazon_20241115.txt │ 1,247 líneas│ │
+│ │ 14/11 23:00 │ ✅ Exitosa │ corazon_20241114.txt │ 1,189 líneas│ │
+│ │ 13/11 23:00 │ ⚠️ Warning │ corazon_20241113.txt │ 1,098 líneas│ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│ [📋 Ver Historial Completo] [📄 Descargar Archivos]            │
+│                                                                 │
+│ 🧪 Herramientas de prueba:                                     │
+│ [▶️ Generar Archivo Ahora] [🔍 Validar Configuración] [📧 Test Email] │
+└─────────────────────────────────────────────────────────────────┘
+Botón "🔄 Cambiar Sistema":
+
+Abre modal con lista de sistemas disponibles
+Muestra preview de cómo cambiaría la plantilla
+Advierte sobre impactos en archivos ya generados
+
+Botón "▶️ Generar Archivo Ahora":
+
+Genera archivo inmediatamente con pauta actual
+Muestra progreso en tiempo real
+Permite descargar o enviar por email
+
+PESTAÑA 4: "💰 TARIFAS"
+Integración con módulo vencimientos:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 TARIFARIOS Y PROGRAMAS ASOCIADOS                            │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔄 Sincronizando con Módulo Vencimientos...                    │
+│ [🔄 Actualizar Ahora] [⚙️ Configurar Sincronización]           │
+│                                                                 │
+│ 📻 Programas configurados (12):                                │
+│                                                                 │
+│ 🌅 PROGRAMA MATINAL (06:00-10:00)                              │
+│ ├─ Auspicio Principal: $1,250,000/mes                         │
+│ ├─ Menciones (6/día): $85,000/mención                         │
+│ ├─ Prime comercial: $45,000/spot                              │
+│ └─ Ocupación actual: 8/10 cupos                               │
+│ [👁️ Ver Detalle] [✏️ Editar Tarifas] [📊 Performance]         │
+│                                                                 │
+│ 🎵 MÚSICA Y NOTICIAS (10:00-14:00)                            │
+│ ├─ Repartido comercial: $28,000/spot                          │
+│ ├─ Señales horarias: $15,000/señal                           │
+│ ├─ Patrocinio noticiero: $180,000/mes                         │
+│ └─ Ocupación actual: 12/15 cupos                              │
+│ [👁️ Ver Detalle] [✏️ Editar Tarifas] [📊 Performance]         │
+│                                                                 │
+│ ⚡ ACCIONES RÁPIDAS:                                           │
+│ [📋 Exportar Tarifario] [📧 Enviar a Equipo] [💾 Backup Config] │
+│                                                                 │
+│ 🔔 Alertas configuradas:                                       │
+│ • Notificar cuando ocupación >90%                             │
+│ • Alerta de conflictos de exclusividad                        │
+│ • Recordatorio de actualización de tarifas                    │
+└─────────────────────────────────────────────────────────────────┘
+Integración automática:
+
+Sincronización bidireccional con módulo vencimientos cada 15 minutos
+Updates automáticos cuando se modifican programas o tarifas
+Notificaciones de cambios importantes
+
+PESTAÑA 5: "📊 AUDITORÍA"
+Historial completo de modificaciones:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 HISTORIAL DE MODIFICACIONES                                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 Filtros: [📅 Último mes ▼] [👤 Todos usuarios ▼] [🔄 Todo tipo ▼] │
+│                                                                 │
+│ 📋 Registro de cambios (23 modificaciones):                    │
+│                                                                 │
+│ ┌─ 16 Nov 2024 - 14:22 ─────────────────────────────────────────┐│
+│ │ 👤 prog@empresa.com                                         ││
+│ │ 🔄 Modificación: Configuración de exportación               ││
+│ │ 📝 Detalle: Cambió directorio de /srv/old/ a /srv/audio/    ││
+│ │ 💻 IP: 192.168.1.45 • 🌍 Santiago, Chile                   ││
+│ │ [👁️ Ver Cambios] [🔄 Revertir] [📋 Descargar Log]          ││
+│ └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│ ┌─ 15 Nov 2024 - 10:30 ─────────────────────────────────────────┐│
+│ │ 👤 admin@empresa.com                                        ││
+│ │ 🆕 Creación: Emisora creada                                 ││
+│ │ 📝 Detalle: Emisora inicial con 3 frecuencias configuradas  ││
+│ │ 💻 IP: 10.0.0.15 • 🌍 Santiago, Chile                      ││
+│ │ [👁️ Ver Estado Inicial] [📋 Descargar Log]                 ││
+│ └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│ 📊 Estadísticas:                                               │
+│ • Total modificaciones: 23                                    │
+│ • Usuarios únicos: 4                                          │
+│ • Cambios más frecuentes: Exportación (8), Frecuencias (7)    │
+│                                                                 │
+│ 📤 Herramientas:                                               │
+│ [📊 Reporte Completo] [📧 Enviar por Email] [🔍 Búsqueda Avanzada] │
+└─────────────────────────────────────────────────────────────────┘
+Funcionalidades de auditoría:
+
+[Ver Cambios]: Diff detallado de valores antes/después
+[Revertir]: Restaurar configuración previa (solo administradores)
+Filtrado avanzado: Por fecha, usuario, tipo de cambio, IP origen
+Export completo: PDF y Excel con logs detallados
+
+🔄 INTEGRACIONES Y AUTOMATIZACIONES
+SINCRONIZACIÓN CON MÓDULO VENCIMIENTOS
+Proceso automático cada 15 minutos:
+
+Consulta programas activos por emisora
+Actualiza tarifarios y disponibilidad
+Sincroniza cambios de horarios o espacios
+Notifica discrepancias automáticamente
+
+VALIDACIONES AUTOMÁTICAS
+Sistema de health checks:
+
+Conectividad: Verifica acceso a directorios de exportación
+Configuración: Valida consistencia de plantillas
+Permisos: Confirma acceso de escritura en rutas
+Formatos: Valida estructura de archivos generados
+
+NOTIFICACIONES INTELIGENTES
+Alertas automáticas por:
+
+Fallos de exportación automática
+Cambios en configuración crítica
+Problemas de sincronización con vencimientos
+Detección de configuraciones inconsistentes
+
+🎯 CONCLUSIÓN TIER 0
+El Módulo Emisoras transforma la gestión técnica tradicional en un sistema inteligente que:
+Para el Administrador:
+
+Control total: Gestión centralizada con auditoría completa
+Automatización: Exportación automática sin intervención manual
+Integración: Conectividad perfecta con todos los sistemas de audio
+Escalabilidad: Soporte para crecimiento ilimitado de emisoras
+
+Para el Operador:
+
+Simplicidad: Interface intuitiva para tareas diarias
+Confiabilidad: Validaciones automáticas previenen errores
+Eficiencia: Procesos optimizados que ahorran tiempo
+Visibilidad: Estado de configuración siempre visible
+
+Para la Organización:
+
+Reducción de errores: 95% menos errores en exportación
+Ahorro de tiempo: 80% menos tiempo en configuración técnica
+Standardización: Procesos unificados para todas las emisoras
+Auditabilidad: Trazabilidad completa para compliance
+
+El módulo establece las bases técnicas sólidas que permiten que todo el ecosistema Silexar Pulse opere con precisión milimétrica, convirtiendo la complejidad técnica en simplicidad operativa.

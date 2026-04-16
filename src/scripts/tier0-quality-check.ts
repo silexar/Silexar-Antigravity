@@ -94,9 +94,9 @@ class TIER0QualityValidator {
     generatedTests?: Record<string, unknown>;
   } = {}
   private logger = {
-    info: (message: string) => .toISOString()} ${message}`),
-    error: (message: string) => .toISOString()} ${message}`),
-    warn: (message: string) => .toISOString()} ${message}`)
+    info: (message: string) => console.log(`[${new Date().toISOString()}] ${message}`),
+    error: (message: string) => console.error(`[${new Date().toISOString()}] ${message}`),
+    warn: (message: string) => console.warn(`[${new Date().toISOString()}] ${message}`)
   }
 
   /**
@@ -151,8 +151,7 @@ class TIER0QualityValidator {
   private async analyzeTestCoverage() {
     try {
       const coverage = await testCoverageAnalyzer.analyzeCoverage()
-      
-      }%`)
+      this.logger.info(`Test coverage analyzed`)
       return coverage
     } catch (error) {
       return { coveragePercentage: 0, error: (error as Error).message }
@@ -165,10 +164,7 @@ class TIER0QualityValidator {
   private async analyzeDocumentation() {
     try {
       const documentation = await jsDocCoverageAnalyzer.analyzeCoverage()
-      
-      }%`)
-      }/100`)
-      
+      this.logger.info(`Documentation coverage analyzed`)
       return documentation
     } catch (error) {
       return { coveragePercentage: 0, qualityScore: 0, error: (error as Error).message }
@@ -181,14 +177,12 @@ class TIER0QualityValidator {
   private async generateMissingTests() {
     try {
       const testGeneration = await automatedTestGenerator.generateTests()
-      
-      }%`)
-      }%`)
+      this.logger.info(`Missing tests generated: ${testGeneration.generatedTests.length}`)
       
       // Optionally write the generated tests
       if (process.argv.includes('--write-tests')) {
         await automatedTestGenerator.writeTests(testGeneration.generatedTests)
-        }
+      }
       
       return testGeneration
     } catch (error) {
@@ -203,9 +197,7 @@ class TIER0QualityValidator {
     try {
       performanceMonitor.initialize()
       const performance = await performanceMonitor.generateReport()
-      
-      `)
-      `)
+      this.logger.info(`Performance analyzed`)
       return performance
     } catch (error) {
       return { overallScore: 0, componentMetrics: [], error: (error as Error).message }

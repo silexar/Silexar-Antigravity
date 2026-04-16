@@ -41,6 +41,7 @@ export class CampanaCommandHandler {
       numeroCampana: numero.valor,
       nombre: command.nombre,
       tipo: command.tipo,
+      medio: command.medio ?? 'fm',
       estado: 'BORRADOR',
       anuncianteId: command.anuncianteId,
       contratoId: command.contratoId,

@@ -1,0 +1,1123 @@
+💰 MÓDULO FACTURACIÓN - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO FACTURACIÓN?
+El Módulo Facturación es el motor financiero central de Silexar Pulse. Funciona como el cerebro fiscal que transforma contratos ejecutados en documentos tributarios válidos, automatizando todo el ciclo desde la generación hasta el cobro, con inteligencia artificial que optimiza flujos de caja, predice patrones de pago y garantiza cumplimiento normativo absoluto. Específicamente diseñado para manejar la complejidad del mercado publicitario chileno con soporte completo para agencias de medios, anunciantes finales, cuotas, canjes comerciales y estructura de facturación de Canal 13.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Controller/CFO, este módulo es mi comando financiero estratégico:
+
+Genero facturas automáticamente desde contratos con diferenciación agencia/anunciante
+El sistema valida automáticamente cumplimiento SII y normativas chilenas
+Monitorio flujo de caja con predicciones IA considerando patrones de agencias
+Gestiono relaciones complejas entre cliente facturado, agencia y anunciante final
+Exporto archivos planos compatibles con estructura Canal 13 para sistemas externos
+
+Como Ejecutivo Comercial, gestiono mi facturación compleja:
+
+Creo facturas manejando automáticamente agencias intermediarias
+El sistema diferencia entre cliente que paga y anunciante final
+Gestiono cuotas de contratos largos con numeración automática
+Manejo canjes comerciales con marcadores especiales
+Recibo comisiones calculadas considerando comisiones de agencia
+
+Como Contador/Administrativo, administro proceso fiscal chileno:
+
+Proceso facturas con estructura completa de 34 campos
+Genero DTEs con diferenciación correcta de entidades
+Manejo anulaciones con notas de crédito y referencias cruzadas
+Exporto archivos planos con formato exacto Canal 13
+Garantizo compliance fiscal 100% para mercado chileno
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Herencia automática incluyendo datos de agencia/anunciante
+Módulo Campañas: Validación servicios con referencia a emisoras específicas
+Módulo Anunciantes: Diferenciación entre cliente facturado y anunciante final
+Módulo Propiedades: Clasificación automática para canje vs. facturación normal
+Cortex-Payment: IA especializada en patrones de pago de agencias chilenas
+Cortex-Compliance: Validación automática estructura SII Chile
+Cortex-Agency: IA que optimiza relaciones agencia-anunciante-medio
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/facturacion/
+├── domain/
+│   ├── entities/
+│   │   ├── FacturaCompleja.ts (Entidad principal con estructura chilena)
+│   │   ├── AgenciaFacturacion.ts (Manejo agencias de medios)
+│   │   ├── AnuncianteFinal.ts (Cliente final vs facturado)
+│   │   ├── LineaFacturaDetallada.ts (Líneas con emisora y campaña)
+│   │   ├── DocumentoTributarioChile.ts (DTE específico Chile)
+│   │   ├── NotaCreditoCompleja.ts (NC con referencias cruzadas)
+│   │   ├── NotaDebito.ts (Cargos adicionales)
+│   │   ├── CuotaFacturacion.ts (Manejo cuotas contratos largos)
+│   │   ├── CanjeComercial.ts (Facturación de intercambios)
+│   │   ├── ConfiguracionFiscalChile.ts (Setup específico SII)
+│   │   ├── PlantillaFacturaPersonalizada.ts (Templates por cliente)
+│   │   ├── CorrelativoDocumento.ts (Numeración SII)
+│   │   ├── EstadoPagoComplejo.ts (Estados con agencias)
+│   │   ├── IntegracionSIIChile.ts (API SII oficial)
+│   │   ├── ArchivoPlanoCanal13.ts (Export formato específico)
+│   │   ├── AuditoriaFiscalCompleta.ts (Logs inmutables)
+│   │   ├── ComisionAgencia.ts (Cálculo comisiones agencias)
+│   │   ├── FlujoCajaPredictivoAgencias.ts (Proyecciones IA)
+│   │   ├── ConciliacionPagosCompleja.ts (Matching con agencias)
+│   │   ├── ReferenciaDocumental.ts (OC-801, HES-802)
+│   │   ├── AlertaCobranzaInteligente.ts (Alertas por tipo cliente)
+│   │   └── NumeroDeudorManager.ts (Gestión números deudor)
+│   ├── value-objects/
+│   │   ├── NumeroFacturaChile.ts (Formato chileno específico)
+│   │   ├── TipoDocumentoSII.ts (33, 34, 39, 61, 56 Chile)
+│   │   ├── MonedaFacturacion.ts (CLP primario, USD secundario)
+│   │   ├── EstadoFacturaComplejo.ts (Estados con agencias)
+│   │   ├── ReferenciaDocumentoChile.ts (OC-801, HES-802)
+│   │   ├── DatosTributariosChile.ts (RUT validado SII)
+│   │   ├── CondicionesPagoAgencia.ts (Términos específicos)
+│   │   ├── TotalesFacturaCompleja.ts (Neto, IVA, Comisión)
+│   │   ├── FechaVencimientoCalculada.ts (Cálculo automático)
+│   │   ├── CodigoActividadEconomica.ts (CIIU Chile)
+│   │   ├── TipoFacturacion.ts (Directo, Agencia, Canje)
+│   │   ├── MetodoPagoChile.ts (Transferencia, Cheque)
+│   │   ├── ScorePagoAgencia.ts (Probabilidad pago por tipo)
+│   │   ├── ConfiguracionImpuestoChile.ts (IVA 19%)
+│   │   ├── NumeroDeudor.ts (Código único por entidad)
+│   │   ├── CuotaInfo.ts (Número cuota y total)
+│   │   ├── MarcadorCanje.ts (IsBarter true/false)
+│   │   ├── ReferenciaCredito.ts (Para notas crédito)
+│   │   └── GlosaFacturacion.ts (Descripción estructura Canal 13)
+│   └── repositories/
+│       ├── IFacturaComplejaRepository.ts
+│       ├── IAgenciaFacturacionRepository.ts
+│       ├── IAnuncianteFinalRepository.ts
+│       ├── IDocumentoTributarioChileRepository.ts
+│       ├── INotaCreditoComplejaRepository.ts
+│       ├── IConfiguracionFiscalChileRepository.ts
+│       ├── IIntegracionSIIChileRepository.ts
+│       ├── IArchivoPlanoRepository.ts
+│       ├── IAuditoriaFiscalRepository.ts
+│       └── INumeroDeudorRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearFacturaComplejaCommand.ts
+│   │   ├── CrearFacturaConAgenciaCommand.ts
+│   │   ├── CrearFacturaCanjeCommand.ts
+│   │   ├── CrearFacturaCuotasCommand.ts
+│   │   ├── ActualizarFacturaComplejaCommand.ts
+│   │   ├── EmitirFacturaSIIChileCommand.ts
+│   │   ├── AnularFacturaComplejaCommand.ts
+│   │   ├── CrearNotaCreditoComplejaCommand.ts
+│   │   ├── GenerarDTEChileCommand.ts
+│   │   ├── ProcesarPagoAgenciaCommand.ts
+│   │   ├── GenerarArchivoPlanoCanal13Command.ts
+│   │   ├── EnviarFacturaEmailComplejaCommand.ts
+│   │   ├── CalcularComisionesAgenciaCommand.ts
+│   │   ├── ConciliarPagoComplejoCommand.ts
+│   │   ├── GenerarReportesFiscalesChileCommand.ts
+│   │   ├── ConfigurarPlantillaPersonalizadaCommand.ts
+│   │   ├── ValidarCumplimientoSIICommand.ts
+│   │   ├── OptimizarFlujoCajaAgenciasCommand.ts
+│   │   ├── AsignarNumeroDeudorCommand.ts
+│   │   ├── ProcesarFacturacionMasivaCommand.ts
+│   │   └── SincronizarSIIStatusCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerFacturaComplejaQuery.ts
+│   │   ├── BuscarFacturasComplejaQuery.ts
+│   │   ├── ObtenerFacturasPorContratoComplejaQuery.ts
+│   │   ├── ObtenerEstadoCuentaAgenciaQuery.ts
+│   │   ├── GenerarReporteVentasComplejoQuery.ts
+│   │   ├── ObtenerFacturasVencidasComplejaQuery.ts
+│   │   ├── ObtenerProyeccionFlujoCajaAgenciasQuery.ts
+│   │   ├── ValidarEstadoSIIChileQuery.ts
+│   │   ├── ObtenerComisionesPendientesAgenciaQuery.ts
+│   │   ├── GenerarAnalisisCobranzaComplejoQuery.ts
+│   │   ├── ObtenerMetricasFinancierasAgenciasQuery.ts
+│   │   ├── GenerarLibroVentasChileQuery.ts
+│   │   ├── ObtenerFacturasPorAnuncianteQuery.ts
+│   │   ├── ObtenerCuotasPendientesQuery.ts
+│   │   ├── ObtenerCanjesComerciales Query.ts
+│   │   ├── GenerarArchivoPlanoPreviewQuery.ts
+│   │   └── ObtenerEstructuraFacturacionQuery.ts
+│   └── handlers/
+│       ├── FacturaComplejaCommandHandler.ts
+│       ├── EmisionDocumentosChileHandler.ts
+│       ├── IntegracionSIIChileHandler.ts
+│       ├── NotasCreditoComplejaHandler.ts
+│       ├── ProcesarPagosAgenciaHandler.ts
+│       ├── GenerarReportesComplejoHandler.ts
+│       ├── CalculoComisionesAgenciaHandler.ts
+│       ├── ValidacionFiscalChileHandler.ts
+│       ├── FlujoCajaAgenciasHandler.ts
+│       ├── CobranzaAutomaticaComplejaHandler.ts
+│       ├── ConciliacionComplejaHandler.ts
+│       ├── ComplianceChileHandler.ts
+│       ├── ArchivoPlanoCanal13Handler.ts
+│       ├── AgenciaManagementHandler.ts
+│       ├── CuotasFacturacionHandler.ts
+│       └── CanjeComercialHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaFacturaComplejaRepository.ts
+│   │   ├── PrismaAgenciaFacturacionRepository.ts
+│   │   ├── PrismaAnuncianteFinalRepository.ts
+│   │   ├── PrismaDocumentoTributarioChileRepository.ts
+│   │   ├── PrismaNotaCreditoComplejaRepository.ts
+│   │   ├── PrismaConfiguracionFiscalChileRepository.ts
+│   │   └── PrismaNumeroDeudorRepository.ts
+│   ├── external/
+│   │   ├── SIIChileOfficialAPIService.ts (API SII oficial)
+│   │   ├── DTEChileGeneratorService.ts (DTE específicos Chile)
+│   │   ├── PDFFacturaPersonalizadaService.ts (PDFs con template)
+│   │   ├── EmailDeliveryAdvancedService.ts (Email con attachments)
+│   │   ├── PaymentGatewayChileService.ts (Pagos Chile)
+│   │   ├── CortexPaymentAgencyService.ts (IA pagos agencias)
+│   │   ├── CortexComplianceChileService.ts (IA compliance SII)
+│   │   ├── CortexCashFlowAgenciesService.ts (IA flujo caja)
+│   │   ├── CortexAgencyOptimizationService.ts (IA agencias)
+│   │   ├── BankIntegrationChileService.ts (Bancos Chile)
+│   │   ├── ERPIntegrationAdvancedService.ts (SAP, Oracle, etc.)
+│   │   ├── ContabilidadChileService.ts (Contabilidad local)
+│   │   ├── TaxCalculationChileService.ts (IVA y otros)
+│   │   ├── CurrencyConversionChileService.ts (CLP conversiones)
+│   │   ├── AuditTrailBlockchainService.ts (Auditoría inmutable)
+│   │   ├── BackupRecoveryAdvancedService.ts (Respaldo fiscal)
+│   │   ├── DigitalSignatureChileService.ts (Firmas Chile)
+│   │   ├── AntifraudDetectionService.ts (Detección fraude)
+│   │   ├── ArchivoPlanoGeneratorService.ts (Export Canal 13)
+│   │   ├── SIIValidationRealTimeService.ts (Validación tiempo real)
+│   │   ├── AgenciaDataEnrichmentService.ts (Enriquecimiento datos)
+│   │   ├── NumeroDeudorManagerService.ts (Gestión números)
+│   │   ├── CuotasCalculationService.ts (Cálculo cuotas)
+│   │   ├── CanjeComercialValidationService.ts (Validación canjes)
+│   │   └── ComplianceMonitoringChileService.ts (Monitoreo SII)
+│   └── messaging/
+│       ├── FacturaComplejaEventPublisher.ts
+│       ├── PagoAgenciaRecibidoPublisher.ts
+│       ├── VencimientoComplejoAlertPublisher.ts
+│       ├── SIIChileStatusPublisher.ts
+│       ├── AgenciaEventPublisher.ts
+│       ├── CuotaEventPublisher.ts
+│       ├── CanjeEventPublisher.ts
+│       └── ComplianceChileAlertPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── FacturaComplejaController.ts
+    │   ├── AgenciaFacturacionController.ts
+    │   ├── AnuncianteFinalController.ts
+    │   ├── DocumentoTributarioChileController.ts
+    │   ├── NotaCreditoComplejaController.ts
+    │   ├── ReportesComplejoController.ts
+    │   ├── IntegracionSIIChileController.ts
+    │   ├── PagosComplejoController.ts
+    │   ├── ComisionesAgenciaController.ts
+    │   ├── ArchivoPlanoController.ts
+    │   ├── CuotasFacturacionController.ts
+    │   ├── CanjeComercialController.ts
+    │   ├── MobileFacturacionComplejaController.ts
+    │   └── APIExternaAvanzadaController.ts
+    ├── dto/
+    │   ├── CrearFacturaComplejaDto.ts
+    │   ├── CrearFacturaAgenciaDto.ts
+    │   ├── CrearFacturaCanjeDto.ts
+    │   ├── ActualizarFacturaComplejaDto.ts
+    │   ├── EmitirDTEChileDto.ts
+    │   ├── CrearNotaCreditoComplejaDto.ts
+    │   ├── ProcesarPagoComplejoDto.ts
+    │   ├── ConfiguracionFiscalChileDto.ts
+    │   ├── GenerarArchivoPlanoDto.ts
+    │   └── AsignarNumeroDeudorDto.ts
+    └── middleware/
+        ├── FacturacionComplejaAuthorizationMiddleware.ts
+        ├── FiscalComplianceChileMiddleware.ts
+        ├── AuditTrailAdvancedMiddleware.ts
+        ├── TaxValidationChileMiddleware.ts
+        ├── AgenciaValidationMiddleware.ts
+        ├── AntifraudAdvancedMiddleware.ts
+        └── SIIComplianceMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE COMANDO FINANCIERO
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando financiero:
+
+Título: "💰 Centro de Comando Financiero - Chile"
+Breadcrumb: "Dashboard > Finanzas > Facturación"
+
+Panel de métricas financieras críticas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 INTELIGENCIA FINANCIERA CHILE TIEMPO REAL                    │
+│                                                                 │
+│ $2.8M Facturado MTD    $485K Pendiente    156 Facturas Activas│
+│ 94.2% Tasa Cobro      23 días DSO        $1.2M Proyección    │
+│ 🏦 SII Status: ✅ Conectado • 🎯 DTEs: 145 Aceptados, 3 Pendientes│
+│ 🤖 IA Detectó: 5 agencias riesgo, 12 pagos esperados hoy      │
+│ 📊 Agencias: 89 facturas • Directos: 67 • Canjes: 8          │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO FINANCIERO AVANZADO:
+Búsqueda inteligente de facturación:
+
+Placeholder: "🔍 'FAC-2025-0123', 'Universal McCann', 'Banco Chile final', 'canjes', '$50K-100K'..."
+IA Conversacional: Entiende consultas como "¿qué agencias tienen facturas vencidas?"
+Predicciones automáticas:
+
+"Facturas de agencias con riesgo de no pago"
+"Anunciantes finales listos para facturar"
+"Documentos pendientes validación SII"
+"Cuotas que vencen próximos 7 días"
+
+
+
+Filtros financieros inteligentes:
+Por Tipo de Facturación:
+
+🏢 Agencia de Medios (cliente intermediario)
+👤 Cliente Directo (anunciante final)
+🔄 Canje Comercial (IsBarter = true)
+📊 Por Cuotas (contratos largos)
+
+Por Estado SII Chile:
+
+🆕 Borrador DTE (pre-emisión)
+📤 Emitida SII (en proceso)
+✅ Aceptada SII (válida fiscalmente)
+💰 Pagada (cobrada)
+⚠️ Vencida (mora)
+🚫 Anulada NC (nota crédito)
+
+Por Tipo Documento SII:
+
+🧾 Factura Electrónica (33)
+🧾 Factura Exenta (34)
+📄 Boleta Electrónica (39)
+❌ Nota Crédito (61)
+➕ Nota Débito (56)
+
+Centro de acciones financieras:
+
+"➕ Nueva Factura Compleja" (wizard con agencias)
+"📊 Dashboard Agencias" (vista específica agencias)
+"🏦 Conciliar Pagos Complejos" (matching con agencias)
+"📁 Generar Archivo Canal 13" (export específico)
+"🚨 Alertas Cobranza Agencias" (gestión especializada)
+
+TABLA DE FACTURAS - INTELIGENCIA FINANCIERA COMPLEJA:
+1. Columna "Documento/Estado SII" (220px):
+┌─────────────────────────────────────┐
+│ 🧾 FAC-2025-00847                  │
+│ DTE: T1F31248 • Tipo: 33 (Factura) │
+│ 💰 Estado: Aceptada SII ✅          │
+│ 🎯 Tipo: Agencia → Cliente Final    │
+└─────────────────────────────────────┘
+
+Número factura: Correlativo interno + DTE SII
+Tipo documento: Según clasificación SII Chile
+Estado SII: Status tiempo real con API oficial
+Tipo facturación: Visual diferenciación
+
+2. Columna "Cliente/Agencia/Anunciante" (280px):
+┌─────────────────────────────────────┐
+│ 💳 PAGA: Universal McCann           │
+│ RUT: 77431280-3 • Deudor: 4551     │
+│ 👤 ANUNCIANTE: Tenpo Payments       │
+│ RUT: 76967692-9 • Deudor: 20824    │
+│ 📋 OC: 3400001882 • HES: --        │
+└─────────────────────────────────────┘
+
+Cliente facturado: Quien paga (agencia o directo)
+Anunciante final: Cliente real del servicio
+Números deudor: Códigos únicos por entidad
+Referencias: OC (801) y HES (802) si existen
+
+3. Columna "Montos/Comisiones" (160px):
+┌─────────────────┐
+│ 💰 Neto: $1.7M  │
+│ 🏛️ IVA: $323K   │
+│ 🎯 Total: $2.0M │
+│ 💼 Comisión: $0 │
+└─────────────────┘
+
+Desglose fiscal: Neto, IVA calculado 19%
+Comisión agencia: Si aplica
+Total final: Monto a cobrar
+
+4. Columna "Cuotas/Fechas" (140px):
+┌─────────────────┐
+│ 📅 Emisión: 15/Nov│
+│ ⏰ Vence: 15/Dic │
+│ 📊 Cuota: 1/1   │
+│ 🎯 DSO: 27 días │
+└─────────────────┘
+
+Fechas críticas: Emisión y vencimiento
+Info cuotas: Número actual/total
+DSO: Días de cobro específicos
+
+5. Columna "Origen/Campaña" (200px):
+┌─────────────────────────────────────┐
+│ 📋 Contrato: CON-2025-0396          │
+│ 🎵 Campaña: Aniversario 5 Años      │
+│ 📻 Emisoras: T13 Radio, Play FM     │
+│ ✅ Validado: 100% servicios entregados│
+└─────────────────────────────────────┘
+
+Contrato origen: Trazabilidad completa
+Campaña específica: Nombre y referencia
+Emisoras: Donde se emitió la publicidad
+Validación servicios: Confirmación entrega
+
+6. Columna "Canje/Referencias" (150px):
+┌─────────────────┐
+│ 🔄 Canje: No    │
+│ 📄 Ref.NC: --   │
+│ 🎯 Orden: 96642394│
+│ 💼 Ejecutivo: Ana│
+└─────────────────┘
+
+Marcador canje: IsBarter true/false
+Referencia NC: Si es nota crédito
+Orden agencia: Número de orden
+Ejecutivo: Responsable comercial
+
+7. Columna "Acciones Complejas" (180px):
+┌─────────────────┐
+│ [👁️] [✏️] [📧] │
+│ [💰] [📄] [❌] │
+│ [📊] [🔄] [🏦] │
+└─────────────────┘
+
+👁️ Ver Detalle: Vista 360° con agencia/anunciante
+✏️ Editar: Modificación estructura compleja
+📧 Enviar: Email a agencia Y anunciante
+💰 Registrar Pago: Con diferenciación de origen
+📄 Generar PDF: Documentos personalizados
+❌ Anular: NC con referencias cruzadas
+📊 Analytics: Métricas agencia/anunciante
+🔄 Re-enviar SII: Re-procesamiento DTE
+🏦 Conciliar: Matching complejo con agencias
+
+➕ CREACIÓN INTELIGENTE DE FACTURA COMPLEJA - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de facturación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿QUÉ TIPO DE FACTURA NECESITAS?      │
+│                                         │
+│ [🏢] Factura a Agencia de Medios        │
+│      Cliente paga ≠ Anunciante final    │
+│      Manejo comisiones automático       │
+│                                         │
+│ [👤] Factura Cliente Directo            │
+│      Cliente paga = Anunciante final    │
+│      Sin intermediarios                 │
+│                                         │
+│ [🔄] Factura por Canje Comercial        │
+│      Intercambio de servicios           │
+│      Marcador IsBarter = true           │
+│                                         │
+│ [📊] Factura por Cuotas                 │
+│      Contrato largo en partes           │
+│      Numeración automática cuotas       │
+│                                         │
+│ [📋] Desde Contrato Específico          │
+│      Herencia automática toda estructura│
+│      Detección inteligente de tipo      │
+│                                         │
+│ [📁] Facturación Masiva Canal 13        │
+│      Múltiples facturas con export      │
+│      Estructura optimizada              │
+└─────────────────────────────────────────┘
+PASO 1: "SELECCIÓN DE CONTRATO Y TIPO" - IA AVANZADA
+Selector inteligente con detección automática:
+┌─────────────────────────────────────────┐
+│ 📋 SELECCIÓN INTELIGENTE DE CONTRATO    │
+│                                         │
+│ 🔍 Buscar contrato: [CON-2025-0396    ]│
+│                                         │
+│ 🤖 IA detectó estructura automáticamente:│
+│                                         │
+│ ✅ CONTRATO IDENTIFICADO:               │
+│ ┌─────────────────────────────────────┐ │
+│ │ 📋 CON-2025-0396 - Tenpo Payments   │ │
+│ │ 🏢 Via: Universal McCann (Agencia)  │ │
+│ │ 👤 Final: Tenpo Payments S.A.       │ │
+│ │ 💰 Valor: $3.3M • Ejecutado: 100%  │ │
+│ │ 📅 Período: Julio 2025              │ │
+│ │ 🎯 Tipo: AGENCIA DE MEDIOS           │ │
+│ │                                     │ │
+│ │ 📊 Servicios incluidos:             │ │
+│ │ • T13 Radio: $1.7M                 │ │
+│ │ • Play FM: $842K                   │ │
+│ │ • Sonar FM: $720K                  │ │
+│ │                                     │ │
+│ │ 🤖 IA recomienda:                   │ │
+│ │ • Facturar completo en una sola     │ │
+│ │ • Separar comisión agencia: 0%      │ │
+│ │ • Referencias: OC múltiples         │ │
+│ │                                     │ │
+│ │ [🔥 Seleccionar] [👁️ Ver Detalle]   │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ [📋 Continuar] [🔍 Buscar Otro] [❌ Cancelar]│
+└─────────────────────────────────────────┘
+PASO 2: "CONFIGURACIÓN ESTRUCTURA AGENCIA" - ESPECÍFICO CHILE
+Configuración automática relación agencia-anunciante:
+┌─────────────────────────────────────────┐
+│ 🏢 CONFIGURACIÓN ESTRUCTURA AGENCIA     │
+│                                         │
+│ 🎯 Estructura detectada automáticamente:│
+│                                         │
+│ 💳 CLIENTE FACTURADO (Quien paga):     │
+│ ┌─────────────────────────────────────┐ │
+│ │ RUT: 77431280-3                     │ │
+│ │ Razón Social: Universal McCann      │ │
+│ │ Servicios de Medios Ltda.           │ │
+│ │ Dirección: Isidora Goyenechea 2800  │ │
+│ │ Comuna: Santiago                     │ │
+│ │ Nro. Deudor: 4551 (asignado)        │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 👤 ANUNCIANTE FINAL (Cliente real):    │
+│ ┌─────────────────────────────────────┐ │
+│ │ RUT: 76967692-9                     │ │
+│ │ Razón Social: Tenpo Payments S.A.   │ │
+│ │ Dirección: Av. Pdte. Riesco 5711    │ │
+│ │ Comuna: Santiago                     │ │
+│ │ Nro. Deudor: 20824 (asignado)       │ │
+│ │ Giro: Actividades Aux. Servicios    │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 💰 CONFIGURACIÓN COMISIONES:           │
+│ Comisión Agencia: [0%    ] (Sin comisión)│
+│ Monto Comisión: $0 (calculado)         │
+│                                         │
+│ 📋 REFERENCIAS DOCUMENTALES:            │
+│ OC (801): [3400001882] [3400001883] [+] │
+│ HES (802): [                         ] │
+│                                         │
+│ 🤖 Validaciones automáticas:           │
+│ ✅ Agencia registrada en sistema        │
+│ ✅ Anunciante validado SII              │
+│ ✅ Números deudor asignados             │
+│ ✅ Estructura coherente con contrato    │
+│                                         │
+│ [🎯 Continuar: Servicios] [⬅️ Anterior] │
+└─────────────────────────────────────────┘
+PASO 3: "VALIDACIÓN SERVICIOS ESPECÍFICOS" - EMISORAS
+Validación con detalle por emisora:
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ VALIDACIÓN SERVICIOS POR EMISORA                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 Cortex-Validation analizó servicios específicos:            │
+│                                                                 │
+│ 📻 T13 RADIO:                                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Campaña: Aniversario 5 Años                                │ │
+│ │ Contratado: 45 spots Prime Matinal                         │ │
+│ │ Emitido: 45 spots confirmados ✅                           │ │
+│ │ Período: 15/07 - 31/07/2025                               │ │
+│ │ Valor facturar: $1,710,000                                │ │
+│ │ Orden Agencia: 96642394                                   │ │
+│ │ OC: 3400001882                                             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📻 PLAY FM:                                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Campaña: Aniversario 5 Años                                │ │
+│ │ Contratado: 30 spots Repartido                             │ │
+│ │ Emitido: 30 spots confirmados ✅                           │ │
+│ │ Período: 15/07 - 31/07/2025                               │ │
+│ │ Valor facturar: $842,400                                  │ │
+│ │ Orden Agencia: 96642395                                   │ │
+│ │ OC: 3400001883                                             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📻 SONAR FM:                                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Campaña: Aniversario 5 Años                                │ │
+│ │ Contratado: 25 spots Repartido                             │ │
+│ │ Emitido: 25 spots confirmados ✅                           │ │
+│ │ Período: 15/07 - 31/07/2025                               │ │
+│ │ Valor facturar: $720,000                                  │ │
+│ │ Orden Agencia: 96642389                                   │ │
+│ │ OC: 3400001884                                             │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 💰 RESUMEN FINANCIERO TOTAL:                                   │
+│ • Sub-total servicios: $3,272,400                             │
+│ • Comisión agencia: $0                                        │
+│ • Total neto: $3,272,400                                      │
+│ • IVA (19%): $621,756                                         │
+│ • TOTAL FACTURA: $3,894,156                                   │
+│                                                                 │
+│ [💰 Continuar: DTE] [✏️ Ajustar] [⬅️ Anterior]                 │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "CONFIGURACIÓN DTE SII CHILE" - COMPLIANCE
+Configuración específica SII con estructura compleja:
+┌─────────────────────────────────────────┐
+│ 🏛️ CONFIGURACIÓN DTE SII CHILE          │
+│                                         │
+│ 📋 DATOS RECEPTOR (Agencia):           │
+│ • RUT: 77431280-3 ✅ Validado SII      │
+│ • Razón Social: Universal McCann       │
+│ • Servicios de Medios Ltda.            │
+│ • Giro: Actividades Auxiliares Medios  │
+│ • Dirección: Isidora Goyenechea 2800   │
+│                                         │
+│ 📄 TIPO DOCUMENTO TRIBUTARIO:          │
+│ ⚫ Factura Electrónica (Tipo 33)       │
+│ ⚪ Factura Exenta (Tipo 34)            │
+│                                         │
+│ 🔢 REFERENCIAS MÚLTIPLES:               │
+│ Campo 801 (OC 1): [3400001882         ]│
+│ Campo 801 (OC 2): [3400001883         ]│
+│ Campo 801 (OC 3): [3400001884         ]│
+│ Campo 802 (HES): [No aplica           ]│
+│                                         │
+│ 🗓️ FECHAS FISCALES:                    │
+│ Fecha Emisión: [07/08/2025] (Hoy)     │
+│ Período Facturado: [Julio 2025]        │
+│ Fecha Vencimiento: [06/09/2025] (30 días)│
+│                                         │
+│ 💰 CONFIGURACIÓN IMPUESTOS:            │
+│ • IVA: 19% (Estándar Chile) ✅         │
+│ • Afecto IVA: SÍ                       │
+│ • Retenciones: No aplican              │
+│                                         │
+│ 🎯 CUOTAS (Si aplica):                 │
+│ Número cuota: [1] de [1] total         │
+│                                         │
+│ 📝 GLOSA AUTOMÁTICA GENERADA:          │
+│ "SERVICIO DE PUBLICIDAD EN T13 RADIO, │
+│ PLAY FM Y SONAR FM - CAMPAÑA:          │
+│ ANIVERSARIO 5 AÑOS - ÓRDENES:          │
+│ 96642394, 96642395, 96642389 -         │
+│ OC: 3400001882, 3400001883, 3400001884 │
+│ MES: JULIO 2025 - CLIENTE: TENPO       │
+│ PAYMENTS S.A."                         │
+│                                         │
+│ [🏛️ Generar DTE] [✏️ Editar] [⬅️ Anterior]│
+└─────────────────────────────────────────┘
+PASO 5: "GENERACIÓN Y CONFIRMACIÓN" - RESULTADO FINAL
+Confirmación completa con estructura Canal 13:
+┌─────────────────────────────────────────┐
+│ ✅ FACTURA COMPLEJA GENERADA EXITOSAMENTE│
+│                                         │
+│ 🎉 ¡Factura FAC-2025-01147 creada!     │
+│                                         │
+│ 📋 DETALLES COMPLETOS:                 │
+│ • Número interno: FAC-2025-01147        │
+│ • Folio SII: T1F31147 (aceptado)       │
+│ • DTE: 76543210-33-31147               │
+│ • Total: $3,894,156                    │
+│ • Vencimiento: 06/09/2025              │
+│                                         │
+│ 🏢 ESTRUCTURA FACTURACIÓN:             │
+│ • Cliente paga: Universal McCann        │
+│ • Anunciante final: Tenpo Payments     │
+│ • Tipo: Agencia de Medios              │
+│ • Comisión: $0 (sin comisión)          │
+│                                         │
+│ ✅ ACCIONES COMPLETADAS:               │
+│ • ✅ PDF personalizado generado        │
+│ • ✅ DTE enviado a SII (ACEPTADO)      │
+│ • ✅ Email enviado a agencia           │
+│ • ✅ Copia enviada a anunciante        │
+│ • ✅ Servicios marcados facturados     │
+│ • ✅ Números deudor asignados          │
+│ • ✅ Referencias OC registradas        │
+│ • ✅ Estructura archivo plano lista    │
+│                                         │
+│ 📧 NOTIFICACIONES ENVIADAS:            │
+│ • Agencia: facturas@mccann.cl ✅       │
+│ • Anunciante: pagos@tenpo.com ✅       │
+│ • Ejecutivo: ejecutivo@silexar.com ✅  │
+│                                         │
+│ 🎯 READY PARA ARCHIVO PLANO:           │
+│ • Línea Canal 13 generada              │
+│ • Todos los 34 campos completos        │
+│ • Formato validado                     │
+│                                         │
+│ [📁 Generar Archivo Canal 13] [👁️ Ver Factura]│
+│ [📧 Re-enviar] [🏠 Dashboard]           │
+└─────────────────────────────────────────┘
+📁 GENERADOR ARCHIVO PLANO CANAL 13 - ESTRUCTURA REAL
+CONFIGURADOR ESPECÍFICO CANAL 13:
+Generador con estructura exacta de 34 campos:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📁 GENERADOR ARCHIVO PLANO - FORMATO CANAL 13 OFICIAL          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 CONFIGURACIÓN ESPECÍFICA ESTRUCTURA:                        │
+│                                                                 │
+│ 📅 Período a exportar:                                        │
+│ Desde: [01/08/2025] Hasta: [31/08/2025]                      │
+│                                                                 │
+│ 🔍 Filtros específicos:                                       │
+│ [✅] Incluir facturas emitidas                                │
+│ [✅] Incluir notas de crédito                                 │
+│ [❌] Solo facturas con agencia                                │
+│ [✅] Incluir canjes comerciales                               │
+│ [❌] Solo cliente específico                                  │
+│                                                                 │
+│ 📊 PREVIEW DE REGISTROS:                                       │
+│ • Total facturas: 18 documentos                               │
+│ • Facturas normales: 15                                       │
+│ • Notas crédito: 2                                           │
+│ • Canjes comerciales: 1                                       │
+│ • Con agencia: 12                                             │
+│ • Clientes directos: 6                                        │
+│ • Total monto: $45.8M                                         │
+│                                                                 │
+│ 🔧 ESTRUCTURA DE 34 CAMPOS CONFIGURADA:                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 1-7: Datos Cliente Facturado                               │ │
+│ │ 8-13: Datos Contractuales y Cuotas                         │ │
+│ │ 14-21: Datos Agencia (si aplica)                           │ │
+│ │ 22-25: Datos Fiscales SII                                  │ │
+│ │ 26-32: Anunciante Final                                    │ │
+│ │ 33-34: Referencias y Control                               │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 VALIDACIONES ESPECÍFICAS:                                   │
+│ ✅ RUTs formato sin puntos ni guión                           │
+│ ✅ Fechas formato DD/MM/YYYY                                  │
+│ ✅ Montos formato decimal con coma                            │
+│ ✅ Campos texto sin caracteres especiales                     │
+│ ✅ IsBarter: True/False exacto                                │
+│ ✅ TipoFolio: F para factura, C para NC                      │
+│                                                                 │
+│ 📝 SEPARADOR: Tab (⟨TAB⟩)                                     │
+│ 📝 ENCODING: UTF-8                                            │
+│ 📝 EXTENSIÓN: .txt                                            │
+│                                                                 │
+│ [📥 GENERAR ARCHIVO] [👁️ Preview Líneas] [⚙️ Config Avanzada] │
+└─────────────────────────────────────────────────────────────────┘
+PREVIEW DE LÍNEAS GENERADAS:
+Vista previa exacta con datos reales:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📝 PREVIEW ARCHIVO CANAL 13 - LÍNEAS ESPECÍFICAS               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 Línea 1 - Factura con Agencia:                              │
+│                                                                 │
+│ 76967692-9⟨TAB⟩20824⟨TAB⟩TENPO PAYMENTS S.A.⟨TAB⟩              │
+│ AV. PRESIDENTE RIESCO 5711 OF 804⟨TAB⟩SANTIAGO⟨TAB⟩CHILE⟨TAB⟩   │
+│ OTRAS ACTIVIDADES AUXILIARES DE LAS ACTIVIDADES DE SERVICIOS⟨TAB⟩│
+│ 2025-6396-00⟨TAB⟩07/08/2025⟨TAB⟩06/09/2025⟨TAB⟩0⟨TAB⟩⟨TAB⟩     │
+│ 1710000,00⟨TAB⟩77431280-3⟨TAB⟩UNIVERSAL MCCANN SERVICIOS DE    │
+│ MEDIOS LTDA.⟨TAB⟩ISIDORA GOYENECHEA 2800 OFICINA 1401 PISO 14⟨TAB⟩│
+│ SANTIAGO⟨TAB⟩CHILE⟨TAB⟩4551⟨TAB⟩0,00⟨TAB⟩1710000,00⟨TAB⟩S⟨TAB⟩  │
+│ SERVICIO DE PUBLICIDAD EN T13 RADIO - CAMPAÑA: ANIVERSARIO     │
+│ 5 AÑOS - ORDEN: 96642394 - OC: 3400001882 - MES: JULIO 2025   │
+│ Camp.: 64801⟨TAB⟩31146⟨TAB⟩F⟨TAB⟩76967692-9⟨TAB⟩20824⟨TAB⟩      │
+│ TENPO PAYMENTS S.A.⟨TAB⟩AV. PRESIDENTE RIESCO 5711 OF 804⟨TAB⟩  │
+│ SANTIAGO⟨TAB⟩CHILE⟨TAB⟩OTRAS ACTIVIDADES AUXILIARES DE LAS      │
+│ ACTIVIDADES DE SERVICIOS⟨TAB⟩⟨TAB⟩False                         │
+│                                                                 │
+│ 📊 Línea 2 - Nota de Crédito:                                  │
+│                                                                 │
+│ 70360100-6⟨TAB⟩1159⟨TAB⟩ASOC CHILENA DE SEGURIDAD⟨TAB⟩         │
+│ RAMON CARNICER 163⟨TAB⟩SANTIAGO⟨TAB⟩CHILE⟨TAB⟩MUTUAL DE        │
+│ SEGURIDAD⟨TAB⟩2025-6024-00⟨TAB⟩07/08/2025⟨TAB⟩06/09/2025⟨TAB⟩  │
+│ 0⟨TAB⟩⟨TAB⟩-6815000,00⟨TAB⟩3144121-8⟨TAB⟩DIRECTOS⟨TAB⟩         │
+│ ALCALDE DAVALOS 164⟨TAB⟩SANTIAGO⟨TAB⟩CHILE⟨TAB⟩4487⟨TAB⟩0,00⟨TAB⟩│
+│ -6815000,00⟨TAB⟩S⟨TAB⟩NOTA DE CREDITO ANULA FACTURA 31079      │
+│ POR FALTA DE INFORMACION⟨TAB⟩1974⟨TAB⟩C⟨TAB⟩70360100-6⟨TAB⟩    │
+│ 1159⟨TAB⟩ASOC CHILENA DE SEGURIDAD⟨TAB⟩RAMON CARNICER 163⟨TAB⟩  │
+│ SANTIAGO⟨TAB⟩CHILE⟨TAB⟩MUTUAL DE SEGURIDAD⟨TAB⟩31079⟨TAB⟩False  │
+│                                                                 │
+│ 📊 Línea 3 - Canje Comercial:                                  │
+│                                                                 │
+│ 76155287-2⟨TAB⟩21702⟨TAB⟩SOCIEDAD GASTRONÓMICA BARCELONA       │
+│ SPA⟨TAB⟩AV. ITALIA 803⟨TAB⟩SANTIAGO⟨TAB⟩CHILE⟨TAB⟩RESTAURANTE⟨TAB⟩│
+│ 2025-6399-00⟨TAB⟩07/08/2025⟨TAB⟩08/08/2025⟨TAB⟩1⟨TAB⟩1⟨TAB⟩    │
+│ 28000,00⟨TAB⟩3144121-8⟨TAB⟩DIRECTOS⟨TAB⟩ALCALDE DAVALOS 164⟨TAB⟩│
+│ SANTIAGO⟨TAB⟩CHILE⟨TAB⟩4487⟨TAB⟩0,00⟨TAB⟩28000,00⟨TAB⟩S⟨TAB⟩    │
+│ SERVICIO DE CANJE CON CASALUZ RESTAURANT - CRUCE DE FACTURA    │
+│ FOLIO: 6424⟨TAB⟩31156⟨TAB⟩F⟨TAB⟩76155287-2⟨TAB⟩21702⟨TAB⟩       │
+│ SOCIEDAD GASTRONÓMICA BARCELONA SPA⟨TAB⟩AV. ITALIA 803⟨TAB⟩     │
+│ SANTIAGO⟨TAB⟩CHILE⟨TAB⟩RESTAURANTE⟨TAB⟩⟨TAB⟩True                 │
+│                                                                 │
+│ [📋 Copiar Todo] [📥 Descargar] [👁️ Ver Completo]              │
+└─────────────────────────────────────────────────────────────────┘
+RESULTADO GENERACIÓN ARCHIVO:
+Confirmación y entrega:
+┌─────────────────────────────────────────┐
+│ ✅ ARCHIVO CANAL 13 GENERADO EXITOSAMENTE│
+│                                         │
+│ 📁 Archivo: facturacion_canal13_202508.txt│
+│ 📊 Registros: 18 líneas                │
+│ 💾 Tamaño: 12.7 KB                     │
+│ 🕐 Generado: 20/08/2025 15:23:45       │
+│                                         │
+│ 📋 RESUMEN DETALLADO:                   │
+│ • Facturas agencia: 12                 │
+│ • Facturas directas: 4                 │
+│ • Notas crédito: 2                     │
+│ • Canjes comerciales: 1                │
+│ • Total neto: $43,672,095              │
+│ • Total IVA: $8,297,698                │
+│ • Total con IVA: $51,969,793           │
+│                                         │
+│ 🔐 VALIDACIONES COMPLETADAS:           │
+│ ✅ Todos los 34 campos completos       │
+│ ✅ Formato exacto Canal 13             │
+│ ✅ RUTs validados SII                  │
+│ ✅ Fechas formato correcto             │
+│ ✅ Montos balanceados                  │
+│ ✅ Caracteres especiales eliminados    │
+│ ✅ Encoding UTF-8 correcto             │
+│                                         │
+│ 📧 ENTREGA:                            │
+│ [💾 Descargar] [📧 Enviar Email]       │
+│ [☁️ Subir Google Drive] [📋 Copiar]     │
+│                                         │
+│ 📋 Log de auditoría guardado           │
+│ Referencia: EXP-CAN13-2025-00156       │
+└─────────────────────────────────────────┘
+📋 GESTIÓN DE NOTAS DE CRÉDITO COMPLEJAS
+WIZARD NOTA DE CRÉDITO CON REFERENCIAS:
+Búsqueda y selección con estructura agencia:
+┌─────────────────────────────────────────────────────────────────┐
+│ ❌ CREAR NOTA DE CRÉDITO COMPLEJA                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 BUSCAR FACTURA A ANULAR:                                    │
+│                                                                 │
+│ Buscar por: [FAC-2025-01149 o Universal McCann              ] 🔍│
+│                                                                 │
+│ 📊 Filtros avanzados:                                          │
+│ Agencia: [Universal McCann ▼] Cliente Final: [Abbott ▼]        │
+│ Período: [Junio 2025 ▼] Estado: [Emitidas ▼]                  │
+│                                                                 │
+│ 📋 FACTURAS ENCONTRADAS:                                       │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🧾 FAC-2025-01149 • DTE: T1F31149                          │ │
+│ │ 💳 AGENCIA: MMS Communications Chile S.A.                  │ │
+│ │ RUT: 96842410-6 • Deudor: 645                             │ │
+│ │ 👤 ANUNCIANTE: Abbott Laboratories Chile                   │ │
+│ │ RUT: 81378300-2 • Deudor: 895                             │ │
+│ │ 💰 Total: $1,573,000 • Estado: Emitida ✅                 │ │
+│ │ 📅 Emisión: 07/08/2025 • Vence: 06/09/2025               │ │
+│ │ 🎵 Campañas: PediaSure, Similac                           │ │
+│ │                                                             │ │
+│ │ ⚠️ Validaciones para anular:                               │ │
+│ │ ✅ Factura emitida y válida SII                            │ │
+│ │ ✅ No tiene pagos registrados                              │ │
+│ │ ✅ Dentro plazo legal anulación                            │ │
+│ │ ⚠️ Agencia AAA - Requiere autorización                    │ │
+│ │                                                             │ │
+│ │ [❌ SELECCIONAR PARA ANULAR] [👁️ Ver Detalle]              │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [🔍 Buscar Más] [📊 Filtros Avanzados] [❌ Cancelar]           │
+└─────────────────────────────────────────────────────────────────┘
+Configuración NC con estructura compleja:
+┌─────────────────────────────────────────┐
+│ 📝 CONFIGURACIÓN NOTA CRÉDITO COMPLEJA  │
+│                                         │
+│ 🧾 Factura origen: FAC-2025-01149      │
+│ 💰 Monto original: $1,573,000          │
+│                                         │
+│ 🏢 ESTRUCTURA ORIGINAL:                │
+│ • Agencia: MMS Communications          │
+│ • Cliente final: Abbott Laboratories   │
+│ • Servicios: 3 emisoras diferentes     │
+│                                         │
+│ 🎯 TIPO DE ANULACIÓN:                  │
+│ ⚫ Anulación Total (100%)              │
+│ ⚪ Anulación Parcial por Servicio      │
+│ ⚪ Descuento por Incumplimiento        │
+│                                         │
+│ 📋 MOTIVO ESPECÍFICO:                  │
+│ [Cliente reporta incumplimiento ▼]     │
+│ • Error en facturación                 │
+│ • Cliente reporta incumplimiento       │
+│ • Duplicación de documento             │
+│ • Cancelación de servicio              │
+│ • Descuento comercial acordado         │
+│                                         │
+│ 📝 DETALLE ESPECÍFICO:                 │
+│ [                                      ]│
+│ [Cliente final Abbott reportó que     ]│
+│ [campaña PediaSure no se emitió según ]│
+│ [especificaciones. Procede anulación   ]│
+│ [total para re-facturar con ajustes.   ]│
+│                                         │
+│ 🔢 NUMERACIÓN AUTOMÁTICA:              │
+│ • Nota Crédito: NCR-2025-01975         │
+│ • Folio SII: [T1C1975] (auto-generará)│
+│ • Tipo documento: 61 (Nota Crédito)    │
+│ • Referencia: FAC-2025-01149 (31149)   │
+│                                         │
+│ 🤖 Cortex-Compliance validó:           │
+│ ✅ Motivo válido según SII              │
+│ ✅ Dentro plazo legal                   │
+│ ✅ Estructura agencia correcta          │
+│ ⚠️ Requiere autorización: Cliente AAA   │
+│                                         │
+│ [🚀 GENERAR NOTA CRÉDITO] [❌ Cancelar] │
+└─────────────────────────────────────────┘
+📊 DASHBOARD FINANCIERO ESPECÍFICO AGENCIAS
+CENTRO DE CONTROL AGENCIAS:
+Vista especializada para mercado chileno:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🏢 CENTRO DE CONTROL AGENCIAS DE MEDIOS CHILE                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 MÉTRICAS AGENCIAS TIEMPO REAL:                              │
+│                                                                 │
+│ 💵 Facturado agencias MTD: $8.9M (69% del total)              │
+│ 🎯 Por cobrar agencias: $5.8M (71% cartera)                   │
+│ ⚡ DSO agencias: 35 días (vs directos: 18 días)               │
+│ 📊 Top 5 agencias: 78% del volumen agencias                   │
+│                                                                 │
+│ 🏆 TOP AGENCIAS POR VOLUMEN:                                   │
+│                                                                 │
+│ 1. 🥇 Universal McCann: $2.1M MTD                             │
+│    • Clientes: Tenpo, Entel, Banco Estado                     │
+│    • DSO: 28 días • Riesgo: Bajo                             │
+│    • Proyección: $2.8M próximos 30 días                      │
+│                                                                 │
+│ 2. 🥈 Carat Chile: $1.8M MTD                                  │
+│    • Clientes: Kraft Heinz, P&G, Unilever                    │
+│    • DSO: 32 días • Riesgo: Bajo                             │
+│    • Proyección: $2.1M próximos 30 días                      │
+│                                                                 │
+│ 3. 🥉 PHD Chile: $1.2M MTD                                    │
+│    • Clientes: Ideal, Nestlé, Johnson & Johnson              │
+│    • DSO: 42 días • Riesgo: Medio                            │
+│    • Proyección: $980K próximos 30 días                      │
+│                                                                 │
+│ ⚠️ AGENCIAS EN RIESGO:                                         │
+│                                                                 │
+│ 🔴 Omnicom Media Group: $680K vencido                         │
+│    • 3 facturas > 45 días mora                               │
+│    • Cliente final: P&G (excelente)                          │
+│    • Problema: Flujo interno agencia                         │
+│    • Acción: Contacto directo con P&G                        │
+│                                                                 │
+│ 🔮 PREDICCIONES IA PRÓXIMOS 30 DÍAS:                          │
+│ • Cobros agencias esperados: $4.2M (confidence: 78%)          │
+│ • Riesgo incobrables: $340K (8% del total)                   │
+│ • Oportunidades directas con clientes finales: $1.2M         │
+│                                                                 │
+│ [📞 Gestión Agencias] [📊 Analytics Detallado] [⚙️ Optimizar] │
+└─────────────────────────────────────────────────────────────────┘
+ANÁLISIS AGENCIA VS CLIENTE FINAL:
+Inteligencia comercial específica:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANÁLISIS AGENCIA vs CLIENTE FINAL                           │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 COMPARATIVO ESTRUCTURA COMERCIAL:                           │
+│                                                                 │
+│ 💼 FACTURACIÓN VIA AGENCIAS (69%):                            │
+│ • Volumen: $8.9M de $12.8M total                              │
+│ • Clientes únicos: 45 anunciantes finales                     │
+│ • Agencias intermediarias: 12 activas                         │
+│ • DSO promedio: 35 días                                       │
+│ • Margen promedio: 62% (menor comisiones)                     │
+│                                                                 │
+│ 👤 FACTURACIÓN DIRECTA (31%):                                 │
+│ • Volumen: $3.9M de $12.8M total                              │
+│ • Clientes únicos: 78 clientes directos                       │
+│ • DSO promedio: 18 días                                       │
+│ • Margen promedio: 68% (sin comisiones)                       │
+│                                                                 │
+│ 💡 INSIGHTS AUTOMÁTICOS:                                       │
+│ • Agencias concentran 75% del volumen en 20% de clientes      │
+│ • Clientes directos pagan 47% más rápido                      │
+│ • 15 anunciantes finales podrían migrar a directo             │
+│ • Oportunidad captura directa: +$1.8M anual                   │
+│                                                                 │
+│ 🎯 RECOMENDACIONES ESTRATÉGICAS:                               │
+│ • Mejorar términos con agencias top 5                         │
+│ • Programa incentivos pago anticipado agencias                │
+│ • Estrategia captura directa clientes grandes                 │
+│ • Diversificar dependencia Universal McCann                   │
+│                                                                 │
+│ 📈 PROYECCIÓN OPTIMIZADA:                                      │
+│ • Con mejoras: DSO agencias 28 días (-7)                      │
+│ • Captura directa: +$150K margen mensual                      │
+│ • Reducción riesgo: -40% concentración                        │
+│                                                                 │
+│ [🎯 Plan Optimización] [📊 Análisis Detallado] [📈 Proyecciones]│
+└─────────────────────────────────────────────────────────────────┘
+🔄 CORTEX-AGENCY - INTELIGENCIA ESPECÍFICA AGENCIAS
+OPTIMIZACIÓN RELACIONES AGENCIA-CLIENTE:
+IA especializada en mercado publicitario chileno:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 CORTEX-AGENCY - OPTIMIZACIÓN AGENCIAS CHILE                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS ESPECÍFICO: Universal McCann                       │
+│                                                                 │
+│ 🏢 PERFIL AGENCIA:                                             │
+│ • Volumen anual: $24M (18% del total)                         │
+│ • Clientes manejados: 12 anunciantes                          │
+│ • Tiempo relación: 4 años                                     │
+│ • Performance pago: 94% puntual últimos 12 meses              │
+│                                                                 │
+│ 👥 CLIENTES FINALES GESTIONADOS:                               │
+│ • Tenpo Payments: $8.5M YTD (fintech)                         │
+│ • Entel: $6.2M YTD (telecomunicaciones)                       │
+│ • Banco Estado: $4.8M YTD (financiero)                        │
+│ • LAN Airlines: $2.9M YTD (transporte)                        │
+│ • Otros menores: $1.6M YTD                                    │
+│                                                                 │
+│ 🎯 OPORTUNIDADES DETECTADAS:                                   │
+│                                                                 │
+│ 💰 OPTIMIZACIÓN TÉRMINOS:                                      │
+│ • Actual: 30 días • Óptimo: 25 días                          │
+│ • Justificación: Excelente historial pago                     │
+│ • Incentivo: 2% descuento pago <20 días                       │
+│ • Impacto proyectado: +$180K flujo caja                       │
+│                                                                 │
+│ 🚀 OPORTUNIDADES CRECIMIENTO:                                  │
+│ • Tenpo expandiendo a regiones (+$2M potencial)               │
+│ • Entel lanza nuevo producto (+$1.5M potencial)               │
+│ • Banco Estado campañas especiales Q4 (+$800K)                │
+│                                                                 │
+│ ⚠️ RIESGOS IDENTIFICADOS:                                       │
+│ • Concentración excesiva: 33% en Tenpo                        │
+│ • Competencia agresiva en cuenta LAN                          │
+│ • Cambio CMO en Banco Estado (riesgo medio)                   │
+│                                                                 │
+│ 🤖 RECOMENDACIONES IA:                                         │
+│ • Establecer límite exposición por cliente final              │
+│ • Negociar contrato marco anual con descuentos                │
+│ • Programa loyalty por volumen acumulado                       │
+│ • Backup plan para cuenta LAN                                 │
+│                                                                 │
+│ 📈 PRONÓSTICO 90 DÍAS:                                         │
+│ • Facturación proyectada: $6.8M                               │
+│ • Probabilidad cumplimiento: 87%                              │
+│ • Riesgo concentración: Controlado                            │
+│                                                                 │
+│ [🎯 Aplicar Optimizaciones] [📊 Análisis Completo] [📧 Report] │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL FACTURACIÓN COMPLEJA
+INTERFAZ MÓVIL ESPECIALIZADA:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR FACTURACIÓN CHILE MÓVIL      │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Financiero                 │
+│ • Facturado hoy: $485K                  │
+│ • Agencias: $340K (70%)                 │
+│ • Directos: $145K (30%)                 │
+│ • Alertas: 3 agencias vencidas          │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🧾 Factura Express Agencia]           │
+│ [👤 Factura Cliente Directo]           │
+│ [🔄 Crear Canje Comercial]             │
+│ [💰 Check Estado Pagos]                │
+│ [📁 Export Canal 13]                   │
+│                                         │
+│ 🚨 ALERTAS CRÍTICAS:                   │
+│ • Universal McCann: $680K vencida      │
+│ • Carat Chile: Límite crédito 90%      │
+│ • 3 DTEs pendientes validación SII     │
+│                                         │
+│ 🏢 TOP AGENCIAS HOY:                   │
+│ • Universal McCann: $145K              │
+│ • Carat Chile: $89K                    │
+│ • PHD Chile: $67K                      │
+│                                         │
+│ 📊 MIS COMISIONES:                     │
+│ • Mes actual: $28,500                  │
+│ • Pendientes: $12,300                  │
+│ • De agencias: $18,900 (66%)           │
+│                                         │
+│ [📧 Envío Email] [💰 Registro Pago]     │
+├─────────────────────────────────────────┤
+│ [🏠] [🧾] [💰] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+🔐 SEGURIDAD FISCAL AVANZADA CHILE
+COMPLIANCE SII ULTRA-ESPECÍFICO:
+Protección nivel Banco Central para estructura chilena:
+
+Validación SII tiempo real: Conexión permanente con API oficial SII
+DTE tracking completo: Seguimiento estado de cada documento tributario
+Estructura agencia validada: Verificación roles agencia/anunciante/pagador
+Backup fiscal inmutable: Respaldos automáticos cada 15 minutos
+Auditoría blockchain: Logs inmutables para inspecciones SII
+
+Controles específicos por estructura:
+Factura con Agencia:
+
+Validación triple: Cliente facturado + Agencia + Anunciante final
+Verificación coherencia RUTs en SII
+Validación límites crédito por entidad
+Control comisiones dentro rangos permitidos
+
+Factura Directa:
+
+Validación estándar cliente único
+Verificación automática datos SII
+Control límites autorización por ejecutivo
+
+Canje Comercial:
+
+Marcador IsBarter obligatorio
+Validación montos equilibrados
+Control tributario específico para canjes
+Documentación automática para auditoría
+
+🚀 INNOVACIONES TIER 0 ESPECÍFICAS CHILE
+1. CORTEX-SII - INTEGRACIÓN NATIVA:
+IA específica para SII Chile:
+
+Validación automática de cambios normativos SII
+Predicción de observaciones antes de emisión
+Optimización de documentos para aprobación rápida
+Alertas proactivas de fechas límite tributarias
+
+2. AGENCIA-OPTIMIZER ENGINE:
+Optimización automática relaciones agencias:
+
+ML entrenado con patrones de pago agencias chilenas
+Predicción de problemas de flujo por agencia
+Optimización automática de términos por performance
+Detección temprana de cambios en cuentas de agencias
+
+3. CANAL-13-EXPORT NATIVE:
+Generación nativa formato Canal 13:
+
+Parser automático de 34 campos específicos
+Validación estructura exacta en tiempo real
+Compatibilidad 100% con sistemas Canal 13
+Extensible a otros grupos de medios chilenos
+
+4. PREDICTIVE COLLECTIONS AGENCIAS:
+Cobranza predictiva específica agencias:
+
+Patrones de pago diferenciados por tipo de agencia
+Escalamiento automático a clientes finales
+Predicción de problemas de flujo agencia-cliente
+Optimización timing de contacto por estructura
+
+🎯 CONCLUSIÓN: FACTURACIÓN MÁS AVANZADA DE CHILE
+PARA EL CFO/CONTROLLER:
+
+Control estructura compleja: Manejo perfecto agencia/anunciante/pagador
+Compliance SII garantizado: 100% compatibilidad normativas chilenas
+Predictive analytics agencias: Forecasting especializado mercado local
+Risk management avanzado: Control riesgo por tipo de estructura comercial
+Export Canal 13 nativo: Compatibilidad total sistemas locales
+
+PARA EL CONTADOR/ADMINISTRATIVO:
+
+Automatización estructura 34 campos: Export perfecto formato Canal 13
+DTE management completo: Gestión total documentos tributarios SII
+Validación triple entidades: Control automático coherencia agencia/cliente
+Cero errores estructura: Imposible generar documentos incorrectos
+Compliance automático: Cumplimiento regulatorio sin esfuerzo manual
+
+PARA EL EJECUTIVO COMERCIAL:
+
+Facturación agencia simplificada: Proceso automático estructura compleja
+Diferenciación cliente/anunciante: Manejo transparente de relaciones
+Comisiones automáticas: Cálculo correcto considerando agencias
+Mobile perfect: Gestión completa desde dispositivos móviles
+Cliente satisfecho: Procesos transparentes para todas las partes
+
+PARA LA ORGANIZACIÓN:
+
+Estructura market-ready: Perfecta para mercado publicitario chileno
+Compliance perfecto: 0 observaciones SII garantizado
+Eficiencia agencias: +60% mejora en gestión relaciones complejas
+Cash flow optimizado: Predicciones específicas por tipo de cliente
+Escalabilidad estructura: Maneja cualquier complejidad comercial
+
+El Módulo Facturación TIER 0 de Silexar Pulse es el sistema de facturación más avanzado y específico para el mercado publicitario chileno jamás creado. No solo maneja la complejidad única de agencias, anunciantes finales, cuotas y canjes comerciales, sino que lo hace con un nivel de automatización, inteligencia artificial y compliance que transforma la gestión fiscal de una carga operativa en una ventaja competitiva estratégica absoluta.

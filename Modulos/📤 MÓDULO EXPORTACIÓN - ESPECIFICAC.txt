@@ -1,0 +1,1013 @@
+📤 MÓDULO EXPORTACIÓN - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO EXPORTACIÓN?
+El Módulo Exportación es el puente técnico crítico entre la inteligencia comercial de Silexar Pulse y los sistemas de automatización de emisión. Funciona como el traductor universal que convierte la programación comercial optimizada por IA en archivos técnicos compatibles con cualquier sistema de playout del mercado, garantizando compatibilidad perfecta, cero errores y máxima eficiencia operativa.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Programador de Tráfico, este módulo es mi salvavidas técnico:
+
+Exporto archivos para múltiples emisoras con un solo click
+El sistema valida automáticamente que todo está correcto antes de exportar
+Recibo alertas si hay problemas con archivos de audio o metadatos
+Cortex-Export optimiza automáticamente el formato según el sistema destino
+Monitoreo en tiempo real del estado de exportación y consumo por sistemas
+
+Como Jefe Técnico, superviso desde el dashboard estratégico:
+
+Veo el estado de exportación de todas las emisoras en tiempo real
+Recibo alertas predictivas de problemas técnicos antes de que ocurran
+Monitoreo la salud de integración con todos los sistemas de playout
+Analytics de performance y confiabilidad de exportaciones
+Gestión centralizada de configuraciones técnicas por sistema
+
+Como Director de Operaciones, tengo visibilidad total:
+
+Compliance automático con especificaciones técnicas de cada sistema
+Auditoría completa de every export con trazabilidad inmutable
+Métricas de uptime y confiabilidad de procesos críticos
+Optimización continua de tiempos y recursos técnicos
+
+INTEGRACIÓN ECOSYSTEM SILEXAR:
+
+Módulo Configuración: Hereda configuraciones de emisoras y rutas de exportación
+Módulo Contratos: Recibe órdenes de pauta aprobadas automáticamente
+Módulo Cuñas: Valida existencia y disponibilidad de archivos de audio
+Módulo Vencimientos: Sincroniza programación y exclusividades en tiempo real
+Cortex-Export: IA que optimiza formatos y detecta problemas técnicos
+Cortex-Monitor: Seguimiento inteligente de consumo por sistemas externos
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/exportacion/
+├── domain/
+│   ├── entities/
+│   │   ├── ExportacionJob.ts (Trabajo de exportación principal)
+│   │   ├── ArchivoExportado.ts (Archivo generado con metadatos)
+│   │   ├── ConfiguracionFormato.ts (Formato por sistema de playout)
+│   │   ├── ValidacionTecnica.ts (Validaciones pre-exportación)
+│   │   ├── MonitoreoExportacion.ts (Seguimiento post-exportación)
+│   │   ├── LogAuditoria.ts (Auditoría inmutable de exportaciones)
+│   │   ├── AlertaTecnica.ts (Sistema de alertas operativas)
+│   │   ├── ProgramacionCompleta.ts (Pauta consolidada por emisora)
+│   │   ├── IntegracionSistema.ts (Conexión con sistemas externos)
+│   │   └── MetricasPerformance.ts (Analytics de exportación)
+│   ├── value-objects/
+│   │   ├── NumeroSP.ts (Identificador único de cuña SPxxxxxx)
+│   │   ├── FormatoArchivo.ts (ASC, XML, CSV, etc.)
+│   │   ├── RutaDestino.ts (Path validado de exportación)
+│   │   ├── TiempoExportacion.ts (Timestamp con timezone)
+│   │   ├── EstadoExportacion.ts (Estados del workflow)
+│   │   ├── ValidacionIntegridad.ts (Checksums y validaciones)
+│   │   ├── ConfiguracionPlayout.ts (Settings por sistema)
+│   │   └── MetricasTecnicas.ts (Performance y confiabilidad)
+│   └── repositories/
+│       ├── IExportacionRepository.ts
+│       ├── IArchivoRepository.ts
+│       ├── IConfiguracionRepository.ts
+│       ├── IValidacionRepository.ts
+│       └── IMonitoreoRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── IniciarExportacionCommand.ts
+│   │   ├── ValidarPreExportacionCommand.ts
+│   │   ├── GenerarArchivoCommand.ts
+│   │   ├── EntregarArchivoCommand.ts
+│   │   ├── ConfigurarFormatoCommand.ts
+│   │   ├── MonitorearEntregaCommand.ts
+│   │   ├── ReintentarExportacionCommand.ts
+│   │   ├── OptimizarFormatoCommand.ts
+│   │   └── GenerarReporteCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerExportacionesPendientesQuery.ts
+│   │   ├── ValidarDisponibilidadArchivosQuery.ts
+│   │   ├── ObtenerHistorialExportacionesQuery.ts
+│   │   ├── GenerarPreviewExportacionQuery.ts
+│   │   ├── ObtenerMetricasExportacionQuery.ts
+│   │   ├── ValidarIntegridadSistemaQuery.ts
+│   │   ├── ObtenerConfiguracionesQuery.ts
+│   │   └── Analizar​PerformanceQuery.ts
+│   └── handlers/
+│       ├── ExportacionCommandHandler.ts
+│       ├── ValidacionTecnicaHandler.ts
+│       ├── GeneracionArchivoHandler.ts
+│       ├── IntegracionSistemasHandler.ts
+│       ├── MonitoreoAutomaticoHandler.ts
+│       ├── OptimizacionFormatoHandler.ts
+│       └── AnalyticsExportacionHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaExportacionRepository.ts
+│   │   ├── PrismaArchivoRepository.ts
+│   │   └── PrismaConfiguracionRepository.ts
+│   ├── external/
+│   │   ├── DaletGalaxyIntegrationService.ts (Dalet Galaxy)
+│   │   ├── WideOrbitIntegrationService.ts (WideOrbit)
+│   │   ├── SaraAutomationService.ts (Sara Automation)
+│   │   ├── RCSZettaService.ts (RCS Zetta)
+│   │   ├── MarketronService.ts (Marketron)
+│   │   ├── NexGenDigitalService.ts (NexGen)
+│   │   ├── RadioTrafficService.ts (RadioTraffic LATAM)
+│   │   ├── FileSystemSecureService.ts (Manejo seguro archivos)
+│   │   ├── NetworkTransferService.ts (FTP/SFTP/SMB)
+│   │   ├── AudioValidationService.ts (Validación archivos WAV/MP3)
+│   │   ├── CortexExportService.ts (IA optimización)
+│   │   ├── BackupArchiveService.ts (Respaldo automático)
+│   │   └── ComplianceValidationService.ts (Validación normativas)
+│   └── messaging/
+│       ├── ExportacionEventPublisher.ts
+│       ├── AlertaTecnicaPublisher.ts
+│       └── MonitoreoSystemPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── ExportacionController.ts
+    │   ├── ConfiguracionController.ts
+    │   ├── MonitoreoController.ts
+    │   ├── ValidacionController.ts
+    │   ├── ReporteController.ts
+    │   └── MobileExportController.ts
+    ├── dto/
+    │   ├── IniciarExportacionDto.ts
+    │   ├── ConfigurarFormatoDto.ts
+    │   ├── ValidarExportacionDto.ts
+    │   └── GenerarReporteDto.ts
+    └── middleware/
+        ├── ExportacionAuthMiddleware.ts
+        ├── TechnicalValidationMiddleware.ts
+        └── AuditTrailMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE COMANDO DE EXPORTACIÓN
+DASHBOARD OPERATIVO CON MONITOREO EN TIEMPO REAL:
+Header de comando técnico:
+
+Título: "📤 Centro de Comando de Exportación"
+Breadcrumb: "Dashboard > Exportación"
+
+Panel de estado global tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔄 ESTADO OPERATIVO TIEMPO REAL                                │
+│                                                                 │
+│ 8 Emisoras Activas    47 Exportaciones Hoy    99.97% Uptime   │
+│ 156 Archivos Generados    2.3TB Procesados    0 Errores       │
+│ 🎯 Próxima: Dalet Galaxy 14:30 (3 emisoras)                   │
+│ 🤖 Cortex detectó: Optimización de formato disponible +15%    │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO TÉCNICO AVANZADO:
+Búsqueda técnica inteligente:
+
+Placeholder: "🔍 'dalet galaxy', 'emisoras pendientes', 'errores hoy', 'exportaciones 14:30'..."
+IA Contextual: Reconoce patrones técnicos específicos
+Sugerencias predictivas:
+
+"Exportaciones programadas próximas 2 horas"
+"Emisoras con problemas técnicos"
+"Archivos fallidos última semana"
+"Sistemas de playout offline"
+
+
+
+Filtros técnicos operativos:
+Sistema de Playout:
+
+🎛️ Dalet Galaxy (v3.2, v4.1, v5.0)
+📡 WideOrbit (AFR, WO Traffic)
+🎵 Sara Automation Suite
+📻 RCS Zetta/GSelector
+💾 Marketron Traffic
+🔊 NexGen Digital
+🌎 RadioTraffic LATAM
+
+Estado Técnico:
+
+🟢 Completado Exitosamente
+🟡 En Proceso de Exportación
+🔄 Pendiente de Programación
+⚠️ Con Advertencias Menores
+🔴 Error Requiere Atención
+📋 Programado Futuro
+
+Tipo de Exportación:
+
+⚡ Manual (Ejecutado por usuario)
+🤖 Automático (Programado)
+🔄 Re-exportación (Por corrección)
+📱 Móvil (Desde dispositivo móvil)
+🚨 Emergencia (Fuera de horario)
+
+Centro de acciones técnicas:
+
+"⚡ Exportar Ahora" (Wizard de exportación inmediata)
+"📅 Programar Exportación" (Scheduler avanzado)
+"🔍 Monitor de Sistemas" (Estado de sistemas de playout)
+"⚙️ Configurar Formatos" (Plantillas por sistema)
+"📊 Analytics Técnicos" (Métricas de performance)
+
+TABLA DE EXPORTACIONES - MONITOREO OPERATIVO:
+1. Columna "Estado/Sistema" (140px):
+┌─────────────────┐
+│ 🟢 EXP-2025-347 │
+│ 🎛️ Dalet Galaxy │
+│ ⏰ 14:30 Prog   │
+│ 📡 3 Emisoras   │
+└─────────────────┘
+
+Estado: Código de color y ID único
+Sistema: Icono + nombre del playout
+Timing: Hora programada/ejecutada
+Scope: Cantidad de emisoras
+
+2. Columna "Emisoras/Configuración" (200px):
+┌─────────────────────────────────┐
+│ 📻 Radio Corazón FM ✅          │
+│ 📻 FM Dos ✅                    │
+│ 📻 La Clave ⚠️ (Sin material)  │
+│ 🎯 Formato: ASC v3.2            │
+└─────────────────────────────────┘
+
+Emisoras: Lista con estado individual
+Validaciones: Checkmarks por emisora
+Formato: Versión específica del formato
+Alertas: Problemas detectados automáticamente
+
+3. Columna "Fechas/Horarios" (130px):
+┌─────────────────┐
+│ 📅 08 Ago 2025  │
+│ ⏰ 06:00-23:59  │
+│ 🔄 Iniciado:    │
+│    14:28:45     │
+└─────────────────┘
+
+Fecha: Día de la programación exportada
+Rango: Horarios incluidos en exportación
+Timestamp: Hora exacta de inicio proceso
+
+4. Columna "Archivos/Datos" (150px):
+┌─────────────────┐
+│ 📁 247 Cuñas    │
+│ 💾 2.3 MB       │
+│ 🎵 156 únicos   │
+│ ✅ 100% válidos │
+└─────────────────┘
+
+Cantidad: Total de spots exportados
+Tamaño: Peso del archivo generado
+Únicos: Cuñas diferentes (sin repetir)
+Validación: Porcentaje de archivos válidos
+
+5. Columna "Performance/Calidad" (120px):
+┌─────────────────┐
+│ ⚡ 12.3 seg     │
+│ 🎯 100% Éxito   │
+│ 🔄 0 Reintentos │
+│ 📊 A+ Calidad   │
+└─────────────────┘
+
+Velocidad: Tiempo total de procesamiento
+Tasa éxito: Porcentaje completado exitosamente
+Reintentos: Cantidad de re-intentos necesarios
+Score: Calificación automática de calidad
+
+6. Columna "Acciones Técnicas" (160px):
+┌─────────────────┐
+│ [👁️] [📁] [🔄] │
+│ [📊] [⚙️] [📋] │
+│ [🚨] [📱] [🔍] │
+└─────────────────┘
+
+👁️ Ver: Detalle completo con logs técnicos
+📁 Archivo: Descargar/ver archivo generado
+🔄 Re-exportar: Proceso nuevamente con validaciones
+📊 Métricas: Analytics de esta exportación específica
+⚙️ Configurar: Ajustar parámetros técnicos
+📋 Log: Historial completo con timestamps
+🚨 Alertar: Notificar problemas técnicos
+📱 Móvil: Enviar a dispositivo móvil
+🔍 Validar: Verificación completa de integridad
+
+➕ WIZARD DE EXPORTACIÓN INTELIGENTE - TIER 0
+INICIO CON DETECCIÓN AUTOMÁTICA DE CONTEXTO:
+Reconocimiento inteligente del flujo de trabajo:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿CÓMO DESEAS INICIAR LA EXPORTACIÓN? │
+│                                         │
+│ [⚡] Exportación Inmediata              │
+│      Para uso ahora mismo               │
+│      ✅ Validación completa automática  │
+│                                         │
+│ [📅] Programar Exportación              │
+│      Scheduler avanzado con IA          │
+│      🤖 Optimización automática timing  │
+│                                         │
+│ [🔄] Re-exportar Existente              │
+│      Corregir exportación previa        │
+│      📋 Hereda configuración anterior   │
+│                                         │
+│ [📱] Exportación Express Móvil          │
+│      Proceso simplificado               │
+│      ⚡ Para emergencias en terreno     │
+│                                         │
+│ [🔧] Configuración Avanzada             │
+│      Control técnico completo           │
+│      ⚙️ Para casos especiales           │
+└─────────────────────────────────────────┘
+PASO 1: "SELECCIÓN DE EMISORAS" - INTELIGENCIA OPERATIVA
+Selector avanzado con grupos inteligentes:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📻 SELECCIÓN INTELIGENTE DE EMISORAS                            │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 SELECCIÓN RÁPIDA:                                           │
+│                                                                 │
+│ [🌟] Todas las Emisoras (8) ✅                                 │
+│ [🏢] Grupo MegaMedia (3) ☑️                                    │
+│ [📻] Solo FM (5) ⚪                                            │
+│ [📡] Solo AM (2) ⚪                                            │
+│ [🔥] Con Pauta Pendiente (6) ⚪                                │
+│                                                                 │
+│ 📊 EMISORAS INDIVIDUALES:                                      │
+│                                                                 │
+│ ✅ Radio Corazón FM 101.5                                      │
+│    🟢 Online • 47 cuñas programadas • Dalet v3.2              │
+│    ✅ Material completo • 🎯 Listo para exportar               │
+│                                                                 │
+│ ✅ FM Dos 99.1                                                 │
+│    🟢 Online • 23 cuñas programadas • WideOrbit AFR            │
+│    ✅ Material completo • 🎯 Listo para exportar               │
+│                                                                 │
+│ ⚠️ La Clave 95.9                                               │
+│    🟡 Online • 31 cuñas programadas • Sara Automation          │
+│    ⚠️ 3 archivos faltantes • ❌ Requiere validación            │
+│                                                                 │
+│ 🤖 RECOMENDACIÓN CORTEX:                                       │
+│ "Exportar Radio Corazón y FM Dos ahora (100% listas)"         │
+│ "La Clave requiere 15 min adicionales para material faltante"  │
+│                                                                 │
+│ [✅ Aplicar Selección] [🔍 Validar Todo] [⚙️ Configurar]       │
+└─────────────────────────────────────────────────────────────────┘
+Validaciones automáticas tiempo real:
+
+Estado de conexión: Verifica que sistemas de playout están online
+Material disponible: Valida existencia de archivos WAV/MP3
+Integridad de datos: Checksum y validación de metadatos
+Capacidad de disco: Confirma espacio suficiente en destino
+Permisos de escritura: Valida acceso a carpetas de destino
+
+PASO 2: "CONFIGURACIÓN TEMPORAL" - PRECISIÓN ABSOLUTA
+Selector de fechas y horarios inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📅 CONFIGURACIÓN TEMPORAL AVANZADA                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 🗓️ FECHAS DE EXPORTACIÓN:                                      │
+│                                                                 │
+│ Fecha Inicio: [08/08/2025 ▼] [📅]                              │
+│ Fecha Fin:    [08/08/2025 ▼] [📅]                              │
+│                                                                 │
+│ ⚡ SELECCIÓN RÁPIDA:                                            │
+│ [📅 Hoy] [📅 Mañana] [📅 Esta Semana] [📅 Próximos 7 días]    │
+│                                                                 │
+│ ⏰ RANGO HORARIO:                                               │
+│                                                                 │
+│ Hora Inicio: [00:00:00 ▼] Hora Fin: [23:59:59 ▼]              │
+│                                                                 │
+│ 🎯 PRESETS OPERATIVOS:                                         │
+│ [🌅 Mañana] [☀️ Diurno] [🌆 Tarde] [🌙 Noche] [⭐ 24 Horas]   │
+│                                                                 │
+│ 📊 VISTA PREVIA DE CONTENIDO:                                  │
+│                                                                 │
+│ Con estos parámetros se exportarán:                            │
+│ • Radio Corazón: 47 cuñas (08:00-22:00)                       │
+│ • FM Dos: 23 cuñas (06:00-24:00)                              │
+│ • Total estimado: 247 spots únicos                             │
+│ • Tamaño aproximado: 2.3 MB                                    │
+│ • Tiempo generación: ~12 segundos                              │
+│                                                                 │
+│ 🤖 OPTIMIZACIÓN CORTEX:                                        │
+│ "Detectada programación especial 20:00-22:00"                  │
+│ "Sugerencia: Incluir spots de relleno automático"              │
+│                                                                 │
+│ [📊 Preview Completo] [⚡ Validar Rango] [➡️ Continuar]        │
+└─────────────────────────────────────────────────────────────────┘
+PASO 3: "FORMATO Y SISTEMA DESTINO" - COMPATIBILIDAD TOTAL
+Configuración automática por sistema:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎛️ CONFIGURACIÓN DE FORMATO AVANZADA                           │
+├─────────────────────────────────────────────────────────────────┤
+│ 📡 SISTEMA DE PLAYOUT DESTINO:                                 │
+│                                                                 │
+│ Radio Corazón FM: [Dalet Galaxy v3.2 ▼] ✅ Configurado        │
+│ FM Dos:          [WideOrbit AFR v6.1 ▼] ✅ Configurado         │
+│                                                                 │
+│ 📄 FORMATO DE ARCHIVO:                                         │
+│                                                                 │
+│ ● ASC (Dalet Standard)     ⚪ XML (WideOrbit)                  │
+│ ⚪ CSV (Custom)            ⚪ TXT (Generic)                     │
+│                                                                 │
+│ ⚙️ CONFIGURACIÓN ESPECÍFICA ASC:                               │
+│                                                                 │
+│ Estructura de línea:                                           │
+│ [SP######] [HH:MM:SS] [DESCRIPCIÓN 40 chars] [ANUNCIANTE 40]  │
+│ [DURACIÓN] [ARCHIVO.WAV] [PADDING]                             │
+│                                                                 │
+│ Configuraciones avanzadas:                                     │
+│ ☑️ Incluir timestamp de creación                               │
+│ ☑️ Validar longitud de caracteres                              │
+│ ☑️ Rellenar con espacios (padding)                             │
+│ ☑️ Codificación: UTF-8 con BOM                                │
+│ ☑️ Terminador de línea: CRLF (Windows)                        │
+│                                                                 │
+│ 📁 RUTAS DE DESTINO:                                           │
+│                                                                 │
+│ Radio Corazón: \\SERVER\Dalet\Import\Daily\                   │
+│ FM Dos:        \\TRAFFIC\WO\AutoImport\                        │
+│                                                                 │
+│ 🔒 VALIDACIÓN DE CONECTIVIDAD:                                 │
+│ ✅ Ruta accesible  ✅ Permisos escritura  ✅ Espacio suficiente │
+│                                                                 │
+│ [🧪 Test Formato] [📁 Cambiar Ruta] [➡️ Continuar]            │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "VALIDACIÓN PRE-EXPORTACIÓN" - GARANTÍA DE ÉXITO
+Sistema de validaciones exhaustivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ VALIDACIÓN INTEGRAL PRE-EXPORTACIÓN                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 CORTEX-EXPORT EJECUTANDO VALIDACIONES...                    │
+│ ████████████████████████████████████████████████░░░ 95%        │
+│                                                                 │
+│ ✅ VALIDACIONES COMPLETADAS:                                    │
+│                                                                 │
+│ 📊 Datos de Programación:                                      │
+│ ✅ 247 spots encontrados para el rango seleccionado            │
+│ ✅ Todos los horarios tienen asignación correcta               │
+│ ✅ No hay duplicados o conflictos detectados                   │
+│ ✅ Secuenciación horaria es coherente                          │
+│                                                                 │
+│ 🎵 Archivos de Audio:                                          │
+│ ✅ 156 archivos únicos validados                               │
+│ ✅ Todos los formatos son compatibles (WAV/MP3)               │
+│ ✅ Calidad de audio verificada (44.1kHz/16bit min)            │
+│ ✅ Duraciones coinciden con metadatos                          │
+│                                                                 │
+│ 🎛️ Sistemas de Destino:                                       │
+│ ✅ Dalet Galaxy v3.2: Online y disponible                     │
+│ ✅ WideOrbit AFR: Conectado y operativo                       │
+│ ✅ Carpetas de destino: Accesibles con permisos               │
+│ ✅ Espacio en disco: 500MB disponibles (req: 2.3MB)           │
+│                                                                 │
+│ ⚠️ ADVERTENCIAS (No bloquean exportación):                     │
+│ • 3 cuñas tienen duración >60 segundos (poco común)            │
+│ • 1 anunciante tiene caracteres especiales en nombre           │
+│                                                                 │
+│ 🤖 OPTIMIZACIONES DISPONIBLES:                                 │
+│ • Cortex puede optimizar orden para mejor performance          │
+│ • Compresión de archivo disponible (reduce 15% tamaño)         │
+│ • Backup automático en cloud disponible                        │
+│                                                                 │
+│ 📊 ESTIMACIONES FINALES:                                       │
+│ • Tiempo de generación: 12-15 segundos                         │
+│ • Tiempo de transferencia: 3-5 segundos                        │
+│ • Probabilidad de éxito: 99.8%                                 │
+│                                                                 │
+│ [🚀 Iniciar Exportación] [⚙️ Aplicar Optimizaciones] [🔙 Ajustar] │
+└─────────────────────────────────────────────────────────────────┘
+PASO 5: "EJECUCIÓN Y MONITOREO" - TIEMPO REAL
+Monitor de ejecución en vivo:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚀 EXPORTACIÓN EN PROCESO - TIEMPO REAL                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 PROGRESO GENERAL:                                           │
+│ ████████████████████████████████████░░░░░ 89%                  │
+│                                                                 │
+│ ⚡ FASE ACTUAL: Generando archivo Radio Corazón                │
+│                                                                 │
+│ 📻 ESTADO POR EMISORA:                                         │
+│                                                                 │
+│ ✅ Radio Corazón FM:                                           │
+│    ████████████████████████████████████████ 100%               │
+│    📁 Archivo generado: RC_20250808.ASC (1.2MB)               │
+│    ⏰ Completado en: 8.3 segundos                              │
+│                                                                 │
+│ 🔄 FM Dos:                                                     │
+│    ███████████████████████████████████░░░░░ 89%                │
+│    📝 Procesando línea 234/247                                 │
+│    ⏱️ ETA: 4 segundos restantes                                │
+│                                                                 │
+│ 📊 MÉTRICAS EN TIEMPO REAL:                                    │
+│ • Velocidad: 23.4 líneas/segundo                               │
+│ • Errores: 0 detectados                                        │
+│ • Memoria usada: 45MB                                          │
+│ • CPU: 12% utilización                                         │
+│                                                                 │
+│ 🔄 ÚLTIMAS ACCIONES:                                           │
+│ 14:29:45 - Iniciando validación final                          │
+│ 14:29:43 - Escribiendo archivo FM_20250808.ASC                │
+│ 14:29:40 - Validando integridad de datos                       │
+│ 14:29:38 - Generando estructura ASC                            │
+│                                                                 │
+│ [⏸️ Pausar] [❌ Cancelar] [📊 Ver Detalles] [📱 Notificar]     │
+└─────────────────────────────────────────────────────────────────┘
+📊 DASHBOARD DE MONITOREO - CENTRO DE CONTROL OPERATIVO
+VISTA PRINCIPAL DE MONITOREO:
+Panel de estado global:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📈 CENTRO DE MONITOREO OPERATIVO                                │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 MÉTRICAS CRÍTICAS (Últimas 24h):                            │
+│                                                                 │
+│ 📤 47 Exportaciones Ejecutadas     ✅ 46 Exitosas (97.9%)      │
+│ ⏱️ Tiempo Promedio: 14.2 seg       🔄 1 Re-intentada           │
+│ 💾 2.8TB Datos Procesados          📁 847 Archivos Generados   │
+│ 🎛️ 8 Sistemas Conectados           🟢 100% Uptime Sistemas     │
+│                                                                 │
+│ 🚨 ALERTAS OPERATIVAS:                                         │
+│ • 0 Críticas  • 2 Advertencias  • 5 Informativas              │
+│                                                                 │
+│ 📊 TENDENCIAS:                                                 │
+│ • Performance: ↗️ +15% vs semana anterior                      │
+│ • Confiabilidad: 📈 99.8% (meta: 99.5%)                       │
+│ • Satisfacción: 🏆 4.9/5.0 rating usuarios                    │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Analytics] [🔧 Configurar] [📱 Móvil] [🚨 Alertas]         │
+└─────────────────────────────────────────────────────────────────┘
+MONITOREO POR SISTEMA DE PLAYOUT:
+Estados de sistemas integrados:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎛️ ESTADO DE SISTEMAS DE PLAYOUT                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🟢 DALET GALAXY v3.2 (3 emisoras):                            │
+│    Last sync: 14:28:45  •  Latencia: 12ms  •  Uptime: 99.97%  │
+│    📁 Última exportación: 47 archivos procesados exitosamente  │
+│    [📊 Detalles] [🔧 Configurar] [🔄 Test Conexión]            │
+│                                                                 │
+│ 🟢 WIDEORBIT AFR v6.1 (2 emisoras):                           │
+│    Last sync: 14:25:12  •  Latencia: 8ms   •  Uptime: 100%    │
+│    📁 Auto-import: Activo  •  Queue: 0 archivos pendientes    │
+│    [📊 Detalles] [🔧 Configurar] [🔄 Test Conexión]            │
+│                                                                 │
+│ 🟡 SARA AUTOMATION (2 emisoras):                               │
+│    Last sync: 14:20:33  •  Latencia: 45ms  •  Uptime: 98.2%   │
+│    ⚠️ Conexión lenta detectada - optimizando automáticamente    │
+│    [📊 Detalles] [🔧 Configurar] [🔄 Test Conexión]            │
+│                                                                 │
+│ 🔴 RCS ZETTA (1 emisora):                                      │
+│    Last sync: 13:45:22  •  Status: Offline  •  Error: Timeout │
+│    🚨 Requiere atención técnica inmediata                      │
+│    [🚨 Diagnosticar] [🔧 Reconfigurar] [📞 Soporte]            │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔄 Refresh All] [⚙️ Config Global] [📊 Report] [🚨 Alert Manager] │
+└─────────────────────────────────────────────────────────────────┘
+ANALYTICS DE PERFORMANCE:
+Métricas detalladas de rendimiento:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANALYTICS DE PERFORMANCE AVANZADOS                           │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 PERFORMANCE POR SISTEMA (Últimos 7 días):                   │
+│                                                                 │
+│ Dalet Galaxy:    ████████████████████████ 97.8% éxito          │
+│ WideOrbit:       ██████████████████████████ 100% éxito         │
+│ Sara Automation: ███████████████████████░░ 94.2% éxito         │
+│ RCS Zetta:       ████████████████░░░░░░░░░ 67.3% éxito         │
+│                                                                 │
+│ ⏱️ TIEMPOS DE PROCESAMIENTO:                                   │
+│ • Promedio general: 14.2 segundos                              │
+│ • Más rápido: WideOrbit (8.3 seg)                             │
+│ • Más lento: Sara Automation (28.7 seg)                        │
+│                                                                 │
+│ 📁 VOLÚMENES DE DATOS:                                         │
+│ • Total procesado: 2.8TB                                       │
+│ • Archivo promedio: 2.1MB                                      │
+│ • Pico diario: 847 archivos (Lunes)                           │
+│                                                                 │
+│ 🎯 QUALITY SCORE POR EMISORA:                                  │
+│ Radio Corazón: A+ (99.8%)    FM Dos: A+ (99.9%)              │
+│ La Clave: B+ (92.1%)         Rock FM: A- (96.7%)             │
+│                                                                 │
+│ 💡 CORTEX INSIGHTS:                                            │
+│ • Optimización detectada: Cambiar orden de procesamiento       │
+│ • Potencial mejora: +18% velocidad con nueva configuración     │
+│ • Recomendación: Upgrade Sara Automation a versión 4.2        │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Report Completo] [💡 Optimizar] [📧 Enviar] [⚙️ Configurar] │
+└─────────────────────────────────────────────────────────────────┘
+⚙️ CONFIGURACIÓN AVANZADA DE FORMATOS
+EDITOR VISUAL DE FORMATOS:
+Constructor de plantillas drag-and-drop:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎨 EDITOR VISUAL DE FORMATOS TIER 0                            │
+├─────────────────────────────────────────────────────────────────┤
+│ 📄 PLANTILLA: ASC Dalet Galaxy v3.2                           │
+│                                                                 │
+│ 🧩 CAMPOS DISPONIBLES:                  📋 ESTRUCTURA ACTUAL:   │
+│                                                                 │
+│ 📊 [Número SP]                          SP062255 11:28:00 CANAL│
+│ 🕐 [Timestamp]                          13 TELETRECE 01       │
+│ 📝 [Descripción]                        CANAL 13 SPA          │
+│ 🏢 [Anunciante]                         21 SP062255.WAV       │
+│ ⏱️ [Duración]                                                  │
+│ 🎵 [Archivo Audio]                      ┌─────────────────┐    │
+│ 📏 [Espaciado]                          │ Drag campos aquí│    │
+│ 🔢 [Padding]                            │ para modificar  │    │
+│                                         │ la estructura   │    │
+│ 📐 CONFIGURACIÓN ACTUAL:                └─────────────────┘    │
+│ • Longitud línea: 80 caracteres                               │
+│ • Separador: Espacios                   🔧 VALIDACIONES:       │
+│ • Codificación: UTF-8                   ✅ Longitud correcta   │
+│ • EOL: CRLF (Windows)                   ✅ Caracteres válidos  │
+│                                         ✅ Formato coherente   │
+│ 🧪 VISTA PREVIA EN TIEMPO REAL:                               │
+│ SP062255 11:28:00 CANAL 13 TELETRECE 01    CANAL 13 SPA     21│
+│ SP062105 11:29:00 ELECTRICA ENEL LANDING   ENEL DIST CHILE  23│
+│                                                                 │
+│ [💾 Guardar] [🧪 Probar] [📋 Duplicar] [🔄 Restaurar Default] │
+└─────────────────────────────────────────────────────────────────┘
+CONFIGURACIÓN POR SISTEMA:
+Plantillas predefinidas optimizadas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📚 BIBLIOTECA DE PLANTILLAS TIER 0                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎛️ DALET GALAXY:                                              │
+│ ├─ ASC Standard v3.2 ✅ (Más usado)                            │
+│ ├─ ASC Extended v4.1 📊                                        │
+│ └─ Custom MegaMedia 🎯 (Personalizado)                         │
+│                                                                 │
+│ 📡 WIDEORBIT:                                                  │
+│ ├─ XML AFR Standard ✅                                         │
+│ ├─ TXT Simple Format 📝                                        │
+│ └─ WO Traffic Pro 💼                                           │
+│                                                                 │
+│ 🎵 SARA AUTOMATION:                                            │
+│ ├─ CSV Standard ✅                                             │
+│ ├─ TXT Delimited 📋                                            │
+│ └─ Sara XML v2.0 🆕                                            │
+│                                                                 │
+│ 📻 RCS ZETTA:                                                  │
+│ ├─ GSelector Import ✅                                         │
+│ ├─ Zetta Standard 🎛️                                          │
+│ └─ Custom Log Format 📊                                        │
+│                                                                 │
+│ 💾 OTROS SISTEMAS:                                             │
+│ ├─ Marketron Traffic 💼                                        │
+│ ├─ NexGen Digital 🔊                                           │
+│ ├─ RadioTraffic LATAM 🌎                                       │
+│ └─ Generic TXT/CSV 📄                                          │
+│                                                                 │
+│ [➕ Nueva Plantilla] [📋 Importar] [🔧 Configurar] [📤 Exportar]│
+└─────────────────────────────────────────────────────────────────┘
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-EXPORT - MOTOR DE OPTIMIZACIÓN:
+Workflows automáticos basados en IA:
+1. Exportación Programada Inteligente:
+Trigger: Cambio en programación aprobada
+↓
+Cortex analiza impacto de cambios
+↓  
+Determina emisoras afectadas automáticamente
+↓
+Programa exportación en horario óptimo
+↓
+Ejecuta validaciones pre-exportación
+↓
+Genera archivos y entrega a sistemas
+↓
+Monitorea consumo y confirma success
+↓
+Notifica resultados a equipo técnico
+2. Detección Predictiva de Problemas:
+Trigger: Análisis continuo de patrones
+↓
+IA detecta anomalías en performance
+↓
+Evalúa riesgo de fallos futuros
+↓
+Si riesgo >70%: Genera alerta preventiva
+↓
+Sugiere acciones correctivas automáticas
+↓
+Programa mantenimiento preventivo
+↓
+Notifica al equipo técnico con contexto
+3. Optimización Automática de Formatos:
+Trigger: Análisis semanal de performance
+↓
+Cortex evalúa eficiencia de formatos
+↓
+Identifica oportunidades de mejora
+↓
+Genera sugerencias de optimización
+↓
+Si mejora >15%: Propone implementación
+↓
+Testing automático en environment sandbox
+↓
+Deploy gradual con monitoreo intensivo
+SISTEMA DE ALERTAS PREDICTIVAS:
+Centro de alertas operativas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚨 CENTRO DE ALERTAS PREDICTIVAS TIEMPO REAL                   │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔥 CRÍTICAS (Acción inmediata):                                │
+│                                                                 │
+│ ⚠️ RCS ZETTA OFFLINE (La Clave FM):                           │
+│ • Último sync: Hace 45 minutos                                 │
+│ • Impact: Exportación 15:00 fallará                            │
+│ • 🎯 Acción: [🔧 Diagnosticar] [📞 Llamar Técnico]             │
+│                                                                 │
+│ 💾 ESPACIO DISCO CRÍTICO (Server DALET):                      │
+│ • Disponible: 2.1GB (req: 8GB para hoy)                       │
+│ • ETA: 3 horas hasta full                                      │
+│ • 🎯 Acción: [🗑️ Cleanup] [📞 Llamar Admin]                    │
+│                                                                 │
+│ 🟡 IMPORTANTES (Supervisar):                                   │
+│ • Sara Automation: Latencia alta (+300% vs normal)            │
+│ • Radio Corazón: 15 archivos de audio con warnings            │
+│ • FM Dos: Sistema programado para mantenimiento 18:00         │
+│                                                                 │
+│ 📊 PREDICTIVAS (Próximas 24h):                                │
+│ • Probable fallo WideOrbit mañana 08:00 (probabilidad 73%)    │
+│ • Pico de carga esperado viernes 14:00 (+250% volumen)        │
+│ • Mantenimiento programado Dalet sábado 02:00-06:00           │
+│                                                                 │
+│ 🤖 CORTEX RECOMMENDATIONS:                                     │
+│ • Activar modo de alta disponibilidad para fin de semana      │
+│ • Pre-cargar exportaciones viernes para evitar saturación     │
+│ • Configurar bypass temporal para RCS Zetta vía manual        │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔥 Resolver Críticas] [📊 Dashboard] [⚙️ Config] [📱 Notificar]│
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - TÉCNICOS EN TERRENO
+APP MÓVIL NATIVA ESPECIALIZADA:
+Interface móvil para soporte técnico:
+┌─────────────────────────────────────────┐
+│ 📤 EXPORTACIÓN MÓVIL TIER 0             │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Técnico                    │
+│ • 8 sistemas monitoreados               │
+│ • 2 alertas activas                     │
+│ • Última exportación: 14:28             │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🚨 Exportación Emergencia]             │
+│ [🔧 Diagnosticar Sistema]               │
+│ [📊 Ver Estado Global]                  │
+│ [🔄 Re-enviar Fallidos]                 │
+│                                         │
+│ 🚨 ALERTAS CRÍTICAS:                    │
+│ • RCS Zetta offline - La Clave          │
+│ • Disco lleno - Server Dalet            │
+│                                         │
+│ 🎛️ SISTEMAS RÁPIDOS:                   │
+│ 🟢 Dalet  🟢 WideOrbit  🟡 Sara        │
+│ 🔴 RCS    🟢 Marketron  🟢 NexGen      │
+├─────────────────────────────────────────┤
+│ [🏠] [📤] [🔧] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+Exportación Express desde móvil:
+Wizard simplificado para emergencias:
+
+Reconocimiento de voz: "Exportar Radio Corazón para mañana"
+One-touch export: Botones preconfigurados por emisora
+Geolocalización: Auto-detecta técnico y asigna prioridad
+Modo offline: Funciona sin conexión, sincroniza al reconectar
+Push notifications: Alertas críticas en tiempo real
+
+INTEGRACIÓN WHATSAPP BUSINESS:
+Procesamiento automático de solicitudes:
+Flujo automático:
+
+Técnico envía: "Exportar urgente Dalet Galaxy Radio Corazón"
+IA extrae: Sistema=Dalet, Emisora=Radio Corazón, Priority=Urgente
+Valida automáticamente disponibilidad y permisos
+Ejecuta exportación con prioridad alta
+Envía confirmación por WhatsApp con enlace de descarga
+Monitorea consumo y notifica success/failure
+
+Parser inteligente para mensajes técnicos:
+
+Extrae sistema, emisora, fechas automáticamente
+Reconoce prioridades: "urgente", "emergencia", "programado"
+Valida solicitudes contra permisos del usuario
+Sugiere correcciones si hay errores en solicitud
+
+🔐 SEGURIDAD TIER 0 - NIVEL PENTÁGONO
+SEGURIDAD DE ARCHIVOS CRÍTICOS:
+Protección de datos operativos:
+Encriptación cuántica-resistente:
+
+Archivos en tránsito: TLS 1.3 + algoritmos post-cuánticos
+Almacenamiento temporal: AES-256 + CRYSTALS-Kyber
+Transfer protocols: SFTP con autenticación PKI
+Integridad de datos: SHA-256 + digital signatures
+
+Zero-trust para exportaciones:
+
+Validación continua de cada request de exportación
+Behavioral analytics para detectar patrones anómalos
+Segregación de acceso por emisora y sistema
+Session recording para todas las exportaciones críticas
+
+AUDITORÍA INMUTABLE:
+Blockchain logging completo:
+Timestamp: 2025-08-08T14:29:45.123Z
+User: carlos.mendoza@megamedia.com
+Action: EXPORT_INITIATED
+Systems: [DaletGalaxy, WideOrbit] 
+Files: [RC_20250808.ASC, FM2_20250808.ASC]
+Checksum: SHA256:a1b2c3d4e5f6...
+Signature: RSA-PSS:9f8e7d6c5b4a...
+Status: SUCCESS
+Compliance automático:
+
+SOX compliance: Control de cambios con aprobaciones
+ISO 27001: Gestión de seguridad de información
+GDPR: Protección de datos y right to be forgotten
+Regulaciones locales: Cumplimiento normativas broadcasting
+
+CONTROLES DE ACCESO GRANULARES:
+Matriz de permisos por rol:
+Programador Junior:
+
+✅ Exportar solo emisoras asignadas
+✅ Formatos básicos (ASC, TXT)
+❌ Modificar configuraciones de formato
+❌ Exportaciones fuera de horario
+❌ Acceso a sistemas críticos
+
+Programador Senior:
+
+✅ Exportar todas las emisoras
+✅ Todos los formatos disponibles
+✅ Configurar formatos básicos
+✅ Exportaciones 24/7
+❌ Modificar integraciones críticas
+
+Jefe Técnico:
+
+✅ Acceso completo a exportaciones
+✅ Configurar plantillas y formatos
+✅ Diagnosticar problemas técnicos
+✅ Override de validaciones
+✅ Configurar integraciones
+
+Director de Operaciones:
+
+✅ Acceso total sin restricciones
+✅ Configurar políticas de seguridad
+✅ Auditoría y compliance
+✅ Gestión de usuarios técnicos
+✅ Configuración global de sistema
+
+🔗 INTEGRACIONES ECOSYSTEM SILEXAR
+SINCRONIZACIÓN BIDIRECCIONAL AVANZADA:
+Con Módulo Configuración:
+
+Configuraciones de emisoras: Sync automático de rutas y sistemas
+Plantillas de formato: Herencia automática de configuraciones
+Usuarios y permisos: Sincronización de roles técnicos
+Políticas de seguridad: Aplicación automática de controles
+
+Con Módulo Contratos:
+
+Órdenes aprobadas: Trigger automático de exportaciones
+Cambios de programación: Re-exportación automática
+Nuevos spots: Validación y actualización de archivos
+Cancelaciones: Removal automático de programación
+
+Con Módulo Cuñas:
+
+Validación de archivos: Verificación automática de existencia
+Metadatos de audio: Sincronización de duración y calidad
+Versionado: Detección automática de cambios
+Archivos faltantes: Alertas y gestión automática
+
+Con Módulo Vencimientos:
+
+Programación actualizada: Sincronización en tiempo real
+Exclusividades: Validación automática de conflictos
+Horarios especiales: Adaptación automática de exportaciones
+Cambios de última hora: Re-exportación inteligente
+
+🎯 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-PREDICT - MANTENIMIENTO PREDICTIVO:
+IA que predice fallas antes de que ocurran:
+
+Análisis de patrones históricos de fallos por sistema
+Correlación entre performance y probabilidad de error
+Predicción de ventanas de mantenimiento óptimas
+Alertas preventivas con acciones recomendadas
+
+2. UNIVERSAL FORMAT TRANSLATOR:
+Traductor automático entre formatos:
+
+Conversión automática ASC ↔ XML ↔ CSV ↔ TXT
+Preservación de metadatos críticos
+Optimización específica por sistema destino
+Validación cruzada de integridad de datos
+
+3. SMART FILE DELIVERY:
+Sistema inteligente de entrega:
+
+Routing automático por tipo de sistema y ubicación
+Retry inteligente con backoff exponencial
+Delivery confirmation con proof of receipt
+Alternative delivery methods en caso de falla
+
+4. REAL-TIME CONSUMPTION MONITOR:
+Monitor de consumo en tiempo real:
+
+Tracking de cuando sistemas leen archivos exportados
+Alertas si archivos no son consumidos
+Analytics de timing óptimo de entrega
+Correlación entre entrega y emisión real
+
+🚀 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+1. AI-Powered Format Evolution:
+
+IA que evoluciona formatos automáticamente
+Adaptación a nuevas versiones de sistemas
+Optimización continua basada en performance
+Backward compatibility automática
+
+2. Blockchain File Verification:
+
+Verificación inmutable de integridad de archivos
+Proof of delivery criptográfico
+Audit trail distribuido
+Smart contracts para SLA enforcement
+
+3. Edge Computing Distribution:
+
+Procesamiento distribuido en edge nodes
+Latencia ultra-baja para exportaciones críticas
+Redundancia automática geográfica
+Intelligent load balancing
+
+Visión 2030:
+El Módulo Exportación evolucionará hacia un "Universal Broadcasting Bridge" que:
+
+Traduce automáticamente entre cualquier formato del mercado
+Predice y previene problemas antes de que impacten operaciones
+Optimiza continuously performance basado en ML global
+Proporciona garantías criptográficas de integridad y entrega
+
+🎯 CONCLUSIÓN: EL PUENTE TÉCNICO MÁS AVANZADO DEL MUNDO
+PARA EL PROGRAMADOR DE TRÁFICO:
+Simplicidad operativa extrema:
+
+Un solo click exporta a múltiples sistemas simultáneamente
+Validaciones automáticas eliminan 100% de errores manuales
+Formato correcto garantizado para cada sistema destino
+Monitoreo en tiempo real de todo el proceso
+Alertas predictivas evitan problemas antes de que ocurran
+
+PARA EL JEFE TÉCNICO:
+Control total sin complejidad:
+
+Visibilidad completa de todos los sistemas en un dashboard
+Configuración visual de formatos sin conocimiento técnico profundo
+Automatización inteligente de 95% de tareas repetitivas
+Analytics predictivos para optimización continua
+Compliance automático con todas las regulaciones técnicas
+
+PARA LA ORGANIZACIÓN:
+Confiabilidad empresarial:
+
+99.97% uptime garantizado con redundancia automática
+Cero pérdida de archivos con backup y recovery automático
+Escalabilidad infinita sin degradación de performance
+Integración nativa con cualquier sistema del mercado
+ROI inmediato por eliminación de errores y tiempo manual
+
+DIFERENCIADORES ÚNICOS IRREPETIBLES:
+
+Universal Compatibility: Funciona con cualquier sistema de playout existente o futuro
+Predictive Intelligence: IA que previene problemas antes de que impacten
+Zero-Error Guarantee: Validaciones exhaustivas eliminan completamente errores
+Real-Time Everything: Monitoreo, alertas y optimización en tiempo real
+Military-Grade Security: Seguridad cuántica-resistente con auditoría inmutable
+Self-Healing Architecture: Sistema se repara y optimiza automáticamente
+Intuitive Complexity: Funcionalidad avanzada con interfaz simple
+
+El Módulo Exportación TIER 0 no es solo un generador de archivos: es el puente inteligente que garantiza que la programación comercial perfecta de Silexar Pulse llegue sin errores y en el formato exacto a cada sistema de playout, eliminando completamente la fricción técnica y maximizando la confiabilidad operativa las 24 horas del día, 365 días del año.
+💾 ESPECIFICACIONES TÉCNICAS CRÍTICAS
+Arquitectura de Alta Disponibilidad:
+Microservicios especializados:
+
+Export Engine Service: Procesamiento principal con auto-scaling
+Format Translation Service: Conversión inteligente de formatos
+File Delivery Service: Entrega confiable con retry automático
+Validation Service: Validaciones exhaustivas pre y post exportación
+Monitor Service: Seguimiento tiempo real con alertas predictivas
+Config Service: Gestión centralizada de configuraciones técnicas
+
+Optimizaciones de performance:
+
+Processing paralelo: Multiple exports simultáneos sin interferencia
+Caching inteligente: Formatos frecuentes pre-procesados
+Compression on-the-fly: Reducción automática de tamaño sin pérdida
+Network optimization: Routing inteligente según latencia y disponibilidad
+Resource pooling: Gestión eficiente de CPU, memoria y disco
+
+Monitoreo y observabilidad:
+
+Real-time metrics: Latencia, throughput, error rates por sistema
+Health checks: Validation continua de todos los sistemas integrados
+Performance baselines: Learning automático de patrones normales
+Anomaly detection: Identificación automática de comportamientos extraños
+Predictive alerting: Notificaciones antes de que problemas impacten operaciones
+
+El sistema está diseñado para ser el estándar de la industria durante la próxima década, proporcionando la base técnica confiable que permite que el resto del ecosistema Silexar Pulse opere con la confianza de que la exportación de archivos nunca será un punto de falla.

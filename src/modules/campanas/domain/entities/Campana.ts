@@ -11,12 +11,15 @@ import { PresupuestoCampana, type PresupuestoData } from '../value-objects/Presu
 export type TipoCampana = 'REPARTIDO' | 'REPARTIDO_DETERMINADO' | 'PRIME' | 'PRIME_DETERMINADO' |
   'MENCION' | 'AUSPICIO' | 'NOCHE' | 'MICRO' | 'SENAL_HORARIA' | 'SENAL_TEMPERATURA' | 'CUSTOM';
 
+export type MedioCampana = 'fm' | 'digital' | 'hibrido';
+
 export interface CampanaProps {
   id: string;
   tenantId: string;
   numeroCampana: string;
   nombre: string;
   tipo: TipoCampana;
+  medio: MedioCampana;
   estado: EstadoCampanaValue;
   anuncianteId: string;
   contratoId?: string;
@@ -44,6 +47,7 @@ export class Campana {
   private readonly _numero: NumeroCampana;
   private _nombre: string;
   private _tipo: TipoCampana;
+  private _medio: MedioCampana;
   private _estado: EstadoCampana;
   private readonly _anuncianteId: string;
   private readonly _contratoId: string | undefined;
@@ -70,6 +74,7 @@ export class Campana {
     this._numero = NumeroCampana.crear(props.numeroCampana);
     this._nombre = props.nombre.trim();
     this._tipo = props.tipo;
+    this._medio = props.medio ?? 'fm';
     this._estado = EstadoCampana.crear(props.estado);
     this._anuncianteId = props.anuncianteId;
     this._contratoId = props.contratoId;
@@ -90,6 +95,7 @@ export class Campana {
     campana._agregarEvento('CAMPANA_CREADA', {
       nombre: props.nombre,
       tipo: props.tipo,
+      medio: props.medio,
       anuncianteId: props.anuncianteId,
     });
     return campana;
@@ -202,6 +208,7 @@ export class Campana {
   get numeroCampana(): NumeroCampana   { return this._numero; }
   get nombre(): string                 { return this._nombre; }
   get tipo(): TipoCampana              { return this._tipo; }
+  get medio(): MedioCampana            { return this._medio; }
   get estado(): EstadoCampana          { return this._estado; }
   get anuncianteId(): string           { return this._anuncianteId; }
   get contratoId(): string | undefined { return this._contratoId; }

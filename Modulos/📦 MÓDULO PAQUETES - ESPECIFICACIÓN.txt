@@ -1,0 +1,1099 @@
+📦 MÓDULO PAQUETES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO PAQUETES?
+El Módulo Paquetes es el catálogo maestro de productos comercializables de Silexar Pulse. Funciona como el cerebro de inventario que define, estructura y gestiona todos los formatos publicitarios disponibles, desde paquetes estándar hasta ofertas especiales dinámicas, con inteligencia artificial que optimiza precios, predice demanda y automatiza la creación de productos según tendencias del mercado.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Gerente Comercial, este módulo es mi arsenal estratégico:
+
+Creo paquetes especiales para aprovechar oportunidades de mercado
+El sistema me sugiere automáticamente precios óptimos basados en demanda
+Monitoreo performance de cada paquete en tiempo real
+Recibo alertas cuando un paquete está saturado o sub-utilizado
+IA me sugiere nuevos paquetes basados en tendencias del mercado
+
+Como Ejecutivo de Ventas, accedo a mi catálogo inteligente:
+
+Veo disponibilidad de paquetes en tiempo real durante reuniones
+El sistema me sugiere el paquete perfecto para cada cliente
+Creo propuestas combinando múltiples paquetes automáticamente
+Recibo alertas de paquetes promocionales disponibles
+Acceso móvil para consultar inventario desde cualquier lugar
+
+Como Programador de Tráfico, gestiono la operación:
+
+Recibo automáticamente especificaciones técnicas de cada paquete
+El sistema valida que existe inventario antes de aprobar contratos
+Monitoreo utilización real vs. vendida por paquete
+Alertas de sobresaturación o conflictos de programación
+Exportación automática de especificaciones a sistemas de emisión
+
+Como Controller/CFO, obtengo inteligencia financiera:
+
+Análisis de rentabilidad por paquete automático
+Predicciones de ingresos basadas en pipeline de paquetes
+Optimización de pricing dinámico basado en demanda
+Control de márgenes y costos por tipo de paquete
+Reportes de performance financiera por categoría
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Validación automática de disponibilidad y pricing dinámico
+Módulo Campañas: Herencia de especificaciones técnicas y restricciones
+Módulo Vencimientos: Sincronización de exclusividades y programación
+Módulo Facturación: Cálculo automático de valores y comisiones
+Cortex-Pricing: IA que optimiza precios basado en demanda y competencia
+Cortex-Demand: Predicción de demanda y sugerencias de nuevos paquetes
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/paquetes/
+├── domain/
+│   ├── entities/
+│   │   ├── Paquete.ts (Entidad principal del paquete)
+│   │   ├── EspecificacionTecnica.ts (Detalles técnicos por emisora)
+│   │   ├── TarifarioDinamico.ts (Precios con IA)
+│   │   ├── DisponibilidadInventario.ts (Control de cupos en tiempo real)
+│   │   ├── RestriccionPaquete.ts (Limitaciones y validaciones)
+│   │   ├── PerformancePaquete.ts (Métricas de rendimiento)
+│   │   ├── PaqueteEspecial.ts (Ofertas temporales y promociones)
+│   │   ├── IntegracionEmisora.ts (Conexión con sistemas de playout)
+│   │   ├── AnalisisRentabilidad.ts (Métricas financieras)
+│   │   ├── PredictorDemanda.ts (Forecasting IA)
+│   │   ├── OptimizadorPrecio.ts (Pricing dinámico)
+│   │   └── HistorialUtilizacion.ts (Tracking de uso histórico)
+│   ├── value-objects/
+│   │   ├── CodigoPaquete.ts (Código único PAQ-YYYY-XXXXX)
+│   │   ├── TipoPaquete.ts (Prime, Repartido, Señales, etc.)
+│   │   ├── DuracionPublicidad.ts (5s, 10s, 15s, 20s, 30s, 45s, 60s)
+│   │   ├── HorarioEmision.ts (Franjas horarias específicas)
+│   │   ├── PrecioBase.ts (Valor base con factores de ajuste)
+│   │   ├── FactorEstacionalidad.ts (Ajustes por temporada)
+│   │   ├── NivelExclusividad.ts (Exclusivo, Compartido, Abierto)
+│   │   ├── ScoreRentabilidad.ts (Índice de rentabilidad 0-1000)
+│   │   ├── PrediccionDemanda.ts (Forecast de utilización)
+│   │   └── IndiceCompetitividad.ts (Posición vs mercado)
+│   └── repositories/
+│       ├── IPaqueteRepository.ts
+│       ├── IEspecificacionTecnicaRepository.ts
+│       ├── ITarifarioRepository.ts
+│       ├── IDisponibilidadRepository.ts
+│       └── IPerformanceRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearPaqueteCommand.ts
+│   │   ├── ActualizarPaqueteCommand.ts
+│   │   ├── CrearPaqueteEspecialCommand.ts
+│   │   ├── AsignarTarifaCommand.ts
+│   │   ├── ReservarInventarioCommand.ts
+│   │   ├── OptimizarPrecioCommand.ts
+│   │   ├── ConfigurarRestriccionCommand.ts
+│   │   ├── ActivarDesactivarPaqueteCommand.ts
+│   │   ├── DuplicarPaqueteCommand.ts
+│   │   ├── GenerarPaqueteFromTemplateCommand.ts
+│   │   ├── SincronizarConEmisoraCommand.ts
+│   │   └── CalcularRentabilidadCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerDetallePaqueteQuery.ts
+│   │   ├── BuscarPaquetesQuery.ts
+│   │   ├── ObtenerPaquetesPorEmisoraQuery.ts
+│   │   ├── ObtenerDisponibilidadQuery.ts
+│   │   ├── ObtenerTarifarioVigenteQuery.ts
+│   │   ├── GenerarAnalisisRentabilidadQuery.ts
+│   │   ├── PredecirDemandaQuery.ts
+│   │   ├── ObtenerPaquetesCompatiblesQuery.ts
+│   │   ├── GenerarReportePerformanceQuery.ts
+│   │   └── ObtenerSugerenciasPrecioQuery.ts
+│   └── handlers/
+│       ├── PaqueteCommandHandler.ts
+│       ├── TarifarioCommandHandler.ts
+│       ├── DisponibilidadHandler.ts
+│       ├── OptimizacionPrecioHandler.ts
+│       ├── PerformanceAnalyticsHandler.ts
+│       ├── PredictiveAnalyticsHandler.ts
+│       ├── IntegracionEmisoraHandler.ts
+│       └── ValidacionInventarioHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaPaqueteRepository.ts
+│   │   ├── PrismaEspecificacionRepository.ts
+│   │   ├── PrismaTarifarioRepository.ts
+│   │   └── PrismaDisponibilidadRepository.ts
+│   ├── external/
+│   │   ├── InventoryManagementService.ts (Gestión inventario tiempo real)
+│   │   ├── PricingOptimizationService.ts (Optimización precios IA)
+│   │   ├── CortexPricingAdvancedService.ts (IA pricing dinámico)
+│   │   ├── CortexDemandPredictionService.ts (Predicción demanda)
+│   │   ├── CortexCompetitorAnalysisService.ts (Análisis competencia)
+│   │   ├── WideOrbitIntegrationService.ts (Sistemas playout)
+│   │   ├── SaraAutomationService.ts (Integración Sara)
+│   │   ├── DaletGalaxyService.ts (Integración Dalet)
+│   │   ├── MarketDataService.ts (Datos de mercado)
+│   │   ├── SeasonalityAnalysisService.ts (Análisis estacionalidad)
+│   │   ├── RevenueOptimizationService.ts (Optimización ingresos)
+│   │   ├── CompetitivePricingService.ts (Pricing competitivo)
+│   │   ├── DemandForecastingService.ts (Forecasting avanzado)
+│   │   └── PerformanceTrackingService.ts (Tracking performance)
+│   └── messaging/
+│       ├── PaqueteEventPublisher.ts
+│       ├── DisponibilidadAlertPublisher.ts
+│       ├── PricingOptimizationPublisher.ts
+│       └── PerformanceAnalyticsPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── PaqueteController.ts
+    │   ├── TarifarioController.ts
+    │   ├── DisponibilidadController.ts
+    │   ├── PerformanceController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── MobilePaqueteController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearPaqueteDto.ts
+    │   ├── ActualizarPaqueteDto.ts
+    │   ├── ConfigurarTarifaDto.ts
+    │   ├── ReservarInventarioDto.ts
+    │   └── OptimizarPrecioDto.ts
+    └── middleware/
+        ├── PaqueteAccessMiddleware.ts
+        ├── InventoryValidationMiddleware.ts
+        ├── PricingSecurityMiddleware.ts
+        └── PerformanceTrackingMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE GESTIÓN DE PAQUETES
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando estratégico:
+
+Título: "📦 Centro de Gestión de Paquetes"
+Breadcrumb: "Dashboard > Paquetes"
+
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 INTELIGENCIA DE PRODUCTOS TIEMPO REAL                        │
+│                                                                 │
+│ 156 Paquetes    89% Utilización   $485M Revenue YTD           │
+│ 23 Activos Hoy  12 Promocionales  15 Nuevos Este Mes          │
+│ 🎯 Top Performer: Prime Matinal (+45% vs mes anterior)         │
+│ 🤖 IA Detectó: 8 paquetes sub-utilizados, 5 listos optimizar  │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO COMERCIAL AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'prime radio corazón', 'repartido 30s', 'disponible diciembre'..."
+IA Conversacional: Entiende consultas como "¿qué paquetes tienen mejor ROI?"
+Predicciones automáticas:
+
+"Paquetes con alta demanda esta semana"
+"Productos sub-utilizados con potencial"
+"Oportunidades de pricing optimization"
+"Paquetes compatibles para cliente específico"
+
+
+
+Filtros inteligentes de negocio:
+Por Tipo de Paquete:
+
+🌟 Prime (Horarios premium)
+📊 Repartido (Distribución equitativa)
+🌙 Nocturno (Horarios económicos)
+🌡️ Señales (Temperatura, hora, tráfico)
+🎯 Especiales (Promociones temporales)
+💎 Exclusivos (Auspicios únicos)
+
+Por Estado Operativo:
+
+🔥 Activo y Disponible
+⚠️ Saturado (>90% utilización)
+💤 Inactivo Temporal
+🚧 En Mantenimiento
+🆕 Nuevo (últimos 30 días)
+📈 Trending (crecimiento >20%)
+
+Por Performance:
+
+🏆 Top Performers (ROI >150%)
+📈 Creciendo (+20% utilización)
+📉 Declinando (-15% utilización)
+🎯 Target Achievers (meta cumplida)
+⚡ High Velocity (rotación rápida)
+
+Centro de acciones inteligentes:
+
+"➕ Crear Paquete" (wizard inteligente)
+"🎯 Optimizar Precios" (IA pricing)
+"📊 Analytics Avanzado" (insights IA)
+"🔍 Detectar Oportunidades" (gaps de mercado)
+"📱 Vista Móvil" (ejecutivos en terreno)
+
+TABLA DE PAQUETES - INTELIGENCIA OPERATIVA:
+1. Columna "Paquete/Performance" (280px):
+┌─────────────────────────────────────┐
+│ 🌟 Prime Matinal Radio Corazón      │
+│ PAQ-2025-0123 • 30s • 07:00-09:00  │
+│ 📊 Utilización: 85% • ROI: 234%     │
+│ 🎯 Trend: ↗️ +15% vs mes anterior   │
+└─────────────────────────────────────┘
+
+Nombre descriptivo: Con iconografía visual por tipo
+Código único: Generado automáticamente PAQ-YYYY-XXXXX
+Especificaciones: Duración, horarios, características técnicas
+Métricas live: Utilización actual, ROI, tendencias
+
+2. Columna "Emisora/Cobertura" (160px):
+┌─────────────────┐
+│ 📻 Radio Corazón│
+│ 🗺️ RM + V Región│
+│ 👥 Reach: 450K  │
+│ 📈 Rating: 12.5 │
+└─────────────────┘
+
+Emisora asociada: Logo + nombre
+Cobertura geográfica: Regiones/ciudades
+Audiencia: Reach estimado
+Rating promedio: Performance audiencia
+
+3. Columna "Fechas/Vigencia" (140px):
+┌─────────────────┐
+│ 📅 01 Ene - 31 Dic│
+│ ████████████░░  │
+│ 78% período usado│
+│ ⏰ Quedan: 87 días│
+└─────────────────┘
+
+Período vigencia: Fecha inicio y término
+Progreso temporal: Barra visual de avance
+Tiempo restante: Días/semanas disponibles
+
+4. Columna "Tarifario/Pricing" (150px):
+┌─────────────────┐
+│ 💰 Base: $12,500│
+│ 🎯 Actual: $15,750│
+│ 📊 vs Mercado: +8%│
+│ 🤖 IA: Subir 12%│
+└─────────────────┘
+
+Precio base: Tarifa estándar sin ajustes
+Precio actual: Con factores de demanda/estacionalidad
+Benchmarking: Comparación vs mercado
+Sugerencia IA: Optimización automática
+
+5. Columna "Disponibilidad/Estado" (130px):
+┌─────────────────┐
+│ 🟢 Disponible   │
+│ 📊 15% ocupado  │
+│ 🎯 85% libre    │
+│ ⚡ 12 spots hoy │
+└─────────────────┘
+
+Estado actual: Disponible, saturado, inactivo
+Ocupación: Porcentaje de utilización actual
+Capacidad libre: Espacio disponible
+Actividad hoy: Spots programados hoy
+
+6. Columna "Analytics/Insights" (180px):
+┌─────────────────────────────────┐
+│ 📈 Revenue MTD: $485K           │
+│ 🎯 Conversión: 78%              │
+│ 👥 Top Cliente: Banco XYZ       │
+│ 🤖 IA: "Optimizar para Q4"     │
+└─────────────────────────────────┘
+
+Revenue: Ingresos del mes actual
+Tasa conversión: % de propuestas que cierran
+Mejor cliente: Quien más compra este paquete
+Insight IA: Recomendación automática
+
+7. Columna "Acciones Inteligentes" (160px):
+┌─────────────────┐
+│ [👁️] [✏️] [📊] │
+│ [💰] [🎯] [📱] │
+│ [🔄] [⚙️] [🚀] │
+└─────────────────┘
+
+👁️ Ver Detalle: Vista 360° completa
+✏️ Editar: Modificación de especificaciones
+📊 Analytics: Métricas detalladas de performance
+💰 Optimizar Precio: IA pricing automático
+🎯 Gestionar Disponibilidad: Control de inventario
+📱 Compartir Móvil: Envío a ejecutivos
+🔄 Duplicar: Para crear variaciones
+⚙️ Configurar: Restricciones y validaciones
+🚀 Activar Promoción: Ofertas especiales
+
+➕ CREACIÓN INTELIGENTE DE PAQUETES - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de creación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿QUÉ TIPO DE PAQUETE NECESITAS?      │
+│                                         │
+│ [⭐] Paquete Premium                    │
+│      Prime time, alta audiencia        │
+│      IA sugerirá horarios óptimos       │
+│                                         │
+│ [📊] Paquete Repartido                  │
+│      Distribución equitativa día       │
+│      Optimización automática slots     │
+│                                         │
+│ [🌙] Paquete Nocturno                   │
+│      Horarios económicos               │
+│      Perfecto para presupuestos ajustados│
+│                                         │
+│ [🌡️] Paquete Señales                   │
+│      Temperatura, hora, tráfico        │
+│      Integración automática sensores   │
+│                                         │
+│ [🎯] Paquete Especial                   │
+│      Promocional temporal              │
+│      IA configurará duración óptima    │
+│                                         │
+│ [💎] Auspicio Exclusivo                 │
+│      Producto único programa           │
+│      Validación automática exclusividad│
+└─────────────────────────────────────────┘
+PASO 1: "CONFIGURACIÓN FUNDAMENTAL" - IA ASISTIDA
+Generación automática de código:
+
+ID generado: PAQ-2025-00847
+Lógica: PAQ-[AÑO]-[SECUENCIA ÚNICA]
+Validación: Verificación automática de unicidad
+Auditoría: Registro completo de creación
+
+Campo "Nombre del Paquete" con inteligencia:
+┌─────────────────────────────────────────┐
+│ 📝 NOMBRE INTELIGENTE DEL PAQUETE       │
+│                                         │
+│ Nombre: [                              ]│
+│                                         │
+│ 🤖 Sugerencias IA basadas en selección: │
+│ • "Prime Matinal Radio Corazón"        │
+│ • "Repartido Tarde FM Dos"             │
+│ • "Nocturno Económico Mix Stations"    │
+│                                         │
+│ ✅ Validaciones automáticas:            │
+│ • No existe paquete duplicado          │
+│ • Nombre cumple convención corporativa │
+│ • Coherente con tipo seleccionado      │
+└─────────────────────────────────────────┘
+Selección de Emisora con análisis predictivo:
+┌─────────────────────────────────────────┐
+│ 📻 SELECCIÓN DE EMISORA INTELIGENTE     │
+│                                         │
+│ Emisora: [Radio Corazón ▼]             │
+│                                         │
+│ 🤖 Análisis automático:                 │
+│ • Audiencia target: Adultos 25-54      │
+│ • Rating promedio: 12.5                │
+│ • Cobertura: RM + V Región             │
+│ • Saturación actual: 65%               │
+│ • Oportunidad: ✅ Alta disponibilidad  │
+│                                         │
+│ 📊 Performance histórica:               │
+│ • ROI promedio: 185%                   │
+│ • Conversión: 76%                      │
+│ • Satisfacción cliente: 8.9/10         │
+│                                         │
+│ 💡 IA Recomienda: Horario 07:00-09:00  │
+│    Mayor demanda y mejor performance    │
+└─────────────────────────────────────────┘
+PASO 2: "ESPECIFICACIONES TÉCNICAS" - OPTIMIZACIÓN IA
+Configuración de horarios inteligente:
+┌─────────────────────────────────────────┐
+│ ⏰ CONFIGURACIÓN HORARIA INTELIGENTE     │
+│                                         │
+│ Tipo de franja seleccionada: PRIME     │
+│                                         │
+│ 🎯 Horarios sugeridos por IA:          │
+│ ┌─────────────────────────────────────┐ │
+│ │ ⭐ 07:00-09:00 • Rating: 15.2      │ │
+│ │    Audiencia: 380K • ROI: 245%     │ │
+│ │    [✅ Seleccionar]                 │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ 🚗 18:00-20:00 • Rating: 13.8      │ │
+│ │    Audiencia: 420K • ROI: 198%     │ │
+│ │    [○ Seleccionar]                  │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ⚙️ Configuración manual:               │
+│ Hora inicio: [07:00] Hora fin: [09:00] │
+│ Días semana: [L][M][M][J][V][S][D]     │
+│                                         │
+│ 🤖 Validaciones automáticas:           │
+│ ✅ Horario disponible en sistema       │
+│ ✅ Sin conflictos con exclusividades   │
+│ ✅ Audiencia medida disponible         │
+└─────────────────────────────────────────┘
+Configuración de duraciones y formatos:
+┌─────────────────────────────────────────┐
+│ 📏 DURACIONES Y FORMATOS DISPONIBLES    │
+│                                         │
+│ Duraciones soportadas:                  │
+│ [✅] 5 segundos   - $8,500             │
+│ [✅] 10 segundos  - $10,200            │
+│ [✅] 15 segundos  - $12,500 👑 Popular │
+│ [✅] 20 segundos  - $14,800            │
+│ [✅] 30 segundos  - $18,500            │
+│ [✅] 45 segundos  - $23,500            │
+│ [✅] 60 segundos  - $28,500            │
+│                                         │
+│ 🎯 Configuración de rotación:          │
+│ Spots por hora: [2] Máximo: [4]        │
+│ Separación mínima: [15] minutos        │
+│                                         │
+│ 🤖 IA Optimización:                    │
+│ • Duración óptima: 20s (mejor ROI)     │
+│ • Frecuencia ideal: 3 spots/hora       │
+│ • Separación recomendada: 18 min       │
+└─────────────────────────────────────────┘
+PASO 3: "PRICING DINÁMICO" - CORTEX-PRICING
+Motor de optimización de precios:
+┌─────────────────────────────────────────┐
+│ 💰 OPTIMIZACIÓN DE PRECIOS CORTEX-AI    │
+│                                         │
+│ 🎯 Análisis de mercado en tiempo real:  │
+│                                         │
+│ 📊 Benchmarking competencia:            │
+│ • Radio Tiempo: $14,200 (similar)      │
+│ • FM Plus: $16,800 (premium)           │
+│ • Mix FM: $11,500 (económico)          │
+│                                         │
+│ 🤖 Precio sugerido por IA: $15,750     │
+│                                         │
+│ 📈 Factores considerados:               │
+│ ✅ Demanda histórica: Alta              │
+│ ✅ Estacionalidad: Temporada alta       │
+│ ✅ Performance audiencia: Excelente     │
+│ ✅ Positioning emisora: Premium         │
+│                                         │
+│ 💡 Estrategias de pricing:              │
+│ [○] Competitivo (-5% vs mercado)       │
+│ [✅] Óptimo (IA recomendado)           │
+│ [○] Premium (+10% vs mercado)          │
+│                                         │
+│ 🎯 Precio base: $15,750                │
+│ 📊 Factores dinámicos:                 │
+│ • Demanda alta: +8%                    │
+│ • Temporada: +5%                       │
+│ • Performance: +3%                     │
+└─────────────────────────────────────────┘
+Configuración de ajustes estacionales:
+┌─────────────────────────────────────────┐
+│ 📅 FACTORES ESTACIONALES AUTOMÁTICOS    │
+│                                         │
+│ 🎄 Diciembre (Navidad): +25%           │
+│ 🎓 Marzo (Vuelta clases): +15%         │
+│ 💕 Febrero (Día enamorados): +10%      │
+│ 🎁 Noviembre (Black Friday): +20%      │
+│ ☀️ Enero-Febrero (Verano): +5%         │
+│ 📚 Abril-Mayo (Otoño): Base            │
+│ ❄️ Junio-Agosto (Invierno): -5%        │
+│ 🌸 Septiembre-Octubre: +8%             │
+│                                         │
+│ 🤖 IA detectó patrones adicionales:    │
+│ • Día de la Madre: +18% (mayo)         │
+│ • Fiestas Patrias: +22% (septiembre)   │
+│ • Black Week: +35% (última sem nov)    │
+│                                         │
+│ ⚙️ Configuración manual:               │
+│ [✅] Aplicar factores automáticos      │
+│ [✅] Incluir eventos especiales        │
+│ [○] Solo pricing base fijo             │
+└─────────────────────────────────────────┘
+PASO 4: "RESTRICCIONES Y VALIDACIONES" - INTELIGENCIA OPERATIVA
+Sistema de restricciones automáticas:
+┌─────────────────────────────────────────┐
+│ 🛡️ SISTEMA DE RESTRICCIONES INTELIGENTE │
+│                                         │
+│ 🚫 Restricciones por industria:         │
+│ [✅] Competencia directa bancaria       │
+│ [✅] Productos farmacéuticos sin receta │
+│ [○] Alcohol horario diurno             │
+│ [○] Política/candidatos                │
+│                                         │
+│ ⏰ Restricciones temporales:            │
+│ [✅] No emitir en noticieros           │
+│ [✅] Evitar programas religiosos       │
+│ [○] Solo horario familiar              │
+│                                         │
+│ 🎯 Exclusividades automáticas:         │
+│ ✅ Máximo 1 banco por hora             │
+│ ✅ Separación 20 min entre telecom     │
+│ ✅ No mezclar retail competencia       │
+│                                         │
+│ 🤖 IA Brand Safety:                    │
+│ • Análisis contenido programa: ✅ Safe │
+│ • Verificación audiencia: ✅ Target   │
+│ • Contexto editorial: ✅ Apropiado    │
+│                                         │
+│ 💡 Sugerencias automáticas:            │
+│ • Agregar separación retail (15 min)   │
+│ • Incluir filtro contenido adulto      │
+│ • Activar validación marca cliente     │
+└─────────────────────────────────────────┘
+PASO 5: "CONFIGURACIÓN AVANZADA" - CORTEX-FLOW
+Automatizaciones inteligentes:
+┌─────────────────────────────────────────┐
+│ 🤖 AUTOMATIZACIONES CORTEX-FLOW         │
+│                                         │
+│ 📊 Monitoring automático:               │
+│ [✅] Alertar si utilización >90%        │
+│ [✅] Notificar cambios performance      │
+│ [✅] Tracking satisfacción cliente      │
+│ [✅] Monitoreo competencia pricing      │
+│                                         │
+│ 🎯 Optimizaciones automáticas:         │
+│ [✅] Ajuste precio por demanda          │
+│ [✅] Redistribución horarios libres     │
+│ [✅] Sugerencias mejora ROI             │
+│ [○] Auto-descuentos por volumen        │
+│                                         │
+│ 📈 Predicciones y alertas:              │
+│ • Forecast utilización próximos 30 días │
+│ • Alertas de saturación temprana       │
+│ • Predicción renovaciones clientes     │
+│ • Oportunidades upselling detectadas   │
+│                                         │
+│ 🔄 Integraciones automáticas:          │
+│ ✅ Sincronizar con sistemas emisión     │
+│ ✅ Actualizar inventario tiempo real    │
+│ ✅ Enviar specs a programación         │
+│ ✅ Notificar cambios a ejecutivos      │
+└─────────────────────────────────────────┘
+📊 GESTIÓN DETALLADA DE PAQUETE - VISTA 360°
+PESTAÑA "RESUMEN EJECUTIVO"
+Panel de información fundamental:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 PRIME MATINAL RADIO CORAZÓN - PAQ-2025-0123                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 INFORMACIÓN BÁSICA:                                          │
+│ • Tipo: Prime Matinal • Duración: 15s-30s-45s                 │
+│ • Horario: 07:00-09:00 L-V • Emisora: Radio Corazón 101.7    │
+│ • Vigencia: 01 Ene 2025 - 31 Dic 2025                        │
+│ • Estado: 🟢 Activo • Utilización: 85%                       │
+│                                                                 │
+│ 💰 PERFORMANCE FINANCIERA:                                     │
+│ • Precio base: $15,750 • Precio actual: $17,500              │
+│ • Revenue YTD: $2.1M • Margen promedio: 68%                  │
+│ • ROI cliente promedio: 234% • Satisfacción: 9.2/10          │
+│                                                                 │
+│ 📊 MÉTRICAS AUDIENCIA:                                         │
+│ • Rating promedio: 15.2 • Share: 28%                         │
+│ • Reach estimado: 380K oyentes • Target: Adultos 25-54       │
+│ • Penetración mercado: 42% • Frequency: 3.8                  │
+│                                                                 │
+│ 🎯 CLIENTES PRINCIPALES:                                        │
+│ • Banco de Chile: $485K YTD • Retail Corp: $320K YTD         │
+│ • TechCorp: $295K YTD • AutoMax: $180K YTD                   │
+│                                                                 │
+│ 🤖 INSIGHTS IA:                                                │
+│ • Trending: ↗️ +23% utilización vs mes anterior               │
+│ • Predicción: Saturación probable en 15 días                 │
+│ • Recomendación: Considerar incremento precio 8%             │
+│ • Oportunidad: 5 clientes potenciales identificados          │
+└─────────────────────────────────────────────────────────────────┘
+PESTAÑA "ESPECIFICACIONES TÉCNICAS"
+Configuración operativa detallada:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚙️ ESPECIFICACIONES TÉCNICAS OPERATIVAS                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 📻 CONFIGURACIÓN EMISORA:                                       │
+│ • Emisora: Radio Corazón 101.7 FM                             │
+│ • Cobertura: Región Metropolitana + V Región                  │
+│ • Sistema playout: WideOrbit Automation v5.2                  │
+│ • Formato exportación: Configurado automáticamente            │
+│                                                                 │
+│ ⏰ CONFIGURACIÓN HORARIA:                                       │
+│ • Horario principal: 07:00-09:00 (Lunes a Viernes)           │
+│ • Spots por hora: Máximo 4 • Mínimo separación: 15 min       │
+│ • Rotación automática: ✅ Activada                           │
+│ • Horarios exclusión: Durante noticieros centrales            │
+│                                                                 │
+│ 📏 FORMATOS PUBLICITARIOS:                                     │
+│ • 15 segundos: $15,750 (más vendido)                         │
+│ • 30 segundos: $17,500                                        │
+│ • 45 segundos: $19,250                                        │
+│ • Formato especial 20s: $16,800 (bajo pedido)                │
+│                                                                 │
+│ 🚫 RESTRICCIONES APLICADAS:                                    │
+│ • Máximo 1 banco por hora                                     │
+│ • Separación competencia directa: 20 minutos                 │
+│ • No emisión durante: Noticieros, programas religiosos       │
+│ • Brand Safety: Filtros automáticos activos                  │
+│                                                                 │
+│ 🔗 INTEGRACIONES ACTIVAS:                                      │
+│ ✅ WideOrbit: Sincronización automática                      │
+│ ✅ Sistema facturación: Precios actualizados                 │
+│ ✅ Módulo contratos: Validación inventario                   │
+│ ✅ Alertas móviles: Ejecutivos notificados                   │
+└─────────────────────────────────────────────────────────────────┘
+PESTAÑA "PRICING DINÁMICO"
+Centro de optimización de precios:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 CENTRO DE PRICING DINÁMICO CORTEX-AI                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS DE MERCADO TIEMPO REAL:                            │
+│                                                                 │
+│ 🏆 Posición competitiva:                                       │
+│ • Nuestro precio: $17,500                                     │
+│ • Competencia promedio: $16,200                               │
+│ • Premium vs mercado: +8% ✅ Justificado por performance      │
+│                                                                 │
+│ 📈 Factores de pricing actuales:                               │
+│ • Precio base: $15,750                                        │
+│ • Factor demanda: +8% ($1,260)                               │
+│ • Factor estacionalidad: +5% ($788)                          │
+│ • Factor performance: +3% ($473)                             │
+│ • Precio final: $17,500                                      │
+│                                                                 │
+│ 🎯 RECOMENDACIONES IA:                                         │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🤖 OPORTUNIDAD DETECTADA:                                  │ │
+│ │                                                             │ │
+│ │ Análisis indica posibilidad incremento +12%                │ │
+│ │ Nuevo precio sugerido: $19,600                            │ │
+│ │                                                             │ │
+│ │ Justificación:                                             │ │
+│ │ • Demanda sostenida >85% por 3 meses                      │ │
+│ │ • ROI cliente promedio 234% (excelente)                   │ │
+│ │ • Competencia subió precios 6% promedio                   │ │
+│ │ • Próxima temporada alta (Diciembre)                      │ │
+│ │                                                             │ │
+│ │ Riesgo estimado: BAJO (15% prob. reducción demanda)       │ │
+│ │                                                             │ │
+│ │ [🚀 Aplicar incremento] [📊 Simular impacto] [❌ Ignorar]  │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📅 Calendario de ajustes programados:                          │
+│ • 01 Dic: +15% factor navideño                               │
+│ • 15 Dic: +25% temporada crítica                             │
+│ • 02 Ene: Retorno a precio base                              │
+│                                                                 │
+│ [💰 Simular precios] [📊 Análisis competencia] [⚙️ Configurar] │
+└─────────────────────────────────────────────────────────────────┘
+PESTAÑA "UTILIZACIÓN Y DISPONIBILIDAD"
+Monitor de inventario en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 MONITOR DE UTILIZACIÓN TIEMPO REAL                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 ESTADO ACTUAL (Diciembre 2025):                            │
+│                                                                 │
+│ Utilización global: ████████████████████░░░ 85%              │
+│                                                                 │
+│ 📅 Desglose por semana:                                        │
+│ • Semana 1: ████████████████████████░ 95% (Casi lleno)       │
+│ • Semana 2: ███████████████████░░░░░ 78% (Disponible)        │
+│ • Semana 3: ████████████████████████████ 100% (Saturado)     │
+│ • Semana 4: ██████████████████░░░░░░ 72% (Disponible)        │
+│                                                                 │
+│ ⏰ Disponibilidad por día semana:                              │
+│ • Lunes: ████████████████████░░ 83%                          │
+│ • Martes: ██████████████████████░ 88%                        │
+│ • Miércoles: ███████████████████████████ 98%                 │
+│ • Jueves: ████████████████████████████ 95%                   │
+│ • Viernes: ██████████████████░░░ 76%                         │
+│                                                                 │
+│ 🚨 ALERTAS AUTOMÁTICAS:                                        │
+│ ⚠️ Semana 3: SATURACIÓN CRÍTICA                               │
+│ • Solo 2 slots disponibles                                    │
+│ • Acción sugerida: Bloquear nuevas ventas                    │
+│ • Clientes en espera: 3                                       │
+│                                                                 │
+│ 💡 OPTIMIZACIONES SUGERIDAS:                                   │
+│ • Redistributir 4 spots de Miércoles a Viernes               │
+│ • Contactar BancoXYZ para cambio horario (slot premium)      │
+│ • Activar lista espera para semana 3                         │
+│                                                                 │
+│ 📊 PROYECCIÓN 30 DÍAS:                                         │
+│ • Utilización esperada: 92% (crítica)                        │
+│ • Revenue proyectado: $2.8M                                  │
+│ • Spots adicionales disponibles: 23                          │
+│                                                                 │
+│ [🎯 Gestionar reservas] [📧 Alertar ejecutivos] [⚙️ Optimizar] │
+└─────────────────────────────────────────────────────────────────┘
+PESTAÑA "CLIENTES Y PERFORMANCE"
+Análisis de clientes y efectividad:
+┌─────────────────────────────────────────────────────────────────┐
+│ 👥 ANÁLISIS DE CLIENTES Y PERFORMANCE                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 🏆 TOP CLIENTES POR INVERSIÓN:                                 │
+│                                                                 │
+│ 1. 🏦 Banco de Chile                                           │
+│    💰 Inversión YTD: $485,000 • ROI: 267%                     │
+│    📊 Satisfacción: 9.8/10 • Renovación: 95% probable         │
+│    🎯 Oportunidad: Expandir a horario vespertino              │
+│                                                                 │
+│ 2. 🛒 Retail Corp                                              │
+│    💰 Inversión YTD: $320,000 • ROI: 198%                     │
+│    📊 Satisfacción: 8.9/10 • Renovación: 85% probable         │
+│    ⚠️ Alerta: Competencia ofreció descuento 15%               │
+│                                                                 │
+│ 3. 💻 TechCorp Solutions                                       │
+│    💰 Inversión YTD: $295,000 • ROI: 234%                     │
+│    📊 Satisfacción: 9.1/10 • Renovación: 78% probable         │
+│    🎯 Insight: Mejores resultados en spots 20s                │
+│                                                                 │
+│ 📈 MÉTRICAS DE EFECTIVIDAD:                                    │
+│ • Conversion rate promedio: 3.8%                              │
+│ • Recall asistido: 67%                                        │
+│ • Brand awareness lift: +23%                                  │
+│ • Purchase intent increase: +18%                              │
+│                                                                 │
+│ 🎯 ANÁLISIS POR INDUSTRIA:                                     │
+│ • Financiero: ROI 245% (mejor performance)                    │
+│ • Retail: ROI 189% (estable)                                  │
+│ • Tecnología: ROI 234% (creciendo)                           │
+│ • Automotriz: ROI 156% (bajo expectativa)                    │
+│                                                                 │
+│ 🤖 PREDICCIONES IA:                                            │
+│ • 3 clientes listos para upselling                           │
+│ • 1 cliente en riesgo de no renovar                          │
+│ • 2 oportunidades cross-selling detectadas                   │
+│                                                                 │
+│ [📊 Análisis detallado] [📧 Contactar clientes] [🎯 Plan acción]│
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - EJECUTIVOS EN TERRENO
+INTERFAZ MÓVIL OPTIMIZADA:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR PAQUETES MÓVIL               │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Ejecutivo                  │
+│ • Paquetes disponibles: 23              │
+│ • Mi utilización: 78% objetivo          │
+│ • Alertas: 2 saturaciones               │
+│                                         │
+│ ⚡ CONSULTAS RÁPIDAS:                   │
+│ [🔍 Buscar disponibilidad]              │
+│ [📊 Check precios tiempo real]          │
+│ [🎯 Paquetes recomendados]              │
+│ [📧 Enviar specs cliente]               │
+│                                         │
+│ 🚨 ALERTAS HOY:                         │
+│ • Prime Matinal: Solo 3 slots libres    │
+│ • Repartido Tarde: Nuevo precio +8%     │
+│                                         │
+│ 📦 MIS PAQUETES TOP:                    │
+│ [Prime Matinal] [Repartido] [Nocturno]  │
+├─────────────────────────────────────────┤
+│ [🏠] [📦] [📞] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+Funcionalidades móviles avanzadas:
+Consulta rápida por voz:
+
+"Disponibilidad prime radio corazón diciembre"
+"Precio actual repartido fm dos"
+"Mejor paquete para cliente retail"
+
+Geolocalización inteligente:
+
+Auto-detecta ubicación del cliente
+Sugiere paquetes con cobertura en la zona
+Alertas de emisoras cercanas disponibles
+
+Compartir especificaciones:
+
+Envío automático por WhatsApp
+PDFs generados instantáneamente
+Links de consulta para clientes
+
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-DEMAND - PREDICCIÓN DE DEMANDA:
+Motor de forecasting avanzado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔮 PREDICTOR DE DEMANDA CORTEX-DEMAND                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS PREDICTIVO PRÓXIMOS 90 DÍAS:                       │
+│                                                                 │
+│ 🎯 Prime Matinal Radio Corazón:                               │
+│ • Utilización actual: 85%                                     │
+│ • Predicción 30 días: 98% (Saturación inminente)             │
+│ • Factores: Temporada navideña + 3 clientes nuevos           │
+│ • Acción sugerida: Incrementar precio 15%                    │
+│                                                                 │
+│ 📊 Repartido Tarde FM Dos:                                    │
+│ • Utilización actual: 45%                                     │
+│ • Predicción 30 días: 67% (Crecimiento saludable)            │
+│ • Oportunidad: Promoción especial para llenar                │
+│ • Clients potenciales: 8 identificados por IA                │
+│                                                                 │
+│ 🌙 Nocturno Mix Stations:                                     │
+│ • Utilización actual: 35%                                     │
+│ • Predicción 30 días: 28% (Declive preocupante)              │
+│ • Causa: Cambio hábitos audiencia (más streaming)            │
+│ • Recomendación: Reposicionar o descontinuar                 │
+│                                                                 │
+│ 🤖 INSIGHTS AUTOMÁTICOS:                                       │
+│ • Detectada tendencia: +45% demanda contenido digital        │
+│ • Oportunidad: Crear paquetes híbridos radio+digital         │
+│ • Riesgo: Sobresaturación horarios prime (acción inmediata)  │
+│ • Predicción revenue: $3.2M próximo trimestre (+18%)         │
+└─────────────────────────────────────────────────────────────────┘
+CORTEX-PRICING - OPTIMIZACIÓN DINÁMICA:
+Automatización de precios inteligente:
+Flujos automáticos activos:
+
+Monitor de Competencia:
+
+Escaneo diario de precios competencia
+Alertas si diferencia >15%
+Sugerencias automáticas de ajuste
+Validación antes de aplicar cambios
+
+
+Optimización por Demanda:
+
+Si utilización >90% por 7 días → Sugiere incremento 10%
+Si utilización <50% por 14 días → Sugiere promoción especial
+Si lista de espera >5 clientes → Incremento automático precio
+
+
+Ajustes Estacionales:
+
+Activación automática factores navideños
+Incrementos por eventos especiales (Mundial, elecciones)
+Descuentos automáticos en períodos bajos
+
+
+
+SISTEMA DE ALERTAS PREDICTIVAS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚨 CENTRO DE ALERTAS INTELIGENTES                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔥 CRÍTICAS (Acción inmediata):                               │
+│                                                                 │
+│ ⚠️ SATURACIÓN INMINENTE:                                       │
+│ • Prime Matinal: 98% utilización próximos 7 días             │
+│   🎯 Acción: Bloquear nuevas ventas HOY                       │
+│   👤 Responsable: Gerente Comercial (notificado)              │
+│                                                                 │
+│ 💰 OPORTUNIDAD PRECIO:                                         │
+│ • Competencia subió precios 12% promedio                     │
+│   🎯 Acción: Considerar incremento inmediato                  │
+│   💡 Impacto estimado: +$180K revenue mensual                │
+│                                                                 │
+│ 🟡 IMPORTANTES (Atención próximas 48h):                       │
+│                                                                 │
+│ 📉 PERFORMANCE DECLINING:                                       │
+│ • Nocturno Mix: -25% utilización vs trimestre anterior       │
+│ • 3 clientes cancelaron recientemente                        │
+│ • Sugerencia: Análisis profundo causas                       │
+│                                                                 │
+│ 🎯 OPORTUNIDADES DETECTADAS:                                   │
+│ • 8 clientes en pipeline para paquetes disponibles           │
+│ • TechCorp listo para upselling (+$45K estimado)             │
+│ • Nueva demanda detectada: Paquetes 20 segundos              │
+│                                                                 │
+│ 📊 INFORMATIVAS (Monitoreo continuo):                         │
+│ • 15 paquetes con performance sobre expectativas             │
+│ • Satisfacción cliente promedio: 8.9/10                      │
+│ • Revenue mensual: 103% de meta                              │
+│                                                                 │
+│ [🚀 Resolver críticas] [📊 Dashboard completo] [⚙️ Configurar] │
+└─────────────────────────────────────────────────────────────────┘
+🔐 SEGURIDAD Y COMPLIANCE TIER 0
+PROTECCIÓN DE DATOS COMERCIALES:
+Encriptación y acceso:
+
+Datos en reposo: Encriptación AES-256 + algoritmos post-cuánticos
+Datos en tránsito: TLS 1.3 + Perfect Forward Secrecy
+Zero-trust: Verificación continua de cada acceso a pricing
+Auditoría inmutable: Blockchain logging de cambios críticos
+
+Controles de acceso por rol:
+Ejecutivo Junior:
+
+✅ Ver paquetes y precios asignados
+✅ Consultar disponibilidad tiempo real
+❌ Modificar precios o especificaciones
+❌ Crear paquetes nuevos
+
+Ejecutivo Senior:
+
+✅ Ver todos los paquetes activos
+✅ Aplicar descuentos hasta 15%
+✅ Reservar inventario temporal
+❌ Modificar precios base
+
+Gerente Comercial:
+
+✅ Crear y modificar paquetes
+✅ Aprobar cambios de precio hasta 25%
+✅ Gestionar promociones especiales
+✅ Acceso completo a analytics
+
+CFO/Director:
+
+✅ Override de cualquier validación
+✅ Aprobar cambios de precio sin límite
+✅ Configurar políticas globales
+✅ Auditoría completa de cambios
+
+🔗 INTEGRACIONES ECOSYSTEM SILEXAR
+SINCRONIZACIÓN BIDIRECCIONAL:
+Con Módulo Contratos:
+
+Validación automática de disponibilidad al crear contratos
+Pricing dinámico aplicado automáticamente
+Reserva temporal de inventario durante negociación
+Confirmación automática al firmar contrato
+
+Con Módulo Campañas:
+
+Herencia de especificaciones técnicas
+Validación de restricciones automática
+Monitoring de performance vs prometido
+Ajustes de expectativas basado en histórico
+
+Con Módulo Vencimientos:
+
+Sincronización de exclusividades
+Prevención de conflictos automática
+Optimización de programación horaria
+Validación de separación competencia
+
+Con Módulo Facturación:
+
+Cálculo automático de valores y comisiones
+Aplicación de descuentos configurados
+Factores estacionales incluidos automáticamente
+Reconciliación de precios vendidos vs emitidos
+
+APIS EXTERNAS CRÍTICAS:
+Sistemas de Emisión:
+
+WideOrbit: Sincronización especificaciones automática
+Sara Automation: Exportación configuraciones técnicas
+Dalet Galaxy: Validación de capacidad técnica
+
+Inteligencia de Mercado:
+
+Nielsen: Datos de audiencia para optimización
+Kantar: Research de mercado para pricing
+IPSOS: Estudios de efectividad publicitaria
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-BUNDLE - PAQUETES INTELIGENTES:
+Generador automático de combinaciones:
+
+IA identifica paquetes que se venden juntos frecuentemente
+Crea automáticamente ofertas bundle con descuentos óptimos
+Predice éxito de nuevas combinaciones antes de lanzar
+A/B testing automático de diferentes configuraciones
+
+2. DYNAMIC INVENTORY PRICING:
+Pricing en tiempo real estilo aerolíneas:
+
+Precios que cambian según demanda inmediata
+Últimos cupos con premium pricing automático
+Early bird discounts para reservas anticipadas
+Surge pricing durante eventos especiales
+
+3. AI-POWERED PACKAGE RECOMMENDATION:
+Motor de recomendaciones personalizado:
+
+Analiza historial completo del cliente
+Considera estacionalidad de su negocio
+Evalúa performance de paquetes similares
+Sugiere timing óptimo para cada cliente específico
+
+4. PREDICTIVE INVENTORY MANAGEMENT:
+Gestión de inventario predictiva:
+
+Predice demanda con 90% precisión
+Optimiza creación de paquetes automáticamente
+Sugiere descontinuar productos de bajo rendimiento
+Identifica gaps de mercado automáticamente
+
+🎯 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+1. Blockchain Package Verification:
+
+Certificación inmutable de especificaciones
+Smart contracts para reservas automáticas
+Eliminación de disputas por cambios de términos
+
+2. AR/VR Package Visualization:
+
+Visualización 3D de cobertura geográfica
+Demos inmersivos para clientes
+Simulaciones de impact audiencia
+
+3. IoT Integration:
+
+Datos reales de tráfico para señales
+Sensors de clima para contextualización
+Smart billboard integration
+
+Visión 2030:
+El Módulo Paquetes evolucionará hacia un "Product AI Brain" que:
+
+Crea productos automáticamente basado en demanda detectada
+Optimiza portfolio completo sin intervención humana
+Predice tendencias de mercado 12 meses en adelante
+Genera revenue de forma autónoma con supervisión mínima
+
+📊 REPORTES Y ANALYTICS AVANZADOS
+DASHBOARD GERENCIAL EJECUTIVO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 BUSINESS INTELLIGENCE - PORTFOLIO PAQUETES                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 💰 MÉTRICAS FINANCIERAS:                                       │
+│ • Revenue total paquetes: $12.8M YTD                          │
+│ • Margen promedio: 67%                                         │
+│ • ROI portfolio: 245%                                          │
+│ • Utilización global: 78%                                     │
+│ • Growth rate YoY: +34%                                        │
+│                                                                 │
+│ 🏆 TOP PERFORMERS:                                             │
+│ • Prime Matinal Radio Corazón: $2.1M (+23%)                  │
+│ • Repartido Tarde FM Dos: $1.8M (+18%)                       │
+│ • Señales Tráfico Mix: $1.2M (+45%)                          │
+│                                                                 │
+│ 📉 UNDERPERFORMERS:                                            │
+│ • Nocturno Mix Stations: $450K (-25%)                        │
+│ • Weekend Special: $280K (-15%)                               │
+│ • Acción requerida: Análisis y reposicionamiento             │
+│                                                                 │
+│ 🔮 PREDICCIONES Q1 2025:                                       │
+│ • Revenue proyectado: $4.2M                                   │
+│ • Nuevos paquetes requeridos: 3                               │
+│ • Optimizaciones precio: +$340K potencial                     │
+│ • Riesgo pipeline: $120K en riesgo                           │
+│                                                                 │
+│ 🎯 RECOMENDACIONES IA:                                         │
+│ • Crear paquete híbrido radio+digital                        │
+│ • Incrementar precios prime 12% promedio                     │
+│ • Descontinuar 2 paquetes bajo rendimiento                   │
+│ • Lanzar promoción especial Q1                               │
+└─────────────────────────────────────────────────────────────────┘
+🎯 CONCLUSIÓN: EL CATÁLOGO MÁS INTELIGENTE DEL MUNDO
+PARA EL EJECUTIVO DE VENTAS:
+
+Catálogo inteligente: Sabe exactamente qué paquete recomendar para cada cliente
+Pricing dinámico: Precios siempre optimizados automáticamente
+Disponibilidad real: Nunca vender algo que no está disponible
+Móvil perfecto: Consultas instantáneas desde cualquier lugar
+IA como asesor: Recomendaciones precisas basadas en data
+
+PARA EL GERENTE COMERCIAL:
+
+Control total: Visibilidad completa del portfolio en tiempo real
+Optimización automática: IA maximiza revenue de cada paquete
+Predicciones precisas: Forecasting con 90%+ precisión
+Alertas proactivas: Detecta problemas antes de que impacten
+Performance tracking: Métricas detalladas de cada producto
+
+PARA EL PROGRAMADOR DE TRÁFICO:
+
+Especificaciones claras: Toda la información técnica automática
+Validación preventiva: Evita conflictos antes de que ocurran
+Integración perfecta: Sincronización con todos los sistemas
+Alertas operativas: Notificaciones de cambios críticos
+Automatización total: 90% de tareas manuales eliminadas
+
+PARA LA ORGANIZACIÓN:
+
+Revenue growth: Crecimiento promedio del 40% en utilización
+Margin improvement: 25% mejora en márgenes por optimización IA
+Operational efficiency: 85% reducción en tiempo de gestión
+Competitive advantage: Ventaja sostenible por tecnología IA
+Scalability infinita: Crece sin límites manteniendo control total
+
+El Módulo Paquetes TIER 0 transforma un simple catálogo de productos en un cerebro comercial inteligente que predice, optimiza y automatiza todo el ciclo de vida de productos publicitarios, maximizando revenue, mejorando márgenes y asegurando la satisfacción total del cliente.

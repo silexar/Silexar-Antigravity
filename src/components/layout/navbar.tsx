@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Home, FileText, Megaphone, BarChart3, Settings } from 'lucide-react';
+import { Home, FileText, Megaphone, BarChart3, Settings, Share2 } from 'lucide-react';
 
 interface NavItem {
     readonly href: string;
@@ -24,6 +24,7 @@ const navItems: NavItem[] = [
     { href: '/dashboard', label: 'Dashboard', icon: <Home className="w-5 h-5" /> },
     { href: '/campanas', label: 'Campañas', icon: <Megaphone className="w-5 h-5" /> },
     { href: '/contratos', label: 'Contratos', icon: <FileText className="w-5 h-5" /> },
+    { href: '/rrss', label: 'RRSS', icon: <Share2 className="w-5 h-5" /> },
     { href: '/reportes', label: 'Reportes', icon: <BarChart3 className="w-5 h-5" /> },
     { href: '/configuracion', label: 'Configuración', icon: <Settings className="w-5 h-5" /> },
 ];

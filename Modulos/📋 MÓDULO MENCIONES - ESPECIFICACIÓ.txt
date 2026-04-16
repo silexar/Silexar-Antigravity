@@ -1,0 +1,656 @@
+📋 MÓDULO MENCIONES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO MENCIONES?
+El Módulo Menciones es el Sistema Inteligente de Reportería de Emisión en Silexar Pulse. Funciona como el generador automático de reportes detallados de todo el contenido publicitario emitido, proporcionando documentación precisa, profesional y certificada de las menciones, spots y auspicios transmitidos por cada emisora en períodos específicos.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Ejecutivo de Ventas, este módulo es mi herramienta de validación:
+
+Genero reportes instantáneos para demostrar cumplimiento a clientes
+Exporto evidencia detallada de emisión para renovaciones de contrato
+Verifico que todas las menciones contractuales se emitieron correctamente
+Creo reportes personalizados para presentaciones comerciales
+
+Como Programador de Tráfico, uso este módulo para auditoría:
+
+Valido que la programación se ejecutó según lo planificado
+Identifico discrepancias entre lo programado y lo emitido
+Genero reportes de cumplimiento para clientes y administración
+Documento evidencia para procesos de conciliación
+
+Como Gerente Comercial, obtengo inteligencia operativa:
+
+Analizo patrones de emisión por emisora y período
+Verifico cumplimiento de contratos y compromisos comerciales
+Genero reportes consolidados para múltiples clientes
+Monitoreo calidad y consistency del contenido emitido
+
+Como Cliente/Anunciante, recibo transparencia total:
+
+Accedo a reportes detallados de mis campañas
+Verifico que mi inversión publicitaria se ejecutó correctamente
+Obtengo documentación certificada para auditorías internas
+Monitoreo efectividad y cumplimiento de acuerdos
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Emisoras: Hereda configuración y datos técnicos de cada emisora
+Módulo Cuñas: Obtiene textos, duraciones y metadatos de creatividades
+Módulo Contratos: Valida cumplimiento vs. especificaciones contractuales
+Módulo Conciliación: Utiliza datos verificados de emisión real
+Cortex-Sense: Integra certificación automática de emisión cuando disponible
+Cortex-Analytics: Proporciona insights inteligentes sobre patrones de emisión
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/menciones/
+├── domain/
+│   ├── entities/
+│   │   ├── ReporteMencion.ts (Entidad principal del reporte)
+│   │   ├── MencionEmitida.ts (Registro individual de mención)
+│   │   ├── FiltroReporte.ts (Criterios de búsqueda y filtrado)
+│   │   ├── ConfiguracionExportacion.ts (Formatos y templates de salida)
+│   │   ├── HistorialReportes.ts (Registro de reportes generados)
+│   │   ├── CertificacionEmision.ts (Validación de veracidad)
+│   │   └── TemplatePersonalizado.ts (Plantillas customizables)
+│   ├── value-objects/
+│   │   ├── PeriodoEmision.ts (Rango de fechas con validación)
+│   │   ├── RangoHorario.ts (Horario de inicio y fin)
+│   │   ├── FormatoExportacion.ts (PDF, Word, Excel, HTML)
+│   │   ├── CriterioOrdenamiento.ts (Ordenamiento de resultados)
+│   │   ├── EstadoReporte.ts (Generando, Completado, Error)
+│   │   ├── NivelDetalle.ts (Básico, Completo, Detallado)
+│   │   └── TipoMencion.ts (Spot, Auspicio, Mención, Promoción)
+│   └── repositories/
+│       ├── IReporteMencionRepository.ts
+│       ├── IMencionEmitidaRepository.ts
+│       ├── IHistorialReportesRepository.ts
+│       └── ITemplateRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── GenerarReporteMencionCommand.ts
+│   │   ├── ExportarReporteCommand.ts
+│   │   ├── ConfigurarTemplateCommand.ts
+│   │   ├── ProgramarReporteAutomaticoCommand.ts
+│   │   ├── CertificarEmisionCommand.ts
+│   │   └── NotificarReporteCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerMencionesEmitdasQuery.ts
+│   │   ├── BuscarMencionesPorCriterioQuery.ts
+│   │   ├── ObtenerHistorialReportesQuery.ts
+│   │   ├── GenerarVistaPreviewQuery.ts
+│   │   ├── ObtenerEstadisticasEmisionQuery.ts
+│   │   └── ValidarDisponibilidadDatosQuery.ts
+│   └── handlers/
+│       ├── ReporteMencionCommandHandler.ts
+│       ├── ExportacionHandler.ts
+│       ├── TemplateManagementHandler.ts
+│       ├── NotificacionHandler.ts
+│       └── CertificacionHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaReporteMencionRepository.ts
+│   │   ├── PrismaMencionEmitidaRepository.ts
+│   │   └── PrismaHistorialRepository.ts
+│   ├── external/
+│   │   ├── PDFGeneratorService.ts (Generación PDF avanzada)
+│   │   ├── WordDocumentService.ts (Generación DOCX)
+│   │   ├── ExcelGeneratorService.ts (Generación XLSX)
+│   │   ├── EmailDeliveryService.ts (Envío automático)
+│   │   ├── FileStorageService.ts (Almacenamiento seguro)
+│   │   ├── ConciliacionDataService.ts (Integración datos emisión)
+│   │   ├── CortexSenseIntegrationService.ts (Certificación IA)
+│   │   └── TemplateEngineService.ts (Motor de plantillas)
+│   └── messaging/
+│       ├── ReporteGeneradoEventPublisher.ts
+│       ├── ExportacionCompletadaPublisher.ts
+│       └── AlertaDiscrepanciaPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── ReporteMencionController.ts
+    │   ├── ExportacionController.ts
+    │   ├── PreviewController.ts
+    │   ├── HistorialController.ts
+    │   └── TemplateController.ts
+    ├── dto/
+    │   ├── GenerarReporteDto.ts
+    │   ├── FiltroMencionDto.ts
+    │   ├── ExportacionDto.ts
+    │   └── ConfiguracionTemplateDto.ts
+    └── middleware/
+        ├── ReporteAccessMiddleware.ts
+        ├── ExportacionSecurityMiddleware.ts
+        └── AuditoriaReportesMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE REPORTERÍA DE MENCIONES
+VISTA INICIAL DEL MÓDULO
+Header ejecutivo con métricas operativas:
+
+Título: "📋 Centro de Reportería de Menciones"
+Breadcrumb: "Dashboard > Reportes > Menciones"
+
+Panel de estado en tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 CENTRO DE REPORTERÍA - ESTADO OPERATIVO                     │
+│                                                                 │
+│ 8 Emisoras Disponibles    47,382 Menciones (Últimos 30 días)   │
+│ 156 Reportes Generados    23 Plantillas Configuradas           │
+│ 🔧 Última actualización: T13 Radio - Hace 5 minutos            │
+│ 📋 Reportes pendientes: 2 en cola • Tiempo estimado: 3 min     │
+└─────────────────────────────────────────────────────────────────┘
+WIZARD PRINCIPAL DE GENERACIÓN DE REPORTES
+Panel de configuración centralizado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 GENERADOR INTELIGENTE DE REPORTES DE MENCIONES             │
+├─────────────────────────────────────────────────────────────────┤
+│ PASO 1: Selección de Emisora                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Emisora: [Radio Corazón FM (99.3)          ▼]              │ │
+│ │ Estado: 🟢 Online • Última sincronización: Hace 2 min      │ │
+│ │ Disponibilidad datos: ✅ Completa                           │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ PASO 2: Período y Horario                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📅 Fecha específica: [07/08/2025        ] 📆                │ │
+│ │ ☐ Rango de fechas: [Del: _____ Al: _____]                  │ │
+│ │                                                             │ │
+│ │ 🕐 Horario: ○ Todo el día                                  │ │
+│ │           ● Rango específico: [06:00] a [23:59]            │ │
+│ │                                                             │ │
+│ │ ⚡ Accesos rápidos:                                         │ │
+│ │ [📅 Hoy] [📅 Ayer] [📅 Última Semana] [📅 Último Mes]     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ PASO 3: Filtros Avanzados (Opcional)                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🔍 Anunciante específico: [Todos            ▼]             │ │
+│ │ 🎵 Tipo de mención: [☑️Spots ☑️Auspicios ☑️Promociones]    │ │
+│ │ ⏱️ Duración: ○ Todas ○ Hasta 15s ○ 16-30s ○ Más de 30s   │ │
+│ │ 📋 Estado: [☑️Emitidas ☐Programadas ☐Incidencias]          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ PASO 4: Formato de Exportación                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📄 Formato: [● PDF  ○ Word  ○ Excel  ○ Múltiple]          │ │
+│ │ 🎨 Template: [Estándar MEV          ▼] [⚙️ Personalizar]   │ │
+│ │ 📊 Nivel detalle: [● Completo  ○ Resumen  ○ Solo textos]  │ │
+│ │ 🔐 Incluir certificación: [☑️ Firmar digitalmente]          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [🔍 Vista Previa] [📋 Generar Reporte] [📅 Programar] [⚙️ Guardar Config]│
+└─────────────────────────────────────────────────────────────────┘
+FUNCIONALIDADES AVANZADAS DEL GENERADOR
+Validación Inteligente en Tiempo Real:
+
+Disponibilidad de datos: Verifica que existen registros para el período seleccionado
+Estimación de contenido: "Se encontraron aproximadamente 247 menciones"
+Alertas automáticas: Si hay gaps en los datos o períodos sin información
+Sugerencias IA: "Cortex detecta mayor actividad en horario 08:00-10:00"
+
+Vista Previa Inteligente:
+Al hacer clic en "🔍 Vista Previa":
+┌─────────────────────────────────────────────────────────────────┐
+│ 👁️ VISTA PREVIA - Radio Corazón FM • 07/08/2025               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 Resumen encontrado:                                         │
+│ • Total menciones: 247                                         │
+│ • Spots comerciales: 189                                       │
+│ • Auspicios: 41                                                │
+│ • Promociones: 17                                              │
+│ • Anunciantes únicos: 34                                       │
+│                                                                 │
+│ 🕐 Distribución horaria:                                       │
+│ ████████████████████▓▓▓▓▓░░░ 06-10: 89 menciones              │
+│ ██████████▓▓▓▓▓▓░░░░░░░░░░░ 10-14: 67 menciones              │
+│ ████████████████▓▓▓▓░░░░░░░ 14-18: 78 menciones              │
+│ ██████████████▓▓▓▓▓▓▓░░░░░░ 18-22: 13 menciones              │
+│                                                                 │
+│ 📋 Muestra (primeras 3 menciones):                            │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 06:05 • SP001234 • Banco de Chile                          │ │
+│ │ "En Banco de Chile tenemos el crédito hipotecario..."       │ │
+│ │ ────────────────────────────────────────────────────────── │ │
+│ │ 06:18 • SP001235 • Coca-Cola                               │ │
+│ │ "Destapa la felicidad con Coca-Cola, la chispa..."         │ │
+│ │ ────────────────────────────────────────────────────────── │ │
+│ │ 06:25 • AUS0089 • Auspicio Matinal                         │ │
+│ │ "Buenos días Santiago, junto a nuestros amigos de..."       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ⚡ Tiempo estimado generación: 45 segundos                     │
+│ 📄 Tamaño estimado archivo: 2.3 MB (PDF) / 890 KB (Word)      │
+│                                                                 │
+│ [✅ Confirmar Generación] [✏️ Ajustar Filtros] [❌ Cancelar]   │
+└─────────────────────────────────────────────────────────────────┘
+📄 MOTOR DE GENERACIÓN DE REPORTES TIER 0
+PROCESO DE GENERACIÓN INTELIGENTE
+Fase 1: Recopilación de Datos
+🔄 Generando Reporte... (Paso 1 de 4)
+████████░░░░░░░░░░░░░░░░░░░░ 30%
+
+🔍 Consultando base de datos...
+✅ Conectado a Radio Corazón FM
+✅ Período validado: 07/08/2025 06:00-23:59
+✅ Encontradas 247 menciones
+🔍 Obteniendo textos de creatividades...
+✅ 189 textos completos recuperados
+⚠️ 3 menciones sin texto (solo metadata)
+Fase 2: Procesamiento y Validación
+🔄 Generando Reporte... (Paso 2 de 4)
+████████████████░░░░░░░░░░░░ 60%
+
+🧠 Cortex-Sense validando emisiones...
+✅ 244 menciones certificadas automáticamente
+⚠️ 3 menciones requieren validación manual
+🔗 Vinculando con contratos activos...
+✅ 221 menciones asociadas a contratos
+📊 Calculando métricas de cumplimiento...
+Fase 3: Formateo y Diseño
+🔄 Generando Reporte... (Paso 3 de 4)
+████████████████████████░░░░ 85%
+
+🎨 Aplicando template "Estándar MEV"...
+📄 Generando estructura PDF...
+🖼️ Añadiendo logos y branding...
+📊 Creando gráficos de distribución...
+🔐 Aplicando firma digital...
+Fase 4: Finalización y Entrega
+✅ Reporte Completado! (4 de 4)
+████████████████████████████ 100%
+
+📁 Archivo generado: MEV_RadioCorazon_20250807.pdf
+📊 Tamaño: 2.1 MB • 247 menciones procesadas
+🕐 Tiempo total: 38 segundos
+🔐 Certificado digitalmente por Silexar Pulse
+ESTRUCTURA DEL REPORTE GENERADO (PDF/WORD)
+Portada Profesional:
+┌─────────────────────────────────────────────────────────────────┐
+│                    [LOGO EMISORA]                               │
+│                                                                 │
+│               REPORTE DE MENCIONES EMITIDAS                     │
+│                                                                 │
+│ Emisora: Radio Corazón FM (99.3 MHz)                           │
+│ Período: 07 de Agosto de 2025                                  │
+│ Horario: 06:00 - 23:59 hrs                                     │
+│                                                                 │
+│ Generado por: Silexar Pulse                                     │
+│ Fecha generación: 15 de Noviembre de 2024 - 14:32 hrs         │
+│ Usuario: admin@radiocorazon.com                                 │
+│                                                                 │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
+│                                                                 │
+│ 🔐 Documento certificado digitalmente                          │
+│ 📊 247 menciones procesadas                                    │
+│ ✅ Validado por sistema Cortex-Sense                           │
+│                                                                 │
+│                    [CÓDIGO QR VERIFICACIÓN]                     │
+└─────────────────────────────────────────────────────────────────┘
+Resumen Ejecutivo:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 RESUMEN EJECUTIVO                                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ Total de Menciones Emitidas: 247                               │
+│                                                                 │
+│ Distribución por Tipo:                                         │
+│ • Spots Comerciales:     189 (76.5%)                          │
+│ • Auspicios:             41  (16.6%)                          │
+│ • Promociones:           17  (6.9%)                           │
+│                                                                 │
+│ Anunciantes Únicos: 34                                         │
+│                                                                 │
+│ Distribución Horaria:                                          │
+│ • 06:00-10:00 (Prime AM):    89 menciones (36.0%)             │
+│ • 10:00-14:00 (Mañana):      67 menciones (27.1%)             │
+│ • 14:00-18:00 (Tarde):       78 menciones (31.6%)             │
+│ • 18:00-22:00 (Prime PM):    13 menciones (5.3%)              │
+│                                                                 │
+│ Estado de Certificación:                                       │
+│ • Certificadas automáticamente: 244 (98.8%)                   │
+│ • Pendientes de validación:     3 (1.2%)                      │
+│                                                                 │
+│ Cumplimiento Contractual: 97.2% ✅                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+Detalle de Menciones (Formato Principal):
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 DETALLE DE MENCIONES EMITIDAS                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ ⏰ 06:05:15 hrs                                                │
+│ 🆔 Código SP: SP001234                                         │
+│ 🏢 Anunciante: BANCO DE CHILE                                  │
+│ 🎵 Nombre Cuña: "Crédito Hipotecario Agosto 2025"             │
+│ ⏱️ Duración: 00:00:30                                          │
+│ 📊 Estado: ✅ Certificado                                      │
+│                                                                 │
+│ 📝 TEXTO COMPLETO:                                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ "En Banco de Chile tenemos el crédito hipotecario que       │ │
+│ │ estabas esperando. Con tasas desde 3.5% anual y hasta      │ │
+│ │ 30 años plazo. Visítanos en nuestras sucursales o en       │ │
+│ │ www.bancochile.cl. Banco de Chile, contigo siempre."       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
+│                                                                 │
+│ ⏰ 06:18:42 hrs                                                │
+│ 🆔 Código SP: SP001235                                         │
+│ 🏢 Anunciante: COCA-COLA                                       │
+│ 🎵 Nombre Cuña: "Destapa la Felicidad Verano"                 │
+│ ⏱️ Duración: 00:00:20                                          │
+│ 📊 Estado: ✅ Certificado                                      │
+│                                                                 │
+│ 📝 TEXTO COMPLETO:                                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ "Destapa la felicidad con Coca-Cola, la chispa de la vida. │ │
+│ │ En estos días de calor, refresca tu día con el sabor       │ │
+│ │ original que nunca pasa de moda. Coca-Cola, destapa        │ │
+│ │ la felicidad."                                              │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
+│                                                                 │
+│ [Continúa con todas las menciones...]                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+Anexos y Certificación:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANEXO: ANÁLISIS ESTADÍSTICO                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ Top 5 Anunciantes por Volumen:                                │
+│ 1. Banco de Chile         - 23 menciones (9.3%)               │
+│ 2. Coca-Cola             - 18 menciones (7.3%)               │
+│ 3. Supermercados Jumbo   - 15 menciones (6.1%)               │
+│ 4. Movistar              - 12 menciones (4.9%)               │
+│ 5. Falabella             - 11 menciones (4.5%)               │
+│                                                                 │
+│ Horarios de Mayor Actividad:                                  │
+│ • 08:00-09:00: 45 menciones                                   │
+│ • 07:00-08:00: 31 menciones                                   │
+│ • 15:00-16:00: 28 menciones                                   │
+│                                                                 │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
+│                                                                 │
+│ 🔐 CERTIFICACIÓN DIGITAL                                       │
+│                                                                 │
+│ Este documento ha sido generado automáticamente por            │
+│ Silexar Pulse y certificado digitalmente usando tecnología     │
+│ blockchain para garantizar su autenticidad e integridad.       │
+│                                                                 │
+│ Hash SHA-256: a3f5d8e9c2b1f4a6e8d7c9b2a5f8e1d4c7b9a2f5e8d1   │
+│ Timestamp: 2025-08-07T14:32:15.234Z                           │
+│ Validador: Cortex-Sense v3.2                                  │
+│                                                                 │
+│ Para verificar la autenticidad de este documento,              │
+│ visite: https://verify.silexar.com/[codigo-unico]             │
+│                                                                 │
+│                     [FIRMA DIGITAL SILEXAR]                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+📊 FORMATOS DE EXPORTACIÓN MÚLTIPLES
+EXPORTACIÓN EXCEL (XLSX) - DATOS ESTRUCTURADOS
+Hoja 1: "Resumen Ejecutivo"
+│ A  │ B                    │ C        │ D           │ E            │
+├────┼──────────────────────┼──────────┼─────────────┼──────────────┤
+│ 1  │ REPORTE MENCIONES    │          │             │              │
+│ 2  │ Radio Corazón FM     │          │             │              │
+│ 3  │ 07/08/2025           │          │             │              │
+│ 4  │                      │          │             │              │
+│ 5  │ RESUMEN              │          │             │              │
+│ 6  │ Total Menciones:     │ 247      │             │              │
+│ 7  │ Spots Comerciales:   │ 189      │ 76.5%       │              │
+│ 8  │ Auspicios:           │ 41       │ 16.6%       │              │
+│ 9  │ Promociones:         │ 17       │ 6.9%        │              │
+│ 10 │ Anunciantes Únicos:  │ 34       │             │              │
+Hoja 2: "Detalle Completo"
+│ A      │ B         │ C              │ D                  │ E        │ F                    │
+├────────┼───────────┼────────────────┼────────────────────┼──────────┼──────────────────────┤
+│ HORA   │ CÓDIGO SP │ ANUNCIANTE     │ NOMBRE CUÑA        │ DURACIÓN │ TEXTO COMPLETO       │
+├────────┼───────────┼────────────────┼────────────────────┼──────────┼──────────────────────┤
+│ 06:05  │ SP001234  │ BANCO DE CHILE │ Crédito Hipotec... │ 00:00:30 │ En Banco de Chile... │
+│ 06:18  │ SP001235  │ COCA-COLA      │ Destapa Felicidad  │ 00:00:20 │ Destapa la felici... │
+│ 06:25  │ AUS0089   │ VARIOS         │ Auspicio Matinal   │ 00:00:15 │ Buenos días Santi... │
+Hoja 3: "Análisis por Horario"
+│ A             │ B          │ C     │ D            │ E              │
+├───────────────┼────────────┼───────┼──────────────┼────────────────┤
+│ RANGO HORARIO │ MENCIONES  │ %     │ SPOTS        │ AUSPICIOS      │
+├───────────────┼────────────┼───────┼──────────────┼────────────────┤
+│ 06:00-07:00   │ 25         │ 10.1% │ 20           │ 5              │
+│ 07:00-08:00   │ 31         │ 12.6% │ 25           │ 6              │
+│ 08:00-09:00   │ 45         │ 18.2% │ 38           │ 7              │
+EXPORTACIÓN WORD (DOCX) - DOCUMENTO PROFESIONAL
+Características Avanzadas:
+
+Formato corporativo con headers y footers personalizados
+Tabla de contenidos automática con hipervínculos
+Estilos profesionales aplicados automáticamente
+Gráficos embebidos (distribución horaria, por anunciante)
+Marcas de agua con logo de la emisora
+Numeración de páginas con información de confidencialidad
+
+Estructura del Documento Word:
+
+Portada corporativa con todos los logos y datos
+Índice automático con navegación por hipervínculos
+Resumen ejecutivo con gráficos embebidos
+Detalle por horarios con tablas formateadas
+Anexos estadísticos con análisis automático
+Certificación digital en página final
+
+🚀 FUNCIONALIDADES AVANZADAS TIER 0
+PROGRAMACIÓN DE REPORTES AUTOMÁTICOS
+Configurador de Reportes Recurrentes:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📅 PROGRAMACIÓN DE REPORTES AUTOMÁTICOS                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 📋 Nombre del programa: [Reporte Diario MEV      ]             │
+│                                                                 │
+│ 🎛️ Configuración:                                              │
+│ • Emisora: [Radio Corazón FM             ▼]                    │
+│ • Período: [● Diario  ○ Semanal  ○ Mensual]                   │
+│ • Horario generación: [23:30] hrs                              │
+│ • Formato: [☑️ PDF  ☑️ Excel  ☐ Word]                          │
+│                                                                 │
+│ 📧 Distribución automática:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Destinatarios:                                              │ │
+│ │ • admin@radiocorazon.com (Administrador)                    │ │
+│ │ • comercial@radiocorazon.com (Equipo Comercial)             │ │
+│ │ • programacion@radiocorazon.com (Tráfico)                   │ │
+│ │                                                             │ │
+│ │ [➕ Agregar] [✏️ Editar Lista] [🧪 Envío de Prueba]         │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ⚙️ Opciones avanzadas:                                         │
+│ • ☑️ Solo días laborales                                        │
+│ • ☑️ Incluir análisis comparativo vs. día anterior             │
+│ • ☑️ Alerta si menos de X menciones detectadas                  │
+│ • ☑️ Backup automático en Drive corporativo                     │
+│                                                                 │
+│ [✅ Activar Programa] [🧪 Test] [❌ Cancelar]                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA DE PLANTILLAS PERSONALIZABLES
+Editor de Plantillas Avanzado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎨 EDITOR DE PLANTILLAS PERSONALIZADAS                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ Plantilla: [MEV Estándar                    ▼] [🆕 Nueva]      │
+│                                                                 │
+│ 📄 Elementos configurables:                                    │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏢 ENCABEZADO                                               │ │
+│ │ • Logo emisora: [📁 Seleccionar] ☑️ Incluir                │ │
+│ │ • Información corporativa: ☑️ Incluir                       │ │
+│ │ • Datos de contacto: ☐ Incluir                             │ │
+│ │                                                             │ │
+│ │ 📊 RESUMEN EJECUTIVO                                        │ │
+│ │ • Métricas principales: ☑️ Incluir                          │ │
+│ │ • Gráfico distribución: ☑️ Incluir                         │ │
+│ │ • Comparativo histórico: ☐ Incluir                         │ │
+│ │                                                             │ │
+│ │ 📋 DETALLE DE MENCIONES                                     │ │
+│ │ • Formato completo: ☑️ Texto completo                      │ │
+│ │ • Agrupación: [Por horario     ▼]                          │ │
+│ │ • Información técnica: ☑️ Códigos SP ☑️ Duraciones         │ │
+│ │                                                             │ │
+│ │ 📈 ANEXOS                                                   │ │
+│ │ • Análisis estadístico: ☑️ Incluir                         │ │
+│ │ • Top anunciantes: ☑️ Incluir                              │ │
+│ │ • Certificación digital: ☑️ Incluir                        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎨 Personalización visual:                                     │
+│ • Colores corporativos: [#1E40AF] [#10B981] [Personalizar]     │
+│ • Fuente principal: [Inter              ▼]                     │
+│ • Tamaño de fuente: [12pt               ▼]                     │
+│                                                                 │
+│ [👁️ Vista Previa] [💾 Guardar] [📤 Exportar Template] [🗑️ Eliminar]│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+CERTIFICACIÓN BLOCKCHAIN E INTEGRIDAD
+Sistema de Verificación Inmutable:
+
+Hash SHA-256 de cada reporte generado
+Timestamp blockchain para certificación temporal
+Firma digital con certificado de Silexar Pulse
+QR Code único para verificación online
+API de verificación pública para terceros
+
+Proceso de Certificación:
+
+Generación: Reporte se crea con contenido verificado
+Hash: Se calcula huella digital única del contenido
+Blockchain: Se registra en blockchain privada de Silexar
+Firma: Se aplica firma digital corporativa
+Verificación: QR code permite validar autenticidad online
+
+HISTORIAL Y GESTIÓN DE REPORTES
+Centro de Gestión de Reportes:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📚 CENTRO DE GESTIÓN DE REPORTES                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 🔍 Buscar: [                                    ] [🔍]          │
+│ 📅 Filtros: [📅 Último mes ▼] [📻 Todas emisoras ▼] [👤 Todos ▼]│
+│                                                                 │
+│ 📋 Historial de reportes (156 total):                          │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📄 MEV_RadioCorazon_20250807.pdf                           │ │
+│ │ 👤 admin@empresa.com • 🕐 15/11/2024 14:32                 │ │
+│ │ 📊 247 menciones • 📁 2.1 MB • ✅ Certificado              │ │
+│ │ [📥 Descargar] [📧 Reenviar] [🔍 Ver Detalles] [🗑️]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 MEV_T13Radio_20250806.xlsx                              │ │
+│ │ 👤 prog@empresa.com • 🕐 14/11/2024 23:30                  │ │
+│ │ 📊 189 menciones • 📁 845 KB • ✅ Certificado              │ │
+│ │ [📥 Descargar] [📧 Reenviar] [🔍 Ver Detalles] [🗑️]        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 Estadísticas del historial:                                 │
+│ • Total reportes generados: 156                                │
+│ • Menciones procesadas: 45,672                                 │
+│ • Emisoras cubiertas: 8                                        │
+│ • Usuarios activos: 12                                         │
+│ • Tamaño total archivos: 247 MB                               │
+│                                                                 │
+│ [🗂️ Archivo Masivo] [📊 Estadísticas Detalladas] [⚙️ Configurar]│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+🔗 INTEGRACIONES AVANZADAS
+INTEGRACIÓN CON CORTEX-SENSE
+Certificación automática de emisiones:
+
+Validación de que las menciones reportadas se emitieron realmente
+Detección automática de discrepancias vs. programación
+Scoring de confiabilidad por emisora
+Alertas automáticas de inconsistencias
+
+INTEGRACIÓN CON MÓDULO CONTRATOS
+Validación de cumplimiento contractual:
+
+Verificación automática vs. especificaciones de contrato
+Alertas de menciones faltantes o excedentes
+Cálculo automático de cumplimiento porcentual
+Generación de reportes de compliance
+
+INTEGRACIÓN CON MÓDULO CUÑAS
+Sincronización automática de contenidos:
+
+Actualización automática de textos modificados
+Versionado de creatividades en reportes
+Alertas de cuñas vencidas incluidas en reportes
+Validación de coherencia entre programado y disponible
+
+API PARA CLIENTES VIP
+Acceso directo para clientes premium:
+javascript// Ejemplo de API para clientes
+GET /api/v1/client/menciones
+{
+  "client_id": "banco-chile",
+  "date_from": "2025-08-07",
+  "date_to": "2025-08-07",
+  "emissions": ["corazon-fm", "t13-radio"],
+  "format": "json"
+}
+
+// Respuesta automática
+{
+  "total_mentions": 23,
+  "emissions": [
+    {
+      "time": "06:05:15",
+      "sp_code": "SP001234",
+      "duration": "00:00:30",
+      "text": "En Banco de Chile tenemos...",
+      "certified": true
+    }
+  ],
+  "compliance": 97.2,
+  "generated_at": "2024-11-15T14:32:15Z"
+}
+🚀 FUNCIONALIDADES FUTURAS ROADMAP
+Versión 2.0: IA Generativa
+
+Resúmenes automáticos de campañas con insights de performance
+Análisis de sentimiento del contenido publicitario
+Sugerencias de optimización basadas en patrones detectados
+Predicciones de efectividad por horario y tipo de mención
+
+Versión 3.0: Análisis Competitivo
+
+Monitoreo de competencia en otras emisoras
+Benchmarking automático de share of voice
+Alertas de oportunidades de mercado
+Análisis de gaps en cobertura publicitaria
+
+🎯 CONCLUSIÓN TIER 0
+El Módulo Menciones transforma la reportería tradicional en un sistema de inteligencia publicitaria que:
+Para el Ejecutivo Comercial:
+
+Validación instantánea: Demuestra cumplimiento a clientes al momento
+Documentación profesional: Reportes que generan confianza y credibilidad
+Eficiencia operativa: 95% menos tiempo en preparación de reportes
+Ventaja competitiva: Capacidad de certificación que competencia no tiene
+
+Para el Administrador:
+
+Control total: Visibilidad completa de toda la operación publicitaria
+Automatización: Reportes se generan y distribuyen automáticamente
+Auditoría: Historial completo e inmutable de toda la actividad
+Compliance: Cumplimiento automático de requerimientos de clientes
+
+Para la Organización:
+
+Transparencia total: Eliminación de disputas por falta de documentación
+Eficiencia operativa: 80% reducción en tiempo de gestión de reportes
+Diferenciación: Servicio que ningún competidor puede igualar
+Escalabilidad: Soporta crecimiento ilimitado sin incremento de costos
+
+El módulo establece un nuevo estándar en la industria, convirtiendo una tarea administrativa tradicional en una ventaja competitiva estratégica que fortalece las relaciones con clientes y optimiza la operación interna.

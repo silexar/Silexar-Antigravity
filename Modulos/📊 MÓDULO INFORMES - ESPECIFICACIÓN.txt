@@ -1,0 +1,1146 @@
+📊 MÓDULO INFORMES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO INFORMES?
+El Módulo Informes es el cerebro analítico y centro de inteligencia estratégica de Silexar Pulse. Funciona como la plataforma de Business Intelligence más avanzada de la industria, que transforma datos operativos en insights accionables, convierte información histórica en predicciones precisas y democratiza el acceso a la inteligencia empresarial para todos los niveles organizacionales. Es el puente entre los datos y las decisiones estratégicas que impulsan el crecimiento exponencial.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como CEO/Gerente General, este módulo es mi centro de comando estratégico:
+
+Dashboard ejecutivo con KPIs críticos actualizados en tiempo real
+Predicciones de IA sobre performance futura de la empresa
+Análisis comparativo automático vs competencia y mercado
+Reportes ejecutivos que se generan y envían automáticamente
+Insights de oportunidades de crecimiento detectadas por machine learning
+
+Como Gerente Comercial, vivo aquí para optimizar mi equipo:
+
+Performance de cada ejecutivo con análisis predictivo de cierre
+Análisis de pipeline con probabilidades de conversión por IA
+Segmentación automática de clientes por potencial de crecimiento
+Reportes de efectividad de campañas con ROI calculado automáticamente
+Comparación de mi performance vs benchmarks de la industria
+
+Como CFO/Controller, obtengo inteligencia financiera crítica:
+
+Cash flow predictivo con precisión del 95%+ basado en IA
+Análisis de riesgo crediticio con scoring dinámico
+Reportes regulatorios generados automáticamente
+Profitability analysis por cliente, producto, canal y período
+Variance analysis con explicaciones automáticas de Cortex-Insights
+
+Como Ejecutivo de Ventas, accedo a intelligence comercial:
+
+Mi performance personal vs equipo con sugerencias de mejora
+Análisis predictivo de mis cuentas: cuáles renovar, cuáles están en riesgo
+Reportes de efectividad de mis campañas con clientes específicos
+Comparación automática de mis resultados vs histórico personal
+Insights de Cortex sobre mejores timing y estrategias por cliente
+
+INTEGRACIÓN ECOSYSTEM SILEXAR:
+
+Módulo Configuración: Hereda configuraciones de permisos y políticas de acceso
+Módulo Anunciantes: Consume datos de clientes para análisis de performance y predictions
+Módulo Contratos: Analiza pipeline, conversiones y trends comerciales
+Módulo Cuñas: Métricas de efectividad creativa y performance de contenido
+Módulo Exportación: Analytics de eficiencia operativa y confiabilidad técnica
+Cortex-Analytics: IA especializada en Business Intelligence y predicciones
+Cortex-Insights: Natural Language Processing para explicar insights automáticamente
+Cortex-Predict: Machine Learning para forecasting y trend analysis
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/informes/
+├── domain/
+│   ├── entities/
+│   │   ├── Reporte.ts (Reporte principal con metadatos)
+│   │   ├── PlantillaReporte.ts (Templates predefinidos y personalizados)
+│   │   ├── ConsultaPersonalizada.ts (Query builder avanzado)
+│   │   ├── VisualizacionDatos.ts (Gráficos, tablas, dashboards)
+│   │   ├── AnalisisComparativo.ts (Comparación archivos externos)
+│   │   ├── MetricaCalculada.ts (KPIs y métricas derivadas)
+│   │   ├── InsightInteligente.ts (Findings automáticos de IA)
+│   │   ├── PrediccionTendencia.ts (Forecasting y trend analysis)
+│   │   ├── AlertaAnalytics.ts (Alertas basadas en anomalías)
+│   │   ├── DashboardEjecutivo.ts (Dashboards por rol)
+│   │   ├── ReporteAutomatizado.ts (Reportes programados)
+│   │   ├── ExportacionAvanzada.ts (Export en múltiples formatos)
+│   │   ├── ComparadorArchivos.ts (File comparison engine)
+│   │   ├── AnalisisNLP.ts (Natural Language Processing)
+│   │   └── AuditoriaReportes.ts (Tracking de acceso y uso)
+│   ├── value-objects/
+│   │   ├── TipoReporte.ts (Categorización inteligente)
+│   │   ├── PeriodoAnalisis.ts (Rangos temporales inteligentes)
+│   │   ├── FormatoExportacion.ts (Excel, PDF, CSV, JSON, etc.)
+│   │   ├── FiltroAvanzado.ts (Filtros con lógica compleja)
+│   │   ├── MetricaPersonalizada.ts (KPIs definidos por usuario)
+│   │   ├── ConfiguracionGrafico.ts (Visualizaciones personalizadas)
+│   │   ├── ParametroComparacion.ts (Settings de comparación)
+│   │   ├── NivelConfianza.ts (Confidence levels para IA)
+│   │   ├── CategorizacionDatos.ts (Data classification automática)
+│   │   └── ContextoAnalisis.ts (Contexto para interpretación IA)
+│   └── repositories/
+│       ├── IReporteRepository.ts
+│       ├── IPlantillaRepository.ts
+│       ├── IDatosAnalyticsRepository.ts
+│       ├── IVisualizacionRepository.ts
+│       ├── IComparacionRepository.ts
+│       ├── IInsightsRepository.ts
+│       └── IAuditoriaRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── GenerarReporteCommand.ts
+│   │   ├── CrearPlantillaCommand.ts
+│   │   ├── EjecutarAnalisisCommand.ts
+│   │   ├── CompararArchivosCommand.ts
+│   │   ├── ProgramarReporteCommand.ts
+│   │   ├── ExportarReporteCommand.ts
+│   │   ├── GenerarInsightsCommand.ts
+│   │   ├── CrearDashboardCommand.ts
+│   │   ├── ConfigurarAlertaCommand.ts
+│   │   ├── AnalyzarTendenciasCommand.ts
+│   │   ├── OptimizarPerformanceCommand.ts
+│   │   └── GenerarPrediccionesCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerReportesPredefinidosQuery.ts
+│   │   ├── BuscarDatosAnalyticsQuery.ts
+│   │   ├── GenerarVisualizacionQuery.ts
+│   │   ├── ObtenerInsightsAutomaticosQuery.ts
+│   │   ├── CalcularMetricasAvanzadasQuery.ts
+│   │   ├── DetectarAnomalíasQuery.ts
+│   │   ├── GenerarBenchmarkingQuery.ts
+│   │   ├── PredecirTendenciasQuery.ts
+│   │   ├── AnalyzarComparacionesQuery.ts
+│   │   ├── ObtenerDashboardPersonalizadoQuery.ts
+│   │   ├── GenerarNLPSummaryQuery.ts
+│   │   └── ValidarCalidadDatosQuery.ts
+│   └── handlers/
+│       ├── ReporteCommandHandler.ts
+│       ├── AnalyticsQueryHandler.ts
+│       ├── VisualizacionHandler.ts
+│       ├── ComparacionAvanzadaHandler.ts
+│       ├── InteligenciaArtificialHandler.ts
+│       ├── ExportacionPersonalizadaHandler.ts
+│       ├── InsightsAutomaticosHandler.ts
+│       ├── PredictiveAnalyticsHandler.ts
+│       ├── NLPProcessingHandler.ts
+│       └── AutomationSchedulerHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaReporteRepository.ts
+│   │   ├── PrismaAnalyticsRepository.ts
+│   │   ├── PrismaVisualizacionRepository.ts
+│   │   └── PrismaInsightsRepository.ts
+│   ├── external/
+│   │   ├── CortexAnalyticsAdvancedService.ts (IA Business Intelligence)
+│   │   ├── CortexInsightsService.ts (Natural Language Insights)
+│   │   ├── CortexPredictService.ts (Machine Learning Predictions)
+│   │   ├── PowerBIIntegrationService.ts (Microsoft Power BI)
+│   │   ├── TableauConnectorService.ts (Tableau Integration)
+│   │   ├── LookerStudioService.ts (Google Looker Studio)
+│   │   ├── ExcelAdvancedExportService.ts (Excel con macros y fórmulas)
+│   │   ├── PDFReportGeneratorService.ts (PDF profesional)
+│   │   ├── DataVisualizationService.ts (D3.js, Chart.js)
+│   │   ├── StatisticalAnalysisService.ts (R, Python integrations)
+│   │   ├── BigQueryIntegrationService.ts (Google BigQuery)
+│   │   ├── SnowflakeConnectorService.ts (Data warehouse)
+│   │   ├── ElasticsearchService.ts (Search y analytics)
+│   │   ├── RedashIntegrationService.ts (Open source BI)
+│   │   ├── DataComparatorService.ts (File comparison engine)
+│   │   ├── NLPProcessorService.ts (Natural Language Processing)
+│   │   ├── MLModelService.ts (Machine Learning models)
+│   │   ├── AnomalyDetectionService.ts (Detección anomalías)
+│   │   ├── ForecastingEngineService.ts (Time series forecasting)
+│   │   ├── BenchmarkingService.ts (Industry benchmarks)
+│   │   ├── DataQualityService.ts (Data validation y cleaning)
+│   │   ├── EmailReportingService.ts (Automated email reports)
+│   │   ├── SlackIntegrationService.ts (Slack notifications)
+│   │   ├── WebhookNotificationService.ts (Custom notifications)
+│   │   └── CloudStorageService.ts (Report storage y backup)
+│   └── messaging/
+│       ├── ReporteEventPublisher.ts
+│       ├── AnalyticsInsightPublisher.ts
+│       ├── PredictionAlertPublisher.ts
+│       └── AutomationEventPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── ReporteController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── VisualizacionController.ts
+    │   ├── ComparacionController.ts
+    │   ├── InsightsController.ts
+    │   ├── DashboardController.ts
+    │   ├── ExportacionController.ts
+    │   ├── AutomationController.ts
+    │   ├── MobileReportController.ts
+    │   └── APIReportController.ts
+    ├── dto/
+    │   ├── GenerarReporteDto.ts
+    │   ├── CrearPlantillaDto.ts
+    │   ├── ConfigurarAnalysisDto.ts
+    │   ├── CompararArchivosDto.ts
+    │   ├── ExportarReporteDto.ts
+    │   └── ProgramarReporteDto.ts
+    └── middleware/
+        ├── ReportAccessMiddleware.ts
+        ├── DataPrivacyMiddleware.ts
+        ├── PerformanceOptimizationMiddleware.ts
+        └── AuditTrailMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE INTELIGENCIA ANALÍTICA
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando analítico:
+
+Título: "📊 Centro de Inteligencia Analítica"
+Breadcrumb: "Dashboard > Informes"
+
+Panel de estado analítico tiempo real:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 INTELIGENCIA ANALÍTICA TIEMPO REAL                          │
+│                                                                 │
+│ 2,847 Reportes Generados   156 Templates Activos   99.2% Data Quality│
+│ 47 Insights Nuevos Hoy    23 Alertas Predictivas   847 TB Procesados│
+│ 🎯 Top Insight: Revenue predicho +23% próximo trimestre        │
+│ 🤖 Cortex detectó: 15 oportunidades de optimización no evidentes│
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO ANALÍTICO AVANZADO:
+Búsqueda inteligente con NLP:
+
+Placeholder: "🔍 'performance ejecutivo Carlos', 'tendencia revenue Q4', 'comparar vs competencia'..."
+IA Conversacional: Entiende preguntas en lenguaje natural
+Sugerencias predictivas con contexto:
+
+"Top 10 clientes por potencial de crecimiento"
+"Análisis de churn risk por industria"
+"Forecast accuracy vs realidad últimos 6 meses"
+"Ejecutivos que superarán meta este mes"
+
+
+
+Filtros inteligentes de análisis:
+Tipo de Análisis:
+
+📊 Descriptivo (¿Qué pasó?)
+🔍 Diagnóstico (¿Por qué pasó?)
+🔮 Predictivo (¿Qué pasará?)
+💡 Prescriptivo (¿Qué hacer?)
+🎯 Comparativo (¿Cómo vs otros?)
+
+Nivel de Complejidad:
+
+⚡ Express (5 min o menos)
+📋 Standard (Análisis completo)
+🔬 Avanzado (Deep dive con ML)
+🏆 Ejecutivo (C-level ready)
+🤖 IA Automático (Cortex full power)
+
+Audiencia del Reporte:
+
+👑 C-Level (CEO, CFO, CTO)
+💼 Gerencial (Managers y directores)
+📊 Operacional (Jefes y supervisores)
+👤 Individual (Personal analytics)
+🌐 Board/Investors (Consejo directorio)
+
+Centro de acciones analíticas:
+
+"⚡ Quick Insight" (Pregunta y obtén respuesta IA)
+"🏗️ Report Builder" (Constructor visual avanzado)
+"🎭 Template Gallery" (Galería de templates profesionales)
+"🔬 Deep Analytics" (Análisis profundo con ML)
+"📊 Executive Dashboard" (Dashboard C-level)
+"🤖 Cortex Autopilot" (IA genera reportes automáticamente)
+
+TABLA DE REPORTES - INTELIGENCIA OPERATIVA:
+1. Columna "Reporte/IA Insights" (320px):
+┌─────────────────────────────────────┐
+│ 📊 Performance Comercial Q4         │
+│ 🎯 Ejecutivo • Actualizado hace 2h  │
+│ 🧠 3 insights críticos detectados   │
+│ 💡 "Revenue 15% sobre predicción"   │
+│ 🔥 Hot: Requiere acción inmediata   │
+└─────────────────────────────────────┘
+
+Título: Nombre descriptivo con contexto automático
+Tipo y frecuencia: Categorización inteligente
+IA Insights: Número de findings automáticos
+Preview: Insight más importante destacado
+Status: Prioridad calculada por relevancia
+
+2. Columna "Métricas Clave/Trends" (200px):
+┌─────────────────────────────────┐
+│ 💰 $2.8M Total Revenue         │
+│ 📈 +23% vs Período Anterior    │
+│ 🎯 94% Goal Achievement        │
+│ 📊 Trend: ↗️ Exponencial       │
+│ 🔮 Predict: +15% próximo mes   │
+└─────────────────────────────────┘
+
+Valor principal: Métrica más importante del reporte
+Comparativo: Vs período anterior con % de cambio
+Achievement: Porcentaje de meta/objetivo cumplido
+Trend: Dirección con análisis visual
+Predicción: Forecast automático de IA
+
+3. Columna "Audiencia/Distribución" (150px):
+┌─────────────────┐
+│ 👑 C-Level      │
+│ 📧 3 Recipients │
+│ ⏰ Enviado:     │
+│    Hoy 08:00    │
+│ 📱 Mobile: ✅   │
+└─────────────────┘
+
+Target: Nivel organizacional del reporte
+Recipients: Cantidad de destinatarios
+Delivery: Timestamp de última entrega
+Mobile: Optimización para dispositivos móviles
+
+4. Columna "Data Sources/Quality" (160px):
+┌─────────────────┐
+│ 🗃️ 8 Sources    │
+│ ✅ 99.7% Quality│
+│ 📊 156K Records│
+│ ⏱️ Real-time   │
+│ 🔄 Last: 2h ago │
+└─────────────────┘
+
+Sources: Cantidad de fuentes de datos integradas
+Quality: Score de calidad de datos automático
+Volume: Cantidad de registros procesados
+Freshness: Frecuencia de actualización
+Last update: Timestamp de última actualización
+
+5. Columna "Performance/Impact" (140px):
+┌─────────────────┐
+│ ⚡ 12.3 seg     │
+│ 🎯 8.7 Rating   │
+│ 👁️ 156 Views   │
+│ 📊 15 Insights  │
+│ 💡 4 Actions    │
+└─────────────────┘
+
+Speed: Tiempo de generación del reporte
+Rating: Calificación promedio de usuarios
+Engagement: Views y interacciones
+Insights: Cantidad de findings automáticos
+Actions: Acciones recomendadas por IA
+
+6. Columna "Acciones Inteligentes" (180px):
+┌─────────────────┐
+│ [👁️] [📊] [🤖] │
+│ [📧] [🔄] [⚙️] │
+│ [📱] [💾] [🎯] │
+└─────────────────┘
+
+👁️ Ver: Reporte completo con interactividad
+📊 Análisis: Deep dive con ML y correlaciones
+🤖 IA: Insights automáticos y explicaciones
+📧 Enviar: Distribution automática personalizada
+🔄 Actualizar: Refresh con data más reciente
+⚙️ Configurar: Personalizar parámetros y KPIs
+📱 Móvil: Versión optimizada para mobile
+💾 Exportar: Multiple formats (Excel, PDF, PowerBI)
+🎯 Automatizar: Programar generación recurrente
+
+🏗️ PILAR 1: GALERÍA DE REPORTES PREDEFINIDOS - "EL DÍA A DÍA"
+CATÁLOGO INTELIGENTE DE TEMPLATES TIER 0:
+Organización por funciones de negocio:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📚 GALERÍA DE TEMPLATES EMPRESARIALES                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 💼 REPORTES EJECUTIVOS (C-LEVEL):                              │
+│                                                                 │
+│ 📊 Executive Dashboard                                          │
+│    KPIs críticos + Trends + Predictive insights                │
+│    🎯 Para: CEO, CFO, COO • ⏰ Tiempo: Tiempo real              │
+│    [🚀 Generar] [👁️ Preview] [⚙️ Personalizar]                 │
+│                                                                 │
+│ 💰 Financial Performance Report                                │
+│    P&L + Cash Flow + Budget Variance + Forecasting            │
+│    🎯 Para: CFO, Controller • ⏰ Tiempo: Mensual                │
+│    [🚀 Generar] [👁️ Preview] [⚙️ Personalizar]                 │
+│                                                                 │
+│ 🎯 Commercial Performance Analysis                             │
+│    Sales metrics + Pipeline + Win rates + Predictions          │
+│    🎯 Para: VP Sales, GM • ⏰ Tiempo: Semanal                   │
+│    [🚀 Generar] [👁️ Preview] [⚙️ Personalizar]                 │
+│                                                                 │
+│ 🏆 Operational Excellence Report                               │
+│    Efficiency + Quality + Performance + Optimization           │
+│    🎯 Para: COO, Operations • ⏰ Tiempo: Diario                 │
+│    [🚀 Generar] [👁️ Preview] [⚙️ Personalizar]                 │
+│                                                                 │
+│ 💼 REPORTES GERENCIALES:                                       │
+│                                                                 │
+│ 📈 Sales Team Performance                                      │
+│    Individual + Team metrics + Coaching insights               │
+│    🎯 Para: Sales Manager • ⏰ Tiempo: Semanal                  │
+│                                                                 │
+│ 👥 Customer Analytics Report                                   │
+│    Segmentation + LTV + Churn + Satisfaction                   │
+│    🎯 Para: Customer Success • ⏰ Tiempo: Mensual               │
+│                                                                 │
+│ 🎵 Campaign Effectiveness Analysis                             │
+│    Creative performance + ROI + Attribution + Optimization     │
+│    🎯 Para: Marketing Manager • ⏰ Tiempo: Post-campaign        │
+│                                                                 │
+│ 📊 Financial Controls Report                                   │
+│    AR/AP + Collections + Credit risk + Compliance             │
+│    🎯 Para: Finance Manager • ⏰ Tiempo: Semanal                │
+│                                                                 │
+│ ⚡ REPORTES OPERACIONALES:                                      │
+│                                                                 │
+│ 🎛️ Technical Operations Report                                │
+│    System uptime + Performance + Issues + Maintenance          │
+│    🎯 Para: IT/Tech Manager • ⏰ Tiempo: Diario                 │
+│                                                                 │
+│ 📻 Broadcasting Analytics                                      │
+│    Airtime + Compliance + Quality + Audience                   │
+│    🎯 Para: Programming • ⏰ Tiempo: Diario                     │
+│                                                                 │
+│ 👤 REPORTES INDIVIDUALES:                                      │
+│                                                                 │
+│ 🎯 My Performance Dashboard                                    │
+│    Personal KPIs + Goals + Achievements + Next actions         │
+│    🎯 Para: Individual contributor • ⏰ Tiempo: Tiempo real     │
+│                                                                 │
+│ 💰 My Commission Report                                        │
+│    Earnings + Pipeline + Projections + Comparisons            │
+│    🎯 Para: Sales Executive • ⏰ Tiempo: Mensual                │
+├─────────────────────────────────────────────────────────────────┤
+│ [🔍 Buscar Template] [⭐ Favoritos] [📊 Más Usados] [➕ Personalizar]│
+└─────────────────────────────────────────────────────────────────┘
+REPORTS CON IA INTEGRADA - AUTOINSIGHTS:
+Cada template incluye inteligencia automática:
+📊 Executive Dashboard - Enhanced:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 EXECUTIVE DASHBOARD - AI ENHANCED                            │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 MÉTRICAS CRÍTICAS (Real-time):                              │
+│                                                                 │
+│ Revenue YTD: $847M (↗️ +23% vs 2024)                          │
+│ 🤖 Insight: "Crecimiento acelerando. Proyección año: $1.2B"   │
+│                                                                 │
+│ Gross Margin: 68.5% (↗️ +2.1 pts)                             │
+│ 🤖 Insight: "Optimización pricing impactó positivamente"       │
+│                                                                 │
+│ Customer Acquisition: 1,247 (↗️ +15%)                          │
+│ 🤖 Insight: "Q4 trending 25% sobre target, revisar capacity"   │
+│                                                                 │
+│ Employee Satisfaction: 8.7/10 (↗️ +0.3)                       │
+│ 🤖 Insight: "Correlación directa con productivity +12%"        │
+│                                                                 │
+│ 🔮 PREDICTIVE INSIGHTS (90 días):                              │
+│ • 87% probabilidad de superar targets anuales                  │
+│ • Revenue Q1 2026 estimado: $280M-320M                        │
+│ • Hiring needs predicho: +25 personas (sales/tech)            │
+│ • Cash flow positive todo el trimestre                         │
+│                                                                 │
+│ 🚨 ATENCIÓN REQUERIDA:                                         │
+│ • 2 clientes tier-1 con churn risk >70%                       │
+│ • Capacity constraint detectado en operations                  │
+│ • Opportunity window: Expansión digital identificada           │
+│                                                                 │
+│ 💡 RECOMENDACIONES IA:                                         │
+│ 1. Acelerar hiring en sales (ROI proyectado: 340%)            │
+│ 2. Invertir $2M en capacity (payback: 8 meses)                │
+│ 3. Lanzar producto digital Q1 (oportunidad: $45M)             │
+├─────────────────────────────────────────────────────────────────┤
+│ [📧 Enviar a Board] [📱 Mobile View] [🔍 Deep Dive] [⚙️ Configurar]│
+└─────────────────────────────────────────────────────────────────┘
+🔬 PILAR 2: CONSTRUCTOR DE REPORTES PERSONALIZADOS - "EL LABORATORIO"
+REPORT BUILDER VISUAL AVANZADO:
+Interface drag-and-drop con IA asistente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🏗️ CONSTRUCTOR VISUAL DE REPORTES TIER 0                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🧩 DATA SOURCES DISPONIBLES:        📊 ÁREA DE CONSTRUCCIÓN:   │
+│                                                                 │
+│ 📊 Módulos Silexar:                 ┌─────────────────────────┐ │
+│ ☑️ [Anunciantes] 2,847 records     │                         │ │
+│ ☑️ [Contratos] 1,156 records       │    Arrastra elementos   │ │
+│ ☑️ [Cuñas] 15,674 records          │    aquí para crear tu   │ │
+│ ☑️ [Facturación] 3,421 records     │    reporte             │ │
+│ ⚪ [Exportación] 847 records        │    personalizado        │ │
+│                                     │                         │ │
+│ 🌐 Fuentes Externas:               │                         │ │
+│ ☑️ [Google Analytics] API           │                         │ │
+│ ☑️ [Facebook Ads] API               │                         │ │
+│ ⚪ [Excel Upload] Browse             │                         │ │
+│ ⚪ [CSV Import] Browse               │                         │ │
+│                                     └─────────────────────────┘ │
+│                                                                 │
+│ 📈 ELEMENTOS VISUALIZACIÓN:          🤖 CORTEX ASSISTANT:       │
+│ [📊 Table] [📈 Line Chart]          "¿Qué quieres analizar?"   │
+│ [📉 Bar Chart] [🥧 Pie Chart]       ┌─────────────────────────┐ │
+│ [🎯 KPI Card] [📋 List]             │ "Revenue por ejecutivo  │ │
+│ [🗺️ Heat Map] [⚡ Gauge]            │  últimos 3 meses con   │ │
+│ [📊 Pivot Table] [🔀 Scatter]       │  comparación vs target" │ │
+│                                     └─────────────────────────┘ │
+│ 🔧 TRANSFORMACIONES:                                            │
+│ [🧮 Calculate] [🔀 Join] [⚖️ Compare] [📊 Aggregate]          │
+│ [🔍 Filter] [📅 Date Range] [🎯 Segment] [💱 Convert]         │
+│                                                                 │
+│ ⚡ ACCIONES RÁPIDAS:                                           │
+│ [🤖 IA: Crear automáticamente]  [📋 Usar template]             │
+│ [👁️ Vista previa]               [💾 Guardar borrador]          │
+├─────────────────────────────────────────────────────────────────┤
+│ [🧪 Modo Experto] [📱 Mobile Preview] [🚀 Generar] [❌ Clear]   │
+└─────────────────────────────────────────────────────────────────┘
+WIZARD DE CONSTRUCCIÓN ASISTIDA:
+Paso 1: Definición de Objetivo con NLP:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 DEFINICIÓN DE OBJETIVO - NLP POWERED                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 💬 DESCRIBE QUE QUIERES ANALIZAR (lenguaje natural):           │
+│                                                                 │
+│ [Quiero ver performance de mi equipo de ventas comparado con   ]│
+│ [el año anterior, incluyendo pipeline y conversión por ejecutiv]│
+│ [o, segmentado por industria del cliente                      ]│
+│                                                                 │
+│ 🤖 CORTEX INTERPRETACIÓN:                                      │
+│                                                                 │
+│ ✅ Entidad Principal: Equipo de ventas                         │
+│ ✅ Métrica Objetivo: Performance (revenue, conversión)         │
+│ ✅ Comparación: Año anterior (YoY analysis)                    │
+│ ✅ Dimensiones: Por ejecutivo, por industria cliente           │
+│ ✅ Datos Necesarios: Pipeline, conversión rates                │
+│                                                                 │
+│ 📊 ESTRUCTURA SUGERIDA:                                        │
+│ • Dashboard con KPI cards principales                          │
+│ • Tabla detallada por ejecutivo con YoY comparison             │
+│ • Gráfico de barras: Revenue by industry                       │
+│ • Pipeline funnel con conversion rates                         │
+│ • Trend analysis últimos 12 meses                              │
+│                                                                 │
+│ 🎯 TEMPLATES RELACIONADOS:                                     │
+│ • Sales Team Performance (87% match)                           │
+│ • Executive Comparison Analysis (73% match)                    │
+│ • Industry Segmentation Report (65% match)                     │
+│                                                                 │
+│ [✅ Usar Sugerencia] [✏️ Refinar] [🔄 Reinterpretar]           │
+└─────────────────────────────────────────────────────────────────┘
+Paso 2: Data Selection Inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🗃️ SELECCIÓN INTELIGENTE DE DATOS                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 DATOS REQUERIDOS (Auto-detectados):                         │
+│                                                                 │
+│ ✅ Contratos → Revenue, fechas, ejecutivo asignado             │
+│    📊 1,156 registros últimos 24 meses                        │
+│    🔍 Campos: valor_contrato, fecha_firma, ejecutivo_id        │
+│                                                                 │
+│ ✅ Anunciantes → Industria, segmentación                       │
+│    📊 847 clientes activos                                     │
+│    🔍 Campos: industry_sector, company_size, tier_level        │
+│                                                                 │
+│ ✅ Pipeline → Oportunidades, probabilidades                     │
+│    📊 2,341 oportunidades activas/cerradas                     │
+│    🔍 Campos: probability, stage, expected_close_date          │
+│                                                                 │
+│ ✅ Usuarios → Ejecutivos, equipos, roles                       │
+│    📊 47 ejecutivos y supervisores                             │
+│    🔍 Campos: name, role, team, hire_date                      │
+│                                                                 │
+│ 🤖 VALIDACIONES AUTOMÁTICAS:                                   │
+│ ✅ Data quality: 99.7% completitud                             │
+│ ✅ Date ranges: Completo para análisis YoY                     │
+│ ✅ Relationships: FK constraints validadas                      │
+│ ⚠️ Missing data: 3% ejecutivos sin industry tags               │
+│                                                                 │
+│ 🔧 DATA TRANSFORMATIONS SUGERIDAS:                             │
+│ • Calcular revenue YoY growth por ejecutivo                    │
+│ • Agregar conversion rates por stage de pipeline               │
+│ • Normalizar industry categories (23 → 8 grupos)              │
+│ • Crear rolling averages para suavizar trends                  │
+│                                                                 │
+│ [✅ Aplicar Todo] [⚙️ Configurar] [🧪 Vista Previa]            │
+└─────────────────────────────────────────────────────────────────┘
+Paso 3: Visualización Avanzada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📈 DISEÑO DE VISUALIZACIÓN AVANZADO                            │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎨 LAYOUT INTELIGENTE (AI-Generated):                          │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎯 KPI SUMMARY CARDS                                       │ │
+│ │ ┌─────────┐┌─────────┐┌─────────┐┌─────────┐               │ │
+│ │ │Revenue  ││Pipeline ││Conv Rate││Team Size│               │ │
+│ │ │$2.8M    ││$1.2M    ││23.4%    ││15 exec  │               │ │
+│ │ │+23% YoY ││+15% YoY ││+2.1 pts ││+2 YoY   │               │ │
+│ │ └─────────┘└─────────┘└─────────┘└─────────┘               │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📊 EXECUTIVE PERFORMANCE TABLE                              │ │
+│ │ Name        2024      2025     Growth   Industry Focus      │ │
+│ │ Carlos M.   $280K     $350K    +25%     Financial Services │ │
+│ │ Ana G.      $220K     $290K    +32%     Retail/E-commerce  │ │
+│ │ Roberto S.  $195K     $245K    +26%     Healthcare         │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 📈 REVENUE BY INDUSTRY TREND                                │ │
+│ │     Financial ████████████████████ $850K                   │ │
+│ │     Retail    ████████████████     $640K                   │ │
+│ │     Healthcare ████████████        $420K                   │ │
+│ │     Technology ███████             $280K                   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎨 PERSONALIZACIÓN VISUAL:                                     │
+│ Colores: [🎨 Corporate] Branding: [Logo ✅] Font: [Inter Pro]   │
+│ Responsive: [📱✅] Interactive: [🖱️✅] Animations: [⚡✅]       │
+│                                                                 │
+│ 🤖 INSIGHTS AUTOMÁTICOS QUE SE INCLUIRÁN:                      │
+│ • "Carlos M. es el top performer con consistencia alta"        │
+│ • "Financial Services muestra el mayor potencial de crecimiento"│ │
+│ • "Conversion rate del equipo supera benchmark industria +8%"  │
+│ • "Q4 trending hacia record histórico de team"                 │
+│                                                                 │
+│ [🎯 Aplicar Layout] [🎨 Personalizar] [👁️ Preview] [🔄 Regenerar]│
+└─────────────────────────────────────────────────────────────────┘
+🤖 PILAR 3: INTELIGENCIA ARTIFICIAL Y ANÁLISIS AVANZADO - "NIVEL 5.0"
+CORTEX-ANALYTICS - MOTOR DE BUSINESS INTELLIGENCE:
+Análisis automático con explicaciones en lenguaje natural:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 CORTEX-ANALYTICS AVANZADO - AUTOANALYSIS                    │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 ANÁLISIS AUTOMÁTICO COMPLETADO EN 23 SEGUNDOS               │
+│                                                                 │
+│ 📊 HALLAZGOS PRINCIPALES:                                      │
+│                                                                 │
+│ 🏆 TOP INSIGHT (Confidence: 94%):                              │
+│ "Revenue growth aceleró 340% en Financial Services debido a    │
+│ nuevo producto lanzado en Marzo. Patrón sugiere expansion      │
+│ similar posible en Healthcare Q1 2026."                        │
+│                                                                 │
+│ 🎯 ANOMALÍAS DETECTADAS:                                       │
+│ • Carlos M.: Performance 23% sobre predicción (investigar      │
+│   métodos para replicar en resto del equipo)                   │
+│ • Technology sector: Subperformance -15% vs forecast           │
+│   (correlación con cambios regulatorios detectada)             │
+│                                                                 │
+│ 🔮 PREDICCIONES ML (Próximos 90 días):                         │
+│ • Team performance: 87% probabilidad de superar target Q4      │
+│ • Revenue forecast: $920K-1.1M rango probable (+/- 8%)        │
+│ • Risk factors: 2 ejecutivos con churn risk >60%               │
+│                                                                 │
+│ 💡 CORRELACIONES DESCUBIERTAS:                                 │
+│ • Conversion rate correlaciona +0.87 con customer satisfaction │
+│ • Deal size aumenta 23% cuando hay >3 touchpoints             │
+│ • Industry expertise reduce sales cycle promedio 18 días       │
+│                                                                 │
+│ 🚨 ALERTAS PREDICTIVAS:                                        │
+│ • Technology sector: Probable downturn detectado               │
+│ • Ana G.: Trending hacia record personal (consider promotion)  │
+│ • Market opportunity: Healthcare expansion window next 6 months │
+│                                                                 │
+│ 🎯 RECOMENDACIONES ACCIONABLES:                                │
+│ 1. Reallocate 2 reps from Technology to Healthcare             │
+│ 2. Implementar Carlos M.'s best practices team-wide            │
+│ 3. Acelerar product development para Healthcare segment         │
+│ 4. Consider Ana G. para leadership role                        │
+│                                                                 │
+│ [📧 Enviar Insights] [🎯 Create Action Plan] [🔍 Deep Dive]    │
+└─────────────────────────────────────────────────────────────────┘
+NATURAL LANGUAGE QUERY - PREGUNTA Y OBTÉN:
+Interface conversacional para análisis:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💬 CORTEX CONVERSATIONAL ANALYTICS                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 Haz cualquier pregunta sobre tus datos...                   │
+│                                                                 │
+│ 👤 "¿Cuál es mi ejecutivo más efectivo y por qué?"             │
+│                                                                 │
+│ 🤖 Analizando datos... ████████████████████████ 100%           │
+│                                                                 │
+│ 📊 RESPUESTA COMPLETA:                                         │
+│                                                                 │
+│ Tu ejecutivo más efectivo es **Carlos Mendoza** basado en:     │
+│                                                                 │
+│ 🏆 **Métricas de Performance:**                                │
+│ • Revenue YTD: $350K (25% sobre team average)                  │
+│ • Conversion rate: 28.5% (vs 23% team average)                 │
+│ • Deal size promedio: $45K (vs $38K team)                      │
+│ • Customer satisfaction: 9.2/10 (highest in team)             │
+│                                                                 │
+│ 💡 **Factores de Éxito Identificados:**                        │
+│ • Especialización en Financial Services (expertise depth)      │
+│ • Promedio 4.2 touchpoints por deal (vs 2.8 team average)     │
+│ • Follow-up consistency: 95% (vs 67% team average)             │
+│ • Uses data-driven approach (Cortex insights adoption: 89%)    │
+│                                                                 │
+│ 🎯 **Recomendación:**                                          │
+│ Usar Carlos como mentor interno. Sus métodos pueden            │
+│ potencialmente aumentar team performance 15-20% si se replican.│
+│                                                                 │
+│ [🔍 Más Detalles] [📊 Comparar con Otros] [💡 Action Plan]     │
+│                                                                 │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
+│                                                                 │
+│ 👤 "Show me revenue forecast for next quarter"                 │
+│                                                                 │
+│ 🤖 Procesando predicción avanzada... ████████░░ 85%            │
+└─────────────────────────────────────────────────────────────────┘
+COMPARATIVE ANALYSIS - BENCHMARK INTELIGENTE:
+Comparación automática con benchmarks de industria:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚖️ ANÁLISIS COMPARATIVO AVANZADO                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 BENCHMARK ANALYSIS: Tu Performance vs Mercado               │
+│                                                                 │
+│ 📊 MÉTRICAS CLAVE:                                            │
+│                                                                 │
+│ Revenue Growth YoY:                                            │
+│ Tu empresa: ████████████████████████░░ 23%                     │
+│ Industry avg: ████████████████░░░░░░░░ 15%                     │
+│ Top quartile: █████████████████████░░░ 18%                     │
+│ 🏆 PERFORMANCE: EXCELENTE (+5pts vs top quartile)              │
+│                                                                 │
+│ Customer Acquisition Cost:                                      │
+│ Tu empresa: ████████████░░░░░░░░░░░░░░ $2,400                  │
+│ Industry avg: ████████████████████░░░░ $3,200                  │
+│ Best in class: ████████████████░░░░░░░ $2,800                  │
+│ 🏆 PERFORMANCE: LÍDER DEL MERCADO (-$400 vs best)              │
+│                                                                 │
+│ Sales Cycle Length:                                            │
+│ Tu empresa: ████████████████████████░░ 28 días                 │
+│ Industry avg: ████████████████████████ 35 días                 │
+│ Best practices: ███████████████████░░░ 25 días                 │
+│ 🎯 PERFORMANCE: SOBRE PROMEDIO (oportunidad: -3 días más)      │
+│                                                                 │
+│ 💡 COMPETITIVE INTELLIGENCE:                                   │
+│                                                                 │
+│ 🥇 Fortalezas vs Competencia:                                  │
+│ • Customer retention: 94% (vs 87% industry avg)                │
+│ • Revenue per employee: $280K (vs $190K market)               │
+│ • Technology adoption: 89% (vs 45% market)                    │
+│                                                                 │
+│ ⚠️ Áreas de Oportunidad:                                       │
+│ • Digital marketing spend: 12% (vs 18% leaders)               │
+│ • Mobile optimization: 67% (vs 78% best practice)             │
+│ • AI adoption: 34% (vs 52% innovators)                        │
+│                                                                 │
+│ 🚀 RECOMENDACIONES ESTRATÉGICAS:                               │
+│ 1. Mantener liderazgo en CAC con process optimization          │
+│ 2. Invertir +$200K en digital marketing (ROI proyectado: 340%)│
+│ 3. Acelerar AI adoption para mantener competitive advantage    │
+│                                                                 │
+│ [📊 Full Report] [🎯 Action Plan] [📧 Share with Team]         │
+└─────────────────────────────────────────────────────────────────┘
+🔗 COMPARADOR AVANZADO DE ARCHIVOS - "NIVEL 5.0"
+ENGINE DE COMPARACIÓN INTELIGENTE:
+Upload y análisis automático de archivos externos:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔄 COMPARADOR AVANZADO DE ARCHIVOS                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 📁 UPLOAD DE ARCHIVO EXTERNO:                                  │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │  📎 Arrastra archivo aquí o [📁 Browse Files]              │ │
+│ │                                                             │ │
+│ │  Formatos soportados:                                       │ │
+│ │  📊 Excel (.xlsx, .xls)  📄 CSV (.csv)                     │ │
+│ │  📋 Google Sheets  🗃️ JSON  📊 Power BI                    │ │
+│ │                                                             │ │
+│ │  ✅ Archivo cargado: "Competencia_Q4_2024.xlsx"            │ │
+│ │  📏 Tamaño: 2.3MB  📊 15,847 filas  📋 23 columnas        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🤖 ANÁLISIS AUTOMÁTICO DEL ARCHIVO:                            │
+│                                                                 │
+│ ✅ **Estructura Detectada:**                                   │
+│ • Tipo: Sales performance data                                 │
+│ • Período: Q1-Q4 2024                                         │
+│ • Empresas: 12 competidores identificados                      │
+│ • Métricas: Revenue, growth, market share, employees           │
+│                                                                 │
+│ 🧠 **Auto-Mapping Inteligente:**                               │
+│ External Column    →    Internal Mapping    →    Confidence    │
+│ "Total_Revenue"    →    contract_revenue    →    97%           │
+│ "Company_Name"     →    client_name         →    89%           │
+│ "Growth_Rate"      →    yoy_growth          →    94%           │
+│ "Market_Share"     →    [New calculated]    →    86%           │
+│                                                                 │
+│ ⚙️ **Configuración de Comparación:**                           │
+│                                                                 │
+│ 📊 Comparar con mis datos de: [Q4 2024 ▼]                     │
+│ 🎯 Tipo de análisis: [⚖️ Benchmark] [📈 Trend] [🔍 Gap Analysis]│
+│ 📈 Métricas a comparar:                                        │
+│ ☑️ Revenue & Growth  ☑️ Market Position  ☑️ Efficiency         │
+│                                                                 │
+│ [🚀 Ejecutar Análisis] [⚙️ Configurar Mapping] [👁️ Preview]   │
+└─────────────────────────────────────────────────────────────────┘
+RESULTADOS DE COMPARACIÓN CON IA:
+Análisis automático completo:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 RESULTADOS DE COMPARACIÓN - IA ANALYSIS                     │
+├─────────────────────────────────────────────────────────────────┤
+│ 🧠 ANÁLISIS COMPLETADO: 15,847 registros vs tus datos internos │
+│                                                                 │
+│ 🏆 **POSICIONAMIENTO COMPETITIVO:**                            │
+│                                                                 │
+│ Tu posición en el mercado: **#3 de 13 empresas**               │
+│ 📈 Revenue rank: #3 ($2.8M vs líder $4.1M)                   │
+│ 🚀 Growth rank: #2 (+23% vs líder +25%)                       │
+│ 💰 Efficiency rank: #1 (Revenue per employee: líder)          │
+│                                                                 │
+│ 📊 **BENCHMARKING DETALLADO:**                                 │
+│                                                                 │
+│ Revenue Performance:                                            │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Líder: CompA     ████████████████████████ $4.1M            │ │
+│ │ #2: CompB        ████████████████████░░░░ $3.2M            │ │
+│ │ 🏢 TU EMPRESA    ███████████████████░░░░░ $2.8M  (68% vs líder)││
+│ │ #4: CompC        ██████████████░░░░░░░░░░ $2.1M            │ │
+│ │ Promedio         ████████████░░░░░░░░░░░░ $1.9M            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🔍 **GAPS Y OPORTUNIDADES IDENTIFICADAS:**                     │
+│                                                                 │
+│ 🚀 **Fortalezas Confirmadas:**                                 │
+│ • Growth rate: 23% (vs 18% promedio) - MOMENTUM FUERTE        │
+│ • Efficiency: $280K revenue/employee (vs $190K promedio)       │
+│ • Customer retention: 94% (vs 87% promedio) - EXCELENTE       │
+│                                                                 │
+│ ⚠️ **Gaps Críticos:**                                          │
+│ • Revenue gap vs líder: $1.3M (32% oportunidad)               │
+│ • Digital adoption: 34% (vs 67% líderes) - RETRASO            │
+│ • Market share: 12% (vs 18% líder) - ESPACIO PARA CRECER      │
+│                                                                 │
+│ 💡 **INSIGHTS DE IA (Confidence 92%):**                        │
+│                                                                 │
+│ 1. **Patrón detectado**: Empresas con >50% digital adoption    │
+│    tienen 40% más revenue. Tu oportunidad: +$1.1M             │
+│                                                                 │
+│ 2. **Timing advantage**: Líderes crecieron más fuerte Q2-Q3.   │
+│    Tu aceleración Q4 sugiere momentum superior para 2025      │
+│                                                                 │
+│ 3. **Efficiency edge**: Tu ratio revenue/employee es 47%       │
+│    mejor que líderes. Escalabilidad superior confirmada       │
+│                                                                 │
+│ 🎯 **PLAN DE ACCIÓN RECOMENDADO:**                             │
+│ • Prioridad 1: Acelerar digital transformation ($500K invest)  │
+│ • Prioridad 2: Scale operations para capturar momentum         │
+│ • Prioridad 3: Market share expansion con efficiency advantage │
+│                                                                 │
+│ [📊 Export Analysis] [📧 Share Results] [🎯 Create Strategy]   │
+└─────────────────────────────────────────────────────────────────┘
+📤 EXPORTACIÓN AVANZADA Y DISTRIBUCIÓN
+EXPORT ENGINE TIER 0:
+Múltiples formatos con configuración avanzada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📤 EXPORTACIÓN AVANZADA TIER 0                                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 **FORMATO DE EXPORTACIÓN:**                                 │
+│                                                                 │
+│ 📈 **Excel Avanzado (.xlsx):**                                 │
+│ ☑️ Múltiples hojas (Summary, Data, Charts, Insights)           │
+│ ☑️ Fórmulas dinámicas y tablas pivot                          │
+│ ☑️ Conditional formatting automático                           │
+│ ☑️ Macros para refresh automático                             │
+│ ☑️ Password protection y watermarks                           │
+│ ☑️ Corporate branding (logo, colores)                         │
+│                                                                 │
+│ 📄 **PDF Ejecutivo:**                                          │
+│ ☑️ Layout profesional con executive summary                    │
+│ ☑️ Interactive charts y gráficos                              │
+│ ☑️ Bookmarks y navegación                                     │
+│ ☑️ Digital signatures ready                                   │
+│ ☑️ Mobile-optimized viewing                                   │
+│                                                                 │
+│ 🔗 **Power BI / Tableau:**                                    │
+│ ☑️ Live data connections                                       │
+│ ☑️ Interactive dashboards                                      │
+│ ☑️ Scheduled refresh automático                               │
+│ ☑️ Row-level security                                         │
+│                                                                 │
+│ 🌐 **Web Dashboard:**                                          │
+│ ☑️ Responsive web interface                                    │
+│ ☑️ Real-time updates                                          │
+│ ☑️ Collaborative comments                                     │
+│ ☑️ Mobile app integration                                     │
+│                                                                 │
+│ 📧 **DISTRIBUCIÓN AUTOMÁTICA:**                                │
+│                                                                 │
+│ 👥 Recipients: [CEO ▼] [CFO ▼] [Sales Team ▼] [+ Agregar]     │
+│ ⏰ Scheduling: [📅 Inmediato] [🔄 Recurrente] [📊 Triggered]   │
+│ 📱 Channels: [✉️ Email] [💬 Slack] [📱 WhatsApp] [🔗 Teams]    │
+│                                                                 │
+│ 🛡️ **CONFIGURACIÓN DE SEGURIDAD:**                            │
+│ • Access level: [👑 Executive] [💼 Management] [👤 Individual] │
+│ • Data sensitivity: [🔒 Confidential] [⚠️ Internal] [🌐 Public]│
+│ • Expiration: [⏰ 30 days] [🔄 No expiry] [📅 Custom date]     │
+│                                                                 │
+│ [🚀 Exportar Ahora] [📅 Programar] [👁️ Preview] [⚙️ Avanzado] │
+└─────────────────────────────────────────────────────────────────┘
+🤖 AUTOMATIZACIÓN INTELIGENTE TIER 0
+CORTEX-AUTOMATION - REPORTES AUTOPILOT:
+Generación y distribución completamente automática:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 CORTEX-AUTOMATION - REPORTES AUTOPILOT                      │
+├─────────────────────────────────────────────────────────────────┤
+│ ⚡ **AUTOMATIZACIÓN INTELIGENTE ACTIVA:**                       │
+│                                                                 │
+│ 🔄 **Reportes Programados (15 activos):**                      │
+│                                                                 │
+│ 📊 Executive Dashboard                                          │
+│    📅 Lunes 8:00 AM → CEO, CFO, COO                           │
+│    🤖 Auto-insights: Detección de anomalías + recomendaciones   │
+│    📧 Delivery: Email + Slack CEO channel                      │
+│    ✅ Último envío: Exitoso (Rating: 4.8/5)                    │
+│                                                                 │
+│ 💰 Financial Weekly Report                                     │
+│    📅 Viernes 5:00 PM → Finance Team + Investors               │
+│    🤖 Auto-analysis: Variance analysis + cash flow forecast    │
+│    🔒 Security: Encrypted + access logs                        │
+│    ✅ Último envío: Exitoso (Rating: 4.9/5)                    │
+│                                                                 │
+│ 🎯 Sales Performance Report                                    │
+│    📅 Diario 9:00 AM → Sales Team + Management                 │
+│    🤖 Smart triggers: Solo si hay cambios significativos       │
+│    📱 Mobile-first: Optimizado para reviewing on-the-go       │
+│    ✅ Último envío: Exitoso (Rating: 4.7/5)                    │
+│                                                                 │
+│ 🚨 **ALERTAS INTELIGENTES (23 configuradas):**                 │
+│                                                                 │
+│ ⚠️ Revenue Drop Alert                                          │
+│    🎯 Trigger: Si revenue daily < -10% vs forecast             │
+│    👥 Notify: CEO + CFO + Sales Director                       │
+│    🤖 Auto-analysis: Root cause identification                 │
+│                                                                 │
+│ 🎉 Goal Achievement Alert                                      │
+│    🎯 Trigger: Cuando ejecutivo supera meta mensual            │
+│    👥 Notify: Manager + HR + Executive                         │
+│    🤖 Auto-celebration: Team notification + leaderboard update │
+│                                                                 │
+│ 🔍 **ANOMALY DETECTION (AI-Powered):**                         │
+│                                                                 │
+│ 📊 Continuous monitoring de todos los KPIs críticos            │
+│ 🧠 ML models detectan patrones anómalos automáticamente        │
+│ ⚡ Response time: <5 minutos desde detección                   │
+│ 📱 Multi-channel notifications: Email, Slack, SMS, Push        │
+│                                                                 │
+│ 🎯 **PREDICTIVE REPORTING:**                                   │
+│                                                                 │
+│ 🔮 Forecasts automáticos generados semanalmente                │
+│ 📈 Trend analysis con confidence intervals                     │
+│ 💡 Automatic insights sobre drivers de performance             │
+│ 🎯 Recommendations engine para optimización                    │
+│                                                                 │
+│ [⚙️ Configurar Nuevo] [📊 Performance] [🔧 Modificar] [⏸️ Pausar]│
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - ANALYTICS ON-THE-GO
+APP MÓVIL NATIVA ESPECIALIZADA:
+Business Intelligence en tu bolsillo:
+┌─────────────────────────────────────────┐
+│ 📊 SILEXAR ANALYTICS MÓVIL              │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Ejecutivo                  │
+│ • Revenue hoy: $47K (+12% vs ayer)     │
+│ • Pipeline: $1.2M (85% confidence)     │
+│ • Team performance: 94% de meta        │
+│                                         │
+│ 💡 INSIGHTS HOY (3 nuevos):            │
+│ [🔥] Carlos M. superó récord personal   │
+│ [📈] Financial sector +40% esta semana  │
+│ [⚠️] Technology deals slowing down     │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🎯 Ask Cortex]                        │
+│ [📊 Generate Report]                   │
+│ [📧 Share Dashboard]                   │
+│ [🔍 Drill Down]                        │
+│                                         │
+│ 🚨 ALERTAS (2):                        │
+│ • Revenue dip -5% requires attention   │
+│ • Ana G. hit monthly goal early        │
+│                                         │
+│ 📊 REPORTS RÁPIDOS:                    │
+│ [📈] My Performance  [👥] Team Stats   │
+│ [💰] Revenue Today   [🎯] Pipeline     │
+├─────────────────────────────────────────┤
+│ [🏠] [📊] [🤖] [📧] [⚙️]                │
+└─────────────────────────────────────────┘
+Ask Cortex - NLP en móvil:
+
+Reconocimiento de voz: "¿Cómo va mi equipo esta semana?"
+Respuestas con gráficos: Visualización optimizada para móvil
+Contexto geográfico: Insights basados en ubicación
+Offline capability: Caché inteligente de reportes frecuentes
+Push notifications: Alertas predictivas en tiempo real
+
+🔐 SEGURIDAD Y COMPLIANCE TIER 0
+SEGURIDAD DE BUSINESS INTELLIGENCE:
+Protección de inteligencia empresarial crítica:
+Data Loss Prevention avanzado:
+
+Row-level security: Acceso granular por rol y contexto
+Watermarking dinámico: Tracking de cada export/view
+Access pattern analysis: Detección de comportamientos anómalos
+Expiration automática: Reportes con vencimiento programado
+
+Compliance multinacional:
+
+GDPR: Right to be forgotten en analytics
+SOX: Audit trail inmutable de decisiones financieras
+PCI DSS: Protección de datos de payment processing
+Local regulations: Cumplimiento automático por país
+
+AUDITORIA INMUTABLE:
+Blockchain logging de analytics:
+Timestamp: 2025-08-08T14:29:45.123Z
+User: ceo@empresa.com  
+Report: Executive_Dashboard_Q4
+Data_Accessed: [revenue, pipeline, team_performance]
+Recipients: [cfo@empresa.com, board@empresa.com]
+Sensitivity: CONFIDENTIAL
+Checksum: SHA256:a1b2c3d4e5f6...
+Action: EXPORT_PDF + EMAIL_SEND
+IP: 192.168.1.45 (Santiago, Chile)
+Status: SUCCESS
+Business_Impact: HIGH (C-level decision data)
+Controls granulares:
+
+Field-level permissions: Control específico por columna/métrica
+Time-based access: Horarios permitidos por rol
+Geographic restrictions: Acceso limitado por ubicación
+Data retention: Políticas automáticas de retención/purge
+
+🎯 INNOVACIONES EXCLUSIVAS TIER 0
+1. PREDICTIVE INSIGHTS AUTOMATION:
+IA que anticipa necesidades de análisis:
+
+Pattern recognition: Identifica qué reportes se necesitarán
+Context awareness: Entiende situaciones de negocio automáticamente
+Proactive generation: Crea reportes antes de que se soliciten
+Learning engine: Mejora predicciones basado en feedback
+
+2. COLLABORATIVE ANALYTICS:
+Business Intelligence colaborativo:
+
+Real-time collaboration: Múltiples usuarios analizando simultáneamente
+Comment threads: Discusiones contextuales en visualizaciones
+Version control: Historia completa de cambios y decisiones
+Decision tracking: Qué decisiones se tomaron basadas en qué insights
+
+3. AUGMENTED ANALYTICS:
+IA que explica y recomienda:
+
+Auto-explanation: Por qué los números son como son
+Correlation discovery: Relaciones que humanos no ven
+Recommendation engine: Qué hacer basado en los datos
+What-if scenarios: Simulaciones automáticas de decisiones
+
+4. VOICE-POWERED ANALYTICS:
+Analytics por comando de voz:
+
+Natural language queries: "Show me top performing regions"
+Voice-to-insight: De pregunta hablada a visualización completa
+Audio reports: Reportes narrados automáticamente
+Hands-free analysis: Ideal para executives en movimiento
+
+🚀 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+1. Quantum Analytics:
+
+Quantum-enhanced machine learning para patrones complejos
+Procesamiento simultáneo de escenarios múltiples
+Optimization problems solucionados instantáneamente
+Correlation analysis en datasets masivos
+
+2. AR/VR Analytics:
+
+Visualización de datos en realidad aumentada
+Immersive dashboards para C-level presentations
+Spatial analytics para entender relaciones de datos
+Gesture-based data exploration
+
+3. Blockchain-Verified Insights:
+
+Smart contracts para validación de insights
+Distributed ledger de decisiones empresariales
+Cryptographic proof of data integrity
+Decentralized business intelligence
+
+Visión 2030:
+El Módulo Informes evolucionará hacia un "Autonomous Intelligence Center" que:
+
+Genera insights antes de que se necesiten
+Toma decisiones operativas automáticamente con IA
+Aprende continuously de outcomes para mejorar predicciones
+Proporciona inteligencia competitiva en tiempo real 24/7
+
+🎯 CONCLUSIÓN: LA PLATAFORMA DE BI MÁS AVANZADA DEL MUNDO
+PARA EL CEO/EXECUTIVE:
+Strategic Intelligence automática:
+
+Dashboards que se actualizan en tiempo real con insights accionables
+Predicciones con 95%+ accuracy para planning estratégico
+Competitive intelligence automática con benchmarking continuo
+Decision support system que recomienda acciones específicas
+Board-ready reports generados automáticamente cada período
+
+PARA EL MANAGER/GERENTE:
+Operational Intelligence optimizada:
+
+Performance de equipo con análisis predictivo de cada individuo
+Identificación automática de best practices para replicar
+Resource optimization recommendations basadas en data
+Risk detection temprana con alertas preventivas
+ROI analysis automático de todas las iniciativas
+
+PARA EL EJECUTIVO/INDIVIDUAL:
+Personal Intelligence empowered:
+
+Mi performance vs. benchmarks con sugerencias de mejora
+Análisis predictivo de mis accounts y oportunidades
+Coaching automático basado en patterns de top performers
+Alertas inteligentes de timing óptimo para acciones
+Career development insights basados en performance data
+
+PARA LA ORGANIZACIÓN:
+Enterprise Intelligence transformation:
+
+Data-driven decision making en todos los niveles
+10x faster time-to-insight con AI automation
+Predictive accuracy que elimina sorpresas negativas
+Competitive advantage sostenible por superior intelligence
+ROI inmediato por optimización automática de recursos
+
+DIFERENCIADORES ÚNICOS IRREPETIBLES:
+
+Conversational Analytics: Pregunta en lenguaje natural, obtén insights profundos
+Predictive Everything: No solo reporta qué pasó, predice qué pasará
+Auto-Explanation: IA explica causas y recomienda acciones automáticamente
+Universal Compatibility: Se integra con cualquier fuente de datos
+Real-Time Intelligence: Insights actualizados segundo a segundo
+Collaborative BI: Teams trabajando together en análisis avanzado
+Mobile-First Analytics: Business intelligence completa en mobile
+Quantum-Ready Architecture: Preparado para próxima generación de computing
+
+El Módulo Informes TIER 0 no es solo una herramienta de reportes: es un centro de inteligencia empresarial que transforma datos en decisiones estratégicas, convierte información histórica en predicciones precisas y democratiza el acceso a insights avanzados para acelerar el crecimiento exponencial de la organización.
+💾 ESPECIFICACIONES TÉCNICAS CRÍTICAS
+Arquitectura de Data Science:
+Machine Learning Pipeline:
+
+Real-time feature engineering con Apache Kafka
+Model training automático con MLOps integration
+A/B testing de modelos para optimización continua
+Explainable AI para transparencia de decisiones
+Auto-retraining basado en drift detection
+
+Big Data Processing:
+
+Apache Spark para procesamiento distribuido
+Delta Lake para data versioning y time travel
+Apache Airflow para orchestration de workflows
+Redis Cluster para caching de high-frequency queries
+Elasticsearch para search y agregaciones complejas
+
+Performance & Scalability:
+
+Horizontal scaling automático basado en demand
+Query optimization con cost-based optimizer
+Columnar storage para analytics workloads
+Data partitioning inteligente por tiempo/tenant
+CDN global para delivery rápido de reportes
+
+El sistema está arquitectónicamente diseñado para procesar petabytes de datos, servir miles de usuarios concurrentes y proporcionar insights en millisegundos, estableciendo el nuevo estándar de Business Intelligence para la próxima década.

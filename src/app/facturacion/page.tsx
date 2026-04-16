@@ -10,7 +10,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import apiClient from '@/lib/api/client';
+import { useRouter } from 'next/navigation';
 import { 
   Receipt, Plus, Search, RefreshCw, AlertTriangle,
   DollarSign, Clock, XCircle, ChevronDown,
@@ -30,12 +30,13 @@ interface Factura {
   rutReceptor: string;
   fechaEmision: string;
   fechaVencimiento: string;
-  total: number;
+  montoTotal: number;
   montoPagado: number;
   estado: string;
-  diasMora: number;
-  scoreCliente: number;
-  probabilidadCobro: number;
+  diasMora?: number;
+  scoreCliente?: number;
+  probabilidadCobro?: number;
+  saldoPendiente?: number;
 }
 
 interface AlertaCobranza {
@@ -132,6 +133,7 @@ const AlertaCard = ({ alerta }: { alerta: AlertaCobranza }) => {
 // ═══════════════════════════════════════════════════════════════
 
 export default function FacturacionPage() {
+  const router = useRouter();
   const [facturas, setFacturas] = useState<Factura[]>([]);
   const [alertas, setAlertas] = useState<AlertaCobranza[]>([]);
   const [stats, setStats] = useState<Stats>({ totalEmitidas: 0, montoFacturado: 0, montoPendiente: 0, montoVencido: 0, alertasCriticas: 0 });
@@ -141,10 +143,10 @@ export default function FacturacionPage() {
 
   // Mock data con métricas IA
   const mockFacturas: Factura[] = [
-    { id: '1', numero: 1234, folio: 45678, tipoDocumento: 'factura', razonSocialReceptor: 'Empresa ABC Ltda', rutReceptor: '76.123.456-7', fechaEmision: '2025-12-01', fechaVencimiento: '2025-12-31', total: 5800000, montoPagado: 0, estado: 'aceptada_sii', diasMora: 0, scoreCliente: 850, probabilidadCobro: 92 },
-    { id: '2', numero: 1235, folio: 45679, tipoDocumento: 'factura', razonSocialReceptor: 'Servicios XYZ SpA', rutReceptor: '76.234.567-8', fechaEmision: '2025-11-15', fechaVencimiento: '2025-12-15', total: 3200000, montoPagado: 0, estado: 'vencida', diasMora: 3, scoreCliente: 520, probabilidadCobro: 65 },
-    { id: '3', numero: 1236, folio: 45680, tipoDocumento: 'factura', razonSocialReceptor: 'Comercial DEF Ltda', rutReceptor: '76.345.678-9', fechaEmision: '2025-11-01', fechaVencimiento: '2025-12-01', total: 12500000, montoPagado: 6000000, estado: 'vencida', diasMora: 17, scoreCliente: 380, probabilidadCobro: 35 },
-    { id: '4', numero: 1237, folio: 45681, tipoDocumento: 'factura', razonSocialReceptor: 'Industrias GHI SpA', rutReceptor: '76.456.789-0', fechaEmision: '2025-12-10', fechaVencimiento: '2026-01-10', total: 8900000, montoPagado: 8900000, estado: 'pagada', diasMora: 0, scoreCliente: 920, probabilidadCobro: 100 }
+    { id: '1', numero: 1234, folio: 45678, tipoDocumento: 'factura', razonSocialReceptor: 'Empresa ABC Ltda', rutReceptor: '76.123.456-7', fechaEmision: '2025-12-01', fechaVencimiento: '2025-12-31', montoTotal: 5800000, montoPagado: 0, estado: 'aceptada_sii', diasMora: 0, scoreCliente: 850, probabilidadCobro: 92 },
+    { id: '2', numero: 1235, folio: 45679, tipoDocumento: 'factura', razonSocialReceptor: 'Servicios XYZ SpA', rutReceptor: '76.234.567-8', fechaEmision: '2025-11-15', fechaVencimiento: '2025-12-15', montoTotal: 3200000, montoPagado: 0, estado: 'vencida', diasMora: 3, scoreCliente: 520, probabilidadCobro: 65 },
+    { id: '3', numero: 1236, folio: 45680, tipoDocumento: 'factura', razonSocialReceptor: 'Comercial DEF Ltda', rutReceptor: '76.345.678-9', fechaEmision: '2025-11-01', fechaVencimiento: '2025-12-01', montoTotal: 12500000, montoPagado: 6000000, estado: 'vencida', diasMora: 17, scoreCliente: 380, probabilidadCobro: 35 },
+    { id: '4', numero: 1237, folio: 45681, tipoDocumento: 'factura', razonSocialReceptor: 'Industrias GHI SpA', rutReceptor: '76.456.789-0', fechaEmision: '2025-12-10', fechaVencimiento: '2026-01-10', montoTotal: 8900000, montoPagado: 8900000, estado: 'pagada', diasMora: 0, scoreCliente: 920, probabilidadCobro: 100 }
   ];
 
   const mockAlertas: AlertaCobranza[] = [
@@ -155,41 +157,40 @@ export default function FacturacionPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (busqueda) params.set('search', busqueda);
+      if (filtroEstado) params.set('estado', filtroEstado);
+      const res = await fetch(`/api/facturacion?${params.toString()}`);
+      const json = await res.json();
+      const sourceFacturas: Factura[] = json.success && Array.isArray(json.data) ? json.data : [];
+      const apiStats = json.meta?.stats || {};
 
-    // Try real API first — falls back to mock data if DB not connected (503)
-    const { data: apiFacturas } = await apiClient.get<Factura[]>('/api/facturacion', {
-      params: { busqueda: busqueda || undefined, estado: filtroEstado || undefined },
-    });
+      setFacturas(sourceFacturas);
+      setAlertas(mockAlertas);
 
-    const sourceFacturas: Factura[] = (apiFacturas && apiFacturas.length > 0) ? apiFacturas : mockFacturas;
-
-    let filtered = [...sourceFacturas];
-    if (busqueda) {
-      filtered = filtered.filter(f =>
-        f.razonSocialReceptor.toLowerCase().includes(busqueda.toLowerCase()) ||
-        f.numero.toString().includes(busqueda)
-      );
+      setStats({
+        totalEmitidas:   apiStats.totalFacturas ?? sourceFacturas.length,
+        montoFacturado:  apiStats.montoEmitido ?? sourceFacturas.reduce((sum, f) => sum + Number(f.montoTotal), 0),
+        montoPendiente:  apiStats.montoPendiente ?? sourceFacturas.filter(f => f.estado !== 'pagada' && f.estado !== 'anulada').reduce((sum, f) => sum + Number(f.montoTotal) - Number(f.montoPagado || 0), 0),
+        montoVencido:    apiStats.montoVencido ?? sourceFacturas.filter(f => f.estado === 'vencida').reduce((sum, f) => sum + Number(f.montoTotal) - Number(f.montoPagado || 0), 0),
+        alertasCriticas: mockAlertas.filter(a => a.prioridad === 'critica').length,
+      });
+    } catch {
+      setFacturas(mockFacturas);
+      setAlertas(mockAlertas);
+      const pendientes = mockFacturas.filter(f => f.estado !== 'pagada' && f.estado !== 'anulada');
+      const vencidas   = mockFacturas.filter(f => f.estado === 'vencida');
+      setStats({
+        totalEmitidas:   mockFacturas.length,
+        montoFacturado:  mockFacturas.reduce((sum, f) => sum + f.montoTotal, 0),
+        montoPendiente:  pendientes.reduce((sum, f) => sum + f.montoTotal - f.montoPagado, 0),
+        montoVencido:    vencidas.reduce((sum, f) => sum + f.montoTotal - f.montoPagado, 0),
+        alertasCriticas: mockAlertas.filter(a => a.prioridad === 'critica').length,
+      });
+    } finally {
+      setLoading(false);
     }
-    if (filtroEstado) {
-      filtered = filtered.filter(f => f.estado === filtroEstado);
-    }
-
-    setFacturas(filtered);
-    setAlertas(mockAlertas);
-
-    const pendientes = sourceFacturas.filter(f => f.estado !== 'pagada' && f.estado !== 'anulada');
-    const vencidas   = sourceFacturas.filter(f => f.estado === 'vencida');
-
-    setStats({
-      totalEmitidas:   sourceFacturas.length,
-      montoFacturado:  sourceFacturas.reduce((sum, f) => sum + f.total, 0),
-      montoPendiente:  pendientes.reduce((sum, f) => sum + f.total - f.montoPagado, 0),
-      montoVencido:    vencidas.reduce((sum, f) => sum + f.total - f.montoPagado, 0),
-      alertasCriticas: mockAlertas.filter(a => a.prioridad === 'critica').length,
-    });
-
-    setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda, filtroEstado]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -215,7 +216,7 @@ export default function FacturacionPage() {
             <button className="px-4 py-2 bg-white text-emerald-600 rounded-xl font-medium flex items-center gap-2 shadow-md">
               <Download className="w-4 h-4" /> Exportar
             </button>
-            <button className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-medium flex items-center gap-2 shadow-lg">
+            <button onClick={() => router.push('/facturacion/nueva')} className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-medium flex items-center gap-2 shadow-lg">
               <Plus className="w-4 h-4" /> Nueva Factura
             </button>
           </div>
@@ -325,21 +326,21 @@ export default function FacturacionPage() {
                         <p className="text-xs text-slate-400">Vence: {f.fechaVencimiento}</p>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="font-bold text-slate-800">${(f.total / 1000000).toFixed(2)}M</p>
-                        {f.montoPagado > 0 && f.montoPagado < f.total && (
-                          <p className="text-xs text-emerald-600">Pagado: ${(f.montoPagado / 1000000).toFixed(1)}M</p>
+                        <p className="font-bold text-slate-800">${(Number(f.montoTotal) / 1000000).toFixed(2)}M</p>
+                        {Number(f.montoPagado) > 0 && Number(f.montoPagado) < Number(f.montoTotal) && (
+                          <p className="text-xs text-emerald-600">Pagado: ${(Number(f.montoPagado) / 1000000).toFixed(1)}M</p>
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <EstadoBadge estado={f.estado} diasMora={f.diasMora} />
+                        <EstadoBadge estado={f.estado} diasMora={f.diasMora ?? 0} />
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`font-bold ${f.scoreCliente >= 700 ? 'text-emerald-600' : f.scoreCliente >= 500 ? 'text-amber-600' : 'text-red-600'}`}>
-                          {f.scoreCliente}
+                        <span className={`font-bold ${(f.scoreCliente ?? 0) >= 700 ? 'text-emerald-600' : (f.scoreCliente ?? 0) >= 500 ? 'text-amber-600' : 'text-red-600'}`}>
+                          {f.scoreCliente ?? 0}
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <ProbabilidadIndicator prob={f.probabilidadCobro} />
+                        <ProbabilidadIndicator prob={f.probabilidadCobro ?? 0} />
                       </td>
                     </tr>
                   ))}

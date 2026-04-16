@@ -46,6 +46,8 @@ export const tipoCampanaEnum = pgEnum('tipo_campana', [
 
 export const prioridadCampanaEnum = pgEnum('prioridad_campana', ['baja', 'normal', 'alta', 'urgente']);
 
+export const medioCampanaEnum = pgEnum('medio_campana', ['fm', 'digital', 'hibrido']);
+
 // ═══════════════════════════════════════════════════════════════
 // TABLA: CAMPAÑAS
 // ═══════════════════════════════════════════════════════════════
@@ -66,6 +68,7 @@ export const campanas = pgTable('campanas', {
   descripcion: text('descripcion'),
   tipoCampana: tipoCampanaEnum('tipo_campana').default('promocional').notNull(),
   prioridad: prioridadCampanaEnum('prioridad').default('normal').notNull(),
+  medio: medioCampanaEnum('medio').default('fm').notNull(),
   
   // Período de emisión
   fechaInicio: date('fecha_inicio').notNull(),
@@ -266,6 +269,7 @@ export type CampanaEmisora = typeof campanasEmisoras.$inferSelect;
 export type PautaCampana = typeof pautaCampana.$inferSelect;
 export type EstadoCampana = 'planificacion' | 'armada' | 'aprobacion' | 'confirmada' | 'programada' | 'en_aire' | 'pausada' | 'completada' | 'cancelada';
 export type TipoCampana = 'branding' | 'promocional' | 'lanzamiento' | 'estacional' | 'institucional' | 'evento' | 'mantencion';
+export type MedioCampana = 'fm' | 'digital' | 'hibrido';
 
 // ═══════════════════════════════════════════════════════════════
 // INTERFACES PARA EL FRONTEND

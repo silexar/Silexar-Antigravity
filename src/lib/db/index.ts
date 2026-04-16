@@ -24,6 +24,7 @@ import * as emisionSchema from './emision-schema';
 import * as propuestasSchema from './propuestas-schema';
 import * as materialesSchema from './materiales-schema';
 import * as cunasDigitalSchema from './cunas-digital-schema';
+import * as rrssSchema from './rrss-schema';
 import * as auditLogsSchema from './audit-logs-schema';
 
 // ═══════════════════════════════════════════════════════════════
@@ -66,6 +67,7 @@ export const db = drizzle(client, {
         ...propuestasSchema,
         ...materialesSchema,
         ...cunasDigitalSchema,
+        ...rrssSchema,
         ...auditLogsSchema,
       },
     });
@@ -108,5 +110,7 @@ export * from './emision-schema';
 export * from './propuestas-schema';
 export * from './materiales-schema';
 export * from './cunas-digital-schema';
+export * from './digital-schema';
+export * from './rrss-schema';
 export * from './audit-logs-schema';
 

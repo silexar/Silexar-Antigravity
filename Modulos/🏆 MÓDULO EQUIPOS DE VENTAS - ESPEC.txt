@@ -1,0 +1,773 @@
+🏆 MÓDULO EQUIPOS DE VENTAS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO EQUIPOS DE VENTAS?
+El Módulo Equipos de Ventas es el centro de comando de fuerza comercial en Silexar Pulse. Funciona como el cerebro organizacional que estructura, optimiza y potencia el rendimiento de equipos comerciales, transformando grupos de vendedores individuales en máquinas de ventas sincronizadas que maximizan revenue, minimizan churn y aceleran el crecimiento través de jerarquías inteligentes, metas dinámicas y gamificación avanzada.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como VP de Ventas/Director Comercial, este módulo es mi torre de control:
+
+Diseño estructuras organizacionales que escalan automáticamente
+Optimizo territorios y asignaciones basado en data e IA
+Gestiono compensation plans complejos con múltiples variables
+Monitoreo performance en tiempo real con predictive analytics
+Ejecuto coaching programs automatizados y personalizados
+Recibo alertas de equipos que necesitan intervención estratégica
+
+Como Gerente Regional/Team Lead, es mi herramienta de liderazgo:
+
+Gestiono mi equipo con visibility 360° de performance
+Configuro metas individuales y grupales dinámicas
+Sesiones de coaching de Ejecuto con información basada en datos
+Monitoreo del estado de la tubería y precisión de los pronósticos
+Gestiono onboarding de nuevos team members
+Cobertura territorial optimizada y asignaciones de cuentas
+
+Como Director de RRHH/People Ops, obtengo gestión integral:
+
+Automatiza los cálculos de compensación y el pago de comisiones
+Vías de progresión profesional de Gestiono
+Monitoreo performance reviews y development plans
+Analizar patrones de rotación y estrategias de retención
+Configurar programas de incentivos y sistemas de reconocimiento
+Genero reportes de compliance y audit trails
+
+Como Individual Contributor, tengo claridad total:
+
+Veo mis metas, progreso y earnings en tiempo real
+Accede a tablas de clasificación y elementos de gamificación
+Recibo coaching automático basado en mi performance
+Entiendo mi career path y próximos steps
+Colaboro estafa sin problemas a los miembros del equipo
+Accedo a training resources personalizados
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Anunciantes: Assignment automático basado en territories y expertise
+Módulo Contratos: Attribution automática de deals a teams y individuals
+Módulo Campañas: Collaboration tracking y shared accountability
+Módulo Facturación: Commission calculations y revenue attribution
+Cortex-Performance: IA que predice success y identifica coaching opportunities
+Cortex-Optimization: Optimización continua de team structures y territories
+
+🏗️ ESTRUCTURA MODULAR DISEÑO IMPULSADO POR EL DOMINIO
+src/modules/equipos-ventas/
+├── domain/
+│   ├── entities/
+│   │   ├── EquipoVentas.ts (Entidad principal del equipo)
+│   │   ├── MiembroEquipo.ts (Individual contributors y managers)
+│   │   ├── JerarquiaOrganizacional.ts (Org chart y reporting structures)
+│   │   ├── TerritorioVenta.ts (Geographic y account-based territories)
+│   │   ├── MetaEquipo.ts (Team goals individual y grupales)
+│   │   ├── PlanCompensacion.ts (Compensation structures complejas)
+│   │   ├── ComisionVendedor.ts (Individual commission tracking)
+│   │   ├── PerformanceMetrics.ts (KPIs y performance indicators)
+│   │   ├── CoachingPlan.ts (Development y coaching programs)
+│   │   ├── IncentivoCampaign.ts (Spiffs, contests, special programs)
+│   │   ├── OnboardingProgram.ts (New hire ramp-up automation)
+│   │   ├── CareerPathway.ts (Promotion paths y skill development)
+│   │   ├── LeaderboardGamification.ts (Competition y recognition)
+│   │   ├── ForecastColaborativo.ts (Team forecasting y pipeline review)
+│   │   ├── AnalisisCapacidad.ts (Capacity planning y headcount optimization)
+│   │   └── AuditoriaPerformance.ts (Performance reviews y compliance)
+│   ├── value-objects/
+│   │   ├── TipoEquipo.ts (Inside Sales, Field Sales, Account Management, BDR)
+│   │   ├── NivelJerarquia.ts (IC, Senior, Lead, Manager, Director, VP)
+│   │   ├── EstructuraComision.ts (Base+Commission, Straight Commission, Salary+Bonus)
+│   │   ├── TipoTerritorio.ts (Geographic, Vertical, Account-based, Hybrid)
+│   │   ├── MetodologiaVenta.ts (SPIN, Challenger, Solution Selling, MEDDIC)
+│   │   ├── CicloPerformance.ts (Monthly, Quarterly, Annual)
+│   │   ├── TipoMeta.ts (Revenue, Activity, Pipeline, Retention)
+│   │   ├── StatusMiembro.ts (Active, Ramping, PIP, On Leave, Alumni)
+│   │   ├── CompetenciaVenta.ts (Prospecting, Discovery, Demo, Negotiation, Closing)
+│   │   └── CertificacionVenta.ts (Product, Industry, Methodology, Tool)
+│   └── repositories/
+│       ├── IEquipoVentasRepository.ts
+│       ├── IMiembroEquipoRepository.ts
+│       ├── IMetaEquipoRepository.ts
+│       ├── IPerformanceRepository.ts
+│       ├── IComisionRepository.ts
+│       └── ITerritorioRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearEquipoVentasCommand.ts
+│   │   ├── ActualizarEquipoVentasCommand.ts
+│   │   ├── AsignarMiembroEquipoCommand.ts
+│   │   ├── ConfigurarMetasCommand.ts
+│   │   ├── DefinirTerritoriosCommand.ts
+│   │   ├── CrearPlanCompensacionCommand.ts
+│   │   ├── CalcularComisionesCommand.ts
+│   │   ├── IniciarCoachingProgramCommand.ts
+│   │   ├── LanzarIncentiveCampaignCommand.ts
+│   │   ├── OptimizarTerritoriosCommand.ts
+│   │   ├── EjecutarPerformanceReviewCommand.ts
+│   │   ├── GenerarForecastCommand.ts
+│   │   ├── OnboardNuevoMiembroCommand.ts
+│   │   ├── PromoverMiembroCommand.ts
+│   │   ├── RebalancearCapacidadCommand.ts
+│   │   └── ArchivarEquipoCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerEstructuraOrganizacionalQuery.ts
+│   │   ├── BuscarEquiposVentasQuery.ts
+│   │   ├── ObtenerPerformanceEquipoQuery.ts
+│   │   ├── GenerarLeaderboardQuery.ts
+│   │   ├── ObtenerMetasProgresoQuery.ts
+│   │   ├── CalcularComisionesQuery.ts
+│   │   ├── AnalisisTerritorialQuery.ts
+│   │   ├── ReporteCapacidadQuery.ts
+│   │   ├── ProyeccionForecastQuery.ts
+│   │   ├── AnalisisRetentionQuery.ts
+│   │   ├── BenchmarkPerformanceQuery.ts
+│   │   ├── OptimizacionRecursosQuery.ts
+│   │   ├── AnalisisCompetenciaQuery.ts
+│   │   └── ReporteComplianceQuery.ts
+│   └── handlers/
+│       ├── EquipoVentasCommandHandler.ts
+│       ├── PerformanceAnalysisHandler.ts
+│       ├── ComissionCalculationHandler.ts
+│       ├── TerritoryOptimizationHandler.ts
+│       ├── CoachingAutomationHandler.ts
+│       ├── GamificationEngineHandler.ts
+│       ├── ForecastingHandler.ts
+│       ├── OnboardingAutomationHandler.ts
+│       ├── CareerDevelopmentHandler.ts
+│       ├── CapacityPlanningHandler.ts
+│       ├── ComplianceAuditHandler.ts
+│       └── InteligenciaVentasHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaEquipoVentasRepository.ts
+│   │   ├── PrismaMiembroEquipoRepository.ts
+│   │   ├── PrismaPerformanceRepository.ts
+│   │   └── PrismaComisionRepository.ts
+│   ├── external/
+│   │   ├── SalesforceIntegrationService.ts (CRM sync bidireccional)
+│   │   ├── HubSpotIntegrationService.ts (Marketing alignment)
+│   │   ├── LinkedInSalesService.ts (Prospecting y social selling)
+│   │   ├── ZoomInfoService.ts (Lead enrichment)
+│   │   ├── OutreachSequenceService.ts (Sales engagement platform)
+│   │   ├── CortexPerformanceService.ts (IA de performance analysis)
+│   │   ├── CortexCoachingService.ts (Automated coaching insights)
+│   │   ├── CortexOptimizationService.ts (Territory y capacity optimization)
+│   │   ├── PayrollIntegrationService.ts (Commission payment automation)
+│   │   ├── HRISIntegrationService.ts (Employee lifecycle management)
+│   │   ├── LearningManagementService.ts (Training y certification tracking)
+│   │   ├── SlackTeamsIntegrationService.ts (Communication y collaboration)
+│   │   ├── CalendlyMeetingService.ts (Meeting coordination y scheduling)
+│   │   ├── DocuSignService.ts (Contract signing automation)
+│   │   ├── TableauPowerBIService.ts (Advanced analytics y reporting)
+│   │   └── ComplianceAuditService.ts (Regulatory compliance tracking)
+│   └── messaging/
+│       ├── EquipoVentasEventPublisher.ts
+│       ├── PerformanceAlertPublisher.ts
+│       ├── ComisionCalculatedPublisher.ts
+│       ├── MetaAchievedPublisher.ts
+│       └── TerritoryChangedPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── EquipoVentasController.ts
+    │   ├── PerformanceController.ts
+    │   ├── ComisionesController.ts
+    │   ├── MetasController.ts
+    │   ├── TerritoriosController.ts
+    │   ├── CoachingController.ts
+    │   ├── GamificationController.ts
+    │   ├── ForecastingController.ts
+    │   ├── OnboardingController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── MobileVentasController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearEquipoVentasDto.ts
+    │   ├── AsignarMiembroDto.ts
+    │   ├── ConfigurarMetaDto.ts
+    │   ├── DefinirTerritorioDto.ts
+    │   ├── CalcularComisionDto.ts
+    │   └── IniciarCoachingDto.ts
+    └── middleware/
+        ├── SalesTeamAuthorizationMiddleware.ts
+        ├── PerformanceSecurityMiddleware.ts
+        ├── CommissionAuditMiddleware.ts
+        └── TerritoryAccessMiddleware.ts
+🎯 PANTALLA PRINCIPAL - CENTRO DE COMANDO DE FUERZA DE VENTAS
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando de ventas:
+
+Título: "🏆 Centro de Comando de Fuerza de Ventas"
+Breadcrumb: "Dashboard > Equipos de Ventas"
+
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 INTELIGENCIA DE FUERZA DE VENTAS TIEMPO REAL                 │
+│                                                                 │
+│ 12 Equipos    89 Vendedores    $847M Pipeline    156% Quota    │
+│ 94% Retention    $2.3M ARR/Rep    23 Reps Superando Meta      │
+│ 🎯 Top Acción: Equipo Digital necesita 2 SDRs HOY (94% optimal)│
+│ 🤖 IA Detectó: 5 reps en riesgo, 12 listos para promotion     │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO DE PERFORMANCE AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'equipos enterprise', 'reps bajo quota', 'territories disponibles'..."
+IA Conversacional: Entiende consultas como "¿qué equipos necesitan refuerzos?"
+Predicciones automáticas:
+
+"Equipos que superarán quota este trimestre"
+Representantes listos para ascender a gerencia
+"Territories con potential no capturado"
+"Coaching opportunities automáticamente detectadas"
+
+
+
+Filtros inteligentes de performance:
+Tipo de Equipo:
+
+🎯 Equipos de ventas internas
+🚀 Equipos de ventas de campo
+Equipos de cuentas empresariales
+Desarrollo de Negocios (BDR/SDR)
+🔄 Equipos de éxito del cliente
+🌟 Gestión de cuentas clave
+
+Nivel de rendimiento:
+
+Artistas de élite (cuota superior al 150 %)
+💎 Alto rendimiento (cuota del 120-150 %)
+✅ Ejecutores principales (cuota del 90-120%)
+⚠️ En desarrollo (cuota 70-90%)
+🔴 Necesita atención (<70% de cuota)
+
+Estado del territorio:
+
+🎯 Totalmente cubierto (capacidad óptima)
+📈 Alto potencial de crecimiento
+⚠️ Recursos insuficientes
+🔄 Se necesita un reequilibrio
+🆕 Nuevo territorio
+
+Centro de acciones inteligentes:
+
+"🎯 Performance Reviews Automáticas" (IA genera insights de cada rep)
+"🤖 Territory Optimization" (Rebalanceo automático con IA)
+"📊 Forecast Collaboration" (Vista consolidada predictiva)
+Planificación de la capacidad (Escáner de necesidades de personal)
+"⚠️ Coaching Alerts" (Reps que requieren intervention)
+
+VISTA ORGANIZACIONAL - INTELIGENCIA ESTRUCTURAL:
+1. Vista de Org Chart Interactivo:
+┌─────────────────────────────────────────────────────────────────┐
+│                    VP SALES - María González                    │
+│                         $15M Quota                             │
+│                      ████████████ 134%                        │
+├─────────────────────────────────────────────────────────────────┤
+│         RVP ENTERPRISE              RVP MID-MARKET             │
+│         Carlos López                 Ana Martínez              │
+│         $8M Quota                   $7M Quota                  │
+│      ████████████ 142%           ███████████░ 128%           │
+├─────────────────────────────────────────────────────────────────┤
+│  🏢 Enterprise West    🏢 Enterprise East    🏪 MM North        │
+│  ████████████ 156%    ████████░░░ 118%     ████████████ 145%  │
+│                                                                 │
+│  • 4 AEs + 2 SDRs     • 3 AEs + 2 SDRs     • 6 AEs + 3 SDRs  │
+│  • $3.2M Quota        • $2.8M Quota        • $2.1M Quota      │
+│  • 🎯 All Green       • ⚠️ Need 1 SDR      • 🚀 Expanding     │
+└─────────────────────────────────────────────────────────────────┘
+2. Tabla de Equipos - Enterprise Grade:
+┌─────────────────────────────────────────────────────────────────┐
+│ Team Name/Leader      │ Performance │ Capacity │ Pipeline │ Action │
+├─────────────────────────────────────────────────────────────────┤
+│ 🏢 Enterprise West    │ 156% Quota  │ 8/8 Full │ $4.2M    │ [🎯]   │
+│    Carlos López       │ 🟢 Healthy  │ 2Q Hire  │ 🔥 Hot   │ [📊]   │
+│    • 4 AEs, 2 SDRs    │ $3.2M/$2.1M │ Optimal  │ 94% Qual │ [⚙️]   │
+├─────────────────────────────────────────────────────────────────┤
+│ 🏪 Mid-Market North   │ 145% Quota  │ 9/10     │ $2.8M    │ [🎯]   │
+│    Ana Martínez       │ 🟢 Scaling  │ Need SDR │ 🔥 Hot   │ [📊]   │
+│    • 6 AEs, 3 SDRs    │ $2.1M/$1.4M │ +1 Hire  │ 87% Qual │ [⚙️]   │
+├─────────────────────────────────────────────────────────────────┤
+│ 📞 Inside Sales       │ 118% Quota  │ 12/15    │ $1.9M    │ [🎯]   │
+│    Roberto Silva      │ 🟡 Growing  │ Scale Up │ 🔄 Build │ [📊]   │
+│    • 8 ISRs, 4 SDRs   │ $1.8M/$1.5M │ +3 Hire  │ 76% Qual │ [⚙️]   │
+└─────────────────────────────────────────────────────────────────┘
+➕ CREACIÓN INTELIGENTE DE EQUIPO - WIZARD TIER 0
+PASO 1: "DEFINICIÓN ESTRATÉGICA" - IA ASISTIDA
+Wizard de configuración empresarial:
+┌─────────────────────────────────────────┐
+│ 🎯 CONFIGURACIÓN DE EQUIPO ESTRATÉGICA  │
+│                                         │
+│ Tipo de Equipo:                         │
+│ ○ Inside Sales (Phone + Digital)        │
+│ ● Field Sales (Face-to-face)           │
+│ ○ Enterprise Accounts (Strategic)       │
+│ ○ Business Development (Lead Gen)       │
+│ ○ Customer Success (Retention)          │
+│                                         │
+│ Metodología de Venta:                   │
+│ ● SPIN Selling                         │
+│ ○ Challenger Sale                       │
+│ ○ Solution Selling                      │
+│ ○ MEDDIC                               │
+│ ○ Custom Hybrid                        │
+│                                         │
+│ 🤖 IA RECOMIENDA AUTOMÁTICAMENTE:       │
+│ ┌─────────────────────────────────────┐ │
+│ │ Basado en tu industry y size:       │ │
+│ │ • Team size óptimo: 6-8 reps        │ │
+│ │ • Manager ratio: 1:6                │ │
+│ │ │ • Quota ramp: 6 months            │ │
+│ │ • Comp plan: 60/40 base/variable    │ │
+│ │ • Territory model: Geographic       │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ [Siguiente: Estructura Organizacional]  │
+└─────────────────────────────────────────┘
+PASO 2: "JERARQUÍA Y LIDERAZGO" - ESTRUCTURA INTELIGENTE
+Configuración de management structure:
+┌─────────────────────────────────────────┐
+│ 👑 ESTRUCTURA DE LIDERAZGO              │
+│                                         │
+│ Team Leader: [Seleccionar Jefe ▼]      │
+│                                         │
+│ 🤖 CANDIDATOS IA-RANKED:                │
+│ ┌─────────────────────────────────────┐ │
+│ │ ⭐ Ana García (Recommended)          │ │
+│ │    📊 Score: 94/100                 │ │
+│ │    🎯 5 años experience leading     │ │
+│ │    💰 $847K team revenue last year  │ │
+│ │    🏆 Top performer + people skills │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Roberto López (Strong candidate)     │ │
+│ │    📊 Score: 87/100                 │ │
+│ │    🎯 3 años management experience  │ │
+│ │    💰 $634K team revenue           │ │
+│ │    🔄 High performer, developing   │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ Reporting Structure:                    │
+│ • Direct reports: 6-8 reps optimal     │
+│ • Skip level frequency: Bi-weekly       │
+│ • Team meeting cadence: Weekly          │
+│                                         │
+│ [Confirmar Selección]                   │
+└─────────────────────────────────────────┘
+PASO 3: "TERRITORIES Y ASIGNACIONES" - OPTIMIZACIÓN IA
+Designer de territorios inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🗺️ TERRITORIO OPTIMIZER CON IA                                  │
+├─────────────────────────────────────────────────────────────────┤
+│ Modelo de Territorio:                                           │
+│ ● Geográfico (By region/city)                                  │
+│ ○ Vertical (By industry)                                       │
+│ ○ Account-based (By company size)                              │
+│ ○ Híbrido (Geo + Vertical)                                     │
+│                                                                 │
+│ 🤖 OPTIMIZACIÓN AUTOMÁTICA:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Cortex-Territory analizó data histórica:                   │ │
+│ │                                                             │ │
+│ │ 📍 TERRITORIO NORTE:                                        │ │
+│ │ • Potential: $2.3M ARR                                     │ │
+│ │ • Accounts: 245 prospects                                  │ │
+│ │ • Travel time: 2.3h avg                                    │ │
+│ │ • Recomendado: 1 Field Rep + 1 SDR                        │ │
+│ │                                                             │ │
+│ │ 📍 TERRITORIO SUR:                                          │ │
+│ │ • Potential: $1.8M ARR                                     │ │
+│ │ • Accounts: 189 prospects                                  │ │
+│ │ • Travel time: 1.8h avg                                    │ │
+│ │ • Recomendado: 1 Field Rep                                 │ │
+│ │                                                             │ │
+│ │ 📍 TERRITORIO CENTRO:                                       │ │
+│ │ • Potential: $3.1M ARR                                     │ │
+│ │ • Accounts: 334 prospects (high density)                  │ │
+│ │ • Travel time: 1.2h avg                                    │ │
+│ │ • Recomendado: 2 Field Reps + 1 SDR                       │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ Balance Score: 94/100 (Optimal distribution)                   │
+│ Projected Quota Attainment: 138%                               │
+│                                                                 │
+│ [✅ Aplicar Optimización] [🔄 Re-calcular] [✏️ Manual Override] │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "METAS Y COMPENSACIÓN" - CONFIGURACIÓN AVANZADA
+Sistema de planificación de compensación:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 COMPENSATION PLAN DESIGNER                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Plan Structure:                                                 │
+│ ● Base + Variable (Recommended)                                 │
+│ ○ Straight Commission                                           │
+│ ○ Salary + Quarterly Bonus                                     │
+│ ○ Draw Against Commission                                       │
+│                                                                 │
+│ 🎯 CONFIGURATION:                                              │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Base Salary: $80,000 annually                              │ │
+│ │ Target Commission: $120,000 (150% OTE)                     │ │
+│ │ Quota: $1,200,000 ARR                                      │ │
+│ │ Commission Rate: 10% (up to quota)                         │ │
+│ │ Accelerator: 15% (above quota)                             │ │
+│ │                                                             │ │
+│ │ 🏆 SPIFF PROGRAMS:                                          │ │
+│ │ • New customer: $2,000 bonus                               │ │
+│ │ • Upsell >50%: $1,000 bonus                               │ │
+│ │ • Quarterly club: 125%+ quota                              │ │
+│ │                                                             │ │
+│ │ 📊 PROJECTED EARNINGS:                                      │ │
+│ │ • 75% quota: $170,000 total                                │ │
+│ │ • 100% quota: $200,000 total                               │ │
+│ │ • 125% quota: $237,500 total                               │ │
+│ │ • 150% quota: $287,500 total                               │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ Performance Metrics:                                            │
+│ • Revenue: 70% weight                                           │
+│ • New Customers: 20% weight                                     │
+│ • Activity (calls/meetings): 10% weight                        │
+│                                                                 │
+│ [💾 Guardar Plan] [🧮 Calculator] [📊 Model Different Scenarios]│
+└─────────────────────────────────────────────────────────────────┘
+📊 DASHBOARD DE PERFORMANCE - CENTRO DE INTELIGENCIA
+RENDIMIENTO DE VISTA EN TIEMPO REAL:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 PERFORMANCE DASHBOARD - Q4 2024                              │
+├─────────────────────────────────────────────────────────────────┤
+│ EQUIPO ENTERPRISE WEST - Carlos López                          │
+│                                                                 │
+│ 💰 PERFORMANCE FINANCIERA:                                     │
+│ Quota: $3.2M    Actual: $4.98M    Attainment: 156% ████████  │
+│ Pipeline: $2.1M (66% qualified)    Forecast: $1.4M probable   │
+│                                                                 │
+│ 👥 PERFORMANCE INDIVIDUAL:                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🌟 Ana García (AE)     $847K/600K  141%  🏆 Top Performer  │ │
+│ │ 💎 Roberto Silva (AE)  $723K/600K  121%  ✅ Solid          │ │
+│ │ 🥇 María López (AE)    $634K/600K  106%  ✅ On Track       │ │
+│ │ ⚠️ Carlos Chen (AE)    $423K/600K   71%  🔄 Coaching       │ │
+│ │ 🚀 Sofia Rodríguez(SDR) 145 SQLs    127%  🎯 Crushing      │ │
+│ │ 📞 Diego Morales (SDR)  134 SQLs    117%  ✅ Strong        │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 MÉTRICAS DE ACTIVIDAD:                                      │
+│ • Calls: 1,247 (↗️ +23% vs last Q)                           │
+│ • Meetings: 342 (↗️ +18% vs last Q)                          │
+│ • Demos: 89 (↗️ +12% vs last Q)                              │
+│ • Conversion rate: 24% (🎯 Target: 22%)                       │
+│                                                                 │
+│ 🤖 INSIGHTS IA AUTOMÁTICOS:                                   │
+│ • Carlos Chen necesita coaching en discovery (34% conv rate)  │
+│ • Sofia Rodríguez lista para promotion a AE (next cycle)     │
+│ • Team proyectado para 165% quota attainment (high confidence)│
+│ • Territory North tiene opportunity gap - consider expansion  │
+│                                                                 │
+│ [📊 Deep Dive] [🎯 Coaching Plan] [💰 Comp Calculator] [🔮 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+SISTEMA DE GAMIFICACIÓN DE CLASIFICACIÓN:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🏆 SALES LEADERBOARD - Q4 2024 (Updated Real-time)             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🥇 QUOTA ATTAINMENT LEADERS:                                   │
+│                                                                 │
+│ 1. 🌟 Ana García (Enterprise West)     - 🔥 156% - $847K      │
+│    • Streak: 4 months >quota                                   │
+│    • Badge: "Quota Crusher" 🏆                                │
+│    • Next milestone: President's Club (175%)                   │
+│                                                                 │
+│ 2. 💎 Roberto Silva (Enterprise West)  - ⚡ 145% - $723K      │
+│    • Streak: 3 months >quota                                   │
+│    • Badge: "Consistent Performer" ⭐                          │
+│                                                                 │
+│ 3. 🚀 María López (Mid-Market North)   - 🎯 141% - $634K      │
+│    • Streak: 2 months >quota                                   │
+│    • Badge: "Rising Star" 🌟                                  │
+│                                                                 │
+│ 💪 ACTIVITY LEADERS:                                           │
+│ • Most Calls: Sofia Rodríguez (SDR) - 342 calls this month    │
+│ • Most Meetings: Diego Chen (AE) - 89 meetings                │
+│ • Best Conversion: Ana García - 34% meeting-to-close          │
+│                                                                 │
+│ 🎁 CURRENT SPIFFS & CONTESTS:                                  │
+│ • 🎄 Holiday Push: Extra $5K for deals closed by Dec 31       │
+│ • 🆕 New Logo Contest: $10K + trip to Hawaii for most new customers│
+│ • 📞 SDR Blitz Week: Extra $500 per week for >50 calls/day    │
+│                                                                 │
+│ [🎯 My Performance] [🏆 All-time Leaders] [🎁 Active Contests]  │
+└─────────────────────────────────────────────────────────────────┘
+🎓 SISTEMA DE COACHING Y DESARROLLO
+COACHING AUTOMÁTICO CON IA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 CORTEX-COACHING RECOMMENDATIONS                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 👤 CARLOS CHEN - Account Executive                              │
+│                                                                 │
+│ 📊 PERFORMANCE ANALYSIS:                                       │
+│ • Current: 71% quota (Below threshold)                         │
+│ • Trend: ↘️ -8% vs last quarter                               │
+│ • Issue: Low discovery-to-demo conversion (34% vs team 52%)    │
+│                                                                 │
+│ 🎯 COACHING PLAN AUTOMÁTICO:                                   │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ WEEK 1-2: Discovery Skills Boot Camp                       │ │
+│ │ • 📚 Required: "SPIN Selling" modules 3-5                  │ │
+│ │ • 🎭 Role-play: 3 sessions with manager                    │ │
+│ │ • 📞 Call shadowing: Listen to top performer calls         │ │
+│ │                                                             │ │
+│ │ WEEK 3-4: Field Application                                │ │
+│ │ • 🎯 Apply new techniques in 10+ discovery calls          │ │
+│ │ • 📊 Manager reviews: 5 recorded calls                     │ │
+│ │ • 🏆 Target: Improve conversion to 45%                     │ │
+│ │                                                             │ │
+│ │ WEEK 5-6: Mastery & Reinforcement                         │ │
+│ │ • 🧠 Peer mentoring with Ana García                        │ │
+│ │ • 📈 Track metrics: Daily conversion tracking              │ │
+│ │ • 🎉 Success milestone: 50% conversion rate                │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📚 RECOMMENDED TRAINING:                                        │
+│ • Challenger Customer methodology                              │
+│ • Advanced questioning techniques                              │
+│ • Objection handling masterclass                              │
+│                                                                 │
+│ 📅 SCHEDULE:                                                   │
+│ • Weekly 1:1s with manager: Tuesdays 10 AM                    │
+│ • Peer mentoring: Thursdays 2 PM                              │
+│ • Progress review: End of month                                │
+│                                                                 │
+│ [📋 Start Coaching Plan] [📞 Schedule 1:1] [📊 Track Progress]  │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - SALES PERFORMANCE ON-THE-GO
+APP MÓVIL SALES MANAGER:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR SALES COMMAND MÓVIL          │
+├─────────────────────────────────────────┤
+│ 🏠 Team Dashboard                       │
+│ • 6 Reps tracking to 142% quota         │
+│ • $847K closed this month              │
+│ • 23 deals in commit stage             │
+│ • 2 reps need coaching attention        │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🎯 Review Team Performance]            │
+│ [📞 Coaching Calls Scheduled (3)]       │
+│ [✅ Approve Deals (4)]                  │
+│ [⚠️ Pipeline Review Alerts (2)]         │
+│                                         │
+│ 🚨 ALERTS HOY:                          │
+│ • Carlos Chen: missed 3 meetings        │
+│ • Ana García: deal at risk - $180K      │
+│ • Sofia Rodríguez: promotion ready      │
+│                                         │
+│ 📊 MY TEAMS:                            │
+│ [Enterprise West] [Performance] [Coaching]│
+├─────────────────────────────────────────┤
+│ [🏠] [👥] [📊] [🎯] [⚙️]                │
+└─────────────────────────────────────────┘
+Funciones avanzadas móviles:
+
+Real-time Coaching: Push notifications cuando rep necesita help
+Instant Approval: Aprobar deals y discounts desde móvil
+Performance Alerts: Alertas quando metrics salen de rango
+Leaderboard Social: Ver rankings y celebrate wins en tiempo real
+
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-PERFORMANCE - Motor de Optimización:
+1. Supervisión automática del rendimiento:
+Trigger: Daily performance data sync
+→ Cortex analiza metrics vs targets por rep
+→ Identifica patrones de under/over performance
+→ Calcula probability de quota attainment
+→ Si risk >70%: Genera coaching recommendation automático
+→ Notifica manager con action plan específico
+→ Programa check-ins y follow-ups automáticos
+→ Trackea improvement metrics week-over-week
+2. Reequilibrio Inteligente del Territorio:
+Trigger: Monthly territory analysis
+→ Cortex evalúa account distribution y performance
+→ Identifica territories desbalanceados
+→ Calcula optimal redistribution basado en capacity
+→ Si improvement >15%: Sugiere rebalance automáticamente
+→ Genera impact analysis para management review
+→ Automatiza transition plan con timelines
+→ Monitorea performance post-change
+3. Coaching Triggers Automáticos:
+Trigger: Performance metrics deviation
+→ Identifica specific skill gaps automáticamente
+→ Asigna training modules personalizados
+→ Programa role-playing sessions con manager
+→ Trackea progress contra learning objectives
+→ Si no improvement en 30 días: Escala a PIP process
+→ Genera success stories para share con team
+→ Optimiza coaching programs basado en outcomes
+💰 SISTEMA DE COMISIONES AVANZADO
+CALCULADORA DE COMISIONES ENTERPRISE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 COMMISSION CALCULATOR - ANA GARCÍA Q4 2024                   │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 BASE PERFORMANCE:                                           │
+│ • Quota: $600,000    Actual: $847,000    Attainment: 141%     │
+│ • Base Salary: $80,000 (paid monthly)                         │
+│                                                                 │
+│ 💵 COMMISSION CALCULATION:                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Tier 1 (0-100% quota): $600K × 10% = $60,000              │ │
+│ │ Tier 2 (100-150% quota): $247K × 15% = $37,050             │ │
+│ │ Total Commission Earned: $97,050                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🏆 SPIFFS & BONUSES:                                           │
+│ • New Customer Bonus: 6 × $2,000 = $12,000                    │
+│ • Upsell Bonus: 3 × $1,000 = $3,000                          │
+│ • President's Club Qualifier: $5,000                          │
+│ • Total Bonuses: $20,000                                      │
+│                                                                 │
+│ 🎯 QUARTERLY SUMMARY:                                          │
+│ • Base Salary: $20,000 (3 months)                             │
+│ • Commission: $97,050                                          │
+│ • Bonuses: $20,000                                            │
+│ • Total Q4 Earnings: $137,050                                 │
+│                                                                 │
+│ 📈 ANNUAL PROJECTION:                                          │
+│ • If maintains pace: $548,200 total annual                    │
+│ • OTE Achievement: 274% (Exceptional)                         │
+│                                                                 │
+│ [💾 Generate Statement] [📧 Send to Payroll] [📊 Compare YoY]  │
+└─────────────────────────────────────────────────────────────────┘
+🎯 FORECAST COLABORATIVO AVANZADO
+SISTEMA DE PREDICCIÓN INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔮 COLLABORATIVE FORECASTING - Q1 2025                         │
+├─────────────────────────────────────────────────────────────────┤
+│ ENTERPRISE WEST TEAM - Carlos López                            │
+│                                                                 │
+│ 📊 FORECAST SUMMARY:                                           │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │              Commit    Best Case    Worst Case    Quota     │ │
+│ │ Ana García   $420K     $580K        $320K        $600K     │ │
+│ │ Roberto Silva $380K    $510K        $280K        $600K     │ │
+│ │ María López  $310K     $420K        $240K        $600K     │ │
+│ │ Carlos Chen  $180K     $240K        $120K        $600K     │ │
+│ │ ─────────────────────────────────────────────────────────   │ │
+│ │ TEAM TOTAL   $1.29M    $1.75M       $960K        $2.4M     │ │
+│ │ Attainment   54%       73%          40%          100%      │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🤖 CORTEX-FORECAST INSIGHTS:                                   │
+│ • High confidence: Team will exceed $1.4M (87% probability)   │
+│ • Risk: Carlos Chen needs pipeline build (only $240K pipe)    │
+│ • Opportunity: 3 large deals could push team to $1.8M         │
+│ • Recommendation: Focus on Q1 pipeline generation NOW         │
+│                                                                 │
+│ 📈 PIPELINE HEALTH:                                            │
+│ • Total Pipeline: $2.8M (2.3x coverage)                       │
+│ • Qualified Pipeline: $1.9M (1.6x coverage)                   │
+│ • Commit Category: $1.29M (confirmed deals)                   │
+│ • Risk Assessment: 🟡 Medium (coverage adequate)              │
+│                                                                 │
+│ 🎯 ACTIONS REQUIRED:                                           │
+│ • Carlos Chen: Build pipeline to 3x coverage ($1.8M needed)   │
+│ • Team: Qualify 15 additional opportunities this month        │
+│ • Focus: Enterprise deals >$100K for Q1 acceleration          │
+│                                                                 │
+│ [📊 Update Forecast] [🎯 Pipeline Actions] [📧 Submit to Leadership]│
+└─────────────────────────────────────────────────────────────────┘
+🔐 SEGURIDAD TIER 0 - NIVEL MILITAR
+PROTECCIÓN DE DATOS DE PERFORMANCE:
+Encriptación y Control de Acceso:
+
+Performance data encriptada con AES-256 + algoritmos post-quantum
+Commission data con protección especial nivel banking
+Territory assignments con control granular por región
+Verificación de confianza cero para acceder a la inteligencia competitiva
+
+Controles de Acceso por Rol:
+Representante de ventas:
+
+✅ Ver su performance y commission data únicamente
+✅ Acceso a asignaciones de territorio y listas de cuentas
+✅ Materiales de formación y recursos de coaching
+❌ Performance data de otros reps
+❌ Planes de comisiones o estructuras de compensación
+
+Gerente de ventas:
+
+✅ Ver el desempeño completo de los informes directos
+✅ Acceso a herramientas de coaching y programas de desarrollo
+✅ Gestión del territorio para su equipo
+✅ Presentación de pronósticos y revisión de pipeline
+❌ Planificación de compensaciones o anulaciones de comisiones
+
+Director de ventas/vicepresidente:
+
+✅ Visibilidad del rendimiento en todos los equipos
+✅ Optimización del territorio y planificación de la capacidad
+✅ Configuración del plan de compensación
+✅ Análisis avanzado y perspectivas predictivas
+✅ Planificación de la sucesión y desarrollo del talento
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-TALENT - IA de Desarrollo de Talento:
+Identificación automática de high-potential performers:
+
+Reconocimiento de patrones para identificar futuros líderes
+Análisis automático de brechas de habilidades con recomendaciones de desarrollo
+Career pathing personalizado basado en strengths y interests
+Planificación de sucesión automática con puntuación de confianza
+
+2. INTELIGENCIA TERRITORIAL AUTOMÁTICA:
+Optimización continua de territories:
+
+Aprendizaje automático para identificar límites territoriales óptimos
+Real-time rebalancing basado en performance y capacity
+Análisis predictivo para nuevas oportunidades territoriales
+Puntuación automática de cuentas para una asignación óptima
+
+3. INTEGRACIÓN DE INTELIGENCIA COMPETITIVA:
+Intelligence de competencia automatizada:
+
+Win/loss analysis automático con competitive insights
+Battle cards automáticas basadas en deal outcomes
+Recomendaciones de posicionamiento competitivo por oportunidad
+Integración de inteligencia de mercado para la planificación estratégica de cuentas
+
+4. AMPLIFICACIÓN DE LA VENTA SOCIAL:
+Potenciación de social selling:
+
+Integración de LinkedIn para la investigación automática de prospectos
+Motor de sugerencias de contenido para la interacción social
+Mapeo automático de relaciones entre cuentas
+Seguimiento y optimización del rendimiento de las ventas sociales
+
+
+🎯 CONCLUSIÓN: LA PLATAFORMA DE SALES PERFORMANCE MÁS AVANZADA DEL MUNDO
+PARA EL SALES REPRESENTATIVE:
+
+Claridad total: Metas, progreso y camino al éxito cristalinos
+Coaching automático: IA identifica areas de mejora y provides resources
+Optimización del territorio: Cuentas y prospectos optimizados para el máximo éxito
+Competición gamificada: Motivación mediante tablas de clasificación y programas de reconocimiento
+Desarrollo de carrera: Camino claro hacia la promoción y el desarrollo de habilidades
+
+PARA EL SALES MANAGER:
+
+Team visibility: Performance completa de team en tiempo real
+Eficiencia del coaching: información y recomendaciones automatizadas para cada representante
+Gestión del territorio: Herramientas de optimización para maximizar la cobertura del equipo
+Precisión de las previsiones: previsión colaborativa con análisis predictivo
+Desarrollo del talento: planificación de la sucesión y seguimiento de la preparación para la promoción
+
+PARA EL SALES LEADERSHIP:
+
+Strategic control: Org design y capacity planning optimizado
+Optimización del rendimiento: decisiones basadas en datos para la asignación de recursos
+Análisis predictivo: Precisión de pronóstico y monitoreo del estado del pipeline
+Gestión del talento: visión integral del pipeline y desarrollo del talento
+Ventaja competitiva: Integración de inteligencia para el liderazgo del mercado
+
+PARA LA ORGANIZACIÓN:
+
+Crecimiento de los ingresos: Mejora promedio del 35 % en el cumplimiento de la cuota
+Eficiencia de ventas: reducción del 60% en gastos administrativos
+Retención de talento: mejora del 40% en la retención de representantes de ventas
+Tiempo de productividad: tiempo de incorporación un 50 % más rápido para nuevas contrataciones
+Posicionamiento competitivo: Capacidades de organización de ventas líderes en el mercado
+
+El Módulo Equipos de Ventas TIER 0 no es solo un org chart: es un cerebro organizacional que transforma teams de sales tradicionales en una máquina de revenue inteligente, automatizada y optimizada que maximiza el potential de cada individual, predice performance outcomes y asegura sustainable growth a través de data-driven decision making y continuous optimization.

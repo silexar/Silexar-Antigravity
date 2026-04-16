@@ -1,0 +1,3911 @@
+MENSAJE PARA EL EQUIPO DE DESARROLLO Y IDE:
+Esta guía representa más que especificaciones técnicas; es el blueprint para revolucionar una industria completa. Cada línea de código, cada decisión de arquitectura, cada pixel de diseño debe reflejar nuestra misión: construir el futuro de la publicidad.
+No estamos creando otro software. Estamos construyendo la infraestructura que alimentará la nueva economía de la atención durante las próximas décadas.
+El éxito de Silexar Pulse determinará si los medios tradicionales evolucionan o se vuelven obsoletos. La responsabilidad es inmensa, pero también lo es la oportunidad.
+Construyamos el futuro. 🚀
+
+
+
+🎯 SILEXAR PULSE - GUÍA MAESTRA COMPLETA TIER 0
+Manual Técnico y Operativo para Desarrollo e Implementación
+
+📋 ÍNDICE EJECUTIVO ESTRATÉGICO
+PARTE I: FUNDAMENTOS DEL ECOSISTEMA
+
+Visión Estratégica y Posicionamiento de Mercado
+Arquitectura Tecnológica TIER 0
+Ecosistema de Usuarios y Experiencias
+Motor de Inteligencia Artificial Cortex
+
+PARTE II: ARQUITECTURA MODULAR FUNCIONAL
+
+Módulos Base de Configuración (Tier Core)
+Módulos de Gestión Comercial (Tier Business)
+Módulos de Operaciones y Ejecución (Tier Operations)
+Módulos de Finanzas e Inteligencia (Tier Analytics)
+Módulos Digitales y IA Avanzada (Tier Digital)
+
+PARTE III: EXPERIENCIAS DE USUARIO DETALLADAS
+
+Flujos Operativos Completos por Rol
+Interfaces y Navegación Intuitiva
+Automatizaciones y Conectividad Externa
+
+
+PARTE I: FUNDAMENTOS DEL ECOSISTEMA
+1. VISIÓN ESTRATÉGICA Y POSICIONAMIENTO DE MERCADO
+🔷 EL PROBLEMA QUE RESOLVEMOS
+Para el Dueño de Medios:
+
+Sistemas fragmentados que no se comunican entre sí
+Procesos manuales que generan errores costosos
+Imposibilidad de optimizar ingresos en tiempo real
+Falta de trazabilidad completa de las emisiones
+Reportes desactualizados que no sirven para tomar decisiones
+
+Para el Ejecutivo de Ventas:
+
+Herramientas lentas que hacen perder oportunidades comerciales
+Imposibilidad de generar propuestas atractivas al instante
+Falta de visibilidad sobre disponibilidad de inventario
+Procesos de seguimiento manual que consumen tiempo valioso
+Dificultad para demostrar valor real al cliente
+
+Para el Programador de Tráfico:
+
+Sistemas arcaicos que requieren múltiples pasos manuales
+Riesgo constante de errores en la programación
+Imposibilidad de conciliar automáticamente lo programado vs. emitido
+Herramientas de exportación limitadas y propensas a fallos
+
+🚀 LA SOLUCIÓN SILEXAR PULSE
+Un Ecosistema Unificado que Transforma:
+
+La complejidad en simplicidad operativa
+Los procesos manuales en automatización inteligente
+Los espacios publicitarios en resultados verificables
+La venta tradicional en consultoría de resultados
+
+🎯 DIFERENCIADORES ÚNICOS EN EL MERCADO
+
+Motor de IA Cortex Integrado: No es un add-on, es el cerebro del sistema
+Certificación de Emisión en Tiempo Real: Tecnología tipo Shazam para verificación automática
+Venta por Resultados: Cambio de paradigma de "espacios" a "objetivos"
+Automatización End-to-End: Desde la prospección hasta la facturación
+Experiencia Móvil Nativa: Especialmente diseñada para ejecutivos de ventas
+Conectividad Universal: Email, WhatsApp, sistemas de playout existentes
+
+2. ARQUITECTURA TECNOLÓGICA TIER 0
+🏗️ STACK TECNOLÓGICO FUNDACIONAL
+Frontend (Cliente)
+
+Framework: Next.js 14+ con App Router y Server Components
+UI Library: shadcn/ui + Tailwind CSS v4
+Lenguaje: TypeScript 5+ con modo estricto
+Estado Global: Zustand + React Query para cache
+Formas: React Hook Form + Zod para validaciones sincronizadas
+PWA: Service Workers para funcionalidad offline
+
+Backend (Servidor)
+
+Framework: NestJS v10+ con decoradores y arquitectura modular
+Lenguaje: Node.js 22 LTS con TypeScript
+Base de Datos: PostgreSQL 16+ con sharding automático
+Cache: Redis v7 + BullMQ para colas de trabajo
+API: GraphQL + REST híbrido con paginación cursor-based
+
+Infraestructura Cloud (Google Cloud Platform)
+
+Compute: Google Kubernetes Engine (GKE) con auto-scaling
+Almacenamiento: Cloud SQL + Cloud Storage + Memorystore
+IA/ML: Vertex AI + Gemini Pro para motores Cortex
+Seguridad: Cloud Armor + Identity Platform + Secret Manager
+Monitoreo: Cloud Monitoring + Error Reporting + Cloud Trace
+
+🔐 SEGURIDAD NIVEL MILITAR
+Capa de Protección 1: Entrada y Validación
+
+Input sanitization automática con DOMPurify y validator.js
+Validación sincronizada frontend/backend con Zod
+Rate limiting inteligente por IP y usuario específico
+Content Security Policy (CSP) automático y estricto
+
+Capa de Protección 2: Autenticación y Sesión
+
+JWT con refresh tokens y rotación automática cada 15 minutos
+Autenticación multifactor obligatoria (TOTP + WebAuthn)
+Session fingerprinting para detección de secuestro
+Device fingerprinting para detección de anomalías
+
+Capa de Protección 3: Datos y Transacciones
+
+Criptografía post-cuántica para datos críticos
+Transacciones atómicas con rollback automático
+Audit log inmutable de todas las operaciones
+Backup automático con encriptación cada 15 minutos
+
+Capa de Protección 4: Red y Aplicación
+
+CORS específico por módulo (nunca wildcard)
+WAF con Cloud Armor y reglas personalizadas
+Escaneo automático de vulnerabilidades (SAST/DAST)
+Protección contra SQL injection, XSS, CSRF, y más
+
+📊 OBSERVABILIDAD Y MONITOREO
+Logging Estructurado
+
+Winston/Pino con contexto completo de transacciones
+Correlación automática entre requests distribuidos
+Métricas de negocio específicas por módulo
+Alertas inteligentes con ML para detección de anomalías
+
+Health Checks y Resilencia
+
+Circuit breakers automáticos para servicios externos
+Retry inteligente con backoff exponencial
+Graceful degradation automática
+Auto-scaling basado en predicciones ML
+
+3. ECOSISTEMA DE USUARIOS Y EXPERIENCIAS
+👑 SUPER ADMINISTRADOR (SILEXAR)
+Dashboard de Control Global
+
+Monitoreo en tiempo real de todos los tenants/clientes
+Métricas de uso: CPU, memoria, requests, errores por cliente
+Gestión de licencias y planes de suscripción
+Herramientas de soporte: impersonación segura de usuarios
+Analytics de negocio: ARR, churn rate, usage patterns
+
+Flujo Diario Típico:
+
+Revisar dashboard de salud del sistema
+Verificar alertas de seguridad o rendimiento
+Procesar solicitudes de nuevos clientes
+Monitorear métricas de satisfacción y uso
+
+👨‍💼 ADMINISTRADOR CLIENTE (CEO/CTO MEDIOS)
+Centro de Comando Empresarial
+
+Dashboard ejecutivo con KPIs del negocio
+Gestión de usuarios internos y permisos
+Configuración de políticas comerciales
+Reportes financieros y operativos consolidados
+Panel de configuración de integraciones
+
+Flujo Diario Típico:
+
+Revisar KPIs de ventas y operaciones del día anterior
+Analizar reportes de rendimiento por vendedor/emisora
+Configurar nuevos usuarios o ajustar permisos
+Revisar alertas de compliance o brand safety
+
+💼 EJECUTIVO DE VENTAS
+Herramientas Móviles y de Escritorio
+
+CRM con prospección inteligente automática
+Generador de propuestas con IA
+Dashboard de metas y comisiones en tiempo real
+App móvil para gestión sobre la marcha
+Integración WhatsApp y email para comunicación
+
+Flujo Diario Típico:
+
+Revisar leads generados automáticamente por el sistema
+Crear propuesta personalizada con IA para reunión de las 10:00
+Durante la reunión: consultar disponibilidad en tiempo real
+Cerrar venta y generar contrato digital con firma electrónica
+Hacer seguimiento automático via WhatsApp
+
+🎛️ PROGRAMADOR DE TRÁFICO
+Centro de Operaciones Técnicas
+
+Interface visual drag-and-drop para programación
+Herramientas de conciliación automática
+Exportadores universales para cualquier sistema de playout
+Monitor de emisión en tiempo real
+Gestor de creatividades con editor integrado
+
+Flujo Diario Típico:
+
+Revisar pauta del día generada automáticamente
+Ajustar manualmente conflictos o casos especiales
+Exportar archivos a sistemas de emisión (Dalet, Sara, etc.)
+Monitorear emisión y recibir alertas automáticas
+Conciliar lo emitido vs. programado al final del día
+
+📊 GERENTE COMERCIAL
+Inteligencia de Negocio Avanzada
+
+Analytics predictivo con IA
+Dashboard de performance del equipo
+Herramientas de pricing dinámico
+Reportes de competencia y mercado
+Panel de optimización de ingresos
+
+Flujo Diario Típico:
+
+Revisar dashboard de performance del equipo
+Analizar oportunidades de optimización de precios
+Revisar pipeline de ventas y proyecciones
+Configurar metas y incentivos para el equipo
+
+4. MOTOR DE INTELIGENCIA ARTIFICIAL CORTEX
+🧠 ARQUITECTURA DEL MOTOR CORTEX
+Cortex-Orchestrator (Optimización de Campañas)
+
+Propósito: Optimizar automáticamente el mix de medios para maximizar KPIs
+Tecnología: Reinforcement Learning + Vertex AI
+Input: Objetivos de campaña, presupuesto, audiencia target, históricos
+Output: Plan de medios optimizado con probabilidad de éxito
+Integración: Se conecta con Módulo de Contratos y Campañas
+
+Cortex-Risk (Evaluación Crediticia)
+
+Propósito: Evaluar automáticamente el riesgo crediticio de anunciantes
+Tecnología: ML Classification + APIs de bureaus de crédito
+Input: RUT, historial de pagos, datos financieros públicos
+Output: Score de riesgo + recomendaciones de términos de pago
+Integración: Se conecta con Módulo CRM y Facturación
+
+Cortex-Audience (Perfilado de Audiencia)
+
+Propósito: Crear perfiles 360° de audiencias y optimizar targeting
+Tecnología: NLP + Behavioral Analysis + Gemini Pro
+Input: Datos de consumo, preferencias, comportamiento histórico
+Output: Segmentos de audiencia + recomendaciones de creatividad
+Integración: Se conecta con Módulos Digitales y Creatividades
+
+Cortex-Voice (Síntesis de Voz Inteligente)
+
+Propósito: Generar menciones sintéticas con modulación emocional
+Tecnología: Google Text-to-Speech + WaveNet + análisis emocional
+Input: Texto base + contexto emocional + perfil de audiencia
+Output: Audio sintético personalizado y contextualizado
+Integración: Se conecta con Módulos de Audio Inteligente
+
+Cortex-Sense (Certificación de Emisión)
+
+Propósito: Verificar automáticamente la emisión de publicidad
+Tecnología: Audio Fingerprinting + Computer Vision + ML
+Input: Archivo de emisión + pauta programada
+Output: Certificado de emisión + alertas de discrepancias
+Integración: Se conecta con Módulo de Conciliación
+
+Cortex-Flow (Automatización de Procesos)
+
+Propósito: Automatizar flujos de trabajo complejos
+Tecnología: Business Process Management + Rules Engine
+Input: Reglas de negocio + triggers de eventos
+Output: Acciones automatizadas + notificaciones inteligentes
+Integración: Transversal a todos los módulos
+
+WIL (Asistente IA Conversacional)
+
+Propósito: Asistencia contextual y resolución de dudas
+Tecnología: Gemini Pro + Knowledge Base + RAG
+Input: Preguntas en lenguaje natural + contexto del usuario
+Output: Respuestas precisas + tutoriales paso a paso
+Integración: Disponible en toda la plataforma como chat bubble
+
+
+PARTE II: ARQUITECTURA MODULAR FUNCIONAL
+5. MÓDULOS BASE DE CONFIGURACIÓN (TIER CORE)
+MÓDULO 1: NÚCLEO DE CONFIGURACIÓN
+El Centro de Control Absoluto del Sistema
+Propósito Estratégico: Establecer los cimientos operativos, de seguridad e inteligencia de cada instancia cliente, proporcionando control granular sobre usuarios, permisos y políticas de negocio.
+SUB-MÓDULO 1.1: PANEL DE SUPER-ADMINISTRACIÓN
+Vista Exclusiva de Silexar
+Dashboard Principal (/super-admin)
+
+Widget "Salud del Sistema" con métricas en tiempo real:
+
+CPU, memoria, latencia promedio de API
+Estado de servicios críticos (BD, Redis, Cortex)
+Alertas de seguridad y anomalías
+
+
+Widget "Actividad de Tenants":
+
+Gráfico de actividad por cliente en últimas 24h
+Usuarios concurrentes por tenant
+Requests por minuto por cliente
+
+
+
+Gestor de Clientes/Tenants
+
+Tabla completa de clientes con columnas:
+
+ID Tenant, Nombre, Plan de Licencia, Fecha Vencimiento
+Estado (Activo/Suspendido), Último Login, Usuarios Activos
+Acciones: Editar, Suspender/Activar, Tomar Control
+
+
+Formulario "Crear Tenant":
+
+Datos básicos: Nombre, RUT, Email Administrador
+Configuración: Plan de licencia, límites de usuarios
+Generación automática: Base de datos aislada, usuario maestro
+Envío automático: Email de bienvenida con setup inicial
+
+
+
+Función de Impersonación Segura
+
+Capacidad de iniciar sesión como cualquier usuario cliente
+Log de auditoría especial para todas las acciones en modo impersonación
+Timeout automático de sesión de impersonación
+Notificación automática al cliente sobre acceso de soporte
+
+SUB-MÓDULO 1.2: ADMINISTRACIÓN CLIENTE
+Centro de Mando para Cada Cliente
+Gestión de Usuarios y Roles (RBAC)
+
+Tabla de usuarios internos con columnas:
+
+Nombre, Email, Rol, Último Login, Estado
+Acciones: Crear, Editar, Desactivar, Resetear Password
+
+
+Sistema de Roles predefinidos:
+
+Super Admin Cliente, Gerente Comercial, Ejecutivo Ventas
+Programador Tráfico, Contador, Auditor
+Permisos granulares por módulo y acción
+
+
+
+Configuración de Políticas de Negocio
+
+Reglas de Pago por Adelantado:
+
+Por score de riesgo Cortex-Risk
+Por tipo de campaña (política, eventos especiales)
+Por monto mínimo de contrato
+
+
+Políticas de Descuento:
+
+Límites por rol de usuario
+Aprobaciones requeridas para descuentos >X%
+Escalamiento automático a supervisores
+
+
+
+Modo Operativo (Copiloto vs. Autónomo)
+
+Switch global para toda la organización
+Override por módulo específico
+Configuración de niveles de confianza para automatización
+Logs de decisiones automáticas para auditoría
+
+SUB-MÓDULO 1.3: CONFIGURACIÓN DE EXPORTACIÓN
+Generador Universal de Formatos de Playout
+Constructor Visual de Formatos
+
+Interface drag-and-drop para definir estructura de archivos
+Configuración de campos:
+
+Posición de inicio, longitud de caracteres
+Tipo de datos (texto, número, fecha)
+Caracteres de relleno y alineación
+
+
+Plantillas predefinidas para sistemas populares:
+
+Dalet Galaxy, Sara Automation, WideOrbit
+Marketron, RCS GSelector, otros
+
+
+
+Validador de Formatos
+
+Preview en tiempo real del archivo generado
+Validación de estructura contra especificaciones técnicas
+Testing automático con datos de muestra
+Exportación de plantillas para reutilización
+
+MÓDULO 2: GESTIÓN DE INVENTARIO Y TARIFAS
+El Catálogo Maestro de Productos Comerciales
+Propósito Estratégico: Definir, estructurar y gestionar todo el inventario comercializable, desde auspicios exclusivos hasta espacios digitales, proporcionando la base para optimización de ingresos.
+SUB-MÓDULO 2.1: GESTIÓN DE EMISORAS
+Configuración de Propiedades Broadcast
+Registry de Emisoras
+
+Formulario completo con campos:
+
+Datos básicos: Nombre, propietario, área de cobertura
+Configuración técnica: FM/AM/Digital, frecuencias por ciudad
+Integración: Sistema de playout, directorio de exportación
+Plantilla de exportación asociada
+
+
+
+Configuración de Exportación
+
+Mapeo directo con plantillas del Sub-Módulo 1.3
+Testing de conectividad con sistemas de playout
+Configuración de rutas de red y protocolos de transferencia
+Backup automático de configuraciones críticas
+
+SUB-MÓDULO 2.2: INVENTARIO DE AUSPICIOS
+El Sistema de Vencimientos Inteligente
+Vista Principal - Booking Chart
+
+Interface visual tipo calendario/grid:
+
+Filas: Programas por emisora
+Columnas: Períodos temporales (meses/semanas)
+Celdas: Estados de ocupación con códigos de color
+
+Verde: Activo y emitiendo
+Amarillo: Vendido, pendiente de inicio
+Rojo: Vencido o en conflicto
+Gris: Disponible
+
+
+
+
+
+Configurador de Auspicios
+
+Formulario por programa:
+
+Derechos incluidos: menciones, promociones, exclusividades
+Cupos totales y distribución temporal
+Tarifario: valor completo vs. solo menciones
+Restricciones: rubros incompatibles, brand safety
+
+
+
+Motor Cortex-Inventory
+
+Cálculo automático de disponibilidad en tiempo real
+Alertas proactivas:
+
+"Último cupo disponible para [Programa] en [Mes]"
+"Cliente [X] vence mañana - preparar renovación"
+
+
+Proyecciones de ingresos por programa y período
+
+Flujo de Activación Inteligente
+
+Contrato confirmado → No actualiza cupo inmediatamente
+Notificación automática SOLO al programador de esa emisora
+Programador confirma/rechaza inicio de emisión
+Solo tras confirmación se ocupa el cupo y cambia estado
+Alerta de vencimiento 24h antes del término
+
+SUB-MÓDULO 2.3: TARIFARIOS Y PAQUETES ROTATIVOS
+Rate Cards Dinámicos
+Gestor de Paquetes Estándar
+
+Definición de bloques comerciales:
+
+Prime (horarios premium con alta audiencia)
+Repartido (distribución equitativa durante el día)
+Noche (horarios de menor costo)
+Señales (temperatura, hora) con duración fija
+Micros especiales y patrocinios
+
+
+
+Rate Card por Duración
+
+Tabla de precios por paquete y duración:
+
+5s, 10s, 15s, 20s, 30s, 45s, 60s
+Precios base sin descuentos aplicados
+Factores de ajuste por temporada/demanda
+
+
+
+Paquetes Especiales Promocionales
+
+Creador de ofertas limitadas en tiempo:
+
+Nombre descriptivo y período de vigencia
+Descuentos automáticos aplicados
+Restricciones de uso y combinación
+Tracking de performance y utilización
+
+
+
+SUB-MÓDULO 2.4: INVENTARIO DIGITAL
+Catálogo de Activos Digitales
+Propiedades Digitales
+
+Registro de activos digitales monetizables:
+
+Websites, apps móviles, podcasts, streaming
+URLs, tráfico mensual, demografía de audiencia
+Certificaciones de calidad y brand safety
+
+
+
+Placements (Espacios Publicitarios)
+
+Inventario específico por propiedad:
+
+Display: Leaderboard (728x90), MPU (300x250), Skyscraper
+Video: Pre-roll, Mid-roll, Post-roll con duraciones
+Audio: Menciones sintéticas, spots personalizados
+Native: Contenido patrocinado, product placement
+
+
+
+Configuración de Targeting
+
+Capacidades de segmentación disponibles:
+
+Geográfica: país, región, ciudad, código postal
+Demográfica: edad, género, ingresos, educación
+Psicográfica: intereses, comportamiento, intenciones
+Temporal: días de semana, horas, estacionalidad
+
+
+
+6. MÓDULOS DE GESTIÓN COMERCIAL (TIER BUSINESS)
+MÓDULO 3: CRM UNIFICADO
+La Única Fuente de Verdad del Cliente
+Propósito Estratégico: Centralizar toda la información de clientes y prospectos, potenciada por inteligencia financiera proactiva y herramientas de prospección automática.
+SUB-MÓDULO 3.1: GESTIÓN DE ANUNCIANTES
+Vista 360° del Cliente
+Dashboard Principal de Anunciantes
+
+Tabla completa con columnas optimizadas:
+
+ID, RUT, Razón Social, Contacto Principal
+Estado (Activo/Inactivo), Clasificación de Riesgo
+Facturación Acumulada Año, Fecha Última Campaña
+Acciones: Ver Detalle, Editar, Crear Campaña, Generar Reporte
+
+
+
+Formulario de Creación/Edición
+
+Datos Básicos:
+
+RUT con validación automática vía API del SII
+Razón social, nombre fantasía, giro comercial
+Dirección completa, teléfonos, emails múltiples
+
+
+Configuración Comercial:
+
+Ejecutivo asignado, equipo de ventas responsable
+Condiciones de pago predeterminadas
+Límite de crédito y garantías requeridas
+
+
+Integración Cortex-Risk:
+
+Score automático al crear/actualizar cliente
+Alertas de cambios en situación crediticia
+Recomendaciones automáticas de términos comerciales
+
+
+
+Vista Detallada 360° del Cliente
+Organizada en pestañas para navegación intuitiva:
+Pestaña "Información General"
+
+Datos de contacto actualizables
+Historial de interacciones (llamadas, emails, reuniones)
+Notas del ejecutivo con timestamp y autoría
+Documentos adjuntos (contratos, cartas, presentaciones)
+
+Pestaña "Portfolio de Productos"
+
+Lista de productos/servicios que comercializa el cliente
+Categorización automática por rubro
+Vinculación con campañas históricas por producto
+Botón "Crear Nuevo Producto" para expansión
+
+Pestaña "Historial Comercial"
+
+Timeline completa de contratos y campañas
+Gráfico de facturación histórica con tendencias
+Análisis de estacionalidad y patrones de compra
+Comparativo vs. presupuesto anual acordado
+
+Pestaña "Análisis de Performance"
+
+Métricas de efectividad de campañas anteriores
+ROI calculado por tipo de pauta y medio
+Benchmarking vs. competidores del rubro
+Sugerencias de Cortex-Orchestrator para optimización
+
+Pestaña "Estado Financiero"
+
+Score Cortex-Risk actualizado
+Estado de cuentas: facturas pendientes, vencidas
+Límites de crédito y utilización actual
+Alertas de riesgo y recomendaciones
+
+SUB-MÓDULO 3.2: GESTIÓN DE AGENCIAS DE MEDIOS
+Partners Comerciales Especializados
+Registry de Agencias
+
+Información corporativa completa
+Listado de anunciantes que representan
+Estructura de comisiones por cliente/medio
+Performance histórica y reliability score
+
+Panel de Colaboración
+
+Herramientas para recepción automática de briefs:
+
+Integración email para órdenes de publicidad
+Parser automático de archivos Excel/Google Sheets
+Validación de completitud de información
+Workflow de aprobación antes de conversión a contrato
+
+
+
+SUB-MÓDULO 3.3: PROSPECCIÓN INTELIGENTE
+Motor de Generación Automática de Leads
+Cortex-Prospector
+
+Propósito: Identificar automáticamente potenciales clientes que están invirtiendo en publicidad digital
+Tecnología: Web scraping ético + análisis de patrones publicitarios + ML de clasificación
+Fuentes de Datos:
+
+Monitoreo de campañas en Meta Ads, Google Ads, programática
+Análisis de menciones de marca en medios digitales
+Tracking de nuevos anuncios en plataformas digitales
+APIs públicas de plataformas publicitarias
+
+
+
+Dashboard de Prospección
+
+Lista de prospectos identificados automáticamente:
+
+Empresa detectada invirtiendo en publicidad
+Estimación de presupuesto mensual digital
+Canales donde está presente actualmente
+Score de probabilidad de conversión
+Ejecutivo sugerido para asignación
+
+
+
+Flujo de Asignación Automática
+
+Cortex-Prospector detecta nueva actividad publicitaria
+Clasifica empresa por rubro, tamaño, presupuesto estimado
+Aplica reglas de asignación configuradas por gerencia
+Asigna automáticamente a ejecutivo según cartera/especialización
+Genera alerta automática al ejecutivo con toda la intelligence
+Crea record preliminar en CRM listo para contacto
+
+Herramientas de Contacto Inteligente
+
+Templates automáticos personalizados por industria
+Sugerencias de approach basadas en análisis competitivo
+Cronograma de follow-up automático
+Integración con WhatsApp Business y email marketing
+
+MÓDULO 4: GESTIÓN DE EQUIPOS DE VENTA
+Organización y Potenciación de la Fuerza Comercial
+Propósito Estratégico: Estructurar, gestionar y optimizar el rendimiento del equipo comercial con herramientas de gamificación, tracking de performance y automatización de procesos.
+SUB-MÓDULO 4.1: GESTIÓN DE VENDEDORES
+Perfil Individual Completo
+Registry de Vendedores
+
+Información personal y profesional
+Especialización por industrias/productos
+Configuración de metas individuales
+Acceso a herramientas móviles y desktop
+
+Dashboard Personal del Vendedor
+Accesible tanto en desktop como en app móvil:
+
+KPIs personales en tiempo real:
+
+Meta mensual vs. logrado (% y CLP)
+Leads en pipeline con probabilidades
+Próximas reuniones y follow-ups
+Comisiones acumuladas del mes
+
+
+Herramientas de productividad:
+
+Generador de propuestas con IA
+Checker de disponibilidad en tiempo real
+Calculadora de precios con descuentos automorizados
+Biblioteca de casos de éxito y referencias
+
+
+
+SUB-MÓDULO 4.2: GESTIÓN DE EQUIPOS
+Estructuras Comerciales Organizadas
+Configuración de Equipos
+
+Creación de equipos por especialización:
+
+Geográfica (Santiago, Regiones)
+Vertical (Retail, Banca, Telecomunicaciones)
+Por tipo de medio (Radio, Digital, Mixto)
+
+
+Asignación de jefes de equipo con permisos especiales
+Configuración de metas grupales y individuales
+
+Dashboard del Jefe de Equipo
+
+Performance consolidada del equipo
+Ranking interno con gamificación sana
+Herramientas de coaching:
+
+Análisis de conversión por etapa de pipeline
+Identificación de vendedores que necesitan apoyo
+Sugerencias de Cortex para mejora de performance
+
+
+Gestión de cartera:
+
+Reasignación de cuentas por performance
+Balanceeo de cargas de trabajo
+Resolución de conflictos territoriales
+
+
+
+SUB-MÓDULO 4.3: MOTOR DE METAS Y COMISIONES
+Sistema Integral de Incentivos
+Configurador de Metas
+
+Flexibilidad total de configuración:
+
+Por vendedor individual, equipo, región, producto
+Metas en CLP, % de crecimiento, # de clientes nuevos
+Escalas progresivas con bonificaciones por tramos
+Ajustes estacionales y por eventos especiales
+
+
+
+Calculadora de Comisiones
+
+Múltiples esquemas configurables:
+
+Porcentaje fijo sobre ventas
+Escala progresiva por cumplimiento de meta
+Bonos por apertura de clientes nuevos
+Incentivos especiales por productos estratégicos
+
+
+Automatización completa:
+
+Cálculo diario de comisiones acumuladas
+Proyección de comisiones fin de mes
+Generación automática de reportes para RRHH
+
+
+
+Gamificación y Motivación
+
+Dashboard de competencia sana entre vendedores
+Badges y reconocimientos por logros específicos
+Leaderboards actualizados en tiempo real
+Integración con WhatsApp para alertas de logros
+
+MÓDULO 5: GESTIÓN DE CONTRATOS
+El Puente Entre la Venta y la Operación
+Propósito Estratégico: Formalizar relaciones
+comerciales y crear acuerdos ejecutables que conecten perfectamente la venta con la operación, registrando todos los términos comerciales, financieros y operativos.
+SUB-MÓDULO 5.1: VISTA PRINCIPAL DE CONTRATOS
+Centro de Control Contractual
+Dashboard de Contratos
+
+Tabla inteligente con columnas optimizadas:
+
+Número Contrato (generado automáticamente: CON-2025-0001)
+Estado visual con códigos de color:
+
+Verde: Confirmado y activo
+Amarillo: Pendiente de aprobación
+Azul: En proceso de ejecución
+Rojo: Rechazado o en conflicto
+Gris: Finalizado
+
+
+Anunciante con link directo al CRM
+Valor Total (Bruto/Neto) con indicador de divisa
+Fechas de vigencia con alertas de vencimiento
+Ejecutivo responsable con foto de perfil
+Acciones rápidas: Ver, Editar, Duplicar, Generar Campaña
+
+
+
+Búsqueda Inteligente Avanzada
+
+Campo único que busca en todos los atributos:
+
+Por número de contrato, RUT, razón social
+Por producto, ejecutivo, período de fechas
+Por monto, estado, tipo de facturación
+
+
+Filtros laterales para refinamiento:
+
+Estado, ejecutivo, rango de fechas
+Rango de montos, tipo de cliente
+Emisora, tipo de pauta
+
+
+
+SUB-MÓDULO 5.2: GESTOR DE CONTRATO DETALLADO
+Interface Completa de Gestión Contractual
+Pestaña "Resumen del Acuerdo"
+La Tapa Fundamental del Contrato
+Sección Identificación
+
+Número de contrato (auto-generado, no editable)
+Nombre descriptivo del contrato
+Tipo de contrato (A, B, C - configurable)
+Fechas de vigencia con validaciones automáticas
+
+Sección Partes Involucradas
+
+Campo RUT con validación automática:
+
+Integración API SII para verificación
+Auto-completado de razón social oficial
+Verificación de situación tributaria actualizada
+
+
+Selección de producto con búsqueda inteligente:
+
+Lista de productos existentes del cliente
+Opción "Crear Nuevo Producto" con modal rápido
+Validación de duplicados automática
+
+
+Agencias involucradas:
+
+Agencia de medios con % comisión automático
+Agencia creativa para producción
+Validación de cartas de tercerización requeridas
+
+
+
+Sección Equipo Comercial
+
+Ejecutivo principal responsable
+Equipo de ventas asignado
+Backup ejecutivo para continuidad
+Configuración de notificaciones automáticas
+
+Pestaña "Términos Financieros"
+Configuración Completa de Facturación
+Modalidad de Facturación
+
+Radio buttons para selección clara:
+
+"Facturación por Hitos" (Combinar por campaña)
+
+Se factura cuando se completa la emisión
+Ideal para campañas con fechas específicas
+Automatización completa de facturación
+
+
+"Facturación por Plazos" (Cuotas)
+
+División en X cuotas según configuración
+Fechas de facturación programadas
+Seguimiento automático de pagos
+
+
+
+
+
+Configuración de Pagos
+
+Tipo de factura con opciones:
+
+A posterior (facturación tras emisión)
+Por adelantado (pago antes de emisión)
+Modalidades especiales: efectivo, transferencia, cheque
+
+
+Plazo de pago con workflow de aprobación:
+
+Hasta 30 días: aprobación automática
+Más de 30 días: requiere autorización de supervisor
+Notificación automática a jefe para aprobación/rechazo
+Email automático al vendedor con resultado
+
+
+
+Configuraciones Especiales
+
+Toggle "Es Canje": Activa workflow especial sin facturación
+Toggle "Facturar Comisión de Agencia":
+
+Se desactiva automáticamente si contrato es valor bruto
+Configura facturación separada de comisiones
+
+
+Configuración de IVA:
+
+19% por defecto para Chile
+Configurable para operación internacional
+Validación automática según país del cliente
+
+
+
+Calculadora Automática de Cuotas
+
+Botón "Calcular Plan de Pagos"
+Genera tabla automática con:
+
+Número de cuota, fecha de facturación
+Monto de cuota (incluye prorrateo de descuentos)
+Estado de facturación (pendiente/emitida/pagada)
+Campaña asociada a cada cuota
+
+
+
+Pestaña "Especificaciones de Pauta"
+El Corazón Operativo del Contrato
+Herramientas de Gestión
+
+Botón "Agregar Línea de Pauta" (modal completo)
+Botón "Importar desde Excel/Google Sheets"
+Botón "Calcular Totales" (actualiza valores automáticamente)
+Botón "Validar Disponibilidad" (consulta inventario en tiempo real)
+
+Tabla de Especificaciones
+Cada fila representa un ítem comercial comprado:
+
+Emisora/Propiedad: Dropdown con todas las propiedades disponibles
+
+Radio/TV: Emisoras configuradas en Módulo 2
+Digital: Websites, apps, podcasts del inventario
+
+
+Tipo de Bloque: Según tipo de medio seleccionado
+
+Radio/TV: Auspicio, Prime, Repartido, Menciones, Señales
+Digital: Display, Video, Audio, Native
+
+
+Paquete/Formato:
+
+Radio/TV: Consulta automática a tarifarios del Módulo 2
+Digital: Tamaños estándar (300x250, 728x90) o duraciones
+
+
+Período de Emisión:
+
+Fecha inicio/fin con validación de disponibilidad
+Días de semana específicos (L-M-M-J-V-S-D)
+Horarios específicos para targeting temporal
+
+
+Volumen Contratado:
+
+Radio/TV: Cuñas por día por día de semana
+Digital: Impresiones totales, clicks objetivo, CPM/CPC/CPA
+
+
+Valores:
+
+Importe total línea (editable por vendedor)
+Valor unitario calculado automáticamente
+% Descuento calculado vs. tarifa oficial
+Bonificaciones incluidas
+
+
+
+Modal "Agregar Línea de Pauta"
+Formulario completo con inteligencia integrada:
+
+Selección de Medio: Radio buttons Radio/TV vs Digital
+Configuración según Medio:
+
+Si Radio/TV:
+
+Emisora → Tipo de Bloque → Paquete
+Consulta automática a inventario de auspicios
+Validación de cupos disponibles en tiempo real
+Alerta si no hay disponibilidad en fechas solicitadas
+
+
+Si Digital:
+
+Propiedad Digital → Placement → Formato
+Configuración de KPI principal (CPM/CPC/CPA)
+Definición de audiencia target básica
+
+
+
+
+Configuración Temporal:
+
+Selector de fechas con calendario visual
+Checkboxes para días de semana activos
+Selector de horarios específicos (opcional)
+
+
+Definición de Volumen:
+
+Campos numéricos según tipo de pauta
+Calculadora automática de totales proyectados
+Validación de volúmenes mínimos/máximos
+
+
+Configuración de Precios:
+
+Campo editable para importe total
+Cálculo automático de descuento aplicado
+Alertas si descuento supera límites del vendedor
+
+
+
+Pestaña "Activos y Referencias"
+Repositorio Completo de Elementos Relacionados
+Sub-pestaña "Creatividades Asociadas"
+
+Tabla con todas las cuñas/creatividades del anunciante
+Vista previa rápida: play para audios, preview para banners
+Estado de cada creatividad (activa, vencida, pendiente)
+Botón directo "Crear Nueva Creatividad" desde el contrato
+
+Sub-pestaña "Documentos del Contrato"
+
+Área de drag-and-drop para subir archivos
+Organización por tipo: contratos firmados, briefs, presentaciones
+Versionado automático de documentos
+Integración con firma electrónica para contratos oficiales
+
+Sub-pestaña "Comunicaciones"
+
+Historial completo de emails enviados/recibidos
+Integraciones con WhatsApp Business para seguimiento
+Notas de llamadas con timestamp automático
+Recordatorios automáticos de follow-ups
+
+Pestaña "Facturación Asociada"
+Vista Completa del Ciclo Financiero
+Lista de Facturas Generadas
+
+Tabla con todas las facturas del contrato
+Estados: Borrador, Emitida, Enviada, Pagada, Vencida
+Links directos para ver/descargar PDFs
+Indicadores de días vencidos para cobranza
+
+Panel de Estado Financiero
+
+Valor total del contrato vs. facturado vs. pagado
+Saldo pendiente con semáforo de alerta
+Próximas fechas de facturación programadas
+Botón "Generar Factura Manual" para casos especiales
+
+SUB-MÓDULO 5.3: ACCIONES Y WORKFLOWS
+Automatizaciones Inteligentes del Contrato
+Barra de Herramientas Superior
+
+Guardar: Grabado automático cada 30 segundos + manual
+Vista Previa: Muestra cómo se verá el contrato impreso
+Generar PDF: Crea documento formal para firma/archivo
+Enviar por Email: Integración directa con cliente/agencia
+Duplicar Contrato: Para renovaciones o contratos similares
+Cambiar Estado: Workflow controlado de estados
+
+Estados del Contrato y Transitions
+
+Nuevo (recién creado)
+→ Pendiente (enviado para revisión)
+→ Confirmado (aprobado por todas las partes)
+→ Activo (en ejecución)
+→ Finalizado (completado exitosamente)
+
+Branches alternativos:
+
+Rechazado (no aprobado)
+Cancelado (terminado antes de completar)
+En Disputa (problemas durante ejecución)
+
+Triggers Automáticos Críticos
+
+Al cambiar a "Confirmado":
+
+Disparador automático: Creación de campaña en Módulo 7
+Reserva de inventario en tiempo real
+Notificación al programador de tráfico
+Generación de tareas en calendario del ejecutivo
+
+
+Al cambiar a "Activo":
+
+Inicio de monitoreo automático de emisión
+Activación de alertas de performance
+Habilitación de reportes en tiempo real para cliente
+
+
+
+Validaciones Antes del Cierre
+
+Verificación de completitud de datos obligatorios
+Validación de disponibilidad de inventario
+Confirmación de límites de crédito del cliente
+Revisión de términos de pago vs. políticas empresa
+
+7. MÓDULOS DE OPERACIONES Y EJECUCIÓN (TIER OPERATIONS)
+MÓDULO 6: GENERADOR DE CAMPAÑAS PREDICTIVAS
+De la Estrategia al Plan de Medios Ejecutable
+Propósito Estratégico: Transformar objetivos comerciales en planes de medios optimizados, utilizando IA para predecir resultados y maximizar ROI antes de la ejecución.
+SUB-MÓDULO 6.1: WIZARD INTELIGENTE DE CAMPAÑA
+Constructor Paso a Paso con IA
+Paso 1: Definición de Objetivos
+
+Selector de Tipo de Campaña:
+
+"Por Resultados" (KPIs específicos: leads, ventas, visitas)
+"Por Alcance" (tradicional: GRPs, frecuencia, cobertura)
+"Mixta" (combinación de objetivos)
+
+
+Configuración de KPIs (si "Por Resultados"):
+
+Objetivo principal: Lead Generation, E-commerce, Brand Awareness
+Meta numérica específica: "Generar 500 leads calificados"
+Período de campaña y distribución temporal
+Presupuesto total disponible
+
+
+
+Paso 2: Definición de Audiencia
+
+Integración Cortex-Audience:
+
+Demografía básica: edad, género, NSE, ubicación
+Intereses y comportamientos (si disponible)
+Lookalike de clientes actuales del anunciante
+
+
+Validación de Reach:
+
+Estimación automática de audiencia alcanzable
+Alerta si audiencia es muy pequeña/amplia
+Sugerencias de ajuste para optimizar cobertura
+
+
+
+Paso 3: Recomendación de Mix de Medios
+
+Motor Cortex-Orchestrator activo:
+
+Análisis de data histórica de campañas similares
+Recomendación automática de distribución presupuestaria
+Ejemplo: "70% Radio Prime + 20% Digital Display + 10% Audio Streaming"
+
+
+Vista de Probabilidad de Éxito:
+
+Porcentaje de probabilidad de alcanzar KPIs
+Rangos de confianza (escenario pesimista/optimista)
+Factores de riesgo identificados automáticamente
+
+
+
+SUB-MÓDULO 6.2: SIMULADOR DE ESCENARIOS
+Herramienta What-If Interactiva
+Panel de Simulación
+
+Sliders interactivos para ajustar:
+
+% de presupuesto por medio/formato
+Duración de campaña y distribución temporal
+Nivel de targeting (amplio vs. específico)
+
+
+Actualización en Tiempo Real:
+
+Cambio automático de probabilidades de éxito
+Recálculo de métricas proyectadas
+Alertas de cambios significativos en performance
+
+
+
+Análisis Competitivo Automático
+
+Cortex-Market consulta data pública sobre:
+
+Campañas similares en el mercado
+Benchmarks de performance por industria
+Precios de mercado vs. precios propuestos
+
+
+Recomendaciones Contextuales:
+
+"Competencia está invirtiendo fuerte en digital este mes"
+"Histórico muestra mejor performance en horario matinal"
+"Considerar extensión de campaña por estacionalidad"
+
+
+
+SUB-MÓDULO 6.3: GENERADOR DE PROPUESTAS
+Creación Automática de Presentaciones Comerciales
+Template Inteligente
+
+Generación automática de presentación con:
+
+Resumen ejecutivo con objetivos y estrategia
+Análisis de audiencia target con insights
+Plan de medios detallado con calendario
+Proyecciones de resultados con rangos de confianza
+Presupuesto detallado con ROI esperado
+
+
+
+Personalización por Cliente
+
+Cortex-Voice genera textos personalizados:
+
+Referencias a campañas anteriores exitosas
+Menciones específicas de la industria del cliente
+Adaptación del tono según perfil del tomador de decisión
+
+
+Elementos Visuales Automáticos:
+
+Gráficos de proyección de resultados
+Calendarios visuales de ejecución
+Comparativos con benchmarks de industria
+
+
+
+Exportación Multi-formato
+
+PDF ejecutivo para presentación formal
+PowerPoint editable para customización
+Link de presentación online interactiva
+Versión móvil optimizada para WhatsApp/email
+
+MÓDULO 7: CENTRO DE MANDO DE CAMPAÑAS
+El Hub Operativo de Ejecución
+Propósito Estratégico: Convertir contratos confirmados en campañas ejecutables, gestionando todo el ciclo operativo desde la planificación hasta la verificación de emisión.
+SUB-MÓDULO 7.1: DASHBOARD DE CAMPAÑAS ACTIVAS
+Vista de Control Central
+Tabla Maestra de Campañas
+
+Columnas Inteligentes:
+
+Número de campaña (auto-generado: CAM-2025-0001)
+Estado con indicadores visuales:
+
+🟢 Activa y emitiendo correctamente
+🟡 Programada, pendiente de inicio
+🔵 En programación/configuración
+🟠 Con alertas o problemas menores
+🔴 Detenida o con problemas críticos
+
+
+Progress bar de ejecución (% completado vs. total)
+KPIs en tiempo real (si es campaña por resultados)
+Próxima acción requerida con responsible asignado
+
+
+
+Panel de Alertas Inteligentes
+
+Alertas de Performance:
+
+"Campaña Banco Chile está 15% por debajo de meta"
+"Inventario agotado para Retail ABC - requiere ajuste"
+"Creatividades de Farmacia XYZ vencen en 3 días"
+
+
+Alertas Operativas:
+
+"Archivo de pauta no exportado para T13 Radio"
+"Conflicto de programación detectado en Prime 10:30"
+"Cliente pendiente de aprobación de nueva creatividad"
+
+
+
+Métricas Consolidadas
+
+Total de campañas activas por estado
+Ingresos proyectados vs. reales del mes
+% de cumplimiento de emisión (general)
+Performance promedio de campañas por KPI
+
+SUB-MÓDULO 7.2: GESTOR DE CAMPAÑA INDIVIDUAL
+Vista Detallada Completa
+Creación de Nueva Campaña
+
+Herencia Automática desde Contrato:
+
+Al cambiar contrato a "Confirmado" → se crea campaña automáticamente
+Todos los datos básicos pre-cargados: cliente, producto, fechas, pauta
+Estado inicial: "En Configuración" hasta completar setup
+
+
+Creación Manual (para casos especiales):
+
+Wizard que solicita selección de contrato padre
+Importación automática de especificaciones
+Opción de modificar/ajustar pauta original
+
+
+
+Pestaña "Resumen de Campaña"
+Información General y Estado
+Panel de Identificación
+
+Nombre de campaña (editable, hereda del contrato)
+Referencias del cliente: OC, HES, número de brief
+Fechas efectivas de emisión (pueden diferir del contrato)
+Estado actual con histórico de cambios
+
+Panel de Performance en Tiempo Real
+(Solo visible si campaña está "Activa")
+
+Para Radio/TV:
+
+% de emisión completada vs. programada
+Cumplimiento de horarios (emisión exacta vs. planificada)
+Incidencias detectadas automáticamente
+
+
+Para Digital:
+
+Impresiones/Clicks entregadas vs. contratadas
+CTR/VTR en tiempo real
+Spend vs. budget por día
+
+
+
+Pestaña "Planificación de Pauta"
+Definición Detallada de Qué Se Emite
+Vista de Líneas de Pauta
+
+Heredadas del contrato pero editables para ajustes operativos
+Columnas Específicas:
+
+Medio/Emisora con estado de configuración
+Tipo de bloque con validación de inventario
+Fechas/horarios con alertas de disponibilidad
+Volumen (cuñas/día o impresiones digitales)
+Estado: Configurado, Programado, Activo, Completado
+
+
+
+Herramientas de Programación
+
+Botón "Planificar Automáticamente":
+
+Cortex-Scheduler distribuye automáticamente la pauta
+Respeta restricciones de horarios y rotación
+Evita conflictos de competencia automáticamente
+Completa proceso en <5 segundos para campañas normales
+
+
+Botón "Programación Manual":
+
+Abre vista de cuadrícula para edición detallada
+Permite overrides de la programación automática
+Validaciones en tiempo real de conflictos
+
+
+
+Opciones de Verificación (checkboxes configurables):
+
+✅ Verificar disponibilidad de inventario
+✅ Aplicar reglas de separación de competidores
+✅ Respetar límites de tiempo por tanda
+✅ Validar vigencia de creatividades
+⚠️ Forzar programación aunque haya conflictos (admin solo)
+
+Pestaña "Asignación de Creatividades"
+Gestión de Materiales Publicitarios
+Panel Izquierdo: Creatividades Disponibles
+
+Lista de todas las cuñas/creatividades del anunciante
+Información por Creatividad:
+
+Código (SP000123), nombre, duración/tamaño
+Estado de vigencia con alertas de vencimiento
+Preview/Play button para validación rápida
+
+
+Filtros Inteligentes:
+
+Por estado (vigentes, por vencer, vencidas)
+Por tipo (audio, display, video)
+Por producto/campaña específica
+
+
+
+Panel Central: Espacios de Pauta
+
+Vista de todos los espacios programados que necesitan material
+Información por Espacio:
+
+Fecha/hora exacta de emisión
+Duración/formato requerido
+Emisora/propiedad de destino
+Estado: Sin asignar, Asignado, Confirmado
+
+
+Códigos de Color:
+
+🔴 Sin creatividad asignada (requiere atención)
+🟡 Creatividad asignada pero no confirmada
+🟢 Confirmado y listo para emisión
+
+
+
+Herramientas de Asignación
+
+Drag & Drop: Arrastrar creatividades a espacios específicos
+Asignación Automática: Botón que distribuye creatividades disponibles
+Rotación Inteligente: Para múltiples creatividades de una campaña
+Validaciones Automáticas:
+
+Duración de audio vs. tiempo disponible en tanda
+Formatos de display vs. tamaños de placement
+Vigencia de creatividad vs. fecha de emisión
+
+
+
+Pestaña "Monitor de Ejecución"
+Seguimiento en Tiempo Real
+Dashboard de Emisión en Vivo
+(Solo activo cuando campaña está "Activa")
+
+Stream en Tiempo Real:
+
+Próximas emisiones programadas (siguientes 4 horas)
+Emisiones completadas del día con confirmación automática
+Alertas inmediatas si spot programado no se emite
+
+
+Mapa de Calor de Performance:
+
+Verde: Emisión confirmada y dentro de especificaciones
+Amarillo: Emisión con variaciones menores (±2 minutos)
+Rojo: Emisión no detectada o fuera de especificaciones
+
+
+
+Panel de Incidencias
+
+Lista de problemas detectados automáticamente:
+
+"Spot no emitido: SP001234 - T13 Radio - 14:29 hrs"
+"Emisión fuera de horario: SP001235 - 5 min tarde"
+"Creatividad no detectada en audio de emisión"
+
+
+Acciones Automáticas Disponibles:
+
+Reprogramar automáticamente el spot no emitido
+Generar alerta al programador de tráfico
+Crear ticket de incidencia para seguimiento
+
+
+
+Pestaña "Resultados y Performance"
+Análisis de Efectividad
+Métricas de Emisión (Radio/TV):
+
+Total de spots emitidos vs. programados
+Puntualidad promedio de emisiones
+Tasa de error/incidencias por emisora
+Certificación de emisión con timestamps exactos
+
+Métricas de Performance Digital:
+
+Impresiones/Clicks entregadas en tiempo real
+CTR, VTR, tasa de conversión por placement
+Costo efectivo (CPM/CPC/CPA) vs. objetivo
+Análisis de audiencia: demografía real vs. target
+
+Análisis de ROI (si está configurado tracking):
+
+Conversiones atribuidas a la campaña
+Costo por conversión real vs. estimado
+ROI calculado con data de ventas del cliente
+Recomendaciones de Cortex para optimización
+
+MÓDULO 8: GESTIÓN DE CREATIVIDADES
+Biblioteca Inteligente de Activos Publicitarios
+Propósito Estratégico: Centralizar, gestionar y potenciar todos los materiales creativos con herramientas de generación automática, edición profesional y optimización por IA.
+SUB-MÓDULO 8.1: BIBLIOTECA MAESTRA DE CREATIVIDADES
+Repositorio Central Inteligente
+Vista Principal
+
+Tabla Optimizada con Columnas:
+
+Estado visual (activo/inactivo) con toggle directo
+Código único (SPX000001) generado automáticamente
+Thumbnail/preview para identificación rápida
+Nombre descriptivo con highlight de keywords
+Tipo (Audio, Display, Video, Native) con iconos
+Duración/tamaño con validación automática
+Anunciante y producto con links directos
+Vigencia con alertas de vencimiento próximo
+Uso actual (en cuántas campañas activas)
+
+
+
+Filtros y Búsqueda Avanzada
+
+Barra de Búsqueda Global:
+
+Busca en nombre, código, anunciante, texto de mención
+Sugerencias automáticas mientras se escribe
+Búsqueda por contenido del audio (transcripción automática)
+
+
+Filtros Laterales:
+
+Estado: Activas, Vencidas, Por vencer (próximos 30 días)
+Tipo de creatividad con iconos visuales
+Anunciante con multi-selección
+Rango de duración para audios
+Formato/tamaño para display
+
+
+
+Acciones Masivas
+
+Selección múltiple con checkboxes
+Cambio de estado masivo (activar/desactivar)
+Extensión de vigencia por lotes
+Exportación de metadatos para análisis
+Duplicación masiva para variaciones de campaña
+
+SUB-MÓDULO 8.2: CREADOR/EDITOR DE CREATIVIDADES
+Herramientas de Producción Integradas
+Formulario Principal de Creatividad
+Sección Identificación
+
+Código SPX: Auto-generado, secuencial, no editable
+Nombre Descriptivo: Campo libre con sugerencias IA
+
+Cortex sugiere nombres basados en contenido
+Validación de duplicados automática
+
+
+Tipo de Creatividad: Radio buttons con preview
+
+Audio Pre-grabado (archivos MP3/WAV)
+Guion para Locución (texto para sintetizar)
+Display Banner (imágenes/HTML5)
+Video (MP4/MOV para digital)
+
+
+
+Sección Asociación
+
+Anunciante: Autocompletar con validación de existencia
+Producto: Lista desplegable filtrada por anunciante
+Campaña: Opcional, para creatividades específicas
+Tags/Etiquetas: Para categorización y búsqueda avanzada
+
+Sección Vigencia y Control
+
+Fecha/Hora Inicio: Calendario integrado con validación
+Fecha/Hora Fin: Con alertas automáticas de vencimiento
+Estado Activo: Toggle con herencia del estado del anunciante
+Restricciones de Uso:
+
+Horarios específicos permitidos
+Emisoras/propiedades autorizadas
+Límite de emisiones por día/semana
+
+
+
+Panel de Contenido - Audio Pre-grabado
+
+Zona de Drag & Drop:
+
+Soporte para MP3, WAV, FLAC, AAC
+Validación automática de calidad mínima
+Detección automática de duración exacta
+
+
+Editor de Audio Integrado (se abre automáticamente):
+
+Visualización de forma de onda
+Herramientas básicas: corte, normalización, fade
+Detección automática de silencios y sugerencia de recorte
+Export con calidad configurable (320 kbps estándar)
+
+
+Análisis Automático:
+
+Detección de tono emocional del spot
+Transcripción automática para SEO interno
+Validación de brand safety automática
+
+
+
+Panel de Contenido - Guion para Locución
+
+Editor de Texto Enriquecido:
+
+Highlighting de variables dinámicas: [nombre_cliente], [ciudad]
+Contador de palabras y tiempo estimado de lecución
+Sugerencias de mejora de Cortex-Voice
+
+
+Sintetizador Integrado:
+
+Preview instantáneo con voces disponibles
+Selector de tono emocional (profesional, cálido, energético)
+Configuración de velocidad y pausas
+
+
+Generación Automática de Variantes:
+
+Botón "Generar Versiones": crea variantes de 10s, 15s, 30s
+Adaptación automática del contenido para diferentes duraciones
+A/B testing automático de efectividad
+
+
+
+Panel de Contenido - Display/Video
+
+Uploader con Validación:
+
+Formatos: JPG, PNG, GIF, HTML5, MP4
+Validación automática de tamaños estándar
+Compresión inteligente para optimización
+
+
+Preview Integrado:
+
+Vista previa en tamaños reales de placement
+Simulación en diferentes dispositivos
+Validación de legibilidad y contraste
+
+
+Generador de Variantes:
+
+Redimensionado automático a todos los formatos estándar
+Adaptación de texto para diferentes tamaños
+Optimización automática por dispositivo
+
+
+
+SUB-MÓDULO 8.3: ESTUDIO DE CREATIVIDAD AUTOMÁTICA
+Generador de Contenido con IA
+Wizard de Generación Automática
+
+
+Paso 1: Brief Automático
+Campo de texto libre: "Describe lo que necesitas crear"
+Ejemplo: "Crear 3 audios de 20 segundos para promoción de descuentos Black Friday en tienda de electrónicos"
+Cortex-Creative analiza y extrae: duración, tono, producto, call-to-action
+
+Paso 2: Configuración Inteligente
+
+Tono y Estilo (selección automática + manual):
+
+Profesional/Corporativo, Amigable/Cercano, Energético/Dinámico
+Urgente/Promocional, Informativo/Educativo, Emocional/Inspirador
+
+
+Audiencia Target:
+
+Cortex-Audience sugiere segmentos basado en el anunciante
+Ajustes de lenguaje y referencias culturales
+Personalización por demografía (edad, género, NSE)
+
+
+
+Paso 3: Generación Automática
+
+Para Audios:
+
+Cortex-Voice genera múltiples variantes del guion
+Sintetiza automáticamente con voces diferentes
+Crea versiones de 10s, 15s, 20s, 30s simultáneamente
+
+
+Para Display:
+
+Cortex-Design genera layouts automáticamente
+Aplica branding del anunciante (colores, logos)
+Crea variantes para todos los tamaños estándar
+
+
+Para Video:
+
+Combina elementos visuales stock con copy generado
+Añade música de fondo de biblioteca libre de derechos
+Renderiza en formatos optimizados por plataforma
+
+
+
+Paso 4: Refinamiento Colaborativo
+
+Vista de todas las variantes generadas
+Sistema de rating para entrenar el modelo
+Edición manual de elementos específicos
+Re-generación selectiva de partes específicas
+Aprobación final y guardado en biblioteca
+
+SUB-MÓDULO 8.4: ANALYTICS DE CREATIVIDADES
+Inteligencia de Performance Creativa
+Dashboard de Performance por Creatividad
+
+Métricas de Uso:
+
+Frecuencia de uso en campañas activas/históricas
+Tendencias de selección por ejecutivos/programadores
+Correlación uso vs. performance de campañas
+
+
+Métricas de Efectividad:
+
+CTR/VTR promedio por creatividad digital
+Tasa de finalización para audios/videos
+Performance relativa vs. otras creatividades del mismo anunciante
+
+
+Análisis Predictivo:
+
+Cortex-Performance predice efectividad de nuevas creatividades
+Sugerencias automáticas de optimización
+Alertas de creatividades con bajo rendimiento
+
+
+
+Recomendaciones Automáticas
+
+"Esta creatividad tiene 40% menos CTR que el promedio - considerar renovar"
+"Creatividades similares funcionan mejor en horario matinal"
+"Audiencia responde mejor a tono emocional vs. racional para este producto"
+
+MÓDULO 9: PAUTA Y EXPORTACIÓN BROADCAST
+Puente Técnico con Sistemas de Emisión
+Propósito Estratégico: Ser la interfaz técnica perfecta entre la planificación comercial de Silexar y los sistemas de automatización de radio/TV existentes, garantizando compatibilidad universal y cero errores.
+SUB-MÓDULO 9.1: CUADRÍCULA DE PLANIFICACIÓN VISUAL
+Booking Grid Inteligente
+Vista Principal del Día
+
+Layout de 3 Paneles:
+
+Panel Izquierdo: Timeline del día (00:00-23:59)
+
+Bloques comerciales con códigos de color por tipo
+Indicador de % ocupación por tanda
+Alertas visuales de sobresaturación o sub-utilización
+
+
+Panel Central: Cuadrícula de tandas comerciales
+
+Cada tanda muestra spots individuales como bloques
+Información visible: código SP, anunciante, duración
+Drag & drop habilitado para reordenar manualmente
+
+
+Panel Derecho: Herramientas y controles
+
+Filtros por emisora, fecha, anunciante
+Botones de acción rápida
+Panel de validaciones y alertas
+
+
+
+
+
+Filtros y Navegación
+
+Selector de Emisora: Dropdown con todas las emisoras configuradas
+Navegador de Fechas: Calendario con navegación rápida
+
+Destacado visual de días con pauta programada
+Alertas de días con problemas o incidencias
+Acceso rápido a "mañana", "semana", "mes"
+
+
+Vista por Período: Día, Semana, Mes para planificación extendida
+
+Funcionalidades de Edición Manual
+Drag & Drop Inteligente
+
+Arrastrar spots entre tandas con validaciones automáticas:
+
+Validación de Duración: Alerta si excede tiempo disponible
+Validación de Bloque: Avisa si spot no coincide con tipo de bloque contratado
+Validación de Competencia: Detecta automáticamente conflictos de rubros
+Validación de Horarios: Verifica vigencia de creatividad en nuevo horario
+
+
+
+Sistema de Alertas Contextuales
+
+Alerta de Sobresaturación: "Esta tanda excederá 300 segundos por 15 segundos"
+
+Opciones: [Continuar] [Cancelar] [Sugerir nueva ubicación]
+
+
+Alerta de Competencia: "Coca-Cola y Pepsi en misma tanda"
+
+Opciones: [Permitir] [Mover automáticamente] [Cancelar]
+
+
+Alerta de Valor: "Moviendo spot Prime a bloque Repartido - menor valor"
+
+Opciones: [Confirmar] [Buscar alternativa] [Cancelar]
+
+
+
+SUB-MÓDULO 9.2: OPTIMIZADOR DE TANDAS
+Motor de Programación Automática
+Cortex-Scheduler: El Cerebro de la Programación
+
+Construcción Automática de Tandas:
+
+Llena bloques respetando duración máxima por tanda
+Aplica rotación inteligente para evitar monotonía
+Respeta posiciones fijas definidas en campañas
+Evita conflictos de competencia automáticamente
+
+
+
+Algoritmo de Rotación Fair-Play
+
+Rotación Diaria: Spots que hoy van al inicio, mañana van al medio/final
+Balanceo de Exposición: Asegura distribución equitativa de prime positions
+Respeto de Restricciones: Mantiene spots con "posición fija" en su lugar
+Optimización Emocional: Ordena spots para maximizar retención de audiencia
+
+Herramientas de Override Manual
+
+Botón "Regenerar Día": Reconstruye automáticamente toda la programación
+Botón "Optimizar Tanda Específica": Mejora solo una tanda seleccionada
+Botón "Aplicar Reglas de Negocio": Re-aplica todas las validaciones
+Modo "Programador Experto": Desactiva validaciones para casos especiales
+
+SUB-MÓDULO 9.3: EXPORTADOR UNIVERSAL
+Generación de Archivos para Cualquier Sistema
+Panel de Exportación
+
+Configuración de Exportación:
+
+Selector de Emisoras (múltiple con checkboxes)
+Rango de Fechas con calendario integrado
+Rango de Horarios para exportación parcial
+Formato de salida basado en plantillas del Módulo 1.3
+
+
+
+Proceso de Exportación Automatizado
+
+Validación Pre-exportación:
+
+Verificar que todas las tandas tienen creatividades asignadas
+Confirmar que no hay conflictos sin resolver
+Validar que archivos de audio/creatividades existen y son accesibles
+
+
+Generación del Archivo:
+
+Consulta pauta finalizada desde cuadrícula
+Aplica plantilla de formato seleccionada
+Construye línea por línea según especificaciones técnicas
+
+
+Entrega del Archivo:
+
+Guarda en ruta de red configurada para la emisora
+Alternativa: descarga directa al computador del usuario
+Envío automático por email si está configurado
+
+
+Confirmación y Log:
+
+Mensaje de éxito con detalles del archivo generado
+Log de auditoría con timestamp y usuario responsable
+Backup automático del archivo para recuperación
+
+
+
+Compatibilidad Universal
+
+Sistemas Soportados (vía plantillas configurables):
+
+Dalet Galaxy (todas las versiones)
+Sara Automation Suite
+WideOrbit Automation for Radio
+RCS GSelector/Zetta
+Marketron Traffic
+NexGen Digital
+RadioTraffic (América Latina)
+Otros sistemas mediante plantillas personalizadas
+
+
+
+Validación Post-exportación
+
+Verificación de Integridad: Confirma que archivo se escribió correctamente
+Testing de Formato: Valida estructura contra especificaciones técnicas
+Notificación Automática: Alerta al programador de tráfico sobre exportación exitosa
+Monitoring de Consumo: Verifica si sistema de playout consumió el archivo
+
+8. MÓDULOS DE FINANZAS E INTELIGENCIA (TIER ANALYTICS)
+MÓDULO 10: FACTURACIÓN INTELIGENTE
+Automatización Completa del Ciclo Financiero
+Propósito Estratégico: Automatizar el ciclo completo de facturación desde la generación hasta el cobro, con integración nativa a sistemas tributarios locales y capacidades de expansión internacional.
+SUB-MÓDULO 10.1: GENERADOR DE FACTURAS INTELIGENTE
+Creación Automatizada con Validación Fiscal
+Dashboard Principal de Facturación
+
+Vista Consolidada:
+
+KPIs financieros: Total facturado mes, pendiente de cobro, vencido
+Gráfico de flujo de caja proyectado próximos 90 días
+Alertas de vencimiento y acciones requeridas
+Estado de integración con SII (Chile) en tiempo real
+
+
+
+Wizard de Creación de Factura
+Paso 1: Selección de Origen
+
+Desde Contrato: Selección de contrato específico
+
+Lista filtrable de contratos "Confirmados" y "Activos"
+Preview de líneas de pauta pendientes de facturación
+Cálculo automático de proporciones si es facturación parcial
+
+
+Desde Campaña: Selección de campaña específica
+
+Útil para contratos con múltiples campañas independientes
+Facturación basada en performance real de emisión
+Integración con datos de Módulo de Conciliación
+
+
+
+Paso 2: Configuración de Detalle
+
+Líneas de Facturación:
+
+Heredadas del contrato pero editables
+Descripción detallada por línea de servicio
+Cantidades y valores unitarios configurables
+Descuentos aplicables por línea o globales
+
+
+Datos de Referencia Tributaria:
+
+Orden de Compra (Ref. 801): Campo obligatorio para empresas/estado
+HES (Ref. 802): Para servicios que requieren conformidad
+Centro de Costo del cliente: Para tracking interno
+Glosa adicional personalizable
+
+
+
+Paso 3: Validación y Generación
+
+Validaciones Automáticas:
+
+Verificación de datos tributarios del cliente vía API SII
+Validación de límites de crédito y políticas internas
+Confirmación de cumplimiento de servicios (emisión certificada)
+
+
+Generación Dual:
+
+Modo Conectado: Integración directa con SII para DTE
+Modo Desconectado: Generación de proforma para sistema externo
+
+
+
+SUB-MÓDULO 10.2: INTEGRACIÓN TRIBUTARIA NATIVA
+Conexión Directa con Sistemas Fiscales
+Integración SII Chile
+
+API Nativa del SII:
+
+Emisión automática de Documentos Tributarios Electrónicos
+Validación en tiempo real de RUTs y situación tributaria
+Envío automático de facturas por email desde SII
+Consulta de estado de documentos emitidos
+
+
+Casos Especiales:
+
+Facturas de exportación para clientes extranjeros
+Notas de débito/crédito con referencia automática
+Facturación exenta para entidades sin fines de lucro
+Facturación electrónica gratuita para montos bajo $1.000.000
+
+
+
+Preparación para Expansión Internacional
+
+Arquitectura Modular para diferentes regímenes tributarios:
+
+Estructura base que se adapta a requerimientos locales
+Plugins configurables por país de operación
+Sistema de impuestos flexible (IVA, Sales Tax, GST, etc.)
+
+
+Países en Roadmap:
+
+Argentina: Integración con AFIP y facturación electrónica
+Perú: Conexión con SUNAT y comprobantes electrónicos
+Colombia: Integración con DIAN y facturación electrónica
+México: Compatibilidad con SAT y CFDI
+
+
+
+SUB-MÓDULO 10.3: GESTIÓN DE COBRANZA INTELIGENTE
+Automatización de Seguimiento de Pagos
+Monitor de Cuentas por Cobrar
+
+Dashboard de Aging:
+
+Facturas por antigüedad: Al día, 1-30 días, 31-60 días, +60 días
+Análisis por cliente: Identificación de buenos/malos pagadores
+Proyección de flujo de caja basada en patrones históricos
+Alertas automáticas de riesgo de incobrable
+
+
+
+Automatización de Cobranza
+
+Flujos Automáticos por Edad de Deuda:
+
+Día 0: Envío automático de factura por email
+Día 15: Recordatorio amigable automático
+Día 30: Alerta formal con copia al ejecutivo
+Día 45: Escalamiento a gerencia comercial
+Día 60: Sugerencia de suspensión de servicios
+
+
+Personalización por Cliente:
+
+Configuración especial para clientes VIP
+Ajuste de timing según acuerdos comerciales
+Integración con WhatsApp para recordatorios informales
+
+
+
+Herramientas de Negociación
+
+Calculadora de Planes de Pago:
+
+Generación automática de cronogramas de pago
+Aplicación de intereses según política comercial
+Contratos de novación automáticos
+
+
+Análisis de Impacto:
+
+Cálculo de costo de oportunidad de cobros tardíos
+Recomendaciones de descuentos por pronto pago
+Evaluación de riesgo vs. beneficio de mantener cliente
+
+
+
+MÓDULO 11: CONCILIACIÓN Y CERTIFICACIÓN
+Verificación Automática de Cumplimiento
+Propósito Estratégico: Proporcionar certificación automática e irrefutable del cumplimiento de servicios publicitarios, eliminando disputas y construyendo confianza absoluta con los clientes.
+SUB-MÓDULO 11.1: CORTEX-SENSE ENGINE
+Motor de Verificación Ultra-Avanzado
+Tecnologías de Detección
+
+Audio Fingerprinting Propietario:
+
+Algoritmo 10x más rápido que soluciones comerciales
+Precisión de detección >99.5% en condiciones normales
+Capacidad de detectar audios modificados ligeramente
+Resistente a interferencias de ruido ambiente
+
+
+Speech-to-Text Especializado:
+
+Optimizado para español chileno y modismos locales
+Capacidad de procesar múltiples locutores simultáneos
+Detección de tonalidad y énfasis emocional
+Transcripción con timestamps de precisión de milisegundos
+
+
+
+Infraestructura de Procesamiento
+
+GPU Cluster Dedicado en GCP:
+
+Procesamiento paralelo masivo
+Auto-scaling basado en demanda
+Redundancia para disponibilidad 99.99%
+Procesamiento de 24 horas de audio en <60 segundos
+
+
+
+SUB-MÓDULO 11.2: VERIFICACIÓN ON-DEMAND
+Auditoría Instantánea de Emisión
+Interface de Solicitud Simplificada
+Paso 1: Selección de Campaña
+
+Búsqueda Inteligente:
+
+Auto-complete con sugerencias contextuales
+Filtros por anunciante, período, emisora
+Acceso directo desde dashboard de campaña activa
+Integración con alertas de incidencias automáticas
+
+
+
+Paso 2: Configuración de Verificación
+
+Selección de Materiales:
+
+Vista previa de todas las creatividades de la campaña
+Checkboxes para selección múltiple
+Player integrado para confirmación del material
+Estimación automática de tiempo de procesamiento
+
+
+
+Proceso de Verificación Optimizado
+
+Ventana de Búsqueda Inteligente:
+
+Algoritmo sugiere ventana óptima basado en pauta programada
+Ejemplo: Si spot programado 14:29, sugiere buscar 14:25-14:35
+Opción manual para casos especiales
+Validación de rangos lógicos (máximo 2 horas por request)
+
+
+
+Resultados Instantáneos
+
+Dashboard de Resultados (aparece en <60 segundos):
+
+Resumen ejecutivo: X de Y spots encontrados
+Lista detallada con timestamps exactos
+Players integrados para cada resultado encontrado
+Scoring de calidad de detección (confianza %)
+
+
+
+Gestión de Resultados
+
+Opciones de Exportación:
+
+Descarga directa de clips como archivos MP3
+Envío automático por email con reporte adjunto
+Subida automática a Google Drive del cliente
+Generación de certificado formal PDF con firmas digitales
+
+
+
+Auto-limpieza y Seguridad
+
+Política de Retención:
+
+Clips temporales eliminados tras 24 horas automáticamente
+Opción de extensión manual para casos especiales
+Logs de auditoría de todas las descargas/envíos
+Encriptación completa durante almacenamiento temporal
+
+
+
+SUB-MÓDULO 11.3: CONCILIACIÓN MASIVA POR LOGS
+Auditoría Automática Basada en Registros
+Comparación Inteligente de Logs
+
+Input Dual:
+
+Log de Silexar: Pauta programada con timestamps exactos
+Log de Playout: Archivo "as-run" del sistema de emisión
+
+
+Parser Universal:
+
+Soporte automático para formatos de múltiples sistemas
+Detección automática de estructura de archivo
+Mapeo inteligente de campos equivalentes
+Validación de integridad de datos importados
+
+
+
+Motor de Conciliación
+
+Algoritmo de Matching:
+
+Coincidencia por código de spot exacto
+Tolerancia configurable de timing (±2 minutos estándar)
+Detección de spots movidos de horario
+Identificación de spots duplicados o extras
+
+
+
+Reporte de Discrepancias
+
+Dashboard de Resultados:
+
+Resumen ejecutivo con métricas clave
+Lista detallada de spots no emitidos
+Análisis de patrones: ¿problemas específicos de horario/emisora?
+Exportación automática para seguimiento
+
+
+
+SUB-MÓDULO 11.4: CORTEX-MAKEGOOD
+Sistema de Recuperación Automática
+Lógica de Re-programación Inteligente
+
+Identificación Automática:
+
+Detecta campaña y contrato originales
+Verifica días restantes de vigencia de campaña
+Calcula espacios disponibles para recuperación
+
+
+Re-inserción Automática:
+
+Distribuye spots no emitidos en días siguientes
+Prioriza horario repartido para recuperación
+Respeta restricciones de horario de creatividades
+Marca spots como "Recuperación - Sin Costo"
+
+
+
+Notificaciones Automáticas
+
+Alertas Proactivas:
+
+Email automático al ejecutivo de la cuenta
+Notificación push al programador de tráfico
+Actualización en dashboard de cliente (si tiene acceso)
+Log en historial de campaña para auditoría
+
+
+
+Validación de Recuperación
+
+Seguimiento Automático:
+
+Monitoreo automático de spots reprogramados
+Confirmación de emisión en días siguientes
+Reporte final de recuperación completada
+Cierre automático de incidencia original
+
+
+
+MÓDULO 12: INTELIGENCIA DE NEGOCIOS
+Analytics Avanzado y Reportería Estratégica
+Propósito Estratégico: Transformar datos operativos en inteligencia accionable, proporcionando insights profundos para optimización de ingresos, performance comercial y toma de decisiones estratégicas.
+SUB-MÓDULO 12.1: DASHBOARDS EJECUTIVOS
+Inteligencia en Tiempo Real para Directivos
+Dashboard CEO/Gerente General
+
+Métricas de Alto Nivel:
+
+Revenue mensual vs. presupuesto con proyecciones
+Margen bruto consolidado por línea de negocio
+Growth rate vs. mismo período año anterior
+Pipeline de ventas valorizado con probabilidades
+
+
+Alertas Ejecutivas:
+
+Desviaciones significativas en KPIs clave
+Oportunidades de ingresos detectadas por IA
+Riesgos operativos o financieros identificados
+Benchmarking automático vs. competencia (cuando disponible)
+
+
+
+Dashboard Gerente Comercial
+
+Performance del Equipo:
+
+Ranking de vendedores por múltiples métricas
+Análisis de conversión por etapa de funnel
+Productividad por ejecutivo (ingresos/hora/esfuerzo)
+Identificación automática de top performers y casos de mejora
+
+
+Optimización de Pricing:
+
+Análisis de descuentos promedio por vendedor/cliente
+Sugerencias de ajuste de tarifas por demanda
+Identificación de oportunidades de upselling
+ROI por tipo de campaign/medio/segmento
+
+
+
+Dashboard Programador de Tráfico
+
+Eficiencia Operativa:
+
+Fill rate por emisora/bloque/horario
+Tiempo promedio de programación por campaña
+Tasa de incidencias y resolución automática
+Performance de exportación y sistemas integrados
+
+
+Optimización de Inventario:
+
+Utilización de inventario por período
+Identificación de slots sub-utilizados
+Recomendaciones de optimización de programación
+Predicción de demanda por período/tipo de pauta
+
+
+
+SUB-MÓDULO 12.2: CORTEX-ANALYTICS
+Motor de Inteligencia Artificial para Análisis
+Análisis Descriptivo Automático
+
+Generación de Insights:
+
+Análisis automático de tendencias en ventas/operación
+Identificación de patrones estacionales
+Correlaciones automáticas entre variables de negocio
+Detección de anomalías en comportamientos históricos
+
+
+
+Análisis Predictivo
+
+Forecasting Inteligente:
+
+Predicción de ingresos próximos 90 días
+Forecast de demanda por tipo de inventario
+Predicción de churn de clientes con score de riesgo
+Estimación de valor de vida de cliente (LTV)
+
+
+
+Consultas en Lenguaje Natural
+
+Interface Conversacional:
+
+"¿Cuál fue el cliente que más gastó en digital el último trimestre?"
+"Muéstrame un gráfico de crecimiento de auspicios vs año anterior"
+"¿Qué vendedor tiene mejor tasa de conversión en el rubro retail?"
+"Identifica oportunidades de crecimiento en mi cartera"
+
+
+
+SUB-MÓDULO 12.3: CONSTRUCTOR DE REPORTES
+Herramientas de Análisis Self-Service
+Biblioteca de Reportes Predefinidos
+Reportes Operativos
+
+Informe de Emisión Diario/Semanal/Mensual:
+
+Cumplimiento de pauta por emisora/anunciante
+Incidencias y resoluciones automáticas
+Performance vs. programado con desviaciones
+
+
+Reporte de Guiones de Locución:
+
+Exportación formateada para locutores
+Organizado por horario y programa
+Incluye timing exacto y pronunciación especial
+
+
+
+Reportes Comerciales
+
+Ranking de Performance Comercial:
+
+Top vendedores por múltiples métricas
+Análisis de productividad y eficiencia
+Identificación de mejores prácticas replicables
+
+
+Análisis de Cuentas Key Account:
+
+Performance histórica por cliente estratégico
+Oportunidades de crecimiento identificadas
+Análisis de satisfacción y loyalty
+
+
+
+Reportes Financieros
+
+Estado de Cuentas por Cobrar:
+
+Aging detallado con análisis de riesgo
+Proyecciones de cobro basadas en patrones históricos
+Recomendaciones de acciones de cobranza
+
+
+Análisis de Rentabilidad:
+
+Margen por cliente/producto/canal/período
+Identificación de líneas de negocio más/menos rentables
+Recomendaciones de optimización de mix
+
+
+
+Constructor Visual de Reportes
+
+Interface Drag & Drop:
+
+Panel de campos disponibles (todas las entidades del sistema)
+Área de construcción con filas/columnas/filtros/métricas
+Preview en tiempo real durante construcción
+Guardado de plantillas para reutilización
+
+
+
+Herramientas de Análisis Avanzado
+
+Análisis de Cohortes: Para retención y valor de vida de clientes
+Análisis de Correlación: Para identificar factores de éxito
+Segmentación Automática: De clientes/productos/campañas
+Análisis de Tendencias: Con proyecciones estadísticas
+
+SUB-MÓDULO 12.4: HERRAMIENTAS DE COMPARACIÓN
+Análisis Competitivo y Benchmarking
+Comparador de Archivos Externos
+
+Import de Data Externa:
+
+Excel/CSV con mapeo inteligente de columnas
+Validación automática de consistencia
+Detección de discrepancias y patrones
+
+
+Análisis de Diferencias:
+
+Identificación automática de variaciones significativas
+Scoring de similitud entre datasets
+Recomendaciones de acciones correctivas
+
+
+
+Benchmarking Automático
+
+Métricas de Industria (cuando disponible):
+
+CPM/CPC promedio por medio/segmento
+Tasas de conversión por industria
+Performance estándar de diferentes tipos de campaña
+
+
+Posicionamiento Relativo:
+
+Dónde se ubica la operación vs. benchmarks
+Oportunidades de mejora identificadas
+Targets realistas basados en mejores prácticas
+
+
+
+9. MÓDULOS DIGITALES Y IA AVANZADA (TIER DIGITAL)
+MÓDULO 13: ECOSISTEMA DIGITAL INTEGRAL
+Publicidad Digital de Próxima Generación
+Propósito Estratégico: Crear un ecosistema completo de publicidad digital que rivalice y supere a plataformas especializadas como AudioServe, proporcionando capacidades end-to-end desde la planificación hasta la medición de resultados.
+SUB-MÓDULO 13.1: AD SERVER NATIVO
+Motor de Entrega Publicitaria Avanzado
+Arquitectura de Alto Rendimiento
+
+Edge Computing Distribuido:
+
+Nodos de entrega en múltiples regiones (Santiago, São Paulo, México DF)
+Latencia <50ms garantizada para toda Latinoamérica
+CDN integrado para creatividades estáticas
+Load balancing inteligente con fallback automático
+
+
+
+API de Inserción Dinámica (DAI)
+
+Endpoint Ultra-Rápido (/api/v1/ad-request):
+
+Procesamiento de requests en <10ms
+Soporte para 10,000 requests/segundo/nodo
+Headers de targeting automático
+Response caching inteligente para optimización
+
+
+
+Capacidades de Targeting Avanzadas
+
+Segmentación Demográfica:
+
+Edad, género, NSE con precisión >90%
+Geolocalización precisa (ciudad, comuna, código postal)
+Dispositivo y sistema operativo
+Horario y día de la semana con timezone automático
+
+
+Segmentación Comportamental:
+
+Historial de navegación (con consentimiento)
+Intereses inferidos por ML
+Intención de compra detectada automáticamente
+Retargeting con ventanas configurables
+
+
+
+Formatos Publicitarios Soportados
+
+Display Tradicional:
+
+Todos los tamaños IAB estándar
+HTML5 con interactividad completa
+Formatos ricos: expandables, video overlay, takeover
+
+
+Video Advertising:
+
+In-stream: Pre-roll, Mid-roll, Post-roll
+Out-stream: In-banner, in-article, floating
+Formatos interactivos con CTAs personalizados
+
+
+Audio Digital:
+
+Spots tradicionales con targeting avanzado
+Menciones sintéticas personalizadas en tiempo real
+Podcasts advertising con host-read simulation
+
+
+Native Advertising:
+
+In-feed posts con contenido sponsored
+Recommendation widgets con ML
+Content marketing automatizado
+
+
+
+SUB-MÓDULO 13.2: PLATAFORMA DE AUDIO INTELIGENTE
+Revolución en Publicidad de Audio Digital
+Cortex-Voice Avanzado
+
+Síntesis de Voz Neural:
+
+50+ voces en español con acentos regionales
+Modulación emocional configurable (energético, cálido, profesional, urgente)
+Pronunciación inteligente de marcas y nombres propios
+Velocidad y pausas adaptables al contexto
+
+Sistema de Personalización Extrema
+
+Variables Dinámicas Avanzadas:
+
+[nombre_usuario] - Personalización directa
+[ciudad_usuario] - Localización automática
+[tiempo_actual] - Referencias temporales dinámicas
+[ofertas_cercanas] - Promociones geo-localizadas
+[historial_compras] - Referencias a compras previas (con consentimiento)
+
+
+
+Ejemplo de Personalización en Tiempo Real:
+Audio Base: "Hola [nombre_usuario], sabemos que te gusta [categoria_interes] 
+en [ciudad_usuario]. Tenemos una oferta especial para ti este [dia_semana]."
+
+Output Personalizado: "Hola María José, sabemos que te gusta la tecnología 
+en Las Condes. Tenemos una oferta especial para ti este viernes."
+Motor de Composición Automática
+
+Componentes Musicales:
+
+Biblioteca de 1000+ tracks libres de derechos
+Etiquetado automático por mood, tempo, género
+Sincronización automática con duración del spot
+Fade-in/out inteligente según contenido vocal
+
+
+
+Orquestador de Experiencias (AO-X)
+
+Narrativas Secuenciales:
+
+Campañas que evolucionan a lo largo del tiempo
+Día 1: Presentación del problema
+Día 3: Insinuación de la solución
+Día 7: Call-to-action definitivo con oferta
+
+
+Adaptación Emocional:
+
+Detección de tono de voz del usuario (si interactúa)
+Ajuste automático del estilo del mensaje
+Si detecta prisa → versión de 10s más directa
+Si detecta calma → versión de 30s más elaborada
+
+
+
+SUB-MÓDULO 13.3: PROGRAMMATIC ADVERTISING
+Compra y Venta Automatizada de Inventario
+Demand Side Platform (DSP) Integrado
+
+Conexiones Nativas con Exchanges:
+
+Google Ad Exchange, Amazon DSP, The Trade Desk
+Exchanges locales (Adsmovil, E-Planning LATAM)
+Deals directos con publishers premium
+Private marketplace para inventario exclusivo
+
+
+
+Supply Side Platform (SSP) Propio
+
+Monetización de Inventario Cliente:
+
+Subasta en tiempo real de espacios no vendidos
+Configuración de floor prices dinámicos
+Brand safety automático con whitelist/blacklist
+Yield optimization con ML para maximizar CPMs
+
+
+
+Real-Time Bidding (RTB) Engine
+
+Bidding Inteligente:
+
+Algoritmos de puja basados en objetivos de campaña
+Bid shading para optimizar costos
+Frequency capping automático
+Dayparting y geo-targeting en tiempo real
+
+
+
+Data Management Platform (DMP) Integrada
+
+First Party Data:
+
+Perfiles de audiencia basados en data del cliente
+Segmentos custom creados desde CRM
+Lookalike modeling automático
+Cross-device tracking cuando sea posible
+
+
+Third Party Data:
+
+Integración con proveedores premium (Oracle, Nielsen)
+Scoring de intención de compra
+Datos demográficos enriquecidos
+Behavioral targeting avanzado
+
+
+
+MÓDULO 14: CENTRO DE MANDO DIGITAL
+Gestión Unificada de Campañas Digitales
+Propósito Estratégico: Centralizar la planificación, ejecución y optimización de todas las campañas digitales en una interfaz unificada que compita directamente con Google Ads Manager y Meta Business.
+SUB-MÓDULO 14.1: GESTOR DE CAMPAÑAS DIGITALES
+Interface Unificada Multi-Plataforma
+Dashboard Principal Digital
+
+Vista Consolidada de Performance:
+
+Spend total vs. budget en tiempo real
+CTR/CPC/CPA consolidado por canal
+Conversiones atribuidas con modelos personalizables
+ROAS (Return on Ad Spend) calculado automáticamente
+
+
+Alertas Inteligentes:
+
+"Campaña Facebook supera CPA objetivo en 25%"
+"Inventario programático disponible para audiencia target"
+"Oportunidad de scaling detectada en Google Ads"
+
+
+
+Creador de Campañas Digitales
+
+Wizard Inteligente Multi-Canal:
+
+Selección de objetivos: Awareness, Consideration, Conversion
+Budget allocation automático entre canales
+Audience building con sugerencias de Cortex-Audience
+Creative versioning automático por plataforma
+
+
+
+Gestión de Creatividades Digitales
+
+Asset Library Inteligente:
+
+Auto-resize para todos los formatos de plataforma
+A/B testing automático de creatividades
+Performance prediction antes del launch
+Dynamic creative optimization (DCO) en tiempo real
+
+
+
+SUB-MÓDULO 14.2: CONECTORES NATIVOS
+Integración Directa con Plataformas Principales
+Google Ads Integration
+
+API Nativa Completa:
+
+Creación y gestión de campañas desde Silexar
+Importación automática de performance data
+Bid management automatizado basado en objetivos
+Keyword research con sugerencias de expansión
+
+
+
+Meta Ads (Facebook/Instagram) Integration
+
+Business Manager Connection:
+
+Gestión de campañas cross-platform (FB + IG + Audience Network)
+Custom audiences sync desde CRM de Silexar
+Lookalike creation automatizada
+Creative testing automatizado con statistical significance
+
+
+
+TikTok for Business Integration
+
+Ads Manager API:
+
+Campaign creation optimizada para mobile-first audience
+Spark Ads integration para contenido orgánico amplificado
+TikTok Pixel integration con attribution modeling
+Creative best practices automation
+
+
+
+LinkedIn Ads Integration
+
+B2B Focused Features:
+
+Account-based marketing con company targeting
+Lead generation forms con sync automático a CRM
+Sponsored content optimization para engagement profesional
+Job title y company size targeting avanzado
+
+
+
+Programmatic Integrations
+
+DV360 (Display & Video 360):
+
+Private marketplace deals management
+YouTube advertising integration
+Advanced audience targeting con Google data
+Cross-device attribution con Google Analytics
+
+
+
+Amazon DSP Integration
+
+E-commerce Focused:
+
+Product targeting basado en purchase intent
+Amazon audience data leveraging
+Sponsored display y video campaigns
+Attribution to Amazon purchases
+
+
+
+SUB-MÓDULO 14.3: MEASUREMENT & ATTRIBUTION
+Medición Unificada Cross-Channel
+Attribution Modeling Avanzado
+
+Multi-Touch Attribution:
+
+First-click, last-click, linear, time-decay, position-based
+Custom attribution models basados en data histórica
+Cross-device attribution con probabilistic matching
+View-through conversions tracking
+
+
+
+Conversion Tracking Universal
+
+Pixel Management Centralizado:
+
+Un solo pixel de Silexar para todos los canales
+Server-side tracking para iOS 14.5+ compliance
+First-party data collection con consent management
+Real-time conversion feed a todas las plataformas
+
+
+
+Dashboard de Attribution
+
+Customer Journey Visualization:
+
+Mapeo completo del path to purchase
+Touchpoint influence scoring
+Channel interaction effects
+Incremental lift measurement por canal
+
+
+
+Advanced Analytics
+
+Predictive Analytics:
+
+Customer lifetime value prediction
+Churn probability scoring
+Next best action recommendations
+Seasonal trend forecasting
+
+
+
+MÓDULO 15: AUTOMATIZACIÓN COMERCIAL MÓVIL
+Herramientas de Productividad para Ejecutivos
+Propósito Estratégico: Crear un ecosistema móvil que transforme a los ejecutivos de ventas en súper-vendedores, proporcionando herramientas de IA, automatización y conectividad que aceleren dramáticamente los procesos comerciales.
+SUB-MÓDULO 15.1: APLICACIÓN MÓVIL NATIVA
+Silexar Pulse Mobile - La Herramienta del Vendedor Moderno
+Dashboard Móvil Inteligente
+
+Vista de Hoy (Today View):
+
+Agenda automática generada por IA: reuniones, follow-ups, deadlines
+Weather + traffic para optimizar ruta de visitas
+Leads prioritarios con score de probabilidad de cierre
+Metas del día vs. progreso actual con gamificación
+
+
+
+Herramientas de Reunión en Tiempo Real
+
+Cliente Insights Instantáneos:
+
+Un tap en contacto → perfil completo del cliente
+Historial de compras, preferencias, ciclos estacionales
+Últimas interacciones y notas de otros ejecutivos
+Contexto de mercado: competidores, tendencias del rubro
+
+
+
+Consultas Instantáneas con Cortex
+
+Preguntas por Voz o Texto:
+
+"¿Cuánto inventario queda para prime matinal en noviembre?"
+"¿Qué descuento máximo puedo ofrecer a Banco Santander?"
+"Muéstrame el ROI de la última campaña de retail"
+"¿Cuándo vence el contrato actual de este cliente?"
+
+
+
+Generador de Propuestas Instantáneo
+
+AI-Powered Pitch Builder:
+
+Foto del brief del cliente → propuesta automática en 30 segundos
+Templates personalizados por industria y tamaño de cliente
+Cálculos automáticos de reach, frequency, pricing
+Exportación inmediata a PDF/PowerPoint/WhatsApp
+
+
+
+SUB-MÓDULO 15.2: INTEGRACIÓN WHATSAPP BUSINESS
+Comunicación Comercial Automatizada
+WhatsApp Business API Integration
+
+Automatic Response System:
+
+Respuestas automáticas basadas en context del mensaje
+"¿Disponibilidad prime radio?" → Respuesta automática con inventario actual
+Routing inteligente: preguntas técnicas → programador, comerciales → ejecutivo
+
+
+
+Template Messages Inteligentes
+
+Follow-up Automatizado:
+
+Post-reunión: Resumen automático + próximos pasos
+Recordatorio de propuesta: "¿Tuviste oportunidad de revisar la propuesta?"
+Urgencia inteligente: "Quedan 2 cupos para el auspicio que te interesaba"
+
+
+
+Rich Media Sharing
+
+Content Library Mobile:
+
+Casos de éxito en formato story/carousel
+Creatividades de referencia por industria
+Screenshots de dashboards para mostrar performance
+Videos testimoniales de otros clientes (con autorización)
+
+
+
+SUB-MÓDULO 15.3: EMAIL INTELLIGENCE
+Procesamiento Automático de Comunicaciones
+AI Email Parser
+
+Automatic Brief Extraction:
+
+Emails con briefs → extracción automática de requisitos
+Creación automática de oportunidad en CRM
+Notificación al ejecutivo con información pre-procesada
+Sugerencia de response template personalizado
+
+
+
+Smart Email Responses
+
+Context-Aware Suggestions:
+
+Análisis de tono del email recibido
+Sugerencias de respuesta apropiadas
+Templates dinámicos con información actualizada
+Follow-up scheduling automático
+
+
+
+Email-to-CRM Sync
+
+Automatic Activity Logging:
+
+Emails importantes → automáticamente logged en CRM
+Extraction de datos clave (fechas, montos, decisores)
+Sentiment analysis del cliente
+Next action recommendations
+
+
+
+SUB-MÓDULO 15.4: VOICE AI ASSISTANT
+Asistente de Voz Especializado en Ventas
+WIL Voice - El Asistente Vocal Inteligente
+
+Activación por Voz: "Hey WIL" o botón de activación
+Consultas Complejas:
+
+"WIL, agenda reunión con Marketing Director de Ripley para mostrar casos de éxito retail"
+"WIL, calcula el ROI si Banco de Chile aumenta su inversión en 40%"
+"WIL, envía por WhatsApp la disponibilidad de auspicios deportivos a Juan"
+
+
+
+Voice-to-CRM Updates
+
+Post-Meeting Voice Notes:
+
+"WIL, actualiza cliente Falabella: interesados en campaña Black Friday, presupuesto estimado 50 millones, decisor es María González, próxima reunión martes 15"
+Transcripción automática + estructuración en campos CRM
+Confirmación antes de guardar cambios importantes
+
+
+
+Hands-Free Operation
+
+Driving Mode:
+
+Entre reuniones, actualizaciones por voz mientras maneja
+Resumen de día por voz: "Tienes 3 reuniones pendientes, 2 propuestas esperando respuesta, meta mensual 78% cumplida"
+Safety first: no interacción visual requerida
+
+
+
+MÓDULO 16: PROSPECCIÓN E INTELIGENCIA COMPETITIVA
+Generación Automática de Oportunidades
+Propósito Estratégico: Crear un motor de prospección automática que identifique proactivamente oportunidades comerciales, analice la competencia y genere leads calificados sin intervención humana.
+SUB-MÓDULO 16.1: CORTEX-PROSPECTOR
+Motor de Detección de Oportunidades
+Web Intelligence Engine
+
+Ad Monitoring Automático:
+
+Scraping ético de plataformas publicitarias públicas
+Detección de nuevas campañas de empresas no-clientes
+Estimación de spend mensual basado en frequency y placement
+Identificación de tendencias de inversión por rubro
+
+
+
+Social Listening Avanzado
+
+Brand Mention Analysis:
+
+Monitoring de menciones de marcas en redes sociales
+Detección de campañas de marketing no-tradicional
+Identificación de lanzamientos de productos
+Sentiment analysis para timing de approach
+
+
+
+Company Intelligence
+
+Business Signal Detection:
+
+Monitoring de job postings (Marketing Manager, CMO hires)
+Funding announcements y expansion news
+New location openings que requieren awareness local
+Seasonal business pattern analysis
+
+
+
+SUB-MÓDULO 16.2: LEAD SCORING Y QUALIFICATION
+Clasificación Inteligente de Prospectos
+Multi-Factor Scoring Algorithm
+
+Company Signals (40% del score):
+
+Revenue estimado y growth trajectory
+Industry vertical y typical ad spend
+Geographic presence y expansion patterns
+Competitive landscape y market share
+
+
+
+Digital Presence Signals (30% del score):
+
+Current advertising activity level
+Website traffic trends y digital maturity
+Social media engagement y follower growth
+E-commerce presence y online sales indicators
+
+Timing Signals (30% del score):
+
+Seasonal business patterns
+Recent company news y announcements
+Marketing team changes y new hires
+Competitive campaign analysis
+
+Lead Prioritization Dashboard
+
+Hot Leads (Score 80-100):
+
+Immediate contact recommended
+Auto-assignment al mejor ejecutivo disponible
+Pre-built pitch package generado automáticamente
+
+
+Warm Leads (Score 60-79):
+
+Nurturing sequence activado automáticamente
+Social media engagement tracking
+Timing optimization para approach
+
+
+Cold Leads (Score 0-59):
+
+Long-term monitoring y signal tracking
+Quarterly review para re-scoring
+Content marketing targeting
+
+
+
+SUB-MÓDULO 16.3: COMPETITIVE INTELLIGENCE
+Análisis Automático de Competencia
+Competitor Campaign Tracking
+
+Ad Creative Monitoring:
+
+Screenshot automático de ads de competidores principales
+Creative trend analysis y messaging evolution
+Budget estimation basado en ad frequency
+Performance indicators cuando están disponibles públicamente
+
+
+
+Pricing Intelligence
+
+Rate Card Analysis:
+
+Monitoring de tarifas públicas de competidores
+Promotional pricing y special offers tracking
+Service bundling y packaging analysis
+Value proposition evolution tracking
+
+
+
+Market Share Estimation
+
+Voice Share Analysis:
+
+Estimation de share of voice por competidor
+Trending analysis de market presence
+New player detection y threat assessment
+Market opportunity gap identification
+
+
+
+SUB-MÓDULO 16.4: OUTREACH AUTOMATION
+Secuencias de Contacto Inteligentes
+Multi-Channel Sequences
+
+Email Sequences:
+
+Personalized templates basados en company intelligence
+A/B testing automático de subject lines y content
+Optimal timing basado en recipient behavior patterns
+Automatic follow-up scheduling con decay intervals
+
+
+
+LinkedIn Outreach
+
+Social Selling Automation:
+
+Connection requests con personalized messages
+Content sharing y engagement tracking
+Relationship building sequences
+Decision maker identification y mapping
+
+
+
+Phone + WhatsApp Integration
+
+Warm Call Preparation:
+
+Auto-generated call scripts con talking points
+Optimal calling time suggestions
+Voicemail templates personalizados
+WhatsApp follow-up sequences
+
+
+
+Success Tracking & Optimization
+
+Campaign Performance Analysis:
+
+Open rates, response rates, meeting booking rates
+Channel effectiveness analysis por industry/company size
+Message optimization recommendations
+ROI tracking desde prospect hasta closed deal
+
+
+
+
+PARTE III: EXPERIENCIAS DE USUARIO DETALLADAS
+10. FLUJOS OPERATIVOS COMPLETOS POR ROL
+🎯 EJECUTIVO DE VENTAS - DÍA TÍPICO CON SILEXAR PULSE
+07:30 - Revisión Matinal (Móvil)
+
+Abre app Silexar Pulse Mobile
+Dashboard muestra automáticamente:
+
+"Buenos días Juan! Tienes 3 reuniones hoy"
+"Meta mensual: 78% completada (+15% vs. ayer)"
+"2 leads calificados nuevos esperan tu atención"
+"Propuesta Banco Chile: recordatorio de follow-up"
+
+
+
+08:15 - Preparación para Reunión (Móvil en tránsito)
+
+Tap en "Reunión 10:00 - Farmacia San Pablo"
+Cortex muestra automáticamente:
+
+Perfil completo: última campaña hace 8 meses
+Insight: "Competencia invirtió fuerte en Q3"
+Sugerencia: "Proponer paquete de fin de año"
+Brief automático: objetivos, presupuesto estimado, decisores
+
+
+
+10:00 - Durante la Reunión (Tablet/Móvil)
+
+Cliente pregunta: "¿Qué disponibilidad tenemos para Diciembre?"
+Juan abre consulta rápida por voz: "WIL, disponibilidad auspicios Diciembre"
+En 3 segundos ve: "Prime: 2 cupos. Repartido: amplia disponibilidad"
+Cliente pide propuesta personalizada
+Juan usa "Generador Instantáneo":
+
+Ingresa presupuesto: $15.000.000
+Selecciona objetivo: Awareness + Traffic to store
+Cortex genera propuesta completa en 30 segundos
+
+
+Presenta propuesta desde tablet con proyecciones de ROI
+
+10:45 - Post-Reunión (Móvil mientras camina)
+
+Grabación rápida por voz: "WIL, actualizar Farmacia San Pablo: interesados en propuesta $15M, decisor confirmado es Gerente Marketing, enviar follow-up el viernes"
+WIL confirma: "¿Quieres que envíe la propuesta por email ahora?"
+Juan: "Sí, y programa recordatorio para llamar el viernes"
+
+14:30 - Almuerzo y Admin (Móvil)
+
+Revisa notificaciones:
+
+"Banco Chile respondió tu propuesta - requiere ajuste en timing"
+"Nuevo lead asignado: Supermercado ABC - Score: 85/100"
+"Competidor lanzó promoción agresiva - revisar pricing"
+
+
+Tap en Banco Chile → Lee email → Cortex sugiere response template
+Edita respuesta, agenda nueva reunión, marca tarea como resuelta
+
+16:00 - Prospección Proactiva (Desktop en oficina)
+
+Revisa dashboard de nuevos leads:
+
+Cortex-Prospector detectó: "Cadena de Gimnasios XYZ aumentó 300% su inversión digital"
+Información automática: Expansion a 3 ciudades nuevas, contrató CMO nuevo
+Recomendación: "Optimal approach timing: próximas 2 semanas"
+
+
+Crea secuencia de outreach automática:
+
+Email personalizado basado en intelligence
+Follow-up por LinkedIn tras 3 días
+WhatsApp follow-up si no responde en 1 semana
+
+
+
+18:00 - Revisión de Día y Planning (Desktop/Móvil)
+
+Dashboard de performance del día:
+
+2 reuniones completadas exitosamente
+1 propuesta enviada ($15M pipeline)
+3 follow-ups programados para mañana
+Meta diaria: 110% completada
+
+
+WIL sugiere: "Basado en tu pipeline, probabilidad 78% de superar meta mensual"
+Revisa agenda de mañana, pre-carga briefs automáticos para reuniones
+
+🎛️ PROGRAMADOR DE TRÁFICO - OPERACIÓN DIARIA
+08:00 - Revisión de Estado (Desktop)
+
+Accede a Dashboard de Operaciones
+Verifica alertas automáticas de la noche:
+
+"15 contratos nuevos confirmados - requieren programación"
+"Emisora T13: conciliación detectó 3 spots no emitidos ayer"
+"Sistema exportó exitosamente a 8 de 8 emisoras"
+
+
+Prioriza tareas según criticidad automática
+
+08:30 - Programación de Campañas Nuevas
+
+Entra a Módulo 7: Centro de Mando de Campañas
+Ve lista de 15 campañas en estado "Configuración Requerida"
+Selecciona primera campaña:
+
+Cortex ya pre-programó automáticamente 90% de la pauta
+Solo requiere validación manual para casos especiales
+
+
+Revisa programación automática en vista visual:
+
+Spots distribuidos equitativamente evitando competidores
+Rotación aplicada automáticamente
+Respeta posiciones fijas definidas en contratos
+
+
+Aprueba 12 campañas con un click, edita manualmente 3 casos especiales
+
+09:30 - Gestión de Creatividades
+
+Entra a Módulo 8: Biblioteca de Creatividades
+Alerta automática: "5 creatividades vencen en próximos 7 días"
+Revisa cada una:
+
+Extiende vigencia para 3 creatividades activas
+Marca 2 como inactivas (campañas finalizadas)
+
+
+Procesa 8 creatividades nuevas subidas por ejecutivos:
+
+Editor automático corrige niveles de audio
+Validación automática de duración y calidad
+Transcripción automática para búsquedas futuras
+
+
+
+11:00 - Exportación Masiva
+
+Entra a Módulo 9: Exportación Broadcast
+Selecciona todas las emisoras del grupo (12 emisoras)
+Configura exportación para mañana (día completo)
+Cortex valida automáticamente:
+
+Todas las tandas tienen creatividades asignadas
+No hay conflictos sin resolver pendientes
+Archivos de audio son accesibles y válidos
+
+
+Click en "Exportar Todo" → Proceso completa en 45 segundos
+Confirmación automática: "12 archivos generados y entregados exitosamente"
+
+14:00 - Conciliación del Día Anterior
+
+Entra a Módulo 11: Conciliación
+Cortex-Sense ya procesó automáticamente logs de emisión
+Ve resumen: "94% de spots emitidos correctamente"
+Revisa 15 spots no detectados:
+
+12 casos: Cortex-MakeGood ya los reprogramó automáticamente
+3 casos especiales requieren revisión manual
+
+
+Para casos especiales:
+
+Usa herramienta de verificación on-demand
+Audio-fingerprinting encuentra 2 de 3 spots (emitidos con timing diferente)
+1 spot efectivamente no emitido → Confirma reprogramación automática
+
+
+
+15:30 - Monitoreo en Tiempo Real
+
+Dashboard de Emisión en Vivo muestra:
+
+Próximas 4 horas de programación para todas las emisoras
+Alertas en tiempo real si spots no se emiten
+Status de sistemas de playout conectados
+
+
+Recibe alerta: "T13 Radio: Spot programado 15:29 no detectado"
+Verifica manualmente:
+
+Revisa log de playout → Sistema tuvo falla técnica 15:25-15:32
+Cortex automáticamente reprogramó el spot para 16:29
+Confirma resolución automática
+
+
+
+17:00 - Revisión y Planning
+
+Genera reporte diario automático:
+
+98% de emisiones exitosas
+23 incidencias menores resueltas automáticamente
+2 incidencias escaladas y resueltas manualmente
+0 quejas de clientes por emisión faltante
+
+
+Revisa programación para próximos 3 días:
+
+Cortex detecta potencial sobresaturación viernes en emisora premium
+Ajusta automáticamente distribución de spots
+Pre-aprueba exportaciones programadas para fin de semana
+
+
+
+👑 ADMINISTRADOR CLIENTE - GESTIÓN ESTRATÉGICA
+09:00 - Dashboard Ejecutivo (Desktop)
+
+Accede a vista de CEO con métricas consolidadas:
+
+Revenue mensual: $847M vs. Meta $850M (99.6%)
+Pipeline valorizado: $1.2B próximos 90 días
+Margen bruto consolidado: 68% (+2% vs. año anterior)
+NPS clientes: 78 (benchmark industria: 54)
+
+
+Revisa alertas ejecutivas:
+
+"Oportunidad detectada: Cliente Retail ABC expandiendo a regiones"
+"Competidor XYZ redujo precios 15% en segmento empresarial"
+"Nuevo regulación afectará facturación digital - acción requerida"
+
+
+
+09:30 - Análisis de Performance Comercial
+
+Entra a Módulo 12: Inteligencia de Negocios
+Consulta a Cortex-Analytics: "¿Cuáles son mis 3 mejores oportunidades de crecimiento?"
+IA responde con análisis completo:
+
+"Expandir servicios digitales a clientes radio-only (+$45M potencial)"
+"Recuperar 8 clientes perdidos a competencia (+$23M potencial)"
+"Upselling de auspicios premium en 15 clientes key (+$18M potencial)"
+
+
+Cada oportunidad incluye plan de acción específico y ejecutivo asignado
+
+10:30 - Gestión de Equipo y Performance
+
+Revisa dashboard de equipo comercial:
+
+Ranking de vendedores con métricas múltiples
+Identifica top performer: María González (135% de meta)
+Identifica underperformer: Carlos Ruiz (67% de meta)
+
+
+Programa sesión de coaching para Carlos
+Configura incentivo especial para María por performance excepcional
+
+11:30 - Configuración de Políticas Comerciales
+
+Entra a Módulo 1: Configuración
+Ajusta políticas de descuento:
+
+Aumenta límite de descuento para clientes AAA de 15% a 20%
+Implementa aprobación obligatoria para descuentos >25%
+
+
+Configura nuevas reglas de pago por adelantado:
+
+Clientes con score Cortex-Risk <500 requieren 50% adelanto
+Campañas políticas requieren 100% adelanto sin excepciones
+
+
+
+14:00 - Análisis Financiero
+
+Revisa estado de cuentas por cobrar:
+
+$78M pendiente de cobro total
+$12M vencido (2 clientes grandes)
+Proyección de cobro: 94% en próximos 30 días
+
+
+Aprueba plan de cobranza intensiva para los 2 clientes morosos
+Configura alertas automáticas para prevenir futuras mora
+
+15:30 - Planificación Estratégica
+
+Usa Constructor de Reportes para análisis custom:
+
+"Rentabilidad por línea de negocio últimos 12 meses"
+Descubre: Digital tiene 45% mayor margen que Radio tradicional
+
+
+Planifica estrategia de growth:
+
+Asignar 2 ejecutivos adicionales a digital
+Crear paquetes híbridos radio+digital con descuento
+Meta: 40% de revenue desde digital en 12 meses
+
+
+
+16:30 - Reunión Virtual con Gerentes
+
+Presenta findings del día usando reportes automáticos
+Revisa pipeline consolidado con probabilidades actualizadas por IA
+Ajusta metas mensuales basado en insights de Cortex-Analytics
+Asigna tareas específicas con deadlines y KPIs medibles
+
+11. INTERFACES Y NAVEGACIÓN INTUITIVA
+🎨 PRINCIPIOS DE DISEÑO UX/UI
+Filosofía de Diseño: "Invisible Complexity, Obvious Value"
+
+Complejidad técnica debe ser invisible al usuario final
+Valor y beneficios deben ser inmediatamente obvios
+Cada click debe sentirse como progreso hacia el objetivo
+Información crítica siempre visible, información secundaria accesible
+
+📱 RESPONSIVE DESIGN FRAMEWORK
+Breakpoints Principales
+
+Mobile: 320px - 768px (Ejecutivos en terreno)
+Tablet: 768px - 1024px (Reuniones con clientes)
+Desktop: 1024px+ (Operación diaria, programación)
+Large Desktop: 1440px+ (Dashboards ejecutivos, múltiples monitores)
+
+Componentes Adaptivos
+
+Tablas de Datos: En móvil se convierten en cards verticales con información jerárquica
+Dashboards: Layout automático de widgets según espacio disponible
+Formularios: Steps colapsables en móvil, vista completa en desktop
+Navegación: Bottom tabs en móvil, sidebar en desktop, top bar en tablet
+
+🧭 SISTEMA DE NAVEGACIÓN UNIFICADO
+Arquitectura de Información
+📊 Dashboard Principal
+├── 🎯 Mi Día (personalizado por rol)
+├── 📈 KPIs en Tiempo Real
+└── 🚨 Alertas y Notificaciones
+
+👥 Gestión Comercial
+├── 🏢 Anunciantes
+├── 📋 Contratos  
+├── 🎵 Campañas
+└── 💰 Pipeline de Ventas
+
+🎛️ Operaciones
+├── 📻 Programación de Pauta
+├── 🎨 Creatividades
+├── 📤 Exportación
+└── ✅ Conciliación
+
+💼 Administración
+├── ⚙️ Configuración
+├── 👤 Usuarios y Permisos
+├── 📊 Reportes e Informes
+└── 🔧 Herramientas Admin
+Navegación Contextual Inteligente
+
+Breadcrumbs Dinámicos: Muestran el path lógico, no solo jerárquico
+
+Ejemplo: Dashboard > Cliente Coca-Cola > Campaña Verano > Programación de Tanda
+
+
+Tabs Persistentes: En vistas detalladas, tabs principales siempre visibles
+Acciones Rápidas: Botones de acción flotantes según contexto
+Search Global: Barra de búsqueda universal accesible con Ctrl+K
+
+🎭 PERSONALIZACIÓN POR ROL
+Dashboard Personalizado por Rol
+Ejecutivo de Ventas - Vista "Hunter"
+┌─ MIS KPIs DIARIOS ──────────────┬─ PIPELINE ACTIVO ─────────┐
+│ Meta: $2.5M  Actual: $1.9M     │ 🔥 Banco Chile - 90% - $8M │
+│ Reuniones: 3   Propuestas: 1   │ 🎯 Retail ABC - 60% - $5M  │
+│ Follow-ups: 5  Leads Nuevos: 2 │ 💭 Pharma XYZ - 30% - $3M  │
+└─────────────────────────────────┴─────────────────────────────┘
+┌─ ACCIÓN REQUERIDA HOY ──────────────────────────────────────────┐
+│ ⏰ 10:00 - Reunión Farmacia San Pablo (Brief preparado por IA) │
+│ 📞 14:00 - Call Banco Estado (Follow-up propuesta $12M)       │  
+│ 📧 16:00 - Enviar propuesta ajustada a Supermercado DEF       │
+└─────────────────────────────────────────────────────────────────┘
+Programador de Tráfico - Vista "Operator"
+┌─ ESTADO OPERATIVO ──────────────┬─ ALERTAS TIEMPO REAL ─────┐
+│ Campañas Activas: 47           │ 🟢 T13 Radio - Normal      │
+│ Spots Hoy: 1,247              │ 🟡 Sonar FM - 2 incidencias│
+│ Conciliación: 98.5%           │ 🔴 Rock FM - Spot faltante │
+│ Exportaciones: 12/12 ✅       │ 🟢 Digital - Tracking OK   │
+└─────────────────────────────────┴─────────────────────────────┘
+┌─ PRÓXIMAS ACCIONES ─────────────────────────────────────────────┐
+│ 🎵 15:29 - Verificar emisión spot SP001234 (Coca-Cola)        │
+│ 📤 16:00 - Exportar pauta mañana para Grupo Prisa (8 emisoras)│
+│ 🔧 17:00 - Revisar creatividades vencen próximos 7 días       │
+└─────────────────────────────────────────────────────────────────┘
+CEO/Administrador - Vista "Commander"
+┌─ PERFORMANCE CONSOLIDADA ───────┬─ INSIGHTS ESTRATÉGICOS ───┐
+│ Revenue Mensual: $847M/850M     │ 💡 Oportunidad Digital:   │
+│ Margen: 68% (+2% YoY)          │    +$45M identificados    │
+│ Pipeline: $1.2B (90 días)      │ ⚠️  Riesgo Competitivo:   │
+│ NPS: 78 (Benchmark: 54)        │    Pricing agresivo       │
+└─────────────────────────────────┴─────────────────────────────┘
+┌─ DECISIONES REQUERIDAS ─────────────────────────────────────────┐
+│ 📈 Aprobar expansión equipo digital (2 ejecutivos - $240K/año) │
+│ 💰 Revisar límites crédito 3 clientes (recomendación IA)      │
+│ 🎯 Definir estrategia respuesta competencia (reunion 14:00)    │
+└─────────────────────────────────────────────────────────────────┘
+🎨 SISTEMA DE DISEÑO VISUAL
+Paleta de Colores Inteligente
+
+Primario: Azul #2563EB (Confianza, profesionalismo)
+Secundario: Verde #10B981 (Éxito, crecimiento, profit)
+Alertas:
+
+Amarillo #F59E0B (Atención, warning)
+Rojo #EF4444 (Error, urgente, crítico)
+Naranja #F97316 (Medio urgente, oportunidad)
+
+
+Neutrales: Escala de grises desde #F8F9FA hasta #1F2937
+Fondos: Blanco puro con sutiles texturas para depth
+
+Tipografía Jerárquica
+
+Display: Inter 700 para títulos principales y KPIs grandes
+Headings: Inter 600 para secciones y subsecciones
+Body: Inter 400 para texto general y descripciones
+Mono: JetBrains Mono para códigos, IDs y datos técnicos
+Tamaños: Escala modular 1.25 (16px base, 20px, 25px, 31px, 39px)
+
+Iconografía Consistente
+
+Lucide React: Librería principal por consistencia y peso
+Tamaños Standard: 16px (inline), 20px (buttons), 24px (headers), 32px (features)
+Estados: Normal, hover (+20% opacity), active (-10% opacity), disabled (40% opacity)
+
+🔄 MICRO-INTERACCIONES Y FEEDBACK
+Loading States Inteligentes
+
+Skeleton Screens: Para tablas y listas, muestran estructura antes de datos
+Progressive Loading: Datos críticos primero, detalles después
+Smart Placeholders: Textos contextuales ("Cargando tus campañas activas...")
+Progress Indicators: Para procesos largos con pasos específicos
+
+Success States Memorables
+
+Confetti Animation: Para logros importantes (meta cumplida, contrato cerrado)
+Check Mark Bounce: Para acciones completadas exitosamente
+Color Flash: Para updates importantes (nuevo lead asignado)
+Sound Design: Sonidos sutiles para feedback táctil (cuando activado)
+
+Error Handling Humano
+
+Mensajes Conversacionales: "Ups, parece que hubo un problema con la conexión"
+Acciones Claras: "Intentar de nuevo" en lugar de "Retry"
+Contexto Específico: Explica qué estaba intentando hacer cuando falló
+Recovery Automático: Auto-retry para errores transitorios de red
+
+12. AUTOMATIZACIONES Y CONECTIVIDAD EXTERNA
+📧 INTEGRACIÓN EMAIL INTELIGENTE
+Email Parser con IA
+
+Detección Automática de Briefs:
+
+Emails con attachments de Excel/Word → Análisis automático de contenido
+Extracción de: Fechas de campaña, presupuesto, target demográfico, objetivos
+Creación automática de oportunidad en CRM con datos pre-cargados
+Asignación inteligente al ejecutivo basado en cliente/rubro/territorio
+
+
+
+Ejemplo de Procesamiento Automático:
+Email Recibido: "Necesitamos campaña para Black Friday, presupuesto $50M, 
+target mujeres 25-45 NSE ABC1, objetivo awareness + ventas online, 
+período 20 nov - 2 dic"
+
+↓ Cortex-Email procesa ↓
+
+Oportunidad Creada Automáticamente:
+- Cliente: [Detectado por sender]
+- Valor: $50.000.000 CLP
+- Fecha Inicio: 20/11/2025
+- Fecha Fin: 02/12/2025  
+- Target: Mujeres 25-45 ABC1
+- Objetivo: Awareness + E-commerce
+- Asignado a: [Ejecutivo especialista en retail]
+- Template de respuesta: [Pre-generado]
+Smart Email Responses
+
+Context Analysis: IA analiza tono, urgencia y tipo de request
+Template Suggestion: Sugiere template apropiado con personalizaciones
+Auto-fill de Datos: Rellena automáticamente información desde CRM
+Follow-up Scheduling: Sugiere timing óptimo para seguimiento
+
+📱 WHATSAPP BUSINESS AVANZADO
+Multi-Agent WhatsApp System
+
+Routing Inteligente:
+
+Consultas de disponibilidad → Programador de Tráfico
+Preguntas comerciales → Ejecutivo asignado
+Soporte técnico → Admin/IT
+Facturación → Contador
+
+
+
+Templates Dinámicos con Variables
+Template: seguimiento_propuesta
+"Hola {nombre_contacto}! 
+Soy {ejecutivo_nombre} de {nombre_empresa}. 
+¿Tuviste oportunidad de revisar la propuesta de {valor_propuesta} 
+que enviamos el {fecha_envio}? 
+Cualquier duda, estoy disponible! 🚀"
+
+Auto-send: 3 días después de envío si no hay respuesta
+WhatsApp Business API Features:
+
+Message Templates Certified: Templates pre-aprobados por WhatsApp
+Interactive Buttons: Para respuestas rápidas (Sí/No/Más info)
+Document Sharing: Envío automático de propuestas PDF
+Status Tracking: Read receipts para propuestas importantes
+Broadcast Lists: Para comunicaciones masivas segmentadas
+
+🤖 VOICE AI INTEGRATION
+WIL Voice Assistant - Capacidades Avanzadas
+Natural Language Processing
+
+Intent Recognition: Comprende más de 200 intenciones específicas del negocio
+Entity Extraction: Identifica clientes, fechas, montos, emisoras automáticamente
+Context Awareness: Recuerda conversación previa para seguimiento
+
+Ejemplos de Comandos Complejos:
+"WIL, muéstrame el ROI de Banco de Chile comparado 
+con otros bancos en los últimos 6 meses"
+
+"WIL, programa reunión con Director Marketing de Ripley 
+para mostrar casos de éxito retail, preferiblemente martes próxima semana"
+
+"WIL, si aumentamos la inversión digital de Farmacias Cruz Verde 
+en 40%, ¿cuál sería el impacto en sus KPIs históricos?"
+Voice-to-Action Capabilities:
+
+CRM Updates: Actualización de campos directamente por voz
+Calendar Management: Scheduling de reuniones con confirmación automática
+Report Generation: Creación de reportes específicos por comando de voz
+Email Composition: Dictado y envío de emails con review opcional
+
+🔗 API ECOSYSTEM
+REST APIs Completas
+
+Authentication: OAuth 2.0 + JWT con refresh token rotation
+Rate Limiting: 1000 requests/hour para usuarios normales, 10,000 para enterprise
+Webhooks: Notificaciones en tiempo real para eventos importantes
+Versioning: Semantic versioning con backward compatibility
+
+GraphQL Endpoint
+
+Single Endpoint: /api/graphql para consultas complejas
+Field-Level Permissions: Seguridad granular por campo
+Real-time Subscriptions: Para updates en tiempo real
+Query Optimization: Automatic query batching y caching
+
+Webhook Events Principales:
+json{
+  "event": "contract.confirmed",
+  "data": {
+    "contract_id": "CON-2025-0123",
+    "client_name": "Banco de Chile",
+    "value": 25000000,
+    "currency": "CLP",
+    "start_date": "2025-02-01"
+  },
+  "timestamp": "2025-01-15T10:30:00Z"
+}
+🔄 AUTOMATIZACIONES INTELIGENTES
+Cortex-Flow: Business Process Automation
+Flujos Pre-configurados:
+1. Flujo "Nuevo Cliente":
+Trigger: Nuevo anunciante creado
+↓
+Acción 1: Cortex-Risk evalúa automáticamente solvencia
+↓
+Acción 2: Asigna ejecutivo basado en rubro y territorio  
+↓
+Acción 3: Genera welcome package personalizado
+↓
+Acción 4: Programa follow-up en 48 horas
+↓
+Acción 5: Notifica a gerente comercial si cliente "AAA"
+2. Flujo "Contrato Venciendo":
+Trigger: Contrato vence en 30 días
+↓
+Acción 1: Analiza performance de campañas completadas
+↓
+Acción 2: Genera reporte de ROI automático
+↓
+Acción 3: Crea propuesta de renovación con mejoras
+↓
+Acción 4: Notifica ejecutivo con package completo
+↓
+Acción 5: Agenda reunión de renovación automática
+3. Flujo "Lead Caliente":
+Trigger: Cortex-Prospector detecta lead score >80
+↓
+Acción 1: Asigna al mejor ejecutivo disponible
+↓
+Acción 2: Genera brief automático con company intelligence
+↓
+Acción 3: Prepara propuesta inicial basada en similares
+↓
+Acción 4: Programa secuencia de outreach multi-canal
+↓
+Acción 5: Crea recordatorios de seguimiento
+Configuración de Flujos Custom:
+
+Visual Flow Builder: Interface drag-and-drop para crear flujos
+Conditional Logic: If/then/else con múltiples condiciones
+Delay Actions: Temporizadores y scheduling avanzado
+External Integrations: Conexión con sistemas externos vía API
+A/B Testing: Testing de diferentes flujos automáticamente
+
+🌐 INTEGRACIONES EXTERNAS CLAVE
+Sistemas de Playout (Broadcasting)
+
+Dalet Galaxy: Import/export directo, monitoring de logs
+WideOrbit: Sincronización bidireccional de pauta
+Sara Automation: Real-time status updates
+RCS Zetta: Playlist generation y verification
+
+Plataformas Digitales
+
+Google Ads: Campaign management, bid optimization, reporting
+Meta Business: Facebook + Instagram unified management
+TikTok Ads: Creación y optimización de campañas mobile-first
+LinkedIn Ads: B2B targeting avanzado
+DV360: Programmatic buying y advanced attribution
+
+Herramientas de Productividad
+
+Google Workspace: Calendar sync, Gmail integration, Drive storage
+Microsoft 365: Outlook sync, Teams integration, OneDrive
+Slack: Notificaciones automáticas, bot integrations
+Zoom: Scheduling automático de reuniones comerciales
+
+Servicios Financieros Chile
+
+SII: Facturación electrónica, validación RUT, DTE
+DICOM: Scoring crediticio, historial de pagos
+Bancos: Integración para confirmación de pagos, transferencias
+SBIF/CMF: Compliance y reportes regulatorios
+
+📊 MONITOREO Y ALERTAS INTELIGENTES
+Sistema de Alertas Multi-Canal
+
+In-App Notifications: Para acciones que requieren atención inmediata
+Email Alerts: Para updates importantes pero no urgentes
+WhatsApp: Para alertas críticas fuera de horario
+SMS: Solo para emergencias del sistema
+
+Alertas por Rol - Ejemplos:
+Ejecutivo de Ventas:
+
+"🔥 Banco Chile respondió tu propuesta - requiere ajuste"
+"⏰ Recordatorio: Call con Retail ABC en 30 minutos"
+"💰 ¡Felicitaciones! Superaste tu meta semanal"
+"🎯 Nuevo lead AAA asignado: Supermercado XYZ"
+
+Programador:
+
+"🚨 T13 Radio: 3 spots no emitidos - acción requerida"
+"✅ Conciliación completa - 98.5% éxito"
+"📤 Exportación fallida para Sara FM - reintentar"
+"⚠️ 15 creatividades vencen en 7 días"
+
+CEO/Admin:
+
+"📈 Revenue mensual: 99.6% de meta alcanzada"
+"🔍 Competidor redujo precios 15% - revisar estrategia"
+"💡 Oportunidad: $45M potencial en expansión digital"
+"⚠️ Cliente AAA tiene 60 días mora - escalamiento requerido"
+
+Inteligencia de Alertas:
+
+Timing Optimization: Envía alertas en horarios óptimos por persona
+Frequency Capping: Evita spam de notificaciones
+Priority Scoring: Agrupa alertas por importancia
+Action Tracking: Marca alertas como leídas/actuadas automáticamente
+
+
+CONCLUSIÓN: EL FUTURO DE LA PUBLICIDAD RADIAL Y DIGITAL
+🚀 IMPACTO TRANSFORMACIONAL ESPERADO
+Para el Mercado:
+Silexar Pulse no solo automatiza procesos existentes; redefine completamente cómo se conceptualiza, vende y ejecuta la publicidad en medios tradicionales y digitales. Transforma una industria tradicionalmente manual y fragmentada en un ecosistema integrado, inteligente y orientado a resultados.
+Para los Clientes:
+
+Reducción de Costos Operativos: 60-80% menos tiempo en procesos administrativos
+Incremento de Ingresos: 25-40% mejora en conversion rate por herramientas de IA
+Mejora en Satisfacción del Cliente: Transparencia y certificación automática
+Ventaja Competitiva: Capacidades que competidores tardarán años en replicar
+
+Para la Industria:
+Establece nuevo estándar de operación que forzará evolución completa del mercado. Organizaciones que no adopten tecnologías similares quedarán obsoletas en 2-3 años.
+🎯 DIFERENCIADORES ÚNICOS IRREPETIBLES
+
+Motor Cortex Integrado: No es un add-on, es el cerebro del sistema
+Certificación Automática: Tecnología propietaria de verificación
+Personalización Extrema: Audio sintético contextualizado en tiempo real
+Unificación Total: Radio + Digital + IA en una sola plataforma
+Automatización Inteligente: Reduce 90% de tareas manuales repetitivas
+
+🏗️ HOJA DE RUTA DE IMPLEMENTACIÓN
+Fase Alpha (Meses 1-3): Fundación
+
+Infraestructura base en GCP
+Módulos Core: Configuración, CRM, Contratos básicos
+Autenticación y seguridad TIER 0
+Primera versión de Cortex-Risk
+
+Fase Beta (Meses 4-8): Operación
+
+Módulos Operativos: Campañas, Creatividades, Exportación
+Cortex-Orchestrator y Cortex-Sense
+Integraciones básicas con sistemas de playout
+App móvil MVP para ejecutivos
+
+Fase Gamma (Meses 9-12): Inteligencia
+
+Módulos de Analytics y Reportería completos
+Suite digital completa con programmatic
+WIL Assistant con voice capabilities
+Todas las automatizaciones e integraciones
+
+Fase Production (Mes 13+): Optimización
+
+Performance optimization y scaling
+Machine learning avanzado
+Expansión internacional
+Features de siguiente generación
+
+💡 VISIÓN A FUTURO 2030
+Silexar Pulse Exchange (SPX):
+Evolución de plataforma operativa a marketplace financiero donde la atención humana se comercializa como commodity, con:
+
+Trading algorítmico de espacios publicitarios
+Contratos de Atención Verificada (CAVs) como instrumentos financieros
+Market making automático para optimización de precios
+Índices de performance de medios como benchmarks de industria
+
+Expansión Global:
+
+Presente en 12+ países de Latinoamérica
+Adaptación a regulaciones locales automática
+Red de nodos de procesamiento distribuidos
+Partnerships estratégicos con grupos de medios globales
+
+Tecnologías Emergentes:
+
+Integración con realidad aumentada para publicidad inmersiva
+Blockchain nativo para certificación inmutable
+Edge computing para latencia ultra-baja
+Quantum computing para optimización de campañas complejas

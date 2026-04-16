@@ -1,7 +1,7 @@
 /**
  * GET /api/cunas  — List cuñas/spots
- * POST /api/cunas — Create cuña
- * PUT /api/cunas  — Bulk update cuñas
+ * POST /api/cunas — Create cuña (via DDD CrearCunaHandler)
+ * PUT /api/cunas  — Bulk update cuñas (via DDD BulkUpdateCunasHandler)
  *
  * Security: withApiRoute enforces JWT auth, RBAC, rate limiting, CSRF, and audit logging.
  */
@@ -13,11 +13,17 @@ import { logger } from '@/lib/observability'
 import { getDB } from '@/lib/db'
 import { cunas, anunciantes } from '@/lib/db/schema'
 import type { TipoCuna, EstadoCuna } from '@/lib/db/cunas-schema'
-import { eq, ilike, and, inArray, gte, lte, or, sql, desc, asc } from 'drizzle-orm'
+import { eq, ilike, and, gte, lte, or, sql, desc, asc } from 'drizzle-orm'
 import { z } from 'zod'
 import { formatDuration } from '@/lib/db/cunas-schema'
+// DDD handlers
+import { CrearCunaHandler } from '@/modules/cunas/application/handlers/CrearCunaHandler'
+import { BulkUpdateCunasHandler } from '@/modules/cunas/application/handlers/BulkUpdateCunasHandler'
+import { CrearCunaCommand } from '@/modules/cunas/application/commands/CrearCunaCommand'
+import { BulkUpdateCunasCommand } from '@/modules/cunas/application/commands/BulkUpdateCunasCommand'
+import { CunaDrizzleRepository } from '@/modules/cunas/infrastructure/repositories/CunaDrizzleRepository'
 
-// ─── Zod Schemas ──────────────────────────────────────────────────────────────
+// ─── Zod Schemas (frontend → API boundary) ────────────────────────────────────
 const createCunaSchema = z.object({
   nombre: z.string().min(1, 'El nombre es requerido'),
   tipo: z.enum(['spot', 'mencion', 'auspicio', 'jingle', 'promo', 'institucional', 'promo_ida', 'presentacion', 'cierre', 'audio']).optional().default('spot'),
@@ -26,13 +32,13 @@ const createCunaSchema = z.object({
   duracionSegundos: z.number().int().positive().optional().default(30),
   urgencia: z.string().optional().default('programada'),
   fechaInicioVigencia: z.string().optional(),
-  fechaFinVigencia: z.string().optional()
+  fechaFinVigencia: z.string().optional(),
 })
 
 const bulkUpdateSchema = z.object({
   cunaIds: z.array(z.string().uuid('Ids inválidos')).min(1, 'Se requiere al menos 1 ID de cuña'),
   accion: z.enum(['aprobar', 'poner_en_aire', 'pausar', 'finalizar', 'eliminar', 'cambiar_urgencia']),
-  urgencia: z.string().optional()
+  urgencia: z.string().optional(),
 })
 
 // ─── GET /api/cunas ──────────────────────────────────────────────────────────
@@ -198,31 +204,30 @@ export const POST = withApiRoute(
 
       const body = parseResult.data
 
-      // Normalización de tipos legacy del frontend al Enum de la DB
-      let tipoFinal = body.tipo
-      if (['promo_ida', 'presentacion', 'cierre'].includes(tipoFinal)) tipoFinal = 'promo'
-      if (tipoFinal === 'audio') tipoFinal = 'spot'
-
-      const fechaVigIni = body.fechaInicioVigencia ? new Date(body.fechaInicioVigencia) : new Date()
-      const fechaVigFin = body.fechaFinVigencia ? new Date(body.fechaFinVigencia) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-
-      // Insert en Drizzle
-      const result = await getDB().insert(cunas).values({
+      // Delegar al handler DDD — genera código SPX atómicamente
+      const repository = new CunaDrizzleRepository()
+      const handler = new CrearCunaHandler(repository)
+      const command = new CrearCunaCommand({
         tenantId,
-        codigo: `SPX-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         nombre: body.nombre,
+        tipo: body.tipo,
         anuncianteId: body.anuncianteId,
-        tipoCuna: tipoFinal as TipoCuna,
-        productoNombre: body.producto,
+        productoNombre: body.producto ?? null,
+        pathAudio: 'placeholder', // Se sube después via /api/cunas/[id]/audio
         duracionSegundos: body.duracionSegundos,
-        estado: 'borrador',
-        pathAudio: 'placeholder', // Se sube después
-        fechaInicioVigencia: fechaVigIni,
-        fechaFinVigencia: fechaVigFin,
-        subidoPorId: userId
-      }).returning()
+        formatoAudio: 'mp3',
+        urgencia: body.urgencia ?? null,
+        fechaInicioVigencia: body.fechaInicioVigencia ? new Date(body.fechaInicioVigencia) : null,
+        fechaFinVigencia: body.fechaFinVigencia ? new Date(body.fechaFinVigencia) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        subidoPorId: userId,
+      })
 
-      return apiSuccess(result[0], 201, { message: 'Cuña creada exitosamente' }) as unknown as NextResponse
+      const result = await handler.execute(command)
+      if (!result.success) {
+        return apiError('CUNA_CREATE_FAILED', result.error, 422) as unknown as NextResponse
+      }
+
+      return apiSuccess(result.data.toJSON(), 201, { message: 'Cuña creada exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in cunas POST', error instanceof Error ? error : undefined, { module: 'cunas', action: 'POST' })
       return apiServerError() as unknown as NextResponse
@@ -257,49 +262,29 @@ export const PUT = withApiRoute(
       }
 
       const body = parseResult.data
-      let actualizadas = 0
 
-      if (body.accion === 'eliminar') {
-        const res = await getDB().update(cunas)
-          .set({ eliminado: true, fechaEliminacion: new Date(), eliminadoPorId: userId })
-          .where(and(inArray(cunas.id, body.cunaIds), eq(cunas.tenantId, tenantId)))
-          .returning()
-        actualizadas = res.length
+      // Delegar al handler DDD — valida transiciones y ejecuta best-effort
+      const repository = new CunaDrizzleRepository()
+      const handler = new BulkUpdateCunasHandler(repository)
+      const command = new BulkUpdateCunasCommand({
+        cunaIds: body.cunaIds,
+        tenantId,
+        userId,
+        accion: body.accion,
+        urgencia: body.urgencia,
+      })
 
-        return apiSuccess({ actualizadas }, 200, { message: `${actualizadas} cuñas eliminadas` }) as unknown as NextResponse
+      const result = await handler.execute(command)
+      if (!result.success) {
+        return apiError('BULK_UPDATE_FAILED', result.error, 500) as unknown as NextResponse
       }
 
-      // Typed update payload — only fields present in the cunas schema
-      const updateData: {
-        modificadoPorId: string
-        fechaModificacion: Date
-        estado?: EstadoCuna
-        aprobadoPorId?: string
-        fechaAprobacion?: Date
-      } = { modificadoPorId: userId, fechaModificacion: new Date() }
-
-      switch (body.accion) {
-        case 'aprobar':
-          updateData.estado = 'aprobada'
-          updateData.aprobadoPorId = userId
-          updateData.fechaAprobacion = new Date()
-          break
-        case 'poner_en_aire':  updateData.estado = 'en_aire';    break
-        case 'pausar':         updateData.estado = 'pausada';    break
-        case 'finalizar':      updateData.estado = 'finalizada'; break
-        case 'cambiar_urgencia':
-          // urgencia is a UI concept mapped to estado; no dedicated DB column
-          break
-      }
-
-      const res = await getDB().update(cunas)
-        .set(updateData)
-        .where(and(inArray(cunas.id, body.cunaIds), eq(cunas.tenantId, tenantId)))
-        .returning()
-
-      actualizadas = res.length
-
-      return NextResponse.json({ success: true, message: `${actualizadas} cuñas actualizadas`, actualizadas })
+      const { exitosos, fallidos, errores } = result.data
+      return apiSuccess(
+        { exitosos, fallidos, errores },
+        200,
+        { message: `${exitosos} cuñas actualizadas${fallidos > 0 ? `, ${fallidos} con errores` : ''}` }
+      ) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in cunas PUT', error instanceof Error ? error : undefined, { module: 'cunas', action: 'PUT' })
       return apiServerError() as unknown as NextResponse

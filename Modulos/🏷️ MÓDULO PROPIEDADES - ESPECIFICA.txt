@@ -1,0 +1,985 @@
+🏷️ MÓDULO PROPIEDADES - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO PROPIEDADES?
+El Módulo Propiedades es el sistema maestro de clasificación y categorización de Silexar Pulse. Funciona como el ADN organizacional que define, estructura y gestiona todas las taxonomías comerciales, operativas y contables del sistema, con inteligencia artificial que sugiere nuevas clasificaciones, detecta inconsistencias y optimiza la estructura organizacional automáticamente.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Administrador del Sistema, este módulo es mi centro de control organizacional:
+
+Defino la estructura completa de clasificaciones del negocio
+El sistema valida automáticamente coherencia entre propiedades
+Configuro reglas de negocio y validaciones avanzadas
+Monitorio utilización y sugiere optimizaciones
+Mantengo orden y consistencia en toda la plataforma
+
+Como Gerente Comercial, uso las propiedades para:
+
+Categorizar campañas y contratos de forma consistente
+Generar reportes segmentados por cualquier propiedad
+Analizar performance por tipo de negocio automáticamente
+Establecer reglas comerciales específicas por categoría
+Obtener insights de rentabilidad por clasificación
+
+Como Ejecutivo de Ventas, las propiedades me facilitan:
+
+Clasificar correctamente cada oportunidad comercial
+El sistema sugiere automáticamente la categoría correcta
+Generar propuestas coherentes con el tipo de negocio
+Acceder a templates específicos por tipo de campaña
+Reportar correctamente para análisis gerencial
+
+Como Controller/CFO, gestiono el impacto contable:
+
+Cada propiedad tiene su configuración contable automática
+Cuentas de ingresos y costos se asignan automáticamente
+Reportes financieros segmentados por clasificación
+Validación de coherencia contable en tiempo real
+Cumplimiento de normativas contables automático
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Clasificación automática y validación de coherencia
+Módulo Campañas: Categorización inteligente y aplicación de reglas específicas
+Módulo Anunciantes: Segmentación por industria y tipo de cliente
+Módulo Facturación: Aplicación automática de cuentas contables correctas
+Módulo Reportes: Segmentación y filtrado por cualquier propiedad
+Cortex-Classifier: IA que sugiere clasificaciones automáticas
+Cortex-Validator: Validación de coherencia y detección de anomalías
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/propiedades/
+├── domain/
+│   ├── entities/
+│   │   ├── TipoPropiedad.ts (Categorías principales como "Tipo Pedido")
+│   │   ├── ValorPropiedad.ts (Valores específicos como "01 PUBLICIDAD")
+│   │   ├── ConfiguracionContable.ts (Cuentas y aspectos financieros)
+│   │   ├── ReglaNegocio.ts (Validaciones y restricciones)
+│   │   ├── JerarquiaPropiedad.ts (Estructura padre-hijo)
+│   │   ├── AsignacionAutomatica.ts (Reglas de clasificación IA)
+│   │   ├── ValidacionCoherencia.ts (Detección de inconsistencias)
+│   │   ├── HistorialCambios.ts (Auditoría de modificaciones)
+│   │   ├── UsoPropiedad.ts (Tracking de utilización)
+│   │   ├── TemplateCategoria.ts (Plantillas por tipo)
+│   │   └── IntegracionSistemas.ts (Sincronización externa)
+│   ├── value-objects/
+│   │   ├── CodigoPropiedad.ts (Códigos únicos PROP-YYYY-XXXXX)
+│   │   ├── TipoClasificacion.ts (Campaña, Contrato, Cliente, etc.)
+│   │   ├── NivelJerarquia.ts (Nivel en estructura padre-hijo)
+│   │   ├── EstadoPropiedad.ts (Activo, Inactivo, Deprecado)
+│   │   ├── ConfiguracionValidacion.ts (Mandatory, Unique, Conflict)
+│   │   ├── CuentaContable.ts (Números de cuenta validados)
+│   │   ├── PrioridadOrden.ts (Orden de visualización)
+│   │   ├── TipoValidacion.ts (Lista, Único, Múltiple)
+│   │   ├── ScoreUtilizacion.ts (Frecuencia de uso)
+│   │   └── FactorRelevancia.ts (Importancia para reportes)
+│   └── repositories/
+│       ├── ITipoPropiedadRepository.ts
+│       ├── IValorPropiedadRepository.ts
+│       ├── IConfiguracionContableRepository.ts
+│       ├── IReglaNegocioRepository.ts
+│       └── IValidacionCoherenciaRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearTipoPropiedadCommand.ts
+│   │   ├── ActualizarTipoPropiedadCommand.ts
+│   │   ├── CrearValorPropiedadCommand.ts
+│   │   ├── ConfigurarValidacionesCommand.ts
+│   │   ├── AsignarCuentaContableCommand.ts
+│   │   ├── EstablecerJerarquiaCommand.ts
+│   │   ├── ActivarDesactivarPropiedadCommand.ts
+│   │   ├── DuplicarEstructuraPropiedadCommand.ts
+│   │   ├── ImportarPropiedadesMasivaCommand.ts
+│   │   ├── OptimizarEstructuraCommand.ts
+│   │   ├── ValidarCoherenciaCommand.ts
+│   │   └── SincronizarSistemasCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerTiposPropiedadQuery.ts
+│   │   ├── BuscarValoresPropiedadQuery.ts
+│   │   ├── ObtenerJerarquiaPropiedadQuery.ts
+│   │   ├── ValidarAsignacionQuery.ts
+│   │   ├── ObtenerConfiguracionContableQuery.ts
+│   │   ├── GenerarReporteUtilizacionQuery.ts
+│   │   ├── ObtenerSugerenciasIAQuery.ts
+│   │   ├── ValidarCoherenciaGlobalQuery.ts
+│   │   ├── ObtenerTemplatesPorTipoQuery.ts
+│   │   └── Analizar RendimientoClasificacionQuery.ts
+│   └── handlers/
+│       ├── PropiedadCommandHandler.ts
+│       ├── ValidacionCoherenciaHandler.ts
+│       ├── ConfiguracionContableHandler.ts
+│       ├── JerarquiaHandler.ts
+│       ├── ClasificacionIAHandler.ts
+│       ├── UtilizacionTrackingHandler.ts
+│       ├── IntegracionSistemasHandler.ts
+│       └── OptimizacionEstructuraHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaTipoPropiedadRepository.ts
+│   │   ├── PrismaValorPropiedadRepository.ts
+│   │   ├── PrismaConfiguracionRepository.ts
+│   │   └── PrismaValidacionRepository.ts
+│   ├── external/
+│   │   ├── ContabilidadIntegrationService.ts (Sistemas contables)
+│   │   ├── CortexClassifierAdvancedService.ts (IA clasificación)
+│   │   ├── CortexValidatorService.ts (IA validación)
+│   │   ├── CortexOptimizerService.ts (IA optimización)
+│   │   ├── TaxonomyStandardsService.ts (Estándares industria)
+│   │   ├── ChartOfAccountsService.ts (Plan de cuentas)
+│   │   ├── ComplianceValidationService.ts (Normativas)
+│   │   ├── DataMigrationService.ts (Migración datos)
+│   │   ├── BusinessRulesEngineService.ts (Motor reglas)
+│   │   ├── AuditTrailService.ts (Auditoría cambios)
+│   │   ├── BackupRecoveryService.ts (Respaldo estructura)
+│   │   ├── PerformanceOptimizationService.ts (Optimización)
+│   │   ├── ValidationEngineService.ts (Motor validaciones)
+│   │   └── ReportingIntegrationService.ts (Integración reportes)
+│   └── messaging/
+│       ├── PropiedadEventPublisher.ts
+│       ├── ValidacionAlertPublisher.ts
+│       ├── CambioEstructuraPublisher.ts
+│       └── OptimizacionSugerenciaPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── TipoPropiedadController.ts
+    │   ├── ValorPropiedadController.ts
+    │   ├── ConfiguracionController.ts
+    │   ├── ValidacionController.ts
+    │   ├── JerarquiaController.ts
+    │   ├── AnalyticsController.ts
+    │   ├── ImportExportController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearTipoPropiedadDto.ts
+    │   ├── ActualizarTipoPropiedadDto.ts
+    │   ├── CrearValorPropiedadDto.ts
+    │   ├── ConfiguracionValidacionDto.ts
+    │   └── AsignacionContableDto.ts
+    └── middleware/
+        ├── PropiedadAccessMiddleware.ts
+        ├── StructureValidationMiddleware.ts
+        ├── AccountingComplianceMiddleware.ts
+        └── ChangeAuditMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE GESTIÓN DE PROPIEDADES
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando organizacional:
+
+Título: "🏷️ Centro de Gestión de Propiedades"
+Breadcrumb: "Dashboard > Configuración > Propiedades"
+
+Panel de métricas de estructura:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧠 ESTRUCTURA ORGANIZACIONAL TIEMPO REAL                        │
+│                                                                 │
+│ 45 Tipos Propiedad    287 Valores Definidos    12 Jerarquías  │
+│ 98% Utilización       23 Reglas Activas        156 Validaciones│
+│ 🎯 Coherencia: 99.2% • Última optimización: Hace 2 días       │
+│ 🤖 IA Detectó: 3 inconsistencias menores, 8 optimizaciones    │
+└─────────────────────────────────────────────────────────────────┘
+VISTA DE ÁRBOL JERÁRQUICO PRINCIPAL:
+Panel izquierdo - Estructura de propiedades:
+┌─────────────────────────────────────────┐
+│ 🌳 ESTRUCTURA DE PROPIEDADES            │
+├─────────────────────────────────────────┤
+│ 📋 Tipos de Clasificación              │
+│                                         │
+│ ▼ 🎯 Tipo Pedido Campaña               │
+│   ├── 01 PUBLICIDAD                    │
+│   ├── 02 CANJE                         │
+│   ├── 03 DIGITAL                       │
+│   ├── 04 NUEVOS NEGOCIOS               │
+│   ├── 05 PROYECTOS ESPECIAL            │
+│   ├── 06 OTROS INGRESOS                │
+│   ├── 07 VENTA ACTIVO FIJO             │
+│   ├── 08 PRODUCCION                    │
+│   ├── 09 FACT. SERVICIOS ADM.          │
+│   ├── 10 SERVICIOS MERCHANDISING       │
+│   ├── 11 CONVENIOS TELEFONICOS         │
+│   ├── 12 SERVICIOS SPONSORING          │
+│   ├── 13 BENEFICENCIA                  │
+│   ├── 14 ASISTENCIA TECNICA            │
+│   ├── 15 PODCASTING                    │
+│   ├── 16 PROYECTO ESPECIAL Y PODCAST   │
+│   ├── 17 POLITICA                      │
+│   ├── 18 SMART AUDIO                   │
+│   ├── 19 FOD                           │
+│   └── 20 CATEGORIA                     │
+│                                         │
+│ ▼ 📄 Tipo Pedido Contrato              │
+│   ├── Contrato Estándar                │
+│   ├── Contrato Marco                   │
+│   ├── Orden de Trabajo                 │
+│   └── Addendum                         │
+│                                         │
+│ ▼ 💼 Tipo Cliente                      │
+│   ├── Directo                          │
+│   ├── Agencia                          │
+│   ├── Gobierno                         │
+│   └── Internacional                    │
+│                                         │
+│ ▼ 🏢 Industria                         │
+│   ├── Financiero                       │
+│   ├── Retail                           │
+│   ├── Tecnología                       │
+│   ├── Automotriz                       │
+│   ├── Farmacéutico                     │
+│   └── Telecomunicaciones               │
+│                                         │
+│ [➕ Nuevo Tipo] [📁 Importar] [⚙️ Config]│
+└─────────────────────────────────────────┘
+Panel central - Configuración detallada:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚙️ CONFIGURACIÓN: TIPO PEDIDO CAMPAÑA                          │
+├─────────────────────────────────────────────────────────────────┤
+│ 📋 Información General:                                        │
+│ • Código: PROP-2025-001                                       │
+│ • Nombre: Tipo Pedido Campaña                                 │
+│ • Descripción: Clasificación de tipos de campaña publicitaria │
+│ • Estado: 🟢 Activo • Obligatorio: ✅ Sí                     │
+│                                                                 │
+│ 🎯 Configuración de Aplicación:                               │
+│ • Aplica a Campaña: ✅ • Aplica a Contrato: ✅               │
+│ • Aplica a Cliente: ❌ • Aplica a Factura: ✅                │
+│ • Visible en Reportes: ✅ • Filtro disponible: ✅            │
+│                                                                 │
+│ 🔧 Validaciones Activas:                                      │
+│ • Valor único por registro: ✅                                │
+│ • Validación coherencia: ✅                                   │
+│ • Conflicto con otros tipos: ❌                               │
+│ • Validación contable: ✅                                     │
+│                                                                 │
+│ 💰 Configuración Contable:                                    │
+│ • Cuenta ingresos por defecto: 4110001                        │
+│ • Cuenta costos por defecto: 5110001                          │
+│ • Centro de costo: Variable por valor                         │
+│ • Requiere aprobación CFO: Para montos >$100M                 │
+│                                                                 │
+│ 📊 Estadísticas de Uso:                                       │
+│ • Utilización: 98% (muy alto)                                │
+│ • Valor más usado: 01 PUBLICIDAD (45%)                        │
+│ • Tendencia: ↗️ +12% último trimestre                         │
+│ • Satisfacción usuario: 9.2/10                               │
+│                                                                 │
+│ [✏️ Editar] [👁️ Historial] [📊 Analytics] [🔄 Optimizar]      │
+└─────────────────────────────────────────────────────────────────┘
+TABLA DE VALORES DE PROPIEDAD:
+Vista detallada de valores específicos:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 VALORES: TIPO PEDIDO CAMPAÑA                                │
+├──┬──────────────────────┬─────────┬──────────┬──────────┬───────┤
+│ID│ Descripción          │Contrato │Mandatory │Conflict  │Active │
+├──┼──────────────────────┼─────────┼──────────┼──────────┼───────┤
+│01│ PUBLICIDAD           │ ✅      │ ✅       │ ❌       │ 🟢    │
+│02│ CANJE               │ ✅      │ ❌       │ ❌       │ 🟢    │
+│03│ DIGITAL             │ ✅      │ ✅       │ ❌       │ 🟢    │
+│04│ NUEVOS NEGOCIOS     │ ✅      │ ❌       │ ❌       │ 🟢    │
+│05│ PROYECTOS ESPECIAL  │ ✅      │ ❌       │ ❌       │ 🟢    │
+│06│ OTROS INGRESOS      │ ✅      │ ❌       │ ❌       │ 🟢    │
+│07│ VENTA ACTIVO FIJO   │ ✅      │ ❌       │ ✅       │ 🟢    │
+│08│ PRODUCCION          │ ✅      │ ❌       │ ❌       │ 🟢    │
+│09│ FACT. SERVICIOS ADM │ ✅      │ ✅       │ ❌       │ 🟢    │
+│10│ SERVICIOS MERCH     │ ✅      │ ❌       │ ❌       │ 🟢    │
+│11│ CONVENIOS TELEFONO  │ ✅      │ ❌       │ ❌       │ 🟢    │
+│12│ SERVICIOS SPONSOR   │ ✅      │ ❌       │ ❌       │ 🟢    │
+│13│ BENEFICENCIA        │ ✅      │ ❌       │ ✅       │ 🟢    │
+│14│ ASISTENCIA TECNICA  │ ✅      │ ❌       │ ❌       │ 🟢    │
+│15│ PODCASTING          │ ✅      │ ❌       │ ❌       │ 🟢    │
+│16│ PROYECTO ESP PODCAST│ ✅      │ ❌       │ ❌       │ 🟢    │
+│17│ POLITICA            │ ✅      │ ✅       │ ✅       │ 🟢    │
+│18│ SMART AUDIO         │ ✅      │ ❌       │ ❌       │ 🟢    │
+│19│ FOD                 │ ✅      │ ❌       │ ❌       │ 🟢    │
+│20│ CATEGORIA           │ ✅      │ ❌       │ ❌       │ 🟢    │
+├──┴──────────────────────┴─────────┴──────────┴──────────┴───────┤
+│ [➕ Agregar Valor] [📊 Utilización] [⚙️ Config Masiva] [📤 Export]│
+└─────────────────────────────────────────────────────────────────┘
+Columnas adicionales (scroll horizontal):
+┌────────────┬────────────────┬─────────────┬──────────────┬────────┐
+│Cta Ingresos│ Cta Costos     │ServiceName  │Código Ingresos│Uso(%) │
+├────────────┼────────────────┼─────────────┼──────────────┼────────┤
+│ 4110001    │ 5110001        │PUBLICIDAD   │ING001        │ 45.2%  │
+│ 4110002    │ 5110002        │CANJE        │ING002        │ 12.8%  │
+│ 4110003    │ 5110003        │DIGITAL      │ING003        │ 23.5%  │
+│ 4110004    │ 5110004        │NEGOCIOS     │ING004        │ 8.1%   │
+│ 4110005    │ 5110005        │ESPECIAL     │ING005        │ 5.4%   │
+│ 4110006    │ 5110006        │OTROS        │ING006        │ 2.3%   │
+│ 4110007    │ 5110007        │ACTIVO       │ING007        │ 0.8%   │
+│ 4110008    │ 5110008        │PRODUCCION   │ING008        │ 1.2%   │
+│ 4110009    │ 5110009        │SERVICIOS    │ING009        │ 0.7%   │
+└────────────┴────────────────┴─────────────┴──────────────┴────────┘
+➕ CREACIÓN DE NUEVO TIPO DE PROPIEDAD - WIZARD IA
+PASO 1: "DEFINICIÓN FUNDAMENTAL"
+Inicio inteligente del wizard:
+┌─────────────────────────────────────────┐
+│ 🎯 CREAR NUEVO TIPO DE PROPIEDAD        │
+│                                         │
+│ 🤖 ¿Qué tipo de clasificación necesitas?│
+│                                         │
+│ [📋] Clasificación de Contenido         │
+│      Para categorizar tipos de material │
+│      Ejemplo: Spot, Jingle, Mención     │
+│                                         │
+│ [🎯] Segmentación Comercial             │
+│      Para agrupar oportunidades         │
+│      Ejemplo: Por región, por ejecutivo │
+│                                         │
+│ [💼] Categoría Operativa                │
+│      Para procesos internos             │
+│      Ejemplo: Estados, prioridades      │
+│                                         │
+│ [💰] Clasificación Contable             │
+│      Para efectos financieros           │
+│      Ejemplo: Centros costo, cuentas    │
+│                                         │
+│ [🎨] Atributo Personalizado             │
+│      Para necesidad específica          │
+│      Ejemplo: Tags, etiquetas libres    │
+│                                         │
+│ [✏️] Manual/Personalizado               │
+│      Definición completamente libre     │
+└─────────────────────────────────────────┘
+Formulario de información básica:
+┌─────────────────────────────────────────┐
+│ 📝 INFORMACIÓN FUNDAMENTAL              │
+│                                         │
+│ Nombre Tipo: [                        ]│
+│ 🤖 Sugerencias IA:                     │
+│ • "Tipo de Creatividad"                │
+│ • "Canal de Distribución"              │
+│ • "Formato Publicitario"               │
+│                                         │
+│ Descripción: [                        ]│
+│ [                                      ]│
+│ [                                      ]│
+│                                         │
+│ Código Auto: PROP-2025-046             │
+│ ✅ Generado automáticamente             │
+│                                         │
+│ 🎯 Aplicación (selección múltiple):    │
+│ [✅] Campañas                          │
+│ [✅] Contratos                         │
+│ [❌] Clientes                          │
+│ [✅] Facturas                          │
+│ [✅] Reportes                          │
+│                                         │
+│ Estado inicial: [Activo ▼]             │
+│                                         │
+│ [📋 Siguiente: Configuración] [❌ Cancelar]│
+└─────────────────────────────────────────┘
+PASO 2: "CONFIGURACIÓN DE VALIDACIONES"
+Sistema de validaciones inteligente:
+┌─────────────────────────────────────────┐
+│ 🛡️ CONFIGURACIÓN DE VALIDACIONES       │
+│                                         │
+│ 🎯 Tipo de Selección:                  │
+│ ⚪ Lista única (seleccionar 1 valor)   │
+│ ⚫ Lista múltiple (seleccionar varios) │
+│ ⚪ Valor libre (texto sin restricción) │
+│                                         │
+│ ✅ Validaciones Básicas:               │
+│ [✅] Campo obligatorio                 │
+│ [❌] Valor único por registro          │
+│ [✅] Validar coherencia automática     │
+│ [❌] Requiere aprobación supervisión   │
+│                                         │
+│ 🚫 Gestión de Conflictos:              │
+│ [❌] Detectar valores conflictivos     │
+│ [❌] Validar exclusividad mutua        │
+│ [✅] Permitir combinaciones libre      │
+│                                         │
+│ 📊 Configuración en Reportes:          │
+│ [✅] Disponible como filtro            │
+│ [✅] Agrupación automática             │
+│ [✅] Incluir en exports Excel          │
+│ [❌] Campo de ordenamiento por defecto │
+│                                         │
+│ 🤖 IA Asistencia:                      │
+│ ✅ Sugerencias automáticas valores     │
+│ ✅ Detección inconsistencias           │
+│ ✅ Optimización estructura             │
+│                                         │
+│ [💰 Siguiente: Contabilidad] [⬅️ Anterior]│
+└─────────────────────────────────────────┘
+PASO 3: "CONFIGURACIÓN CONTABLE AVANZADA"
+Integración contable automática:
+┌─────────────────────────────────────────┐
+│ 💰 CONFIGURACIÓN CONTABLE INTELIGENTE   │
+│                                         │
+│ 🎯 Impacto Contable:                   │
+│ ⚫ Cada valor tiene cuenta específica   │
+│ ⚪ Todos comparten cuenta común         │
+│ ⚪ Sin impacto contable directo         │
+│                                         │
+│ 📊 Configuración por Defecto:          │
+│ Cuenta Ingresos: [4110000    ▼]        │
+│ Cuenta Costos:   [5110000    ▼]        │
+│ Centro Costo:    [Variable   ▼]        │
+│                                         │
+│ 🔧 Validaciones Financieras:           │
+│ [✅] Validar existencia de cuentas     │
+│ [✅] Verificar plan de cuentas activo  │
+│ [❌] Requiere aprobación CFO           │
+│ [✅] Auditoría automática cambios      │
+│                                         │
+│ 📈 Configuración de Reportes:          │
+│ [✅] Incluir en Estado de Resultados   │
+│ [✅] Segmentación por centro costo     │
+│ [❌] Análisis de rentabilidad por valor│
+│                                         │
+│ 🤖 Sugerencias IA Contables:           │
+│ • Cuenta 4110046 disponible            │
+│ • Patrón similar: "Tipo Pedido"        │
+│ • Validación: Cumple normativa local   │
+│                                         │
+│ [🏷️ Siguiente: Valores] [⬅️ Anterior]   │
+└─────────────────────────────────────────┘
+PASO 4: "DEFINICIÓN DE VALORES INICIALES"
+Creador de valores con IA:
+┌─────────────────────────────────────────┐
+│ 🏷️ VALORES INICIALES DE LA PROPIEDAD   │
+│                                         │
+│ 🤖 IA sugiere valores basados en:       │
+│ "Tipo de Creatividad"                   │
+│                                         │
+│ ✨ Valores Sugeridos Automáticamente:   │
+│ ┌─────────────────────────────────────┐ │
+│ │ [✅] 01 SPOT RADIO                  │ │
+│ │ [✅] 02 JINGLE CORPORATIVO          │ │
+│ │ [✅] 03 MENCION EN VIVO             │ │
+│ │ [✅] 04 CUÑA PROMOCIONAL            │ │
+│ │ [✅] 05 IDENTIFICACION PROGRAMA     │ │
+│ │ [❌] 06 PODCAST BRANDED             │ │
+│ │ [❌] 07 AUDIO STREAMING             │ │
+│ │ [❌] 08 MICROESPACIO TEMPORAL       │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ➕ Agregar Valor Manual:               │
+│ Código: [09] Descripción: [           ]│
+│                                         │
+│ 🔧 Configuración Rápida:               │
+│ • Todos activos por defecto: ✅         │
+│ • Numeración automática: ✅             │
+│ • Configuración contable heredada: ✅   │
+│                                         │
+│ 📊 Preview Estructura:                 │
+│ ┌─────────────────────────────────────┐ │
+│ │ Tipo de Creatividad                 │ │
+│ │ ├── 01 SPOT RADIO                   │ │
+│ │ ├── 02 JINGLE CORPORATIVO           │ │
+│ │ ├── 03 MENCION EN VIVO              │ │
+│ │ ├── 04 CUÑA PROMOCIONAL             │ │
+│ │ └── 05 IDENTIFICACION PROGRAMA      │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ [🚀 Crear Propiedad] [⬅️ Anterior]      │
+└─────────────────────────────────────────┘
+📊 GESTIÓN AVANZADA DE VALORES - EDITOR MASIVO
+EDITOR DE TABLA INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ ✏️ EDITOR MASIVO DE VALORES - TIPO CREATIVIDAD                 │
+├─────────────────────────────────────────────────────────────────┤
+│ 🛠️ Herramientas: [➕ Agregar] [📋 Duplicar] [📤 Export] [📥 Import]│
+├──┬────────────────────┬─────────┬────────────┬──────────┬───────┤
+│ID│ Descripción        │Obligat. │Cta Ingresos│Active    │Acciones│
+├──┼────────────────────┼─────────┼────────────┼──────────┼───────┤
+│01│[SPOT RADIO        ]│[✅]     │[4110001▼] │[🟢]     │[✏️][❌]│
+│02│[JINGLE CORPORATIVO]│[❌]     │[4110002▼] │[🟢]     │[✏️][❌]│
+│03│[MENCION EN VIVO   ]│[✅]     │[4110003▼] │[🟢]     │[✏️][❌]│
+│04│[CUÑA PROMOCIONAL  ]│[❌]     │[4110004▼] │[🟢]     │[✏️][❌]│
+│05│[IDENTIFICACION    ]│[❌]     │[4110005▼] │[🟢]     │[✏️][❌]│
+│06│[PODCAST BRANDED   ]│[❌]     │[4110006▼] │[🟡]     │[✏️][❌]│
+│07│[AUDIO STREAMING   ]│[❌]     │[4110007▼] │[🟡]     │[✏️][❌]│
+│08│[MICROESPACIO      ]│[❌]     │[4110008▼] │[🔴]     │[✏️][❌]│
+├──┼────────────────────┼─────────┼────────────┼──────────┼───────┤
+│++│[Nueva entrada...  ]│[❌]     │[Auto   ▼] │[🟢]     │[✅][❌]│
+├──┴────────────────────┴─────────┴────────────┴──────────┴───────┤
+│ 📊 Estadísticas: 8 valores • 6 activos • 2 en prueba • 0 inactivos│
+│ 🤖 IA Sugiere: "AUDIO INTERACTIVO" basado en tendencias        │
+│                                                                 │
+│ [💾 Guardar Cambios] [🔄 Recargar] [⚙️ Configuración Avanzada] │
+└─────────────────────────────────────────────────────────────────┘
+CONFIGURACIÓN AVANZADA POR VALOR:
+Modal de configuración detallada:
+┌─────────────────────────────────────────┐
+│ ⚙️ CONFIGURACIÓN: SPOT RADIO            │
+├─────────────────────────────────────────┤
+│ 📋 Información Básica:                 │
+│ Código: 01                              │
+│ Descripción: [SPOT RADIO              ]│
+│ Descripción larga: [                  ]│
+│ [Spots tradicionales de radio para    ]│
+│ [publicidad comercial estándar        ]│
+│                                         │
+│ 🎯 Configuración Operativa:            │
+│ [✅] Obligatorio en campañas radio     │
+│ [❌] Requiere material específico      │
+│ [✅] Permite programación automática   │
+│ [❌] Requiere aprobación especial      │
+│                                         │
+│ 💰 Configuración Contable:             │
+│ Cuenta Ingresos: [4110001] ✅ Validada │
+│ Cuenta Costos:   [5110001] ✅ Validada │
+│ Centro Costo:    [Variable por emisora]│
+│ Service Name:    [SPOT_RADIO          ]│
+│                                         │
+│ 🔧 Validaciones Específicas:           │
+│ [❌] Conflicto con otros valores       │
+│ [✅] Validar duración material         │
+│ [❌] Exclusivo por campaña             │
+│ [✅] Permitir múltiples por contrato   │
+│                                         │
+│ 📊 Análisis de Uso:                    │
+│ • Utilización: 78% de campañas radio   │
+│ • Revenue asociado: $2.8M YTD          │
+│ • Satisfacción: 9.1/10                │
+│ • Tendencia: ↗️ +12% trimestre         │
+│                                         │
+│ [💾 Guardar] [🗑️ Eliminar] [❌ Cerrar]   │
+└─────────────────────────────────────────┘
+🔍 SISTEMA DE VALIDACIONES Y COHERENCIA
+CENTRO DE VALIDACIONES AUTOMÁTICAS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🛡️ CENTRO DE VALIDACIONES Y COHERENCIA                         │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 ESTADO ACTUAL DEL SISTEMA:                                  │
+│                                                                 │
+│ ✅ Coherencia Global: 99.2% (Excelente)                       │
+│ ⚠️ Inconsistencias Detectadas: 3 menores                      │
+│ 🔄 Última Validación: Hace 15 minutos                         │
+│ 🤖 Optimizaciones Sugeridas: 8 disponibles                    │
+│                                                                 │
+│ 🚨 ALERTAS ACTIVAS:                                            │
+│                                                                 │
+│ ⚠️ CONFLICTO DETECTADO:                                        │
+│ • Tipo: "Tipo Pedido Campaña"                                 │
+│ • Problema: Valor "17 POLITICA" marcado como conflictivo      │
+│ • Impacto: 3 contratos afectados                              │
+│ • Sugerencia: Revisar reglas de validación                    │
+│ • [🔧 Resolver] [👁️ Detalles] [📋 Ignorar]                   │
+│                                                                 │
+│ ⚠️ CUENTA CONTABLE INVÁLIDA:                                   │
+│ • Tipo: "Centro de Costo"                                     │
+│ • Problema: Cuenta 6110045 no existe en plan actual           │
+│ • Afectados: 12 valores de propiedad                          │
+│ • Sugerencia: Actualizar a cuenta 6110046                     │
+│ • [🔧 Corregir Automático] [✏️ Manual] [📋 Revisar]           │
+│                                                                 │
+│ ⚠️ DUPLICACIÓN SEMÁNTICA:                                      │
+│ • Problema: "DIGITAL" y "AUDIO DIGITAL" muy similares         │
+│ • Confusión: 5 usuarios reportaron ambigüedad                 │
+│ • Sugerencia: Consolidar o renombrar para claridad            │
+│ • [🔀 Consolidar] [✏️ Renombrar] [📋 Mantener]                │
+│                                                                 │
+│ 💡 OPTIMIZACIONES SUGERIDAS IA:                               │
+│                                                                 │
+│ 🎯 NUEVA PROPIEDAD RECOMENDADA:                               │
+│ • Nombre: "Formato Duración"                                  │
+│ • Justificación: 45% campañas usan duraciones específicas     │
+│ • Beneficio: Mejor segmentación y análisis                    │
+│ • [➕ Crear] [📊 Analizar] [❌ Ignorar]                        │
+│                                                                 │
+│ 📊 REESTRUCTURACIÓN JERARQUÍA:                                │
+│ • Sugerencia: Agrupar valores tipo "PODCAST" bajo categoría   │
+│ • Beneficio: Simplifica navegación 23%                        │
+│ • Impacto: Sin riesgo, solo reorganización visual             │
+│ • [🔄 Aplicar] [👁️ Preview] [❌ Declinar]                     │
+│                                                                 │
+│ [🔄 Ejecutar Validación Completa] [📊 Reporte Detallado]       │
+└─────────────────────────────────────────────────────────────────┘
+📊 ANALYTICS Y UTILIZACIÓN
+DASHBOARD DE UTILIZACIÓN INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 ANALYTICS DE UTILIZACIÓN - PROPIEDADES                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 TOP PROPIEDADES POR UTILIZACIÓN:                           │
+│                                                                 │
+│ 1. 🥇 Tipo Pedido Campaña                                     │
+│    Uso: 98.7% • 2,847 asignaciones • Satisfacción: 9.8/10    │
+│    Valor top: "01 PUBLICIDAD" (45.2% del uso)                │
+│    Tendencia: ↗️ +12% último trimestre                        │
+│                                                                 │
+│ 2. 🥈 Industria Cliente                                       │
+│    Uso: 89.3% • 1,234 asignaciones • Satisfacción: 8.9/10    │
+│    Valor top: "FINANCIERO" (28.7% del uso)                   │
+│    Tendencia: ↗️ +8% último trimestre                         │
+│                                                                 │
+│ 3. 🥉 Tipo Cliente                                            │
+│    Uso: 76.4% • 987 asignaciones • Satisfacción: 8.2/10      │
+│    Valor top: "DIRECTO" (67.3% del uso)                      │
+│    Tendencia: ↔️ Estable                                       │
+│                                                                 │
+│ 📉 PROPIEDADES SUB-UTILIZADAS:                                │
+│                                                                 │
+│ ⚠️ Estado Proyecto: 23.1% uso                                 │
+│ • Problema: Usuarios no entienden cuándo usar                 │
+│ • Acción sugerida: Training + simplificar opciones            │
+│                                                                 │
+│ ⚠️ Prioridad Comercial: 18.7% uso                             │
+│ • Problema: Percibido como "no obligatorio"                   │
+│ • Acción sugerida: Hacer obligatorio o eliminar               │
+│                                                                 │
+│ 🎯 ANÁLISIS TEMPORAL:                                          │
+│ • Adopción nuevas propiedades: 78% en primeros 30 días        │
+│ • Tiempo promedio para 90% adopción: 45 días                  │
+│ • Propiedades sin uso en 90 días: 2 (candidatas a eliminar)   │
+│                                                                 │
+│ 💡 INSIGHTS AUTOMÁTICOS:                                       │
+│ • Usuarios prefieren listas cortas (<10 valores)              │
+│ • Propiedades obligatorias tienen 95%+ cumplimiento           │
+│ • Configuración contable automática reduce errores 78%        │
+│                                                                 │
+│ [📊 Reporte Completo] [📧 Enviar a Stakeholders] [📈 Trends]   │
+└─────────────────────────────────────────────────────────────────┘
+MATRIZ DE UTILIZACIÓN POR MÓDULO:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 MATRIZ DE UTILIZACIÓN POR MÓDULO                            │
+├─────────────────────────────────────────────────────────────────┤
+│                    │Contratos│Campañas│Clientes│Reportes│Global │
+├────────────────────┼─────────┼────────┼────────┼────────┼───────┤
+│Tipo Pedido         │  98.7%  │  94.2% │   N/A  │  89.1% │ 94.0% │
+│Industria Cliente   │  89.3%  │  87.1% │  92.4% │  91.3% │ 90.0% │
+│Tipo Cliente        │  76.4%  │  78.9% │  98.1% │  82.3% │ 83.9% │
+│Estado Proyecto     │  23.1%  │  45.7% │   N/A  │  34.2% │ 34.3% │
+│Prioridad Comercial │  18.7%  │  52.3% │  12.1% │  28.9% │ 28.0% │
+│Centro Costo        │  67.8%  │  23.4% │   N/A  │  89.7% │ 60.3% │
+│Formato Duración    │   N/A   │  91.2% │   N/A  │  76.8% │ 84.0% │
+├────────────────────┼─────────┼────────┼────────┼────────┼───────┤
+│PROMEDIO POR MÓDULO │  62.1%  │  67.4% │  67.5% │  70.3% │ 66.8% │
+└─────────────────────────────────────────────────────────────────┘
+
+🎯 INSIGHTS:
+- Campañas utilizan más propiedades que Contratos
+- Reportes muestran alta adopción de clasificaciones
+- Oportunidad: Mejorar adopción en módulo Contratos
+
+🚀 ACCIONES RECOMENDADAS:
+- Hacer obligatorias las propiedades clave en Contratos
+- Training específico para propiedades sub-utilizadas
+- Eliminar "Prioridad Comercial" por bajo uso
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-CLASSIFIER - CLASIFICACIÓN AUTOMÁTICA:
+Motor de clasificación inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 CORTEX-CLASSIFIER - CLASIFICACIÓN AUTOMÁTICA                │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 ANÁLISIS EN TIEMPO REAL:                                    │
+│                                                                 │
+│ 📋 Nueva Campaña Detectada:                                   │
+│ • Cliente: "Banco de Chile"                                   │
+│ • Descripción: "Campaña promoción tarjeta de crédito navidad" │
+│                                                                 │
+│ 🤖 Clasificación Sugerida (Confianza: 94%):                   │
+│ • Tipo Pedido: "01 PUBLICIDAD" ✅                             │
+│ • Industria: "FINANCIERO" ✅                                  │
+│ • Tipo Cliente: "DIRECTO" ✅                                  │
+│ • Estacionalidad: "NAVIDAD/DICIEMBRE" ✅                      │
+│                                                                 │
+│ 📊 Factores de Decisión:                                      │
+│ • Cliente histórico: 23 campañas similares                    │
+│ • Keywords detectadas: "promoción", "tarjeta", "navidad"      │
+│ • Patrón temporal: Campaña navideña típica                    │
+│ • Industria confirmada: Sector financiero                     │
+│                                                                 │
+│ 🎯 Validaciones Automáticas:                                  │
+│ ✅ Sin conflictos detectados                                  │
+│ ✅ Cuentas contables válidas                                  │
+│ ✅ Coherencia con historial cliente                           │
+│ ⚠️ Alerta: Temporada alta (considerar premium pricing)        │
+│                                                                 │
+│ [✅ Aplicar Clasificación] [✏️ Ajustar] [❌ Manual]           │
+└─────────────────────────────────────────────────────────────────┘
+CORTEX-VALIDATOR - VALIDACIÓN CONTINUA:
+Sistema de validación proactiva:
+Flujos automáticos activos:
+
+Validación en Tiempo Real:
+
+Cada asignación de propiedad → Validación inmediata
+Verificación de coherencia con reglas configuradas
+Alertas automáticas si se detectan inconsistencias
+Sugerencias de corrección automática
+
+
+Monitoreo de Estructura:
+
+Análisis nocturno de toda la estructura
+Detección de propiedades no utilizadas
+Identificación de valores duplicados semánticamente
+Optimización de jerarquías automática
+
+
+Alertas Predictivas:
+
+Predicción de problemas antes de que ocurran
+Notificación de cambios que pueden afectar reportes
+Alertas de nuevas necesidades de clasificación
+Recomendaciones de mantenimiento preventivo
+
+
+
+CORTEX-OPTIMIZER - OPTIMIZACIÓN AUTOMÁTICA:
+Optimización continua de estructura:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚀 CORTEX-OPTIMIZER - OPTIMIZACIÓN CONTINUA                    │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 ANÁLISIS SEMANAL COMPLETADO:                                │
+│                                                                 │
+│ 🎯 OPTIMIZACIONES DETECTADAS:                                  │
+│                                                                 │
+│ 1. 🔄 CONSOLIDACIÓN RECOMENDADA:                               │
+│    • "DIGITAL" + "AUDIO DIGITAL" → "CONTENIDO DIGITAL"         │
+│    • Beneficio: -15% confusión usuario, +12% eficiencia       │
+│    • Riesgo: Bajo (migración automática posible)              │
+│    • [🔀 Ejecutar] [📊 Simular] [❌ Ignorar]                   │
+│                                                                 │
+│ 2. 📈 NUEVA PROPIEDAD SUGERIDA:                               │
+│    • Nombre: "Duración Spot"                                  │
+│    • Justificación: 67% usuarios filtran por duración         │
+│    • ROI estimado: +23% eficiencia en programación            │
+│    • [➕ Crear] [📋 Analizar Más] [❌ Declinar]                │
+│                                                                 │
+│ 3. 🗑️ ELIMINACIÓN SUGERIDA:                                   │
+│    • Propiedad: "Estado Proyecto"                             │
+│    • Uso: 23% (muy bajo)                                      │
+│    • Alternativa: Usar "Estado Campaña" existente             │
+│    • [🗑️ Eliminar] [🔄 Migrar] [📊 Analizar]                  │
+│                                                                 │
+│ 4. ⚡ OPTIMIZACIÓN PERFORMANCE:                                │
+│    • Reordenar valores por frecuencia de uso                  │
+│    • Beneficio: -8% tiempo selección promedio                 │
+│    • Impacto: Sin cambios funcionales                         │
+│    • [⚡ Aplicar] [👁️ Preview] [📋 Programar]                 │
+│                                                                 │
+│ 🎯 PRÓXIMA REVISIÓN: En 7 días                                │
+│ 📧 Stakeholders notificados automáticamente                    │
+│                                                                 │
+│ [🚀 Ejecutar Todas] [📊 Reporte Detallado] [⚙️ Configurar]    │
+└─────────────────────────────────────────────────────────────────┘
+📱 ACCESO MÓVIL Y CONSULTAS RÁPIDAS
+INTERFAZ MÓVIL OPTIMIZADA:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR PROPIEDADES MÓVIL            │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Configuración              │
+│ • Propiedades activas: 45               │
+│ • Validaciones OK: 99.2%                │
+│ • Última sync: Hace 5 min               │
+│                                         │
+│ 🔍 CONSULTAS RÁPIDAS:                  │
+│ [🏷️ Buscar propiedad]                  │
+│ [📊 Ver utilización]                   │
+│ [⚠️ Check validaciones]                │
+│ [📧 Enviar reporte]                    │
+│                                         │
+│ 🚨 ALERTAS ACTIVAS:                    │
+│ • 2 inconsistencias detectadas          │
+│ • 1 nueva propiedad sugerida           │
+│                                         │
+│ 📋 ACCESO RÁPIDO:                      │
+│ [Tipo Pedido] [Industria] [Cliente]     │
+├─────────────────────────────────────────┤
+│ [🏠] [🏷️] [📊] [⚙️] [👤]               │
+└─────────────────────────────────────────┘
+🔐 SEGURIDAD Y COMPLIANCE TIER 0
+PROTECCIÓN DE ESTRUCTURA ORGANIZACIONAL:
+Seguridad de configuración crítica:
+
+Backup automático: Estructura completa respaldada cada 4 horas
+Versionado: Control de versiones de toda la taxonomía
+Rollback: Capacidad de revertir cambios en <5 minutos
+Auditoría inmutable: Log blockchain de todos los cambios
+
+Controles de acceso por rol:
+Administrador Sistema:
+
+✅ Crear/modificar tipos de propiedad
+✅ Configurar validaciones y reglas
+✅ Acceso completo a optimizaciones IA
+✅ Gestión de integraciones contables
+
+Gerente Configuración:
+
+✅ Modificar valores de propiedades existentes
+✅ Configurar cuentas contables específicas
+❌ Crear nuevos tipos de propiedad
+✅ Ejecutar validaciones manuales
+
+Usuario Operativo:
+
+✅ Ver estructura de propiedades
+✅ Consultar configuraciones
+❌ Modificar cualquier configuración
+❌ Acceso a funciones administrativas
+
+Auditor/Controller:
+
+✅ Acceso completo solo lectura
+✅ Reportes de auditoría completos
+✅ Validación de cumplimiento contable
+❌ Modificación de estructura
+
+🔗 INTEGRACIONES ECOSYSTEM SILEXAR
+SINCRONIZACIÓN BIDIRECCIONAL COMPLETA:
+Con Módulo Contratos:
+
+Validación automática de propiedades al crear contrato
+Aplicación de cuentas contables según clasificación
+Alertas si faltan propiedades obligatorias
+Herencia automática de configuraciones por tipo
+
+Con Módulo Campañas:
+
+Clasificación automática sugerida por IA
+Validación de coherencia con tipo de campaña
+Aplicación de restricciones específicas por tipo
+Templates automáticos según clasificación
+
+Con Módulo Anunciantes:
+
+Clasificación automática por industria
+Validación de coherencia cliente-tipo campaña
+Scoring automático basado en clasificaciones
+Segmentación inteligente para análisis
+
+Con Módulo Reportes:
+
+Filtros automáticos por todas las propiedades
+Agrupaciones dinámicas según clasificación
+Segmentación automática en exports
+KPIs específicos por tipo de propiedad
+
+INTEGRACIÓN CONTABLE AVANZADA:
+Sistemas ERP/Contables:
+
+SAP: Sincronización plan de cuentas en tiempo real
+Oracle EBS: Validación automática de cuentas
+ContaPlus: Export/import de configuraciones
+Defontana: Integración nativa Chilean ERP
+
+Validaciones Fiscales:
+
+SII Chile: Verificación de cumplimiento tributario
+Código Tributario: Validación de clasificaciones
+Normas IFRS: Compliance automático internacional
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. AI-POWERED TAXONOMY EVOLUTION:
+Evolución automática de taxonomía:
+
+IA analiza patrones de uso y sugiere nuevas clasificaciones
+Detección automática de gaps en estructura actual
+Predicción de necesidades futuras basada en tendencias
+Auto-creación de propiedades con aprobación humana
+
+2. SEMANTIC CONSISTENCY ENGINE:
+Motor de coherencia semántica:
+
+Análisis NLP de nombres y descripciones
+Detección de duplicaciones semánticas
+Sugerencias de renombrado para mayor claridad
+Validación de coherencia terminológica global
+
+3. PREDICTIVE CLASSIFICATION:
+Clasificación predictiva avanzada:
+
+ML models entrenados en 100,000+ clasificaciones históricas
+Precisión 95%+ en sugerencias automáticas
+Aprendizaje continuo de correcciones humanas
+Adaptación automática a nuevos tipos de negocio
+
+4. DYNAMIC HIERARCHY OPTIMIZATION:
+Optimización dinámica de jerarquías:
+
+Reestructuración automática basada en patrones de uso
+Balanceeo de árboles para mejor performance
+Sugerencias de agrupación por afinidad semántica
+A/B testing de diferentes estructuras organizacionales
+
+🎯 ROADMAP TECNOLÓGICO FUTURO
+Próximas Innovaciones (6-12 meses):
+1. Natural Language Property Creation:
+
+"Crear propiedad para clasificar campañas por temporada"
+IA interpreta y crea estructura completa automáticamente
+Validación en lenguaje natural de configuraciones
+
+2. Cross-Platform Taxonomy Sync:
+
+Sincronización con sistemas externos automática
+Import/export de taxonomías de otros sistemas
+Mapeo inteligente entre diferentes estándares
+
+3. Blockchain Property Governance:
+
+Votación descentralizada para cambios estructurales
+Immutable audit trail de decisiones organizacionales
+Smart contracts para validaciones automáticas
+
+Visión 2030:
+El Módulo Propiedades evolucionará hacia un "Organizational DNA Engine" que:
+
+Auto-organiza la empresa basado en patrones de datos
+Predice necesidades organizacionales 12 meses en adelante
+Optimiza estructura completa sin intervención humana
+Aprende de mejores prácticas de miles de organizaciones globalmente
+
+📊 REPORTES ESPECIALIZADOS
+REPORTE EJECUTIVO DE ESTRUCTURA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 REPORTE EJECUTIVO - SALUD ORGANIZACIONAL                    │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 MÉTRICAS CLAVE:                                             │
+│ • Total Propiedades: 45 (óptimo para organización)            │
+│ • Utilización Promedio: 76.3% (saludable)                     │
+│ • Coherencia Global: 99.2% (excelente)                        │
+│ • Satisfacción Usuario: 8.9/10 (muy buena)                    │
+│                                                                 │
+│ 📈 TENDENCIAS:                                                 │
+│ • Adopción nuevas propiedades: +34% trimestre                 │
+│ • Reducción errores clasificación: -67% año                   │
+│ • Tiempo promedio clasificación: -23% vs anterior             │
+│ • Compliance contable: 100% último año                        │
+│                                                                 │
+│ 🏆 LOGROS DESTACADOS:                                          │
+│ • Zero downtime en implementaciones                           │
+│ • 95%+ precisión clasificación automática                     │
+│ • Reducción 45% consultas soporte                             │
+│ • Mejora 67% consistencia reportes                            │
+│                                                                 │
+│ 🎯 PRÓXIMAS ACCIONES:                                          │
+│ • Optimizar 3 propiedades sub-utilizadas                      │
+│ • Implementar 2 nuevas clasificaciones sugeridas IA           │
+│ • Training usuarios en funciones avanzadas                    │
+│ • Migración 2 propiedades legacy pendientes                   │
+│                                                                 │
+│ 💡 RECOMENDACIONES ESTRATÉGICAS:                               │
+│ • Expandir uso propiedades a módulo Facturación               │
+│ • Integrar con sistema CRM externo                            │
+│ • Implementar clasificación automática en más módulos         │
+│ • Considerar estructura multi-idioma para expansión           │
+│                                                                 │
+│ [📧 Enviar Stakeholders] [📊 Dashboard Interactivo] [📈 Trends] │
+└─────────────────────────────────────────────────────────────────┘
+🎯 CONCLUSIÓN: EL SISTEMA DE CLASIFICACIÓN MÁS INTELIGENTE
+PARA EL ADMINISTRADOR DEL SISTEMA:
+
+Control total: Estructura organizacional completamente configurable
+IA como asistente: Optimización automática y sugerencias inteligentes
+Validación continua: Detección proactiva de problemas
+Escalabilidad infinita: Crece con la organización sin límites
+Compliance automático: Cumplimiento contable y regulatorio garantizado
+
+PARA EL USUARIO OPERATIVO:
+
+Simplicidad extrema: Clasificación automática con 95% precisión
+Coherencia garantizada: Imposible crear inconsistencias
+Velocidad optimizada: Clasificación en <3 segundos promedio
+Aprendizaje continuo: Sistema mejora con cada uso
+Acceso universal: Disponible en todos los módulos y dispositivos
+
+PARA LA ORGANIZACIÓN:
+
+Eficiencia operativa: 67% reducción en tiempo de clasificación
+Coherencia total: 99.2% coherencia en toda la plataforma
+Insights automáticos: Análisis organizacional sin esfuerzo manual
+Escalabilidad empresarial: Estructura que evoluciona con el negocio
+ROI comprobado: $50+ de beneficio por cada $1 invertido en configuración
+
+El Módulo Propiedades TIER 0 transforma el caos organizacional en una estructura inteligente, coherente y auto-optimizada que aprende, evoluciona y mejora continuamente, proporcionando la base sólida sobre la cual toda la plataforma Silexar Pulse puede operar con máxima eficiencia y precisión.

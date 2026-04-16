@@ -1,14 +1,8 @@
 {
-  "buildCommand": "npm run build:deploy",
-  "outputDirectory": "dist",
-  "rewrites": [
+  "crons": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "path": "/api/cron/rrss",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

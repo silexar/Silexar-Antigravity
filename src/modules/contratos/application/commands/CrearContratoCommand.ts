@@ -34,6 +34,7 @@ export interface CrearContratoCommand {
   // Clasificación
   prioridad: 'baja' | 'media' | 'alta' | 'critica'
   tipoContrato: 'A' | 'B' | 'C'
+  medio?: 'fm' | 'digital' | 'hibrido'
   tags: string[]
   
   // Especificaciones de pauta (opcional)

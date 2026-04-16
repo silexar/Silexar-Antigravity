@@ -1,0 +1,748 @@
+PLAN DE IMPLEMENTACIÓN COMPLETO: SILEXAR PULSE - ATENCIÓN DE CALIDAD Y PUBLICIDAD INTELIGENTE
+I. OBJETIVOS ESTRATÉGICOS
+Propósito Fundamental
+Transformar Silexar Pulse de un sistema de gestión publicitaria tradicional a una plataforma de gestión de atención de calidad, donde los anunciantes pagan por valor real generado (atención de calidad verificada) en lugar de por impresiones vacías.
+
+Objetivos Específicos
+Reemplazar métricas obsoletas (CPM, CTR) con métricas de atención de calidad verificada (0-100)
+Crear ventaja competitiva insuperable mediante capacidades que competidores tardarán 2-3 años en replicar
+Aumentar el valor promedio por cliente en un 35% mediante modelos de pricing basados en calidad
+Reducir la tasa de churn en un 25% al demostrar valor real medible a los anunciantes
+Posicionar a Silexar Pulse como estándar de la industria para la próxima generación de publicidad
+II. ESTRUCTURA DE MEJORAS PROPUESTAS
+Visión General de la Integración
+Attention Quality Engine (AQE)
+Nuevo Sub-módulo
+Tier Digital (Módulo 14)
+Módulos 12, 14, Cortex-Performance
+Alto - Reemplaza métricas centrales
+Voice Advertising Orchestrator (VAO)
+Nuevo Sub-módulo
+Tier Digital (Módulo 14)
+Módulos 3, 8, 10, 14
+Medio-Alto - Expande capacidades digitales
+Memory Impact Analytics (MIA)
+Nuevo Sub-módulo
+Tier Analytics (Módulo 12)
+Módulos 12, 14, Cortex-Performance
+Medio - Profundiza en valor real
+
+1. ATTENTION QUALITY ENGINE (AQE) - SUB-MÓDULO 14.4
+Propósito Funcional
+Reemplazar métricas obsoletas (CPM, CTR) con un sistema de puntuación de atención de calidad (0-100) basado en 5 dimensiones medibles con tecnologías actuales, permitiendo a los anunciantes pagar por valor real generado.
+
+Componentes Clave y Funcionalidad
+Attention Quality Scoring System
+Calcula puntuación de 0-100 basada en 5 dimensiones: Profundidad, Duración, Involucramiento, Retención y Acción
+Reemplaza métricas en Módulo 14.1 (Gestor de Campañas Digitales)
+Integra con Cortex-Performance para scoring de campañas
+Gerente Comercial:
+
+- Analiza puntuaciones para optimizar estrategias
+- Compara AQ Score vs. costos
+Ejecutivo de Ventas:
+
+- Usa AQ Score en propuestas
+- Demuestra valor real al cliente
+Data Integrations Layer
+Agrega datos de múltiples fuentes éticas y con consentimiento:
+- Google Analytics 4
+- APIs de redes sociales públicas
+- Wearables (Apple Health, Google Fit)
+- Plataformas de voz (Alexa, Google Home)
+Se integra con Sub-módulo 14.1
+Conecta con Cortex-Sense para verificación
+Utiliza infraestructura de Cortex-Audience
+Programador de Tráfico:
+
+- Monitorea atención en tiempo real
+- Ajusta programación basado en calidad
+Soporte Técnico:
+
+- Gestiona integraciones de APIs
+- Soluciona problemas de datos
+Advertiser Quality Dashboard
+Muestra puntuación principal, desglose por dimensiones, comparativas históricas y recomendaciones de optimización
+Nuevo panel en Módulo 14
+Integra con Módulo 12.1 (Dashboards Ejecutivos)
+Conecta con Módulo 10 para facturación basada en calidad
+Anunciante (Cliente):
+
+- Visualiza calidad de atención obtenida
+- Compara con campañas anteriores
+- Ajusta estrategias en tiempo real
+Ejecutivo de Cuentas:
+
+- Genera reportes de valor para clientes
+Quality-Based Pricing System
+Permite modelos de facturación basados en calidad de atención en lugar de impresiones
+Se integra con Módulo 10 (Facturación Inteligente)
+Modifica Sub-módulo 10.1
+Conecta con Cortex-Risk para scoring
+Gerente Comercial:
+
+- Configura modelos de pricing
+- Analiza margen por calidad
+Contabilidad:
+
+- Procesa facturas basadas en calidad
+- Reconcilia pagos
+
+Flujo de Operación Típico
+Para un Ejecutivo de Ventas:
+
+Al crear una campaña digital en Sub-módulo 14.1, selecciona "Modelo de Precio por Calidad"
+Define objetivos de AQ Score mínimo (ej: 75+)
+Durante la campaña, monitorea el AQ Score en tiempo real
+Si el score cae por debajo del objetivo, recibe recomendaciones automáticas de optimización
+Al finalizar, presenta al cliente un reporte mostrando "Pago por Valor Real Generado"
+Para un Anunciante (Cliente):
+
+Inicia sesión en su portal de cliente
+Navega a "Reportes de Campaña" > "Calidad de Atención"
+Visualiza su puntuación actual (ej: 82/100) con desglose por dimensiones
+Compara con campañas anteriores y promedio de la industria
+Recibe recomendaciones automáticas para mejorar su próxima campaña
+2. VOICE ADVERTISING ORCHESTRATOR (VAO) - SUB-MÓDULO 14.5
+Propósito Funcional
+Permitir a los anunciantes gestionar campañas en asistentes de voz (Alexa, Google Home) directamente desde Silexar Pulse, sin necesidad de aprender nuevas plataformas, integrando estas campañas al ecosistema existente.
+
+Componentes Clave y Funcionalidad
+Voice Campaign Manager
+Gestión centralizada de campañas de voz, desde creación hasta monitoreo
+Se integra con Sub-módulo 14.1
+Conecta con Módulo 8 (Biblioteca de Creatividades)
+Utiliza Cortex-Orchestrator
+Ejecutivo de Ventas:
+
+- Crea campañas de voz en minutos
+- Incluye en propuestas comerciales
+Programador de Tráfico:
+
+- Programa y monitorea campañas de voz
+Skill/Action Generator
+Crea automáticamente skills para Alexa y actions para Google Home basadas en creatividades subidas
+Integra con Amazon Alexa Skills Kit
+Conecta con Google Actions API
+Utiliza infraestructura de Sub-módulo 9.1
+Soporte Técnico:
+
+- Gestiona credenciales API
+- Soluciona problemas de despliegue
+Programador de Tráfico:
+
+- Verifica correcto despliegue
+Voice Analytics Adapter
+Convierte métricas de plataformas de voz en formatos compatibles con el sistema de reporting existente
+Se integra con Cortex-Sense
+Conecta con Módulo 12 (Analytics)
+Utiliza infraestructura de Sub-módulo 14.1
+Gerente Comercial:
+
+- Analiza performance de voz vs. otros canales
+Ejecutivo de Cuentas:
+
+- Genera reportes para clientes
+Voice Creative Optimizer
+Adapta creatividades a formato de voz y genera variaciones contextuales
+Se integra con Módulo 8
+Conecta con Cortex-Risk para validación
+Utiliza IA de Sub-módulo 6.1
+Ejecutivo de Ventas:
+
+- Sube creatividades y recibe optimizaciones
+Programador de Tráfico:
+
+- Ajusta variaciones contextuales
+
+Flujo de Operación Típico
+Para un Ejecutivo de Ventas:
+
+En Sub-módulo 14.1, selecciona "Voice" como canal adicional
+Sube una creatividad de audio (máx.
+15 segundos)
+El sistema sugiere optimizaciones para voz y genera automáticamente variaciones
+Define targeting específico para voz (dispositivos, horarios, contextos)
+Incluye en propuesta comercial con proyecciones de AQ Score esperado
+Durante la campaña, monitorea engagement de voz en el mismo dashboard
+Para un Anunciante (Cliente):
+
+Recibe notificación de campaña de voz activa
+Accede al dashboard de campaña y ve métricas específicas de voz
+Visualiza cómo su mensaje se adapta a diferentes contextos de voz
+Recibe reportes mostrando impacto en memoria y calidad de atención
+3. MEMORY IMPACT ANALYTICS (MIA) - SUB-MÓDULO 12.4
+Propósito Funcional
+Medir el impacto real de las campañas en la memoria del usuario mediante fuentes éticas y con consentimiento, determinando el verdadero valor de las campañas publicitarias más allá de las conversiones inmediatas.
+
+Componentes Clave y Funcionalidad
+Memory Impact Calculator
+Calcula Memory Score (0-100) basado en 5 dimensiones: Menciones Sociales, Búsquedas Orgánicas, Engagement en Voz, Patrones de Conversión y Retraso Temporal
+Se integra con Sub-módulo 12.1
+Conecta con Cortex-Performance
+Utiliza datos de Sub-módulo 14.4
+Gerente Comercial:
+
+- Analiza impacto a largo plazo
+- Optimiza presupuesto por canal
+Ejecutivo de Cuentas:
+
+- Demuestra valor sostenido al cliente
+Ethical Data Aggregator
+Recopila datos de fuentes éticas y públicas sin acceso invasivo: menciones en redes sociales, búsquedas orgánicas, interacciones con voz (con consentimiento)
+Integra con Sub-módulo 6.3 (Social Listening)
+Conecta con Google Trends API
+Utiliza Cortex-Sense para verificación
+Analista de Datos:
+
+- Configura fuentes de datos
+- Ajusta algoritmos de scoring
+Soporte Técnico:
+
+- Gestiona integraciones de APIs
+Brand Recall Dashboard
+Muestra Memory Score, tendencias históricas, comparativas y recomendaciones de optimización
+Nuevo panel en Módulo 12
+Integra con Módulo 14.4
+Conecta con Cortex-Performance
+Gerente Comercial:
+
+- Analiza impacto en memoria vs. inversión
+- Toma decisiones estratégicas
+Anunciante (Cliente):
+
+- Visualiza cómo su marca se mantiene en la memoria
+Memory Optimization Engine
+Proporciona recomendaciones específicas para mejorar el impacto en memoria basado en análisis de datos históricos
+Se integra con Sub-módulo 6.1
+Conecta con Cortex-Performance
+Utiliza IA de Sub-módulo 12.1
+Ejecutivo de Ventas:
+
+- Recibe sugerencias para próximas campañas
+Programador de Tráfico:
+
+- Ajusta programación para maximizar memoria
+
+Flujo de Operación Típico
+Para un Gerente Comercial:
+
+Accede a Sub-módulo 12.4 desde el dashboard ejecutivo
+Analiza Memory Score de campañas recientes (ej: 78/100)
+Compara con campañas anteriores y objetivos establecidos
+Identifica canales que generan mayor impacto en memoria
+Reasigna presupuesto hacia canales con mejor Memory Score
+En reuniones estratégicas, usa Memory Score para justificar decisiones
+Para un Anunciante (Cliente):
+
+Recibe informe mensual que incluye Memory Score
+Visualiza cómo su marca se mantiene en la memoria del usuario
+Compara con competencia y promedio de industria
+Recibe recomendaciones específicas para mejorar su impacto
+Ajusta estrategia publicitaria basado en insights de memoria
+III. INTEGRACIÓN CON EL SISTEMA EXISTENTE
+Mapa de Integración Completo
+AQE Core Engine
+Módulo 14 (Centro de Mando Digital)
+Profunda
+Reemplaza métricas centrales con AQ Score
+Sub-módulo 14.1 (Gestor de Campañas Digitales)
+Profunda
+Muestra AQ Score junto a métricas tradicionales
+Módulo 12 (Inteligencia de Negocios)
+Media
+Incorpora AQ Score en reportes analíticos
+Cortex-Performance
+Profunda
+Usa AQ Score en sistema de scoring de campañas
+Módulo 10 (Facturación Inteligente)
+Media
+Habilita modelos de pricing basados en calidad
+VAO Core Engine
+Módulo 14 (Centro de Mando Digital)
+Profunda
+Añade "Voice" como canal seleccionable
+Sub-módulo 14.1 (Gestor de Campañas Digitales)
+Profunda
+Permite crear y gestionar campañas de voz
+Módulo 8 (Biblioteca de Creatividades)
+Media
+Soporta formatos de creatividades para voz
+Módulo 3 (Gestión de Anunciantes)
+Ligera
+Incluye voice en perfil de anunciantes
+Módulo 10 (Facturación Inteligente)
+Media
+Crea modelo de facturación para voice
+MIA Core Engine
+Módulo 12 (Inteligencia de Negocios)
+Profunda
+Añade Memory Score como métrica estratégica
+Sub-módulo 12.1 (Dashboards Ejecutivos)
+Profunda
+Muestra Memory Score en dashboards
+Módulo 14 (Centro de Mando Digital)
+Media
+Usa Memory Score para optimización
+Cortex-Performance
+Profunda
+Incorpora Memory Score en scoring de campañas
+Sub-módulo 6.3 (Social Listening)
+Media
+Utiliza datos de menciones públicas
+
+Impacto en la Arquitectura TIER 0
+Frontend (Cliente):
+
+Impacto: Alto
+Cambios:
+Nuevas vistas en Módulo 14 (Sub-módulo 14.4 y 14.5)
+Nueva vista en Módulo 12 (Sub-módulo 12.4)
+Modificaciones en componentes existentes de dashboards
+Tecnologías afectadas:
+Next.js 14 (App Router)
+shadcn/ui + Tailwind CSS v4
+React Query para cache
+Backend (Server):
+
+Impacto: Alto
+Cambios:
+Nuevos endpoints API para atención de calidad
+Nuevos servicios para integración con voice platforms
+Algoritmos avanzados para cálculo de métricas
+Tecnologías afectadas:
+Node.js 18+
+Firebase Cloud Functions
+Firestore collections adicionales
+Infraestructura:
+
+Impacto: Medio
+Cambios:
+Aumento de procesamiento para cálculos de IA
+Nuevas integraciones con APIs externas
+Posible incremento en almacenamiento
+Tecnologías afectadas:
+Google Cloud Platform
+Firebase services
+Redis para caching
+IV. FLUJOS DE OPERACIÓN POR ROL DE USUARIO
+1. SUPER ADMINISTRADOR (SILEXAR)
+Flujo Diario Típico:
+
+Revisar dashboard de salud del sistema (CPU, memoria, latencia)
+Verificar alertas de seguridad o rendimiento relacionadas con nuevos componentes
+Procesar solicitudes de nuevos clientes que requieren acceso a funciones avanzadas
+Monitorear métricas de uso de los nuevos sub-módulos
+Ajustar configuraciones globales de AQE, VAO y MIA según necesidades del mercado
+Acciones Clave:
+
+Configurar parámetros globales de scoring (pesos por dimensión)
+Gestionar integraciones con APIs externas (credenciales, límites)
+Aprobar nuevos partners para integraciones avanzadas
+Monitorear cumplimiento de SLA para nuevos servicios
+Configurar modelos de pricing basados en calidad
+2. ADMINISTRADOR CLIENTE (CEO/CTO MEDIOS)
+Flujo Diario Típico:
+
+Revisar dashboard ejecutivo con KPIs incluyendo AQ Score y Memory Score
+Analizar reportes de rendimiento por vendedor/emisora con nuevas métricas
+Configurar políticas comerciales para modelos de pricing basados en calidad
+Revisar alertas de compliance o brand safety relacionadas con nuevas capacidades
+Evaluar oportunidades para expandir uso de voice advertising
+Acciones Clave:
+
+Definir umbrales mínimos de AQ Score para campañas
+Configurar políticas de descuento basadas en calidad de atención
+Analizar ROI comparando inversión vs. AQ Score y Memory Score
+Aprobar implementación de voice advertising para clientes estratégicos
+Monitorear satisfacción del cliente respecto a nuevas métricas
+3. GERENTE COMERCIAL
+Flujo Diario Típico:
+
+Revisar dashboard de performance del equipo incluyendo AQ Score
+Analizar oportunidades de optimización de precios basados en calidad
+Revisar pipeline de ventas y proyecciones con nuevas métricas
+Analizar reportes de competencia con enfoque en calidad de atención
+Utilizar Memory Score para estrategias a largo plazo
+Acciones Clave:
+
+Configurar modelos de pricing dinámico basados en AQ Score
+Identificar clientes con bajo Memory Score para estrategias de retención
+Analizar correlación entre AQ Score y resultados comerciales
+Desarrollar propuestas comerciales enfocadas en calidad de atención
+Capacitar al equipo en explicación de nuevas métricas a clientes
+4. EJECUTIVO DE VENTAS
+Flujo Diario Típico:
+
+Revisar leads generados automáticamente por el sistema con indicadores de AQ Score
+Usar WIL Assistant para obtener disponibilidad y proyecciones de AQ Score
+Generar propuestas con IAD que incluyan proyecciones de calidad de atención
+Monitorear campañas activas con enfoque en métricas de calidad
+Usar Memory Score en follow-ups para demostrar valor a largo plazo
+Acciones Clave:
+
+Crear campañas con objetivos de AQ Score definidos
+Explicar valor de calidad de atención a clientes potenciales
+Ajustar propuestas basado en histórico de AQ Score del cliente
+Usar voice advertising en propuestas para clientes digitales
+Generar reportes de Memory Score para demostrar impacto sostenido
+5. PROGRAMADOR DE TRÁFICO
+Flujo Diario Típico:
+
+Revisar alertas automáticas relacionadas con calidad de atención
+Programar campañas considerando objetivos de AQ Score
+Monitorear emisión y recibir alertas sobre calidad de atención
+Conciliar lo emitido vs. programado con enfoque en calidad
+Gestionar creatividades con enfoque en impacto en memoria
+Acciones Clave:
+
+Ajustar programación basado en alertas de baja calidad de atención
+Utilizar Voice Advertising Orchestrator para programar campañas de voz
+Priorizar espacios con mayor potencial de alto AQ Score
+Monitorear Memory Score para ajustar estrategias de repetición
+Reportar problemas con integraciones de voice platforms
+V. REQUISITOS TÉCNICOS Y DE SEGURIDAD
+A. Requisitos Técnicos Mínimos
+1. Infraestructura
+Servidores: Mínimo 2 nodos adicionales en GCP para procesamiento de IA
+Almacenamiento: 20% adicional en Firestore para nuevas colecciones
+Ancho de banda: 15% adicional para integraciones con APIs externas
+Procesamiento: 30% adicional de capacidad para algoritmos de scoring
+2. Tecnologías Específicas
+APIs Externas Requeridas:
+Google Analytics 4 API (para métricas de atención)
+Amazon Alexa Skills Kit API (para voice advertising)
+Google Actions API (para voice advertising)
+Brandwatch/Mention API (para social listening)
+Apple Health/Google Fit API (para datos de wearables - opcional)
+Librerías Específicas:
+TensorFlow.js para algoritmos de scoring básico
+Web Audio API para procesamiento de audio
+WebSocket para actualizaciones en tiempo real
+JWT para autenticación con APIs externas
+3. Requisitos de Frontend
+Navegadores Soportados:
+Chrome 100+
+Firefox 95+
+Safari 15+
+Edge 100+
+Móvil:
+iOS 15+ (para app móvil)
+Android 11+ (para app móvil)
+B. Requisitos de Seguridad
+1. Protección de Datos
+Consentimiento Explícito:
+Implementar sistema de consentimiento para datos avanzados
+Documentación clara sobre uso de datos para anunciantes
+Opción de "opt-out" para clientes que no deseen métricas avanzadas
+Clasificación de Datos:
+Nivel 1 (Público): Métricas agregadas sin identificación
+Nivel 2 (Confidencial): Datos por cliente/anunciante
+Nivel 3 (Altamente Confidencial): Datos personales de usuarios finales
+2. Medidas de Seguridad Técnicas
+Autenticación:
+OAuth 2.0 para integraciones con APIs externas
+JWT con rotación cada 15 minutos para sesiones
+MFA obligatorio para roles administrativos
+Almacenamiento:
+Encriptación AES-256 para datos en reposo
+TLS 1.3 para datos en tránsito
+Secret Manager para credenciales de APIs
+Monitoreo:
+Alertas para acceso no autorizado a datos sensibles
+Logs inmutables para todas las operaciones con datos
+Auditoría mensual de accesos a datos sensibles
+3. Cumplimiento Normativo
+LGPD/CCPA/GDPR:
+Sistema de gestión de consentimiento integrado
+Herramientas de "derecho al olvido"
+Informes de cumplimiento automáticos
+ISO 27001:
+Documentación de políticas de seguridad
+Procesos de gestión de incidentes
+Auditorías de seguridad trimestrales
+VI. PLAN DE IMPLEMENTACIÓN DETALLADO
+Fase 1: Foundation (Meses 1-3) - Preparación y Métricas Básicas
+Objetivos Clave
+Establecer infraestructura base para nuevos componentes
+Implementar métricas básicas de atención de calidad
+Crear integraciones esenciales con APIs existentes
+Capacitar al equipo en nuevos conceptos y flujos
+Tareas Específicas
+1-2
+Análisis detallado de integración con Google Analytics 4
+Arquitecto Senior
+Documento de integración
+1-2
+Diseño de nuevas colecciones en Firestore
+DB Specialist
+Esquema de base de datos
+3-4
+Configuración de entornos de desarrollo y staging
+DevOps
+Entornos preparados
+5-6
+Implementación de cálculo básico de AQ Score
+Backend Dev
+Algoritmo funcional
+7-8
+Integración con Sub-módulo 14.1
+Frontend Dev
+Dashboard actualizado
+9-10
+Pruebas de integración y QA
+QA Specialist
+Reporte de pruebas
+11-12
+Capacitación al equipo comercial
+Product Manager
+Material de capacitación
+
+Recursos Requeridos
+1 Arquitecto Senior (tiempo completo)
+1 DB Specialist (medio tiempo)
+1 DevOps Engineer (medio tiempo)
+2 Backend Developers (tiempo completo)
+1 Frontend Developer (tiempo completo)
+1 QA Specialist (tiempo completo)
+1 Product Manager (medio tiempo)
+Hitos Clave
+Semana 4: Entornos de desarrollo listos
+Semana 8: AQ Score básico funcional en staging
+Semana 12: Primera versión lista para clientes piloto
+Fase 2: Expansion (Meses 4-6) - Voice y Memory Impact
+Objetivos Clave
+Implementar Voice Advertising Orchestrator
+Desarrollar Memory Impact Analytics
+Integrar con APIs de voice platforms
+Crear modelos de pricing basados en calidad
+Tareas Específicas
+13-14
+Registro en Amazon Developer Console
+DevOps
+Cuentas configuradas
+13-14
+Análisis de Google Actions API
+Backend Dev
+Documento de integración
+15-16
+Implementación de Voice Campaign Manager
+Backend Dev
+Servicio funcional
+17-18
+Desarrollo de Skill/Action Generator
+Backend Dev
+Generador automático
+19-20
+Integración con Social Listening API
+Backend Dev
+Agregador funcional
+21-22
+Implementación de Memory Impact Calculator
+Backend Dev
+Algoritmo funcional
+23-24
+Integración con Módulo 12
+Frontend Dev
+Dashboard actualizado
+
+Recursos Requeridos
+1 DevOps Engineer (medio tiempo)
+3 Backend Developers (tiempo completo)
+1 Frontend Developer (tiempo completo)
+1 QA Specialist (tiempo completo)
+1 Product Manager (medio tiempo)
+1 Integración con partners de social listening
+Hitos Clave
+Semana 16: Voice Campaign Manager funcional
+Semana 20: Integración básica con voice platforms
+Semana 24: Sistema completo listo para lanzamiento
+Fase 3: Optimization (Meses 7-9) - Profundización y ML
+Objetivos Clave
+Profundizar en medición de atención
+Implementar integración con wearables
+Desarrollar Voice Emotion Analytics
+Optimizar algoritmos con machine learning
+Tareas Específicas
+25-26
+Configuración de consentimiento para wearables
+Product Manager
+Política de consentimiento
+25-26
+Análisis de Apple Health/Google Fit APIs
+Backend Dev
+Documento de integración
+27-28
+Implementación de integración con wearables
+Backend Dev
+Servicio funcional
+29-30
+Desarrollo de Voice Emotion Analytics
+ML Engineer
+Algoritmo funcional
+31-32
+Entrenamiento de modelos de ML
+ML Engineer
+Modelos optimizados
+33-34
+Implementación de "Atención Capital"
+Backend Dev
+Sistema funcional
+35-36
+Optimización de algoritmos de scoring
+ML Engineer
+Algoritmos mejorados
+
+Recursos Requeridos
+1 Product Manager (tiempo completo)
+2 Backend Developers (tiempo completo)
+1 ML Engineer (tiempo completo)
+1 Frontend Developer (medio tiempo)
+1 UX Designer (medio tiempo)
+1 QA Specialist (tiempo completo)
+Hitos Clave
+Semana 28: Integración básica con wearables
+Semana 32: Voice Emotion Analytics funcional
+Semana 36: Sistema optimizado listo para producción
+VII. MANUAL DE OPERACIÓN BÁSICO
+A. Configuración Inicial por Administrador
+1. Activación de Nuevas Funcionalidades
+Acceder a /super-admin/digital-settings
+Habilitar "Attention Quality Engine" en Tier Digital
+Configurar parámetros iniciales:
+Pesos por dimensión (recomendado: Profundidad 25%, Duración 20%, etc.)
+Umbrales para alertas automáticas
+Fuentes de datos habilitadas por región
+Guardar configuración y reiniciar servicios
+2. Configuración de Integraciones Externas
+Navegar a /super-admin/api-integrations
+Para cada API requerida (Google Analytics, Alexa, etc.):
+Ingresar credenciales API
+Configurar límites
+de uso
+Definir horarios de sincronización
+Habilitar/deshabilitar según necesidad
+Probar conexión con cada API
+Guardar configuración
+B. Uso Diario por Ejecutivo de Ventas
+1. Crear Campaña con Modelo de Calidad
+Navegar a /digital/campaigns/new
+Completar información básica de campaña
+En sección "Modelo de Precio":
+Seleccionar "Por Calidad de Atención"
+Definir AQ Score mínimo requerido
+Configurar límites de inversión por punto de calidad
+Continuar con proceso normal de creación
+Al finalizar, la campaña mostrará proyecciones de AQ Score
+2. Monitorear Campaña en Tiempo Real
+Navegar a /digital/campaigns/:id
+En pestaña "Calidad de Atención":
+Visualizar AQ Score actual (ej: 78/100)
+Ver desglose por dimensiones
+Comparar con objetivos establecidos
+Revisar recomendaciones de optimización
+Si el score cae por debajo del objetivo, aplicar recomendaciones
+Generar reportes para cliente con métricas de calidad
+C. Reportes Clave para Gerentes Comerciales
+1. Reporte de Valor por Calidad
+Navegar a /analytics/reports/value-by-quality
+Seleccionar período y segmentos relevantes
+Analizar:
+Inversión vs. AQ Score promedio
+AQ Score vs. resultados comerciales
+Comparativa por canal/medio
+Identificar oportunidades de optimización
+Exportar datos para presentaciones ejecutivas
+2. Reporte de Impacto en Memoria
+Navegar a /analytics/reports/memory-impact
+Seleccionar campañas a analizar
+Analizar:
+Memory Score por campaña
+Tendencias históricas
+Comparativa con competencia
+Correlación con ventas a largo plazo
+Ajustar estrategias basado en insights
+Generar presentación para reuniones estratégicas
+VIII. PLAN DE CAPACITACIÓN PARA EL EQUIPO
+A. Capacitación Técnica para Desarrolladores
+Temas Clave
+Arquitectura de los Nuevos Componentes
+Estructura de datos y relaciones
+Flujos de información entre módulos
+Patrones de diseño utilizados
+Integraciones con APIs Externas
+Autenticación y seguridad
+Manejo de errores y retries
+Limitación de tasa y optimización
+Algoritmos de Scoring
+Lógica detrás de AQ Score
+Cálculo de Memory Score
+Optimización con machine learning
+Formato
+2 talleres técnicos de 4 horas cada uno
+Documentación detallada en Confluence
+Pair programming con arquitecto senior
+Acceso a entorno de staging para pruebas
+B. Capacitación Comercial para el Equipo de Ventas
+Temas Clave
+Nuevas Métricas y su Valor para el Cliente
+¿Qué es la calidad de atención?
+¿Por qué es más importante que CTR/CPM?
+Cómo explicarlo a los clientes
+Uso en Propuestas Comerciales
+Cómo incluir AQ Score en propuestas
+Cómo proyectar Memory Score
+Cómo justificar precios basados en calidad
+Manejo de Objecciones
+"¿Por qué debería pagar por calidad en lugar de impresiones?"
+"¿Cómo sé que estas métricas son reales?"
+"¿Qué garantías tengo de que obtendré el AQ Score prometido?"
+Formato
+3 talleres comerciales de 2 horas cada uno
+Material de apoyo con ejemplos reales
+Role-playing para manejo de objeciones
+Acceso a dashboard de demostración
+IX. ROADMAP ESTRATÉGICO A 24 MESES
+Fase Alpha (Meses 1-3): Fundación
+Enfoque: Implementar métricas básicas de atención de calidad
+Diferencial: Primer sistema en LATAM que mide atención de calidad
+KPIs Clave:
+100% de clientes piloto utilizando AQ Score
+25% de aumento en satisfacción del cliente
+15% de reducción en disputas de facturación
+Fase Beta (Meses 4-8): Expansión
+Enfoque: Voice Advertising y Memory Impact Analytics
+Diferencial: Plataforma única que integra voice y mide impacto en memoria
+KPIs Clave:
+30% de clientes utilizando voice advertising
+20% de aumento en Memory Score promedio
+18% de incremento en valor promedio por cliente
+Fase Gamma (Meses 9-12): Inteligencia Avanzada
+Enfoque: Integración con wearables
+y Voice Emotion Analytics
+Diferencial: Primera plataforma en LATAM con medición emocional
+KPIs Clave:
+40% de clientes utilizando métricas avanzadas
+35% de aumento en margen bruto
+25% de reducción en tasa de churn
+Fase Production (Meses 13-24): Dominio de Mercado
+Enfoque: Silexar Pulse Exchange (SPX) - Comercialización de atención
+Diferencial: Convertir atención humana en commodity comercializable
+KPIs Clave:
+60% de clientes en modelo de pricing por calidad
+50% de aumento en ARPU
+Liderazgo indiscutible en el mercado LATAM
+X. CONCLUSIÓN: EL FUTURO DE LA PUBLICIDAD CON SILEXAR PULSE
+Esta implementación no es una funcionalidad adicional, sino la evolución natural del modelo de negocio de Silexar Pulse hacia la economía de la atención de calidad. Al implementar estos componentes:
+
+Diferenciarás radicalmente frente a competidores que siguen vendiendo "impresiones"
+Crearás valor real para anunciantes al ayudarles a entender el verdadero impacto de sus campañas
+Generarás nuevas fuentes de ingresos con modelos de pricing basados en valor real generado
+Futurizarás tu plataforma sin requerir tecnologías invasivas o no disponibles
+Próximos pasos inmediatos para kiro.dev:
+
+Confirmar recursos y asignar equipo según plan
+Iniciar Fase 1 (Foundation) según roadmap detallado
+Programar reunión de kickoff con stakeholders clave
+Establecer métricas de éxito claras para cada fase
+Con esta implementación, Silexar Pulse no solo será el mejor sistema de gestión publicitaria, sino la plataforma que define el estándar para la próxima generación de publicidad digital. La atención humana de calidad se convertirá en el nuevo estándar de la industria, y Silexar Pulse estará a la vanguardia de este cambio histórico.

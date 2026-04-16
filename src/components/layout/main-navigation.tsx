@@ -46,7 +46,8 @@ import {
   Shield,
   Rocket,
   Bot,
-  MessageSquare
+  MessageSquare,
+  Share2
 } from 'lucide-react'
 
 /**
@@ -177,6 +178,16 @@ export function MainNavigation() {
           badge: 'Cortex-Inventory',
           badgeColor: 'bg-indigo-600',
           description: 'Gestión inteligente de inventario y pricing'
+        },
+        {
+          id: 'rrss',
+          name: 'RRSS Media',
+          href: '/rrss',
+          icon: Share2,
+          badge: 'Nuevo',
+          badgeColor: 'bg-pink-600',
+          description: 'Gestión de redes sociales y publicaciones',
+          isNew: true
         }
       ]
     },

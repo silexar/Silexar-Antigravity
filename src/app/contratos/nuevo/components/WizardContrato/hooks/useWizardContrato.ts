@@ -21,7 +21,8 @@ import {
   determinarNivelAprobacion,
   TipoContrato,
   AnuncianteSeleccionado,
-  FlujoProbacion
+  FlujoProbacion,
+  EspecificacionDigitalData
 } from '../types/wizard.types';
 
 // ═══════════════════════════════════════════════════════════════
@@ -66,6 +67,9 @@ function wizardReducer(state: WizardContratoState, action: WizardAction): Wizard
       
     case 'SET_TIPO_CONTRATO':
       return { ...state, tipoContrato: action.payload, ultimaModificacion: now };
+      
+    case 'SET_MEDIO':
+      return { ...state, medio: action.payload, ultimaModificacion: now };
       
     case 'SET_ANUNCIANTE':
       return { 
@@ -187,6 +191,16 @@ function wizardReducer(state: WizardContratoState, action: WizardAction): Wizard
       
     case 'SET_MATERIALES_PENDIENTES':
       return { ...state, materialesPendientes: action.payload, ultimaModificacion: now };
+
+    case 'SET_ESPECIFICACION_DIGITAL':
+      return {
+        ...state,
+        especificacionDigital: {
+          ...state.especificacionDigital,
+          ...action.payload
+        } as EspecificacionDigitalData,
+        ultimaModificacion: now
+      };
       
     // Paso 4: Aprobaciones
     case 'SET_FLUJO_APROBACION':
@@ -475,6 +489,7 @@ export function useWizardContrato(options: UseWizardContratoOptions = {}) {
       const contratoData = {
         numeroContrato: state.numeroContrato,
         tipoContrato: state.tipoContrato,
+        medio: state.medio,
         anuncianteId: state.anunciante?.id,
         campana: state.campana,
         descripcion: state.descripcion,
@@ -502,8 +517,30 @@ export function useWizardContrato(options: UseWizardContratoOptions = {}) {
       const data = await response.json();
       
       if (data.success) {
-        options.onSaveSuccess?.(data.data.id);
-        return { success: true, id: data.data.id };
+        const contratoId = data.data.id;
+        const especDigital = state.especificacionDigital;
+        const tieneDatosDigitales =
+          especDigital &&
+          (
+            (especDigital.plataformas && especDigital.plataformas.length > 0) ||
+            (especDigital.presupuestoDigital && especDigital.presupuestoDigital > 0) ||
+            (especDigital.notas && especDigital.notas.trim().length > 0)
+          );
+
+        if (tieneDatosDigitales) {
+          try {
+            await fetch('/api/digital/especificaciones', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contratoId, ...especDigital })
+            });
+          } catch {
+            // No bloquear el flujo si falla
+          }
+        }
+
+        options.onSaveSuccess?.(contratoId);
+        return { success: true, id: contratoId };
       } else {
         options.onSaveError?.(data.error);
         return { success: false, error: data.error };

@@ -77,7 +77,12 @@
       "Bash(node -e ':*)",
       "Bash(node scan_aria.js)",
       "Bash(mv scan_aria.js scan_aria.cjs)",
-      "Bash(node scan_aria.cjs)"
+      "Bash(node scan_aria.cjs)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(cmd /c \"cd \\\\\"C:\\\\\\\\Users\\\\\\\\jsotos\\\\\\\\Documents\\\\\\\\Antigravity\\\\\\\\Silexar Pulse\\\\\" && node --version 2>&1\")",
+      "Bash(cmd /c \"where node 2>&1\")",
+      "Bash(cmd /c \"\\\\\"C:\\\\\\\\Users\\\\\\\\jsotos\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Programs\\\\\\\\Antigravity\\\\\\\\bin\\\\\\\\node.exe\\\\\" --version 2>&1\")",
+      "Bash(powershell.exe -Command \"cd 'C:\\\\Users\\\\jsotos\\\\Documents\\\\Antigravity\\\\Silexar Pulse'; node --version\")"
     ]
   },
   "hooks": {

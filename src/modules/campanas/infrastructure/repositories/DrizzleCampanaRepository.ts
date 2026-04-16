@@ -27,7 +27,7 @@ export interface CampanaEmisoraInput {
 import { Campana } from '../../domain/entities/Campana';
 import type { ICampanaRepository, CampanaFilters, CampanaPaginada } from '../../domain/repositories/ICampanaRepository';
 import type { EstadoCampanaValue } from '../../domain/value-objects/EstadoCampana';
-import type { TipoCampana } from '../../domain/entities/Campana';
+import type { TipoCampana, MedioCampana } from '../../domain/entities/Campana';
 
 // ─── Estado mapping: domain → DB enum ───────────────────────────
 const DOMAIN_TO_DB_ESTADO: Record<EstadoCampanaValue, string> = {
@@ -354,6 +354,7 @@ export class DrizzleCampanaRepository implements ICampanaRepository {
       numeroCampana: row.codigo,
       nombre: row.nombre,
       tipo: 'CUSTOM' as TipoCampana,
+      medio: (row.medio ?? 'fm') as MedioCampana,
       estado: domainEstado,
       anuncianteId: row.anuncianteId,
       contratoId: row.contratoId ?? undefined,
@@ -378,6 +379,7 @@ export class DrizzleCampanaRepository implements ICampanaRepository {
       codigo: campana.numeroCampana.valor,
       nombre: campana.nombre,
       tipoCampana: (DOMAIN_TO_DB_TIPO[campana.tipo] ?? 'mantencion') as never,
+      medio: (campana.medio ?? 'fm') as never,
       estado: DOMAIN_TO_DB_ESTADO[campana.estado.valor] as never,
       anuncianteId: campana.anuncianteId,
       contratoId: campana.contratoId ?? null,

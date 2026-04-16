@@ -17,6 +17,29 @@ export type WizardStep =
   | 'programacion'
   | 'revision';
 
+export type MedioCampana = 'fm' | 'digital' | 'hibrido';
+
+export interface EspecificacionDigitalData {
+  plataformas?: string[];
+  presupuestoDigital?: number;
+  moneda?: 'CLP' | 'USD' | 'UF';
+  tipoPresupuesto?: 'diario' | 'total';
+  objetivos?: {
+    alcance?: number;
+    impresiones?: number;
+    clics?: number;
+  };
+  trackingLinks?: string[];
+  configuracionTargeting?: {
+    edadMinima?: number;
+    edadMaxima?: number;
+    generos?: string[];
+    regiones?: string[];
+  };
+  estado?: string;
+  notas?: string;
+}
+
 export interface WizardState {
   currentStep: WizardStep;
   completedSteps: WizardStep[];
@@ -34,6 +57,7 @@ export interface WizardState {
   
   // Accumulated Campaign Data
   campanaDraft: {
+    medio?: MedioCampana;
     // Tapa Data
     nombre?: string;
     anunciante?: string;
@@ -98,6 +122,25 @@ export interface WizardState {
     especificacionesValidadas?: boolean;
     motivoBloqueoEspecificaciones?: string;
     emisorasSinEspecificacion?: string[];
+    
+    // Digital specifications
+    plataformas?: string[];
+    presupuestoDigital?: number;
+    moneda?: 'CLP' | 'USD' | 'UF';
+    tipoPresupuesto?: 'diario' | 'total';
+    objetivos?: {
+      alcance?: number;
+      impresiones?: number;
+      clics?: number;
+    };
+    trackingLinks?: string[];
+    configuracionTargeting?: {
+      edadMinima?: number;
+      edadMaxima?: number;
+      generos?: string[];
+      regiones?: string[];
+    };
+    notas?: string;
     
     // Future steps data can go here
   };

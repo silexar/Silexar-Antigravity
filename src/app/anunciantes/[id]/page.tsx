@@ -1,45 +1,28 @@
-/**
- * 🏢 SILEXAR PULSE - Detalle de Anunciante
- * 
- * @description Vista de detalle del anunciante con pestañas y diseño neuromórfico
- * 
- * @version 2025.1.0
- * @tier TIER_0_FORTUNE_10
- */
-
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
-import { 
-  Building2, 
-  ArrowLeft, 
-  Edit3, 
-  Trash2, 
-  Mail, 
-  Phone, 
-  Globe, 
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
+import {
+  Building2,
+  ArrowLeft,
+  Edit3,
+  Mail,
+  Phone,
   MapPin,
-  FileText,
+  Globe,
+  User,
   Briefcase,
   CreditCard,
-  Calendar,
-  User,
+  FileText,
   CheckCircle2,
   XCircle,
   AlertCircle,
-  ToggleLeft,
-  ToggleRight,
-  Clock,
-  History,
-  Paperclip
+  Loader2,
+  Trash2
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
-// TIPOS
-// ═══════════════════════════════════════════════════════════════
-
-interface AnuncianteDetalle {
+interface AnuncianteData {
   id: string;
   codigo: string;
   rut: string | null;
@@ -57,347 +40,274 @@ interface AnuncianteDetalle {
   tieneFacturacionElectronica: boolean;
   direccionFacturacion: string | null;
   emailFacturacion: string | null;
-  estado: string;
-  activo: boolean;
   notas: string | null;
+  estado: 'activo' | 'inactivo' | 'suspendido' | 'pendiente';
+  activo: boolean;
   fechaCreacion: string;
   fechaModificacion: string | null;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// COMPONENTES NEUROMÓRFICOS
-// ═══════════════════════════════════════════════════════════════
-
-const NeuromorphicCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`
-    rounded-2xl p-6 bg-gradient-to-br from-slate-50 to-slate-100 
-    shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.9)]
-    ${className}
-  `}>
-    {children}
-  </div>
-);
-
-const NeuromorphicButton = ({
-  children, onClick, variant = 'secondary', disabled = false,
-  'aria-label': ariaLabel
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  disabled?: boolean;
-  'aria-label'?: string;
-}) => {
-  const variants = {
-    primary: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-[4px_4px_12px_rgba(59,130,246,0.4)]',
-    secondary: 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700 shadow-[4px_4px_12px_rgba(0,0,0,0.1)]',
-    danger: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[4px_4px_12px_rgba(239,68,68,0.4)]',
-    ghost: 'bg-transparent text-slate-600 hover:bg-slate-100'
-  };
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={ariaLabel}
-      className={`
-        px-4 py-2 rounded-xl font-medium transition-all duration-200
-        flex items-center gap-2 justify-center
-        ${variants[variant]}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}
-      `}
-    >
-      {children}
-    </button>
-  );
-};
-
-const Tab = ({ 
-  active, label, icon: Icon, onClick 
-}: { 
-  active: boolean; 
-  label: string; 
-  icon: React.ElementType;
-  onClick: () => void;
-}) => (
-  <button
-    onClick={onClick}
-    className={`
-      flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200
-      ${active 
-        ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-[4px_4px_12px_rgba(59,130,246,0.3)]' 
-        : 'text-slate-600 hover:bg-slate-100'
-      }
-    `}
-  >
-    <Icon className="w-4 h-4" />
-    {label}
-  </button>
-);
-
-const InfoRow = ({ label, value, icon: Icon }: { label: string; value: string | null; icon?: React.ElementType }) => (
-  <div className="flex items-start gap-3 py-3 border-b border-slate-100 last:border-0">
-    {Icon && <Icon className="w-5 h-5 text-slate-400 mt-0.5" />}
-    <div className="flex-1">
-      <p className="text-sm text-slate-400">{label}</p>
-      <p className="text-slate-700 font-medium">{value || '—'}</p>
-    </div>
-  </div>
-);
-
-const StatusBadge = ({ estado }: { estado: string }) => {
-  const config: Record<string, { bg: string; icon: React.ElementType }> = {
-    activo: { bg: 'from-emerald-400 to-emerald-500', icon: CheckCircle2 },
-    inactivo: { bg: 'from-slate-400 to-slate-500', icon: XCircle },
-    suspendido: { bg: 'from-amber-400 to-amber-500', icon: AlertCircle }
-  };
-  const { bg, icon: Icon } = config[estado] || config.activo;
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r ${bg} text-white shadow-md`}>
-      <Icon className="w-4 h-4" />
-      {estado.charAt(0).toUpperCase() + estado.slice(1)}
-    </span>
-  );
-};
-
-// ═══════════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
-
-export default function AnuncianteDetallePage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
+export default function DetalleAnunciantePage() {
   const router = useRouter();
-  const [anunciante, setAnunciante] = useState<AnuncianteDetalle | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('info');
+  const params = useParams();
+  const id = params.id as string;
+  const [data, setData] = useState<AnuncianteData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAnunciante = async () => {
-      try {
-        const response = await fetch(`/api/anunciantes/${resolvedParams.id}`);
-        const data = await response.json();
-        if (data.success) {
-          setAnunciante(data.data);
+    if (!id) return;
+    fetch(`/api/anunciantes/${id}`)
+      .then(r => r.json())
+      .then(json => {
+        if (json.success && json.data) {
+          setData(json.data);
+        } else {
+          toast({ title: 'No se encontró el anunciante', variant: 'destructive' });
+          router.push('/anunciantes');
         }
-      } catch (error) {
-        /* */;
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAnunciante();
-  }, [resolvedParams.id]);
-
-  const handleToggleActivo = async () => {
-    if (!anunciante) return;
-    try {
-      const response = await fetch(`/api/anunciantes/${anunciante.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'toggle_activo' })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setAnunciante(data.data);
-      }
-    } catch (error) {
-      /* */;
-    }
-  };
+      })
+      .catch(() => {
+        toast({ title: 'Error de red', variant: 'destructive' });
+        router.push('/anunciantes');
+      })
+      .finally(() => setIsLoading(false));
+  }, [id, router]);
 
   const handleDelete = async () => {
-    if (!anunciante || !confirm(`¿Está seguro de eliminar el anunciante "${anunciante.nombreRazonSocial}"?`)) return;
-    
+    if (!data) return;
+    if (!confirm(`¿Estás seguro de eliminar a "${data.nombreRazonSocial}"?`)) return;
     try {
-      await fetch(`/api/anunciantes/${anunciante.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/anunciantes/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast({ title: 'Error al eliminar', description: json.error, variant: 'destructive' });
+        return;
+      }
+      toast({ title: 'Anunciante eliminado' });
       router.push('/anunciantes');
-    } catch (error) {
-      /* */;
+    } catch {
+      toast({ title: 'Error de red', variant: 'destructive' });
     }
   };
 
-  if (loading) {
+  if (isLoading || !data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
+        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
       </div>
     );
   }
 
-  if (!anunciante) {
+  const StatusBadge = () => {
+    const configs = {
+      activo: { bg: 'from-emerald-400 to-emerald-500', icon: CheckCircle2 },
+      inactivo: { bg: 'from-slate-400 to-slate-500', icon: XCircle },
+      suspendido: { bg: 'from-amber-400 to-amber-500', icon: AlertCircle },
+      pendiente: { bg: 'from-blue-400 to-blue-500', icon: AlertCircle },
+    };
+    const cfg = configs[data.estado] || configs.pendiente;
+    const Icon = cfg.icon;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 flex items-center justify-center">
-        <NeuromorphicCard className="text-center">
-          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-800">Anunciante no encontrado</h2>
-          <p className="text-slate-500 mt-2 mb-6">El anunciante solicitado no existe o fue eliminado.</p>
-          <NeuromorphicButton variant="primary" onClick={() => router.push('/anunciantes')}>
-            <ArrowLeft className="w-4 h-4" /> Volver a la lista
-          </NeuromorphicButton>
-        </NeuromorphicCard>
-      </div>
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${cfg.bg} text-white shadow`}>
+        <Icon className="w-3.5 h-3.5" />
+        {data.estado.charAt(0).toUpperCase() + data.estado.slice(1)}
+      </span>
     );
-  }
+  };
+
+  const cardClass = 'rounded-2xl p-6 bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/50';
+  const labelClass = 'text-sm text-slate-500';
+  const valueClass = 'text-slate-800 font-medium';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* ═══ HEADER ═══ */}
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <NeuromorphicButton aria-label="Volver" variant="ghost" onClick={() => router.push('/anunciantes')}>
-              <ArrowLeft className="w-5 h-5" />
-            </NeuromorphicButton>
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
+                <Building2 className="w-9 h-9 text-blue-500" />
+                {data.nombreRazonSocial}
+              </h1>
+              <StatusBadge />
+            </div>
+            <p className="text-slate-500">Código: <span className="font-mono text-sm text-blue-600">{data.codigo}</span></p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push('/anunciantes')}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 border border-white/60 text-slate-700 shadow-sm hover:bg-white transition-all"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver
+            </button>
+            <button
+              onClick={() => router.push(`/anunciantes/${id}/editar`)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <Edit3 className="w-4 h-4" />
+              Editar
+            </button>
+            <button
+              onClick={handleDelete}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <Trash2 className="w-4 h-4" />
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        {/* Info Legal */}
+        <div className={cardClass}>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-blue-500" />
+            Información Legal
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="flex items-center gap-3">
-                <Building2 className="w-8 h-8 text-blue-500" />
-                <h1 className="text-3xl font-bold text-slate-800">{anunciante.nombreRazonSocial}</h1>
+              <p className={labelClass}>Razón Social</p>
+              <p className={valueClass}>{data.nombreRazonSocial}</p>
+            </div>
+            <div>
+              <p className={labelClass}>RUT</p>
+              <p className={`${valueClass} font-mono`}>{data.rut || '—'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>Giro / Actividad</p>
+              <p className={valueClass}>{data.giroActividad || '—'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Dirección */}
+        <div className={cardClass}>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-emerald-500" />
+            Dirección
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="md:col-span-2 lg:col-span-2">
+              <p className={labelClass}>Dirección</p>
+              <p className={valueClass}>{data.direccion || '—'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>Ciudad</p>
+              <p className={valueClass}>{data.ciudad || '—'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>Comuna / Provincia</p>
+              <p className={valueClass}>{data.comunaProvincia || '—'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>País</p>
+              <p className={valueClass}>{data.pais}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Contacto */}
+        <div className={cardClass}>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <Mail className="w-5 h-5 text-indigo-500" />
+            Información de Contacto
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <p className={labelClass}>Email</p>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-slate-400" />
+                <p className={valueClass}>{data.emailContacto || '—'}</p>
               </div>
-              <div className="flex items-center gap-3 mt-2">
-                <span className="font-mono text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">{anunciante.codigo}</span>
-                {anunciante.rut && (
-                  <span className="font-mono text-sm text-slate-600 bg-slate-100 px-2 py-1 rounded">{anunciante.rut}</span>
+            </div>
+            <div>
+              <p className={labelClass}>Teléfono</p>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-slate-400" />
+                <p className={valueClass}>{data.telefonoContacto || '—'}</p>
+              </div>
+            </div>
+            <div>
+              <p className={labelClass}>Página Web</p>
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-slate-400" />
+                {data.paginaWeb ? (
+                  <a href={data.paginaWeb} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                    {data.paginaWeb}
+                  </a>
+                ) : (
+                  <p className={valueClass}>—</p>
                 )}
               </div>
             </div>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <StatusBadge estado={anunciante.estado} />
-            <NeuromorphicButton variant="secondary" onClick={() => router.push(`/anunciantes/${anunciante.id}/editar`)}>
-              <Edit3 className="w-4 h-4" /> Editar
-            </NeuromorphicButton>
-            <NeuromorphicButton variant="secondary" onClick={handleToggleActivo}>
-              {anunciante.activo ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
-              {anunciante.activo ? 'Desactivar' : 'Activar'}
-            </NeuromorphicButton>
-            <NeuromorphicButton variant="danger" onClick={handleDelete}>
-              <Trash2 className="w-4 h-4" /> Eliminar
-            </NeuromorphicButton>
+        </div>
+
+        {/* Contacto Principal */}
+        <div className={cardClass}>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <User className="w-5 h-5 text-purple-500" />
+            Contacto Principal
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className={labelClass}>Nombre</p>
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4 text-slate-400" />
+                <p className={valueClass}>{data.nombreContactoPrincipal || '—'}</p>
+              </div>
+            </div>
+            <div>
+              <p className={labelClass}>Cargo</p>
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-slate-400" />
+                <p className={valueClass}>{data.cargoContactoPrincipal || '—'}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ═══ TABS ═══ */}
-        <NeuromorphicCard className="flex flex-wrap gap-2">
-          <Tab active={activeTab === 'info'} label="Información General" icon={Building2} onClick={() => setActiveTab('info')} />
-          <Tab active={activeTab === 'facturacion'} label="Facturación" icon={CreditCard} onClick={() => setActiveTab('facturacion')} />
-          <Tab active={activeTab === 'contratos'} label="Contratos" icon={FileText} onClick={() => setActiveTab('contratos')} />
-          <Tab active={activeTab === 'campanas'} label="Campañas" icon={Briefcase} onClick={() => setActiveTab('campanas')} />
-          <Tab active={activeTab === 'archivos'} label="Archivos" icon={Paperclip} onClick={() => setActiveTab('archivos')} />
-          <Tab active={activeTab === 'historial'} label="Historial" icon={History} onClick={() => setActiveTab('historial')} />
-        </NeuromorphicCard>
+        {/* Facturación */}
+        <div className={cardClass}>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <CreditCard className="w-5 h-5 text-amber-500" />
+            Facturación
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className={labelClass}>Facturación Electrónica</p>
+              <p className={valueClass}>{data.tieneFacturacionElectronica ? 'Sí' : 'No'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>Dirección de Facturación</p>
+              <p className={valueClass}>{data.direccionFacturacion || '—'}</p>
+            </div>
+            <div>
+              <p className={labelClass}>Email de Facturación</p>
+              <p className={valueClass}>{data.emailFacturacion || '—'}</p>
+            </div>
+          </div>
+        </div>
 
-        {/* ═══ CONTENIDO TAB ═══ */}
-        {activeTab === 'info' && (
-          <div className="grid lg:grid-cols-2 gap-6">
-            <NeuromorphicCard>
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-blue-500" /> Datos de la Empresa
-              </h3>
-              <InfoRow label="Razón Social" value={anunciante.nombreRazonSocial} />
-              <InfoRow label="RUT" value={anunciante.rut} icon={FileText} />
-              <InfoRow label="Giro o Actividad" value={anunciante.giroActividad} icon={Briefcase} />
-              <InfoRow label="Página Web" value={anunciante.paginaWeb} icon={Globe} />
-            </NeuromorphicCard>
-
-            <NeuromorphicCard>
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-500" /> Dirección
-              </h3>
-              <InfoRow label="Dirección" value={anunciante.direccion} />
-              <InfoRow label="Ciudad" value={anunciante.ciudad} />
-              <InfoRow label="Comuna/Provincia" value={anunciante.comunaProvincia} />
-              <InfoRow label="País" value={anunciante.pais} />
-            </NeuromorphicCard>
-
-            <NeuromorphicCard>
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-500" /> Contacto Principal
-              </h3>
-              <InfoRow label="Nombre" value={anunciante.nombreContactoPrincipal} icon={User} />
-              <InfoRow label="Cargo" value={anunciante.cargoContactoPrincipal} />
-              <InfoRow label="Email" value={anunciante.emailContacto} icon={Mail} />
-              <InfoRow label="Teléfono" value={anunciante.telefonoContacto} icon={Phone} />
-            </NeuromorphicCard>
-
-            <NeuromorphicCard>
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-blue-500" /> Auditoría
-              </h3>
-              <InfoRow 
-                label="Fecha de Creación" 
-                value={anunciante.fechaCreacion ? new Date(anunciante.fechaCreacion).toLocaleString('es-CL') : null}
-                icon={Calendar}
-              />
-              <InfoRow 
-                label="Última Modificación" 
-                value={anunciante.fechaModificacion ? new Date(anunciante.fechaModificacion).toLocaleString('es-CL') : null}
-                icon={Calendar}
-              />
-              {anunciante.notas && (
-                <div className="mt-4 p-4 bg-amber-50 rounded-xl">
-                  <p className="text-sm text-amber-600 font-medium">Notas:</p>
-                  <p className="text-slate-700 mt-1 whitespace-pre-wrap">{anunciante.notas}</p>
-                </div>
-              )}
-            </NeuromorphicCard>
+        {/* Notas */}
+        {data.notas && (
+          <div className={cardClass}>
+            <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-slate-500" />
+              Notas
+            </h2>
+            <p className="text-slate-700 whitespace-pre-line">{data.notas}</p>
           </div>
         )}
 
-        {activeTab === 'facturacion' && (
-          <NeuromorphicCard>
-            <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-blue-500" /> Información de Facturación
-            </h3>
-            <div className="grid lg:grid-cols-2 gap-6">
-              <div>
-                <InfoRow 
-                  label="Facturación Electrónica" 
-                  value={anunciante.tieneFacturacionElectronica ? '✅ Sí' : '❌ No'} 
-                />
-                <InfoRow label="Dirección de Facturación" value={anunciante.direccionFacturacion} icon={MapPin} />
-                <InfoRow label="Email de Facturación" value={anunciante.emailFacturacion} icon={Mail} />
-              </div>
-            </div>
-          </NeuromorphicCard>
-        )}
-
-        {activeTab === 'contratos' && (
-          <NeuromorphicCard className="text-center py-12">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-slate-600">Contratos Asociados</h3>
-            <p className="text-slate-400 mt-2">Los contratos de este anunciante aparecerán aquí cuando se implementen.</p>
-          </NeuromorphicCard>
-        )}
-
-        {activeTab === 'campanas' && (
-          <NeuromorphicCard className="text-center py-12">
-            <Briefcase className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-slate-600">Campañas Asociadas</h3>
-            <p className="text-slate-400 mt-2">Las campañas de este anunciante aparecerán aquí cuando se implementen.</p>
-          </NeuromorphicCard>
-        )}
-
-        {activeTab === 'archivos' && (
-          <NeuromorphicCard className="text-center py-12">
-            <Paperclip className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-slate-600">Archivos Adjuntos</h3>
-            <p className="text-slate-400 mt-2">Arrastra y suelta archivos aquí o haz clic para subir.</p>
-            <NeuromorphicButton variant="primary">
-              Subir Archivo
-            </NeuromorphicButton>
-          </NeuromorphicCard>
-        )}
-
-        {activeTab === 'historial' && (
-          <NeuromorphicCard className="text-center py-12">
-            <History className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-slate-600">Historial de Cambios</h3>
-            <p className="text-slate-400 mt-2">El historial de modificaciones aparecerá aquí.</p>
-          </NeuromorphicCard>
-        )}
+        {/* Auditoría */}
+        <div className="text-center text-slate-400 text-sm">
+          <p>Creado: {new Date(data.fechaCreacion).toLocaleString('es-CL')}</p>
+          {data.fechaModificacion && (
+            <p className="mt-1">Última modificación: {new Date(data.fechaModificacion).toLocaleString('es-CL')}</p>
+          )}
+        </div>
       </div>
     </div>
   );

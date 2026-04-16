@@ -39,6 +39,8 @@ export * from './cotizaciones-schema';
 export * from './ventas-premium-schema';
 
 export * from './activos-digitales-schema';
+export * from './digital-schema';
+export * from './rrss-schema';
 export * from './cunas-programacion-schema';
 
 // AI / Cortex engines state persistence

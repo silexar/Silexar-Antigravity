@@ -27,12 +27,14 @@ import {
   Sparkles,
   Info,
   Star,
-  Briefcase
+  Briefcase,
+  Radio
 } from 'lucide-react';
 import { 
   WizardContratoState, 
   WizardAction, 
   TipoContrato,
+  MedioContrato,
   AnuncianteSeleccionado,
   ProductoContrato
 } from '../types/wizard.types';
@@ -159,6 +161,52 @@ const TipoContratoSelector: React.FC<{
             layoutId="tipoIndicator"
             className="absolute top-2 right-2"
           >
+            <CheckCircle2 className="w-5 h-5 text-white" />
+          </motion.div>
+        )}
+      </motion.button>
+    ))}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// SELECTOR DE MEDIO
+// ═══════════════════════════════════════════════════════════════
+
+const mediosContrato: { id: MedioContrato; label: string; desc: string; icono: React.ElementType; color: string }[] = [
+  { id: 'fm', label: 'Radio FM', desc: 'Contrato tradicional de radio', icono: Radio, color: 'from-blue-400 to-blue-600' },
+  { id: 'digital', label: 'Digital', desc: 'Campañas 100% digitales', icono: Sparkles, color: 'from-purple-400 to-purple-600' },
+  { id: 'hibrido', label: 'Híbrido', desc: 'Radio + Digital combinado', icono: Briefcase, color: 'from-emerald-400 to-emerald-600' }
+];
+
+const MedioSelector: React.FC<{
+  selected: MedioContrato;
+  onSelect: (medio: MedioContrato) => void;
+}> = ({ selected, onSelect }) => (
+  <div className="grid grid-cols-3 gap-3">
+    {mediosContrato.map(({ id, label, desc, icono: Icon, color }) => (
+      <motion.button
+        key={id}
+        onClick={() => onSelect(id)}
+        className={`
+          relative p-4 rounded-2xl text-left transition-all duration-300
+          ${selected === id
+            ? `bg-gradient-to-br ${color} text-white shadow-lg`
+            : 'bg-slate-50 hover:bg-slate-100 shadow-[4px_4px_12px_rgba(0,0,0,0.08),-4px_-4px_12px_rgba(255,255,255,0.9)]'
+          }
+        `}
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Icon className={`w-6 h-6 mb-2 ${selected === id ? 'text-white' : 'text-slate-500'}`} />
+        <h4 className={`font-semibold text-sm ${selected === id ? 'text-white' : 'text-slate-700'}`}>
+          {label}
+        </h4>
+        <p className={`text-xs mt-1 ${selected === id ? 'text-white/80' : 'text-slate-400'}`}>
+          {desc}
+        </p>
+        {selected === id && (
+          <motion.div className="absolute top-2 right-2">
             <CheckCircle2 className="w-5 h-5 text-white" />
           </motion.div>
         )}
@@ -680,6 +728,18 @@ export const StepInfoFundamental: React.FC<StepInfoFundamentalProps> = ({
         <TipoContratoSelector
           selected={state.tipoContrato}
           onSelect={(tipo) => dispatch({ type: 'SET_TIPO_CONTRATO', payload: tipo })}
+        />
+      </div>
+
+      {/* Medio */}
+      <div>
+        <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+          <Radio className="w-5 h-5 text-indigo-500" />
+          Medio del Contrato
+        </h3>
+        <MedioSelector
+          selected={state.medio}
+          onSelect={(medio) => dispatch({ type: 'SET_MEDIO', payload: medio })}
         />
       </div>
       

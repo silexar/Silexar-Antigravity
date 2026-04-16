@@ -59,6 +59,8 @@ export const modalidadPagoEnum = pgEnum('modalidad_pago', [
   'mixto'
 ]);
 
+export const medioContratoEnum = pgEnum('medio_contrato', ['fm', 'digital', 'hibrido']);
+
 // ═══════════════════════════════════════════════════════════════
 // TABLA: CONTRATOS
 // ═══════════════════════════════════════════════════════════════
@@ -79,6 +81,7 @@ export const contratos = pgTable('contratos', {
   titulo: varchar('titulo', { length: 255 }).notNull(),
   descripcion: text('descripcion'),
   tipoContrato: tipoContratoEnum('tipo_contrato').default('campaña').notNull(),
+  medio: medioContratoEnum('medio').default('fm').notNull(),
   
   // Vigencia
   fechaInicio: date('fecha_inicio').notNull(),
@@ -390,6 +393,7 @@ export type ContratoVencimiento = typeof contratosVencimientos.$inferSelect;
 export type EstadoContrato = 'borrador' | 'pendiente_aprobacion' | 'aprobado' | 'activo' | 'pausado' | 'completado' | 'cancelado' | 'vencido';
 export type TipoContrato = 'anual' | 'semestral' | 'trimestral' | 'mensual' | 'campaña' | 'evento' | 'marco';
 export type ModalidadPago = 'anticipado' | 'mensual' | 'por_emisiones' | 'post_pago' | 'mixto';
+export type MedioContrato = 'fm' | 'digital' | 'hibrido';
 
 // ═══════════════════════════════════════════════════════════════
 // INTERFACES PARA EL FRONTEND

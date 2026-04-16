@@ -55,6 +55,8 @@ export default function CrearCampanaWizard() {
               updateOrigenData({ tipo });
               setCanAdvance(true); // Allow advance once selected
             }}
+            medio={state.campanaDraft.medio || 'fm'}
+            onSelectMedio={(medio) => updateDraft({ medio })}
           />
         );
       case 'tapa':
@@ -64,7 +66,7 @@ export default function CrearCampanaWizard() {
             onComplete={handleStepCompletion}
             onBack={prevStep}
             data={state.campanaDraft}
-            onUpdate={updateDraft}
+            onUpdate={(data) => updateDraft(data as any)}
             isFromContract={state.origenData.tipo === 'contrato'}
           />
         );

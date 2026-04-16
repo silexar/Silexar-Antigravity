@@ -2,13 +2,14 @@
  * CreateCampanaCommand — Command to create a new campaign
  */
 
-import type { TipoCampana } from '../../domain/entities/Campana';
+import type { TipoCampana, MedioCampana } from '../../domain/entities/Campana';
 import type { PresupuestoData } from '../../domain/value-objects/PresupuestoCampana';
 
 export interface CreateCampanaCommand {
   tenantId: string;
   nombre: string;
   tipo: TipoCampana;
+  medio?: MedioCampana;
   anuncianteId: string;
   contratoId?: string;
   presupuesto: PresupuestoData;

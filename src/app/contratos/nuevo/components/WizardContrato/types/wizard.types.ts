@@ -35,6 +35,8 @@ export type TipoContrato =
   | 'marco_anual'
   | 'express';
 
+export type MedioContrato = 'fm' | 'digital' | 'hibrido';
+
 export type ModalidadFacturacion = 'hitos' | 'cuotas';
 
 export type TipoFactura = 'posterior' | 'adelantado';
@@ -119,6 +121,17 @@ export interface AnalisisRiesgoCortex {
   };
   fechaActualizacion: Date;
   confianza: number;
+}
+
+export interface EspecificacionDigitalData {
+  plataformas: string[];
+  presupuestoDigital?: number;
+  moneda?: string;
+  tipoPresupuesto?: 'diario' | 'total';
+  objetivos?: Record<string, number>;
+  trackingLinks?: string[];
+  configuracionTargeting?: Record<string, any>;
+  notas?: string;
 }
 
 export interface ValidacionInventario {
@@ -222,6 +235,7 @@ export interface WizardContratoState {
   // Paso 1: Información Fundamental
   numeroContrato: string;
   tipoContrato: TipoContrato;
+  medio: MedioContrato;
   anunciante: AnuncianteSeleccionado | null;
   productosPrincipales: ProductoContrato[];
   campana: string;
@@ -257,6 +271,7 @@ export interface WizardContratoState {
   validacionesInventario: ValidacionInventario[];
   requiereMaterialCreativo: boolean;
   materialesPendientes: string[];
+  especificacionDigital?: EspecificacionDigitalData;
   
   // Paso 4: Aprobaciones
   flujoAprobacion: FlujoProbacion | null;
@@ -339,6 +354,7 @@ export type WizardAction =
   // Paso 1
   | { type: 'SET_NUMERO_CONTRATO'; payload: string }
   | { type: 'SET_TIPO_CONTRATO'; payload: TipoContrato }
+  | { type: 'SET_MEDIO'; payload: MedioContrato }
   | { type: 'SET_ANUNCIANTE'; payload: AnuncianteSeleccionado | null }
   | { type: 'ADD_PRODUCTO'; payload: ProductoContrato }
   | { type: 'REMOVE_PRODUCTO'; payload: string }
@@ -362,6 +378,7 @@ export type WizardAction =
   | { type: 'REMOVE_LINEA_ESPECIFICACION'; payload: string }
   | { type: 'SET_VALIDACIONES_INVENTARIO'; payload: ValidacionInventario[] }
   | { type: 'SET_MATERIALES_PENDIENTES'; payload: string[] }
+  | { type: 'SET_ESPECIFICACION_DIGITAL'; payload: Partial<EspecificacionDigitalData> }
   
   // Paso 4
   | { type: 'SET_FLUJO_APROBACION'; payload: FlujoProbacion | null }
@@ -517,6 +534,7 @@ export const getInitialWizardState = (): WizardContratoState => ({
   
   numeroContrato: '',
   tipoContrato: 'nuevo',
+  medio: 'fm',
   anunciante: null,
   productosPrincipales: [],
   campana: '',
@@ -547,6 +565,11 @@ export const getInitialWizardState = (): WizardContratoState => ({
   validacionesInventario: [],
   requiereMaterialCreativo: true,
   materialesPendientes: [],
+  especificacionDigital: {
+    plataformas: [],
+    trackingLinks: [],
+    moneda: 'CLP'
+  },
   
   flujoAprobacion: null,
   notificacionesConfiguradas: true,

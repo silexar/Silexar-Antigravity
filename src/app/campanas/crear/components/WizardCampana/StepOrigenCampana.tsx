@@ -13,7 +13,7 @@
 import React, { useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { WizardStepProps } from './types/wizard.types';
-import { FileText, PlusCircle, Copy, Search, Brain, Upload, Sparkles } from 'lucide-react';
+import { FileText, PlusCircle, Copy, Search, Brain, Upload, Sparkles, Radio } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,8 @@ interface StepOrigenProps extends WizardStepProps {
   onSelectType: (type: 'contrato' | 'nueva' | 'clon' | 'orden') => void;
   onSelectContrato?: (id: string) => void;
   onDatosOrdenExtraidos?: (datos: unknown) => void;
+  medio?: 'fm' | 'digital' | 'hibrido';
+  onSelectMedio?: (medio: 'fm' | 'digital' | 'hibrido') => void;
 }
 
 export const StepOrigenCampana: React.FC<StepOrigenProps> = ({
@@ -38,7 +40,9 @@ export const StepOrigenCampana: React.FC<StepOrigenProps> = ({
   selectedType,
   onSelectType,
   onSelectContrato,
-  onDatosOrdenExtraidos
+  onDatosOrdenExtraidos,
+  medio = 'fm',
+  onSelectMedio
 }) => {
   // Validate step on mount/change to allow advance
   useEffect(() => {
@@ -149,6 +153,44 @@ export const StepOrigenCampana: React.FC<StepOrigenProps> = ({
             </Card>
           );
         })}
+      </div>
+
+      {/* Selector de Medio */}
+      <div className="mt-6 p-6 bg-slate-50 rounded-2xl border border-slate-200">
+        <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <Radio className="w-5 h-5 text-indigo-600" />
+          Medio de la Campaña
+        </h3>
+        <div className="grid md:grid-cols-3 gap-3">
+          {[
+            { id: 'fm', label: 'Radio FM', desc: 'Campaña tradicional de radio', color: 'blue' },
+            { id: 'digital', label: 'Digital', desc: 'Campaña 100% digital', color: 'purple' },
+            { id: 'hibrido', label: 'Híbrido', desc: 'Radio + Digital combinado', color: 'emerald' }
+          ].map((m) => {
+            const isSelected = medio === m.id;
+            return (
+              <Card
+                key={m.id}
+                onClick={() => onSelectMedio?.(m.id as 'fm' | 'digital' | 'hibrido')}
+                className={`
+                  relative p-4 cursor-pointer transition-all duration-300 border-2
+                  ${isSelected
+                    ? `border-${m.color}-500 bg-${m.color}-50/50 shadow-md ring-1 ring-${m.color}-200`
+                    : 'border-slate-100 hover:border-slate-300 bg-white'
+                  }
+                `}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-700'}`}>
+                    {m.label}
+                  </span>
+                  {isSelected && <div className={`w-2.5 h-2.5 rounded-full bg-${m.color}-500`} />}
+                </div>
+                <p className="text-xs text-slate-500">{m.desc}</p>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
       {/* Contract Search Section */}

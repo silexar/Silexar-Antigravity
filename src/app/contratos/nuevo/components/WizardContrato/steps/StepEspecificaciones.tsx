@@ -36,6 +36,7 @@ import {
   ValidacionInventario,
   formatCurrency
 } from '../types/wizard.types';
+import PanelEspecificacionesDigitales from './PanelEspecificacionesDigitales';
 
 // ═══════════════════════════════════════════════════════════════
 // DATOS MOCK DE MEDIOS
@@ -576,6 +577,14 @@ export const StepEspecificaciones: React.FC<StepEspecificacionesProps> = ({
           />
         )}
       </AnimatePresence>
+
+      {/* Panel de especificaciones digitales */}
+      {(state.medio === 'digital' || state.medio === 'hibrido') && (
+        <PanelEspecificacionesDigitales
+          data={state.especificacionDigital || { plataformas: [], trackingLinks: [], moneda: 'CLP' }}
+          onUpdate={(payload) => dispatch({ type: 'SET_ESPECIFICACION_DIGITAL', payload })}
+        />
+      )}
     </div>
   );
 };

@@ -45,6 +45,7 @@ export interface ContratoProps {
     estado: EstadoContrato
     prioridad: 'baja' | 'media' | 'alta' | 'critica'
     tipoContrato: 'A' | 'B' | 'C'
+    medio: 'fm' | 'digital' | 'hibrido'
 
     // Términos comerciales
     terminosPago: TerminosPago
@@ -148,6 +149,7 @@ export class Contrato {
     get anunciante(): string { return this.props.anunciante }
     get producto(): string { return this.props.producto }
     get estado(): EstadoContrato { return this.props.estado }
+    get medio(): 'fm' | 'digital' | 'hibrido' { return this.props.medio }
     get totales(): TotalesContrato { return this.props.totales }
     get riesgoCredito(): RiesgoCredito { return this.props.riesgoCredito }
     get metricas(): MetricasRentabilidad { return this.props.metricas }

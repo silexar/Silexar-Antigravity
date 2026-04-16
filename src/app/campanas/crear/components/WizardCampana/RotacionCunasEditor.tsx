@@ -11,7 +11,7 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -74,7 +74,8 @@ interface RotacionCunasEditorProps {
   lineaId: string;
   lineaNombre: string;
   configuracion?: ConfiguracionRotacion;
-  cunasDisponibles: { id: string; codigo: string; nombre: string; duracion: number }[];
+  cunasDisponibles?: { id: string; codigo: string; nombre: string; duracion: number }[];
+  anuncianteId?: string; // Nuevo: si se pasa, fetch automático de la API
   onGuardar: (config: ConfiguracionRotacion) => void;
   onCancelar: () => void;
 }
@@ -84,44 +85,45 @@ interface RotacionCunasEditorProps {
 // ═══════════════════════════════════════════════════════════════
 
 const TIPOS_ROTACION = [
-  { 
-    id: 'equitativo', 
-    label: 'Equitativo', 
+  {
+    id: 'equitativo',
+    label: 'Equitativo',
     desc: 'Todas las cuñas se emiten igual cantidad de veces',
     icon: Shuffle
   },
-  { 
-    id: 'ponderado', 
-    label: 'Ponderado', 
+  {
+    id: 'ponderado',
+    label: 'Ponderado',
     desc: 'Cada cuña tiene un peso diferente en la rotación',
     icon: Percent
   },
-  { 
-    id: 'secuencial', 
-    label: 'Secuencial', 
+  {
+    id: 'secuencial',
+    label: 'Secuencial',
     desc: 'Las cuñas se emiten en orden: A, B, C, A, B, C...',
     icon: ArrowRight
   },
-  { 
-    id: 'ab_test', 
-    label: 'A/B Testing', 
+  {
+    id: 'ab_test',
+    label: 'A/B Testing',
     desc: 'Compara rendimiento entre dos versiones',
     icon: BarChart3
   },
-  { 
-    id: 'por_fecha', 
-    label: 'Por Fecha', 
+  {
+    id: 'por_fecha',
+    label: 'Por Fecha',
     desc: 'Diferentes cuñas según el período',
     icon: Calendar
   }
 ];
 
-const CUNAS_MOCK = [
-  { id: 'cuna_001', codigo: 'CUN-001', nombre: 'Versión A - Promocional', duracion: 30 },
-  { id: 'cuna_002', codigo: 'CUN-002', nombre: 'Versión B - Emocional', duracion: 30 },
-  { id: 'cuna_003', codigo: 'CUN-003', nombre: 'Versión C - Informativo', duracion: 30 },
-  { id: 'cuna_004', codigo: 'CUN-004', nombre: 'Backup - Institucional', duracion: 30 }
-];
+/**
+ * ERRATA LOG — RotacionCunasEditor
+ * 
+ * BUG FIXED: Previously used CUNAS_MOCK hardcodeado como default.
+ * FIX: Added anuncianteId prop → auto-fetches from /api/cunas?anuncianteId=X&estado=aprobada
+ * BACKWARD COMPAT: cunasDisponibles prop still works as before.
+ */
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -131,10 +133,44 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
   lineaId,
   lineaNombre,
   configuracion,
-  cunasDisponibles = CUNAS_MOCK,
+  cunasDisponibles: cunasProp,
+  anuncianteId,
   onGuardar,
   onCancelar
 }) => {
+  // Estado para cuñas cargadas desde API
+  const [cunasApi, setCunasApi] = useState<{ id: string; codigo: string; nombre: string; duracion: number }[]>([]);
+  const [loadingApi, setLoadingApi] = useState(false);
+
+  // Fetch automático cuando hay anuncianteId
+  useEffect(() => {
+    if (!anuncianteId) return;
+    let cancelled = false;
+    setLoadingApi(true);
+
+    fetch(`/api/cunas?anuncianteId=${anuncianteId}&estado=aprobada&limit=100`)
+      .then(res => res.json())
+      .then(json => {
+        if (!cancelled && json.success && json.data) {
+          setCunasApi(json.data.map((c: any) => ({
+            id: c.id,
+            codigo: c.spxCodigo || c.codigo,
+            nombre: c.nombre,
+            duracion: c.duracionSegundos || 30,
+          })));
+        }
+      })
+      .catch(() => { /* silencioso, fallback a prop si existe */ })
+      .finally(() => { if (!cancelled) setLoadingApi(false); });
+
+    return () => { cancelled = true; };
+  }, [anuncianteId]);
+
+  // Cuñas efectivas: API > prop > empty
+  const cunasDisponibles = anuncianteId
+    ? (cunasApi.length > 0 ? cunasApi : (cunasProp || []))
+    : (cunasProp || []);
+
   const [config, setConfig] = useState<ConfiguracionRotacion>({
     lineaId,
     lineaNombre,
@@ -155,15 +191,15 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
   // Agregar cuña a rotación
   const agregarCuna = () => {
     if (!cunaSeleccionada) return;
-    
+
     const cuna = cunasDisponibles.find(c => c.id === cunaSeleccionada);
     if (!cuna) return;
-    
+
     // Verificar si ya existe
     if (config.cunasEnRotacion.some(c => c.cunaId === cunaSeleccionada)) return;
 
     const pesoEquitativo = 100 / (config.cunasEnRotacion.length + 1);
-    
+
     setConfig(prev => ({
       ...prev,
       cunasEnRotacion: [
@@ -180,7 +216,7 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
         }
       ]
     }));
-    
+
     setCunaSeleccionada('');
   };
 
@@ -234,7 +270,7 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
   // Cuñas disponibles filtradas (no en rotación ya)
   const cunasParaAgregar = cunasDisponibles.filter(
     c => !config.cunasEnRotacion.some(r => r.cunaId === c.id) &&
-         c.id !== config.cunaBackupId
+      c.id !== config.cunaBackupId
   );
 
   return (
@@ -264,11 +300,10 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
             return (
               <div
                 key={tipo.id}
-                className={`p-3 border rounded-lg cursor-pointer transition-all text-center ${
-                  config.tipoRotacion === tipo.id
-                    ? 'border-purple-400 bg-purple-100'
-                    : 'hover:border-gray-300'
-                }`}
+                className={`p-3 border rounded-lg cursor-pointer transition-all text-center ${config.tipoRotacion === tipo.id
+                  ? 'border-purple-400 bg-purple-100'
+                  : 'hover:border-gray-300'
+                  }`}
                 onClick={() => setConfig(prev => ({ ...prev, tipoRotacion: tipo.id as ConfiguracionRotacion['tipoRotacion'] }))}
               >
                 <Icono className={`w-5 h-5 mx-auto mb-1 ${config.tipoRotacion === tipo.id ? 'text-purple-600' : 'text-gray-500'}`} />
@@ -284,19 +319,32 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
 
       {/* Agregar cuña */}
       <div className="flex gap-2 mb-4">
-        <Select value={cunaSeleccionada} onValueChange={setCunaSeleccionada}>
+        <Select value={cunaSeleccionada} onValueChange={setCunaSeleccionada} disabled={loadingApi}>
           <SelectTrigger className="flex-1">
-            <SelectValue placeholder="Seleccionar cuña para agregar..." />
+            <SelectValue placeholder={loadingApi ? 'Cargando cuñas...' : 'Seleccionar cuña para agregar...'} />
           </SelectTrigger>
           <SelectContent>
-            {cunasParaAgregar.map(cuna => (
-              <SelectItem key={cuna.id} value={cuna.id}>
-                <div className="flex items-center gap-2">
-                  <Music className="w-4 h-4" />
-                  {cuna.codigo} - {cuna.nombre} ({cuna.duracion}s)
-                </div>
-              </SelectItem>
-            ))}
+            {loadingApi ? (
+              <div className="flex items-center justify-center py-4 text-sm text-gray-400">
+                <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                Cargando cuñas del anunciante...
+              </div>
+            ) : cunasParaAgregar.length === 0 ? (
+              <div className="py-4 text-sm text-gray-400 text-center">
+                {cunasDisponibles.length === 0
+                  ? 'No hay cuñas disponibles. Agregue cuñas primero.'
+                  : 'Todas las cuñas están en rotación'}
+              </div>
+            ) : (
+              cunasParaAgregar.map(cuna => (
+                <SelectItem key={cuna.id} value={cuna.id}>
+                  <div className="flex items-center gap-2">
+                    <Music className="w-4 h-4" />
+                    {cuna.codigo} - {cuna.nombre} ({cuna.duracion}s)
+                  </div>
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
         <Button onClick={agregarCuna} disabled={!cunaSeleccionada} className="gap-1">
@@ -308,15 +356,14 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
       {/* Lista de cuñas en rotación */}
       <div className="space-y-3 mb-6">
         {config.cunasEnRotacion.map((cuna, index) => (
-          <Card 
-            key={cuna.id} 
+          <Card
+            key={cuna.id}
             className={`p-4 ${cuna.activa ? 'bg-white' : 'bg-gray-50 opacity-60'}`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                  cuna.activa ? 'bg-purple-100 text-purple-700' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${cuna.activa ? 'bg-purple-100 text-purple-700' : 'bg-gray-200 text-gray-500'
+                  }`}>
                   {String.fromCharCode(65 + index)}
                 </div>
                 <div>
@@ -324,7 +371,7 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
                   <p className="text-xs text-gray-500">{cuna.cunaCodigo} • {cuna.duracion}s</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <Switch
                   checked={cuna.activa}
@@ -447,14 +494,14 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
         <p className="text-xs text-amber-600 mb-3">
           Se usará si ninguna cuña principal está disponible o hay error en el material.
         </p>
-        <Select 
-          value={config.cunaBackupId || ''} 
+        <Select
+          value={config.cunaBackupId || ''}
           onValueChange={(v) => {
             const cuna = cunasDisponibles.find(c => c.id === v);
-            setConfig(prev => ({ 
-              ...prev, 
+            setConfig(prev => ({
+              ...prev,
               cunaBackupId: v,
-              cunaBackupNombre: cuna?.nombre 
+              cunaBackupNombre: cuna?.nombre
             }));
           }}
         >
@@ -489,8 +536,8 @@ export const RotacionCunasEditor: React.FC<RotacionCunasEditorProps> = ({
         <Button variant="outline" onClick={onCancelar}>
           Cancelar
         </Button>
-        <Button 
-          onClick={handleGuardar} 
+        <Button
+          onClick={handleGuardar}
           className="gap-1 bg-purple-600"
           disabled={config.cunasEnRotacion.length === 0 || (config.tipoRotacion === 'ponderado' && pesoTotal !== 100)}
         >

@@ -1,0 +1,1744 @@
+📋 MÓDULO CONTRATOS - ESPECIFICACIÓN COMPLETA TIER 0
+📋 ANÁLISIS DESDE MÚLTIPLES PERSPECTIVAS
+🏢 PERSPECTIVA CEO/DUEÑO:
+Los contratos son donde las promesas se convierten en ingresos garantizados. Este módulo debe ser el puente perfecto entre las oportunidades de venta y el cash flow real. Cada contrato debe estar conectado automáticamente con facturación, programación y cumplimiento. Es el núcleo que convierte leads en revenue.
+💼 PERSPECTIVA GERENTE COMERCIAL:
+Necesito visibilidad total del pipeline de contratos - valores, estados, riesgos de cancelación, y principalmente control de autorización para plazos de pago y descuentos. Cada modificación debe quedar auditada y cada contrato debe tener métricas de performance en tiempo real.
+👤 PERSPECTIVA EJECUTIVO DE VENTAS:
+Crear contratos debe ser rápido e intuitivo, con validaciones automáticas que me eviten errores. Necesito que el sistema me sugiera productos, calcule valores automáticamente, valide inventario en tiempo real y me permita generar PDFs profesionales al instante.
+⚖️ PERSPECTIVA LEGAL/COMPLIANCE:
+Cada contrato debe tener trazabilidad completa, validaciones automáticas de términos, workflows de aprobación según montos y control de descuentos. Las modificaciones deben requerir justificación y quedar inmutables en el historial.
+💰 PERSPECTIVA FINANZAS:
+Los contratos alimentan directamente el módulo de facturación. Necesito que los plazos de pago, condiciones y cuotas estén perfectamente estructurados, que se respeten las políticas de riesgo crediticio y que cada cambio impacte automáticamente los flujos de caja.
+🤖 PERSPECTIVA CORTEX:
+Cada contrato genera data valiosa para optimizar: patrones de compra, performance de productos, términos más exitosos, predicciones de renovación. Debo detectar oportunidades de upselling automáticamente y sugerir optimizaciones basadas en data histórica.
+
+
+
+ PROMPT 1: ARQUITECTURA Y ESTRUCTURA BASE
+Necesito crear un módulo completo de gestión de contratos para una aplicación de medios publicitarios. 
+
+CONTEXTO DEL PROYECTO:
+- Aplicación Next.js 14 con App Router
+- UI con Shadcn/UI y Tailwind CSS
+- Sistema de contratos publicitarios con 8 pestañas
+- Validaciones complejas y flujos de aprobación
+- Integración con sistemas externos (WideOrbit)
+- IMPORTANTE: NO usar emojis, solo iconos de Lucide React
+- Moneda por defecto: Peso Chileno (CLP), configurable por país
+
+ARQUITECTURA REQUERIDA:
+Crea la estructura completa de carpetas y archivos base:
+
+/src/app/contratos/
+├── page.tsx (listado principal)
+├── nuevo/page.tsx (wizard de creación)
+├── [id]/page.tsx (vista detalle)
+└── components/
+    ├── ContractWizard.tsx (componente principal)
+    ├── ContractList.tsx (tabla de contratos)
+    ├── tabs/
+    │   ├── GeneralInfoTab.tsx
+    │   ├── FinancialTermsTab.tsx
+    │   ├── SpecificationsTab.tsx
+    │   ├── ObservationsTab.tsx
+    │   ├── DocumentsTab.tsx
+    │   ├── AuditTab.tsx
+    │   ├── WorkflowTab.tsx
+    │   └── ConfigTab.tsx
+    ├── modals/
+    │   ├── NewContractModal.tsx
+    │   ├── AddLineModal.tsx
+    │   ├── ApprovalModal.tsx
+    │   └── PreviewModal.tsx
+    ├── forms/
+    │   ├── ContractForm.tsx
+    │   ├── LineSpecForm.tsx
+    │   └── validation.ts
+    └── utils/
+        ├── currency.ts (formateo de monedas)
+        ├── dateUtils.ts
+        └── constants.ts
+
+ESTADO GLOBAL CON ZUSTAND:
+Crea stores para:
+- contractStore: contratos activos, filtros, paginación
+- userStore: usuario actual y permisos
+- configStore: configuración del sistema, moneda, región
+- uiStore: estados de UI (modals, loading, notifications)
+
+TIPOS TYPESCRIPT:
+Define interfaces para:
+- Contract (con campos de moneda y región)
+- ContractLine 
+- Advertiser
+- Station
+- User
+- ApprovalRequest
+- CurrencyConfig (moneda, símbolo, formato)
+
+UTILIDADES DE MONEDA:
+Crea funciones para:
+- formatCurrency(amount, currency = 'CLP')
+- parseCurrency(formatted)
+- convertCurrency(amount, from, to)
+- getCurrencySymbol(currency)
+
+COMPONENTES SHADCN/UI NECESARIOS:
+- Tabs
+- Dialog
+- Form
+- Input
+- Select
+- Button
+- Table
+- Badge
+- Alert
+- Progress
+- Textarea
+- Checkbox
+- RadioGroup
+- Calendar
+- Popover
+- Toast
+
+CONFIGURACIÓN INICIAL:
+- Moneda por defecto: CLP (Peso Chileno)
+- Formato: $ 1.234.567 (separador miles punto, decimales coma)
+- Región por defecto: Chile
+- Zona horaria: America/Santiago
+
+Genera toda esta estructura base con configuración inicial y sin usar emojis en ningún lugar.
+
+ PROMPT 2: PÁGINA PRINCIPAL Y LISTADO DE CONTRATOS
+Implementa la página principal del módulo contratos (/contratos) con estas especificaciones exactas:
+
+LAYOUT PRINCIPAL:
+- Header fijo con título "GESTIÓN DE CONTRATOS" (ícono FileText de Lucide)
+- Stats bar con métricas: "127 contratos • $5.8M pipeline • 94% aprobación"
+- Toolbar con botones usando iconos de Lucide:
+  * [Plus] Nuevo Contrato
+  * [FileTemplate] Plantilla  
+  * [Copy] Duplicar
+  * [BarChart3] Dashboard
+  * [Download] Exportar
+  * [Settings] Configurar
+- Área de filtros expandible con: búsqueda, estado, cliente, valor, ejecutivo, período
+- Tabla principal con paginación
+- Sidebar izquierdo fijo de navegación
+
+TABLA DE CONTRATOS:
+Columnas:
+- # (número de contrato con ícono FileText)
+- Cliente (nombre + RUT + score)  
+- Ejecutivo (nombre + total contratos + valor YTD)
+- Valor (monto en CLP + variación % + ROI)
+- Estado (badge con color + porcentaje ejecución)
+- Acciones (Eye, Edit, Copy, Trash de Lucide)
+
+FORMATO DE MONEDA:
+- Usar formato chileno: $1.234.567 (punto separador miles)
+- Función formatCurrency debe manejar CLP por defecto
+- Mostrar símbolo $ antes del monto
+- Para montos grandes usar K/M (ej: $1.2M)
+
+Cada fila debe mostrar:
+- Altura: 72px
+- Información principal en línea 1
+- Información secundaria en línea 2 (text-sm text-gray-600)
+- Estados con colores Tailwind: 
+  * Verde (bg-green-100 text-green-800) = Confirmado
+  * Amarillo (bg-yellow-100 text-yellow-800) = Pendiente
+  * Rojo (bg-red-100 text-red-800) = Rechazado
+
+FUNCIONALIDADES:
+- Búsqueda en tiempo real con debounce
+- Filtros múltiples con Popover de Shadcn
+- Ordenamiento por columnas (ícono ChevronUp/Down)
+- Paginación con componente Pagination
+- Selección múltiple con Checkbox
+- Export a Excel/PDF con toast de confirmación
+
+DATOS MOCK (formato chileno):
+Incluye 10 contratos de ejemplo con:
+- Números: CON-2025-0123, CON-2025-0124, etc.
+- Clientes: Supermercados XYZ (RUT: 12.345.678-9), Banco Chile (RUT: 98.765.432-1)
+- Valores en CLP: $45.230.000, $89.150.000, etc.
+- Ejecutivos: Carlos Mendoza, María Silva, Ana García
+- Estados: Confirmado, Pendiente, En Revisión, Rechazado
+
+RESPONSIVE:
+- Desktop: tabla completa
+- Tablet: ocultar columnas secundarias
+- Mobile: cards en lugar de tabla
+
+Implementa todo usando componentes de Shadcn/UI, Tailwind CSS y sin emojis.
+
+PROMPT 3: MODAL DE NUEVO CONTRATO Y WIZARD BASE
+Implementa el modal de selección de tipo de contrato y el wizard base con estas especificaciones exactas:
+
+MODAL DE NUEVO CONTRATO:
+Cuando se hace clic en "Nuevo Contrato", debe aparecer un Dialog de Shadcn con:
+
+- Tamaño: 800px ancho x 600px alto
+- Título: "CREAR NUEVO CONTRATO" (ícono Plus)
+- Overlay semi-transparente
+
+CONTENIDO DEL MODAL:
+Cuatro cards de selección en grid 2x2:
+
+1. USAR PLANTILLA (ícono FileTemplate)
+   - Descripción: "Templates por industria"
+   - Etiqueta: "Rápido" (badge verde)
+   - "Templates pre-configurados por tipo de cliente"
+
+2. CREAR DESDE CERO (ícono Edit3)  
+   - Descripción: "Wizard paso a paso"
+   - Etiqueta: "Control" (badge azul)
+   - "Máximo control sobre cada configuración"
+
+3. DUPLICAR EXISTENTE (ícono Copy)
+   - Descripción: "Copiar otro contrato"
+   - Etiqueta: "Rápido" (badge verde)  
+   - "Basado en contrato existente similar"
+
+4. GENERAR CON IA (ícono Brain)
+   - Descripción: "Cortex crea automático"
+   - Etiqueta: "Smart" (badge púrpura)
+   - "IA genera basado en historial del cliente"
+
+INTERACCIONES:
+- Hover: elevación con shadow-lg y scale-105
+- Selección: border-primary y bg-primary/5
+- Click: navegación según tipo seleccionado
+
+WIZARD BASE:
+Al seleccionar cualquier opción, redirigir a /contratos/nuevo con:
+
+ESTRUCTURA DEL WIZARD:
+- 8 pestañas horizontales con iconos de Lucide
+- Indicador de progreso (Progress component) 
+- Navegación: Anterior/Siguiente buttons
+- Auto-guardado cada 30 segundos
+- Validación en tiempo real
+
+PESTAÑAS DEL WIZARD:
+1. Información General (ícono Info) - Activa por defecto
+2. Términos Financieros (ícono DollarSign)
+3. Especificaciones (ícono Settings)
+4. Observaciones (ícono MessageSquare)
+5. Documentos (ícono Folder)
+6. Historial (ícono History)
+7. Workflows (ícono GitBranch)
+8. Configuración (ícono Cog)
+
+ESTADOS VISUALES DE PESTAÑAS:
+- Completada: check verde + texto verde
+- Activa: fondo azul + texto blanco
+- Pendiente: fondo gris + texto gris
+- Error: borde rojo + ícono AlertCircle
+
+LAYOUT DEL WIZARD:
+- Header: breadcrumb + título + acciones (Guardar/Cerrar)
+- Tabs: barra horizontal con indicadores
+- Content: área principal 920px ancho
+- Footer: navegación + progreso
+
+ESTADO INICIAL:
+- contractType: selección del modal
+- currentTab: 1
+- contractData: objeto vacío
+- isValid: false por pestaña
+- isDirty: false
+
+Implementa el modal y la estructura base del wizard usando Shadcn/UI components.
+
+PROMPT 4: PESTAÑA 1 - INFORMACIÓN GENERAL
+Implementa la primera pestaña del wizard "Información General" con estas especificaciones exactas:
+
+ESTRUCTURA DE LA PESTAÑA:
+Dividir en secciones usando Card components de Shadcn:
+
+SECCIÓN 1: IDENTIFICACIÓN (200px altura)
+Campos:
+- Nombre del contrato: Input obligatorio, placeholder "Campaña Retail Verano 2025"  
+- Número de contrato: Input readonly, auto-generado "CON-2025-XXXX"
+- Tipo de contrato: Select con opciones (A: Advertising, P: Programa, E: Evento)
+- Estado: Badge readonly "Nuevo" (bg-blue-100 text-blue-800)
+- Fecha de creación: readonly con formato chileno "25 de Mayo 2025, 14:30"
+
+SECCIÓN 2: FECHAS DE VIGENCIA (180px altura)
+Campos:
+- Fecha desde: DatePicker (Calendar de Shadcn) obligatorio
+- Fecha hasta: DatePicker obligatorio
+- Duración calculada: readonly "61 días (44 días hábiles)"
+
+CÁLCULOS AUTOMÁTICOS:
+- Al cambiar fechas, recalcular duración automáticamente
+- Mostrar días hábiles (L-V) vs días totales
+- Validar que fecha hasta > fecha desde
+- Mostrar alertas si período incluye feriados o eventos especiales
+
+SECCIÓN 3: PARTES INVOLUCRADAS (250px altura)
+Campos:
+- Anunciante: Combobox con búsqueda
+  * Búsqueda por RUT o nombre
+  * Mostrar: Nombre + RUT + Score de riesgo
+  * Botón "Crear nuevo anunciante" si no existe
+- Producto/Campaña: Combobox dependiente del anunciante
+  * Mostrar productos existentes del anunciante
+  * Opción "Crear nuevo producto"
+- Ejecutivo asignado: Select con usuarios de ventas
+  * Auto-asignar usuario actual por defecto
+- Agencia (opcional): Combobox similar a anunciante
+
+VALIDACIONES EN TIEMPO REAL:
+- Nombre: mínimo 5 caracteres, máximo 100
+- Fechas: vigencia mínima 1 día, máxima 365 días
+- Anunciante: obligatorio, debe existir en sistema
+- Producto: obligatorio
+
+ALERTAS DEL CLIENTE:
+Cuando se selecciona anunciante, mostrar Alert component si hay alertas:
+- Información: contratos vigentes, historial
+- Advertencias: retrasos en pagos, límites de crédito  
+- Críticas: problemas graves, bloqueos
+
+DATOS MOCK:
+Incluir anunciantes de ejemplo:
+- Supermercados XYZ SPA (RUT: 12.345.678-9, Score: 750)
+- Banco Chile (RUT: 98.765.432-1, Score: 820)
+- Retail ABC LTDA (RUT: 87.654.321-9, Score: 650)
+
+FUNCIONALIDADES ESPECIALES:
+- Auto-completado con debounce en búsquedas
+- Validación de RUT chileno en formato XX.XXX.XXX-X
+- Carga lazy de productos cuando se selecciona anunciante
+- Toast de confirmación al guardar cambios
+
+LAYOUT RESPONSIVE:
+- Desktop: 3 columnas para fechas
+- Tablet: 2 columnas  
+- Mobile: 1 columna stack
+
+Implementa usando Form de Shadcn con react-hook-form, validación con Zod, y todos los componentes mencionados.
+
+ PROMPT 5: VALIDACIONES Y FLUJO DE ANUNCIANTE
+Implementa las validaciones complejas y el flujo completo de selección de anunciante:
+
+DROPDOWN DE ANUNCIANTES:
+Cuando el usuario hace focus en el campo "Anunciante":
+
+COMPORTAMIENTO:
+- Mostrar Popover de Shadcn (400px ancho x 300px alto)
+- Input de búsqueda con ícono Search
+- Lista de resultados filtrable en tiempo real
+- Loading state con Skeleton components
+- Estado vacío con mensaje y botón "Crear nuevo"
+
+ESTRUCTURA DE CADA RESULTADO:
+Card compacta (80px altura) con:
+- Línea 1: Nombre empresa + ícono Building2
+- Línea 2: RUT formateado + estado SII (Check o X)
+- Línea 3: Score de riesgo con Badge colorizado:
+  * Verde (750-1000): "Riesgo Bajo"
+  * Amarillo (500-749): "Riesgo Medio"  
+  * Rojo (0-499): "Riesgo Alto"
+- Línea 4: Límite de crédito y disponible con Progress bar
+
+VALIDACIÓN DE RUT CHILENO:
+Función validateRut que:
+- Acepta formato XX.XXX.XXX-X o XXXXXXXX-X
+- Valida dígito verificador
+- Reformatea automáticamente
+- Muestra error si es inválido
+
+MODAL CREAR ANUNCIANTE:
+Al hacer clic "Crear nuevo anunciante":
+
+Dialog (600px x 500px) con Form:
+- Nombre o Razón Social: Input obligatorio
+- RUT: Input con validación en tiempo real
+- Giro comercial: Select con opciones predefinidas
+- Dirección: Input opcional
+- Teléfono: Input con formato chileno +56 9 XXXX XXXX
+- Email: Input con validación de email  
+- Ejecutivo asignado: Select automático (usuario actual)
+
+SISTEMA DE ALERTAS DEL CLIENTE:
+Cuando se selecciona un anunciante existente:
+
+VERIFICACIÓN AUTOMÁTICA:
+- Consulta API mock para obtener alertas
+- Evalúa: historial de pagos, contratos vigentes, límites de crédito
+- Muestra Alert component debajo del campo
+
+TIPOS DE ALERTAS:
+1. INFORMACIÓN (bg-blue-50):
+   - "Cliente tiene 2 contratos vigentes por $150.000"
+   - Botón "Ver contratos"
+
+2. ADVERTENCIA (bg-yellow-50):  
+   - "Promedio retraso en pagos: 18 días"
+   - "Límite de crédito al 85%"
+   - Recomendación: "Considerar pago anticipado"
+
+3. CRÍTICA (bg-red-50):
+   - "Cliente con facturas vencidas por $450.000"
+   - "Cuenta bloqueada por cobranza"
+   - Botón "Solicitar autorización especial"
+
+FUNCIONES PARA IMPLEMENTAR:
+
+```typescript
+// Validación de RUT
+const validateRut = (rut: string): boolean => {
+  // Implementar algoritmo de validación chileno
+}
+
+// Formateo de RUT
+const formatRut = (rut: string): string => {
+  // Formato XX.XXX.XXX-X
+}
+
+// Búsqueda de anunciantes
+const searchAdvertisers = async (query: string) => {
+  // Simular API con debounce 300ms
+}
+
+// Obtener alertas del cliente
+const getClientAlerts = async (advertiserId: string) => {
+  // Mock de sistema de alertas
+}
+
+DATOS MOCK EXPANDIDOS:
+Agregar más anunciantes con alertas variadas:
+
+Supermercados XYZ: Sin alertas (cliente premium)
+Retail ABC: Alerta media (retrasos menores)
+Farmacia DEF: Alerta crítica (facturas vencidas)
+Inmobiliaria GHI: Información (múltiples contratos)
+
+Implementa toda esta funcionalidad usando Shadcn components y lógica robusta de validación.
+
+## 🎯 **PROMPT 6: PESTAÑA 2 - TÉRMINOS FINANCIEROS**
+
+```bash
+Implementa la segunda pestaña "Términos Financieros" con validaciones complejas y sistema de aprobaciones:
+
+ESTRUCTURA DE LA PESTAÑA:
+
+SECCIÓN 1: ANÁLISIS DE RIESGO AUTOMÁTICO (80px altura)
+Card con información readonly:
+- Cliente seleccionado + Score + nivel de riesgo
+- Límite de crédito disponible con Progress bar
+- Historial de pagos (% puntualidad + promedio retraso)  
+- Recomendación automática del sistema
+
+SECCIÓN 2: CONFIGURACIÓN DE FACTURACIÓN (280px altura)
+RadioGroup con dos opciones principales:
+
+OPCIÓN 1: FACTURACIÓN POR HITOS
+- Card con descripción completa
+- Ventajas: Control de flujo, ideal para campañas por fases
+- Ejemplo: "50% al inicio, 50% al final"
+- Configuración adicional si se selecciona
+
+OPCIÓN 2: FACTURACIÓN POR PLAZOS (CUOTAS)  
+- Card con descripción completa
+- Ventajas: Flujo predecible, menor impacto en cash flow cliente
+- Advertencia: Mayor riesgo de cobranza
+- Configuración de número de cuotas si se selecciona
+
+CONFIGURACIÓN DE PLAZOS (aparece al seleccionar cuotas):
+- Botones para 2, 3, 4, 6 cuotas + opción personalizada
+- Preview automático del plan de pagos
+- Cálculo de fechas basado en período del contrato
+
+SECCIÓN 3: TÉRMINOS DE PAGO (240px altura)
+Campos:
+- Plazo de pago: Input numérico (días) con validación especial
+- Análisis automático: Comparación con promedio industria
+- Recomendación del sistema basada en score del cliente
+
+VALIDACIÓN DE PLAZO CRÍTICA:
+Implementar lógica especial para plazos > 30 días:
+
+```typescript
+const validatePaymentTerms = (days: number, clientScore: number) => {
+  const standardLimit = 30;
+  const executiveLimit = 45; // Requiere aprobación gerencial
+  const managerLimit = 60;   // Requiere aprobación directoral
+  
+  if (days <= standardLimit) return { valid: true };
+  if (days <= executiveLimit) return { 
+    valid: false, 
+    requiresApproval: 'manager',
+    message: 'Requiere autorización gerencial'
+  };
+  // ... más lógica
+}
+
+MODAL DE SOLICITUD DE AUTORIZACIÓN:
+Cuando el plazo excede límites, mostrar Dialog (600px x 500px):
+CONTENIDO:
+
+Información del contrato y cliente
+Análisis de riesgo automático
+Evaluación de Cortex AI (simulada)
+Campo obligatorio de justificación comercial
+Botones: "Enviar Solicitud" / "Cancelar"
+
+FLUJO DE APROBACIÓN:
+
+Usuario ingresa plazo > 30 días
+Campo se bloquea automáticamente (disabled + overlay)
+Aparece botón "Solicitar Autorización"
+Modal de justificación
+Estado "Pendiente" hasta respuesta del supervisor
+Notificación en tiempo real al supervisor (simular)
+
+SECCIÓN 4: RESUMEN FINANCIERO PRELIMINAR (200px altura)
+Card con cálculos automáticos:
+
+Valor base estimado (basado en propiedades asignadas)
+Comisión de agencia (% configurable)
+Descuentos promedio estimados
+Subtotal, IVA, Total final
+Botón "Recalcular" y "Ver Desglose Detallado"
+
+ESTADOS DE LA PESTAÑA:
+typescriptconst [billingMode, setBillingMode] = useState<'milestones' | 'installments'>()
+const [installmentCount, setInstallmentCount] = useState<number>()
+const [paymentTerms, setPaymentTerms] = useState<number>(30)
+const [isTermsLocked, setIsTermsLocked] = useState(false)
+const [approvalPending, setApprovalPending] = useState(false)
+const [financialEstimate, setFinancialEstimate] = useState({})
+FUNCIONES MOCK:
+
+getClientRiskAnalysis(clientId): Análisis automático
+requestTermsApproval(data): Solicitud de autorización
+calculateFinancialEstimate(contractData): Cálculos automáticos
+simulateSupervisorNotification(): Notificación push simulada
+
+VALIDACIONES ZOD:
+typescriptconst financialTermsSchema = z.object({
+  billingMode: z.enum(['milestones', 'installments']),
+  paymentTerms: z.number().min(1).max(120),
+  justification: z.string().min(20).optional(),
+  // ... más validaciones
+})
+Implementa toda esta funcionalidad con componentes Shadcn, estados complejos y lógica de negocio robusta.
+
+## 🎯 **PROMPT 7: SISTEMA DE APROBACIONES EN TIEMPO REAL**
+
+```bash
+Implementa el sistema completo de aprobaciones que se integra con la pestaña de términos financieros:
+
+ESTADO GLOBAL DE APROBACIONES:
+Crear store con Zustand para manejar:
+
+```typescript
+interface ApprovalStore {
+  pendingApprovals: ApprovalRequest[]
+  approvalHistory: ApprovalRecord[]
+  currentUserRole: 'executive' | 'manager' | 'director'
+  addApprovalRequest: (request: ApprovalRequest) => void
+  updateApprovalStatus: (id: string, status: 'approved' | 'rejected') => void
+  // ... más acciones
+}
+COMPONENTE DE SOLICITUD DE AUTORIZACIÓN:
+Expandir el modal de aprobación con:
+INFORMACIÓN AUTOMÁTICA:
+
+Datos del contrato y cliente pre-llenados
+Análisis de riesgo automático del sistema
+Comparación con políticas de la empresa
+Impacto financiero calculado
+
+EVALUACIÓN DE CORTEX AI (SIMULADA):
+Card especial con:
+
+Análisis automático del riesgo
+Comparación con casos similares históricos
+Recomendación: "APROBAR", "APROBAR CON CONDICIONES", "RECHAZAR"
+Nivel de confianza del análisis (ej: 89%)
+Condiciones sugeridas si aplica
+
+MODAL DEL SUPERVISOR:
+Crear componente separado para cuando el supervisor recibe la notificación:
+Dialog (700px x 600px) con:
+
+Resumen completo de la solicitud
+Evaluación de Cortex prominente
+Historial del cliente expandido
+Campo para condiciones especiales (Checkboxes):
+
+Requerir garantía adicional %
+Solicitar aval comercial
+Aumentar tasa de interés por mora
+Revisión mensual del límite
+
+
+
+SIMULACIÓN DE NOTIFICACIONES:
+Implementar sistema mock de notificaciones push:
+typescriptconst simulateApprovalFlow = async (approvalRequest) => {
+  // 1. Crear solicitud
+  const request = await createApprovalRequest(approvalRequest)
+  
+  // 2. Determinar aprobador automáticamente
+  const approver = determineApprover(request.type, request.amount)
+  
+  // 3. Simular notificación al supervisor (toast + badge + sound)
+  await simulateNotification(approver.id, request)
+  
+  // 4. Simular respuesta después de 30-60 segundos
+  setTimeout(() => simulateApprovalResponse(request.id), 45000)
+}
+COMPONENTE DE ESTADO PENDIENTE:
+Mientras espera aprobación, mostrar:
+
+Overlay semi-transparente sobre el campo bloqueado
+Información del estado: a quién se envió, tiempo límite
+Opciones: Reenviar notificación, Cancelar solicitud, Contactar supervisor
+Progress bar del tiempo de respuesta esperado
+
+RESPUESTA AUTOMÁTICA SIMULADA:
+Después de 30-60 segundos, simular respuesta aleatoria:
+
+70% probabilidad: APROBADO con condiciones
+20% probabilidad: APROBADO sin condiciones
+10% probabilidad: RECHAZADO
+
+NOTIFICACIÓN DE RESPUESTA:
+Cuando llega la respuesta:
+
+Toast notification grande con el resultado
+Actualización automática del campo (desbloqueado si aprobado)
+Mostrar las condiciones aplicadas si las hay
+Logging en el historial de auditoría
+
+COMPONENTE DE CONDICIONES ESPECIALES:
+Si se aprueba con condiciones, mostrar Card especial:
+
+Título: "APROBADO CON CONDICIONES ESPECIALES"
+Lista de condiciones aplicadas
+Información del aprobador y fecha
+Botón "Ver documento de condiciones completas"
+
+WIDGET PARA SUPERVISORES:
+Crear componente que aparece en el dashboard del supervisor:
+
+Lista de aprobaciones pendientes
+Tiempo restante para cada una
+Botones de acción rápida: Aprobar/Rechazar/Ver detalles
+Filtros por urgencia, tipo, monto
+
+MOCK DATA PARA TESTING:
+Incluir diferentes escenarios:
+
+Plazo 35 días (aprobable por gerente)
+Plazo 65 días (requiere director)
+Descuento 30% (crítico)
+Cliente riesgo alto + plazo extendido (caso complejo)
+
+AUDIO Y FEEDBACK:
+
+Sonido de notificación (opcional, configurable)
+Animaciones smooth para cambios de estado
+Micro-interacciones en botones y estados
+
+Implementa todo el sistema usando Zustand, Shadcn components, y lógica de estado robusta para simular un flujo de aprobaciones realista.
+
+
+## 🎯 **PROMPT 8: PESTAÑA 3 - ESPECIFICACIONES DE PAUTA**
+
+```bash
+Implementa la pestaña más compleja "Especificaciones de Pauta" con wizard modal y drag & drop:
+
+ESTRUCTURA PRINCIPAL DE LA PESTAÑA:
+
+HEADER CON RESUMEN EN TIEMPO REAL (60px altura):
+Card horizontal con métricas que se actualizan automáticamente:
+- Número de líneas, emisoras, días totales, cuñas, valor total
+- Estado: "Sin especificaciones" o resumen de lo configurado
+- Progress bar del progreso de configuración
+
+TOOLBAR DE ACCIONES (60px altura):  
+Botones con iconos Lucide:
+- [Plus] Agregar Línea
+- [Calculator] Calcular Totales  
+- [Eye] Preview Órdenes
+- [Brain] Optimizar IA
+- [FileSpreadsheet] Importar Excel
+- [Save] Guardar Todo
+
+TABLA DE ESPECIFICACIONES:
+Si no hay líneas: Estado vacío con:
+- Mensaje centrado "No hay especificaciones de pauta"
+- Botón grande "Agregar Primera Línea"  
+- Botón secundario "Generar con IA"
+
+Si hay líneas: Tabla con columnas:
+- # (número de línea)
+- Emisora (nombre + frecuencia + ciudad + audiencia)
+- Bloque (tipo + horarios + descripción)
+- Período (fechas + duración + días)
+- Cuñas (total + pagadas + bonificadas + distribución)
+- Valor (línea + descuento + estado de aprobación)
+- Acciones (ver, editar, duplicar, eliminar)
+
+MODAL WIZARD PARA AGREGAR LÍNEA:
+Dialog fullscreen (1200px x 800px) con 6 pasos:
+
+PASO 1: SELECCIÓN DE EMISORA (17% progreso)
+- Lista de emisoras asignadas al contrato  
+- Cards con información completa de cada emisora
+- Validación de disponibilidad en tiempo real
+- Información de audiencia
+PASO 2: TIPO DE BLOQUE (33% progreso)
+Grid 4x2 de cards con tipos de bloque:
+- Prime (07-09h, 18-20h, alto impacto)
+- Prime Determinado (horario fijo, máxima precisión)
+- Repartido (aleatorio, económico)
+- Noche (22-06h, bajo costo)
+- Menciones (en vivo, personalizado)
+- Micros (10-15 seg, breve impacto)
+- Señal Horaria (en punto, recordatorio)
+- Auspicio (programa completo, exclusivo)
+
+Cada card muestra: precio, características, disponibilidad, rating
+
+PASO 3: CONFIGURACIÓN TEMPORAL (50% progreso)
+- DateRangePicker para período de la línea
+- Validación contra fechas del contrato
+- Selector de duración por cuña (10s, 15s, 20s, 30s, 45s, personalizado)
+- Análisis automático de eventos especiales en el período
+- Recomendaciones de Cortex sobre el período seleccionado
+
+PASO 4: SELECCIÓN DE PAQUETE (67% progreso)
+Grid 2x2 con paquetes disponibles para el bloque seleccionado:
+- Información detallada: distribución, bonificaciones, flexibilidad
+- Costo estimado por paquete
+- Rating de cada paquete
+- Recomendación de Cortex
+- Opción "Personalizado" para crear configuración específica
+
+PASO 5: CONFIGURACIÓN DETALLADA (83% progreso)
+- Distribución semanal en tabla editable
+- Cuñas por día de la semana (inputs numéricos)
+- Cálculo automático de totales y bonificaciones
+- Botón "Personalizar distribución" para casos especiales
+- Preview de la programación semanal
+
+PASO 6: VALIDACIÓN Y CONFIRMACIÓN (100% progreso)
+- Resumen completo de la configuración
+- Cálculo final con validaciones de descuento
+- Input para precio acordado por cuña
+- Validación automática de límites de descuento
+- Sistema de alertas si excede límites
+- Proyecciones de Cortex (reach, frecuencia, GRP, ROI)
+
+VALIDACIÓN DE DESCUENTOS CRÍTICA:
+```typescript
+const validateDiscount = (agreedPrice: number, listPrice: number) => {
+ const discountPercent = ((listPrice - agreedPrice) / listPrice) * 100;
+ const limits = {
+   automatic: 15,    // Sin aprobación
+   executive: 25,    // Aprobación gerencial  
+   manager: 40       // Aprobación directoral
+ };
+ 
+ if (discountPercent > limits.automatic) {
+   return {
+     requiresApproval: true,
+     level: discountPercent > limits.manager ? 'director' : 'manager',
+     excessAmount: discountPercent - limits.automatic
+   };
+ }
+ return { requiresApproval: false };
+};
+
+MODAL DE DESCUENTO EXCESIVO:
+Si el descuento excede límites:
+
+Overlay crítico sobre el paso 6
+Información del exceso y impacto financiero
+Campo obligatorio de justificación (mínimo 20 caracteres)
+Botón "Solicitar Autorización"
+El wizard se bloquea hasta resolver
+
+COMPONENTE DE LÍNEA GUARDADA:
+Cada línea en la tabla como Card expandible:
+
+Vista compacta por defecto (80px altura)
+Click para expandir y mostrar detalles completos
+Acciones: Ver, Editar, Duplicar, Eliminar
+Estado visual según validaciones y aprobaciones
+
+DRAG & DROP PARA REORDENAR:
+
+Implementar con @dnd-kit para reordenar líneas
+Visual feedback durante el arrastre
+Numeración automática después de reordenar
+
+CÁLCULOS AUTOMÁTICOS:
+Funciones para recalcular en tiempo real:
+typescriptconst calculateLineTotal = (line: ContractLine) => {
+  const totalSpots = line.regularSpots + line.bonusSpots;
+  const lineValue = line.regularSpots * line.unitPrice;  
+  return { totalSpots, lineValue, bonusSpots: line.bonusSpots };
+};
+
+const calculateContractTotals = (lines: ContractLine[]) => {
+  const totals = lines.reduce((acc, line) => {
+    const lineCalc = calculateLineTotal(line);
+    return {
+      totalLines: acc.totalLines + 1,
+      totalSpots: acc.totalSpots + lineCalc.totalSpots,
+      totalValue: acc.totalValue + lineCalc.lineValue,
+      totalBonusSpots: acc.totalBonusSpots + lineCalc.bonusSpots
+    };
+  }, { totalLines: 0, totalSpots: 0, totalValue: 0, totalBonusSpots: 0 });
+  
+  return totals;
+};
+DATOS MOCK:
+Emisoras de ejemplo:
+
+Radio Nueva 95.3 FM (Santiago, 320K oyentes, Prime $350/mención)
+App Móvil MegaMedia (Digital, 150K usuarios, CPM $15)
+TV Regional Canal 8 (Regiones, 80K viewers, $500/mención)
+
+ESTADOS DEL COMPONENTE:
+typescriptconst [contractLines, setContractLines] = useState<ContractLine[]>([]);
+const [isAddingLine, setIsAddingLine] = useState(false);
+const [currentStep, setCurrentStep] = useState(1);
+const [lineData, setLineData] = useState<Partial<ContractLine>>({});
+const [totals, setTotals] = useState<ContractTotals>({});
+Implementa toda esta funcionalidad usando Shadcn Dialog, Form, Table, y componentes personalizados para el wizard multi-paso.
+## 🎯 **PROMPT 9: FUNCIONALIDAD AVANZADA DE ESPECIFICACIONES**
+
+```bash
+Implementa las funcionalidades avanzadas de la pestaña Especificaciones:
+
+FUNCIÓN "PREVIEW ÓRDENES DE PAUTA":
+Al hacer clic en el botón "Preview Órdenes":
+
+Dialog (1000px x 700px) que genera vista previa de órdenes para sistemas de emisión:
+- Información del contrato pre-llenada
+- Orden formateada para WideOrbit Traffic
+- Instrucciones técnicas específicas
+- Archivos de audio requeridos
+- Configuración de horarios exactos
+- Separación de competencia
+- Formato de exportación (CSV, XML, JSON)
+
+FORMATO DE ORDEN TIPO:
+```typescript
+interface PautaOrder {
+  contractNumber: string;
+  client: string;
+  campaign: string;
+  station: string;
+  blockType: string;
+  startDate: string;
+  endDate: string;
+  totalSpots: number;
+  duration: number; // segundos
+  dayparts: string[]; // ["07:00-09:00", "18:00-20:00"]
+  weeklyDistribution: WeeklySpots;
+  audioFiles: AudioFile[];
+  specialInstructions: string[];
+  competitorSeparation: number; // minutos
+}
+FUNCIÓN "CALCULAR TOTALES":
+Botón que ejecuta recálculo completo:
+
+Validar todas las líneas individualmente
+Recalcular subtotales por línea
+Aplicar descuentos y comisiones
+Calcular IVA según configuración
+Actualizar totales del contrato
+Mostrar modal con resumen de cambios
+Progress bar durante el cálculo
+
+FUNCIÓN "OPTIMIZAR IA":
+Simulación de optimización automática:
+Modal de optimización (600px x 500px):
+
+Análisis del mix actual de medios
+Sugerencias de mejora:
+
+"Agregar Radio Corazón para maximizar reach (+25%)"
+"Considerar digital para audiencia joven"
+"Optimizar distribución horaria"
+
+
+Estimación de ROI mejorado
+Botón "Aplicar sugerencias" vs "Mantener actual"
+
+FUNCIÓN "IMPORTAR EXCEL":
+Input file que acepta .xlsx/.csv:
+
+Validación de formato de archivo
+Mapeo de columnas automático
+Preview de datos antes de importar
+Validación de datos línea por línea
+Reporte de errores y advertencias
+Confirmación antes de aplicar cambios
+
+TABLA AVANZADA DE LÍNEAS:
+Mejorar la tabla con funcionalidades:
+COLUMNAS EXPANDIBLES:
+
+Emisora: Hover para mostrar detalles completos
+Período: Tooltip con distribución día por día
+Cuñas: Breakdown de pagadas/bonificadas/total
+Valor: Desglose con descuentos aplicados
+
+FILTROS Y BÚSQUEDA:
+
+Barra de búsqueda global
+Filtros por: Emisora, Bloque, Estado, Rango de valores
+Ordenamiento por cualquier columna
+Vista compacta/expandida
+
+ACCIONES EN LOTE:
+
+Checkbox para selección múltiple
+Acciones: Duplicar seleccionadas, Eliminar, Aplicar descuento, Cambiar fechas
+Confirmación antes de acciones masivas
+
+COMPONENTE DE RESUMEN FINANCIERO:
+Card siempre visible con totales actualizados:
+typescriptinterface ContractSummary {
+  totalLines: number;
+  totalSpots: number;
+  totalBonusSpots: number;
+  subtotal: number;
+  discounts: number;
+  commissions: number;
+  subtotalAfterDiscounts: number;
+  vat: number;
+  grandTotal: number;
+  estimatedROI: number;
+  totalReach: number;
+  averageFrequency: number;
+}
+VALIDACIONES COMPLEJAS:
+Implementar validaciones de negocio:
+typescriptconst validateContractSpecifications = (lines: ContractLine[]) => {
+  const validations = [];
+  
+  // Validar solapamiento de horarios en misma emisora
+  const overlaps = detectTimeOverlaps(lines);
+  if (overlaps.length > 0) {
+    validations.push({
+      type: 'warning',
+      message: 'Posible solapamiento de horarios detectado',
+      affectedLines: overlaps
+    });
+  }
+  
+  // Validar disponibilidad de inventario
+  const inventoryIssues = await validateInventoryAvailability(lines);
+  
+  // Validar límites de descuento
+  const discountIssues = validateDiscountLimits(lines);
+  
+  return validations;
+};
+NOTIFICACIONES Y FEEDBACK:
+
+Toast notifications para acciones exitosas
+Progress indicators para operaciones largas
+Confirmación antes de acciones destructivas
+Auto-save cada 30 segundos con indicador visual
+
+INTEGRACIÓN CON PESTAÑAS ANTERIORES:
+
+Actualizar automáticamente totales en Pestaña 2
+Validar que hay anunciante y fechas en Pestaña 1
+Bloquear navegación si hay validaciones pendientes
+
+RESPONSIVE DESIGN:
+
+Desktop: Tabla completa con todas las columnas
+Tablet: Colapsar columnas secundarias
+Mobile: Vista de cards apiladas en lugar de tabla
+
+ESTADOS DE CARGA:
+
+Skeleton loading para tabla mientras carga
+Shimmer effect en cálculos automáticos
+Disable buttons durante operaciones async
+
+Implementa todas estas funcionalidades con manejo de errores robusto y UX pulida usando Shadcn components.
+
+## 🎯 **PROMPT 10: PESTAÑAS 4-6 - OBSERVACIONES, DOCUMENTOS E HISTORIAL**
+
+```bash
+Implementa las tres pestañas siguientes del wizard:
+
+PESTAÑA 4: OBSERVACIONES Y COMENTARIOS
+
+EDITOR PRINCIPAL:
+- Rich text editor usando Textarea de Shadcn con toolbar básico
+- Botones: Bold, Italic, Underline, Lista, Numeración, Link
+- Auto-guardado cada 30 segundos con indicador
+- Contador de caracteres
+- Soporte para markdown básico
+
+PLANTILLAS RÁPIDAS:
+Botones que insertan texto predefinido:
+- "Términos Comerciales": Inserta template con valores del contrato
+- "Objetivos Campaña": Template de objetivos típicos
+- "Restricciones": Template de limitaciones comunes
+- "Cronograma": Template con fechas importantes
+- "Modificaciones": Template para cambios post-firma
+
+EJEMPLO DE TEMPLATE:
+```typescript
+const commercialTermsTemplate = (contractData) => `
+TÉRMINOS COMERCIALES ESPECIALES:
+
+- Precio acordado: ${formatCurrency(contractData.unitPrice)} por cuña
+- Descuento aplicado: ${contractData.discountPercent}%
+- Condiciones de pago: ${contractData.paymentTerms} días
+- Garantías requeridas: ${contractData.guarantees || 'Ninguna'}
+- Bonificaciones incluidas: ${contractData.bonusPercent}%
+
+COMPROMISOS DEL CLIENTE:
+- Volumen mínimo anual: ${formatCurrency(contractData.annualCommitment)}
+- Exclusividad de categoría: ${contractData.exclusivity ? 'Sí' : 'No'}
+- Renovación automática: A evaluar
+
+COMPROMISOS DEL MEDIO:
+- Horarios garantizados: ${contractData.guaranteedTimeSlots}
+- Separación de competencia: 30 minutos
+- Reporting semanal: Sí
+- Make good automático: Sí
+
+Fecha de vigencia: ${formatDate(contractData.startDate)} a ${formatDate(contractData.endDate)}
+`;
+SISTEMA DE COMENTARIOS COLABORATIVOS:
+
+Sección debajo del editor para comentarios del equipo
+Comentarios en tiempo real (simulado)
+Formato: Avatar + Nombre + Timestamp + Contenido
+Botones: Responder, Like, Marcar como importante
+Input para nuevo comentario con botón Enviar
+
+
+PESTAÑA 5: ACTIVOS Y ANEXOS
+NAVEGACIÓN POR CATEGORÍAS:
+Tabs horizontales con contadores:
+
+Cuñas (0) - Archivos de audio
+Facturas (0) - Documentos de facturación
+Documentos (0) - Archivos generales
+Reportes (0) - Reportes y análisis
+
+TAB CUÑAS:
+
+Lista de cuñas disponibles del anunciante seleccionado
+Cards con: nombre, duración, tamaño, formato, fecha
+Reproductor de audio inline con controles
+Botón "Asignar a líneas" que abre selector de líneas
+Upload zone para subir nuevas cuñas
+
+REPRODUCTOR DE AUDIO:
+typescriptconst AudioPlayer = ({ audioFile }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  
+  // Controles: Play/Pause, Progress bar, Volume, Download
+  // Waveform visual (simulado con barras CSS)
+};
+TAB DOCUMENTOS:
+
+Drag & drop zone para archivos (PDF, DOC, XLS, JPG, PNG)
+Validación de formatos y tamaños (máx 25MB)
+Lista de documentos con thumbnails
+Viewer integrado para PDFs e imágenes
+Categorización automática por tipo de archivo
+Sistema de etiquetas
+
+UPLOAD COMPONENT:
+typescriptconst FileUpload = ({ onUpload, maxSize = 25000000, acceptedTypes }) => {
+  const [dragActive, setDragActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  
+  // Drag & drop logic
+  // Progress bar durante upload
+  // Validación de archivos
+  // Preview de archivos subidos
+};
+
+PESTAÑA 6: HISTORIAL Y AUDITORÍA
+FILTROS DE AUDITORÍA:
+
+Por usuario: Select con todos los usuarios del sistema
+Por tipo: Select con tipos de eventos (creación, modificación, aprobación)
+Por período: DateRangePicker
+Búsqueda de texto libre
+Botones: Aplicar filtros, Limpiar, Exportar log
+
+LOG DE EVENTOS:
+Lista cronológica de eventos con:
+
+Timestamp exacto (fecha y hora)
+Usuario (avatar + nombre + rol)
+Tipo de evento con icono y color
+Descripción detallada del cambio
+Valores anteriores vs nuevos (si aplica)
+Botón "Ver detalles" para información completa
+
+TIPOS DE EVENTOS MOCK:
+typescriptconst auditEvents = [
+  {
+    id: '1',
+    timestamp: '2025-05-25T15:45:33Z',
+    userId: 'carlos123',
+    userName: 'Carlos Mendoza',
+    userRole: 'Ejecutivo Ventas',
+    type: 'DISCOUNT_APPROVED',
+    description: 'Descuento 25% aprobado por gerencia',
+    details: {
+      previousValue: '$400/cuña',
+      newValue: '$300/cuña',
+      approver: 'María Silva',
+      conditions: ['Garantía 15%', 'Compromiso anual $200K']
+    }
+  },
+  // ... más eventos
+];
+MODAL DE DETALLE DE EVENTO:
+Dialog con información completa:
+
+Información básica (ID, timestamp, usuario, IP, dispositivo)
+Contexto del cambio (valores anteriores/nuevos)
+Cadena de aprobación si aplica
+Metadatos técnicos (hash, request ID, tiempo de procesamiento)
+Botones: Copiar ID, Reporte forense, Eventos relacionados
+
+WIDGET DE ALERTAS:
+Card con alertas automáticas del sistema:
+
+Detección de patrones anómalos
+Múltiples modificaciones en poco tiempo
+Accesos fuera de horario
+Cambios por usuarios no autorizados
+
+FUNCIONES DE AUDITORÍA:
+typescriptconst logAuditEvent = async (event: AuditEvent) => {
+  // Guardar en store con timestamp inmutable
+  // Generar hash de integridad
+  // Detectar patrones anómalos
+  // Enviar alertas si es necesario
+};
+
+const generateAuditReport = (filters: AuditFilters) => {
+  // Generar reporte PDF con eventos filtrados
+  // Incluir gráficos de actividad
+  // Firmar digitalmente para integridad
+};
+DATOS MOCK PARA TESTING:
+
+Eventos de diferentes tipos y usuarios
+Cadenas de aprobación completas
+Alertas de seguridad simuladas
+Patrones de actividad realistas
+
+Implementa todas estas pestañas con componentes Shadcn, estados locales apropiados, y funcionalidades completas pero usando datos mock.
+
+
+## 🎯 **PROMPT 11: PESTAÑAS 7-8 Y FUNCIONALIDADES FINALES**
+
+```bash
+Implementa las últimas pestañas del wizard y funcionalidades de finalización:
+
+PESTAÑA 7: WORKFLOWS Y GESTIÓN DE TAREAS
+
+ESTADO ACTUAL DEL CONTRATO:
+Card de resumen con:
+- Progress bar del progreso general (calculado automáticamente)
+- Estado actual: "Borrador en elaboración", "En revisión", etc.
+- Próximo paso en el workflow
+- Tiempo estimado para finalizar
+- Responsable del próximo paso
+
+CÁLCULO DE PROGRESO:
+```typescript
+const calculateContractProgress = (contractData) => {
+  const requirements = [
+    { key: 'hasBasicInfo', weight: 15, check: () => contractData.name && contractData.advertiser },
+    { key: 'hasFinancialTerms', weight: 20, check: () => contractData.paymentTerms && contractData.billingMode },
+    { key: 'hasSpecifications', weight: 30, check: () => contractData.lines?.length > 0 },
+    { key: 'hasObservations', weight: 10, check: () => contractData.observations?.length > 0 },
+    { key: 'hasDocuments', weight: 10, check: () => contractData.documents?.length > 0 },
+    { key: 'isConfigured', weight: 15, check: () => contractData.isConfigured }
+  ];
+  
+  return requirements.reduce((progress, req) => {
+    return progress + (req.check() ? req.weight : 0);
+  }, 0);
+};
+TAREAS ACTIVAS:
+Lista de tareas pendientes con:
+
+Cards de diferentes prioridades (Alta: rojo, Media: amarillo, Baja: gris)
+Información: título, asignado, fecha límite, descripción
+Estados: Pendiente, En progreso, Completada, Vencida
+Acciones: Completar, Reasignar, Comentar, Reprogramar
+
+TIPOS DE TAREAS:
+
+Manuales: Creadas por usuarios
+Automáticas: Generadas por el sistema
+Programadas: Ejecutan en fechas específicas
+Condicionales: Se activan al cumplir condiciones
+
+COMPONENTE DE TAREA:
+typescriptconst TaskCard = ({ task, onComplete, onEdit }) => {
+  const priorityColors = {
+    high: 'bg-red-50 border-red-200 text-red-800',
+    medium: 'bg-yellow-50 border-yellow-200 text-yellow-800', 
+    low: 'bg-gray-50 border-gray-200 text-gray-800'
+  };
+  
+  // Mostrar información de la tarea
+  // Botones de acción según permisos del usuario
+  // Countdown timer si tiene fecha límite
+};
+WORKFLOW VISUAL:
+Diagrama de flujo simplificado:
+
+Pasos: Crear → Configurar → Especificar → Revisar → Aprobar → Firmar → Activar
+Estados visuales: Completado (verde), En proceso (azul), Pendiente (gris), Bloqueado (rojo)
+Click en cada paso para ver detalles
+Información de quién completó cada paso y cuándo
+
+MODAL CREAR TAREA:
+Dialog para crear tareas personalizadas:
+
+Título (obligatorio)
+Descripción
+Asignado a (Select de usuarios)
+Fecha límite (DatePicker)
+Prioridad (RadioGroup)
+Configuración avanzada: recordatorios, bloqueo de workflow, subtareas
+
+
+PESTAÑA 8: CONFIGURACIÓN
+NAVEGACIÓN DE CONFIGURACIÓN:
+Tabs secundarios:
+
+General: Preferencias básicas
+Notificaciones: Configuración de alertas
+Personalización: Tema y visualización
+Permisos: Control de acceso
+Integración: APIs y sistemas externos
+Automatización: Reglas y triggers
+
+TAB GENERAL:
+Checkboxes para:
+
+Auto-guardar cada 30 segundos
+Validación en tiempo real
+Modo offline (guardar local)
+Confirmación antes de eliminar
+Mostrar tooltips explicativos
+
+Configuración de descuentos:
+
+Límite automático: Input numérico
+Límite ejecutivo: Input numérico
+Límite gerencial: Input numérico
+
+Configuración financiera:
+
+Moneda base: Select (CLP, USD, EUR)
+Tasa IVA: Input numérico
+Redondeo: Select (peso más cercano, centavo, etc.)
+
+TAB NOTIFICACIONES:
+Configuración detallada de cuando recibir alertas:
+
+Email: Checkboxes para diferentes tipos de eventos
+Browser: Notificaciones push en tiempo real
+WhatsApp: Para urgencias críticas
+Horarios: No molestar desde/hasta
+Sonidos: Selección de tonos y volumen
+
+TAB PERSONALIZACIÓN:
+
+Tema: Light/Dark/Auto con preview
+Densidad: Compacta/Cómoda/Espaciosa
+Widgets del dashboard: Checkboxes de qué mostrar
+Configuración de tablas: filas por página, filtros
+Atajos de teclado: Enable/disable + personalización
+
+TAB PERMISOS:
+Lista de usuarios con acceso al contrato:
+
+Cards con información de cada usuario
+Niveles: Solo lectura, Colaborador, Aprobador, Control total
+Botón "Agregar usuario" con modal
+Configuración de seguridad: 2FA, logs, restricciones horarias
+
+TAB AUTOMATIZACIÓN:
+Reglas de negocio configurables:
+
+Triggers: "Cuando se completa el contrato..."
+Acciones: "Generar órdenes automáticamente", "Notificar programación"
+Integraciones: WideOrbit, Email, otros sistemas
+Configuración de Cortex AI: sensibilidad, tipos de alertas
+
+
+FINALIZACIÓN DEL WIZARD:
+MODAL DE RESUMEN:
+Al completar todas las pestañas, mostrar Dialog de confirmación:
+
+Resumen de toda la configuración aplicada
+Lista de próximos pasos automáticos
+Advertencias si falta algo importante
+Botones: "Ir al Dashboard", "Notificar Equipo", "Revisar Contrato"
+
+FUNCIÓN DE FINALIZACIÓN:
+typescriptconst finalizeContract = async () => {
+  // 1. Validar todas las pestañas
+  const validation = await validateAllTabs();
+  if (!validation.isValid) {
+    showValidationErrors(validation.errors);
+    return;
+  }
+  
+  // 2. Aplicar configuración
+  await applyConfiguration();
+  
+  // 3. Activar automatizaciones
+  await activateAutomations();
+  
+  // 4. Crear tareas de seguimiento
+  await createFollowUpTasks();
+  
+  // 5. Notificar al equipo
+  await notifyTeam();
+  
+  // 6. Actualizar estado
+  await updateContractStatus('CONFIGURED');
+  
+  // 7. Mostrar confirmación
+  showCompletionModal();
+};
+NAVEGACIÓN ENTRE PESTAÑAS:
+
+Validación antes de cambiar de pestaña
+Indicadores visuales de pestañas completadas/con errores
+Botones Anterior/Siguiente inteligentes
+Salto directo a pestañas específicas
+Confirmación antes de salir sin guardar
+
+ESTADO GLOBAL DEL WIZARD:
+typescriptconst useContractWizard = () => {
+  const [currentTab, setCurrentTab] = useState(1);
+  const [contractData, setContractData] = useState({});
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isDirty, setIsDirty] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  
+  // Funciones para manejar navegación, validación, guardado
+};
+RESPONSIVE Y UX:
+
+Wizard responsive en mobile (pestañas como accordion)
+Loading states para operaciones async
+Toast notifications para feedback
+Confirmaciones antes de acciones destructivas
+Auto-save con indicador visual
+Keyboard shortcuts para navegación
+
+Implementa todas estas funcionalidades finales con la misma calidad y detalle de las pestañas anteriores.
+
+## 🎯 **PROMPT 12: INTEGRACIÓN COMPLETA Y TESTING**
+
+```bash
+Finaliza el módulo de contratos integrando todos los componentes y agregando funcionalidades de producción:
+
+INTEGRACIÓN ENTRE COMPONENTES:
+
+NAVEGACIÓN GLOBAL:
+- Desde listado principal (/contratos) a wizard (/contratos/nuevo)
+- Desde wizard a vista detalle (/contratos/[id])
+- Breadcrumbs funcionais en todas las páginas
+- Estado compartido entre páginas usando Zustand
+
+SINCRONIZACIÓN DE DATOS:
+```typescript
+// Store global integrado
+const useContractStore = create((set, get) => ({
+  // Estado principal
+  contracts: [],
+  currentContract: null,
+  filters: {},
+  pagination: { page: 1, limit: 20, total: 0 },
+  
+  // Acciones
+  loadContracts: async (filters) => {
+    // Cargar contratos con filtros
+    // Actualizar pagination
+    // Manejar errores
+  },
+  
+  createContract: async (data) => {
+    // Crear nuevo contrato
+    // Actualizar lista
+    // Navegar a wizard
+  },
+  
+  updateContract: async (id, data) => {
+    // Actualizar contrato existente
+    // Sincronizar con lista
+    // Auto-save en wizard
+  },
+  
+  deleteContract: async (id) => {
+    // Eliminar con confirmación
+    // Actualizar lista
+    // Manejo de errores
+  }
+}));
+VALIDACIONES GLOBALES:
+Sistema de validación consistente en todo el módulo:
+
+Esquemas Zod compartidos
+Mensajes de error unificados
+Validación async para RUTs, emails, etc.
+Cross-validation entre pestañas del wizard
+
+MANEJO DE ERRORES:
+typescriptconst ErrorBoundary = ({ children }) => {
+  // Capturar errores de React
+  // Mostrar fallback UI elegante
+  // Logging automático de errores
+  // Opción de retry
+};
+
+const useErrorHandler = () => {
+  // Hook para manejo consistente de errores
+  // Toast notifications automáticas
+  // Logging en consola y servidor mock
+  // Recovery automático cuando sea posible
+};
+SISTEMA DE NOTIFICACIONES:
+Implementar Toaster global de Shadcn:
+
+Success: Verde con icono Check
+Error: Rojo con icono AlertCircle
+Warning: Amarillo con icono AlertTriangle
+Info: Azul con icono Info
+Loading: Con spinner y texto dinámico
+
+DATOS MOCK REALISTAS:
+Expandir datos mock para testing completo:
+typescript// Mock data más realista
+const mockContracts = [
+  {
+    id: 'CON-2025-0123',
+    name: 'Campaña Retail Verano 2025',
+    advertiser: {
+      id: 'adv-001',
+      name: 'Supermercados XYZ SPA',
+      rut: '12.345.678-9',
+      score: 750
+    },
+    executive: {
+      id: 'exec-001', 
+      name: 'Carlos Mendoza',
+      email: 'carlos.mendoza@megamedia.com'
+    },
+    value: 68100,
+    currency: 'CLP',
+    status: 'draft',
+    progress: 75,
+    createdAt: '2025-05-25T10:30:00Z',
+    // ... más campos
+  },
+  // ... 50+ contratos mock
+];
+FUNCIONALIDADES DE PRODUCCIÓN:
+BÚSQUEDA AVANZADA:
+
+Búsqueda global con debounce
+Filtros combinables
+Autocompletado inteligente
+Guardado de filtros favoritos
+Búsqueda por texto completo en observaciones y documentos
+
+EXPORT/IMPORT:
+typescriptconst exportContracts = async (format: 'excel' | 'pdf' | 'csv', filters) => {
+  // Generar archivo según formato
+  // Incluir filtros aplicados
+  // Progress bar para exports grandes
+  // Download automático
+};
+
+const importContracts = async (file: File) => {
+  // Validar formato de archivo
+  // Preview de datos antes de importar
+  // Validación de datos línea por línea  
+  // Reporte de errores y éxitos
+  // Rollback si falla
+};
+SISTEMA DE PERMISOS:
+Implementar control de acceso granular:
+typescriptconst usePermissions = () => {
+  const { user } = useUserStore();
+  
+  const can = (action: string, resource: string) => {
+    // Verificar permisos del usuario
+    // Considerar roles y permisos específicos
+    // Cache de permisos para performance
+  };
+  
+  const canEdit = (contract: Contract) => {
+    // Lógica específica para edición
+    // Considerar estado del contrato
+    // Propietario vs colaborador
+  };
+  
+  return { can, canEdit };
+};
+TESTING Y VALIDACIÓN:
+CASOS DE PRUEBA CRÍTICOS:
+Implementar testing manual para:
+
+Flujo completo: crear contrato desde cero hasta finalización
+Validaciones: todos los campos obligatorios y límites
+Aprobaciones: flujo completo de solicitud y respuesta
+Cálculos: totales, descuentos, impuestos
+Navegación: entre todas las pestañas y páginas
+Responsive: funcionalidad en mobile y tablet
+Estados de error: manejo cuando fallan las APIs mock
+
+DATOS DE TESTING:
+typescript// Casos edge para testing
+const testCases = {
+  // Caso normal
+  normal: { /* datos válidos completos */ },
+  
+  // Casos límite  
+  minimumContract: { /* datos mínimos requeridos */ },
+  maximumValues: { /* valores en límites superiores */ },
+  
+  // Casos de error
+  invalidRut: { /* RUT inválido */ },
+  exceedDiscountLimit: { /* descuento > 40% */ },
+  overlappingDates: { /* fechas solapadas */ },
+  
+  // Casos complejos
+  multipleApprovals: { /* requiere múltiples aprobaciones */ },
+  highRiskClient: { /* cliente con alertas críticas */ }
+};
+PERFORMANCE Y OPTIMIZACIÓN:
+LAZY LOADING:
+
+Componentes de pestañas cargados bajo demanda
+Datos de contratos con paginación virtual
+Imágenes y documentos con loading diferido
+
+MEMOIZACIÓN:
+typescript// Optimizar cálculos costosos
+const contractTotals = useMemo(() => {
+  return calculateContractTotals(contractData.lines);
+}, [contractData.lines]);
+
+// Callbacks estables
+const handleSave = useCallback(async (data) => {
+  await saveContract(data);
+}, []);
+ESTADO DE LOADING:
+
+Skeleton components para carga inicial
+Shimmer effects para recálculos
+Progress bars para operaciones largas
+Disable states durante operaciones async
+
+CONFIGURACIÓN FINAL:
+CONSTANTES DEL SISTEMA:
+typescriptexport const CONTRACT_CONSTANTS = {
+  DISCOUNT_LIMITS: {
+    AUTOMATIC: 15,
+    EXECUTIVE: 25, 
+    MANAGER: 40
+  },
+  PAYMENT_TERMS: {
+    STANDARD: 30,
+    EXTENDED_LIMIT: 60
+  },
+  CURRENCIES: {
+    CLP: { symbol: '$', format: '#,##0', decimals: 0 },
+    USD: { symbol: 'US$', format: '#,##0.00', decimals: 2 }
+  },
+  FILE_LIMITS: {
+    MAX_SIZE: 25 * 1024 * 1024, // 25MB
+    ACCEPTED_TYPES: ['image/*', 'application/pdf', '.doc,.docx,.xls,.xlsx']
+  }
+};
+CONFIGURACIÓN DE DESARROLLO:
+
+Variables de entorno para APIs mock
+Configuración de logging (development vs production)
+Feature flags para funcionalidades experimentales
+Configuración de hot-reload y debugging
+
+DOCUMENTACIÓN EN CÓDIGO:
+typescript/**
+ * Hook principal para manejar el wizard de contratos
+ * @param contractId - ID del contrato (opcional para creación)
+ * @returns {object} Estado y funciones del wizard
+ * 
+ * @example
+ * const { currentTab, contractData, saveContract } = useContractWizard();
+ */
+const useContractWizard = (contractId?: string) => {
+  // Implementación con JSDoc completo
+};
+DEPLOYMENT CHECKLIST:
+
+ Todos los componentes Shadcn importados correctamente
+ Estados de loading en todas las operaciones async
+ Manejo de errores en todos los componentes
+ Validaciones client-side completas
+ Responsive design testeado
+ Accessibility básica (ARIA labels, keyboard navigation)
+ SEO meta tags en páginas principales
+ Performance optimizado (< 3s carga inicial)
+
+PRUEBAS FINALES:
+
+Crear 3 contratos diferentes usando el wizard completo
+Probar todas las validaciones con datos inválidos
+Verificar navegación entre todas las páginas
+Testear responsive en 3 tamaños de pantalla
+Probar funcionalidades de export/import
+Verificar sistema de notificaciones
+Testear estados de error y recovery
+
+El módulo debe estar 100% funcional con datos mock, listo para conectar APIs reales en el futuro.
+## 🎯 **PROMPT 13: DOCUMENTACIÓN Y ENTREGA FINAL**
+
+```bash
+Genera la documentación completa del módulo de contratos y preparación para producción:
+
+README.md DEL MÓDULO:
+Crea documentación completa con:
+
+# Módulo de Contratos - Silexar Pulse
+
+## Descripción
+Módulo completo para gestión de contratos publicitarios con wizard de 8 pestañas, validaciones complejas, sistema de aprobaciones y integración con sistemas externos.
+
+## Tecnologías
+- Next.js 14 (App Router)
+- Shadcn/UI + Tailwind CSS
+- Zustand (Estado global)
+- React Hook Form + Zod (Formularios)
+- Lucide React (Iconos)
+
+## Estructura de Archivos
+[Árbol completo de archivos generados]
+
+## Funcionalidades Principales
+- [Lista detallada de todas las funcionalidades]
+
+## Configuración
+[Instrucciones de instalación y configuración]
+
+## API Mock
+[Documentación de todos los endpoints mock implementados]
+
+## Guía de Uso
+[Screenshots y explicación de flujos principales]
+
+GUÍA DE DESARROLLO:
+```typescript
+// Convenciones de código
+// Patrones de componentes
+// Estructura de estados
+// Manejo de errores estándar
+// Testing guidelines
+CHANGELOG.md:
+Historial de cambios implementados:
+
+v1.0.0: Implementación inicial completa
+Todas las funcionalidades base
+Sistema de validaciones
+Flujo de aprobaciones
+8 pestañas del wizard
+Integración mock completa
+
+DEPLOYMENT GUIDE:
+Instrucciones para puesta en producción:
+
+Variables de entorno requeridas
+Configuración de base de datos (cuando se conecte)
+APIs externas a configurar
+Configuración de permisos
+Monitoreo y logging
+
+TESTING SCENARIOS:
+Documentar todos los casos de prueba:
+markdown## Casos de Prueba Críticos
+
+### 1. Creación de Contrato Completo
+- [ ] Iniciar desde "Nuevo Contrato"
+- [ ] Completar todas las 8 pestañas
+- [ ] Validar cálculos automáticos
+- [ ] Finalizar y confirmar creación
+
+### 2. Validaciones de Negocio
+- [ ] RUT inválido debe mostrar error
+- [ ] Descuento > 15% requiere aprobación
+- [ ] Fechas inválidas deben bloquearse
+- [ ] Campos obligatorios validados
+
+### 3. Sistema de Aprobaciones
+- [ ] Solicitud se envía correctamente
+- [ ] Estado pendiente se muestra
+- [ ] Respuesta automática funciona
+- [ ] Campo se desbloquea al aprobar
+
+[... más casos de prueba]
+TROUBLESHOOTING:
+Guía de resolución de problemas comunes:
+
+Error en carga de datos mock
+Problemas de validación
+Issues de navegación
+Estados inconsistentes
+Performance lenta
+
+## 📋 **RESUMEN DE ENTREGAS**
+
+Con estos 13 prompts secuenciales, Kiro.dev construirá un módulo de contratos completamente funcional que incluye:
+
+✅ **Arquitectura completa** con Next.js 14 + Shadcn/UI  
+✅ **8 pestañas funcionales** del wizard de contratos  
+✅ **Sistema de validaciones** complejas con Zod  
+✅ **Flujo de aprobaciones** simulado en tiempo real  
+✅ **Gestión de documentos** con drag & drop  
+✅ **Auditoría completa** con historial inmutable  
+✅ **Estados globales** con Zustand  
+✅ **Responsive design** para mobile/tablet/desktop  
+✅ **Datos mock realistas** para testing completo  
+✅ **Manejo de errores** robusto  
+✅ **Performance optimizado** con lazy loading  
+✅ **Documentación completa** para producción  
+
+El resultado será un módulo enterprise-grade, pixel-perfect según mi especificación TIER 0, listo para integrar con APIs reales.

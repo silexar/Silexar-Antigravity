@@ -1,0 +1,771 @@
+🎨 MÓDULO AGENCIAS CREATIVAS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO AGENCIAS CREATIVAS?
+El Módulo Agencias Creativas es el hub de talento creativo en Silexar Pulse. Funciona como el repositorio inteligente que gestiona, organiza y potencia las relaciones con agencias creativas, estudios de diseño y proveedores de contenido, transformando la colaboración creativa tradicional en partnerships estratégicos que maximizan la calidad, eficiencia y impacto de las creatividades publicitarias.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Gerente de Creatividad, este módulo es mi centro de control de talento:
+
+Veo el performance creativo de cada agencia en tiempo real
+Analizo qué agencias entregan mejor calidad y timing
+Gestiono briefings y feedback de manera centralizada
+Monitoreo costos y eficiencia de producción
+Recibo alertas de entregas pendientes y deadlines críticos
+
+Como Ejecutivo de Ventas, es mi partner creativo inteligente:
+
+Acceso instantáneo al portfolio de cada agencia
+Consulto disponibilidad y tiempos de entrega en tiempo real
+Colaboro en briefings creativos con templates inteligentes
+Tengo visibilidad del pipeline creativo por cliente
+Automatizo el seguimiento de producciones en curso
+
+Como Programador de Tráfico, obtengo control operativo:
+
+Monitoreo automático de entregas de material
+Validación de calidad y especificaciones técnicas
+Alertas de creatividades próximas a vencer
+Tracking de versiones y aprobaciones
+Integración directa con biblioteca de creatividades
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Creatividades: Alimentación automática de materiales creados
+Módulo Contratos: Integración de costos de producción creativa
+Módulo Campañas: Colaboración en briefings y entregas
+Módulo Facturación: Automatización de facturación por servicios creativos
+Cortex-Creative: IA que optimiza asignaciones y predice performance
+Cortex-Quality: Evaluación automática de calidad creativa
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/agencias-creativas/
+├── domain/
+│   ├── entities/
+│   │   ├── AgenciaCreativa.ts (Entidad principal de la agencia)
+│   │   ├── ContactoCreativo.ts (Directores creativos, productores, diseñadores)
+│   │   ├── EspecialidadCreativa.ts (Audio, video, gráfica, digital, BTL)
+│   │   ├── ProyectoCreativo.ts (Trabajos individuales)
+│   │   ├── PortfolioTrabajo.ts (Showcase de trabajos realizados)
+│   │   ├── BriefCreativo.ts (Solicitudes de trabajo)
+│   │   ├── TimelineProduccion.ts (Seguimiento de entregas)
+│   │   ├── EvaluacionCalidad.ts (Scoring de trabajos entregados)
+│   │   ├── CostosProduccion.ts (Tarifas y presupuestos)
+│   │   ├── HistorialColaboracion.ts (Timeline de trabajos históricos)
+│   │   ├── AlertasEntrega.ts (Sistema de alertas por deadlines)
+│   │   └── CertificacionesTecnicas.ts (Capacidades técnicas verificadas)
+│   ├── value-objects/
+│   │   ├── RutAgenciaCreativa.ts (RUT validado con SII)
+│   │   ├── TipoAgenciaCreativa.ts (Full Service, Especializada, Boutique, Freelance)
+│   │   ├── EspecializacionCreativa.ts (Audio, Video, Gráfica, Digital, Integral)
+│   │   ├── NivelExperiencia.ts (Junior, Semi-senior, Senior, Premium)
+│   │   ├── ScoreCreativo.ts (Score 0-1000 con IA)
+│   │   ├── TiempoEntrega.ts (Express, Estándar, Premium)
+│   │   ├── CalidadTecnica.ts (HD, 4K, Premium Audio, etc.)
+│   │   ├── RangoPresupuesto.ts (Low, Medium, High, Premium)
+│   │   └── EstadoDisponibilidad.ts (Disponible, Ocupado, Saturado)
+│   └── repositories/
+│       ├── IAgenciaCreativaRepository.ts
+│       ├── IContactoCreativoRepository.ts
+│       ├── IProyectoCreativoRepository.ts
+│       ├── IPortfolioRepository.ts
+│       └── IEvaluacionRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearAgenciaCreativaCommand.ts
+│   │   ├── ActualizarAgenciaCreativaCommand.ts
+│   │   ├── AsignarProyectoCommand.ts
+│   │   ├── CrearBriefCreativoCommand.ts
+│   │   ├── ActualizarPortfolioCommand.ts
+│   │   ├── EvaluarTrabajoCommand.ts
+│   │   ├── GenerarPresupuestoCommand.ts
+│   │   ├── ActivarAlertasCommand.ts
+│   │   ├── CertificarCapacidadCommand.ts
+│   │   ├── OptimizarAsignacionCommand.ts
+│   │   ├── SincronizarCreatividadesCommand.ts
+│   │   └── RenovarColaboracionCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerPerfilCreativoQuery.ts
+│   │   ├── BuscarAgenciasCreativasQuery.ts
+│   │   ├── ObtenerPortfolioQuery.ts
+│   │   ├── AnalisisPerformanceCreativoQuery.ts
+│   │   ├── ObtenerDisponibilidadQuery.ts
+│   │   ├── GenerarReporteProduccionQuery.ts
+│   │   ├── BuscarEspecialistasQuery.ts
+│   │   ├── CompararAgenciasCreativasQuery.ts
+│   │   ├── ProyectarCostosQuery.ts
+│   │   └── AnalisisCalidadQuery.ts
+│   └── handlers/
+│       ├── AgenciaCreativaCommandHandler.ts
+│       ├── ProyectoCreativoHandler.ts
+│       ├── CalidadAssessmentHandler.ts
+│       ├── BriefAutomationHandler.ts
+│       ├── PortfolioManagementHandler.ts
+│       ├── ProductionTrackingHandler.ts
+│       ├── AlertasCreativasHandler.ts
+│       └── IntegracionCreatividadesHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaAgenciaCreativaRepository.ts
+│   │   ├── PrismaContactoCreativoRepository.ts
+│   │   ├── PrismaProyectoRepository.ts
+│   │   └── PrismaPortfolioRepository.ts
+│   ├── external/
+│   │   ├── SIIValidationService.ts (Validación datos tributarios)
+│   │   ├── BehanceIntegrationService.ts (Portfolio automation)
+│   │   ├── DribbbleIntegrationService.ts (Showcase integration)
+│   │   ├── InstagramBusinessService.ts (Social portfolio)
+│   │   ├── CortexCreativeService.ts (IA de evaluación creativa)
+│   │   ├── CortexQualityService.ts (Análisis de calidad automático)
+│   │   ├── FileValidationService.ts (Specs técnicas)
+│   │   ├── EmailParsingService.ts (Procesamiento briefs)
+│   │   ├── WhatsAppBusinessService.ts (Comunicación directa)
+│   │   ├── CalendlyIntegrationService.ts (Scheduling meetings)
+│   │   ├── SlackIntegrationService.ts (Collaboration real-time)
+│   │   ├── TrelloAsanaService.ts (Project management)
+│   │   ├── DropboxDriveService.ts (File sharing)
+│   │   ├── DocuSignService.ts (Firmas digitales)
+│   │   └── PaymentGatewayService.ts (Pagos automáticos)
+│   └── messaging/
+│       ├── AgenciaCreativaEventPublisher.ts
+│       ├── ProyectoCreativoEventPublisher.ts
+│       ├── CalidadAlertPublisher.ts
+│       └── DeadlineAlertPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── AgenciaCreativaController.ts
+    │   ├── ProyectoCreativoController.ts
+    │   ├── PortfolioController.ts
+    │   ├── BriefingController.ts
+    │   ├── CalidadController.ts
+    │   ├── ProductionController.ts
+    │   ├── MobileCreativoController.ts
+    │   └── IntegracionController.ts
+    ├── dto/
+    │   ├── CrearAgenciaCreativaDto.ts
+    │   ├── ActualizarAgenciaCreativaDto.ts
+    │   ├── CrearBriefCreativoDto.ts
+    │   ├── AsignarProyectoDto.ts
+    │   └── EvaluarTrabajoDto.ts
+    └── middleware/
+        ├── CreativoAuthorizationMiddleware.ts
+        ├── QualityValidationMiddleware.ts
+        ├── FileSecurityMiddleware.ts
+        └── ProjectAuditMiddleware.ts
+🎨 PANTALLA PRINCIPAL - CENTRO DE TALENTO CREATIVO
+DASHBOARD EJECUTIVO CON IA EN TIEMPO REAL:
+Header de comando creativo:
+
+Título: "🎨 Centro de Talento Creativo"
+Breadcrumb: "Dashboard > Agencias Creativas"
+
+Panel de métricas predictivas:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎨 INTELIGENCIA CREATIVA TIEMPO REAL                           │
+│                                                                 │
+│ 18 Agencias    127 Proyectos Activos    23 Entregas Esta Semana│
+│ 94% On-Time    8.7/10 Calidad Promedio    $234M Producido YTD  │
+│ 🎯 Top Acción: Revisar entrega EstudioX HOY (deadline crítico) │
+│ 🤖 IA Detectó: 3 agencias sobrecargadas, 5 disponibles premium │
+└─────────────────────────────────────────────────────────────────┘
+CENTRO DE COMANDO CREATIVO AVANZADO:
+Búsqueda con inteligencia artificial:
+
+Placeholder: "🔍 'estudios video', 'disponibles urgente', 'especialistas retail'..."
+IA Conversacional: Entiende consultas como "¿quién puede hacer video 4K en 48 horas?"
+Predicciones automáticas:
+
+"Agencias disponibles para proyectos express"
+"Especialistas en vertical específico"
+"Mejor calidad/precio por tipo de trabajo"
+"Timeline realista para brief complejo"
+
+
+
+Filtros inteligentes de negocio:
+Especialización Creativa:
+
+🎵 Audio & Radio Spots
+🎬 Video & TV Comerciales
+🎨 Diseño Gráfico & Print
+📱 Digital & Social Media
+🏪 BTL & Activaciones
+🎯 Integral & Full Service
+
+Nivel de Experiencia:
+
+🌟 Premium (10+ años, grandes marcas)
+💎 Senior (5-10 años, experiencia consolidada)
+🥇 Semi-Senior (2-5 años, calidad probada)
+🥈 Junior (0-2 años, tarifas competitivas)
+🆕 Emergente (nuevos talentos)
+
+Disponibilidad:
+
+🚀 Express (<24h disponible)
+⚡ Urgente (24-48h disponible)
+📅 Esta Semana (2-7 días)
+📋 Estándar (1-2 semanas)
+🔄 Ocupado (>2 semanas)
+
+Centro de acciones inteligentes:
+
+"🎯 Asignar Proyecto" (Matching automático con especialistas)
+"🤖 Insights Creativos" (Análisis de performance y trends)
+"📊 Portfolio Dashboard" (Vista de trabajos realizados)
+"🔍 Buscar Especialistas" (Por expertise y disponibilidad)
+"⚠️ Alertas Críticas" (Deadlines y problemas de calidad)
+
+TABLA DE AGENCIAS CREATIVAS - INTELIGENCIA OPERATIVA:
+1. Columna "Agencia/Especialización" (300px):
+┌─────────────────────────────────────┐
+│ [LOGO] Estudio Creativo X           │
+│ 🎬 Video + Audio • 15 años exp     │
+│ 📊 Score: 870/1000 • 🌟 Premium    │
+│ 🤖 IA: "Experto en retail + finance"│
+│ 🏆 4K Video • Dolby Audio Certified│
+└─────────────────────────────────────┘
+
+Logo dinámico: Portfolio preview automático
+Información contextual: Especialidades, experiencia
+Score visual: Calidad promedio con tendencia
+Insight IA: Recomendación automática de Cortex-Creative
+Badges técnicos: Certificaciones y capacidades
+
+2. Columna "Performance/Disponibilidad" (180px):
+┌─────────────────┐
+│ ✅ 96% On-Time  │
+│ ⭐ 9.2/10 Calidad│
+│ 🕐 Disponible   │
+│ 💰 $$$ Premium  │
+└─────────────────┘
+
+Puntualidad: Porcentaje de entregas a tiempo
+Calidad: Score promedio de trabajos
+Estado: Disponibilidad actual
+Rango de precio: Indicador de costo
+
+3. Columna "Contacto Principal/Expertise" (200px):
+┌─────────────────┐
+│ [AVATAR] Carlos │
+│ Mendoza - Dir.  │
+│ 📞 Resp: <2h    │
+│ 🎯 Retail Expert│
+└─────────────────┘
+
+Contacto principal: Avatar + nombre + cargo
+Tiempo de respuesta: Promedio histórico
+Expertise principal: Vertical de especialización
+
+4. Columna "Proyectos/Pipeline" (170px):
+┌─────────────────┐
+│ 🎯 5 Activos    │
+│ 💰 $45M Pipeline│
+│ 🔥 2 Entregas   │
+│ 📅 Esta Semana │
+└─────────────────┘
+
+Proyectos activos: Cantidad en producción
+Valor total: Sumatoria de proyectos
+Entregas urgentes: Esta semana
+Timeline: Distribución temporal
+
+5. Columna "Última Actividad/Status" (220px):
+┌─────────────────────────────────┐
+│ 🎬 Video entregado ayer 14:30   │
+│ "Campaña Black Friday - Ripley" │
+│                                 │
+│ 🎯 Próxima Entrega:             │
+│ "📹 Spot 30s Banco Chile        │
+│ Deadline: Viernes 16:00"        │
+└─────────────────────────────────┘
+
+Última actividad: Tipo, fecha, proyecto
+Contenido: Descripción del trabajo
+Próximo deadline: Entrega más urgente
+
+6. Columna "Acciones Creativas" (180px):
+┌─────────────────┐
+│ [👁️] [💌] [📋] │
+│ [🎯] [📊] [⭐] │
+│ [⚠️] [🔄] [💰] │
+└─────────────────┘
+
+👁️ Portfolio 360°: Vista completa de trabajos
+💌 Brief Express: Envío de brief automático
+📋 Nuevo Proyecto: Wizard de asignación
+🎯 Buscar Similar: Trabajos similares realizados
+📊 Analytics: Análisis de performance histórica
+⭐ Evaluar Trabajo: Sistema de rating
+⚠️ Alertas: Gestionar deadlines y issues
+🔄 Historial: Timeline de colaboración
+💰 Facturación: Gestión de pagos y costos
+
+➕ CREACIÓN INTELIGENTE DE AGENCIA CREATIVA - WIZARD IA
+INICIO CON INTELIGENCIA ARTIFICIAL:
+Detección automática del contexto de creación:
+┌─────────────────────────────────────────┐
+│ 🤖 ¿CÓMO PREFIERES CREAR LA AGENCIA?    │
+│                                         │
+│ [🔍] Búsqueda por RUT                   │
+│      Validación automática SII + IA    │
+│      Datos pre-llenados instantáneamente│
+│                                         │
+│ [🌐] Desde sitio web/Portfolio          │
+│      Ingresa URL, IA analiza trabajos   │
+│      Clasificación automática expertise │
+│                                         │
+│ [🎨] Desde Behance/Dribbble             │
+│      Importa portfolio automáticamente  │
+│      Análisis de calidad y estilo       │
+│                                         │
+│ [📧] Desde email/contacto               │
+│      OCR extrae información             │
+│      Procesamiento automático de datos  │
+│                                         │
+│ [👤] Referencia de contacto             │
+│      Datos desde LinkedIn/redes         │
+│      Análisis de trabajos públicos      │
+│                                         │
+│ [✏️] Manual tradicional                 │
+│      Formulario guiado con sugerencias  │
+│      IA asiste en clasificación         │
+└─────────────────────────────────────────┘
+PASO 1: "INFORMACIÓN FUNDAMENTAL" - IA ASISTIDA
+Sección "Clasificación Creativa Automática":
+┌─────────────────────────────────────────┐
+│ 🤖 CLASIFICACIÓN CREATIVA AUTOMÁTICA    │
+│                                         │
+│ ✅ Análisis completado automáticamente: │
+│                                         │
+│ 🎨 Tipo Agencia: BOUTIQUE ESPECIALIZADA │
+│ Factores: 5-15 empleados, nicho específico│
+│                                         │
+│ 🎯 Especialización: VIDEO + AUDIO       │
+│ Evidencia: Portfolio 80% audiovisual    │
+│                                         │
+│ 📊 Nivel Experiencia: SENIOR            │
+│ Trabajos detectados: 8+ años mercado    │
+│                                         │
+│ 🌟 Rango Calidad: PREMIUM               │
+│ Razón: Clientes tier 1 + awards        │
+│                                         │
+│ 💰 Rango Presupuesto: ALTO              │
+│ Proyectos estimados: $2M-10M por trabajo│
+│                                         │
+│ 🎪 Expertise Detectada:                │
+│ • Comerciales TV (fortaleza principal)  │
+│ • Spots Radio (alta calidad)           │
+│ • Content Digital (emergente)          │
+│ • Motion Graphics (especialización)     │
+│                                         │
+│ [✅ Confirmar] [✏️ Ajustar] [🔄 Re-analizar]│
+└─────────────────────────────────────────┘
+PASO 2: "ANÁLISIS DE CAPACIDADES" - CORTEX-CREATIVE
+Evaluación automática de capacidades:
+┌─────────────────────────────────────────┐
+│ 🎨 ANÁLISIS CORTEX-CREATIVE AVANZADO    │
+│                                         │
+│ 🔍 Analizando capacidades técnicas...   │
+│ ████████████████████████████░░░ 90%    │
+│                                         │
+│ ✅ ANÁLISIS COMPLETADO:                 │
+│                                         │
+│ 📊 SCORE CREATIVO: 870/1000            │
+│ 🟢 CLASIFICACIÓN: PREMIUM CREATIVE      │
+│                                         │
+│ 🛠️ Capacidades Técnicas Verificadas:   │
+│ ✅ Video 4K: Producción completa        │
+│ ✅ Audio HD: Estudio profesional        │
+│ ✅ Motion Graphics: After Effects Pro   │
+│ ✅ Color Grading: DaVinci Resolve       │
+│ ✅ 3D Animation: Cinema 4D               │
+│ ⚠️ Live Action: Equipo básico (mejora) │
+│                                         │
+│ 🎯 Especializaciones Verificadas:      │
+│ • Comerciales Emocionales (Expert)      │
+│ • Product Showcase (Advanced)          │
+│ • Corporate Videos (Intermediate)       │
+│ • Social Content (Basic)                │
+│                                         │
+│ 💡 Recomendaciones automáticas:        │
+│ • Nivel asignación: Premium Projects   │
+│ • Timing típico: 7-14 días             │
+│ • Presupuesto óptimo: $5M-15M          │
+│ • Best fit: Retail, Finance, Tech      │
+│                                         │
+│ 🎯 Potencial colaborativo:             │
+│ • Proyectos estimados: 15-25 anuales   │
+│ • Revenue proyectado: $120M-200M       │
+│ • Crecimiento esperado: +20% anual     │
+└─────────────────────────────────────────┘
+PASO 3: "EQUIPO CREATIVO" - INTELIGENCIA DE TALENTO
+Detección automática de equipo clave:
+┌─────────────────────────────────────────┐
+│ 👥 EQUIPO CREATIVO DETECTADO            │
+│                                         │
+│ 🤖 IA identificó 5 roles clave:         │
+│                                         │
+│ 🎬 DIRECTOR CREATIVO PRINCIPAL:         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Carlos Mendoza Rivera               │ │
+│ │ 🎯 Creative Director & Founder      │ │
+│ │ 📧 carlos.mendoza@estudiox.cl      │ │
+│ │ 📞 +56 9 8765 4321                 │ │
+│ │ 💼 LinkedIn: /in/carlos-mendoza-cd  │ │
+│ │ 🏆 15+ años exp + Cannes Bronze     │ │
+│ │ ⭐ Decision Maker Level: HIGH       │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 🎥 OTROS ROLES KEY:                    │
+│ • María Silva - Head of Production     │
+│ • Juan López - Motion Graphics Lead    │
+│ • Ana García - Audio Producer         │
+│ • Diego Chen - Post-Production Dir.    │
+│                                         │
+│ 🎯 Estructura recomendada:             │
+│ Carlos (Briefings + aprobaciones)      │
+│ María (Timeline + coordinación)        │
+│                                         │
+│ [✅ Confirmar equipo] [✏️ Editar] [➕ Agregar]│
+└─────────────────────────────────────────┘
+PASO 4: "PORTFOLIO Y REFERENCIAS" - ANÁLISIS AUTOMÁTICO
+Importación inteligente de portfolio:
+┌─────────────────────────────────────────┐
+│ 🎨 PORTFOLIO AUTOMÁTICO DETECTADO       │
+│                                         │
+│ 🤖 Cortex-Creative analizó 127 trabajos:│
+│                                         │
+│ 📊 ANÁLISIS DE TRABAJOS:                │
+│ • Videos comerciales: 67 trabajos       │
+│ • Spots radio: 34 trabajos             │
+│ • Motion graphics: 18 trabajos         │
+│ • Content digital: 8 trabajos          │
+│                                         │
+│ 🏆 TRABAJOS DESTACADOS DETECTADOS:     │
+│ ┌─────────────────────────────────────┐ │
+│ │ 🥇 "Banco Chile - Sueños" (2024)    │ │
+│ │    📊 Score: 9.4/10                 │ │
+│ │    🎯 Viral: 2.3M views             │ │
+│ │    💰 Budget: $8M                   │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ 🥈 "Ripley - Black Friday" (2023)   │ │
+│ │    📊 Score: 9.1/10                 │ │
+│ │    🎯 Performance: +40% sales       │ │
+│ │    💰 Budget: $12M                  │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ 🎯 CLIENTES PRINCIPALES DETECTADOS:    │
+│ • Grandes superficies: Ripley, Falabella│
+│ • Banca: Banco Chile, BCI              │
+│ • Telco: Movistar, Entel               │
+│ • FMCG: Unilever, P&G                  │
+│                                         │
+│ 📈 TENDENCIA DE CALIDAD:               │
+│ • 2024: 9.2/10 promedio (+0.3 vs 2023) │
+│ • Consistencia: 94% trabajos >8.5/10   │
+│ • Innovation score: 8.7/10             │
+│                                         │
+│ [✅ Importar portfolio] [🔄 Re-analizar] [✏️ Editar]│
+└─────────────────────────────────────────┘
+📊 DASHBOARD CREATIVO - CENTRO DE PRODUCCIÓN
+VISTA KANBAN PROYECTOS:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎨 PIPELINE CREATIVO - TIEMPO REAL                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 📝 BRIEF      🎬 PRODUCCIÓN   ✂️ POST-PROD    ✅ ENTREGADO     │
+│ (8 proyectos) (15 proyectos)  (12 proyectos)   (23 esta sem)   │
+│                                                                 │
+│ ┌───────────┐ ┌────────────┐  ┌────────────┐  ┌──────────────┐ │
+│ │EstudioX   │ │CreativeHub │  │MotionLab   │  │EstudioX      │ │
+│ │Banco Chile│ │Retail Plus │  │Tech Corp   │  │Ripley BF     │ │
+│ │Video 30s  │ │3x Spots    │  │Logo Anim   │  │Campaign Kit  │ │
+│ │[Brief]    │ │🚨 2 días   │  │⏰ 1 día    │  │✅ Aprobado   │ │
+│ └───────────┘ └────────────┘  └────────────┘  └──────────────┘ │
+│                                                                 │
+│ ┌───────────┐ ┌────────────┐  ┌────────────┐  ┌──────────────┐ │
+│ │AudioPro   │ │DesignCo    │  │VideoMax    │  │CreativeHub   │ │
+│ │Radio Spot │ │Print Ads   │  │Social Cut  │  │Multi-format  │ │
+│ │15s + 30s  │ │Magazine    │  │Instagram   │  │Digital Pack  │ │
+│ │[Wait OK]  │ │📞 Review   │  │🔄 V2       │  │💰 Facturado  │ │
+│ └───────────┘ └────────────┘  └────────────┘  └──────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 Acciones rápidas:                                           │
+│ [➕ Nuevo Brief] [🔄 Update Status] [📊 Production Report]     │
+└─────────────────────────────────────────────────────────────────┘
+MÉTRICAS CREATIVAS CON IA:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🤖 ANÁLISIS PREDICTIVO CORTEX-CREATIVE                         │
+├─────────────────────────────────────────────────────────────────┤
+│ 📈 PREDICCIONES SEMANA ACTUAL:                                 │
+│ • Entregas programadas: 23 proyectos (95% on-time probable)    │
+│ • Carga trabajo óptima: 78% capacidad utilizada                │
+│ • Quality score proyectado: 9.1/10 (+0.2 vs semana anterior)  │
+│ • Budget total en producción: $89M                             │
+│                                                                 │
+│ 🎯 INSIGHTS AUTOMÁTICOS POR AGENCIA:                          │
+│ • EstudioX: Sobrecargado - considerar redistribuir 2 proyectos │
+│ • AudioPro: Disponibilidad premium - ideal para proyecto urgente│
+│ • CreativeHub: Performance excepcional - aumentar asignaciones │
+│ • VideoMax: Retraso promedio +1 día - revisar planning        │
+│                                                                 │
+│ 💡 RECOMENDACIONES ESTRATÉGICAS:                               │
+│ • Proyecto Banco Chile: Asignar a EstudioX (mejor fit histórico)│
+│ • Brief urgente Retail: AudioPro tiene slot mañana disponible  │
+│ • Calidad concern: VideoMax necesita feedback detallado        │
+│ • Opportunity: 3 agencias premium disponibles para Q2          │
+│                                                                 │
+│ 🚨 ALERTAS CRÍTICAS:                                           │
+│ • 2 entregas risk para viernes - intervención requerida        │
+│ • CreativeHub solicita extensión 24h en proyecto crítico       │
+│ • Budget overrun detectado en 3 proyectos (+15% promedio)      │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Deep Analysis] [🎯 Optimize] [📧 Alert Teams] [🔮 Forecast] │
+└─────────────────────────────────────────────────────────────────┘
+🎨 GESTOR DE PROYECTOS CREATIVOS
+CREACIÓN DE BRIEF INTELIGENTE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📝 BRIEF CREATIVO INTELIGENTE - WIZARD IA                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 PASO 1: DEFINICIÓN DEL PROYECTO                             │
+│                                                                 │
+│ Cliente: [Banco Chile ▼]                                       │
+│ Campaña: [Black Friday Promocional ▼]                          │
+│ Tipo Trabajo: [🎬 Video Comercial] [🎵 Spot Radio] [🎨 Gráfica]│
+│                                                                 │
+│ 🤖 IA SUGIERE AUTOMÁTICAMENTE:                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Basado en campañas similares de Banco Chile:               │ │
+│ │ • Duración recomendada: 30 segundos                        │ │
+│ │ • Tono: Cercano y confiable                               │ │
+│ │ • Referencias: "Sueños 2023" (9.4/10 score)               │ │
+│ │ • Budget estimado: $8M-12M                                 │ │
+│ │ • Timeline sugerido: 10-12 días                            │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 PASO 2: ESPECIFICACIONES TÉCNICAS                           │
+│                                                                 │
+│ Formatos requeridos:                                           │
+│ ☑️ Master 4K (ProRes 422 HQ)                                  │
+│ ☑️ Versión TV (Full HD H.264)                                 │
+│ ☑️ Versión Digital (1080p MP4)                                │
+│ ☑️ Versión Social (Square, Vertical)                          │
+│                                                                 │
+│ Audio:                                                         │
+│ ☑️ Mix Stereo (-23 LUFS)                                      │
+│ ☑️ Mix 5.1 Surround                                          │
+│ ☑️ Stems separados                                            │
+│                                                                 │
+│ 🤖 ASIGNACIÓN INTELIGENTE:                                     │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ RECOMENDACIÓN IA: EstudioX (94% match)                     │ │
+│ │                                                             │ │
+│ │ ✅ Expertise: Banca (8 trabajos similares)                 │ │
+│ │ ✅ Calidad: 9.2/10 promedio sector                         │ │
+│ │ ✅ Timing: 100% on-time entregas 2024                      │ │
+│ │ ✅ Disponibilidad: Slot libre próximos 7 días              │ │
+│ │ 💰 Budget match: $10M (dentro de rango)                    │ │
+│ │                                                             │ │
+│ │ Alternativas:                                               │ │
+│ │ • CreativeHub: 89% match (más económico)                   │ │
+│ │ • VideoMax: 85% match (disponible inmediato)               │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [🎯 Asignar a EstudioX] [👁️ Ver Alternativas] [✏️ Customizar]  │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL - GESTIÓN CREATIVA ON-THE-GO
+APP MÓVIL CREATIVE MANAGER:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR CREATIVE MÓVIL               │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Creativo                   │
+│ • 18 Agencias activas                   │
+│ • 127 Proyectos en producción          │
+│ • 23 Entregas esta semana              │
+│ • 8.7/10 Calidad promedio              │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [📝 Nuevo Brief Express]                │
+│ [👁️ Review Pendientes (8)]              │
+│ [✅ Aprobar Trabajos (5)]               │
+│ [⚠️ Alertas Deadline (3)]               │
+│                                         │
+│ 🚨 ALERTS HOY:                          │
+│ • EstudioX: Entrega video 16:00 hoy    │
+│ • AudioPro: Requiere feedback urgente   │
+│ • CreativeHub: Budget approval needed   │
+│                                         │
+│ 📊 MIS PROYECTOS:                       │
+│ [Production Board] [Quality] [Timeline] │
+├─────────────────────────────────────────┤
+│ [🏠] [🎨] [📞] [📊] [⚙️]                │
+└─────────────────────────────────────────┘
+Funcionalidades Móviles Avanzadas:
+
+Quick Approval: Review y aprobación de trabajos desde móvil
+Brief Express: Creación de briefs simplificados por voz
+Quality Check: Preview y scoring de trabajos entregados
+Deadline Alerts: Push notifications de entregas críticas
+
+🔄 AUTOMATIZACIONES INTELIGENTES TIER 0
+CORTEX-CREATIVE - Motor de Automatización:
+1. Asignación Inteligente de Proyectos:
+Trigger: Nuevo brief creado
+→ Cortex analiza tipo de proyecto, cliente, timing, budget
+→ Evalúa disponibilidad y expertise de todas las agencias
+→ Calcula probability score de éxito por agencia
+→ Si >85%: Asigna automáticamente al mejor match
+→ Genera timeline de producción optimizado
+→ Notifica a agencia con brief completo
+→ Programa checkpoints de seguimiento automático
+2. Quality Assurance Automático:
+Trigger: Trabajo entregado por agencia
+→ Cortex-Quality valida specs técnicas automáticamente
+→ Compara contra briefing original
+→ Analiza calidad vs trabajos similares históricos
+→ Si pasa validación: Notifica para approval final
+→ Si falla: Genera feedback específico automáticamente
+→ Programa reunión de corrección con agencia
+→ Trackea iterations hasta aprobación
+3. Deadline Management Inteligente:
+Trigger: Proyecto asignado con fechas
+→ Cortex crea timeline con milestones automáticos
+→ Monitorea progreso en tiempo real
+→ Predice retrasos basado en patrones históricos
+→ Si risk >70%: Alerta temprana a team
+→ Sugiere acciones correctivas automáticamente
+→ Rebalancea workload si es necesario
+→ Escala problemas críticos a management
+📊 ANALYTICS Y REPORTING CREATIVO
+DASHBOARD DE PERFORMANCE:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 CREATIVE INTELLIGENCE - PERFORMANCE ANALYTICS               │
+├─────────────────────────────────────────────────────────────────┤
+│ 💰 MÉTRICAS FINANCIERAS:                                       │
+│ • Inversión creativa total: $234M CLP YTD                     │
+│ • Crecimiento vs año anterior: +28%                           │
+│ • Costo promedio por proyecto: $1.8M                          │
+│ • ROI creativo promedio: 340%                                 │
+│ • Agencias más costo-eficientes: AudioPro, DesignCo           │
+│                                                                 │
+│ 🎯 MÉTRICAS DE CALIDAD:                                        │
+│ • Score promedio calidad: 8.7/10                              │
+│ • Proyectos >9.0: 34% (mejora +8% vs 2023)                   │
+│ • Tasa aprobación primera entrega: 78%                        │
+│ • Tiempo promedio iterations: 2.3 rounds                      │
+│ • Satisfaction score clientes: 89%                            │
+│                                                                 │
+│ ⏰ MÉTRICAS OPERACIONALES:                                     │
+│ • Entregas on-time: 94% (target: 90%)                         │
+│ • Tiempo promedio producción: 8.5 días                        │
+│ • Agencias más rápidas: AudioPro (6.2d), VideoMax (7.1d)     │
+│ • Pipeline efficiency: 87%                                    │
+│ • Resource utilization: 76%                                   │
+│                                                                 │
+│ 🏆 TOP PERFORMING AGENCIES:                                    │
+│ • EstudioX: 9.2/10 calidad, 96% on-time, $45M volumen       │
+│ • AudioPro: 8.9/10 calidad, 98% on-time, $38M volumen       │
+│ • CreativeHub: 8.8/10 calidad, 94% on-time, $41M volumen    │
+│                                                                 │
+│ 📈 TRENDING UP:                                               │
+│ • Digital content demand: +45% YoY                            │
+│ • Motion graphics requests: +62% YoY                          │
+│ • Social media formats: +78% YoY                              │
+│ • 4K video production: +123% YoY                             │
+├─────────────────────────────────────────────────────────────────┤
+│ [📊 Detailed Reports] [🎯 Optimize Mix] [📈 Trends] [🔮 Forecast]│
+└─────────────────────────────────────────────────────────────────┘
+🔐 SEGURIDAD TIER 0 - PROTECCIÓN CREATIVA
+PROTECCIÓN DE PROPIEDAD INTELECTUAL:
+Encriptación y Control de Acceso:
+
+Trabajos creativos encriptados con AES-256 + marca de agua digital
+Control granular de acceso por proyecto y usuario
+Auditoría completa de descargas y visualizaciones
+Backup automático con versionado inmutable
+
+Controles de Acceso por Rol:
+Creative Manager:
+
+✅ Asignar proyectos hasta $5M
+✅ Aprobar trabajos calidad >8.0
+✅ Acceso completo a portfolios
+❌ Override de budgets establecidos
+❌ Acceso a información financiera sensible
+
+Director Creativo:
+
+✅ Asignación ilimitada de proyectos
+✅ Override de recommendations IA
+✅ Acceso a analytics predictivos
+✅ Configuración de quality standards
+❌ Modificación de políticas globales
+
+CEO/Gerente General:
+
+✅ Acceso total a performance creative
+✅ Configuración de políticas de calidad
+✅ Analytics estratégicos completos
+✅ Gestión de partnerships estratégicos
+✅ Override de todas las validaciones
+
+🚀 INNOVACIONES EXCLUSIVAS TIER 0
+1. CORTEX-QUALITY - IA de Evaluación Creativa:
+Análisis automático de calidad:
+
+Computer vision para evaluar composición, color, lighting
+Audio analysis para calidad técnica y emotional impact
+Comparison engine vs benchmarks de industria
+Predictive scoring de performance esperada
+
+2. CREATIVE DNA MATCHING:
+Algoritmo de matching perfecto:
+
+Analiza "DNA creativo" de cada agencia
+Match automático con requerimientos de proyecto
+Prediction de success probability
+Learning continuo de outcomes
+
+3. AUTOMATED BRIEF INTELLIGENCE:
+Generación automática de briefs:
+
+NLP para crear briefs desde conversaciones
+Template suggestion basado en proyectos similares
+Requirements validation automática
+Reference gathering inteligente
+
+4. REAL-TIME COLLABORATION STUDIO:
+Espacio colaborativo integrado:
+
+Review tools con annotation en tiempo real
+Version control automático
+Approval workflows inteligentes
+Feedback loops optimizados
+
+
+🎯 CONCLUSIÓN: EL CREATIVE MANAGEMENT MÁS AVANZADO DEL MUNDO
+PARA EL CREATIVE MANAGER:
+
+IA como director creativo 24/7: Matching perfecto entre proyectos y talento
+Quality assurance automático: 85% menos tiempo en validaciones manuales
+Predictive planning: Ve bottlenecks y oportunidades antes que ocurran
+Portfolio inteligente: Showcase automático del mejor trabajo
+Mobile-first workflow: Gestión completa desde cualquier lugar
+
+PARA EL DIRECTOR CREATIVO:
+
+Talent optimization: Maximización del potencial de cada agencia partner
+Quality benchmarking: Standards automáticos basados en best practices
+Strategic insights: Data que informa decisiones creativas
+Efficiency gains: 40% reducción en tiempo de gestión operativa
+Innovation tracking: Identificación temprana de trends y oportunidades
+
+PARA EL NEGOCIO:
+
+ROI optimization: Maximización del retorno en inversión creativa
+Quality consistency: Estándares automatizados de excelencia
+Time-to-market: 50% reducción en tiempos de producción
+Risk management: Minimización de delays y re-works
+Strategic advantage: Portfolio creativo que supera competencia
+
+El Módulo Agencias Creativas TIER 0 no es solo un directorio de proveedores: es un cerebro creativo que transforma la gestión de talento tradicional en una plataforma inteligente, automatizada y optimizada que maximiza la calidad, eficiencia y impacto de cada proyecto creativo, prediciendo necesidades futuras y asegurando resultados excepcionales consistentemente.

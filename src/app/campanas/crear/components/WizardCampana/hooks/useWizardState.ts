@@ -26,7 +26,9 @@ const INITIAL_STATE: WizardState = {
   origenData: {
     tipo: 'contrato'
   },
-  campanaDraft: {}
+  campanaDraft: {
+    medio: 'fm'
+  }
 };
 
 export const useWizardState = () => {

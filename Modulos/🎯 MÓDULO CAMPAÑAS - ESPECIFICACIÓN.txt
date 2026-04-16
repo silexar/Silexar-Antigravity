@@ -1,0 +1,1115 @@
+🎯 MÓDULO CAMPAÑAS - ESPECIFICACIÓN TIER 0 COMPLETA
+📋 DESCRIPCIÓN Y PROPÓSITO DEL MÓDULO
+¿QUÉ ES EL MÓDULO CAMPAÑAS?
+El Módulo Campañas es el cerebro operativo central de Silexar Pulse, donde convergen contratos, programación, facturación y ejecución. Evolucionando desde la base familiar de MediaSales Traffic pero potenciado con IA tier 0, funciona como el centro de comando donde cada campaña publicitaria se transforma de concepto comercial a realidad operativa, con automatización inteligente que maneja 95% de las tareas repetitivas mientras mantiene control total sobre casos especiales.
+PERSPECTIVA DEL USUARIO DIARIO:
+Como Traffic Manager/Programador, este módulo es mi centro de control operativo:
+
+Gestiono campañas completas desde creación hasta emisión con interfaz familiar pero inteligente
+La IA pre-completa campos automáticamente basada en contratos y históricos
+Programo líneas con validación automática de conflictos y disponibilidad
+Superviso ejecución con alertas proactivas de problemas antes que ocurran
+Genero confirmaciones horarias profesionales automáticamente
+
+Como Ejecutivo Comercial, valido la ejecución de mis ventas:
+
+Verifico que mis contratos se ejecuten exactamente como se vendieron
+Recibo alertas automáticas de cualquier discrepancia en programación
+Genero reportes de cumplimiento para clientes instantáneamente
+Manejo cambios de última hora con validación automática de impacto comercial
+
+Como Controller/Financiero, superviso rentabilidad operativa:
+
+Monitorio márgenes reales vs. vendidos en tiempo real
+Valido que tarifas aplicadas correspondan a lo contractual
+Superviso comisiones automáticamente calculadas
+Genero reportes financieros por campaña instantáneamente
+
+Como Cliente/Anunciante, recibo transparencia total:
+
+Accedo a portal de cliente para ver estado de mi campaña en tiempo real
+Recibo confirmaciones horarias automáticas con detalle exacto de emisiones
+Valido cumplimiento de posicionamiento y frecuencias contratadas
+Obtengo reportes post-campaña con métricas de cumplimiento
+
+INTEGRACIÓN TOTAL CON ECOSYSTEM SILEXAR:
+
+Módulo Contratos: Herencia automática completa de términos comerciales y restricciones
+Módulo Anunciantes: Aplicación automática de preferencias y exclusividades
+Módulo Propiedades: Asignación inteligente de propiedades según tipo de campaña
+Módulo Facturación: Generación automática de facturas al completar emisiones
+Módulo Revisión Tandas: Sincronización bidireccional de programación optimizada
+Esqueleto Emisión: Distribución automática en estructura predefinida por emisora
+Cortex-Campaign: IA que optimiza programación y detecta conflictos proactivamente
+Cortex-Compliance: IA que garantiza cumplimiento contractual 100%
+
+🏗️ ESTRUCTURA MODULAR DOMAIN-DRIVEN DESIGN
+src/modules/campanas/
+├── domain/
+│   ├── entities/
+│   │   ├── CampanaPublicitaria.ts (Entidad principal estilo MediaSales++)
+│   │   ├── TapaCampana.ts (Información general y metadatos)
+│   │   ├── LineaCampana.ts (Línea específica con horarios y tarifas)
+│   │   ├── ProgramacionCampana.ts (Scheduling y distribución)
+│   │   ├── MaterialPublicitario.ts (Cuñas/Spots con códigos SP)
+│   │   ├── PropiedadAsignada.ts (Propiedades aplicadas a campaña)
+│   │   ├── TarifaCampana.ts (Configuración paquetes vs. individual)
+│   │   ├── FacturacionCampana.ts (Integración con módulo facturación)
+│   │   ├── PlanificacionLinea.ts (Distribución horaria inteligente)
+│   │   ├── ConflictoDetectado.ts (IA detecta solapamientos/problemas)
+│   │   ├── ValidacionProgramacion.ts (Verificaciones automáticas)
+│   │   ├── EstadoCampana.ts (Trabajando, Confirmado, Ejecutando, etc.)
+│   │   ├── CunaRechazada.ts (Gestión spots no programables)
+│   │   ├── HistorialCampana.ts (Audit trail completo de cambios)
+│   │   ├── ObservacionCampana.ts (Comentarios y notas colaborativas)
+│   │   ├── ConfirmacionHoraria.ts (Documento PDF profesional)
+│   │   ├── MetricasCumplimiento.ts (KPIs ejecución vs. contractual)
+│   │   ├── AlertaAutomatica.ts (Notificaciones proactivas)
+│   │   ├── BackupEstadoCampana.ts (Respaldo antes cambios críticos)
+│   │   ├── IntegracionContrato.ts (Sincronización bidireccional)
+│   │   ├── GestionMateriales.ts (Asignación automática códigos SP)
+│   │   ├── DistribucionDiaria.ts (Algoritmo distribución por días)
+│   │   ├── ValidadorLimitesTiempo.ts (Control saturación bloques)
+│   │   ├── OptimizadorPosicion.ts (IA optimiza posicionamiento)
+│   │   ├── CalculadorValores.ts (Recálculo automático tarifas)
+│   │   └── GeneradorReportes.ts (Reportes automáticos múltiples formatos)
+│   ├── value-objects/
+│   │   ├── NumeroCampana.ts (ID único autoincremental)
+│   │   ├── NumeroContrato.ts (Referencia origen contractual)
+│   │   ├── EstadoEjecucion.ts (Borrador, Planificado, Ejecutando, etc.)
+│   │   ├── NombreAnunciante.ts (Cliente final de la campaña)
+│   │   ├── ReferenciaCliente.ts (Referencia interna cliente)
+│   │   ├── NombreCampana.ts (Título descriptivo campaña)
+│   │   ├── NombreProducto.ts (Producto/servicio promocionado)
+│   │   ├── ValorNeto.ts (Valor comercial neto campaña)
+│   │   ├── FechaInicio.ts (Fecha inicio emisiones)
+│   │   ├── FechaTermino.ts (Fecha fin emisiones)
+│   │   ├── CantidadCunas.ts (Total spots a emitir)
+│   │   ├── TipoPedidoCampana.ts (Auspicio, Menciones, Prime, etc.)
+│   │   ├── VendedorResponsable.ts (Ejecutivo comercial asignado)
+│   │   ├── AgenciaCreativa.ts (Agencia responsable creatividad)
+│   │   ├── AgenciaMedios.ts (Agencia responsable medios)
+│   │   ├── UsuarioCreador.ts (Usuario que creó campaña)
+│   │   ├── OrdenAgencia.ts (Número orden de la agencia)
+│   │   ├── OrdenCompra.ts (OC del cliente - Código 801)
+│   │   ├── NumeroHES.ts (HES si aplica - Código 802)
+│   │   ├── EmisoraPrincipal.ts (Radio principal de emisión)
+│   │   ├── DireccionEnvio.ts (Anunciante o Agencia)
+│   │   ├── TipoTarifa.ts (Paquete acordado vs. Tarifa por spot)
+│   │   ├── ValorCampana.ts (Monto fijo paquete si aplica)
+│   │   ├── ComisionAgencia.ts (% comisión de agencia)
+│   │   ├── DuracionCuna.ts (15s, 30s, 60s, etc.)
+│   │   ├── PosicionFija.ts (Ninguno, Inicio, Segundo, etc.)
+│   │   ├── ValorPorCuna.ts (Tarifa individual por spot)
+│   │   ├── TipoBloque.ts (Prime, Auspicio, Repartido, etc.)
+│   │   ├── PaqueteSeleccionado.ts (Paquete comercial aplicado)
+│   │   ├── CunasPorDia.ts (Distribución L-M-M-J-V-S-D)
+│   │   ├── CunasBonificadas.ts (Spots gratis por día)
+│   │   ├── HoraInicio.ts (Hora inicio programación)
+│   │   ├── HoraFin.ts (Hora fin programación)
+│   │   ├── CodigoSP.ts (Código material publicitario)
+│   │   ├── EstadoPlanificacion.ts (Planificado, No planificado)
+│   │   ├── MotivoRechazo.ts (Razón por la cual no se programó)
+│   │   ├── TipoAccionUsuario.ts (Crear, Modificar, Eliminar, etc.)
+│   │   ├── TimestampAccion.ts (Marca temporal de acciones)
+│   │   ├── IpUsuario.ts (IP del usuario para auditoría)
+│   │   ├── VersionCampana.ts (Control de versiones)
+│   │   ├── ChecklistValidacion.ts (Validaciones automáticas)
+│   │   ├── NivelPrioridad.ts (Prioridad en caso de conflictos)
+│   │   ├── ModoEjecucion.ts (Automático, Manual, Mixto)
+│   │   ├── ResultadoValidacion.ts (OK, Warning, Error)
+│   │   └── FormatoPresentacion.ts (PDF, Excel, Email)
+│   └── repositories/
+│       ├── ICampanaPublicitariaRepository.ts
+│       ├── ITapaCampanaRepository.ts
+│       ├── ILineaCampanaRepository.ts
+│       ├── IProgramacionCampanaRepository.ts
+│       ├── IMaterialPublicitarioRepository.ts
+│       ├── IPropiedadAsignadaRepository.ts
+│       ├── ITarifaCampanaRepository.ts
+│       ├── IFacturacionCampanaRepository.ts
+│       ├── IPlanificacionLineaRepository.ts
+│       ├── IConflictoDetectadoRepository.ts
+│       ├── IValidacionProgramacionRepository.ts
+│       ├── IEstadoCampanaRepository.ts
+│       ├── ICunaRechazadaRepository.ts
+│       ├── IHistorialCampanaRepository.ts
+│       ├── IObservacionCampanaRepository.ts
+│       ├── IConfirmacionHorariaRepository.ts
+│       ├── IMetricasCumplimientoRepository.ts
+│       ├── IAlertaAutomaticaRepository.ts
+│       ├── IBackupEstadoRepository.ts
+│       └── IIntegracionContratoRepository.ts
+├── application/
+│   ├── commands/
+│   │   ├── CrearCampanaCommand.ts
+│   │   ├── CrearCampanaDesdeContratoCommand.ts
+│   │   ├── ActualizarTapaCampanaCommand.ts
+│   │   ├── ConfigurarTarifasCampanaCommand.ts
+│   │   ├── CrearLineaCampanaCommand.ts
+│   │   ├── ActualizarLineaCampanaCommand.ts
+│   │   ├── EliminarLineaCampanaCommand.ts
+│   │   ├── AsignarPropiedadesCampanaCommand.ts
+│   │   ├── PlanificarCampanaCommand.ts
+│   │   ├── PlanificarLineaEspecificaCommand.ts
+│   │   ├── EliminarPlanificacionCommand.ts
+│   │   ├── DesprogramarLineasCommand.ts
+│   │   ├── CalcularValoresCampanaCommand.ts
+│   │   ├── ValidarProgramacionCommand.ts
+│   │   ├── ResolverConflictosCommand.ts
+│   │   ├── AsignarMaterialCommand.ts
+│   │   ├── CrearCunasUnidasCommand.ts
+│   │   ├── CancelarCunasUnidasCommand.ts
+│   │   ├── SustituirCunasCommand.ts
+│   │   ├── LiberarCunasAsignadasCommand.ts
+│   │   ├── CambiarPosicionesCommand.ts
+│   │   ├── PlanificarCunasRechazadasCommand.ts
+│   │   ├── GenerarConfirmacionHorariaCommand.ts
+│   │   ├── EnviarConfirmacionEmailCommand.ts
+│   │   ├── AgregarObservacionCommand.ts
+│   │   ├── CrearBackupEstadoCommand.ts
+│   │   ├── RestaurarBackupCommand.ts
+│   │   ├── ConfirmarCampanaCommand.ts
+│   │   ├── CambiarEstadoCampanaCommand.ts
+│   │   ├── SincronizarContratoCommand.ts
+│   │   ├── OptimizarDistribucionCommand.ts
+│   │   ├── ValidarCumplimientoCommand.ts
+│   │   └── GenerarReportesCommand.ts
+│   ├── queries/
+│   │   ├── ObtenerListadoCampanasQuery.ts
+│   │   ├── BuscarCampanasQuery.ts
+│   │   ├── ObtenerDetalleCampanaQuery.ts
+│   │   ├── ObtenerTapaCampanaQuery.ts
+│   │   ├── ObtenerLinesCampanaQuery.ts
+│   │   ├── ObtenerProgramacionCampanaQuery.ts
+│   │   ├── ObtenerMaterialesDisponiblesQuery.ts
+│   │   ├── ObtenerPropiedadesDisponiblesQuery.ts
+│   │   ├── ObtenerTarifasAplicablesQuery.ts
+│   │   ├── ValidarDisponibilidadBloqueQuery.ts
+│   │   ├── ObtenerConflictosActivosQuery.ts
+│   │   ├── ObtenerCunasRechazadasQuery.ts
+│   │   ├── ObtenerHistorialCampanaQuery.ts
+│   │   ├── ObtenerObservacionesCampanaQuery.ts
+│   │   ├── GenerarConfirmacionHorariaQuery.ts
+│   │   ├── ObtenerMetricasCumplimientoQuery.ts
+│   │   ├── ObtenerAlertasActivasQuery.ts
+│   │   ├── ValidarIntegridadCampanaQuery.ts
+│   │   ├── ObtenerBackupsDisponiblesQuery.ts
+│   │   ├── GenerarReporteCampanaQuery.ts
+│   │   ├── ObtenerEstadisticasEjecucionQuery.ts
+│   │   ├── ValidarSincronizacionContratoQuery.ts
+│   │   ├── ObtenerProyeccionCumplimientoQuery.ts
+│   │   ├── GenerarAnalisisRentabilidadQuery.ts
+│   │   └── ObtenerDashboardCampanasQuery.ts
+│   └── handlers/
+│       ├── CampanaCommandHandler.ts
+│       ├── TapaCampanaHandler.ts
+│       ├── LineaCampanaHandler.ts
+│       ├── ProgramacionHandler.ts
+│       ├── MaterialesHandler.ts
+│       ├── PropiedadesHandler.ts
+│       ├── TarifasHandler.ts
+│       ├── ValidacionHandler.ts
+│       ├── ConflictosHandler.ts
+│       ├── PlanificacionHandler.ts
+│       ├── BackupHandler.ts
+│       ├── HistorialHandler.ts
+│       ├── ObservacionesHandler.ts
+│       ├── ConfirmacionHandler.ts
+│       ├── ReportesHandler.ts
+│       ├── AlertasHandler.ts
+│       ├── IntegracionHandler.ts
+│       ├── OptimizacionHandler.ts
+│       ├── CumplimientoHandler.ts
+│       └── DashboardHandler.ts
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── PrismaCampanaPublicitariaRepository.ts
+│   │   ├── PrismaTapaCampanaRepository.ts
+│   │   ├── PrismaLineaCampanaRepository.ts
+│   │   ├── PrismaProgramacionRepository.ts
+│   │   ├── PrismaMaterialRepository.ts
+│   │   ├── PrismaPropiedadRepository.ts
+│   │   ├── PrismaTarifaRepository.ts
+│   │   ├── PrismaValidacionRepository.ts
+│   │   ├── PrismaConflictoRepository.ts
+│   │   ├── PrismaHistorialRepository.ts
+│   │   ├── PrismaObservacionRepository.ts
+│   │   ├── PrismaConfirmacionRepository.ts
+│   │   ├── PrismaBackupRepository.ts
+│   │   └── PrismaIntegracionRepository.ts
+│   ├── external/
+│   │   ├── CortexCampaignOptimizationService.ts (IA optimización campañas)
+│   │   ├── CortexConflictDetectionService.ts (IA detección conflictos)
+│   │   ├── CortexComplianceValidationService.ts (IA validación cumplimiento)
+│   │   ├── CortexSchedulingIntelligenceService.ts (IA programación inteligente)
+│   │   ├── MediaSalesStyleRenderService.ts (Render interfaz familiar)
+│   │   ├── AutoCompleteIntelligenceService.ts (Auto-completado inteligente)
+│   │   ├── ContractSynchronizationService.ts (Sync bidireccional contratos)
+│   │   ├── PropertyManagementService.ts (Gestión propiedades automática)
+│   │   ├── TariffCalculationService.ts (Cálculo tarifas automático)
+│   │   ├── ProgrammingValidationService.ts (Validación programación)
+│   │   ├── MaterialAssignmentService.ts (Asignación materiales IA)
+│   │   ├── ConflictResolutionService.ts (Resolución conflictos automática)
+│   │   ├── ScheduleOptimizationService.ts (Optimización horarios)
+│   │   ├── PDFGenerationAdvancedService.ts (PDFs profesionales)
+│   │   ├── EmailNotificationService.ts (Notificaciones automáticas)
+│   │   ├── ReportGenerationService.ts (Reportes avanzados)
+│   │   ├── BackupAutomationService.ts (Backups automáticos)
+│   │   ├── AuditTrailService.ts (Auditoría completa)
+│   │   ├── AlertingIntelligenceService.ts (Alertas inteligentes)
+│   │   ├── IntegrationOrchestratorService.ts (Orquestación integraciones)
+│   │   ├── PerformanceMonitoringService.ts (Monitoreo performance)
+│   │   ├── DataSynchronizationService.ts (Sincronización datos)
+│   │   ├── ValidationEngineService.ts (Motor validaciones)
+│   │   ├── OptimizationEngineService.ts (Motor optimización)
+│   │   └── ComplianceMonitoringService.ts (Monitoreo compliance)
+│   └── messaging/
+│       ├── CampanaCreatedEventPublisher.ts
+│       ├── CampanaUpdatedEventPublisher.ts
+│       ├── CampanaPlanificadaEventPublisher.ts
+│       ├── ConflictoDetectadoEventPublisher.ts
+│       ├── MaterialAsignadoEventPublisher.ts
+│       ├── ValidacionCompletadaEventPublisher.ts
+│       ├── ConfirmacionGeneradaEventPublisher.ts
+│       ├── BackupCreadoEventPublisher.ts
+│       ├── EstadoCambiadoEventPublisher.ts
+│       ├── AlertaCriticaEventPublisher.ts
+│       ├── SincronizacionCompletadaEventPublisher.ts
+│       └── ReporteGeneradoEventPublisher.ts
+└── presentation/
+    ├── controllers/
+    │   ├── CampanasController.ts
+    │   ├── TapaCampanaController.ts
+    │   ├── LineaCampanaController.ts
+    │   ├── ProgramacionController.ts
+    │   ├── MaterialesController.ts
+    │   ├── PropiedadesController.ts
+    │   ├── TarifasController.ts
+    │   ├── FacturacionController.ts
+    │   ├── ValidacionController.ts
+    │   ├── ConflictosController.ts
+    │   ├── HistorialController.ts
+    │   ├── ObservacionesController.ts
+    │   ├── ConfirmacionController.ts
+    │   ├── ReportesController.ts
+    │   ├── BackupController.ts
+    │   ├── IntegracionController.ts
+    │   ├── DashboardController.ts
+    │   ├── MobileCampanasController.ts
+    │   ├── APIExternaCampanasController.ts
+    │   └── ClientPortalController.ts
+    ├── dto/
+    │   ├── CrearCampanaDto.ts
+    │   ├── ActualizarCampanaDto.ts
+    │   ├── CrearLineaDto.ts
+    │   ├── PlanificarCampanaDto.ts
+    │   ├── AsignarMaterialDto.ts
+    │   ├── ConfigurarTarifasDto.ts
+    │   ├── GenerarConfirmacionDto.ts
+    │   ├── AgregarObservacionDto.ts
+    │   ├── ValidarProgramacionDto.ts
+    │   └── GenerarReporteDto.ts
+    └── middleware/
+        ├── CampanaAuthorizationMiddleware.ts
+        ├── DataIntegrityMiddleware.ts
+        ├── BackupProtectionMiddleware.ts
+        ├── AuditTrailMiddleware.ts
+        ├── ConflictPreventionMiddleware.ts
+        ├── PerformanceMiddleware.ts
+        └── ComplianceMiddleware.ts
+🎨 PANTALLA PRINCIPAL - LISTADO INTELIGENTE DE CAMPAÑAS
+HEADER DE CONTROL CON IA:
+Barra superior con controles evolucionados:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 CENTRO DE COMANDO CAMPAÑAS - SILEXAR PULSE                   │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔧 [➕ Nueva Campaña] [🔄 Desde Contrato] [📊 Dashboard IA]     │
+│                                                                 │
+│ 🔍 Búsqueda inteligente: [                                    ]│
+│ Placeholder: "'Banco Chile', 'Campaña Navidad', 'Ejecutando',  │
+│ 'Ana García', '>$1M', 'vence hoy'..."                         │
+│                                                                 │
+│ 🤖 Filtros IA: [Mis Campañas] [Activas] [Requieren Atención] 📊│
+│ 📈 Métricas rápidas: 156 Activas • 23 Ejecutando • 5 Alertas  │
+└─────────────────────────────────────────────────────────────────┘
+TABLA INTELIGENTE DE CAMPAÑAS:
+Vista optimizada con información crítica:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 LISTADO CAMPAÑAS CON INTELIGENCIA                           │
+├───┬──────────┬────────────┬──────────┬────────────────────────────┤
+│#  │Campaña   │Contrato    │Estado    │Anunciante                  │
+├───┼──────────┼────────────┼──────────┼────────────────────────────┤
+│001│CMP-25-001│CON-25-0234 │✅ Ejecutando│BANCO CHILE               │
+│   │Navidad Premium      │🎯 Prime Determinado                    │
+│   │💰 $2.5M • 📅 01/12-31/12 • 👤 Ana García • 🔔 2 alertas    │
+├───┼──────────┼────────────┼──────────┼────────────────────────────┤
+│002│CMP-25-002│CON-25-0189 │⚠️ Planificando│COCA COLA            │
+│   │Lanzamiento Zero     │🎵 Auspicio + Menciones               │
+│   │💰 $1.8M • 📅 15/12-15/01 • 👤 Carlos Ruiz • ✅ OK          │
+├───┼──────────┼────────────┼──────────┼────────────────────────────┤
+│003│CMP-25-003│CON-25-0156 │🔴 Conflictos│TOYOTA                │
+│   │Nuevo Corolla        │🚗 Prime Matinal                      │
+│   │💰 $3.2M • 📅 10/01-28/02 • 👤 María López • 🚨 5 conflictos│
+└─────────────────────────────────────────────────────────────────┘
+Columnas específicas según requerimientos:
+1. Número de campaña (120px): CMP-25-001 (formato auto)
+2. Número de contrato (120px): CON-25-0234 (link clickeable)
+3. Estado (100px): Borrador, Planificando, Ejecutando, Completado
+4. Nombre anunciante (180px): Cliente final con formato consistente
+5. Referencia (150px): Referencia interna del cliente
+6. Nombre de la campaña (200px): Título descriptivo campaña
+7. Nombre del producto (150px): Producto/servicio promocionado
+8. Valor neto (120px): Valor comercial con formato monetario
+9. Fecha Inicio (100px): DD/MM/YYYY formato estándar
+10. Fecha término (100px): DD/MM/YYYY formato estándar
+11. Cantidad cuñas (80px): Total spots programados
+12. Tipo de pedido (120px): Prime, Auspicio, Menciones, etc.
+13. Vendedor (120px): Ejecutivo comercial responsable
+14. Agencia creativa (150px): Agencia responsable creativos
+15. Agencia de medios (150px): Agencia responsable medios
+16. Usuario (100px): Usuario que creó la campaña
+➕ CREACIÓN DE CAMPAÑA - WIZARD INTELIGENTE
+PASO 1: "ORIGEN DE CAMPAÑA" - DECISIÓN INTELIGENTE
+Selector de origen con pre-configuración automática:
+┌─────────────────────────────────────────┐
+│ 🎯 ¿CÓMO QUIERES CREAR LA CAMPAÑA?      │
+│                                         │
+│ ⚫ DESDE CONTRATO EXISTENTE             │
+│    🤖 Auto-completa todos los campos    │
+│    ⚡ Herencia automática de términos   │
+│    📋 Validación automática vigencia    │
+│                                         │
+│ ⚪ CAMPAÑA NUEVA INDEPENDIENTE          │
+│    ✏️ Creación manual desde cero       │
+│    🔗 Asociación posterior a contrato   │
+│    📝 Mayor flexibilidad inicial        │
+│                                         │
+│ ⚪ CLONAR CAMPAÑA EXISTENTE            │
+│    🔄 Duplicar campaña como template   │
+│    ⚙️ Modificar datos específicos      │
+│    ⚡ Acelerar campañas similares       │
+│                                         │
+│ 🔍 Si desde contrato, buscar:          │
+│ [CON-2025-0234                        ]│
+│ 💡 "CON-2025-0234 - Banco Chile"       │
+│ 💡 "CON-2025-0189 - Coca Cola"         │
+│ 💡 "CON-2025-0156 - Toyota"            │
+│                                         │
+│ [🚀 CONTINUAR] [❌ Cancelar]            │
+└─────────────────────────────────────────┘
+PASO 2: "PESTAÑA CAMPAÑA" - INFORMACIÓN GENERAL
+Interfaz familiar estilo MediaSales pero inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 INFORMACIÓN GENERAL DE CAMPAÑA                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📝 DATOS PRINCIPALES:                                           │
+│                                                                 │
+│ Nombre de la campaña:                                           │
+│ [Promoción Navidad Premium 2025                               ]│
+│                                                                 │
+│ Referencia cliente:                                             │
+│ [DICIEMBRE 2025                                               ]│
+│                                                                 │
+│ Orden de agencia:          Orden de Compra (801):              │
+│ [ORD-NAV-2025-123        ] [OC-2025-789                       ]│
+│                                                                 │
+│ HES (802):                                                      │
+│ [HES-NAV-456                                                  ]│
+│                                                                 │
+│ 📅 FECHAS DE CAMPAÑA:                                          │
+│ Fecha inicio: [01/12/2025 📅] Fecha término: [31/12/2025 📅]  │
+│                                                                 │
+│ 📋 DATOS CONTRACTUALES (Auto-completados desde contrato):      │
+│                                                                 │
+│ Contrato: [CON-2025-0234 ✅ Validado]                          │
+│ └─ 💡 Banco Chile • Ana García • Vigente hasta 31/12/2025      │
+│                                                                 │
+│ Anunciante: [BANCO DE CHILE                                   ]│
+│ └─ RUT: 97.004.000-5 • Status: Cliente AAA ✅                 │
+│                                                                 │
+│ Producto: [Tarjeta de Crédito Joven ▼]                        │
+│ └─ 💡 Búsqueda: "pa" → Paquete Ahorro, Pagaré, etc.           │
+│ [➕ Crear Nuevo Producto]                                      │
+│                                                                 │
+│ 🏢 AGENCIAS Y COMERCIAL:                                       │
+│                                                                 │
+│ Agencia Publicidad: [Universal McCann ▼]                       │
+│ └─ 🔍 Búsqueda inteligente por nombre                          │
+│                                                                 │
+│ Agencia de Medios: [Carat Chile ▼]                            │
+│ └─ 🔍 Búsqueda inteligente por nombre                          │
+│                                                                 │
+│ Vendedor: [Ana García ▼]                                       │
+│ └─ 🔍 Búsqueda por nombre del ejecutivo                        │
+│                                                                 │
+│ Dirección de envío: ⚫ Anunciante ⚪ Agencia                   │
+│                                                                 │
+│ 📻 EMISORA PRINCIPAL:                                           │
+│ [T13 Radio ▼]                                                  │
+│ └─ 💡 Búsqueda: "T13" → T13 Radio, Play FM, etc.              │
+└─────────────────────────────────────────────────────────────────┘
+Panel lateral de propiedades (similar a imagen):
+┌─────────────────────────────────────────┐
+│ 🎯 PROPIEDADES DISPONIBLES              │
+├─────────────────────────────────────────┤
+│ 📊 Propiedades disponibles:             │
+│                                         │
+│ [▼] 🎵 Tipo Pedido                      │
+│     ⚪ 01 PUBLICIDAD                    │
+│     ⚪ 02 CANJE                         │
+│     ⚪ 03 DIGITAL                       │
+│     ⚪ 04 NUEVOS NEGOCIOS               │
+│                                         │
+│ [▼] 📻 Tipo                             │
+│     ⚪ PRIME DETERMINADO                │
+│     ⚪ AUSPICIO                         │
+│     ⚪ MENCIONES                        │
+│     ⚪ REPARTIDO                        │
+│                                         │
+│ [▼] 🎯 Categoría                        │
+│     ⚪ BANCOS                           │
+│     ⚪ AUTOMOTRIZ                       │
+│     ⚪ RETAIL                           │
+│     ⚪ TELECOMUNICACIONES               │
+│                                         │
+│ 📋 PROPIEDADES ASIGNADAS:               │
+│ ✅ PRIME DETERMINADO                    │
+│ ✅ BANCOS                               │
+│ ✅ 01 PUBLICIDAD                        │
+│                                         │
+│ [⚙️ Gestionar Propiedades]              │
+└─────────────────────────────────────────┘
+PASO 3: "PESTAÑA TARIFAS" - CONFIGURACIÓN FINANCIERA
+Sistema de tarifas inteligente:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💰 CONFIGURACIÓN TARIFAS DE CAMPAÑA                             │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 MODALIDAD DE TARIFICACIÓN:                                   │
+│                                                                 │
+│ ⚫ PAQUETE ACORDADO                                             │
+│    📦 Valor fijo total de campaña                              │
+│    💰 Valor campaña: [$2,500,000                             ]│
+│    📝 Descripción: Paquete promocional navideño               │
+│                                                                 │
+│ ⚪ TARIFA POR SPOT                                             │
+│    📊 Valor individual por cada cuña                          │
+│    💰 Se configurará en líneas específicas                    │
+│                                                                 │
+│ 💼 COMISIONES Y DESCUENTOS:                                    │
+│                                                                 │
+│ Comisión agencia: [15%] (Auto desde contrato)                 │
+│ └─ 💰 Monto comisión: $375,000                                 │
+│                                                                 │
+│ 📊 DESCUENTOS APLICABLES:                                      │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ Descuento          │ Porcentaje │ Emisora │ Grupo Emisoras  │ │
+│ ├────────────────────┼────────────┼─────────┼─────────────────┤ │
+│ │ Cliente AAA        │    5.00%   │ Global  │ Todas          │ │
+│ │ Volumen Navidad    │    3.00%   │ T13     │ Específica     │ │
+│ │ Pronto Pago        │    2.00%   │ Global  │ Todas          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🧮 RESUMEN FINANCIERO:                                         │
+│ • Valor bruto campaña: $2,500,000                             │
+│ • Descuentos aplicados: -$250,000 (10%)                       │
+│ • Valor neto: $2,250,000                                      │
+│ • Comisión agencia: $337,500 (15% sobre neto)                 │
+│ • Valor final facturación: $2,250,000                         │
+│                                                                 │
+│ [💾 Guardar Configuración] [🧮 Recalcular] [📊 Detallar]       │
+└─────────────────────────────────────────────────────────────────┘
+PASO 4: "PESTAÑA FACTURAS" - INTEGRACIÓN FACTURACIÓN
+Vista integrada con módulo facturación:
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧾 CONFIGURACIÓN Y SEGUIMIENTO FACTURACIÓN                     │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 OPCIONES DE FACTURACIÓN:                                    │
+│                                                                 │
+│ Estilo de facturación: [Factura a posteriori ▼]               │
+│ • Factura a posteriori (Post-emisión)                         │
+│ • Factura inmediata (Pre-emisión)                             │
+│ • Intercambio (Canje comercial)                               │
+│                                                                 │
+│ Facturación por: [Mensual ▼]                                  │
+│ • Una línea por mes y por estación                            │
+│ • Global por campaña                                          │
+│ • Por línea específica                                        │
+│                                                                 │
+│ 📅 CONFIGURACIÓN TEMPORAL:                                     │
+│ Paso de pago: [30] días 📋 Código fiscal: [19%]               │
+│                                                                 │
+│ 📧 DIRECCIÓN FACTURACIÓN:                                      │
+│ ⚫ Anunciante  ⚪ Facturación libre                            │
+│                                                                 │
+│ 🏦 DATOS BANCARIOS Y FISCALES:                                │
+│ Número de Deudor: [1234] (Auto-asignado)                      │
+│ Es Cooperativa: ☐                                             │
+│                                                                 │
+│ 📋 FACTURAS GENERADAS:                                         │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │Fac │Crédito│A la Fecha│Fecha Inicio│Fecha Final│Bruto │Neto │ │
+│ ├────┼───────┼──────────┼────────────┼───────────┼──────┼─────┤ │
+│ │    │   ☐   │26/08/25  │11/08/25    │26/08/25   │$2.5M │$2.5M│ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [📄 Crear Factura] [📧 Enviar] [👁️ Ver Detalle]                │
+└─────────────────────────────────────────────────────────────────┘
+PASO 5: "PESTAÑA LÍNEAS" - PROGRAMACIÓN DETALLADA
+Configuración de líneas estilo MediaSales evolucionado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 LÍNEAS DE CAMPAÑA - PROGRAMACIÓN DETALLADA                   │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔧 [➕ Crear Líneas] [✏️ Editar] [❌ Eliminar] [📊 Validar]     │
+│                                                                 │
+│ 📊 LÍNEAS CONFIGURADAS:                                         │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │Prog│Dur│H.Inicio│H.Final│Hora│Bloque│Fecha    │F.Final │L│M│ │
+│ ├────┼───┼────────┼───────┼────┼──────┼─────────┼────────┼─┼─┤ │
+│ │ ✅ │35s│07:00   │09:30  │ 0  │PRIME │11/08/25 │26/08/25│1│1│ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📝 CREAR NUEVA LÍNEA:                                          │
+│                                                                 │
+│ 📅 FECHAS Y HORARIOS:                                          │
+│ Fecha inicio: [11/08/2025 📅] Fecha término: [26/08/2025 📅]   │
+│ Hora inicio: [07:00:00 🕐] Hora fin: [09:30:00 🕐]             │
+│ └─ 💡 Defecto: 00:00 a 23:59 (modificable)                    │
+│                                                                 │
+│ ⏱️ CARACTERÍSTICAS SPOT:                                       │
+│ Duración cuña: ⚫ 30s ⚪ 15s ⚪ Personalizada [   ]s          │
+│                                                                 │
+│ 📍 POSICIÓN FIJA:                                              │
+│ [Ninguno ▼]                                                    │
+│ • Ninguno (Rotación libre)                                    │
+│ • Inicio (Posición 1°)                                        │
+│ • Segundo en el bloque                                         │
+│ • Tercero en el bloque                                         │
+│ • Cuarto en el bloque                                          │
+│ • Quinto en el bloque                                          │
+│ • Al medio del bloque                                          │
+│ • Penúltimo en el bloque                                       │
+│ • Final del bloque                                             │
+│                                                                 │
+│ 💰 CONFIGURACIÓN FINANCIERA:                                   │
+│ Valor por cuña: [$85,000                                     ]│
+│ └─ 🧮 Total línea se calcula automáticamente                   │
+│                                                                 │
+│ 🎯 TIPO DE BLOQUE:                                             │
+│ [PRIME MATINAL ▼]                                             │
+│ └─ 🔍 Búsqueda: "PR" → Prime Matinal, Prime Vespertino        │
+│                                                                 │
+│ 📦 PAQUETE:                                                    │
+│ [Paquete Navidad Premium ▼]                                   │
+│ └─ 🤖 Auto-detecta derechos: Auspicio + Menciones + Frases    │
+│                                                                 │
+│ 📊 DISTRIBUCIÓN SEMANAL CUÑAS POR DÍA:                        │
+│ ┌────┬────┬────┬────┬────┬────┬────┐                          │
+│ │ L  │ M  │ M  │ J  │ V  │ S  │ D  │                          │
+│ ├────┼────┼────┼────┼────┼────┼────┤                          │
+│ │[5] │[5] │[5] │[5] │[5] │[0] │[0] │ 🔢 ↑↓                   │
+│ └────┴────┴────┴────┴────┴────┴────┘                          │
+│                                                                 │
+│ 📊 DISTRIBUCIÓN SEMANAL CUÑAS BONIFICADAS:                    │
+│ ┌────┬────┬────┬────┬────┬────┬────┐                          │
+│ │ L  │ M  │ M  │ J  │ V  │ S  │ D  │                          │
+│ ├────┼────┼────┼────┼────┼────┼────┤                          │
+│ │[1] │[1] │[1] │[1] │[1] │[0] │[0] │ 🎁                      │
+│ └────┴────┴────┴────┴────┴────┴────┘                          │
+│                                                                 │
+│ [✅ CREAR LÍNEA] [🔄 Aplicar Paquete] [❌ Cancelar]            │
+└─────────────────────────────────────────────────────────────────┘
+PASO 6: "PESTAÑA PROGRAMACIÓN" - MOTOR DE PLANIFICACIÓN
+Sistema de programación con validaciones automáticas:
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚙️ OPCIONES DE PROGRAMACIÓN INTELIGENTE                        │
+├─────────────────────────────────────────────────────────────────┤
+│ ✅ CHECKLIST DE VALIDACIONES AUTOMÁTICAS:                      │
+│                                                                 │
+│ ☑️ Verificar campaña en el bloque                              │
+│ └─ 🤖 Previene duplicación campaña en mismo bloque            │
+│                                                                 │
+│ ☑️ Verificar posición en el bloque                             │
+│ └─ 🎯 Valida coherencia: Auspicio→Bloque Auspicio             │
+│                                                                 │
+│ ☑️ Verificar límite de tiempo en el bloque                     │
+│ └─ ⏱️ Controla saturación de tandas (300s máximo)             │
+│                                                                 │
+│ ☐ Comprobar si hay conflictos                                  │
+│ └─ 🚨 Detecta competencia directa en misma tanda               │
+│                                                                 │
+│ 🎯 CONFIGURACIÓN AVANZADA:                                     │
+│ Nivel de Conflicto: [Bloque Exclusivo ▼]                      │
+│ Separación: [Ninguno ▼] [00:00]                               │
+│                                                                 │
+│ 📊 ESTADO PROGRAMACIÓN ACTUAL:                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │Prog│Dur│H.Inicio│H.Final│Hora│Bloque│Fecha   │F.Final │Lun│ │
+│ ├────┼───┼────────┼───────┼────┼──────┼────────┼────────┼────┤ │
+│ │ ✅ │35s│07:00   │09:30  │ 0  │PRIME │11/08/25│26/08/25│ 1 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🚀 ACCIONES DE PROGRAMACIÓN:                                   │
+│                                                                 │
+│ [🎯 PLANIFICAR CAMPAÑA]                                        │
+│ └─ ⚡ Procesa todas las líneas en <5 segundos                  │
+│                                                                 │
+│ [📋 PLANIFICAR LÍNEA DE PEDIDO]                                │
+│ └─ 🎯 Procesa solo la línea seleccionada                      │
+│                                                                 │
+│ [❌ ELIMINAR PLANIFICACIÓN]                                    │
+│ └─ 🔄 Libera espacios y marca como desplanificado             │
+│                                                                 │
+│ [📝 DESPROGRAMAR LÍNEAS]                                       │
+│ └─ 🎯 Elimina solo líneas específicas seleccionadas           │
+│                                                                 │
+│ [💰 CALCULAR VALORES]                                          │
+│ └─ 🧮 Recalcula toda la estructura financiera                 │
+│                                                                 │
+│ 📈 PROGRESO PLANIFICACIÓN:                                     │
+│ ████████████████████████████████████████████░░░░░ 85%          │
+│ • Líneas planificadas: 17/20                                  │
+│ • Cuñas rechazadas: 23 (por límite tiempo)                    │
+│ • Conflictos detectados: 2 (resueltos automáticamente)        │
+│                                                                 │
+│ [📊 Ver Detalles] [🚨 Gestionar Rechazadas] [⚙️ Optimizar]     │
+└─────────────────────────────────────────────────────────────────┘
+📺 PESTAÑA "PROGRAMA" - CENTRO DE COMANDO VISUAL
+INTERFAZ ESTILO MEDIASALES AVANZADA:
+Layout familiar con inteligencia agregada:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📺 CENTRO DE COMANDO PROGRAMACIÓN VISUAL                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 🗓️ [📅 11/08] [📻 T13 RADIO] [🔄 Actualizar] [⚙️ Config]      │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────┬───────────────────────────┬─────────────────────┐
+│ 📊 BLOQUES      │ 🎯 PROGRAMACIÓN ASIGNADA  │ 🎵 MATERIALES DISP │
+│ (Izquierda)     │ (Centro)                  │ (Derecha)           │
+├─────────────────┼───────────────────────────┼─────────────────────┤
+│ ⏰ 06:29:00     │ 🔴 PRIME MATINAL (115s)   │ 📀 CUÑAS BANCO CHILE│
+│ 📊 285s/300s 95%│ ┌─────────────────────────┐│ ┌─────────────────┐ │
+│ 🟢 Disponible   │ │ 1. [VACÍO] - 30s        ││ │SP00262│32│BANCO │ │
+│                 │ │ 2. [VACÍO] - 30s        ││ │       │  │SCOTI │ │
+│ ⏰ 06:50:00     │ │ 3. [VACÍO] - 30s        ││ │       │  │BANK  │ │
+│ 📊 280s/300s 93%│ │ 4. [VACÍO] - 25s        ││ │SP00263│15│MEV  │ │
+│ 🟢 Disponible   │ └─────────────────────────┘│ │       │  │CAFE │ │
+│                 │                           │ │SP00314│29│BANCO│ │
+│ ⏰ 07:26:00     │ 🔵 AUSPICIO (75s)         ││ │       │  │SCOTI│ │
+│ 📊 295s/300s 98%│ ┌─────────────────────────┐│ │SP00315│30│BANCO│ │
+│ 🟡 Casi lleno   │ │ 1. [VACÍO] - 15s        ││ │       │  │SCOTI│ │
+│                 │ │ 2. [VACÍO] - 30s        ││ └─────────────────┘ │
+│ ⏰ 07:29:00     │ │ 3. [VACÍO] - 30s        ││                     │
+│ 📊 312s/300s 104%│ └─────────────────────────┘│ 🔧 HERRAMIENTAS:   │
+│ 🔴 Saturado     │                           │ [❌ Eliminar Selec] │
+│                 │ 🟢 REPARTIDO (90s)        │ [🔗 Crear Unidas]  │
+│ ⏰ 08:26:00     │ ┌─────────────────────────┐│ [❌ Cancelar Unidas]│
+│ 📊 267s/300s 89%│ │ 1. [VACÍO] - 30s        ││ [📎 Sustituir Cuñas]│
+│ 🟢 Disponible   │ │ 2. [VACÍO] - 30s        ││ [🔓 Liberar Cuñas] │
+│                 │ │ 3. [VACÍO] - 30s        ││                     │
+│ [Más bloques...] │ └─────────────────────────┘│ 📍 POSICIONES:     │
+│                 │                           │ [🥇 Inicio]        │
+│                 │ 📊 TOTAL BLOQUE: 280s/300s│ [🥈 Segundo]       │
+│                 │ 🟢 Disponible: 20s        │ [🥉 Tercero]       │
+│                 │                           │ [📍 Al Medio]      │
+│                 │ 🎯 Seleccionar múltiple:  │ [🔚 Final]         │
+│                 │ Ctrl+Click para varios    │                     │
+│                 │ Shift+Click para rango    │ [⚙️ Aplicar Posición]│
+└─────────────────┴───────────────────────────┴─────────────────────┘
+FUNCIONALIDADES DRAG & DROP INTELIGENTE:
+Sistema de arrastrar y soltar con validación automática:
+1. Eliminar Selección:
+
+Multi-selección con Ctrl+Click y Shift+Click
+Confirmación visual antes de eliminar
+Liberación automática de espacios
+Actualización inmediata de contadores
+
+2. Crear Cuñas Unidas:
+
+Duplicación inteligente en mismo bloque
+Indicador visual de "clip" para spots unidos
+Posibilidad de mover unidos o separar después
+Drag & drop a otros bloques manteniendo unión
+
+3. Sustituir Cuñas:
+
+Asignación material desde panel derecho
+Código SP + Nombre + Duración automática
+Multi-selección de materiales para intercalar
+Validación automática de duración vs. espacio disponible
+
+4. Control de Posiciones:
+
+Aplicación de posición fija desde panel lateral
+Bloqueo automático de posición hasta liberar
+Indicadores visuales de posición fija
+Override con confirmación para casos especiales
+
+ALERTAS Y VALIDACIONES EN TIEMPO REAL:
+Sistema de alertas inteligente:
+┌─────────────────────────────────────────┐
+│ 🚨 ALERTA DE MOVIMIENTO                  │
+│                                         │
+│ ⚠️ MOVIMIENTO INAPROPIADO DETECTADO     │
+│                                         │
+│ 🎯 Acción: Mover spot PRIME → REPARTIDO │
+│ 📊 Material: SP00262 - Banco Scotiabank │
+│ 🔴 Problema: Prime en tanda repartida   │
+│                                         │
+│ 💡 El spot está marcado como PRIME pero │
+│ lo estás moviendo a una tanda REPARTIDO │
+│                                         │
+│ ❓ ¿Qué deseas hacer?                   │
+│                                         │
+│ [🔧 FORZAR INGRESO]                     │
+│ └─ Permite movimiento ignorando tipo    │
+│                                         │
+│ [❌ CANCELAR MOVIMIENTO]                │
+│ └─ Mantiene spot en ubicación original  │
+│                                         │
+│ [🎯 CAMBIAR TIPO SPOT]                  │
+│ └─ Modifica tipo a REPARTIDO            │
+└─────────────────────────────────────────┘
+📋 PESTAÑA "CUÑAS RECHAZADAS" - GESTIÓN INTELIGENTE
+CENTRO DE GESTIÓN DE RECHAZADAS:
+Interfaz para manejar spots no programables:
+┌─────────────────────────────────────────────────────────────────┐
+│ ❌ GESTIÓN CUÑAS RECHAZADAS                                     │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 RESUMEN RECHAZADAS:                                          │
+│ • Total rechazadas: 23 cuñas                                   │
+│ • Por límite tiempo: 20 cuñas (87%)                            │
+│ • Por conflictos: 3 cuñas (13%)                                │
+│                                                                 │
+│ 📋 DETALLE CUÑAS RECHAZADAS:                                    │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │Fecha   │Bloque    │Material│Duración│Motivo Rechazo        │ │
+│ ├────────┼──────────┼────────┼────────┼──────────────────────┤ │
+│ │11/08/25│Prime 7:26│SP00262 │30s     │Límite tiempo (5s)    │ │
+│ │11/08/25│Prime 7:29│SP00263 │15s     │Límite tiempo (2s)    │ │
+│ │12/08/25│Ausp 8:26 │SP00314 │30s     │Conflicto: Toyota     │ │
+│ │12/08/25│Prime 7:26│SP00315 │30s     │Límite tiempo (8s)    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🎯 ACCIONES DISPONIBLES:                                        │
+│                                                                 │
+│ [🔄 PLANIFICAR FORZADO]                                        │
+│ └─ ⚡ Ingresa todas sin validar límites tiempo                 │
+│                                                                 │
+│ [🎯 REUBICAR INTELIGENTE]                                      │
+│ └─ 🤖 IA busca bloques alternativos automáticamente            │
+│                                                                 │
+│ [📊 ANÁLISIS CONFLICTOS]                                       │
+│ └─ 🔍 Detalla qué conflictos impiden programación              │
+│                                                                 │
+│ 🗺️ MAPA DE REUBICACIÓN:                                        │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ BLOQUES DISPONIBLES:            │ CUÑAS A REUBICAR:         │ │
+│ │ ┌─────────────────────────────┐  │ ┌───────────────────────┐ │ │
+│ │ │ ⏰ 08:26:00 - Prime         │  │ │ SP00262 (30s)         │ │ │
+│ │ │ 📊 267s/300s (33s libres)   │◄─┤ │ SP00263 (15s)         │ │ │
+│ │ │ 🟢 Disponible para 1 spot   │  │ │ SP00315 (30s)         │ │ │
+│ │ └─────────────────────────────┘  │ └───────────────────────┘ │ │
+│ │                                 │                           │ │
+│ │ ⏰ 09:26:00 - Auspicio          │ [Drag & Drop para asignar] │ │
+│ │ 📊 180s/300s (120s libres)      │                           │ │
+│ │ 🟢 Disponible para 4 spots      │                           │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [✅ APLICAR REUBICACIÓN] [🔄 Reset] [❌ Mantener Rechazadas]    │
+└─────────────────────────────────────────────────────────────────┘
+📜 PESTAÑA "HISTORIAL" - AUDIT TRAIL COMPLETO
+TRAZABILIDAD TOTAL DE ACCIONES:
+Sistema de auditoría avanzado:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📜 HISTORIAL COMPLETO DE CAMPAÑA                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔍 Filtros: [Todos ▼] [Usuario ▼] [Acción ▼] [Última semana ▼] │
+│                                                                 │
+│ 📋 REGISTRO DETALLADO DE ACCIONES:                             │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │Timestamp     │Usuario    │IP         │Acción              │ │
+│ ├──────────────┼───────────┼───────────┼────────────────────┤ │
+│ │20/08 14:23:45│Ana García │192.168.1.5│Creó campaña        │ │
+│ │20/08 14:24:12│Ana García │192.168.1.5│Agregó línea PRIME  │ │
+│ │20/08 14:25:03│Ana García │192.168.1.5│Configuró tarifas   │ │
+│ │20/08 14:26:18│Ana García │192.168.1.5│Planificó campaña   │ │
+│ │20/08 14:27:45│Carlos Ruiz│192.168.1.8│Revisó programación │ │
+│ │20/08 14:28:12│Carlos Ruiz│192.168.1.8│Movió SP00262 a 8:26│ │
+│ │20/08 14:29:33│Ana García │192.168.1.5│Calculó valores     │ │
+│ │20/08 14:30:15│Ana García │192.168.1.5│Confirmó campaña    │ │
+│ │20/08 15:15:22│SISTEMA    │127.0.0.1  │Backup automático   │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 📊 DETALLES DE ACCIÓN SELECCIONADA:                            │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🎯 Acción: Movió SP00262 a bloque 8:26                     │ │
+│ │ 👤 Usuario: Carlos Ruiz                                    │ │
+│ │ 🕐 Timestamp: 20/08/2025 14:28:12                          │ │
+│ │ 🌐 IP: 192.168.1.8                                         │ │
+│ │ 📊 Detalles:                                               │ │
+│ │    • Origen: Bloque 7:26 PRIME posición 3°                │ │
+│ │    • Destino: Bloque 8:26 PRIME posición 5°               │ │
+│ │    • Motivo: Resolver saturación bloque origen             │ │
+│ │    • Material: SP00262 - Banco Scotiabank (30s)           │ │
+│ │    • Validación: Automática ✅                             │ │
+│ │ 🔄 Estado anterior guardado en backup BKP-20250820-002     │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [📊 Exportar Historial] [🔍 Filtros Avanzados] [📄 Imprimir]   │
+└─────────────────────────────────────────────────────────────────┘
+💬 PESTAÑA "OBSERVACIONES" - COLABORACIÓN INTELIGENTE
+SISTEMA DE COMENTARIOS Y VINCULACIONES:
+Centro de comunicación colaborativa:
+┌─────────────────────────────────────────────────────────────────┐
+│ 💬 OBSERVACIONES Y COLABORACIÓN                                │
+├─────────────────────────────────────────────────────────────────┤
+│ ✏️ NUEVA OBSERVACIÓN:                                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ [                                                          ] │ │
+│ │ [ Cliente solicita cambio de horarios para prime matinal.  ] │ │
+│ │ [ Requiere validación con programación antes de aplicar.   ] │ │
+│ │ [                                                          ] │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🔗 VINCULACIONES:                                              │
+│ Relacionar con:                                                │
+│ [📋 Campaña] [CON-2025-0234                                  ]│ │
+│ [📝 Contrato] [Buscar...                                     ]│ │
+│ [📧 Email] [ana.garcia@banco.cl                              ]│ │
+│                                                                 │
+│ 📎 ADJUNTOS:                                                   │
+│ [📁 Subir Archivo] [🔗 Link Externo] [🎥 Grabación Audio]     │
+│                                                                 │
+│ [💾 AGREGAR OBSERVACIÓN]                                       │
+│                                                                 │
+│ 📋 HISTORIAL DE OBSERVACIONES:                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 💬 Ana García - 20/08/2025 14:35                           │ │
+│ │ "Cliente confirma aprobación de horarios prime matinal.    │ │
+│ │ Proceder con programación según planificado."              │ │
+│ │ 🔗 Vinculado: CON-2025-0234                                │ │
+│ │ 📎 Adjunto: email_aprobacion.pdf                           │ │
+│ │ [✏️ Editar] [❌ Eliminar] [💬 Responder]                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 💬 Carlos Ruiz - 20/08/2025 10:22                          │ │
+│ │ "Detectado conflicto horario con campaña Toyota. Requiere  │ │
+│ │ coordinación para evitar solapamiento categoría automotriz"│ │
+│ │ 🔗 Vinculado: CMP-25-003 (Toyota)                          │ │
+│ │ 🚨 Prioridad: Alta                                         │ │
+│ │ [✏️ Editar] [❌ Eliminar] [💬 Responder]                    │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ [📊 Exportar Observaciones] [🔍 Buscar] [📧 Notificar Equipo] │
+└─────────────────────────────────────────────────────────────────┘
+📄 PESTAÑA "CONFIRMACIÓN HORARIA" - DOCUMENTO PROFESIONAL
+GENERADOR DE CONFIRMACIONES AUTOMÁTICO:
+Sistema de documentos profesionales:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📄 GENERADOR CONFIRMACIÓN HORARIA PROFESIONAL                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 🎯 CONFIGURACIÓN DOCUMENTO:                                     │
+│                                                                 │
+│ 📋 Template: [Confirmación Estándar Banco ▼]                   │
+│ • Confirmación Estándar Banco                                  │
+│ • Confirmación Detallada Premium                               │
+│ • Confirmación Simple                                          │
+│ • Template Personalizado Cliente                               │
+│                                                                 │
+│ 📧 DESTINATARIOS:                                              │
+│ Principal: [ana.garcia@banco.cl                               ]│
+│ Copia: [marketing@banco.cl                                    ]│
+│ Copia oculta: [traffic@silexar.com                           ]│
+│                                                                 │
+│ 🎨 PERSONALIZACIÓN:                                            │
+│ [✅] Incluir logo cliente                                      │
+│ [✅] Incluir detalles técnicos                                 │
+│ [✅] Incluir métricas proyectadas                              │
+│ [✅] Incluir contactos responsables                            │
+│                                                                 │
+│ 📊 PREVIEW CONFIRMACIÓN:                                       │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 🏦 BANCO DE CHILE                📅 Confirmación Horaria    │ │
+│ │ Campaña: Promoción Navidad Premium 2025                    │ │
+│ │ ════════════════════════════════════════════════════════════ │ │
+│ │                                                             │ │
+│ │ 📋 DATOS GENERALES:                                         │ │
+│ │ • Campaña: CMP-25-001                                      │ │
+│ │ • Contrato: CON-2025-0234                                  │ │
+│ │ • Período: 01/12/2025 - 31/12/2025                         │ │
+│ │ • Emisora: T13 Radio                                       │ │
+│ │ • Ejecutivo: Ana García                                    │ │
+│ │                                                             │ │
+│ │ 💰 RESUMEN FINANCIERO:                                      │ │
+│ │ • Valor Campaña: $2,500,000                               │ │
+│ │ • Total Cuñas: 350 spots                                   │ │
+│ │ • Valor Promedio: $7,143 por spot                         │ │
+│ │                                                             │ │
+│ │ 📊 DETALLE PROGRAMACIÓN:                                    │ │
+│ │ ┌─────────────────────────────────────────────────────────┐ │ │
+│ │ │Fecha   │Hora  │Bloque│Material│Duración│Posición│Costo │ │ │
+│ │ ├────────┼──────┼──────┼────────┼────────┼────────┼──────┤ │ │
+│ │ │01/12/25│07:26 │PRIME │SP00262 │30s     │2°      │$8,500│ │ │
+│ │ │01/12/25│08:26 │PRIME │SP00263 │30s     │1°      │$8,500│ │ │
+│ │ │01/12/25│19:26 │PRIME │SP00262 │30s     │3°      │$8,500│ │ │
+│ │ │...     │...   │...   │...     │...     │...     │...   │ │ │
+│ │ └─────────────────────────────────────────────────────────┘ │ │
+│ │                                                             │ │
+│ │ 📞 CONTACTOS:                                               │ │
+│ │ • Traffic: Carlos Ruiz - carlos@silexar.com                │ │
+│ │ • Comercial: Ana García - ana@silexar.com                  │ │
+│ │                                                             │ │
+│ │ ✅ Confirmado: 20/08/2025 - Válido hasta emisión          │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│ 🚀 ACCIONES:                                                   │
+│ [📧 ENVIAR POR EMAIL] [📄 DESCARGAR PDF] [🖨️ IMPRIMIR]        │
+│ [📋 COPIAR LINK] [📊 GENERAR EXCEL] [⚙️ PERSONALIZAR]          │
+└─────────────────────────────────────────────────────────────────┘
+📱 MÓDULO MÓVIL CAMPAÑAS
+INTERFAZ MÓVIL OPTIMIZADA:
+┌─────────────────────────────────────────┐
+│ 📱 SILEXAR CAMPAÑAS MÓVIL               │
+├─────────────────────────────────────────┤
+│ 🏠 Dashboard Campañas                   │
+│ • Mis campañas activas: 12               │
+│ • En programación: 5                    │
+│ • Ejecutándose: 7                       │
+│ • Requieren atención: 2                 │
+│                                         │
+│ ⚡ ACCIONES RÁPIDAS:                    │
+│ [🎯 Mis Campañas Activas]              │
+│ [📊 Estado Programación]               │
+│ [🚨 Alertas y Conflictos]              │
+│ [📧 Generar Confirmación]              │
+│ [🔄 Sincronizar Datos]                 │
+│                                         │
+│ 🚨 ALERTAS URGENTES:                   │
+│ • CMP-25-001: Conflicto detectado       │
+│   [🔧 Resolver] [👁️ Ver]               │
+│ • CMP-25-003: Cliente solicita cambio   │
+│   [📧 Contactar] [📝 Anotar]           │
+│                                         │
+│ 📊 MIS CAMPAÑAS:                       │
+│ • Banco Chile: Ejecutando ✅            │
+│ • Coca Cola: Planificando ⚠️            │
+│ • Toyota: Conflictos 🔴                 │
+│                                         │
+│ 🎯 PRÓXIMAS ACCIONES:                  │
+│ • Confirmar horarios Toyota             │
+│ • Enviar confirmación Banco Chile       │
+│ • Revisar programación Coca Cola        │
+│                                         │
+│ [📊 Dashboard] [🔧 Acciones] [⚙️ Config]│
+├─────────────────────────────────────────┤
+│ [🏠] [🎯] [📊] [💬] [⚙️]                │
+└─────────────────────────────────────────┘
+🔐 SEGURIDAD Y COMPLIANCE AVANZADO
+PROTECCIÓN TIER 0 PARA CAMPAÑAS:
+Seguridad nivel enterprise:
+
+Backup automático: Respaldo antes de cada acción crítica
+Versionado completo: Control de versiones de cada campaña
+Audit trail inmutable: Log completo de todas las acciones
+Validación multi-nivel: Verificaciones automáticas en cada paso
+Rollback inteligente: Capacidad de reversión a cualquier punto
+
+Control de acceso granular:
+Traffic Manager Senior:
+
+✅ Gestión completa campañas
+✅ Programación y reprogramación
+✅ Resolución de conflictos
+✅ Generación de confirmaciones
+
+Ejecutivo Comercial:
+
+✅ Crear campañas desde sus contratos
+✅ Modificar datos comerciales
+✅ Generar confirmaciones para clientes
+❌ Modificar programación técnica
+
+Programador:
+
+✅ Programación y materiales
+✅ Resolución conflictos técnicos
+❌ Modificación datos comerciales
+❌ Confirmación final campañas
+
+Cliente (Portal):
+
+✅ Ver estado de sus campañas
+✅ Descargar confirmaciones
+❌ Modificar programación
+❌ Acceder datos de otros clientes
+
+🚀 INNOVACIONES TIER 0 ESPECÍFICAS
+1. CORTEX-CAMPAIGN INTELLIGENCE:
+IA que optimiza campañas automáticamente:
+
+Auto-completado inteligente basado en históricos y contratos
+Detección proactiva de conflictos antes que ocurran
+Optimización automática de distribución horaria
+Sugerencias inteligentes de mejoras de programación
+
+2. SMART CONFLICT RESOLUTION:
+Resolución automática de conflictos:
+
+Detección en tiempo real de solapamientos comerciales
+Propuesta automática de soluciones alternativas
+Escalamiento inteligente según criticidad
+Machine learning de patrones de resolución exitosa
+
+3. DYNAMIC SCHEDULING ENGINE:
+Motor de programación adaptativo:
+
+Optimización continua de distribución según performance
+Ajuste automático por cambios de disponibilidad
+Balanceado inteligente de cargas por bloque
+Predicción de saturación y prevención automática
+
+4. INTELLIGENT DOCUMENT GENERATION:
+Generación automática de documentos:
+
+Confirmaciones horarias profesionales automatizadas
+Personalización por cliente sin intervención manual
+Reportes de cumplimiento automáticos
+Integración con sistemas de email marketing
+
+🎯 CONCLUSIÓN: CAMPAÑAS MÁS INTELIGENTES DE LA INDUSTRIA
+PARA EL TRAFFIC MANAGER:
+
+Automatización extrema: 95% de tareas repetitivas automatizadas
+Control total: Supervisión inteligente con intervención solo cuando necesaria
+Eficiencia máxima: Programación 10x más rápida que sistemas tradicionales
+Calidad garantizada: IA previene errores humanos automáticamente
+Interfaz familiar: Evolución natural de MediaSales pero inteligente
+
+PARA EL EJECUTIVO COMERCIAL:
+
+Transparencia total: Visibilidad completa del cumplimiento de sus ventas
+Automatización comercial: Confirmaciones y reportes generados automáticamente
+Control de calidad: Validación automática que servicios se ejecuten como se vendieron
+Satisfacción cliente: Documentación profesional y comunicación automática
+Eficiencia comercial: Más tiempo vendiendo, menos tiempo administrando
+
+PARA EL CLIENTE/ANUNCIANTE:
+
+Transparencia absoluta: Portal de seguimiento en tiempo real
+Documentación profesional: Confirmaciones automáticas de calidad empresarial
+Garantía de cumplimiento: IA asegura ejecución exacta según contratado
+Comunicación fluida: Notificaciones automáticas de estados y cambios
+Confianza total: Evidencia documental de cada emisión
+
+PARA LA ORGANIZACIÓN:
+
+Excelencia operativa: Estándar industria en gestión de campañas
+Automatización total: Proceso manual convertido en automático inteligente
+Calidad consistente: Estándar alto mantenido automáticamente
+Escalabilidad infinita: Maneja 100x más campañas sin aumentar personal
+Competitividad: Diferenciación técnica imposible de igualar
+
+El Módulo Campañas TIER 0 de Silexar Pulse es la evolución definitiva de MediaSales Traffic: mantiene la familiaridad operativa que los programadores conocen y aman, pero añade un nivel de automatización e inteligencia artificial que transforma la gestión de campañas de un proceso manual complejo en un sistema que prácticamente se gestiona solo, garantizando excelencia operativa sin esfuerzo humano.

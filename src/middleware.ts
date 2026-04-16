@@ -44,6 +44,7 @@ const PUBLIC_PATHS = [
   '/images',
   '/_vercel',
   '/api/webhooks',
+  '/api/rrss/callback',
 ]
 
 const AUTH_PATHS = ['/api/auth/login', '/api/auth/register', '/api/mobile/auth']
