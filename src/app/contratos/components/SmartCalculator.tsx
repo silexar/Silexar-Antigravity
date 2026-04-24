@@ -1,10 +1,10 @@
 /**
- * 🧮 SILEXAR PULSE - Smart Contract Calculator TIER 0
+ * ?? SILEXAR PULSE - Smart Contract Calculator TIER 0
  * 
  * @description Calculadora inteligente para contratos que permite:
  * - Simular descuentos y comisiones
  * - Comparar escenarios
- * - Calcular márgenes
+ * - Calcular m�rgenes
  * - Analizar rentabilidad
  * 
  * @version 2025.4.0
@@ -30,9 +30,9 @@ import {
   Sparkles
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface DatosCalculadora {
   valorBruto: number;
@@ -63,65 +63,65 @@ interface Escenario {
   resultado: ResultadoCalculo;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     px-4 py-3 text-right font-semibold
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `,
   slider: `
-    w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer
+    w-full h-2 bg-[#dfeaff] rounded-full appearance-none cursor-pointer
     [&::-webkit-slider-thumb]:appearance-none
     [&::-webkit-slider-thumb]:w-4
     [&::-webkit-slider-thumb]:h-4
     [&::-webkit-slider-thumb]:rounded-full
-    [&::-webkit-slider-thumb]:bg-indigo-500
+    [&::-webkit-slider-thumb]:bg-[#6888ff]
     [&::-webkit-slider-thumb]:shadow-lg
     [&::-webkit-slider-thumb]:cursor-pointer
   `
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // HELPERS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('es-CL', { 
@@ -161,9 +161,9 @@ const calcular = (datos: DatosCalculadora): ResultadoCalculo => {
   };
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export default function SmartCalculator({
   valorInicial = 50000000,
@@ -189,7 +189,7 @@ export default function SmartCalculator({
 
   const resultado = useMemo(() => calcular(datos), [datos]);
 
-  // Límites del usuario (simular)
+  // L�mites del usuario (simular)
   const limiteDescuento = 20;
   const excedeLimite = datos.descuentoPorcentaje > limiteDescuento;
 
@@ -216,15 +216,15 @@ export default function SmartCalculator({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600">
+            <div className="p-3 rounded-xl bg-[#6888ff]">
               <Calculator className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-800">Calculadora Inteligente</h3>
-              <p className="text-sm text-slate-500">Simula descuentos, comisiones y márgenes</p>
+              <h3 className="font-bold text-lg text-[#69738c]">Calculadora Inteligente</h3>
+              <p className="text-sm text-[#9aa3b8]">Simula descuentos, comisiones y m�rgenes</p>
             </div>
           </div>
 
@@ -246,7 +246,7 @@ export default function SmartCalculator({
             {escenarios.length > 0 && (
               <button
                 onClick={() => setShowComparacion(!showComparacion)}
-                className={`${neuro.btnSecondary} p-2 ${showComparacion ? 'ring-2 ring-indigo-400' : ''}`}
+                className={`${neuro.btnSecondary} p-2 ${showComparacion ? 'ring-2 ring-[#6888ff]' : ''}`}
                 title="Comparar escenarios"
               >
                 <BarChart3 className="w-4 h-4" />
@@ -262,7 +262,7 @@ export default function SmartCalculator({
           <div className="space-y-4">
             {/* Valor Bruto */}
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-[#69738c] mb-2">
                 <DollarSign className="w-4 h-4 inline mr-1" />
                 Valor Bruto
               </label>
@@ -278,7 +278,7 @@ export default function SmartCalculator({
             {/* Descuento */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm text-slate-600">
+                <label className="text-sm text-[#69738c]">
                   <Percent className="w-4 h-4 inline mr-1" />
                   Descuento
                 </label>
@@ -286,10 +286,10 @@ export default function SmartCalculator({
                   {excedeLimite && (
                     <span className={`${neuro.badge} bg-red-100 text-red-700`}>
                       <AlertTriangle className="w-3 h-3 inline mr-1" />
-                      Excede límite ({limiteDescuento}%)
+                      Excede l�mite ({limiteDescuento}%)
                     </span>
                   )}
-                  <span className={`font-bold text-lg ${excedeLimite ? 'text-red-600' : 'text-slate-800'}`}>
+                  <span className={`font-bold text-lg ${excedeLimite ? 'text-red-600' : 'text-[#69738c]'}`}>
                     {datos.descuentoPorcentaje}%
                   </span>
                 </div>
@@ -303,21 +303,21 @@ export default function SmartCalculator({
                 onChange={e => setDatos({ ...datos, descuentoPorcentaje: Number(e.target.value) })}
                 className={neuro.slider}
               />
-              <div className="flex justify-between text-xs text-slate-400 mt-1">
+              <div className="flex justify-between text-xs text-[#9aa3b8] mt-1">
                 <span>0%</span>
-                <span className="text-amber-500">Límite: {limiteDescuento}%</span>
+                <span className="text-amber-500">L�mite: {limiteDescuento}%</span>
                 <span>50%</span>
               </div>
             </div>
 
-            {/* Comisión Agencia */}
+            {/* Comisi�n Agencia */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm text-slate-600">
+                <label className="text-sm text-[#69738c]">
                   <TrendingDown className="w-4 h-4 inline mr-1" />
-                  Comisión Agencia
+                  Comisi�n Agencia
                 </label>
-                <span className="font-bold text-lg text-slate-800">
+                <span className="font-bold text-lg text-[#69738c]">
                   {datos.comisionAgenciaPorcentaje}%
                 </span>
               </div>
@@ -325,7 +325,7 @@ export default function SmartCalculator({
                 type="range"
                 min="0"
                 max="30"
-                aria-label="Comisión agencia en porcentaje"
+                aria-label="Comisi�n agencia en porcentaje"
                 value={datos.comisionAgenciaPorcentaje}
                 onChange={e => setDatos({ ...datos, comisionAgenciaPorcentaje: Number(e.target.value) })}
                 className={neuro.slider}
@@ -334,7 +334,7 @@ export default function SmartCalculator({
 
             {/* IVA */}
             <div className="flex items-center justify-between">
-              <label className="text-sm text-slate-600">IVA</label>
+              <label className="text-sm text-[#69738c]">IVA</label>
               <select
                 value={datos.iva}
                 onChange={e => setDatos({ ...datos, iva: Number(e.target.value) })}
@@ -342,14 +342,14 @@ export default function SmartCalculator({
               >
                 <option value={19}>19% (Chile)</option>
                 <option value={21}>21% (Argentina)</option>
-                <option value={18}>18% (Perú)</option>
+                <option value={18}>18% (Per�)</option>
                 <option value={0}>0% (Exento)</option>
               </select>
             </div>
 
             {/* Costo Operacional */}
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-[#69738c] mb-2">
                 Costo Operacional (opcional)
               </label>
               <input
@@ -367,36 +367,36 @@ export default function SmartCalculator({
           <div className="space-y-3">
             <div className={`${neuro.card} p-4`}>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-slate-500">Monto Descuento</span>
+                <span className="text-sm text-[#9aa3b8]">Monto Descuento</span>
                 <span className="font-semibold text-red-600">
                   -{formatCurrency(resultado.montoDescuento)}
                 </span>
               </div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-slate-500">Después descuento</span>
+                <span className="text-sm text-[#9aa3b8]">Despu�s descuento</span>
                 <span className="font-semibold">{formatCurrency(resultado.valorConDescuento)}</span>
               </div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-slate-500">Comisión Agencia</span>
+                <span className="text-sm text-[#9aa3b8]">Comisi�n Agencia</span>
                 <span className="font-semibold text-orange-600">
                   -{formatCurrency(resultado.montoComision)}
                 </span>
               </div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-slate-500">IVA ({datos.iva}%)</span>
-                <span className="font-semibold text-slate-600">
+                <span className="text-sm text-[#9aa3b8]">IVA ({datos.iva}%)</span>
+                <span className="font-semibold text-[#69738c]">
                   +{formatCurrency(resultado.montoIva)}
                 </span>
               </div>
-              <hr className="my-3 border-slate-200" />
+              <hr className="my-3 border-[#bec8de30]" />
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-slate-700">VALOR NETO</span>
-                <span className="text-xl font-bold text-slate-800">
+                <span className="text-sm font-semibold text-[#69738c]">VALOR NETO</span>
+                <span className="text-xl font-bold text-[#69738c]">
                   {formatCurrency(resultado.valorNeto)}
                 </span>
               </div>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-sm font-semibold text-slate-700">VALOR TOTAL (con IVA)</span>
+                <span className="text-sm font-semibold text-[#69738c]">VALOR TOTAL (con IVA)</span>
                 <span className="text-2xl font-bold text-green-600">
                   {formatCurrency(resultado.valorTotal)}
                 </span>
@@ -411,21 +411,21 @@ export default function SmartCalculator({
                   resultado.rentabilidad > 30 ? 'text-amber-500' :
                   'text-red-500'
                 }`} />
-                <p className="text-2xl font-bold text-slate-800">
+                <p className="text-2xl font-bold text-[#69738c]">
                   {resultado.rentabilidad.toFixed(1)}%
                 </p>
-                <p className="text-xs text-slate-500">Rentabilidad</p>
+                <p className="text-xs text-[#9aa3b8]">Rentabilidad</p>
               </div>
               <div className={`${neuro.card} p-4 text-center`}>
-                <DollarSign className="w-6 h-6 mx-auto mb-1 text-indigo-500" />
-                <p className="text-2xl font-bold text-slate-800">
+                <DollarSign className="w-6 h-6 mx-auto mb-1 text-[#6888ff]" />
+                <p className="text-2xl font-bold text-[#69738c]">
                   {formatCurrency(resultado.margenNeto)}
                 </p>
-                <p className="text-xs text-slate-500">Margen Neto</p>
+                <p className="text-xs text-[#9aa3b8]">Margen Neto</p>
               </div>
             </div>
 
-            {/* Botón aplicar */}
+            {/* Bot�n aplicar */}
             <button
               onClick={() => onAplicar?.(resultado)}
               className={`${neuro.btnPrimary} w-full py-3 flex items-center justify-center gap-2`}
@@ -441,7 +441,7 @@ export default function SmartCalculator({
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3"
+            className="mt-4 p-4 bg-amber-50 border border-[#bec8de30] rounded-2xl flex items-start gap-3"
           >
             <Sparkles className="w-5 h-5 text-amber-600 mt-0.5" />
             <div>
@@ -449,25 +449,25 @@ export default function SmartCalculator({
                 Sugerencia de Cortex-Flow
               </p>
               <p className="text-sm text-amber-700 mt-1">
-                El descuento del {datos.descuentoPorcentaje}% excede tu límite autorizado ({limiteDescuento}%). 
-                Necesitarás aprobación de tu supervisor. Considera ofrecer {limiteDescuento}% 
+                El descuento del {datos.descuentoPorcentaje}% excede tu l�mite autorizado ({limiteDescuento}%). 
+                Necesitar�s aprobaci�n de tu supervisor. Considera ofrecer {limiteDescuento}% 
                 con valor agregado adicional.
               </p>
             </div>
           </motion.div>
         )}
 
-        {/* Comparación de escenarios */}
+        {/* Comparaci�n de escenarios */}
         {showComparacion && escenarios.length > 0 && (
           <div className="mt-6">
-            <h4 className="font-bold text-slate-800 mb-4">Comparación de escenarios</h4>
+            <h4 className="font-bold text-[#69738c] mb-4">Comparaci�n de escenarios</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-500 border-b border-slate-200">
+                  <tr className="text-left text-[#9aa3b8] border-b border-[#bec8de30]">
                     <th className="pb-2">Escenario</th>
                     <th className="pb-2 text-right">Descuento</th>
-                    <th className="pb-2 text-right">Comisión</th>
+                    <th className="pb-2 text-right">Comisi�n</th>
                     <th className="pb-2 text-right">Valor Neto</th>
                     <th className="pb-2 text-right">Rentabilidad</th>
                     <th className="pb-2"></th>
@@ -475,7 +475,7 @@ export default function SmartCalculator({
                 </thead>
                 <tbody>
                   {escenarios.map(esc => (
-                    <tr key={esc.id} className="border-b border-slate-100">
+                    <tr key={esc.id} className="border-b border-[#bec8de30]">
                       <td className="py-3 font-medium">{esc.nombre}</td>
                       <td className="py-3 text-right">{esc.datos.descuentoPorcentaje}%</td>
                       <td className="py-3 text-right">{esc.datos.comisionAgenciaPorcentaje}%</td>
@@ -492,7 +492,7 @@ export default function SmartCalculator({
                       <td className="py-3">
                         <button
                           onClick={() => setDatos(esc.datos)}
-                          className="text-indigo-600 hover:underline text-xs"
+                          className="text-[#6888ff] hover:underline text-xs"
                         >
                           Cargar
                         </button>

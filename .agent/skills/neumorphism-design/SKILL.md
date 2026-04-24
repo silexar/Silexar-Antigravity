@@ -7,13 +7,24 @@ description: Guía suprema para implementar la identidad visual Neumórfica en S
 
 Este skill define el máximo estándar visual para **Silexar Pulse Antygravity**. Toda la interfaz debe sentirse como un sistema operativo avanzado, táctil, limpio y orgánico, donde los elementos de la pantalla no son dibujos planos, sino piezas mecánicas con volumen que reaccionan a la luz y al toque del usuario.
 
+
 ## 📌 1. Reglas Sagradas del Neumorfismo
 
 El Neumorfismo se basa en la extrusión (elevación) o intrusión (hundimiento) del mismo material de fondo. **Queda terminantemente prohibido el uso de fondos negros, blancos puros o transparencias de cristal (Glassmorphism) en contenedores base.**
 
-- **Material Base (Fondo Universal)**: `#F0EDE8` (Gris cálido/arena ultra suave). TODOS los fondos de pantalla y contenedores deben llevar este color base.
-- **Luz y Sombra**: El volumen se crea con una sombra oscura (`#d1d5db`) proyectada hacia abajo a la derecha, y una contra-luz blanca (`#ffffff`) proyectada hacia arriba a la izquierda.
-- **Bordes Inexistentes**: No se usan bordes de 1px a menos que sean un acento ultra fino. La forma la define la luz.
+### 🎨 Tokens de Color Oficiales — Silexar Pulse TIER 0
+
+| Token | Valor | Descripción |
+|-------|-------|-------------|
+| `--neu-base` | `#dfeaff` | Fondo universal — azul lavanda perlado |
+| `--neu-shadow-dark` | `#bec8de` | Sombra oscura neumórfica |
+| `--neu-shadow-light` | `#ffffff` | Contraluz blanca |
+| `--neu-accent` | `#6888ff` | Acento activo / botones seleccionados / highlights |
+| `--neu-text` | `#69738c` | Texto primario — gris azulado elegante |
+| `--neu-text-light` | `#9aa3b8` | Texto secundario / placeholder |
+
+**Regla de Luz y Sombra**: Sombra oscura (`#bec8de`) abajo-derecha + contraluz blanca (`#ffffff`) arriba-izquierda.
+**Bordes Inexistentes**: No se usan bordes de 1px. La forma la define la luz.
 
 ---
 
@@ -21,11 +32,14 @@ El Neumorfismo se basa en la extrusión (elevación) o intrusión (hundimiento) 
 
 | Elemento | Clases Tailwind Obligatorias | Efecto / Explicación |
 |----------|------------------------------|----------------------|
-| **Fondo Pantalla** | `bg-[#F0EDE8] text-slate-700` | El "lienzo" base de Silexar Pulse. |
-| **Card / Panel Elevado** | `bg-[#F0EDE8] rounded-2xl shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]` | Superficie donde vive la información (Outset Shadow). |
-| **Input / Área Hundida** | `bg-[#F0EDE8] rounded-xl shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-amber-500/30` | Campos de texto y áreas de drop (Inset Shadow). |
-| **Botón Primario (Hundido)** | `bg-[#F0EDE8] rounded-full shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] text-indigo-600 font-bold transition-all duration-300` | Botón táctil que se hunde físicamente al presionarlo. |
-| **Píldora Destaque** | `bg-indigo-50 text-indigo-600 rounded-full font-semibold shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff] px-3 py-1 text-xs` | Para estados o badges. |
+| **Fondo Pantalla** | `bg-[#dfeaff] text-[#69738c]` | El "lienzo" base de Silexar Pulse. |
+| **Card / Panel Elevado** | `bg-[#dfeaff] rounded-2xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]` | Superficie elevada (Outset Shadow). |
+| **Input / Área Hundida** | `bg-[#dfeaff] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30` | Campos de texto hundidos (Inset Shadow). |
+| **Botón Primario (Activo)** | `bg-[#6888ff] rounded-full text-white font-bold shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff] hover:bg-[#5572ee] active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.2)] transition-all duration-300` | Botón con color de acento cuando está activo/seleccionado. |
+| **Botón Secundario (Inactivo)** | `bg-[#dfeaff] rounded-full text-[#69738c] font-bold shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff] hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff] active:shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] transition-all duration-300` | Botón elevado (no seleccionado). |
+| **Píldora Destaque** | `bg-[#6888ff]/10 text-[#6888ff] rounded-full font-semibold shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] px-3 py-1 text-xs` | Para estados, badges y tags activos. |
+| **Nav Item Activo** | `bg-[#dfeaff] shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff] text-[#6888ff]` | Ítem de navegación seleccionado (hundido). |
+| **Nav Item Inactivo** | `text-[#69738c] hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]` | Ítem de navegación normal. |
 
 ---
 

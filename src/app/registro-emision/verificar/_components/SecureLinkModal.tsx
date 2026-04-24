@@ -1,319 +1,380 @@
 /**
- * 🔗 COMPONENT: SecureLinkModal
+ * 🔐 COMPONENT: SecureLinkModal
  * 
- * Modal para envío de registros por Link Seguro.
- * Genera: Link único + Clave de acceso + Email borrador.
- * El operador revisa y aprueba antes de enviar.
- * Link expira en 24 horas.
+ * Modal para crear y gestionar enlaces seguros de acceso a evidencia.
+ * Genera links temporales con código de acceso y seguimiento de uso.
  * 
- * @tier TIER_0_PREMIUM
+ * @tier TIER_0_ENTERPRISE
+ * @design NEUROMORPHIC + SECURITY
  */
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { 
-  Link2, 
-  Key, 
-  Mail, 
-  Clock, 
-  Copy, 
-  CheckCircle, 
-  Send, 
-  X,
-  RefreshCw,
-  Eye,
+import { useState } from 'react';
+import {
+  Link2,
+  Copy,
+  CheckCircle2,
+  Clock,
   Shield,
-  MessageCircle // WhatsApp icon
+  Eye,
+  Download,
+  Share2,
+  ExternalLink,
+  Key,
+  Lock,
+  Unlock,
+  Trash2,
+  QrCode
 } from 'lucide-react';
 
 interface SecureLinkModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSend: (data: { email: string; link: string; code: string }) => void;
-  // Data to send
-  materialName: string;
-  spxCode: string;
-  clipUrl?: string; // Kept for interface compatibility even if not used in modal logic
-  clienteName?: string;
-  campanaName?: string;
+  verificacionId: string;
+  clipsCount: number;
+  onCreateLink: (config: LinkConfig) => Promise<{ url: string; code: string }>;
+}
+
+interface LinkConfig {
+  expiresInHours: number;
+  maxAccessCount: number;
+  includeBlockchain: boolean;
+  requireCode: boolean;
+}
+
+interface GeneratedLink {
+  id: string;
+  url: string;
+  code: string;
+  expiresAt: Date;
+  accessCount: number;
+  maxAccess: number;
+  status: 'active' | 'expired' | 'revoked';
 }
 
 export function SecureLinkModal({
   isOpen,
   onClose,
-  onSend,
-  materialName,
-  spxCode,
-  clienteName = 'Cliente',
-  campanaName = 'Campaña'
+  verificacionId,
+  clipsCount,
+  onCreateLink
 }: SecureLinkModalProps) {
-  
-  // Auto-generated data
-  const [secureLink, setSecureLink] = useState('');
-  const [accessCode, setAccessCode] = useState('');
-  const [emailDraft, setEmailDraft] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
-  
-  // User input
-  const [clientEmail, setClientEmail] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [copied, setCopied] = useState<'link' | 'code' | null>(null);
-
-  // Generate secure data function wrapped in useCallback
-  const generateSecureData = useCallback(() => {
-    // Generate unique link
-    const uuid = crypto.randomUUID().split('-').slice(0, 2).join('');
-    const link = `https://silexar.pulse/registro/${uuid}`;
-    setSecureLink(link);
-    
-    // Generate 6-digit access code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setAccessCode(code);
-    
-    // Calculate expiration (24 hours from now)
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 24);
-    setExpiresAt(expires.toLocaleString('es-CL', { 
-      dateStyle: 'short', 
-      timeStyle: 'short' 
-    }));
-    
-    // Generate email draft
-    const draft = `Estimado/a ${clienteName},
-
-Adjuntamos el registro de emisión correspondiente a la campaña "${campanaName}".
-
-📋 DETALLE DEL REGISTRO
-• Material: ${materialName}
-• Código SPX: ${spxCode}
-• Fecha de verificación: ${new Date().toLocaleDateString('es-CL')}
-
-🔐 ACCESO SEGURO
-Para descargar su registro, ingrese al siguiente enlace:
-${link}
-
-Clave de acceso: ${code}
-
-⚠️ IMPORTANTE: Este enlace expira en 24 horas (${expires.toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' })}).
-
-Si tiene consultas, no dude en contactarnos.
-
-Atentamente,
-Equipo de Verificación
-Silexar Pulse`;
-
-    setEmailDraft(draft);
-  }, [materialName, spxCode, clienteName, campanaName]);
-
-  // Generate secure data on open
-  useEffect(() => {
-    if (isOpen) {
-      generateSecureData();
-    }
-  }, [isOpen, generateSecureData]);
-
-  const handleCopy = (type: 'link' | 'code') => {
-    const text = type === 'link' ? secureLink : accessCode;
-    navigator.clipboard.writeText(text);
-    setCopied(type);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const handleSend = async () => {
-    if (!clientEmail || !clientEmail.includes('@')) {
-      alert('Por favor ingrese un email válido');
-      return;
-    }
-    
-    setIsProcessing(true);
-    
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1500));
-    
-    onSend({ email: clientEmail, link: secureLink, code: accessCode });
-    setIsProcessing(false);
-    setShowSuccess(true);
-  };
+  const [step, setStep] = useState<'config' | 'generating' | 'created'>('config');
+  const [config, setConfig] = useState<LinkConfig>({
+    expiresInHours: 24,
+    maxAccessCount: 5,
+    includeBlockchain: true,
+    requireCode: true
+  });
+  const [generatedLink, setGeneratedLink] = useState<GeneratedLink | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [showCode, setShowCode] = useState(false);
 
   if (!isOpen) return null;
 
-  // Success State
-  if (showSuccess) {
-    return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in p-4">
-        <div className="bg-white rounded-3xl p-10 max-w-md text-center shadow-2xl animate-in zoom-in">
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600" />
-          </div>
-          <h2 className="text-2xl font-black text-slate-800 mb-2">¡Enviado con Éxito!</h2>
-          <p className="text-slate-500 mb-2">El link seguro ha sido enviado a:</p>
-          <p className="text-lg font-bold text-slate-800 mb-6">{clientEmail}</p>
-          
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
-            <div className="flex items-center gap-2 text-amber-700 text-sm font-bold mb-1">
-              <Clock className="w-4 h-4" /> Recordatorio
-            </div>
-            <p className="text-amber-600 text-xs">
-              El link expirará automáticamente en 24 horas ({expiresAt}).
-            </p>
-          </div>
-          
-          <button 
-            onClick={() => { setShowSuccess(false); onClose(); }}
-            className="w-full py-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors"
-          >
-            Cerrar
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const handleCreateLink = async () => {
+    setStep('generating');
+    try {
+      const result = await onCreateLink(config);
+      setGeneratedLink({
+        id: Math.random().toString(36).slice(2),
+        url: result.url,
+        code: result.code,
+        expiresAt: new Date(Date.now() + config.expiresInHours * 60 * 60 * 1000),
+        accessCount: 0,
+        maxAccess: config.maxAccessCount,
+        status: 'active'
+      });
+      setStep('created');
+    } catch (error) {
+      setStep('config');
+    }
+  };
 
-  // Main Modal
+  const handleCopy = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = `🔐 Acceso seguro a evidencia de verificación\n\n${generatedLink?.url}\n\nCódigo: ${generatedLink?.code}\n\nVence: ${generatedLink?.expiresAt.toLocaleDateString()}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const handleShareEmail = () => {
+    const subject = 'Evidencia de Verificación de Emisión';
+    const body = `Accede a la evidencia de verificación mediante el siguiente enlace seguro:\n\n${generatedLink?.url}\n\nCódigo de acceso: ${generatedLink?.code}\n\n\nEste enlace expira en ${config.expiresInHours} horas.`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[95vh] overflow-hidden animate-in slide-in-from-bottom-4">
-        
-        {/* HEADER */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 relative">
-          <button aria-label="Cerrar" onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-              <Link2 className="w-8 h-8" />
-            </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-[#F0EDE8]/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-lg bg-[#e0e5ec] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/40">
+
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#6888ff] to-[#5572ee] p-6 text-white">
+          <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-black">ENVIAR POR LINK SEGURO</h2>
-              <p className="text-indigo-200 text-sm font-medium">{spxCode} • {materialName}</p>
+              <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
+                <Shield className="w-6 h-6" /> ENLACE SEGURO DE EVIDENCIA
+              </h2>
+              <p className="text-blue-100 text-sm font-medium mt-1 opacity-90">
+                {clipsCount} clips de evidencia listos para compartir
+              </p>
             </div>
-          </div>
-        </div>
-
-        {/* CONTENT */}
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          
-          {/* SECURITY INFO BAR */}
-          <div className="flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-            <Shield className="w-8 h-8 text-emerald-600" />
-            <div>
-              <p className="font-bold text-emerald-800">Entrega Segura Activada</p>
-              <p className="text-xs text-emerald-600">Link único • Clave de acceso • Auto-expira en 24h</p>
-            </div>
-          </div>
-
-          {/* GENERATED DATA */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            {/* LINK */}
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1">
-                  <Link2 className="w-3 h-3" /> Link Único
-                </span>
-                <button onClick={() => handleCopy('link')} className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                  {copied === 'link' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  {copied === 'link' ? 'Copiado' : 'Copiar'}
-                </button>
-              </div>
-              <p className="font-mono text-sm text-slate-700 break-all">{secureLink}</p>
-            </div>
-
-            {/* CODE */}
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1">
-                  <Key className="w-3 h-3" /> Clave de Acceso
-                </span>
-                <button onClick={() => handleCopy('code')} className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                  {copied === 'code' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  {copied === 'code' ? 'Copiado' : 'Copiar'}
-                </button>
-              </div>
-              <p className="font-mono text-3xl font-black text-slate-800 tracking-[0.5em]">{accessCode}</p>
-            </div>
-
-          </div>
-
-          {/* EXPIRATION WARNING */}
-          <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-            <Clock className="w-5 h-5 text-amber-600" />
-            <p className="text-sm text-amber-700">
-              <strong>Expira:</strong> {expiresAt} (24 horas desde ahora)
-            </p>
-            <button onClick={generateSecureData} className="ml-auto text-xs font-bold text-amber-700 hover:text-amber-900 flex items-center gap-1">
-              <RefreshCw className="w-3 h-3" /> Regenerar
+            <button
+              onClick={onClose}
+              className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+            >
+              <Link2 className="w-5 h-5" />
             </button>
           </div>
-
-          {/* EMAIL PREVIEW */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
-                <Eye className="w-4 h-4" /> Vista Previa del Email
-              </h3>
-            </div>
-            <div className="bg-[#F0EDE8] rounded-xl p-4 max-h-48 overflow-y-auto">
-              <pre className="text-xs text-slate-300 whitespace-pre-wrap font-mono">{emailDraft}</pre>
-            </div>
-          </div>
-
-          {/* CLIENT EMAIL INPUT */}
-          <div>
-            <label className="block text-sm font-black text-slate-700 uppercase tracking-widest mb-2">
-              <Mail className="w-4 h-4 inline mr-2" /> Email del Cliente
-            </label>
-            <input
-              type="email"
-              value={clientEmail}
-              onChange={(e) => setClientEmail(e.target.value)}
-              placeholder="cliente@empresa.com"
-              aria-label="Email del Cliente"
-              className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
-            />
-          </div>
-
         </div>
 
-        {/* FOOTER ACTIONS */}
-        <div className="p-6 border-t border-slate-200 bg-slate-50 flex flex-col md:flex-row gap-4">
-          <button 
-            onClick={onClose}
-            className="flex-1 py-3 bg-white border border-slate-300 text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors"
-          >
-            Cancelar
-          </button>
-          
-          {/* WHATSAPP BUTTON */}
-          <button 
-            onClick={() => {
-                const message = `Hola, aquí tienes tu registro de emisión de *${materialName}*.\n\nLink Seguro: ${secureLink}\nClave: *${accessCode}*\n\nExpira en 24 horas.`;
-                const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
-                // handleAction removed, not defined here
-                onClose();
-            }}
-            disabled={isProcessing}
-            className="flex-1 py-3 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-2"
-          >
-            <MessageCircle className="w-5 h-5" /> WhatsApp Web
-          </button>
+        <div className="p-6 space-y-6">
 
-          <button 
-            onClick={handleSend}
-            disabled={!clientEmail || isProcessing}
-            className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isProcessing ? (
-              <><RefreshCw className="w-5 h-5 animate-spin" /> Enviando...</>
-            ) : (
-              <><Send className="w-5 h-5" /> Enviar Email</>
-            )}
-          </button>
+          {step === 'config' && (
+            <>
+              {/* Configuration Options */}
+              <div className="space-y-4">
+
+                {/* Expiration */}
+                <div className="bg-white rounded-2xl p-5 shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                      <Clock className="w-4 h-4 text-[#6888ff]" /> Expira en
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[6, 24, 72].map(hours => (
+                      <button
+                        key={hours}
+                        onClick={() => setConfig(c => ({ ...c, expiresInHours: hours }))}
+                        className={`py-2 px-3 rounded-xl text-sm font-bold transition-all ${config.expiresInHours === hours
+                            ? 'bg-[#6888ff] text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                      >
+                        {hours}h
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Max Access */}
+                <div className="bg-white rounded-2xl p-5 shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                      <Eye className="w-4 h-4 text-[#6888ff]" /> Veces accessible
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[1, 3, 5, 10].map(count => (
+                      <button
+                        key={count}
+                        onClick={() => setConfig(c => ({ ...c, maxAccessCount: count }))}
+                        className={`py-2 px-3 rounded-xl text-sm font-bold transition-all ${config.maxAccessCount === count
+                            ? 'bg-[#6888ff] text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                      >
+                        {count}x
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Toggles */}
+                <div className="space-y-3">
+                  <label className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff] cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <Lock className="w-5 h-5 text-slate-500" />
+                      <div>
+                        <p className="text-sm font-bold text-slate-700">Requerir código de acceso</p>
+                        <p className="text-xs text-slate-400">El destinatario necesitará un código</p>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => setConfig(c => ({ ...c, requireCode: !c.requireCode }))}
+                      className={`w-12 h-6 rounded-full transition-all relative ${config.requireCode ? 'bg-emerald-500' : 'bg-slate-300'
+                        }`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${config.requireCode ? 'left-7' : 'left-1'
+                        }`} />
+                    </div>
+                  </label>
+
+                  <label className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff] cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <Shield className="w-5 h-5 text-slate-500" />
+                      <div>
+                        <p className="text-sm font-bold text-slate-700">Incluir certificación blockchain</p>
+                        <p className="text-xs text-slate-400">Evidencia inmutable legal</p>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => setConfig(c => ({ ...c, includeBlockchain: !c.includeBlockchain }))}
+                      className={`w-12 h-6 rounded-full transition-all relative ${config.includeBlockchain ? 'bg-emerald-500' : 'bg-slate-300'
+                        }`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${config.includeBlockchain ? 'left-7' : 'left-1'
+                        }`} />
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="flex gap-4">
+                <button
+                  onClick={onClose}
+                  className="flex-1 py-3 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCreateLink}
+                  className="flex-1 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-[#6888ff] to-[#5572ee] shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                >
+                  <Key className="w-4 h-4" />
+                  Generar Enlace
+                </button>
+              </div>
+            </>
+          )}
+
+          {step === 'generating' && (
+            <div className="py-12 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 border-4 border-[#6888ff] border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-slate-500 font-medium">Generando enlace seguro...</p>
+            </div>
+          )}
+
+          {step === 'created' && generatedLink && (
+            <>
+              {/* Success Message */}
+              <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 flex items-center gap-3">
+                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                <div>
+                  <p className="font-bold text-emerald-700">¡Enlace generado exitosamente!</p>
+                  <p className="text-xs text-emerald-600">Copie el enlace y compártalo con el destinatario</p>
+                </div>
+              </div>
+
+              {/* Link Display */}
+              <div className="bg-white rounded-2xl p-5 shadow-[inset_2px_2px_5px_#b8b9be,inset_-2px_-2px_5px_#ffffff] space-y-4">
+                <div>
+                  <p className="text-[10px] font-bold text-[#888780] uppercase mb-2">🔗 Enlace de Acceso</p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={generatedLink.url}
+                      className="flex-1 px-3 py-2 rounded-xl bg-slate-50 text-slate-600 text-sm font-mono truncate"
+                    />
+                    <button
+                      onClick={() => handleCopy(generatedLink.url)}
+                      className={`p-2 rounded-xl transition-all ${copied ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                    >
+                      {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {config.requireCode && (
+                  <div>
+                    <p className="text-[10px] font-bold text-[#888780] uppercase mb-2">🔑 Código de Acceso</p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type={showCode ? 'text' : 'password'}
+                        readOnly
+                        value={generatedLink.code}
+                        className="flex-1 px-3 py-2 rounded-xl bg-slate-50 text-slate-600 text-sm font-mono tracking-widest"
+                      />
+                      <button
+                        onClick={() => setShowCode(!showCode)}
+                        className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all"
+                      >
+                        {showCode ? <Lock className="w-5 h-5" /> : <Unlock className="w-5 h-5" />}
+                      </button>
+                      <button
+                        onClick={() => handleCopy(generatedLink.code)}
+                        className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all"
+                      >
+                        <Copy className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Meta Info */}
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    <span>Expira: {generatedLink.expiresAt.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    <span>{generatedLink.accessCount} / {generatedLink.maxAccess} accesos</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Share Options */}
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={handleShareWhatsApp}
+                  className="flex flex-col items-center gap-2 py-4 px-3 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all"
+                >
+                  <Share2 className="w-5 h-5" />
+                  <span className="text-xs font-bold">WhatsApp</span>
+                </button>
+                <button
+                  onClick={handleShareEmail}
+                  className="flex flex-col items-center gap-2 py-4 px-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all"
+                >
+                  <Download className="w-5 h-5" />
+                  <span className="text-xs font-bold">Email</span>
+                </button>
+                <button
+                  onClick={() => {/* QR Code modal */ }}
+                  className="flex flex-col items-center gap-2 py-4 px-3 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                >
+                  <QrCode className="w-5 h-5" />
+                  <span className="text-xs font-bold">Código QR</span>
+                </button>
+              </div>
+
+              {/* Footer */}
+              <div className="flex gap-4">
+                <button
+                  onClick={onClose}
+                  className="flex-1 py-3 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  Cerrar
+                </button>
+                <button
+                  onClick={() => {
+                    setStep('config');
+                    setGeneratedLink(null);
+                  }}
+                  className="flex-1 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-[#6888ff] to-[#5572ee] shadow-lg hover:shadow-xl transition-all"
+                >
+                  Crear Otro
+                </button>
+              </div>
+            </>
+          )}
         </div>
-
       </div>
     </div>
   );

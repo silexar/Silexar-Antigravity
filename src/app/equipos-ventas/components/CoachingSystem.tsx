@@ -1,9 +1,10 @@
 /**
- * COMPONENT: COACHING SYSTEM — Cortex-Coaching IA
+ * COMPONENT: COACHING SYSTEM — Sistema de Coaching IA TIER 0 NEUMORPHIC
  * 
  * @description Sistema inteligente de coaching y desarrollo.
  * Incluye: Performance analysis, plan de coaching 6 semanas,
  * recommended training, schedule, y action buttons.
+ * Todo en español. Diseño neumórfico oficial de Silexar Pulse.
  */
 
 'use client';
@@ -15,6 +16,22 @@ import {
   Sparkles, Video,
   MessageSquare, ArrowRight
 } from 'lucide-react';
+
+/* ─── COLORES NEUMÓRFICOS ───────────────────────────────────────────────── */
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8'
+};
+
+const gradientBase = 'linear-gradient(145deg, #e6e6e6, #ffffff)';
+
+const shadowOut = (s: number) => `${s}px ${s}px ${s * 2}px ${N.dark}, -${s}px -${s}px ${s * 2}px ${N.light}`;
+const shadowIn = (s: number) => `inset ${s}px ${s}px ${s * 2}px ${N.dark}, inset -${s}px -${s}px ${s * 2}px ${N.light}`;
 
 /* ─── MOCK DATA ───────────────────────────────────────────────── */
 
@@ -29,8 +46,8 @@ const PERFORMANCE_ANALYSIS = {
   currentQuota: 71,
   threshold: 80,
   trend: -8,
-  issue: 'Low discovery-to-demo conversion',
-  issueDetail: '34% vs team avg 52%',
+  issue: 'Baja conversión discovery-a-demo',
+  issueDetail: '34% vs promedio equipo 52%',
   monthsBelow: 2,
 };
 
@@ -45,44 +62,44 @@ interface CoachingWeek {
 
 const COACHING_PLAN: CoachingWeek[] = [
   {
-    phase: 'Discovery Skills Boot Camp', weeks: 'WEEK 1-2',
-    color: 'text-blue-700', bgColor: 'bg-blue-50', borderColor: 'border-blue-200',
+    phase: 'Boot Camp de Habilidades de Descubrimiento', weeks: 'SEMANA 1-2',
+    color: '#1e40af', bgColor: '#dbeafe', borderColor: '#3b82f6',
     items: [
-      { emoji: '📚', text: 'Required: "SPIN Selling" modules 3-5' },
-      { emoji: '🎭', text: 'Role-play: 3 sessions with manager' },
-      { emoji: '📞', text: 'Call shadowing: Listen to top performer calls' },
+      { emoji: '📚', text: 'Requerido: Módulos 3-5 de "SPIN Selling"' },
+      { emoji: '🎭', text: 'Role-play: 3 sesiones con manager' },
+      { emoji: '📞', text: 'Shadow de llamadas: Escuchar top performers' },
     ],
   },
   {
-    phase: 'Field Application', weeks: 'WEEK 3-4',
-    color: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200',
+    phase: 'Aplicación en Terreno', weeks: 'SEMANA 3-4',
+    color: '#b45309', bgColor: '#fef3c7', borderColor: '#f59e0b',
     items: [
-      { emoji: '🎯', text: 'Apply new techniques in 10+ discovery calls' },
-      { emoji: '📊', text: 'Manager reviews: 5 recorded calls' },
-      { emoji: '🏆', text: 'Target: Improve conversion to 45%' },
+      { emoji: '🎯', text: 'Aplicar nuevas técnicas en 10+ llamadas discovery' },
+      { emoji: '📊', text: 'Manager reviews: 5 llamadas grabadas' },
+      { emoji: '🏆', text: 'Meta: Mejorar conversión a 45%' },
     ],
   },
   {
-    phase: 'Mastery & Reinforcement', weeks: 'WEEK 5-6',
-    color: 'text-emerald-700', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200',
+    phase: 'Dominio y Refuerzo', weeks: 'SEMANA 5-6',
+    color: '#047857', bgColor: '#d1fae5', borderColor: '#10b981',
     items: [
-      { emoji: '🧠', text: 'Peer mentoring with Ana García' },
-      { emoji: '📈', text: 'Track metrics: Daily conversion tracking' },
-      { emoji: '🎉', text: 'Success milestone: 50% conversion rate' },
+      { emoji: '🧠', text: 'Mentoring con Ana García' },
+      { emoji: '📈', text: 'Track metrics: Seguimiento diario de conversión' },
+      { emoji: '🎉', text: 'Hito de éxito: 50% tasa de conversión' },
     ],
   },
 ];
 
 const RECOMMENDED_TRAINING = [
-  { title: 'Challenger Customer Methodology', type: 'Course', duration: '8h', icon: BookOpen, color: 'bg-blue-50 text-blue-600' },
-  { title: 'Advanced Questioning Techniques', type: 'Workshop', duration: '4h', icon: MessageSquare, color: 'bg-purple-50 text-purple-600' },
-  { title: 'Objection Handling Masterclass', type: 'Video', duration: '3h', icon: Video, color: 'bg-orange-50 text-orange-600' },
+  { title: 'Metodología Challenger Customer', type: 'Curso', duration: '8h', icon: BookOpen, color: '#6888ff' },
+  { title: 'Técnicas Avanzadas de Preguntas', type: 'Workshop', duration: '4h', icon: MessageSquare, color: '#8b5cf6' },
+  { title: 'Masterclass Manejo de Objeciones', type: 'Video', duration: '3h', icon: Video, color: '#f59e0b' },
 ];
 
 const SCHEDULE = [
-  { event: 'Weekly 1:1s with manager', day: 'Tuesdays 10 AM', icon: Phone, color: 'bg-blue-500' },
-  { event: 'Peer mentoring', day: 'Thursdays 2 PM', icon: Users, color: 'bg-purple-500' },
-  { event: 'Progress review', day: 'End of month', icon: BarChart3, color: 'bg-emerald-500' },
+  { event: '1:1s semanales con manager', day: 'Martes 10 AM', icon: Phone, color: '#6888ff' },
+  { event: 'Mentoring peer', day: 'Jueves 2 PM', icon: Users, color: '#8b5cf6' },
+  { event: 'Revisión de progreso', day: 'Fin de mes', icon: BarChart3, color: '#10b981' },
 ];
 
 /* ─── COMPONENT ───────────────────────────────────────────── */
@@ -93,174 +110,306 @@ export const CoachingSystem = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
 
-      {/* ──── HEADER ──── */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+      {/* ──── HEADER NEUMORPHIC ──── */}
+      <div
+        className="rounded-2xl p-6 text-white relative overflow-hidden"
+        style={{
+          background: `linear-gradient(145deg, #8b5cf6, #a855f7, #8b5cf6)`,
+          boxShadow: shadowOut(6)
+        }}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.12),transparent_50%)]" />
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                boxShadow: shadowOut(2)
+              }}
+            >
               <Brain size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">Cortex-Coaching</h2>
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
-                  <Sparkles size={10} /> AI Powered
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-semibold flex items-center gap-1"
+                  style={{
+                    background: 'rgba(255,255,255,0.2)',
+                    color: 'white'
+                  }}
+                >
+                  <Sparkles size={10} /> Potenciado por IA
                 </span>
               </div>
-              <p className="text-white/80 text-sm">Recommendations Engine</p>
+              <p className="text-white/80 text-sm">Motor de Recomendaciones</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ──── PERSON CARD ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+      {/* ──── PERSON CARD NEUMORPHIC ──── */}
+      <div
+        className="rounded-2xl p-6"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowIn(4)
+        }}
+      >
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center text-2xl">
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
+            style={{
+              background: gradientBase,
+              boxShadow: shadowOut(4)
+            }}
+          >
             {COACHING_TARGET.avatar}
           </div>
           <div>
-            <h3 className="text-xl font-bold text-slate-800">{COACHING_TARGET.name}</h3>
-            <p className="text-sm text-slate-400">{COACHING_TARGET.role} — {COACHING_TARGET.team}</p>
+            <h3 className="text-xl font-bold" style={{ color: '#1e293b' }}>{COACHING_TARGET.name}</h3>
+            <p className="text-sm" style={{ color: N.text }}>{COACHING_TARGET.role} — {COACHING_TARGET.team}</p>
           </div>
         </div>
 
-        {/* ──── PERFORMANCE ANALYSIS ──── */}
-        <div className="bg-red-50/60 border border-red-100 rounded-xl p-5 mb-0">
-          <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <BarChart3 size={16} className="text-red-500" /> Performance Analysis
+        {/* ──── PERFORMANCE ANALYSIS NEUMORPHIC ──── */}
+        <div
+          className="rounded-2xl p-5"
+          style={{
+            background: gradientBase,
+            boxShadow: shadowIn(3)
+          }}
+        >
+          <h4
+            className="font-bold mb-4 flex items-center gap-2"
+            style={{ color: '#1e293b' }}
+          >
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: `linear-gradient(145deg, #ef4444, #dc2626)` }}
+            >
+              <BarChart3 size={16} className="text-white" />
+            </div>
+            Análisis de Performance
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <p className="text-xs text-slate-400 uppercase font-semibold">Current</p>
-              <p className="text-2xl font-bold text-red-600">{PERFORMANCE_ANALYSIS.currentQuota}% quota</p>
-              <p className="text-xs text-red-500 font-medium mt-0.5">Below {PERFORMANCE_ANALYSIS.threshold}% threshold</p>
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowOut(3)
+              }}
+            >
+              <p className="text-xs uppercase font-bold" style={{ color: N.text }}>Actual</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#dc2626' }}>{PERFORMANCE_ANALYSIS.currentQuota}% cuota</p>
+              <p className="text-xs font-semibold mt-0.5" style={{ color: '#ef4444' }}>Bajo umbral de {PERFORMANCE_ANALYSIS.threshold}%</p>
             </div>
-            <div>
-              <p className="text-xs text-slate-400 uppercase font-semibold">Trend</p>
-              <p className="text-2xl font-bold text-red-600 flex items-center gap-1">
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowOut(3)
+              }}
+            >
+              <p className="text-xs uppercase font-bold" style={{ color: N.text }}>Tendencia</p>
+              <p className="text-2xl font-bold flex items-center gap-1 mt-1" style={{ color: '#dc2626' }}>
                 <TrendingDown size={20} /> {PERFORMANCE_ANALYSIS.trend}%
               </p>
-              <p className="text-xs text-slate-400 mt-0.5">vs last quarter</p>
+              <p className="text-xs mt-0.5" style={{ color: N.textSub }}>vs último trimestre</p>
             </div>
-            <div>
-              <p className="text-xs text-slate-400 uppercase font-semibold">Issue</p>
-              <p className="text-sm font-semibold text-slate-700 mt-1">{PERFORMANCE_ANALYSIS.issue}</p>
-              <p className="text-xs text-red-500 font-medium mt-0.5">{PERFORMANCE_ANALYSIS.issueDetail}</p>
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowOut(3)
+              }}
+            >
+              <p className="text-xs uppercase font-bold" style={{ color: N.text }}>Problema</p>
+              <p className="text-sm font-bold mt-1" style={{ color: '#1e293b' }}>{PERFORMANCE_ANALYSIS.issue}</p>
+              <p className="text-xs font-semibold mt-0.5" style={{ color: '#ef4444' }}>{PERFORMANCE_ANALYSIS.issueDetail}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ──── COACHING PLAN AUTOMÁTICO ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-5 flex items-center gap-2">
-          <Target size={18} className="text-violet-500" /> Coaching Plan Automático
-          <span className="text-xs bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full font-semibold border border-violet-200">6 Weeks</span>
+      {/* ──── COACHING PLAN AUTOMÁTICO NEUMORPHIC ──── */}
+      <div
+        className="rounded-2xl p-6"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-5 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: `linear-gradient(145deg, #8b5cf6, #a855f7)` }}
+          >
+            <Target size={18} className="text-white" />
+          </div>
+          Plan de Coaching Automático
+          <span
+            className="text-xs px-2 py-0.5 rounded-full font-bold ml-auto"
+            style={{
+              background: '#f3e8ff',
+              color: '#8b5cf6'
+            }}
+          >6 Semanas</span>
         </h3>
         <div className="space-y-4">
           {COACHING_PLAN.map((phase, idx) => (
-            <div key={idx} className={`${phase.bgColor} border ${phase.borderColor} rounded-xl p-5 transition-all hover:shadow-sm`}>
+            <div
+              key={idx}
+              className="border-2 rounded-2xl p-5 transition-all hover:scale-[1.01]"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowOut(4),
+                borderColor: phase.borderColor
+              }}
+            >
               <div className="flex items-center gap-2 mb-3">
-                <span className={`text-xs font-bold uppercase tracking-widest ${phase.color}`}>{phase.weeks}</span>
-                <span className="text-slate-300">|</span>
-                <h4 className={`font-bold text-sm ${phase.color}`}>{phase.phase}</h4>
+                <span
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: phase.color }}
+                >
+                  {phase.weeks}
+                </span>
+                <span style={{ color: '#cbd5e1' }}>|</span>
+                <h4
+                  className="font-black text-sm"
+                  style={{ color: phase.color }}
+                >
+                  {phase.phase}
+                </h4>
               </div>
               <div className="space-y-2">
                 {phase.items.map((item, i) => (
                   <div key={`${item}-${i}`} className="flex items-start gap-2">
-                    <span className="text-sm flex-shrink-0">{item.emoji}</span>
-                    <p className="text-sm text-slate-700">{item.text}</p>
+                    <span className="text-lg">{item.emoji}</span>
+                    <span className="text-sm" style={{ color: '#475569' }}>{item.text}</span>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-
-        {/* Progress Timeline */}
-        <div className="flex items-center justify-center gap-1 mt-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <React.Fragment key={`${_}-${i}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 ${
-                i < 2 ? 'bg-blue-100 border-blue-400 text-blue-700' :
-                i < 4 ? 'bg-amber-100 border-amber-400 text-amber-700' :
-                'bg-emerald-100 border-emerald-400 text-emerald-700'
-              }`}>
-                W{i + 1}
-              </div>
-              {i < 5 && <div className="w-6 h-0.5 bg-slate-200" />}
-            </React.Fragment>
-          ))}
-        </div>
       </div>
 
-      {/* ──── RECOMMENDED TRAINING ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-5 flex items-center gap-2">
-          <BookOpen size={18} className="text-blue-500" /> Recommended Training
+      {/* ──── RECOMMENDED TRAINING NEUMORPHIC ──── */}
+      <div
+        className="rounded-2xl p-6"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-5 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <BookOpen size={18} style={{ color: '#6888ff' }} /> Capacitaciones Recomendadas
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {RECOMMENDED_TRAINING.map((training) => (
-            <div key={training.title} className="rounded-xl border border-slate-100 p-5 hover:shadow-md hover:border-blue-200 transition-all cursor-pointer group">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${training.color} mb-3`}>
-                <training.icon size={18} />
+          {RECOMMENDED_TRAINING.map((training, idx) => {
+            const IconComponent = training.icon;
+            return (
+              <div
+                key={idx}
+                className="rounded-xl p-4 transition-all hover:scale-[1.02]"
+                style={{
+                  background: gradientBase,
+                  boxShadow: shadowOut(3)
+                }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style={{ background: `${training.color}20` }}
+                  >
+                    <IconComponent size={20} style={{ color: training.color }} />
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: N.textSub }}>{training.type}</p>
+                    <p className="font-semibold text-sm" style={{ color: '#1e293b' }}>{training.title}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock size={12} style={{ color: N.textSub }} />
+                  <span className="text-xs" style={{ color: N.text }}>{training.duration}</span>
+                </div>
               </div>
-              <h4 className="font-semibold text-slate-800 text-sm group-hover:text-blue-700 transition-colors">{training.title}</h4>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">{training.type}</span>
-                <span className="text-xs text-slate-400 flex items-center gap-1">
-                  <Clock size={10} /> {training.duration}
-                </span>
-              </div>
-              <button className="text-xs font-semibold text-blue-600 mt-3 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Start <ArrowRight size={12} />
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* ──── SCHEDULE ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-5 flex items-center gap-2">
-          <Calendar size={18} className="text-emerald-500" /> Schedule
+      {/* ──── SCHEDULE NEUMORPHIC ──── */}
+      <div
+        className="rounded-2xl p-6"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-5 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <Calendar size={18} style={{ color: '#10b981' }} /> Programación
         </h3>
-        <div className="space-y-3">
-          {SCHEDULE.map((item) => (
-            <div key={item.event} className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-slate-200 transition-all">
-              <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center text-white flex-shrink-0`}>
-                <item.icon size={18} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {SCHEDULE.map((item, idx) => {
+            const IconComponent = item.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-center gap-4 rounded-xl p-4"
+                style={{
+                  background: gradientBase,
+                  boxShadow: shadowOut(3)
+                }}
+              >
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{ background: item.color }}
+                >
+                  <IconComponent size={18} className="text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: '#1e293b' }}>{item.event}</p>
+                  <p className="text-xs" style={{ color: N.text }}>{item.day}</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-semibold text-slate-800 text-sm">{item.event}</p>
-                <p className="text-xs text-slate-400">{item.day}</p>
-              </div>
-              <button className="text-xs text-slate-400 hover:text-blue-600 transition-colors">
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* ──── ACTION BUTTONS ──── */}
-      <div className="flex flex-wrap gap-3">
-        {[
-          { label: 'Start Coaching Plan', icon: Play, color: 'bg-gradient-to-r from-violet-600 to-purple-600 text-white border-violet-600 shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30' },
-          { label: 'Schedule 1:1', icon: Phone, color: 'bg-white text-slate-600 border-slate-200 hover:border-violet-300 hover:shadow-sm' },
-          { label: 'Track Progress', icon: BarChart3, color: 'bg-white text-slate-600 border-slate-200 hover:border-violet-300 hover:shadow-sm' },
-        ].map((btn) => (
-          <button
-            key={btn.label}
-            onClick={() => { if (btn.label === 'Start Coaching Plan') setPlanStarted(true); }}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${btn.color}`}
-          >
-            <btn.icon size={16} />
-            {btn.label}
-          </button>
-        ))}
+      <div className="flex gap-3">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-[1.02]"
+          style={{
+            background: `linear-gradient(145deg, #8b5cf6, #a855f7)`,
+            boxShadow: shadowOut(4)
+          }}
+        >
+          <Play size={18} /> Iniciar Plan de Coaching
+        </button>
+        <button
+          className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all"
+          style={{
+            background: gradientBase,
+            color: N.text,
+            boxShadow: shadowOut(4)
+          }}
+        >
+          <ArrowRight size={18} /> Ver Detalles Completos
+        </button>
       </div>
     </div>
   );

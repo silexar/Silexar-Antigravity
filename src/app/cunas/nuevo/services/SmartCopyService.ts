@@ -67,7 +67,7 @@ export class SmartCopyService {
   static getSuggestions() {
     return [
       { id: 'validation', label: 'Mantener estructura de validaciones', icon: 'shield' },
-      { id: 'alerts', label: 'Heredar alertas de vencimiento', icon: 'bell' },
+      { id: 'alerts', label: 'Heredar alertas de vencimientos', icon: 'bell' },
       { id: 'distribution', label: 'Usar mismos grupos de distribución', icon: 'users' },
       { id: 'schedules', label: 'Aplicar misma configuración de horarios', icon: 'calendar' }
     ];

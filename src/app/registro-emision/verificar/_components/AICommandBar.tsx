@@ -1,135 +1,273 @@
 /**
- * 🧠 COMPONENT: AI Command Bar
+ * 🤖 COMPONENT: AICommandBar
  * 
- * Barra de comandos inteligente con procesamiento de lenguaje natural (NLP) simulado.
- * Permite a los operadores expertos ejecutar acciones complejas en segundos.
+ * Barra de comandos con IA que proporciona sugerencias inteligentes
+ * basadas en el contexto del usuario y patrones de uso.
  * 
- * @tier TIER_0_EFFICIENCY
+ * * @tier TIER_0_ENTERPRISE
+ * @design NEUROMORPHIC
  */
 
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Command, Zap, Search, CornerDownLeft, Sparkles } from 'lucide-react';
+import {
+  Sparkles,
+  Search,
+  Mic,
+  Zap,
+  Clock,
+  Radio,
+  Calendar,
+  TrendingUp,
+  AlertCircle,
+  ChevronRight,
+  X
+} from 'lucide-react';
 
-interface AICommandBarProps {
-  onExecute: (command: string) => void;
+interface AISuggestion {
+  id: string;
+  text: string;
+  tipo: 'busqueda' | 'accion' | 'alerta' | 'sugerencia';
+  icon?: React.ReactNode;
+  accion?: () => void;
 }
 
-export function AICommandBar({ onExecute }: AICommandBarProps) {
+interface AICommandBarProps {
+  onSearch?: (query: string) => void;
+  onSuggestionClick?: (suggestion: AISuggestion) => void;
+  onExecute?: (command: string) => void;
+  contexto?: {
+    cliente?: string;
+    campanaActiva?: string;
+    ultimoAcceso?: Date;
+    verificacionesPendientes?: number;
+  };
+  placeholder?: string;
+}
+
+const SUGERENCIAS_DEFAULT: AISuggestion[] = [
+  { id: '1', text: 'Verificar spots de ayer', tipo: 'busqueda', icon: <Clock className="w-4 h-4" /> },
+  { id: '2', text: 'Buscar menciones de cliente prime', tipo: 'busqueda', icon: <Search className="w-4 h-4" /> },
+  { id: '3', text: 'Auditar cumplimiento contratos hoy', tipo: 'accion', icon: <AlertCircle className="w-4 h-4" /> },
+  { id: '4', text: 'Verificar presentaciones campaña activa', tipo: 'busqueda', icon: <Radio className="w-4 h-4" /> },
+  { id: '5', text: 'Nueva verificación express', tipo: 'accion', icon: <Zap className="w-4 h-4" /> },
+  { id: '6', text: 'Ver dashboard compliance', tipo: 'sugerencia', icon: <TrendingUp className="w-4 h-4" /> },
+];
+
+export function AICommandBar({
+  onSearch,
+  onSuggestionClick,
+  onExecute,
+  contexto,
+  placeholder = '¿Qué verificación necesitas hoy?'
+}: AICommandBarProps) {
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<AISuggestion[]>(SUGERENCIAS_DEFAULT);
+  const [isProcessing, setIsProcessing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Keyboard Shortcut: Ctrl+K or Cmd+K
+  // Procesar query y generar sugerencias contextuales
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+    if (query.length > 2) {
+      setIsProcessing(true);
+      // Simular procesamiento IA
+      const timer = setTimeout(() => {
+        const queryLower = query.toLowerCase();
+        let contextualSuggestions: AISuggestion[] = [];
 
-  // Simple NLP Simulation
-  useEffect(() => {
-    if (!query) {
-      setSuggestion(null);
-      return;
+        if (queryLower.includes('navidad') || queryLower.includes('super')) {
+          contextualSuggestions.push({
+            id: 'ctx-1',
+            text: 'Verificar campaña SuperMax Navidad',
+            tipo: 'busqueda',
+            icon: <Sparkles className="w-4 h-4 text-yellow-500" />
+          });
+        }
+        if (queryLower.includes('banco') || queryLower.includes('bank')) {
+          contextualSuggestions.push({
+            id: 'ctx-2',
+            text: 'Verificar spots Banco Chile',
+            tipo: 'busqueda',
+            icon: <Sparkles className="w-4 h-4 text-green-500" />
+          });
+        }
+        if (queryLower.includes('ayer')) {
+          contextualSuggestions.push({
+            id: 'ctx-3',
+            text: `Verificar emisiones de ayer`,
+            tipo: 'busqueda',
+            icon: <Calendar className="w-4 h-4 text-blue-500" />
+          });
+        }
+        if (queryLower.includes('prime') || queryLower.includes('horario')) {
+          contextualSuggestions.push({
+            id: 'ctx-4',
+            text: 'Verificar bloque Prime Time',
+            tipo: 'busqueda',
+            icon: <Clock className="w-4 h-4 text-purple-500" />
+          });
+        }
+
+        setSuggestions([...contextualSuggestions, ...SUGERENCIAS_DEFAULT]);
+        setIsProcessing(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setSuggestions(SUGERENCIAS_DEFAULT);
     }
-    
-    const lower = query.toLowerCase();
-    if (lower.startsWith('verificar c')) setSuggestion('erificar Campaña Coca-Cola Ayer');
-    else if (lower.startsWith('buscar b')) setSuggestion('uscar Banco Chile Última Hora');
-    else if (lower.startsWith('reporte')) setSuggestion('eporte Mensual PDF');
-    else setSuggestion(null);
-
   }, [query]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      onExecute(query);
+      if (onSearch) {
+        onSearch(query.trim());
+      }
       setQuery('');
-      inputRef.current?.blur();
+      setShowSuggestions(false);
     }
   };
 
+  const handleSuggestionClick = (suggestion: AISuggestion) => {
+    console.log('[AICommandBar] handleSuggestionClick called:', suggestion.text);
+    // If there's a custom handler, use it
+    if (onSuggestionClick) {
+      onSuggestionClick(suggestion);
+    }
+    // Also execute the command via onExecute
+    if (onExecute) {
+      console.log('[AICommandBar] Calling onExecute with:', suggestion.text);
+      onExecute(suggestion.text);
+    }
+    setQuery('');
+    setShowSuggestions(false);
+  };
+
   return (
-    <div className={`
-      relative transition-all duration-300 transform
-      ${isFocused ? 'scale-105 z-50' : 'scale-100'}
-    `}>
-      <div className={`
-        absolute -inset-1 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-500 to-blue-500 opacity-0 transition-opacity duration-300
-        ${isFocused ? 'opacity-30 blur-md' : ''}
-      `} />
-      
-      <form onSubmit={handleSubmit} className="relative bg-[#e0e5ec] rounded-2xl shadow-[inset_6px_6px_12px_#b8b9be,inset_-6px_-6px_12px_#ffffff] flex items-center p-1">
-        
-        <div className={`p-3 rounded-xl transition-colors ${isFocused ? 'text-emerald-500' : 'text-slate-400'}`}>
-           {isFocused ? <Sparkles className="w-6 h-6 animate-pulse" /> : <Command className="w-6 h-6" />}
-        </div>
-        
-        <div className="flex-1 relative">
-            <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                aria-label="Pregunta a Silexar AI"
-                placeholder="Pregunta a Silexar AI... (Ej: Verificar Coca-Cola)"
-                className="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400 text-lg h-12"
-            />
-            {/* Ghost Text Suggestion */}
-            {suggestion && isFocused && (
-                <div className="absolute top-0 left-0 h-12 flex items-center pointer-events-none">
-                    <span className="text-transparent">{query}</span>
-                    <span className="text-slate-400/50">{suggestion}</span>
-                </div>
-            )}
-        </div>
-
-        <div className="flex items-center gap-2 pr-2">
-            {!query && (
-                <div className="hidden md:flex items-center gap-1 px-2 py-1 rounded bg-slate-200/50 border border-slate-300/50 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                    <span>Ctrl</span><span>K</span>
-                </div>
-            )}
-            {query && (
-                <button type="submit" className="p-2 bg-emerald-500 text-white rounded-xl shadow-lg hover:bg-emerald-400 transition-colors animate-in zoom-in">
-                    <CornerDownLeft className="w-5 h-5" />
-                </button>
-            )}
-        </div>
-
-      </form>
-      
-      {/* RESULT PREVIEW DROPDOWN (DEMO) */}
-      {isFocused && query.length > 2 && (
-          <div className="absolute top-full left-0 right-0 mt-4 bg-[#e0e5ec] rounded-2xl p-4 shadow-[9px_9px_16px_rgb(163,177,198),-9px_-9px_16px_rgba(255,255,255,0.5)] z-50 animate-in slide-in-from-top-2">
-              <h4 className="text-xs font-bold text-slate-400 uppercase mb-3 flex items-center gap-2">
-                  <Zap className="w-3 h-3 text-amber-500" /> Interpretación AI
-              </h4>
-              <div className="flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-white/60">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                      <Search className="w-5 h-5" />
-                  </div>
-                  <div>
-                      <p className="font-bold text-slate-700 text-sm">Ejecutar Verificación Completa</p>
-                      <p className="text-xs text-slate-500">
-                          Cliente: <span className="font-bold text-slate-800">Coca-Cola</span> • 
-                          Rango: <span className="font-bold text-slate-800">Ayer</span> • 
-                          Modo: <span className="font-bold text-slate-800">Express</span>
-                      </p>
-                  </div>
-              </div>
+    <div className="relative w-full">
+      {/* Main Input */}
+      <form onSubmit={handleSubmit} className="relative">
+        <div className={`
+          relative flex items-center gap-3 px-5 py-4 rounded-2xl
+          bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+          transition-all duration-300
+          ${showSuggestions ? 'rounded-b-none' : ''}
+        `}>
+          {/* AI Indicator */}
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] shadow-lg">
+            <Sparkles className="w-5 h-5 text-white animate-pulse" />
           </div>
+
+          {/* Input */}
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            placeholder={placeholder}
+            className="flex-1 bg-transparent text-[#69738c] text-base font-medium outline-none placeholder:text-[#9aa3b8]"
+          />
+
+          {/* Mic Button (future voice) */}
+          <button
+            type="button"
+            className="p-2 rounded-xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] transition-all"
+            title="Búsqueda por voz (próximamente)"
+          >
+            <Mic className="w-5 h-5 text-[#9aa3b8]" />
+          </button>
+
+          {/* Search Button */}
+          <button
+            type="submit"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
+          >
+            <Search className="w-4 h-4" />
+            <span>Buscar</span>
+          </button>
+        </div>
+      </form>
+
+      {/* Suggestions Dropdown */}
+      {showSuggestions && (
+        <div className={`
+          absolute left-0 right-0 z-50
+          bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+          rounded-b-2xl overflow-hidden
+          border-t border-[#bec8de]/30
+        `}>
+          <div className="p-3 space-y-1">
+            <p className="text-[10px] font-bold text-[#9aa3b8] uppercase tracking-widest px-2 mb-2">
+              🤖 Sugerencias Cortex-Sense
+            </p>
+
+            {isProcessing && (
+              <div className="flex items-center justify-center py-4">
+                <div className="w-5 h-5 border-2 border-[#6888ff] border-t-transparent rounded-full animate-spin" />
+                <span className="ml-2 text-sm text-[#9aa3b8]">Procesando...</span>
+              </div>
+            )}
+
+            {!isProcessing && suggestions.map((suggestion) => (
+              <button
+                key={suggestion.id}
+                onClick={() => handleSuggestionClick(suggestion)}
+                className={`
+                  w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
+                  text-left transition-all text-sm font-medium
+                  hover:bg-white/60 active:bg-white/40
+                  ${suggestion.tipo === 'accion' ? 'text-[#6888ff]' : 'text-[#69738c]'}
+                  ${suggestion.tipo === 'alerta' ? 'text-amber-600' : ''}
+                `}
+              >
+                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/50 shadow-sm">
+                  {suggestion.icon}
+                </span>
+                <span className="flex-1">{suggestion.text}</span>
+                <ChevronRight className="w-4 h-4 text-[#bec8de]" />
+              </button>
+            ))}
+
+            {/* Quick Actions */}
+            <div className="pt-3 mt-3 border-t border-[#bec8de]/30">
+              <p className="text-[10px] font-bold text-[#9aa3b8] uppercase tracking-widest px-2 mb-2">
+                ⚡ Acciones Rápidas
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => {
+                    console.log('[AICommandBar] Quick Action: Nueva Verificación clicked');
+                    if (onExecute) {
+                      onExecute('Nueva Verificación');
+                    }
+                  }}
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-[#6888ff] to-[#5572ee] text-white text-xs font-bold shadow-sm hover:shadow-md transition-all"
+                >
+                  <Zap className="w-3 h-3" />
+                  Verificación Express
+                </button>
+                <button
+                  onClick={() => handleSuggestionClick({ id: 'qa-2', text: 'Ver Pendientes', tipo: 'accion' })}
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-amber-50 text-amber-600 text-xs font-bold shadow-sm hover:shadow-md transition-all"
+                >
+                  <AlertCircle className="w-3 h-3" />
+                  Alertas Pendientes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Backdrop to close */}
+      {showSuggestions && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowSuggestions(false)}
+        />
       )}
     </div>
   );

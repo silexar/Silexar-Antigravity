@@ -164,7 +164,7 @@ export const POST = withApiRoute(
           new ValorPropiedadDrizzleRepository(tenantId)
         )
         const validacion = await propiedadesAPI.validarCoherenciaPropiedades(body.propiedadesSeleccionadas)
-        if (validacion.isFailure) {
+        if (!validacion.isSuccess) {
           return apiError(
             'VALIDATION_ERROR',
             `Contrato Rechazado: ${validacion.error?.message || 'Error de coherencia en propiedades.'}`,

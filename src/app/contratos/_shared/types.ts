@@ -96,7 +96,7 @@ export interface DashboardMobile {
 
 export interface AlertaContrato {
   id: string;
-  tipo: 'urgente' | 'vencimiento' | 'aprobacion' | 'renovacion' | 'pago' | 'info';
+  tipo: 'urgente' | 'vencimientos' | 'aprobacion' | 'renovacion' | 'pago' | 'info';
   prioridad: 'critica' | 'alta' | 'media' | 'baja';
   titulo: string;
   descripcion: string;
@@ -116,7 +116,7 @@ export interface AlertaContrato {
 // CALENDARIO
 // ═══════════════════════════════════════════════════════════════
 
-export type TipoEvento = 'vencimiento' | 'renovacion' | 'reunion' | 'pago' | 'obligacion' | 'recordatorio';
+export type TipoEvento = 'vencimientos' | 'renovacion' | 'reunion' | 'pago' | 'obligacion' | 'recordatorio';
 
 export interface EventoCalendario {
   id: string;

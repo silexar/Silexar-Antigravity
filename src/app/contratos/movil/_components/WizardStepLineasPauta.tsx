@@ -1,8 +1,8 @@
 /**
- * 📻 MOBILE WIZARD — Paso 2: Líneas de Pauta
+ * ?? MOBILE WIZARD � Paso 2: L�neas de Pauta
  * 
  * Cards interactivas para ver, editar, agregar y eliminar
- * las líneas de pauta (emisoras) del contrato.
+ * las l�neas de pauta (emisoras) del contrato.
  * Cada card muestra: emisora, cantidad, horario, tarifa, disponibilidad.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -19,9 +19,9 @@ import {
 } from 'lucide-react';
 import type { LineaPautaSugerida } from '../../_shared/useSmartCapture';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // PROPS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface WizardStepLineasPautaProps {
   lineas: LineaPautaSugerida[];
@@ -35,15 +35,15 @@ interface WizardStepLineasPautaProps {
   onBack: () => void;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// CATÁLOGO DE EMISORAS DISPONIBLES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
+// CAT�LOGO DE EMISORAS DISPONIBLES
+// ---------------------------------------------------------------
 
 const CATALOGO_EMISORAS: {
   id: string; nombre: string; categoria: LineaPautaSugerida['categoria'];
   producto: string; tarifa: number;
 }[] = [
-  { id: 'med-001', nombre: 'Radio Corazón', categoria: 'Radio', producto: 'Radio FM', tarifa: 450000 },
+  { id: 'med-001', nombre: 'Radio Coraz�n', categoria: 'Radio', producto: 'Radio FM', tarifa: 450000 },
   { id: 'med-002', nombre: 'FM Dos', categoria: 'Radio', producto: 'Radio FM', tarifa: 380000 },
   { id: 'med-003', nombre: 'Radio Futuro', categoria: 'Radio', producto: 'Radio FM', tarifa: 350000 },
   { id: 'med-004', nombre: 'ADN Radio', categoria: 'Radio', producto: 'Radio FM', tarifa: 520000 },
@@ -55,9 +55,9 @@ const CATALOGO_EMISORAS: {
   { id: 'med-010', nombre: 'El Mercurio', categoria: 'Prensa', producto: 'Prensa Escrita', tarifa: 800000 },
 ];
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function WizardStepLineasPauta({
   lineas, descuentoGlobal, fechaInicio, fechaFin,
@@ -112,26 +112,26 @@ export function WizardStepLineasPauta({
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Líneas de Pauta</p>
-          <p className="text-xs text-slate-500">{lineas.length} línea{lineas.length !== 1 ? 's' : ''} configurada{lineas.length !== 1 ? 's' : ''}</p>
+          <p className="text-[10px] font-bold text-[#9aa3b8] uppercase tracking-widest">L�neas de Pauta</p>
+          <p className="text-xs text-[#9aa3b8]">{lineas.length} l�nea{lineas.length !== 1 ? 's' : ''} configurada{lineas.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => setShowAddSheet(true)}
-          className="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95"
+          className="px-3 py-2 bg-[#6888ff] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95"
         >
           <Plus className="w-3.5 h-3.5" /> Agregar
         </button>
       </div>
 
-      {/* CARDS DE LÍNEAS */}
+      {/* CARDS DE L�NEAS */}
       {lineas.length === 0 ? (
         <div className="text-center py-8">
-          <Package className="w-12 h-12 text-slate-300 mx-auto" />
-          <p className="mt-3 text-sm font-bold text-slate-400">Sin líneas de pauta</p>
-          <p className="text-xs text-slate-400 mt-1">Agrega emisoras para completar el contrato</p>
+          <Package className="w-12 h-12 text-[#9aa3b8] mx-auto" />
+          <p className="mt-3 text-sm font-bold text-[#9aa3b8]">Sin l�neas de pauta</p>
+          <p className="text-xs text-[#9aa3b8] mt-1">Agrega emisoras para completar el contrato</p>
           <button
             onClick={() => setShowAddSheet(true)}
-            className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold active:scale-95"
+            className="mt-4 px-6 py-3 bg-[#6888ff] text-white rounded-xl text-sm font-bold active:scale-95"
           >
             <Plus className="w-4 h-4 inline mr-1" /> Agregar emisora
           </button>
@@ -153,36 +153,36 @@ export function WizardStepLineasPauta({
 
       {/* TOTAL */}
       {lineas.length > 0 && (
-        <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-4 text-white">
+        <div className="bg-[#6888ff] rounded-2xl p-4 text-white">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400">Subtotal bruto</span>
+            <span className="text-xs text-[#9aa3b8]">Subtotal bruto</span>
             <span className="text-sm font-mono">{formatMonto(totalBruto)}</span>
           </div>
           {descuentoGlobal > 0 && (
             <div className="flex items-center justify-between mt-1">
-              <span className="text-xs text-slate-400">Descuento ({descuentoGlobal}%)</span>
+              <span className="text-xs text-[#9aa3b8]">Descuento ({descuentoGlobal}%)</span>
               <span className="text-sm font-mono text-red-400">-{formatMonto(totalBruto - totalNeto)}</span>
             </div>
           )}
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-700">
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#bec8de]">
             <span className="text-sm font-bold">Total Neto</span>
             <span className="text-lg font-black font-mono">{formatMonto(totalNeto)}</span>
           </div>
         </div>
       )}
 
-      {/* NAVEGACIÓN */}
+      {/* NAVEGACI�N */}
       <div className="flex gap-3">
         <button
           onClick={onBack}
-          className="flex-1 py-3.5 border border-slate-200 text-slate-600 rounded-2xl font-bold text-sm active:scale-[0.97]"
+          className="flex-1 py-3.5 border border-[#bec8de30] text-[#69738c] rounded-2xl font-bold text-sm active:scale-[0.97]"
         >
           Volver
         </button>
         <button
           onClick={onNext}
           disabled={lineas.length === 0}
-          className="flex-[2] py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-indigo-200"
+          className="flex-[2] py-3.5 bg-[#6888ff] text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-[#6888ff]/20"
         >
           Confirmar y Enviar
           <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
@@ -192,11 +192,11 @@ export function WizardStepLineasPauta({
       {/* SHEET AGREGAR EMISORA */}
       {showAddSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => setShowAddSheet(false)}>
-          <div className="bg-white w-full rounded-t-3xl p-5 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#dfeaff] w-full rounded-t-3xl p-5 max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg text-slate-800">Agregar Emisora</h3>
-              <button onClick={() => setShowAddSheet(false)} className="p-2 rounded-xl bg-slate-100 active:scale-90">
-                <X className="w-5 h-5 text-slate-500" />
+              <h3 className="font-bold text-lg text-[#69738c]">Agregar Emisora</h3>
+              <button onClick={() => setShowAddSheet(false)} className="p-2 rounded-xl bg-[#dfeaff] active:scale-90">
+                <X className="w-5 h-5 text-[#9aa3b8]" />
               </button>
             </div>
 
@@ -205,24 +205,24 @@ export function WizardStepLineasPauta({
                 <button
                   key={emisora.id}
                   onClick={() => handleAddEmisora(emisora)}
-                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-3 active:scale-[0.97] transition-transform"
+                  className="w-full p-4 bg-[#dfeaff] border border-[#bec8de30] rounded-2xl flex items-center gap-3 active:scale-[0.97] transition-transform"
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${getCategoriaColor(emisora.categoria)}`}>
                     {getCategoriaIcon(emisora.categoria)}
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="font-bold text-sm text-slate-800">{emisora.nombre}</p>
-                    <p className="text-[10px] text-slate-500">{emisora.producto}</p>
+                    <p className="font-bold text-sm text-[#69738c]">{emisora.nombre}</p>
+                    <p className="text-[10px] text-[#9aa3b8]">{emisora.producto}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-bold text-slate-700">{formatMonto(emisora.tarifa)}</p>
-                    <p className="text-[10px] text-slate-400">/unidad</p>
+                    <p className="text-xs font-bold text-[#69738c]">{formatMonto(emisora.tarifa)}</p>
+                    <p className="text-[10px] text-[#9aa3b8]">/unidad</p>
                   </div>
                 </button>
               ))}
 
               {CATALOGO_EMISORAS.filter(e => !emisorasEnUso.has(e.id)).length === 0 && (
-                <p className="text-center py-6 text-sm text-slate-400">Todas las emisoras ya están agregadas</p>
+                <p className="text-center py-6 text-sm text-[#9aa3b8]">Todas las emisoras ya est�n agregadas</p>
               )}
             </div>
           </div>
@@ -232,9 +232,9 @@ export function WizardStepLineasPauta({
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
-// CARD DE LÍNEA DE PAUTA
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
+// CARD DE L�NEA DE PAUTA
+// ---------------------------------------------------------------
 
 function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }: {
   linea: LineaPautaSugerida;
@@ -246,15 +246,15 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
   const disponibilidadConfig = getDisponibilidadConfig(linea.disponibilidad?.estado);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+    <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] overflow-hidden shadow-sm">
       {/* HEADER */}
-      <div className="px-4 py-3 flex items-center gap-3 border-b border-slate-50">
+      <div className="px-4 py-3 flex items-center gap-3 border-b border-[#bec8de30]">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${getCategoriaColor(linea.categoria)}`}>
           {getCategoriaIcon(linea.categoria)}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-sm text-slate-800 truncate">{linea.medioNombre}</p>
-          <p className="text-[10px] text-slate-400">{linea.productoNombre}</p>
+          <p className="font-bold text-sm text-[#69738c] truncate">{linea.medioNombre}</p>
+          <p className="text-[10px] text-[#9aa3b8]">{linea.productoNombre}</p>
         </div>
         <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
           linea.fuenteDeteccion === 'manual' ? 'bg-blue-100 text-blue-700' :
@@ -265,45 +265,45 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
            linea.fuenteDeteccion === 'ia_texto' ? 'IA Texto' :
            linea.fuenteDeteccion === 'historial_cliente' ? 'Historial' : 'Manual'}
         </span>
-        <button onClick={onToggleEdit} className="p-1.5 rounded-lg bg-slate-100 active:scale-90">
-          <Edit3 className="w-3.5 h-3.5 text-slate-400" />
+        <button onClick={onToggleEdit} className="p-1.5 rounded-lg bg-[#dfeaff] active:scale-90">
+          <Edit3 className="w-3.5 h-3.5 text-[#9aa3b8]" />
         </button>
       </div>
 
       {/* DETALLES */}
       <div className="px-4 py-3 grid grid-cols-3 gap-3">
         <div>
-          <p className="text-[10px] text-slate-400">Cantidad</p>
+          <p className="text-[10px] text-[#9aa3b8]">Cantidad</p>
           {editing ? (
             <div className="flex items-center gap-1 mt-0.5">
               <button
                 onClick={() => onCantidadChange(linea.cantidad - 1)}
-                className="w-6 h-6 rounded-md bg-slate-200 text-slate-600 text-xs font-bold flex items-center justify-center"
+                className="w-6 h-6 rounded-md bg-[#dfeaff] text-[#69738c] text-xs font-bold flex items-center justify-center"
               >-</button>
-              <span className="text-sm font-black text-slate-800 w-8 text-center">{linea.cantidad}</span>
+              <span className="text-sm font-black text-[#69738c] w-8 text-center">{linea.cantidad}</span>
               <button
                 onClick={() => onCantidadChange(linea.cantidad + 1)}
-                className="w-6 h-6 rounded-md bg-indigo-500 text-white text-xs font-bold flex items-center justify-center"
+                className="w-6 h-6 rounded-md bg-[#6888ff] text-white text-xs font-bold flex items-center justify-center"
               >+</button>
             </div>
           ) : (
-            <p className="text-sm font-black text-slate-800">{linea.cantidad} frases</p>
+            <p className="text-sm font-black text-[#69738c]">{linea.cantidad} frases</p>
           )}
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">Tarifa</p>
-          <p className="text-sm font-bold text-slate-700">{formatMonto(linea.tarifaUnitaria)}</p>
+          <p className="text-[10px] text-[#9aa3b8]">Tarifa</p>
+          <p className="text-sm font-bold text-[#69738c]">{formatMonto(linea.tarifaUnitaria)}</p>
         </div>
         <div>
-          <p className="text-[10px] text-slate-400">Total Neto</p>
+          <p className="text-[10px] text-[#9aa3b8]">Total Neto</p>
           <p className="text-sm font-black text-emerald-600">{formatMonto(linea.totalNeto)}</p>
         </div>
       </div>
 
       {/* HORARIO + DISPONIBILIDAD */}
-      <div className="px-4 py-2 bg-slate-50 flex items-center gap-4 text-[10px]">
+      <div className="px-4 py-2 bg-[#dfeaff] flex items-center gap-4 text-[10px]">
         {linea.horarioInicio && (
-          <span className="flex items-center gap-1 text-slate-500">
+          <span className="flex items-center gap-1 text-[#9aa3b8]">
             <Clock className="w-3 h-3" /> {linea.horarioInicio} - {linea.horarioFin}
           </span>
         )}
@@ -314,11 +314,11 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
           </span>
         )}
         {linea.duracionSpot && (
-          <span className="text-slate-400">{linea.duracionSpot}s</span>
+          <span className="text-[#9aa3b8]">{linea.duracionSpot}s</span>
         )}
       </div>
 
-      {/* ACCIONES EDICIÓN */}
+      {/* ACCIONES EDICI�N */}
       {editing && (
         <div className="px-4 py-2 bg-red-50 border-t border-red-100 flex justify-end">
           <button onClick={onDelete} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 active:scale-95">
@@ -330,9 +330,9 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // UTILIDADES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 function formatMonto(valor: number): string {
   if (valor >= 1000000) return `$${(valor / 1000000).toFixed(1)}M`;
@@ -352,7 +352,7 @@ function getCategoriaIcon(cat: LineaPautaSugerida['categoria']) {
 function getCategoriaColor(cat: LineaPautaSugerida['categoria']) {
   switch (cat) {
     case 'Radio': return 'bg-gradient-to-br from-red-500 to-pink-500';
-    case 'Televisión': return 'bg-gradient-to-br from-blue-500 to-indigo-500';
+    case 'Televisión': return 'bg-[#6888ff]';
     case 'Digital': return 'bg-gradient-to-br from-emerald-500 to-teal-500';
     case 'Prensa': return 'bg-gradient-to-br from-amber-500 to-orange-500';
   }
@@ -364,6 +364,6 @@ function getDisponibilidadConfig(estado?: string) {
     case 'limitado': return { label: 'Limitado', color: 'text-amber-600', icon: <TrendingUp className="w-3 h-3" /> };
     case 'saturado': return { label: 'Saturado', color: 'text-orange-600', icon: <AlertTriangle className="w-3 h-3" /> };
     case 'no_disponible': return { label: 'No disponible', color: 'text-red-600', icon: <AlertTriangle className="w-3 h-3" /> };
-    default: return { label: 'Sin datos', color: 'text-slate-400', icon: null };
+    default: return { label: 'Sin datos', color: 'text-[#9aa3b8]', icon: null };
   }
 }

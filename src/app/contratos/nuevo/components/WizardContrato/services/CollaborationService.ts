@@ -1,9 +1,9 @@
 /**
  * 👥 SILEXAR PULSE - Real-Time Collaboration Service TIER 0
- * 
+ *
  * @description Sistema de colaboración en tiempo real para contratos.
  * Permite a múltiples usuarios editar, comentar y revisar simultáneamente.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -12,12 +12,12 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type TipoActividad = 
-  | 'viewing'
-  | 'editing'
-  | 'commenting'
-  | 'approving'
-  | 'idle';
+export type TipoActividad =
+  | "viewing"
+  | "editing"
+  | "commenting"
+  | "approving"
+  | "idle";
 
 export interface UsuarioConectado {
   id: string;
@@ -78,14 +78,14 @@ export interface SesionColaborativa {
 // ═══════════════════════════════════════════════════════════════
 
 const COLORES_USUARIO = [
-  '#6366f1', // indigo
-  '#8b5cf6', // violet
-  '#ec4899', // pink
-  '#f59e0b', // amber
-  '#10b981', // emerald
-  '#06b6d4', // cyan
-  '#f43f5e', // rose
-  '#84cc16', // lime
+  "#6366f1", // indigo
+  "#8b5cf6", // violet
+  "#ec4899", // pink
+  "#f59e0b", // amber
+  "#10b981", // emerald
+  "#06b6d4", // cyan
+  "#f43f5e", // rose
+  "#84cc16", // lime
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -95,7 +95,8 @@ const COLORES_USUARIO = [
 class CollaborationEngine {
   private static instance: CollaborationEngine;
   private sesiones: Map<string, SesionColaborativa> = new Map();
-  private listeners: Map<string, ((event: CollaborationEvent) => void)[]> = new Map();
+  private listeners: Map<string, ((event: CollaborationEvent) => void)[]> =
+    new Map();
   private wsConnection: WebSocket | null = null;
   private usuarioActual: UsuarioConectado | null = null;
 
@@ -117,9 +118,12 @@ class CollaborationEngine {
   /**
    * Conecta a una sesión de contrato
    */
-  conectar(contratoId: string, usuario: { id: string; nombre: string; email: string }): SesionColaborativa {
+  conectar(
+    contratoId: string,
+    usuario: { id: string; nombre: string; email: string },
+  ): SesionColaborativa {
     let sesion = this.sesiones.get(contratoId);
-    
+
     if (!sesion) {
       sesion = {
         id: `ses-${Date.now()}`,
@@ -128,31 +132,35 @@ class CollaborationEngine {
         cambiosPendientes: [],
         comentariosActivos: [],
         iniciadaEn: new Date(),
-        ultimaActividad: new Date()
+        ultimaActividad: new Date(),
       };
       this.sesiones.set(contratoId, sesion);
     }
 
     // Verificar si ya está conectado
-    const yaConectado = sesion.usuariosConectados.find(u => u.id === usuario.id);
+    const yaConectado = sesion.usuariosConectados.find((u) =>
+      u.id === usuario.id
+    );
     if (!yaConectado) {
       const nuevoUsuario: UsuarioConectado = {
         id: usuario.id,
         nombre: usuario.nombre,
         email: usuario.email,
-        color: COLORES_USUARIO[sesion.usuariosConectados.length % COLORES_USUARIO.length],
-        actividad: 'viewing',
+        color: COLORES_USUARIO[
+          sesion.usuariosConectados.length % COLORES_USUARIO.length
+        ],
+        actividad: "viewing",
         ultimaActividad: new Date(),
-        sesionId: sesion.id
+        sesionId: sesion.id,
       };
-      
+
       sesion.usuariosConectados.push(nuevoUsuario);
       this.usuarioActual = nuevoUsuario;
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'usuario_conectado',
+        tipo: "usuario_conectado",
         usuario: nuevoUsuario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -166,14 +174,16 @@ class CollaborationEngine {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const usuario = sesion.usuariosConectados.find(u => u.id === usuarioId);
+    const usuario = sesion.usuariosConectados.find((u) => u.id === usuarioId);
     if (usuario) {
-      sesion.usuariosConectados = sesion.usuariosConectados.filter(u => u.id !== usuarioId);
-      
+      sesion.usuariosConectados = sesion.usuariosConectados.filter((u) =>
+        u.id !== usuarioId
+      );
+
       this.emitirEvento(contratoId, {
-        tipo: 'usuario_desconectado',
+        tipo: "usuario_desconectado",
         usuario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Limpiar sesión si no hay usuarios
@@ -197,20 +207,25 @@ class CollaborationEngine {
   /**
    * Actualiza actividad del usuario
    */
-  actualizarActividad(contratoId: string, usuarioId: string, actividad: TipoActividad, seccion?: string): void {
+  actualizarActividad(
+    contratoId: string,
+    usuarioId: string,
+    actividad: TipoActividad,
+    seccion?: string,
+  ): void {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const usuario = sesion.usuariosConectados.find(u => u.id === usuarioId);
+    const usuario = sesion.usuariosConectados.find((u) => u.id === usuarioId);
     if (usuario) {
       usuario.actividad = actividad;
       usuario.seccionActual = seccion;
       usuario.ultimaActividad = new Date();
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'actividad_actualizada',
+        tipo: "actividad_actualizada",
         usuario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -218,18 +233,22 @@ class CollaborationEngine {
   /**
    * Actualiza posición del cursor
    */
-  actualizarCursor(contratoId: string, usuarioId: string, posicion: { x: number; y: number }): void {
+  actualizarCursor(
+    contratoId: string,
+    usuarioId: string,
+    posicion: { x: number; y: number },
+  ): void {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const usuario = sesion.usuariosConectados.find(u => u.id === usuarioId);
+    const usuario = sesion.usuariosConectados.find((u) => u.id === usuarioId);
     if (usuario) {
       usuario.cursorPosicion = posicion;
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'cursor_movido',
+        tipo: "cursor_movido",
         usuario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -247,10 +266,10 @@ class CollaborationEngine {
     valorAnterior: unknown,
     valorNuevo: unknown,
     usuarioId: string,
-    usuarioNombre: string
+    usuarioNombre: string,
   ): CambioEnTiempoReal {
     const sesion = this.sesiones.get(contratoId);
-    if (!sesion) throw new Error('Sesión no encontrada');
+    if (!sesion) throw new Error("Sesión no encontrada");
 
     const cambio: CambioEnTiempoReal = {
       id: `cambio-${Date.now()}`,
@@ -261,15 +280,15 @@ class CollaborationEngine {
       usuarioId,
       usuarioNombre,
       timestamp: new Date(),
-      aplicado: false
+      aplicado: false,
     };
 
     sesion.cambiosPendientes.push(cambio);
-    
+
     this.emitirEvento(contratoId, {
-      tipo: 'campo_modificado',
+      tipo: "campo_modificado",
       cambio,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return cambio;
@@ -282,14 +301,14 @@ class CollaborationEngine {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const cambio = sesion.cambiosPendientes.find(c => c.id === cambioId);
+    const cambio = sesion.cambiosPendientes.find((c) => c.id === cambioId);
     if (cambio) {
       cambio.aplicado = true;
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'cambio_aplicado',
+        tipo: "cambio_aplicado",
         cambio,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -301,12 +320,14 @@ class CollaborationEngine {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    sesion.cambiosPendientes = sesion.cambiosPendientes.filter(c => c.id !== cambioId);
-    
+    sesion.cambiosPendientes = sesion.cambiosPendientes.filter((c) =>
+      c.id !== cambioId
+    );
+
     this.emitirEvento(contratoId, {
-      tipo: 'cambio_rechazado',
+      tipo: "cambio_rechazado",
       cambioId,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
@@ -323,13 +344,13 @@ class CollaborationEngine {
     texto: string,
     autor: { id: string; nombre: string },
     campoId?: string,
-    respuestaAId?: string
+    respuestaAId?: string,
   ): Comentario {
     const sesion = this.sesiones.get(contratoId);
-    if (!sesion) throw new Error('Sesión no encontrada');
+    if (!sesion) throw new Error("Sesión no encontrada");
 
     // Detectar menciones (@usuario)
-    const menciones = texto.match(/@(\w+)/g)?.map(m => m.substring(1)) || [];
+    const menciones = texto.match(/@(\w+)/g)?.map((m) => m.substring(1)) || [];
 
     const comentario: Comentario = {
       id: `com-${Date.now()}`,
@@ -344,15 +365,15 @@ class CollaborationEngine {
       resuelto: false,
       respuestaAId,
       reacciones: [],
-      menciones
+      menciones,
     };
 
     sesion.comentariosActivos.push(comentario);
-    
+
     this.emitirEvento(contratoId, {
-      tipo: 'comentario_agregado',
+      tipo: "comentario_agregado",
       comentario,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return comentario;
@@ -366,7 +387,7 @@ class CollaborationEngine {
     if (!sesion) return [];
 
     if (seccion) {
-      return sesion.comentariosActivos.filter(c => c.seccion === seccion);
+      return sesion.comentariosActivos.filter((c) => c.seccion === seccion);
     }
     return sesion.comentariosActivos;
   }
@@ -374,19 +395,25 @@ class CollaborationEngine {
   /**
    * Resuelve un comentario
    */
-  resolverComentario(contratoId: string, comentarioId: string, resueltoPor: string): void {
+  resolverComentario(
+    contratoId: string,
+    comentarioId: string,
+    resueltoPor: string,
+  ): void {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const comentario = sesion.comentariosActivos.find(c => c.id === comentarioId);
+    const comentario = sesion.comentariosActivos.find((c) =>
+      c.id === comentarioId
+    );
     if (comentario) {
       comentario.resuelto = true;
       comentario.resueltoPor = resueltoPor;
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'comentario_resuelto',
+        tipo: "comentario_resuelto",
         comentario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -394,27 +421,34 @@ class CollaborationEngine {
   /**
    * Agrega reacción a comentario
    */
-  agregarReaccion(contratoId: string, comentarioId: string, emoji: string, usuarioId: string): void {
+  agregarReaccion(
+    contratoId: string,
+    comentarioId: string,
+    emoji: string,
+    usuarioId: string,
+  ): void {
     const sesion = this.sesiones.get(contratoId);
     if (!sesion) return;
 
-    const comentario = sesion.comentariosActivos.find(c => c.id === comentarioId);
+    const comentario = sesion.comentariosActivos.find((c) =>
+      c.id === comentarioId
+    );
     if (comentario) {
       // Toggle reacción
       const existente = comentario.reacciones.findIndex(
-        r => r.emoji === emoji && r.usuarioId === usuarioId
+        (r) => r.emoji === emoji && r.usuarioId === usuarioId,
       );
-      
+
       if (existente >= 0) {
         comentario.reacciones.splice(existente, 1);
       } else {
         comentario.reacciones.push({ emoji, usuarioId });
       }
-      
+
       this.emitirEvento(contratoId, {
-        tipo: 'reaccion_agregada',
+        tipo: "reaccion_agregada",
         comentario,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
   }
@@ -426,7 +460,10 @@ class CollaborationEngine {
   /**
    * Suscribe a eventos de un contrato
    */
-  suscribir(contratoId: string, callback: (event: CollaborationEvent) => void): () => void {
+  suscribir(
+    contratoId: string,
+    callback: (event: CollaborationEvent) => void,
+  ): () => void {
     const listeners = this.listeners.get(contratoId) || [];
     listeners.push(callback);
     this.listeners.set(contratoId, listeners);
@@ -434,13 +471,13 @@ class CollaborationEngine {
     // Devolver función para desuscribir
     return () => {
       const current = this.listeners.get(contratoId) || [];
-      this.listeners.set(contratoId, current.filter(cb => cb !== callback));
+      this.listeners.set(contratoId, current.filter((cb) => cb !== callback));
     };
   }
 
   private emitirEvento(contratoId: string, evento: CollaborationEvent): void {
     const listeners = this.listeners.get(contratoId) || [];
-    listeners.forEach(callback => callback(evento));
+    listeners.forEach((callback) => callback(evento));
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -450,51 +487,52 @@ class CollaborationEngine {
   private inicializarDemoData(): void {
     // Crear sesión de demo con usuarios simulados
     const demoSesion: SesionColaborativa = {
-      id: 'ses-demo',
-      contratoId: 'ctr-demo',
+      id: "ses-demo",
+      contratoId: "ctr-demo",
       usuariosConectados: [
         {
-          id: 'user-1',
-          nombre: 'Ana García',
-          email: 'ana@silexar.cl',
+          id: "user-1",
+          nombre: "Ana García",
+          email: "ana@silexar.cl",
           color: COLORES_USUARIO[1],
-          actividad: 'editing',
-          seccionActual: 'terminos',
+          actividad: "editing",
+          seccionActual: "terminos",
           ultimaActividad: new Date(),
-          sesionId: 'ses-demo'
+          sesionId: "ses-demo",
         },
         {
-          id: 'user-2',
-          nombre: 'Roberto Silva',
-          email: 'roberto@silexar.cl',
+          id: "user-2",
+          nombre: "Roberto Silva",
+          email: "roberto@silexar.cl",
           color: COLORES_USUARIO[2],
-          actividad: 'commenting',
-          seccionActual: 'lineas',
+          actividad: "commenting",
+          seccionActual: "lineas",
           ultimaActividad: new Date(Date.now() - 120000),
-          sesionId: 'ses-demo'
-        }
+          sesionId: "ses-demo",
+        },
       ],
       cambiosPendientes: [],
       comentariosActivos: [
         {
-          id: 'com-1',
-          contratoId: 'ctr-demo',
-          seccion: 'terminos',
-          texto: 'El descuento parece alto para este cliente. @Carlos ¿puedes revisar el historial?',
-          autorId: 'user-1',
-          autorNombre: 'Ana García',
+          id: "com-1",
+          contratoId: "ctr-demo",
+          seccion: "terminos",
+          texto:
+            "El descuento parece alto para este cliente. @Carlos ¿puedes revisar el historial?",
+          autorId: "user-1",
+          autorNombre: "Ana García",
           fechaCreacion: new Date(Date.now() - 300000),
           editado: false,
           resuelto: false,
-          reacciones: [{ emoji: '👀', usuarioId: 'user-2' }],
-          menciones: ['Carlos']
-        }
+          reacciones: [{ emoji: "👀", usuarioId: "user-2" }],
+          menciones: ["Carlos"],
+        },
       ],
       iniciadaEn: new Date(Date.now() - 600000),
-      ultimaActividad: new Date()
+      ultimaActividad: new Date(),
     };
 
-    this.sesiones.set('ctr-demo', demoSesion);
+    this.sesiones.set("ctr-demo", demoSesion);
   }
 }
 
@@ -503,17 +541,17 @@ class CollaborationEngine {
 // ═══════════════════════════════════════════════════════════════
 
 export interface CollaborationEvent {
-  tipo: 
-    | 'usuario_conectado'
-    | 'usuario_desconectado'
-    | 'actividad_actualizada'
-    | 'cursor_movido'
-    | 'campo_modificado'
-    | 'cambio_aplicado'
-    | 'cambio_rechazado'
-    | 'comentario_agregado'
-    | 'comentario_resuelto'
-    | 'reaccion_agregada';
+  tipo:
+    | "usuario_conectado"
+    | "usuario_desconectado"
+    | "actividad_actualizada"
+    | "cursor_movido"
+    | "campo_modificado"
+    | "cambio_aplicado"
+    | "cambio_rechazado"
+    | "comentario_agregado"
+    | "comentario_resuelto"
+    | "reaccion_agregada";
   usuario?: UsuarioConectado;
   cambio?: CambioEnTiempoReal;
   comentario?: Comentario;
@@ -530,17 +568,19 @@ export const Collaboration = CollaborationEngine.getInstance();
 export function useCollaboration(contratoId: string) {
   return {
     engine: Collaboration,
-    conectar: (usuario: { id: string; nombre: string; email: string }) => 
+    conectar: (usuario: { id: string; nombre: string; email: string }) =>
       Collaboration.conectar(contratoId, usuario),
-    desconectar: (usuarioId: string) => 
+    desconectar: (usuarioId: string) =>
       Collaboration.desconectar(contratoId, usuarioId),
-    getUsuarios: () => 
-      Collaboration.getUsuariosConectados(contratoId),
-    agregarComentario: (seccion: string, texto: string, autor: { id: string; nombre: string }) =>
-      Collaboration.agregarComentario(contratoId, seccion, texto, autor),
+    getUsuarios: () => Collaboration.getUsuariosConectados(contratoId),
+    agregarComentario: (
+      seccion: string,
+      texto: string,
+      autor: { id: string; nombre: string },
+    ) => Collaboration.agregarComentario(contratoId, seccion, texto, autor),
     getComentarios: (seccion?: string) =>
       Collaboration.getComentarios(contratoId, seccion),
     suscribir: (callback: (event: CollaborationEvent) => void) =>
-      Collaboration.suscribir(contratoId, callback)
+      Collaboration.suscribir(contratoId, callback),
   };
 }

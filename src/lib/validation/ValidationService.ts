@@ -26,7 +26,7 @@ export interface ResultadoValidacion {
 export interface Alerta {
   id: string;
   tipo: 'error' | 'warning' | 'info';
-  categoria: 'competencia' | 'legal' | 'duracion' | 'audio' | 'vencimiento' | 'contenido';
+  categoria: 'competencia' | 'legal' | 'duracion' | 'audio' | 'vencimientos' | 'contenido';
   titulo: string;
   mensaje: string;
   detalle?: string;
@@ -390,7 +390,7 @@ export class ValidationService {
             alertas.push({
               id: `venc_fecha_${Date.now()}`,
               tipo: 'error',
-              categoria: 'vencimiento',
+              categoria: 'vencimientos',
               titulo: 'Fecha vencida en el texto',
               mensaje: `El texto menciona "${match[0]}" que ya pasó`,
               accionRequerida: true,
@@ -406,7 +406,7 @@ export class ValidationService {
       alertas.push({
         id: `venc_cuña_${Date.now()}`,
         tipo: 'error',
-        categoria: 'vencimiento',
+        categoria: 'vencimientos',
         titulo: 'Cuña vencida',
         mensaje: 'La vigencia de esta cuña ya expiró',
         accionRequerida: true,
@@ -416,7 +416,7 @@ export class ValidationService {
       alertas.push({
         id: `venc_pronto_${Date.now()}`,
         tipo: 'warning',
-        categoria: 'vencimiento',
+        categoria: 'vencimientos',
         titulo: 'Cuña por vencer',
         mensaje: `La cuña vence en ${diasRestantes} día${diasRestantes === 1 ? '' : 's'}`,
         accionRequerida: false,
@@ -426,7 +426,7 @@ export class ValidationService {
       alertas.push({
         id: `venc_semana_${Date.now()}`,
         tipo: 'info',
-        categoria: 'vencimiento',
+        categoria: 'vencimientos',
         titulo: 'Vencimiento próximo',
         mensaje: `La cuña vence en ${diasRestantes} días`,
         accionRequerida: false

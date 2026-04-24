@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔄 MOBILE: Renovaciones View
  * 
  * Gestión de contratos próximos a renovar.
@@ -54,7 +54,7 @@ export function MobileRenovacionesView() {
     por_vencer: { label: 'Por vencer', color: 'text-amber-700', bg: 'bg-amber-100' },
     vencido: { label: 'Vencido', color: 'text-red-700', bg: 'bg-red-100' },
     renovado: { label: 'Renovado', color: 'text-emerald-700', bg: 'bg-emerald-100' },
-    perdido: { label: 'Perdido', color: 'text-slate-700', bg: 'bg-slate-100' },
+    perdido: { label: 'Perdido', color: 'text-[#69738c]', bg: 'bg-[#dfeaff]' },
   };
 
   return (
@@ -66,15 +66,15 @@ export function MobileRenovacionesView() {
           <p className="text-xs font-bold text-amber-200 uppercase tracking-widest">Renovaciones</p>
         </div>
         <div className="grid grid-cols-3 gap-3 mt-3">
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{RENOVACIONES_MOCK.length}</p>
             <p className="text-[10px] text-amber-200">Total</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{enRiesgo.length}</p>
             <p className="text-[10px] text-amber-200">En riesgo</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{tasaRenovacion}%</p>
             <p className="text-[10px] text-amber-200">Tasa renov.</p>
           </div>
@@ -87,7 +87,7 @@ export function MobileRenovacionesView() {
         {(['todos', 'por_vencer', 'vencido', 'renovado'] as FiltroRen[]).map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${
-              filtro === f ? 'bg-amber-600 text-white' : 'bg-white text-slate-500 border border-slate-200'
+              filtro === f ? 'bg-amber-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {f === 'todos' ? 'Todos' : estadoConfig[f]?.label}
           </button>
@@ -97,19 +97,19 @@ export function MobileRenovacionesView() {
       {/* LIST */}
       <div className="space-y-3">
         {filtered.map(ren => (
-          <div key={ren.id} className="bg-white rounded-xl border border-slate-100 p-4">
+          <div key={ren.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="font-bold text-slate-800 text-sm">{ren.cliente}</p>
-                <p className="text-[10px] text-slate-400">{ren.contrato} · {ren.ejecutivo}</p>
+                <p className="font-bold text-[#69738c] text-sm">{ren.cliente}</p>
+                <p className="text-[10px] text-[#9aa3b8]">{ren.contrato} · {ren.ejecutivo}</p>
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estadoConfig[ren.estado]?.bg} ${estadoConfig[ren.estado]?.color}`}>
                 {estadoConfig[ren.estado]?.label}
               </span>
             </div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-lg font-black text-slate-800">{formatCurrency(ren.valorActual)}</p>
-              <span className={`text-xs font-bold flex items-center gap-1 ${ren.diasRestantes <= 0 ? 'text-red-600' : ren.diasRestantes <= 7 ? 'text-amber-600' : 'text-slate-500'}`}>
+              <p className="text-lg font-black text-[#69738c]">{formatCurrency(ren.valorActual)}</p>
+              <span className={`text-xs font-bold flex items-center gap-1 ${ren.diasRestantes <= 0 ? 'text-red-600' : ren.diasRestantes <= 7 ? 'text-amber-600' : 'text-[#9aa3b8]'}`}>
                 <Clock className="w-3 h-3" />
                 {ren.diasRestantes <= 0 ? `Venció hace ${Math.abs(ren.diasRestantes)}d` : `${ren.diasRestantes}d restantes`}
               </span>
@@ -117,10 +117,10 @@ export function MobileRenovacionesView() {
             {/* PROBABILIDAD */}
             <div className="mb-3">
               <div className="flex items-center justify-between text-[10px] mb-1">
-                <span className="text-slate-400">Probabilidad renovación</span>
+                <span className="text-[#9aa3b8]">Probabilidad renovación</span>
                 <span className={`font-bold ${ren.probabilidadRenovacion >= 70 ? 'text-emerald-600' : ren.probabilidadRenovacion >= 40 ? 'text-amber-600' : 'text-red-600'}`}>{ren.probabilidadRenovacion}%</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${ren.probabilidadRenovacion >= 70 ? 'bg-emerald-500' : ren.probabilidadRenovacion >= 40 ? 'bg-amber-500' : 'bg-red-500'}`}
                   style={{ width: `${ren.probabilidadRenovacion}%` }} />
               </div>

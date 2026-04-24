@@ -54,22 +54,22 @@ interface PlantillaEmail {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    rounded-3xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
-    rounded-2xl shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
+    rounded-2xl shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   btn: `
     px-4 py-2 rounded-xl font-medium transition-all
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
   `,
-  btnPrimary: `bg-gradient-to-br from-indigo-500 to-purple-600 text-white`,
-  btnSecondary: `bg-gradient-to-br from-slate-50 to-slate-100 text-slate-700`,
+  btnPrimary: `bg-[#6888ff] text-white`,
+  btnSecondary: `bg-gradient-to-br from-[#dfeaff] to-[#dfeaff] text-[#69738c]`,
   badge: `px-3 py-1 rounded-lg text-xs font-medium`
 };
 
@@ -151,7 +151,7 @@ const mockPlantillas: PlantillaEmail[] = [
 ];
 
 const categoriaConfig = {
-  contratos: { color: 'text-indigo-600', bg: 'bg-indigo-100', icon: FileText, label: 'Contratos' },
+  contratos: { color: 'text-[#6888ff]', bg: 'bg-indigo-100', icon: FileText, label: 'Contratos' },
   facturacion: { color: 'text-green-600', bg: 'bg-green-100', icon: DollarSign, label: 'Facturación' },
   cobranza: { color: 'text-amber-600', bg: 'bg-amber-100', icon: AlertTriangle, label: 'Cobranza' },
   sistema: { color: 'text-purple-600', bg: 'bg-purple-100', icon: Settings, label: 'Sistema' }
@@ -181,7 +181,7 @@ export default function EmailTemplatesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -190,8 +190,8 @@ export default function EmailTemplatesPage() {
               <Mail className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">Plantillas de Email</h1>
-              <p className="text-slate-500">Personaliza los emails que se envían automáticamente</p>
+              <h1 className="text-2xl font-bold text-[#69738c]">Plantillas de Email</h1>
+              <p className="text-[#69738c]">Personaliza los emails que se envían automáticamente</p>
             </div>
           </div>
           
@@ -205,7 +205,7 @@ export default function EmailTemplatesPage() {
         <div className="grid grid-cols-4 gap-6 mb-8">
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Plantillas Activas</p>
+              <p className="text-sm text-[#69738c] mb-1">Plantillas Activas</p>
               <p className="text-2xl font-bold text-green-600">
                 {plantillas.filter(p => p.activa).length}
               </p>
@@ -213,15 +213,15 @@ export default function EmailTemplatesPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Emails Enviados (30d)</p>
-              <p className="text-2xl font-bold text-indigo-600">
+              <p className="text-sm text-[#69738c] mb-1">Emails Enviados (30d)</p>
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {plantillas.reduce((acc, p) => acc + p.enviosTotales, 0).toLocaleString()}
               </p>
             </div>
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Tasa Apertura Promedio</p>
+              <p className="text-sm text-[#69738c] mb-1">Tasa Apertura Promedio</p>
               <p className="text-2xl font-bold text-purple-600">
                 {Math.round(plantillas.reduce((acc, p) => acc + p.tasaApertura, 0) / plantillas.length)}%
               </p>
@@ -229,8 +229,8 @@ export default function EmailTemplatesPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Mejor Rendimiento</p>
-              <p className="text-lg font-bold text-slate-800 truncate">
+              <p className="text-sm text-[#69738c] mb-1">Mejor Rendimiento</p>
+              <p className="text-lg font-bold text-[#69738c] truncate">
                 {plantillas.sort((a, b) => b.tasaApertura - a.tasaApertura)[0]?.nombre}
               </p>
             </div>
@@ -281,63 +281,63 @@ export default function EmailTemplatesPage() {
                         <CatIcon className={`w-5 h-5 ${catConfig.color}`} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-slate-800">{plantilla.nombre}</h3>
-                        <p className="text-xs text-slate-400 font-mono">{plantilla.codigo}</p>
+                        <h3 className="font-semibold text-[#69738c]">{plantilla.nombre}</h3>
+                        <p className="text-xs text-[#9aa3b8] font-mono">{plantilla.codigo}</p>
                       </div>
                     </div>
-                    <span className={`${neuro.badge} ${plantilla.activa ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`${neuro.badge} ${plantilla.activa ? 'bg-green-100 text-green-600' : 'bg-[#dfeaff] text-[#69738c]'}`}>
                       {plantilla.activa ? 'Activa' : 'Inactiva'}
                     </span>
                   </div>
                   
-                  <p className="text-sm text-slate-500 mb-4">{plantilla.descripcion}</p>
+                  <p className="text-sm text-[#69738c] mb-4">{plantilla.descripcion}</p>
                   
                   {/* Variables */}
                   <div className="flex flex-wrap gap-1 mb-4">
                     {plantilla.variables.slice(0, 4).map(v => (
-                      <span key={v} className="px-2 py-0.5 bg-slate-100 rounded text-xs text-slate-600 font-mono">
+                      <span key={v} className="px-2 py-0.5 bg-[#dfeaff] rounded text-xs text-[#69738c] font-mono">
                         {`{{${v}}}`}
                       </span>
                     ))}
                     {plantilla.variables.length > 4 && (
-                      <span className="px-2 py-0.5 bg-slate-100 rounded text-xs text-slate-500">
+                      <span className="px-2 py-0.5 bg-[#dfeaff] rounded text-xs text-[#69738c]">
                         +{plantilla.variables.length - 4} más
                       </span>
                     )}
                   </div>
                   
                   {/* Stats */}
-                  <div className="flex items-center justify-between text-sm border-t border-slate-100 pt-4">
+                  <div className="flex items-center justify-between text-sm border-t border-[#bec8de30] pt-4">
                     <div className="flex items-center gap-4">
-                      <span className="text-slate-500">
+                      <span className="text-[#69738c]">
                         {plantilla.enviosTotales} envíos
                       </span>
                       <span className="text-green-600 font-medium">
                         {plantilla.tasaApertura}% apertura
                       </span>
                     </div>
-                    <span className="text-slate-400 text-xs">
+                    <span className="text-[#9aa3b8] text-xs">
                       Último: {formatTiempo(plantilla.ultimoEnvio)}
                     </span>
                   </div>
                 </div>
                 
                 {/* Actions */}
-                <div className="flex border-t border-slate-100">
+                <div className="flex border-t border-[#bec8de30]">
                   <button 
                     onClick={() => setPlantillaPreview(plantilla)}
-                    className="flex-1 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors"
+                    className="flex-1 py-3 text-sm font-medium text-[#69738c] hover:bg-[#dfeaff] flex items-center justify-center gap-2 transition-colors"
                   >
                     <Eye className="w-4 h-4" />
                     Preview
                   </button>
-                  <div className="w-px bg-slate-100" />
-                  <button className="flex-1 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors">
+                  <div className="w-px bg-[#dfeaff]" />
+                  <button className="flex-1 py-3 text-sm font-medium text-[#69738c] hover:bg-[#dfeaff] flex items-center justify-center gap-2 transition-colors">
                     <Edit3 className="w-4 h-4" />
                     Editar
                   </button>
-                  <div className="w-px bg-slate-100" />
-                  <button className="flex-1 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-50 flex items-center justify-center gap-2 transition-colors">
+                  <div className="w-px bg-[#dfeaff]" />
+                  <button className="flex-1 py-3 text-sm font-medium text-[#6888ff] hover:bg-[#6888ff]/10 flex items-center justify-center gap-2 transition-colors">
                     <Send className="w-4 h-4" />
                     Test
                   </button>
@@ -365,57 +365,57 @@ export default function EmailTemplatesPage() {
                 onClick={e => e.stopPropagation()}
               >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-200">
+                <div className="flex items-center justify-between p-4 border-b border-[#bec8de30]">
                   <div>
-                    <h2 className="font-bold text-lg text-slate-800">{plantillaPreview.nombre}</h2>
-                    <p className="text-sm text-slate-500">{plantillaPreview.descripcion}</p>
+                    <h2 className="font-bold text-lg text-[#69738c]">{plantillaPreview.nombre}</h2>
+                    <p className="text-sm text-[#69738c]">{plantillaPreview.descripcion}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     {/* Device toggle */}
-                    <div className="flex bg-slate-100 rounded-lg p-1">
+                    <div className="flex bg-[#dfeaff] rounded-lg p-1">
                       <button 
                         onClick={() => setViewMode('desktop')}
-                        className={`p-2 rounded-lg transition-colors ${viewMode === 'desktop' ? 'bg-white shadow' : ''}`}
+                        className={`p-2 rounded-lg transition-colors ${viewMode === 'desktop' ? 'bg-[#dfeaff] shadow' : ''}`}
                       >
                         <Monitor className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => setViewMode('mobile')}
-                        className={`p-2 rounded-lg transition-colors ${viewMode === 'mobile' ? 'bg-white shadow' : ''}`}
+                        className={`p-2 rounded-lg transition-colors ${viewMode === 'mobile' ? 'bg-[#dfeaff] shadow' : ''}`}
                       >
                         <Smartphone className="w-4 h-4" />
                       </button>
                     </div>
                     <button onClick={() => setPlantillaPreview(null)} className="p-1">
-                      <X className="w-5 h-5 text-slate-400" />
+                      <X className="w-5 h-5 text-[#9aa3b8]" />
                     </button>
                   </div>
                 </div>
                 
                 {/* Preview */}
-                <div className="flex-1 overflow-y-auto p-6 bg-slate-200">
+                <div className="flex-1 overflow-y-auto p-6 bg-[#dfeaff]">
                   <div 
-                    className={`bg-white rounded-lg shadow-lg mx-auto transition-all duration-300 ${
+                    className={`bg-[#dfeaff] rounded-lg shadow-lg mx-auto transition-all duration-300 ${
                       viewMode === 'mobile' ? 'max-w-sm' : 'max-w-2xl'
                     }`}
                   >
                     {/* Email Preview Content */}
                     <div className="p-6">
-                      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-t-lg -mx-6 -mt-6 mb-6">
+                      <div className="bg-[#6888ff] text-white p-6 rounded-t-lg -mx-6 -mt-6 mb-6">
                         <h3 className="text-xl font-bold">Silexar Pulse</h3>
                       </div>
                       
-                      <h2 className="text-xl font-bold text-slate-800 mb-4">
+                      <h2 className="text-xl font-bold text-[#69738c] mb-4">
                         ¡Hola {'{{clienteNombre}}'}! 👋
                       </h2>
                       
-                      <p className="text-slate-600 mb-4">
+                      <p className="text-[#69738c] mb-4">
                         Este es un preview de la plantilla "{plantillaPreview.nombre}". 
                         Las variables se muestran entre llaves dobles.
                       </p>
                       
-                      <div className="bg-slate-50 rounded-lg p-4 mb-4">
-                        <p className="text-sm text-slate-500 mb-2">Variables disponibles:</p>
+                      <div className="bg-[#dfeaff] rounded-lg p-4 mb-4">
+                        <p className="text-sm text-[#69738c] mb-2">Variables disponibles:</p>
                         <div className="flex flex-wrap gap-2">
                           {plantillaPreview.variables.map(v => (
                             <code key={v} className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-sm">
@@ -425,7 +425,7 @@ export default function EmailTemplatesPage() {
                         </div>
                       </div>
                       
-                      <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-medium">
+                      <button className="w-full py-3 bg-[#6888ff] text-white rounded-lg font-medium">
                         Botón de Acción
                       </button>
                     </div>
@@ -433,7 +433,7 @@ export default function EmailTemplatesPage() {
                 </div>
                 
                 {/* Footer */}
-                <div className="flex justify-between items-center p-4 border-t border-slate-200 bg-white">
+                <div className="flex justify-between items-center p-4 border-t border-[#bec8de30] bg-[#dfeaff]">
                   <button className={`${neuro.btn} ${neuro.btnSecondary} flex items-center gap-2`}>
                     <Code className="w-4 h-4" />
                     Ver HTML

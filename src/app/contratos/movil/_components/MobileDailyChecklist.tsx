@@ -1,8 +1,8 @@
 /**
- * ðŸ“‹ MOBILE: Checklist Diario
+ * ?? MOBILE: Checklist Diario
  * 
- * Tareas auto-generadas del dÃ­a con checkbox tÃ¡ctil,
- * prioridades por color, y acciones rÃ¡pidas.
+ * Tareas auto-generadas del día con checkbox táctil,
+ * prioridades por color, y acciones rápidas.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -28,12 +28,12 @@ interface Tarea {
 }
 
 const TAREAS: Tarea[] = [
-  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar Banco Chile', desc: 'SP-2025-0012 Â· $85M', prioridad: 'alta', completada: false, accion: 'Aprobar' },
-  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar Falabella', desc: 'Propuesta #4521 Â· 3 dÃ­as sin respuesta', prioridad: 'alta', completada: false, accion: 'Llamar' },
-  { id: 't3', tipo: 'vencimiento', titulo: 'LATAM vence viernes', desc: 'SP-2024-0088 Â· $200M', prioridad: 'alta', completada: false, accion: 'Renovar' },
-  { id: 't4', tipo: 'propuesta', titulo: 'Propuesta Ripley', desc: 'Radio Q2 Â· $30M', prioridad: 'media', completada: false },
-  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', desc: 'Radio CorazÃ³n 25 frases', prioridad: 'media', completada: true },
-  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovaciÃ³n Entel', desc: 'Vence en 30 dÃ­as', prioridad: 'baja', completada: false },
+  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar Banco Chile', desc: 'SP-2025-0012 · $85M', prioridad: 'alta', completada: false, accion: 'Aprobar' },
+  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar Falabella', desc: 'Propuesta #4521 · 3 días sin respuesta', prioridad: 'alta', completada: false, accion: 'Llamar' },
+  { id: 't3', tipo: 'vencimiento', titulo: 'LATAM vence viernes', desc: 'SP-2024-0088 · $200M', prioridad: 'alta', completada: false, accion: 'Renovar' },
+  { id: 't4', tipo: 'propuesta', titulo: 'Propuesta Ripley', desc: 'Radio Q2 · $30M', prioridad: 'media', completada: false },
+  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', desc: 'Radio Corazón 25 frases', prioridad: 'media', completada: true },
+  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovación Entel', desc: 'Vence en 30 días', prioridad: 'baja', completada: false },
 ];
 
 export function MobileDailyChecklist() {
@@ -48,7 +48,7 @@ export function MobileDailyChecklist() {
   const icons: Record<string, React.ReactNode> = {
     vencimiento: <Clock className="w-3.5 h-3.5 text-orange-500" />,
     seguimiento: <Phone className="w-3.5 h-3.5 text-blue-500" />,
-    propuesta: <FileText className="w-3.5 h-3.5 text-indigo-500" />,
+    propuesta: <FileText className="w-3.5 h-3.5 text-[#6888ff]" />,
     aprobacion: <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />,
     renovacion: <RefreshCw className="w-3.5 h-3.5 text-emerald-500" />,
   };
@@ -60,8 +60,8 @@ export function MobileDailyChecklist() {
         <div className="flex items-center gap-2">
           <ClipboardList className="w-5 h-5 text-amber-600" />
           <div>
-            <p className="text-sm font-bold text-slate-800">Checklist del DÃ­a</p>
-            <p className="text-[10px] text-slate-500">{pendientes.length} pendientes</p>
+            <p className="text-sm font-bold text-[#69738c]">Checklist del Día</p>
+            <p className="text-[10px] text-[#9aa3b8]">{pendientes.length} pendientes</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -75,19 +75,19 @@ export function MobileDailyChecklist() {
       {/* PENDIENTES */}
       <div className="space-y-2">
         {pendientes.map(t => (
-          <div key={t.id} className="bg-white rounded-xl border border-slate-100 p-3 flex items-center gap-3">
+          <div key={t.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3">
             <button onClick={() => toggle(t.id)}
-              className="w-5 h-5 rounded-md border-2 border-slate-300 shrink-0 active:scale-90" />
+              className="w-5 h-5 rounded-md border-2 border-[#bec8de] shrink-0 active:scale-90" />
             {icons[t.tipo]}
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-slate-800 truncate">{t.titulo}</p>
-              <p className="text-[10px] text-slate-500 truncate">{t.desc}</p>
+              <p className="text-xs font-bold text-[#69738c] truncate">{t.titulo}</p>
+              <p className="text-[10px] text-[#9aa3b8] truncate">{t.desc}</p>
             </div>
             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-              t.prioridad === 'alta' ? 'bg-red-500' : t.prioridad === 'media' ? 'bg-amber-400' : 'bg-slate-300'
+              t.prioridad === 'alta' ? 'bg-red-500' : t.prioridad === 'media' ? 'bg-amber-400' : 'bg-[#bec8de]'
             }`} />
             {t.accion && (
-              <button className="px-2 py-1 bg-indigo-600 text-white text-[9px] font-bold rounded-lg active:scale-95">
+              <button className="px-2 py-1 bg-[#6888ff] text-white text-[9px] font-bold rounded-lg active:scale-95">
                 {t.accion}
               </button>
             )}
@@ -99,7 +99,7 @@ export function MobileDailyChecklist() {
       {completadas.length > 0 && (
         <>
           <button onClick={() => setShowDone(!showDone)}
-            className="w-full flex items-center gap-1 text-[10px] text-slate-400 font-bold">
+            className="w-full flex items-center gap-1 text-[10px] text-[#9aa3b8] font-bold">
             <ChevronDown className={`w-3 h-3 transition ${showDone ? 'rotate-180' : ''}`} />
             {completadas.length} completada{completadas.length !== 1 ? 's' : ''}
           </button>
@@ -109,7 +109,7 @@ export function MobileDailyChecklist() {
                 className="w-5 h-5 rounded-md bg-emerald-500 flex items-center justify-center shrink-0">
                 <Check className="w-3 h-3 text-white" />
               </button>
-              <p className="text-xs text-slate-500 line-through truncate">{t.titulo}</p>
+              <p className="text-xs text-[#9aa3b8] line-through truncate">{t.titulo}</p>
             </div>
           ))}
         </>

@@ -1,7 +1,7 @@
 /**
- * üè¢ MOBILE: Ficha Cliente R√°pida
+ * ?? MOBILE: Ficha Cliente R·pida
  * 
- * Vista compacta 360¬∞ del cliente: contacto 1-toque,
+ * Vista compacta 360∞ del cliente: contacto 1-toque,
  * historial, preferencias, oportunidades.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -18,7 +18,7 @@ import {
 
 const CL = {
   nombre: 'Banco Chile', rubro: 'Banca', score: 92,
-  contacto: 'Jos√© Rodr√≠guez', tel: '+56 2 2345 6789', email: 'jrodriguez@bancochile.cl',
+  contacto: 'JosÈ RodrÌguez', tel: '+56 2 2345 6789', email: 'jrodriguez@bancochile.cl',
   valorHist: 340e6, contratos: 4, tasaRenov: 100, pagoDias: 38,
   prefs: ['Radio FM prime', 'TV estelar', 'Digital SEM'],
   hist: [
@@ -27,8 +27,8 @@ const CL = {
     { num: 'SP-2023-0201', val: 90e6, est: 'completado' },
   ],
   ops: [
-    { titulo: 'Campa√±a tarjeta Q2', val: 95e6, prob: 85 },
-    { titulo: 'App M√≥vil', val: 40e6, prob: 60 },
+    { titulo: 'CampaÒa tarjeta Q2', val: 95e6, prob: 85 },
+    { titulo: 'App MÛvil', val: 40e6, prob: 60 },
   ],
 };
 
@@ -36,23 +36,23 @@ export function MobileClienteCard() {
   return (
     <div className="space-y-3">
       {/* HEADER */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-4 text-white shadow-xl">
+      <div className="bg-[#6888ff] rounded-2xl p-4 text-white shadow-xl">
         <div className="flex items-center gap-3">
           <Building2 className="w-8 h-8 text-blue-200" />
           <div className="flex-1">
             <h3 className="font-black text-lg">{CL.nombre}</h3>
-            <p className="text-xs text-blue-200">{CL.rubro} ¬∑ {CL.contacto}</p>
+            <p className="text-xs text-blue-200">{CL.rubro} ∑ {CL.contacto}</p>
           </div>
-          <div className="px-2 py-1 bg-white/20 rounded-lg">
+          <div className="px-2 py-1 bg-[#dfeaff]/20 rounded-lg">
             <Star className="w-3 h-3 text-amber-300 inline" />
             <span className="text-xs font-bold ml-0.5">{CL.score}</span>
           </div>
         </div>
         <div className="flex gap-3 mt-3">
-          <a href={`tel:${CL.tel}`} className="flex-1 py-2 bg-white/20 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1 active:scale-95">
+          <a href={`tel:${CL.tel}`} className="flex-1 py-2 bg-[#dfeaff]/20 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1 active:scale-95">
             <Phone className="w-3.5 h-3.5" /> Llamar
           </a>
-          <a href={`mailto:${CL.email}`} className="flex-1 py-2 bg-white/20 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1 active:scale-95">
+          <a href={`mailto:${CL.email}`} className="flex-1 py-2 bg-[#dfeaff]/20 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1 active:scale-95">
             <Mail className="w-3.5 h-3.5" /> Email
           </a>
         </div>
@@ -60,16 +60,16 @@ export function MobileClienteCard() {
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-2">
-        <MiniStat icon={<DollarSign className="w-3 h-3 text-emerald-500" />} val={`$${(CL.valorHist / 1e6).toFixed(0)}M`} lbl="Hist√≥rico" />
-        <MiniStat icon={<FileText className="w-3 h-3 text-indigo-500" />} val={String(CL.contratos)} lbl="Contratos" />
-        <MiniStat icon={<TrendingUp className="w-3 h-3 text-blue-500" />} val={`${CL.tasaRenov}%`} lbl="Renovaci√≥n" />
+        <MiniStat icon={<DollarSign className="w-3 h-3 text-emerald-500" />} val={`$${(CL.valorHist / 1e6).toFixed(0)}M`} lbl="HistÛrico" />
+        <MiniStat icon={<FileText className="w-3 h-3 text-[#6888ff]" />} val={String(CL.contratos)} lbl="Contratos" />
+        <MiniStat icon={<TrendingUp className="w-3 h-3 text-blue-500" />} val={`${CL.tasaRenov}%`} lbl="RenovaciÛn" />
         <MiniStat icon={<DollarSign className="w-3 h-3 text-amber-500" />} val={`${CL.pagoDias}d`} lbl="Pago prom." />
       </div>
 
       {/* PREFERENCIAS */}
       <div className="flex flex-wrap gap-1.5">
         {CL.prefs.map((p) => (
-          <span key={p} className="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full flex items-center gap-1">
+          <span key={p} className="px-2.5 py-1 bg-[#dfeaff] text-[#6888ff] text-[10px] font-bold rounded-full flex items-center gap-1">
             {p.includes('Radio') ? <Radio className="w-2.5 h-2.5" /> : p.includes('TV') ? <Tv className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
             {p}
           </span>
@@ -78,25 +78,25 @@ export function MobileClienteCard() {
 
       {/* HISTORIAL */}
       <div>
-        <p className="text-[10px] font-bold text-slate-400 mb-1.5">Contratos</p>
+        <p className="text-[10px] font-bold text-[#9aa3b8] mb-1.5">Contratos</p>
         {CL.hist.map((h) => (
-          <div key={h.num} className="flex items-center gap-2 py-1.5 border-b border-slate-50">
-            <span className="text-[10px] font-mono text-indigo-500">{h.num}</span>
-            <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${h.est === 'activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{h.est}</span>
-            <span className="text-xs font-bold text-slate-700 ml-auto">${(h.val / 1e6).toFixed(0)}M</span>
+          <div key={h.num} className="flex items-center gap-2 py-1.5 border-b border-[#bec8de30]">
+            <span className="text-[10px] font-mono text-[#6888ff]">{h.num}</span>
+            <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${h.est === 'activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}>{h.est}</span>
+            <span className="text-xs font-bold text-[#69738c] ml-auto">${(h.val / 1e6).toFixed(0)}M</span>
           </div>
         ))}
       </div>
 
       {/* OPORTUNIDADES */}
       <div>
-        <p className="text-[10px] font-bold text-slate-400 mb-1.5">Oportunidades</p>
+        <p className="text-[10px] font-bold text-[#9aa3b8] mb-1.5">Oportunidades</p>
         {CL.ops.map((o) => (
-          <div key={o.titulo} className="p-2.5 bg-amber-50 rounded-xl border border-amber-100 mb-1.5 flex items-center gap-2">
+          <div key={o.titulo} className="p-2.5 bg-amber-50 rounded-xl border border-[#bec8de30] mb-1.5 flex items-center gap-2">
             <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" />
             <div className="flex-1">
-              <p className="text-xs font-bold text-slate-800">{o.titulo}</p>
-              <p className="text-[10px] text-slate-500">${(o.val / 1e6).toFixed(0)}M ¬∑ {o.prob}%</p>
+              <p className="text-xs font-bold text-[#69738c]">{o.titulo}</p>
+              <p className="text-[10px] text-[#9aa3b8]">${(o.val / 1e6).toFixed(0)}M ∑ {o.prob}%</p>
             </div>
           </div>
         ))}
@@ -109,8 +109,8 @@ function MiniStat({ icon, val, lbl }: { icon: React.ReactNode; val: string; lbl:
   return (
     <div className="neo-mobile-stat rounded-xl p-2 text-center">
       <div className="mx-auto w-fit">{icon}</div>
-      <p className="text-sm font-black text-slate-800 mt-0.5">{val}</p>
-      <p className="text-[8px] text-slate-400">{lbl}</p>
+      <p className="text-sm font-black text-[#69738c] mt-0.5">{val}</p>
+      <p className="text-[8px] text-[#9aa3b8]">{lbl}</p>
     </div>
   );
 }

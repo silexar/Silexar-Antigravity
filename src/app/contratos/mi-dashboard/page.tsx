@@ -8,6 +8,7 @@
  * - Tareas pendientes
  * - Métricas de productividad
  * - Ranking del equipo
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -28,9 +29,6 @@ import {
   FileText,
   DollarSign,
   Users,
-  Calendar,
-  ChevronRight,
-  Plus,
   Search,
   Bell,
   Settings,
@@ -52,42 +50,23 @@ import {
 } from '../nuevo/components/WizardContrato/services/ProductivityService';
 
 // ═══════════════════════════════════════════════════════════════
-// ESTILOS NEUROMORPHIC
+// TOKENS OFICIALES NEUMORPHISM
 // ═══════════════════════════════════════════════════════════════
 
-const neuro = {
-  panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
-  `,
-  card: `
-    bg-gradient-to-br from-white to-slate-50
-    rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
-  `,
-  btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
-    text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  badge: `
-    px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    text-xs font-medium
-  `
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
 };
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
 // MOCK TAREAS PENDIENTES
@@ -150,23 +129,48 @@ const formatCurrency = (value: number) => {
 
 const getPrioridadColor = (prioridad: string) => {
   switch (prioridad) {
-    case 'urgente': return 'bg-red-100 text-red-700';
-    case 'alta': return 'bg-orange-100 text-orange-700';
-    case 'media': return 'bg-amber-100 text-amber-700';
-    default: return 'bg-slate-100 text-slate-700';
+    case 'urgente': return { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' };
+    case 'alta': return { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' };
+    case 'media': return { bg: 'rgba(104,136,255,0.12)', text: '#6888ff' };
+    default: return { bg: 'rgba(154,163,184,0.12)', text: N.textSub };
   }
 };
 
 const getTipoTareaIcon = (tipo: string) => {
   switch (tipo) {
-    case 'aprobar': return <CheckCircle className="w-4 h-4 text-green-500" />;
-    case 'revisar': return <Search className="w-4 h-4 text-blue-500" />;
-    case 'firmar': return <FileText className="w-4 h-4 text-purple-500" />;
-    case 'subir': return <Plus className="w-4 h-4 text-indigo-500" />;
-    case 'llamar': return <Users className="w-4 h-4 text-cyan-500" />;
-    default: return <AlertCircle className="w-4 h-4 text-slate-500" />;
+    case 'aprobar': return <CheckCircle className="w-4 h-4" style={{ color: '#22c55e' }} />;
+    case 'revisar': return <Search className="w-4 h-4" style={{ color: N.accent }} />;
+    case 'firmar': return <FileText className="w-4 h-4" style={{ color: '#a855f7' }} />;
+    case 'subir': return <ExternalLink className="w-4 h-4" style={{ color: N.accent }} />;
+    case 'llamar': return <Users className="w-4 h-4" style={{ color: '#06b6d4' }} />;
+    default: return <AlertCircle className="w-4 h-4" style={{ color: N.textSub }} />;
   }
 };
+
+// ═══════════════════════════════════════════════════════════════
+// COMPONENTES NEUMORPHIC
+// ═══════════════════════════════════════════════════════════════
+
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -187,169 +191,179 @@ export default function MiDashboardPage() {
   const saludo = horaActual < 12 ? 'Buenos días' : horaActual < 19 ? 'Buenas tardes' : 'Buenas noches';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
       <div className="max-w-7xl mx-auto">
         {/* Header con saludo */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+            <h1 className="text-3xl font-black" style={{ color: N.text }}>
               {saludo}, {usuarioNombre.split(' ')[0]} 👋
             </h1>
-            <p className="text-slate-500 mt-1">
+            <p className="text-sm mt-1" style={{ color: N.textSub }}>
               Aquí está el resumen de tu actividad
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Selector de período */}
-            <div className="flex items-center bg-white rounded-xl p-1 shadow">
+            <div className="flex items-center rounded-xl p-1" style={{ background: N.base, boxShadow: inset }}>
               {(['dia', 'semana', 'mes'] as const).map(p => (
                 <button
                   key={p}
                   onClick={() => setPeriodo(p)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                     periodo === p 
-                      ? 'bg-indigo-500 text-white' 
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'text-white' 
+                      : ''
                   }`}
+                  style={periodo === p ? { background: N.accent, boxShadow: neuSm } : { color: N.textSub }}
                 >
                   {p === 'dia' ? 'Hoy' : p === 'semana' ? 'Esta semana' : 'Este mes'}
                 </button>
               ))}
             </div>
             
-            <button className={`${neuro.btnSecondary} p-2`}>
+            <NeuButton variant="secondary" className="p-2">
               <Bell className="w-5 h-5" />
-            </button>
-            <button className={`${neuro.btnSecondary} p-2`}>
+            </NeuButton>
+            <NeuButton variant="secondary" className="p-2">
               <Settings className="w-5 h-5" />
-            </button>
+            </NeuButton>
           </div>
         </div>
 
         {/* KPIs principales */}
-        <div className="grid grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${neuro.card} p-6`}
+            className="p-6 rounded-3xl"
+            style={{ background: N.base, boxShadow: neu }}
           >
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-blue-100">
-                <FileText className="w-6 h-6 text-blue-600" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <FileText className="w-6 h-6" style={{ color: N.accent }} />
               </div>
-              <span className={`${neuro.badge} ${metricas.variacionVsSemanaAnterior > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: metricas.variacionVsSemanaAnterior > 0 ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)', color: metricas.variacionVsSemanaAnterior > 0 ? '#22c55e' : '#ef4444', boxShadow: insetSm }}>
                 {metricas.variacionVsSemanaAnterior > 0 ? '+' : ''}{metricas.variacionVsSemanaAnterior}%
               </span>
             </div>
-            <p className="text-3xl font-bold text-slate-800 mt-4">{metricas.contratosCreados}</p>
-            <p className="text-sm text-slate-500">Contratos creados</p>
+            <p className="text-3xl font-black mt-4" style={{ color: N.text }}>{metricas.contratosCreados}</p>
+            <p className="text-sm" style={{ color: N.textSub }}>Contratos creados</p>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className={`${neuro.card} p-6`}
+            className="p-6 rounded-3xl"
+            style={{ background: N.base, boxShadow: neu }}
           >
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-green-100">
-                <DollarSign className="w-6 h-6 text-green-600" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <DollarSign className="w-6 h-6" style={{ color: '#22c55e' }} />
               </div>
-              <ArrowUpRight className="w-5 h-5 text-green-500" />
+              <ArrowUpRight className="w-5 h-5" style={{ color: '#22c55e' }} />
             </div>
-            <p className="text-3xl font-bold text-slate-800 mt-4">{formatCurrency(metricas.valorTotalGestionado)}</p>
-            <p className="text-sm text-slate-500">Valor gestionado</p>
+            <p className="text-3xl font-black mt-4" style={{ color: N.text }}>{formatCurrency(metricas.valorTotalGestionado)}</p>
+            <p className="text-sm" style={{ color: N.textSub }}>Valor gestionado</p>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className={`${neuro.card} p-6`}
+            className="p-6 rounded-3xl"
+            style={{ background: N.base, boxShadow: neu }}
           >
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-purple-100">
-                <Target className="w-6 h-6 text-purple-600" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <Target className="w-6 h-6" style={{ color: '#a855f7' }} />
               </div>
-              <span className={`${neuro.badge} bg-purple-100 text-purple-700`}>
+              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(168,85,247,0.12)', color: '#a855f7', boxShadow: insetSm }}>
                 {metricas.tasaAprobacion}%
               </span>
             </div>
-            <p className="text-3xl font-bold text-slate-800 mt-4">{metricas.contratosAprobados}</p>
-            <p className="text-sm text-slate-500">Contratos aprobados</p>
+            <p className="text-3xl font-black mt-4" style={{ color: N.text }}>{metricas.contratosAprobados}</p>
+            <p className="text-sm" style={{ color: N.textSub }}>Contratos aprobados</p>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className={`${neuro.card} p-6`}
+            className="p-6 rounded-3xl"
+            style={{ background: N.base, boxShadow: neu }}
           >
             <div className="flex items-center justify-between">
-              <div className="p-3 rounded-xl bg-amber-100">
-                <Award className="w-6 h-6 text-amber-600" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <Award className="w-6 h-6" style={{ color: '#f59e0b' }} />
               </div>
-              <span className={`${neuro.badge} bg-amber-100 text-amber-700`}>
+              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', boxShadow: insetSm }}>
                 Top {ranking.posicion}
               </span>
             </div>
-            <p className="text-3xl font-bold text-slate-800 mt-4">#{ranking.posicion}</p>
-            <p className="text-sm text-slate-500">Ranking del equipo</p>
+            <p className="text-3xl font-black mt-4" style={{ color: N.text }}>#{ranking.posicion}</p>
+            <p className="text-sm" style={{ color: N.textSub }}>Ranking del equipo</p>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Columna izquierda - Tareas y acciones */}
-          <div className="col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             {/* Tareas pendientes */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <Hourglass className="w-5 h-5 text-orange-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <Hourglass className="w-5 h-5" style={{ color: '#f59e0b' }} />
                   Tareas pendientes
-                  <span className={`${neuro.badge} bg-orange-100 text-orange-700`}>
+                  <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', boxShadow: insetSm }}>
                     {mockTareas.length}
                   </span>
                 </h3>
-                <button className="text-sm text-indigo-600 hover:underline">Ver todas</button>
+                <button className="text-xs font-bold" style={{ color: N.accent }}>Ver todas</button>
               </div>
 
               <div className="space-y-3">
-                {mockTareas.map((tarea, idx) => (
-                  <motion.div
-                    key={tarea.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className={`${neuro.card} p-4 flex items-center gap-4 cursor-pointer hover:shadow-lg transition-shadow`}
-                  >
-                    <div className="p-2 rounded-xl bg-slate-100">
-                      {getTipoTareaIcon(tarea.tipo)}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-slate-800">{tarea.titulo}</p>
-                      {tarea.numeroContrato && (
-                        <p className="text-xs text-slate-500">{tarea.numeroContrato}</p>
-                      )}
-                    </div>
-                    <span className={`${neuro.badge} ${getPrioridadColor(tarea.prioridad)}`}>
-                      {tarea.prioridad}
-                    </span>
-                    <ChevronRight className="w-5 h-5 text-slate-400" />
-                  </motion.div>
-                ))}
+                {mockTareas.map((tarea, idx) => {
+                  const prio = getPrioridadColor(tarea.prioridad);
+                  return (
+                    <motion.div
+                      key={tarea.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-4 rounded-2xl cursor-pointer"
+                      style={{ background: N.base, boxShadow: neuSm }}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                          {getTipoTareaIcon(tarea.tipo)}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-sm" style={{ color: N.text }}>{tarea.titulo}</p>
+                          {tarea.numeroContrato && (
+                            <p className="text-xs" style={{ color: N.textSub }}>{tarea.numeroContrato}</p>
+                          )}
+                        </div>
+                        <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: prio.bg, color: prio.text, boxShadow: insetSm }}>
+                          {tarea.prioridad}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
-            </div>
+            </NeuCard>
 
             {/* Acciones rápidas */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <Zap className="w-5 h-5" style={{ color: '#f59e0b' }} />
                   Acciones rápidas
                 </h3>
-                <button className="text-sm text-indigo-600 hover:underline">Personalizar</button>
+                <button className="text-xs font-bold" style={{ color: N.accent }}>Personalizar</button>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
@@ -361,70 +375,69 @@ export default function MiDashboardPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.05 }}
                     whileHover={{ scale: 1.02 }}
-                    className={`${neuro.card} p-4 text-center cursor-pointer group`}
+                    className="p-4 rounded-2xl text-center cursor-pointer group"
+                    style={{ background: N.base, boxShadow: neuSm }}
                   >
-                    <div className="p-3 rounded-xl bg-indigo-100 w-fit mx-auto mb-3 group-hover:bg-indigo-200 transition-colors">
-                      {accion.icono === 'plus' && <Plus className="w-6 h-6 text-indigo-600" />}
-                      {accion.icono === 'search' && <Search className="w-6 h-6 text-indigo-600" />}
-                      {accion.icono === 'layout-dashboard' && <LayoutDashboard className="w-6 h-6 text-indigo-600" />}
-                      {accion.icono === 'kanban' && <BarChart3 className="w-6 h-6 text-indigo-600" />}
-                      {accion.icono === 'download' && <ExternalLink className="w-6 h-6 text-indigo-600" />}
-                      {accion.icono === 'chart-bar' && <TrendingUp className="w-6 h-6 text-indigo-600" />}
+                    <div className="p-3 rounded-xl w-fit mx-auto mb-3" style={{ background: N.base, boxShadow: neuXs }}>
+                      {accion.icono === 'plus' && <ExternalLink className="w-6 h-6" style={{ color: N.accent }} />}
+                      {accion.icono === 'search' && <Search className="w-6 h-6" style={{ color: N.accent }} />}
+                      {accion.icono === 'layout-dashboard' && <LayoutDashboard className="w-6 h-6" style={{ color: N.accent }} />}
+                      {accion.icono === 'kanban' && <BarChart3 className="w-6 h-6" style={{ color: N.accent }} />}
+                      {accion.icono === 'download' && <ExternalLink className="w-6 h-6" style={{ color: N.accent }} />}
+                      {accion.icono === 'chart-bar' && <TrendingUp className="w-6 h-6" style={{ color: N.accent }} />}
                     </div>
-                    <p className="font-semibold text-slate-800 text-sm">{accion.nombre}</p>
+                    <p className="font-bold text-sm" style={{ color: N.text }}>{accion.nombre}</p>
                     {accion.shortcut && (
-                      <p className="text-xs text-slate-400 mt-1 font-mono">{accion.shortcut}</p>
+                      <p className="text-xs mt-1 font-mono" style={{ color: N.textSub }}>{accion.shortcut}</p>
                     )}
                   </motion.a>
                 ))}
               </div>
-            </div>
+            </NeuCard>
 
             {/* Métricas de productividad */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-green-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
                   Mi productividad
                 </h3>
               </div>
 
               <div className="grid grid-cols-4 gap-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{metricas.tiempoPromedioCreacion}min</p>
-                  <p className="text-xs text-slate-500">Tiempo creación</p>
+                  <p className="text-2xl font-black" style={{ color: N.text }}>{metricas.tiempoPromedioCreacion}min</p>
+                  <p className="text-xs" style={{ color: N.textSub }}>Tiempo creación</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{metricas.tasaConversion}%</p>
-                  <p className="text-xs text-slate-500">Tasa conversión</p>
+                  <p className="text-2xl font-black" style={{ color: N.text }}>{metricas.tasaConversion}%</p>
+                  <p className="text-xs" style={{ color: N.textSub }}>Tasa conversión</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{metricas.contratosEnPrimeraAprobacion}%</p>
-                  <p className="text-xs text-slate-500">Primera aprobación</p>
+                  <p className="text-2xl font-black" style={{ color: N.text }}>{metricas.contratosEnPrimeraAprobacion}%</p>
+                  <p className="text-xs" style={{ color: N.textSub }}>Primera aprobación</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{formatCurrency(metricas.ticketMasAlto)}</p>
-                  <p className="text-xs text-slate-500">Ticket más alto</p>
+                  <p className="text-2xl font-black" style={{ color: N.text }}>{formatCurrency(metricas.ticketMasAlto)}</p>
+                  <p className="text-xs" style={{ color: N.textSub }}>Ticket más alto</p>
                 </div>
               </div>
 
               <div className="mt-6">
-                <p className="text-sm text-slate-500 mb-2">Tiempo por etapa</p>
+                <p className="text-sm mb-2" style={{ color: N.textSub }}>Tiempo por etapa</p>
                 <div className="flex items-center gap-2">
                   {Object.entries(metricas.tiempoPorEtapa).map(([etapa, minutos], idx) => (
                     <div key={etapa} className="flex-1">
-                      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="h-2 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: insetSm }}>
                         <div 
-                          className={`h-full rounded-full ${
-                            idx === 0 ? 'bg-blue-500' :
-                            idx === 1 ? 'bg-purple-500' :
-                            idx === 2 ? 'bg-amber-500' :
-                            'bg-green-500'
-                          }`}
-                          style={{ width: `${Math.min((minutos / 480) * 100, 100)}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{ 
+                            width: `${Math.min((minutos / 480) * 100, 100)}%`, 
+                            background: idx === 0 ? N.accent : idx === 1 ? '#a855f7' : idx === 2 ? '#f59e0b' : '#22c55e' 
+                          }}
                         />
                       </div>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs mt-1" style={{ color: N.textSub }}>
                         {etapa.replace('_', ' ')}
                         <br />
                         {minutos < 60 ? `${minutos}m` : `${(minutos/60).toFixed(1)}h`}
@@ -433,19 +446,19 @@ export default function MiDashboardPage() {
                   ))}
                 </div>
               </div>
-            </div>
+            </NeuCard>
           </div>
 
           {/* Columna derecha - Favoritos y búsquedas */}
           <div className="space-y-6">
             {/* Favoritos */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <Star className="w-5 h-5" style={{ color: '#f59e0b' }} />
                   Favoritos
                 </h3>
-                <button className="text-sm text-indigo-600 hover:underline">+Agregar</button>
+                <button className="text-xs font-bold" style={{ color: N.accent }}>+Agregar</button>
               </div>
 
               <div className="space-y-3">
@@ -456,25 +469,26 @@ export default function MiDashboardPage() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    className={`${neuro.card} p-4 block cursor-pointer hover:shadow-lg transition-shadow`}
+                    className="p-4 rounded-2xl block cursor-pointer"
+                    style={{ background: N.base, boxShadow: neuSm }}
                   >
                     <div className="flex items-center justify-between">
-                      <p className="font-semibold text-slate-800">{fav.numeroContrato}</p>
-                      <span className={`${neuro.badge} ${
-                        fav.estado === 'ACTIVO' ? 'bg-green-100 text-green-700' :
-                        fav.estado === 'EN_APROBACION' ? 'bg-amber-100 text-amber-700' :
-                        'bg-slate-100 text-slate-700'
-                      }`}>
+                      <p className="font-bold text-sm" style={{ color: N.text }}>{fav.numeroContrato}</p>
+                      <span className="px-2 py-0.5 rounded-lg text-xs font-bold" style={{ 
+                        background: fav.estado === 'ACTIVO' ? 'rgba(34,197,94,0.12)' : fav.estado === 'EN_APROBACION' ? 'rgba(245,158,11,0.12)' : 'rgba(154,163,184,0.12)', 
+                        color: fav.estado === 'ACTIVO' ? '#22c55e' : fav.estado === 'EN_APROBACION' ? '#f59e0b' : N.textSub,
+                        boxShadow: insetSm
+                      }}>
                         {fav.estado}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-500 mt-1">{fav.clienteNombre}</p>
-                    <p className="text-lg font-bold text-slate-800 mt-2">{formatCurrency(fav.valorTotal)}</p>
+                    <p className="text-sm mt-1" style={{ color: N.textSub }}>{fav.clienteNombre}</p>
+                    <p className="text-lg font-black mt-2" style={{ color: N.text }}>{formatCurrency(fav.valorTotal)}</p>
                     
                     {fav.etiquetas.length > 0 && (
                       <div className="flex items-center gap-1 mt-2">
                         {fav.etiquetas.map(tag => (
-                          <span key={tag} className="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded">
+                          <span key={tag} className="text-xs px-2 py-0.5 rounded" style={{ background: `${N.accent}18`, color: N.accent }}>
                             {tag}
                           </span>
                         ))}
@@ -484,19 +498,21 @@ export default function MiDashboardPage() {
                 ))}
 
                 {favoritos.length === 0 && (
-                  <div className="text-center py-8 text-slate-400">
-                    <Star className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p>Sin favoritos aún</p>
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 rounded-3xl mx-auto mb-4 flex items-center justify-center" style={{ background: N.base, boxShadow: inset }}>
+                      <Star className="w-8 h-8" style={{ color: N.textSub }} />
+                    </div>
+                    <p style={{ color: N.textSub }}>Sin favoritos aún</p>
                   </div>
                 )}
               </div>
-            </div>
+            </NeuCard>
 
             {/* Ranking del equipo */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <Award className="w-5 h-5 text-amber-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <Award className="w-5 h-5" style={{ color: '#f59e0b' }} />
                   Top del equipo
                 </h3>
               </div>
@@ -505,36 +521,36 @@ export default function MiDashboardPage() {
                 {ranking.top.map((usuario, idx) => (
                   <div key={usuario.nombre} className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                      idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' :
-                      idx === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400' :
-                      'bg-gradient-to-br from-amber-600 to-amber-700'
-                    }`}>
+                      idx === 0 ? '' : idx === 1 ? '' : ''
+                    }`} style={{ 
+                      background: idx === 0 ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : idx === 1 ? 'linear-gradient(135deg, #94a3b8, #64748b)' : 'linear-gradient(135deg, #d97706, #b45309)' 
+                    }}>
                       {idx + 1}
                     </div>
                     <div className="flex-1">
-                      <p className="font-semibold text-slate-800">{usuario.nombre}</p>
+                      <p className="font-bold text-sm" style={{ color: N.text }}>{usuario.nombre}</p>
                     </div>
-                    <span className="font-bold text-slate-600">{usuario.valor}</span>
+                    <span className="font-bold text-sm" style={{ color: N.text }}>{usuario.valor}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-slate-200">
+              <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${N.dark}40` }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-500">Tu posición</span>
-                  <span className="font-bold text-indigo-600">#{ranking.posicion} de {ranking.total}</span>
+                  <span className="text-sm" style={{ color: N.textSub }}>Tu posición</span>
+                  <span className="font-bold" style={{ color: N.accent }}>#{ranking.posicion} de {ranking.total}</span>
                 </div>
               </div>
-            </div>
+            </NeuCard>
 
             {/* Búsquedas recientes */}
-            <div className={`${neuro.panel} p-6`}>
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-slate-500" />
+                <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
+                  <Clock className="w-5 h-5" style={{ color: N.textSub }} />
                   Recientes
                 </h3>
-                <button className="text-sm text-slate-400 hover:text-slate-600">Limpiar</button>
+                <button className="text-xs" style={{ color: N.textSub }}>Limpiar</button>
               </div>
 
               <div className="space-y-2">
@@ -542,15 +558,16 @@ export default function MiDashboardPage() {
                   <a 
                     key={busqueda.id}
                     href={`/contratos?q=${encodeURIComponent(busqueda.query)}`}
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-slate-100 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
+                    style={{ background: N.base, boxShadow: neuXs }}
                   >
-                    <Search className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm text-slate-600 flex-1">{busqueda.query}</span>
-                    <span className="text-xs text-slate-400">{busqueda.resultados}</span>
+                    <Search className="w-4 h-4" style={{ color: N.textSub }} />
+                    <span className="text-sm flex-1" style={{ color: N.text }}>{busqueda.query}</span>
+                    <span className="text-xs" style={{ color: N.textSub }}>{busqueda.resultados}</span>
                   </a>
                 ))}
               </div>
-            </div>
+            </NeuCard>
           </div>
         </div>
 
@@ -559,29 +576,28 @@ export default function MiDashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className={`${neuro.card} p-6 mt-6 border-l-4 border-indigo-500`}
+          className="p-6 mt-6 rounded-3xl"
+          style={{ background: N.base, boxShadow: neu, borderLeft: `4px solid ${N.accent}` }}
         >
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-indigo-100">
-              <Sparkles className="w-6 h-6 text-indigo-600" />
+            <div className="p-3 rounded-xl" style={{ background: N.base, boxShadow: neuSm }}>
+              <Sparkles className="w-6 h-6" style={{ color: N.accent }} />
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-slate-800">💡 Sugerencia de Cortex-Flow</h4>
-              <p className="text-slate-600 mt-1">
-                Basado en tu actividad, te recomiendo contactar a <strong>Banco Chile</strong> para 
+              <h4 className="font-bold" style={{ color: N.text }}>💡 Sugerencia de Cortex-Flow</h4>
+              <p className="mt-1" style={{ color: N.textSub }}>
+                Basado en tu actividad, te recomiendo contactar a <strong style={{ color: N.text }}>Banco Chile</strong> para 
                 iniciar la renovación del contrato CTR-2025-001 que vence en 15 días. 
                 Su inversión aumentó un 40% este año, considera ofrecer el paquete premium.
               </p>
               <div className="flex items-center gap-3 mt-3">
-                <button className={`${neuro.btnPrimary} px-4 py-2 text-sm`}>
+                <NeuButton variant="primary" className="px-4 py-2 text-xs">
                   Ver contrato
-                </button>
-                <button className={`${neuro.btnSecondary} px-4 py-2 text-sm`}>
+                </NeuButton>
+                <NeuButton variant="secondary" className="px-4 py-2 text-xs">
                   Iniciar renovación
-                </button>
-                <button className="text-sm text-slate-400 hover:text-slate-600">
-                  Ignorar
-                </button>
+                </NeuButton>
+                <button className="text-xs" style={{ color: N.textSub }}>Ignorar</button>
               </div>
             </div>
           </div>

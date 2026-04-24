@@ -26,7 +26,7 @@ import {
   Plus, Trash2, Clock, Calendar, DollarSign, 
   Tv, AlertCircle, MapPin, Edit2, Settings,
   ChevronUp, ChevronDown, Gift, Zap, Radio, Smartphone,
-  Music, Mic, MessageSquare, Shield, ImageIcon, Volume2,
+  Music, Mic, MessageSquare, Shield, Image as ImageIcon, Volume2,
   Video, Sparkles, Target, Eye
 } from 'lucide-react';
 

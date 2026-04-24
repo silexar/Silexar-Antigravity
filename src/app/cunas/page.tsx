@@ -19,7 +19,8 @@ import {
   Calendar, TrendingUp, BarChart2,
   Sparkles,
   Target, Activity, ExternalLink,
-  ShieldAlert, CheckSquare, Square
+  ShieldAlert, CheckSquare, Square,
+  ArrowLeft
 } from 'lucide-react';
 import useAtajosTeclado from '@/app/campanas/crear/components/WizardCampana/hooks/useAtajosTeclado';
 
@@ -31,6 +32,7 @@ import {
 } from './_lib/components';
 import { AlertasPanel } from './_lib/AlertasPanel';
 import { CunaRow } from './_lib/CunaRow';
+import { DraggableWindow } from './_lib/DraggableWindow';
 
 // AlertasPanel and CunaRow extracted to ./_lib/AlertasPanel.tsx and ./_lib/CunaRow.tsx
 
@@ -60,10 +62,12 @@ export default function CunasOperacionesPage() {
   
   const [alertas, setAlertas] = useState<AlertaOperativa[]>([]);
   
-  // Estados para Operación 24/7
+  // Estados para Operación 24/7 y Ventanas Flotantes Neumórficas
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [panicMode, setPanicMode] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0); // Para navegación con teclado
+  const [windowCunaOpen, setWindowCunaOpen] = useState(false);
+  const [windowCunaId, setWindowCunaId] = useState<string | null>(null);
 
   // ─────────────────────────────────────────────────────────────
   // ATAJOS DE TECLADO (MODO OPERADOR PRO)
@@ -338,7 +342,9 @@ export default function CunasOperacionesPage() {
   };
 
   const handleView = (id: string) => {
-    router.push(`/cunas/${id}`);
+    // Abre en la ventana flotante en lugar de rutear
+    setWindowCunaId(id);
+    setWindowCunaOpen(true);
   };
 
   const handleEdit = (id: string) => {
@@ -357,55 +363,46 @@ export default function CunasOperacionesPage() {
   // RENDER
   // ─────────────────────────────────────────────────────────────
 
+  const N = { base: '#dfeaff', dark: '#bec8de', light: '#ffffff', accent: '#6888ff', text: '#69738c', textSub: '#9aa3b8' };
+  const shadowOut = (s: number) => `${s}px ${s}px ${s*2}px ${N.dark}, -${s}px -${s}px ${s*2}px ${N.light}`;
+
   return (
-    <div className="min-h-screen bg-slate-50/50 relative p-6 lg:p-8">
-      {/* Decorative Orbs */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-emerald-100/40 to-transparent pointer-events-none mix-blend-multiply"></div>
-      
+    <div className="min-h-screen relative p-6 lg:p-8 overflow-hidden" style={{ background: N.base, color: N.text }}>
       <div className="max-w-[1920px] mx-auto space-y-6 relative z-10">
-        
-        {/* ═══════════════════════════════════════════════════════════ */}
+
         {/* HEADER OPERATIVO */}
-        {/* ═══════════════════════════════════════════════════════════ */}
-        
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-emerald-600 to-slate-800 bg-clip-text text-transparent flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg">
-                <Music className="w-8 h-8 text-white" />
-              </div>
-              Centro de Operaciones - Cuñas
-            </h1>
-            <p className="text-slate-500 mt-2 flex items-center gap-2">
-              <Activity className="w-4 h-4" />
-              Sistema enterprise 24/7 • TIER 0 Fortune 10
-            </p>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push('/dashboard')} className="flex items-center justify-center w-9 h-9 rounded-xl transition-all" title="Volver al Dashboard"
+              style={{ background: N.base, boxShadow: shadowOut(3), color: N.textSub }}>
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+            <div className="p-3 rounded-xl" style={{ background: '#22c55e', boxShadow: shadowOut(3) }}>
+              <Music className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black tracking-tight" style={{ color: N.text }}>Centro de Operaciones — Cuñas</h1>
+              <p className="text-xs font-bold flex items-center gap-2" style={{ color: N.textSub }}>
+                <Activity className="w-3 h-3" /> Sistema 24/7 · TIER 0 Fortune 10
+              </p>
+            </div>
           </div>
-          
-          <div className="flex flex-wrap gap-3">
+
+          <div className="flex flex-wrap gap-2">
             <NeuromorphicButton variant="secondary" onClick={() => router.push('/cunas/subir')}>
-              <Upload className="w-5 h-5" /> Subir Audio
+              <Upload className="w-4 h-4" /> Subir Audio
             </NeuromorphicButton>
             <NeuromorphicButton variant="secondary" onClick={() => router.push('/cunas/generar-ia')}>
-              <Sparkles className="w-5 h-5" /> Generar con IA
+              <Sparkles className="w-4 h-4" /> Generar IA
             </NeuromorphicButton>
             <NeuromorphicButton variant="primary" onClick={() => router.push('/cunas/nuevo')}>
-              <Plus className="w-5 h-5" /> Nueva Cuña
+              <Plus className="w-4 h-4" /> Nueva Cuña
             </NeuromorphicButton>
-            
-            {/* KILL SWITCH (TIER X SAFETY) */}
-            <button 
-              onClick={() => setPanicMode(true)}
-              className="
-                flex items-center gap-2 px-5 py-2.5 rounded-xl 
-                bg-red-500/90 backdrop-blur-md text-white border border-red-400/50 
-                shadow-[0_8px_20px_rgba(239,68,68,0.25)]
-                hover:shadow-[0_12px_25px_rgba(239,68,68,0.4)] hover:bg-red-500 hover:scale-105
-                transition-all font-bold tracking-wider
-              "
-              title="Detener todas las emisiones (Ctrl+K)"
-            >
-              <ShieldAlert className="w-5 h-5" />
+            <button onClick={() => setPanicMode(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-bold text-xs tracking-wider transition-all hover:scale-105"
+              style={{ background: '#ef4444', boxShadow: '4px 4px 10px #bec8de,-2px -2px 6px #ffffff' }}
+              title="Detener todas las emisiones (Ctrl+K)">
+              <ShieldAlert className="w-4 h-4" />
               <span className="hidden lg:inline">PANIC STOP</span>
             </button>
           </div>
@@ -416,84 +413,30 @@ export default function CunasOperacionesPage() {
         {/* ═══════════════════════════════════════════════════════════ */}
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          <button
-            onClick={() => router.push('/cunas/dashboard')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 text-indigo-600 shadow-sm group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all">
-              <BarChart2 className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Dashboard</p>
-              <p className="text-xs font-medium text-slate-500">Vista gerencial</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => router.push('/cunas/programacion')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 text-purple-600 shadow-sm group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all">
-              <Calendar className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Programación</p>
-              <p className="text-xs font-medium text-slate-500">Bloques horarios</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => router.push('/cunas/inbox')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group relative"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 text-blue-600 shadow-sm group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all">
-              <Mail className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Inbox</p>
-              <p className="text-xs font-medium text-slate-500">Cuñas entrantes</p>
-            </div>
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
-          </button>
-          
-          <button
-            onClick={() => router.push('/cunas/material-pendiente')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 text-amber-600 shadow-sm group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all">
-              <Clock className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Material</p>
-              <p className="text-xs font-medium text-slate-500">Pendiente entrega</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => router.push('/cunas/presentacion')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200 text-pink-600 shadow-sm group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white transition-all">
-              <ExternalLink className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Presentación</p>
-              <p className="text-xs font-medium text-slate-500">Modo ventas</p>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => router.push('/cunas/digital')}
-            className="flex items-center gap-3 p-4 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md hover:bg-white transition-all hover:scale-[1.02] group"
-          >
-            <div className="p-2 rounded-lg bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200 text-teal-600 shadow-sm group-hover:scale-110 group-hover:bg-teal-500 group-hover:text-white transition-all">
-              <Target className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-bold text-slate-800 text-sm">Digital</p>
-              <p className="text-xs font-medium text-slate-500">Activos digitales</p>
-            </div>
-          </button>
+          {[
+            { href: '/cunas/dashboard',      icon: BarChart2,    label: 'Dashboard',      desc: 'Vista gerencial',     color: '#6888ff' },
+            { href: '/cunas/programacion',   icon: Calendar,     label: 'Programación',   desc: 'Bloques horarios',    color: '#a855f7' },
+            { href: '/cunas/inbox',          icon: Mail,         label: 'Inbox',          desc: 'Cuñas entrantes',     color: '#3b82f6', badge: 3 },
+            { href: '/cunas/material-pendiente', icon: Clock,    label: 'Material',       desc: 'Pendiente entrega',   color: '#f59e0b' },
+            { href: '/cunas/presentacion',   icon: ExternalLink, label: 'Presentación',   desc: 'Modo ventas',         color: '#ec4899' },
+            { href: '/cunas/digital',        icon: Target,       label: 'Digital',        desc: 'Activos digitales',   color: '#14b8a6' },
+          ].map(item => (
+            <button key={item.href} onClick={() => router.push(item.href)}
+              className="relative flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.01] group text-left"
+              style={{ background: N.base, boxShadow: shadowOut(4) }}
+            >
+              <div className="p-2 rounded-lg transition-all shrink-0" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                <item.icon className="w-5 h-5" style={{ color: item.color }} />
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold text-sm truncate" style={{ color: N.text }}>{item.label}</p>
+                <p className="text-[10px] font-semibold truncate" style={{ color: N.textSub }}>{item.desc}</p>
+              </div>
+              {'badge' in item && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-[10px] font-black text-white rounded-full" style={{ background: '#ef4444', boxShadow: '2px 2px 4px #bec8de' }}>{item.badge}</span>
+              )}
+            </button>
+          ))}
         </div>
 
         {/* ═══════════════════════════════════════════════════════════ */}
@@ -501,46 +444,12 @@ export default function CunasOperacionesPage() {
         {/* ═══════════════════════════════════════════════════════════ */}
         
         <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          <MetricaCard 
-            label="Total Cuñas" 
-            value={metricas.totalCunas} 
-            icon={Music}
-            color="from-emerald-400 to-emerald-500"
-          />
-          <MetricaCard 
-            label="En Aire" 
-            value={metricas.enAire} 
-            icon={Volume2}
-            color="from-blue-400 to-blue-500"
-            trend="up"
-            trendValue="+2 hoy"
-          />
-          <MetricaCard 
-            label="Pendientes" 
-            value={metricas.pendientesValidacion} 
-            icon={AlertCircle}
-            color="from-amber-400 to-amber-500"
-          />
-          <MetricaCard 
-            label="Por Vencer" 
-            value={metricas.porVencer} 
-            icon={Clock}
-            color="from-orange-400 to-orange-500"
-          />
-          <MetricaCard 
-            label="Emisiones Hoy" 
-            value={metricas.emisionesHoy} 
-            icon={TrendingUp}
-            color="from-purple-400 to-purple-500"
-            trend="up"
-            trendValue={`+${metricas.cambioVsAyer}%`}
-          />
-          <MetricaCard 
-            label="Tasa Aprobación" 
-            value={`${metricas.tasaAprobacion}%`} 
-            icon={Target}
-            color="from-cyan-400 to-cyan-500"
-          />
+          <MetricaCard label="Total Cuñas" value={metricas.totalCunas} icon={Music} color="#22c55e" />
+          <MetricaCard label="En Aire" value={metricas.enAire} icon={Volume2} color="#3b82f6" trend="up" trendValue="+2 hoy" />
+          <MetricaCard label="Pendientes" value={metricas.pendientesValidacion} icon={AlertCircle} color="#f59e0b" />
+          <MetricaCard label="Por Vencer" value={metricas.porVencer} icon={Clock} color="#f97316" />
+          <MetricaCard label="Emisiones Hoy" value={metricas.emisionesHoy} icon={TrendingUp} color="#a855f7" trend="up" trendValue={`+${metricas.cambioVsAyer}%`} />
+          <MetricaCard label="Tasa Aprobación" value={`${metricas.tasaAprobacion}%`} icon={Target} color="#14b8a6" />
         </div>
 
         {/* ═══════════════════════════════════════════════════════════ */}
@@ -564,7 +473,7 @@ export default function CunasOperacionesPage() {
                     aria-label="Buscar cuñas"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full rounded-xl py-3 pl-12 pr-4 bg-white/80 border border-slate-200 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 text-slate-800 font-medium shadow-sm transition-all placeholder:text-slate-400"
+                    className="w-full rounded-xl py-3 pl-12 pr-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 font-bold transition-all placeholder:text-slate-400"
                   />
                 </div>
                 
@@ -573,7 +482,7 @@ export default function CunasOperacionesPage() {
                   <select 
                     value={filterTipo} 
                     onChange={(e) => setFilterTipo(e.target.value)}
-                    className="rounded-xl py-3 px-4 bg-white/80 border border-slate-200 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 text-slate-800 text-sm font-medium shadow-sm transition-all cursor-pointer"
+                    className="rounded-xl py-3 px-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 text-sm font-bold transition-all cursor-pointer"
                   >
                     <option value="">Todos los tipos</option>
                     <option value="audio">Audio</option>
@@ -587,7 +496,7 @@ export default function CunasOperacionesPage() {
                   <select 
                     value={filterEstado} 
                     onChange={(e) => setFilterEstado(e.target.value)}
-                    className="rounded-xl py-3 px-4 bg-white/80 border border-slate-200 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 text-slate-800 text-sm font-medium shadow-sm transition-all cursor-pointer"
+                    className="rounded-xl py-3 px-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 text-sm font-bold transition-all cursor-pointer"
                   >
                     <option value="">Todos los estados</option>
                     <option value="en_aire">En Aire</option>
@@ -601,7 +510,7 @@ export default function CunasOperacionesPage() {
                   <select 
                     value={filterUrgencia} 
                     onChange={(e) => setFilterUrgencia(e.target.value)}
-                    className="rounded-xl py-3 px-4 bg-white/80 border border-slate-200 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 text-slate-800 text-sm font-medium shadow-sm transition-all cursor-pointer"
+                    className="rounded-xl py-3 px-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 text-slate-700 text-sm font-bold transition-all cursor-pointer"
                   >
                     <option value="">Todas las urgencias</option>
                     <option value="critica">🔴 Crítica</option>
@@ -715,16 +624,16 @@ export default function CunasOperacionesPage() {
             </NeuromorphicCard>
           </div>
 
-          {/* Modal de Pánico (Global) */}
+          {/* Modal de Pánico (Global) - NEUMORPHIC FIXED */}
           {panicMode && (
-              <div className="fixed inset-0 z-[100] bg-red-900/90 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-200">
-                  <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full text-center space-y-6 border-4 border-red-500">
-                      <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto animate-pulse">
+              <div className="fixed inset-0 z-[100] bg-[#EAF0F6]/80 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
+                  <div className="bg-[#EAF0F6] p-8 rounded-3xl shadow-[12px_12px_24px_#c8d0d8,-12px_-12px_24px_#ffffff] max-w-lg w-full text-center space-y-6">
+                      <div className="w-24 h-24 rounded-full shadow-[inset_6px_6px_12px_#c8d0d8,inset_-6px_-6px_12px_#ffffff] flex items-center justify-center mx-auto animate-pulse">
                           <ShieldAlert className="w-12 h-12 text-red-600" />
                       </div>
                       <div>
-                          <h2 className="text-3xl font-black text-red-600">KILL SWITCH</h2>
-                          <p className="text-slate-600 mt-2 text-lg">
+                          <h2 className="text-3xl font-black text-red-600 tracking-wider">KILL SWITCH</h2>
+                          <p className="text-slate-600 mt-2 text-lg font-bold">
                               Estás a punto de detener <strong className="text-red-600">TODAS</strong> las emisiones activas.
                               <br/>
                               Esta acción es irreversible y notificará a Gerencia.
@@ -734,13 +643,13 @@ export default function CunasOperacionesPage() {
                       <div className="flex gap-4 pt-4">
                           <button 
                               onClick={() => setPanicMode(false)}
-                              className="flex-1 py-4 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+                              className="flex-1 py-4 rounded-xl font-bold text-slate-500 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] active:shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] transition-all"
                           >
                               CANCELAR (Esc)
                           </button>
                           <button 
                               onClick={handlePanicSwitch}
-                              className="flex-1 py-4 rounded-xl font-bold text-white bg-red-600 hover:bg-red-700 shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+                              className="flex-1 py-4 rounded-xl font-bold text-red-600 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] active:shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] transition-all"
                           >
                               CONFIRMAR DETENCIÓN
                           </button>
@@ -749,7 +658,44 @@ export default function CunasOperacionesPage() {
               </div>
           )}
           
-          {/* Espaciador o cierre correcto si necesario */}
+          {/* WINDOW FLOTANTE PARA VER DETALLE (Paradigma Neumórfico OS) */}
+          <DraggableWindow 
+            id="ventana-detalle"
+            title={`Detalle Cuña: ${cunas.find(c => c.id === windowCunaId)?.spxCodigo || 'Seleccionada'}`}
+            isOpen={windowCunaOpen}
+            onClose={() => setWindowCunaOpen(false)}
+          >
+             {windowCunaId && (
+                <div className="space-y-4">
+                   <div className="p-4 rounded-xl shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] flex items-center justify-center bg-[#EAF0F6]">
+                        <Volume2 className="w-8 h-8 text-indigo-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-700">{cunas.find(c => c.id === windowCunaId)?.nombre}</h3>
+                        <p className="text-slate-500">{cunas.find(c => c.id === windowCunaId)?.anuncianteNombre}</p>
+                      </div>
+                   </div>
+                   
+                   <div className="grid grid-cols-2 gap-4 mt-6">
+                      <div className="p-4 rounded-xl shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff]">
+                        <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Duración</p>
+                        <p className="text-lg font-bold text-slate-700">{cunas.find(c => c.id === windowCunaId)?.duracionFormateada}</p>
+                      </div>
+                      <div className="p-4 rounded-xl shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff]">
+                        <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Estado</p>
+                        <p className="text-lg font-bold text-slate-700 capitalize">{cunas.find(c => c.id === windowCunaId)?.estado.replace('_', ' ')}</p>
+                      </div>
+                   </div>
+                   
+                   <div className="flex justify-end mt-6 gap-2">
+                     <NeuromorphicButton variant="secondary" onClick={() => router.push(`/cunas/${windowCunaId}/editar`)}>
+                       Editar Completo
+                     </NeuromorphicButton>
+                   </div>
+                </div>
+             )}
+          </DraggableWindow>
 
           {/* PANEL LATERAL - ALERTAS */}
           <div className="xl:col-span-1">

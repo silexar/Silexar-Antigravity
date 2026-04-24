@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 // Base neuromorphic styles - internal use only
 export const neuromorphicStyles = {
-  base: 'bg-[#F0EDE8] text-slate-700 font-sans',
+  base: 'bg-[#EAF0F6] text-slate-700 font-sans',
   embossed: 'shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]',
   debossed: 'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]',
   glow: 'shadow-[12px_12px_24px_#d1d5db,-12px_-12px_24px_#ffffff] border border-white/50',
@@ -84,7 +84,7 @@ export const NeuromorphicButton: React.FC<NeuromorphicButtonProps> = ({
   const getVariantStyle = (v: typeof variant): string => {
     switch (v) {
       case 'primary': return `
-        bg-[#F0EDE8]
+        bg-[#EAF0F6]
         text-indigo-600 font-bold
         shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
         hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
@@ -92,28 +92,28 @@ export const NeuromorphicButton: React.FC<NeuromorphicButtonProps> = ({
         disabled:opacity-50 disabled:cursor-not-allowed
       `;
       case 'secondary': return `
-        bg-[#F0EDE8]
+        bg-[#EAF0F6]
         text-slate-600 font-medium
         shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
         hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
         active:shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
       `;
       case 'danger': return `
-        bg-[#F0EDE8]
+        bg-[#EAF0F6]
         text-red-600 font-bold
         shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
         hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
         active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
       `;
       case 'success': return `
-        bg-[#F0EDE8]
+        bg-[#EAF0F6]
         text-emerald-600 font-bold
         shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
         hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
         active:shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
       `;
       default: return `
-        bg-[#F0EDE8]
+        bg-[#EAF0F6]
         text-indigo-600 font-bold
         shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
         hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
@@ -175,7 +175,7 @@ export const NeuromorphicInput: React.FC<NeuromorphicInputProps> = ({
         )}
         <input
           className={cn(
-            'w-full bg-[#F0EDE8] rounded-xl',
+            'w-full bg-[#EAF0F6] rounded-xl',
             'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]',
             'text-slate-700 placeholder-slate-400',
             'focus:outline-none focus:ring-2 focus:ring-indigo-500/30',

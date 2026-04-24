@@ -39,65 +39,65 @@ import {
 const neuroStyles = {
   // Contenedor principal con efecto neuromorphic
   container: `
-    bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff]
     min-h-screen
   `,
   
   // Card con sombras neuromorphic (efecto elevado)
   cardRaised: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   
   // Card con efecto hundido
   cardInset: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-2xl
-    shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
-    border border-slate-200/30
+    shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   
   // Botón neuromorphic activo
   buttonActive: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     transition-all duration-200
   `,
   
   // Botón neuromorphic secundario
   buttonSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    text-[#69738c] font-medium
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    active:shadow-[inset_2px_2px_4px_#d1d5db]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
+    active:shadow-[inset_2px_2px_4px_#bec8de]
     transition-all duration-200
   `,
   
   // Input neuromorphic
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50
+    focus:ring-2 focus:ring-[#6888ff]/50
     transition-all duration-200
     px-4 py-3
-    text-slate-700
-    placeholder:text-slate-400
+    text-[#69738c]
+    placeholder:text-[#9aa3b8]
   `,
   
   // Toggle switch neuromorphic
   toggle: `
     relative w-14 h-7
-    bg-gradient-to-br from-slate-200 to-slate-100
+    bg-gradient-to-br from-slate-200 to-[#dfeaff]
     rounded-full
     shadow-[inset_2px_2px_4px_#c9cbd0,inset_-2px_-2px_4px_#ffffff]
     cursor-pointer
@@ -111,7 +111,7 @@ const neuroStyles = {
   
   toggleKnob: `
     absolute top-1 w-5 h-5
-    bg-white
+    bg-[#dfeaff]
     rounded-full
     shadow-[2px_2px_4px_rgba(0,0,0,0.15)]
     transition-all duration-300
@@ -120,7 +120,7 @@ const neuroStyles = {
   // Slider neuromorphic
   slider: `
     w-full h-2
-    bg-gradient-to-r from-slate-200 to-slate-100
+    bg-gradient-to-r from-slate-200 to-[#dfeaff]
     rounded-full
     shadow-[inset_1px_1px_2px_#c9cbd0,inset_-1px_-1px_2px_#ffffff]
     appearance-none
@@ -130,9 +130,9 @@ const neuroStyles = {
   // Badge neuromorphic
   badge: `
     px-3 py-1
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `
 };
@@ -284,8 +284,8 @@ const NeuroSlider: React.FC<{
 }> = ({ value, min, max, step = 1, onChange, suffix = '', formatValue, label }) => (
   <div className="space-y-2">
     <div className="flex justify-between items-center">
-      <span className="text-sm text-slate-500">Valor actual:</span>
-      <span className={`${neuroStyles.badge} text-indigo-600`}>
+      <span className="text-sm text-[#69738c]">Valor actual:</span>
+      <span className={`${neuroStyles.badge} text-[#6888ff]`}>
         {formatValue ? formatValue(value) : value}{suffix}
       </span>
     </div>
@@ -299,7 +299,7 @@ const NeuroSlider: React.FC<{
       aria-label={label}
       className={`${neuroStyles.slider} [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-br [&::-webkit-slider-thumb]:from-indigo-400 [&::-webkit-slider-thumb]:to-purple-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer`}
     />
-    <div className="flex justify-between text-xs text-slate-400">
+    <div className="flex justify-between text-xs text-[#9aa3b8]">
       <span>{formatValue ? formatValue(min) : min}{suffix}</span>
       <span>{formatValue ? formatValue(max) : max}{suffix}</span>
     </div>
@@ -317,7 +317,7 @@ const NeuroInput: React.FC<{
 }> = ({ value, onChange, type = 'text', placeholder, prefix, suffix, label }) => (
   <div className="relative">
     {prefix && (
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9aa3b8]">
         {prefix}
       </div>
     )}
@@ -330,7 +330,7 @@ const NeuroInput: React.FC<{
       className={`${neuroStyles.input} w-full ${prefix ? 'pl-10' : ''} ${suffix ? 'pr-10' : ''}`}
     />
     {suffix && (
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9aa3b8]">
         {suffix}
       </div>
     )}
@@ -370,8 +370,8 @@ const UserPermissionCard: React.FC<{
   const getRolIcon = () => {
     if (usuario.rol.includes('Gerente')) return <Crown className="w-5 h-5 text-amber-500" />;
     if (usuario.rol.includes('Supervisor')) return <Briefcase className="w-5 h-5 text-purple-500" />;
-    if (usuario.rol.includes('Senior')) return <Zap className="w-5 h-5 text-indigo-500" />;
-    return <Users className="w-5 h-5 text-slate-500" />;
+    if (usuario.rol.includes('Senior')) return <Zap className="w-5 h-5 text-[#6888ff]" />;
+    return <Users className="w-5 h-5 text-[#69738c]" />;
   };
 
   return (
@@ -392,15 +392,15 @@ const UserPermissionCard: React.FC<{
           
           <div className="text-left">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-800">{usuario.nombre}</h3>
+              <h3 className="text-lg font-bold text-[#69738c]">{usuario.nombre}</h3>
               {usuario.rolPersonalizado && (
                 <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">
                   Personalizado
                 </span>
               )}
             </div>
-            <p className="text-sm text-slate-500">{usuario.email}</p>
-            <p className="text-xs text-indigo-600 font-medium">{usuario.rol}</p>
+            <p className="text-sm text-[#69738c]">{usuario.email}</p>
+            <p className="text-xs text-[#6888ff] font-medium">{usuario.rol}</p>
           </div>
         </div>
         
@@ -425,7 +425,7 @@ const UserPermissionCard: React.FC<{
             animate={{ rotate: expanded ? 90 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+            <ChevronRight className="w-5 h-5 text-[#9aa3b8]" />
           </motion.div>
         </div>
       </button>
@@ -438,19 +438,19 @@ const UserPermissionCard: React.FC<{
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="mt-6 pt-6 border-t border-slate-200/50"
+            className="mt-6 pt-6 border-t border-[#bec8de30]/50"
           >
             <div className="grid md:grid-cols-2 gap-6">
               {/* Columna 1: Límites de valor */}
               <div className={`${neuroStyles.cardInset} p-5 space-y-5`}>
-                <h4 className="font-bold text-slate-700 flex items-center gap-2">
+                <h4 className="font-bold text-[#69738c] flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-green-500" />
                   Límites de Valor
                 </h4>
                 
                 {/* Valor máximo de contrato */}
                 <div>
-                  <label className="text-sm font-medium text-slate-600 mb-2 block">
+                  <label className="text-sm font-medium text-[#69738c] mb-2 block">
                     Valor Máximo de Contrato
                   </label>
                   <NeuroSlider
@@ -466,7 +466,7 @@ const UserPermissionCard: React.FC<{
                 
                 {/* Descuento máximo */}
                 <div>
-                  <label className="text-sm font-medium text-slate-600 mb-2 block">
+                  <label className="text-sm font-medium text-[#69738c] mb-2 block">
                     Descuento Máximo Permitido
                   </label>
                   <NeuroSlider
@@ -482,7 +482,7 @@ const UserPermissionCard: React.FC<{
                 
                 {/* Días de pago máximo */}
                 <div>
-                  <label className="text-sm font-medium text-slate-600 mb-2 block">
+                  <label className="text-sm font-medium text-[#69738c] mb-2 block">
                     Días de Pago Máximo
                   </label>
                   <NeuroSlider
@@ -499,16 +499,16 @@ const UserPermissionCard: React.FC<{
 
               {/* Columna 2: Permisos de acción */}
               <div className={`${neuroStyles.cardInset} p-5 space-y-5`}>
-                <h4 className="font-bold text-slate-700 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-indigo-500" />
+                <h4 className="font-bold text-[#69738c] flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-[#6888ff]" />
                   Permisos de Acción
                 </h4>
                 
                 {/* Puede Aprobar */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-slate-700">Puede Aprobar Contratos</p>
-                    <p className="text-xs text-slate-500">Aprueba contratos de niveles inferiores</p>
+                    <p className="font-medium text-[#69738c]">Puede Aprobar Contratos</p>
+                    <p className="text-xs text-[#69738c]">Aprueba contratos de niveles inferiores</p>
                   </div>
                   <NeuroToggle
                     value={limites.puedeAprobar}
@@ -519,8 +519,8 @@ const UserPermissionCard: React.FC<{
                 {/* Puede Firmar */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-slate-700">Puede Firmar Contratos</p>
-                    <p className="text-xs text-slate-500">Firma como representante comercial</p>
+                    <p className="font-medium text-[#69738c]">Puede Firmar Contratos</p>
+                    <p className="text-xs text-[#69738c]">Firma como representante comercial</p>
                   </div>
                   <NeuroToggle
                     value={limites.puedeFirmar}
@@ -531,8 +531,8 @@ const UserPermissionCard: React.FC<{
                 {/* Firma para Facturación */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-slate-700">Firma para Facturación</p>
-                    <p className="text-xs text-slate-500">Libera contratos para facturación</p>
+                    <p className="font-medium text-[#69738c]">Firma para Facturación</p>
+                    <p className="text-xs text-[#69738c]">Libera contratos para facturación</p>
                   </div>
                   <NeuroToggle
                     value={limites.puedeFirmarParaFacturacion}
@@ -543,8 +543,8 @@ const UserPermissionCard: React.FC<{
                 {/* Requiere Supervisión */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-slate-700">Requiere Supervisión</p>
-                    <p className="text-xs text-slate-500">Acciones revisadas por superior</p>
+                    <p className="font-medium text-[#69738c]">Requiere Supervisión</p>
+                    <p className="text-xs text-[#69738c]">Acciones revisadas por superior</p>
                   </div>
                   <NeuroToggle
                     value={limites.requiereSupervision}
@@ -613,16 +613,16 @@ export default function PermisosConfiguracion() {
   return (
     <div className={neuroStyles.container}>
       {/* Header */}
-      <div className="sticky top-0 z-30 backdrop-blur-xl bg-slate-50/80 border-b border-slate-200/50">
+      <div className="sticky top-0 z-30 -xl bg-[#dfeaff]/80 border-b border-[#bec8de30]/50">
         <div className="max-w-[1400px] mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className={`p-4 rounded-2xl ${neuroStyles.cardRaised}`}>
-                <UserCog className="w-7 h-7 text-indigo-600" />
+                <UserCog className="w-7 h-7 text-[#6888ff]" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">⚙️ Configuración de Permisos</h1>
-                <p className="text-slate-500 text-sm">Gestiona límites y permisos de usuarios</p>
+                <h1 className="text-2xl font-bold text-[#69738c]">⚙️ Configuración de Permisos</h1>
+                <p className="text-[#69738c] text-sm">Gestiona límites y permisos de usuarios</p>
               </div>
             </div>
             
@@ -662,7 +662,7 @@ export default function PermisosConfiguracion() {
                   onClick={() => setFilterRol(rol)}
                   className={`px-4 py-2 rounded-xl capitalize transition-all ${
                     filterRol === rol
-                      ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg'
+                      ? 'bg-[#6888ff] text-white shadow-lg'
                       : neuroStyles.buttonSecondary
                   }`}
                 >
@@ -687,8 +687,8 @@ export default function PermisosConfiguracion() {
                   {stat.icon}
                 </div>
                 <div>
-                  <p className="text-sm text-slate-500">{stat.label}</p>
-                  <p className="text-2xl font-bold text-slate-800">{stat.value}</p>
+                  <p className="text-sm text-[#69738c]">{stat.label}</p>
+                  <p className="text-2xl font-bold text-[#69738c]">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -710,8 +710,8 @@ export default function PermisosConfiguracion() {
 
         {filteredUsuarios.length === 0 && (
           <div className={`${neuroStyles.cardInset} p-12 text-center`}>
-            <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500">No se encontraron usuarios</p>
+            <Users className="w-12 h-12 text-[#9aa3b8] mx-auto mb-4" />
+            <p className="text-[#69738c]">No se encontraron usuarios</p>
           </div>
         )}
       </div>

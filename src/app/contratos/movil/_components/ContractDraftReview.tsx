@@ -1,7 +1,7 @@
 /**
- * ✅ MOBILE: Contract Draft Review
+ * ? MOBILE: Contract Draft Review
  * 
- * Pantalla de revisión del borrador auto-generado por IA.
+ * Pantalla de revisi�n del borrador auto-generado por IA.
  * Muestra campos detectados con score de confianza, permite
  * editar y confirmar en 1 click.
  * 
@@ -21,9 +21,9 @@ import {
 import type { ResultadoCaptura } from '../../_shared/useSmartCapture';
 import { formatCurrency } from '../../_shared/useContratos';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function ContractDraftReview({ resultado, onBack, onConfirm }: {
   resultado: ResultadoCaptura;
@@ -49,14 +49,14 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
           <CheckCircle2 className="w-10 h-10 text-emerald-500" />
         </div>
         <div className="text-center">
-          <p className="text-xl font-black text-slate-800">¡Contrato Creado!</p>
-          <p className="text-sm text-slate-500 mt-1">
-            {requiereValidacion ? 'Enviado a cola de validación' : 'Listo para aprobación'}
+          <p className="text-xl font-black text-[#69738c]">�Contrato Creado!</p>
+          <p className="text-sm text-[#9aa3b8] mt-1">
+            {requiereValidacion ? 'Enviado a cola de validaci�n' : 'Listo para aprobaci�n'}
           </p>
         </div>
-        <div className="bg-indigo-50 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-indigo-500" />
-          <span className="text-xs font-bold text-indigo-600">Procesado en {tiempoProcesamiento}ms</span>
+        <div className="bg-[#dfeaff] rounded-xl px-4 py-2 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#6888ff]" />
+          <span className="text-xs font-bold text-[#6888ff]">Procesado en {tiempoProcesamiento}ms</span>
         </div>
       </div>
     );
@@ -66,23 +66,23 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
     <div className="space-y-5">
       {/* HEADER */}
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="p-2 rounded-xl bg-white border border-slate-200 active:scale-90">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+        <button onClick={onBack} className="p-2 rounded-xl bg-[#dfeaff] border border-[#bec8de30] active:scale-90">
+          <ArrowLeft className="w-5 h-5 text-[#69738c]" />
         </button>
         <div className="flex-1">
-          <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-indigo-600" /> Borrador IA
+          <h2 className="text-lg font-black text-[#69738c] flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[#6888ff]" /> Borrador IA
           </h2>
-          <p className="text-xs text-slate-400">Revisa y confirma en 1 click</p>
+          <p className="text-xs text-[#9aa3b8]">Revisa y confirma en 1 click</p>
         </div>
         <ConfianzaBadge value={datosExtraidos.confianzaGlobal} />
       </div>
 
       {/* AI CONFIDENCE BANNER */}
       <div className={`p-4 rounded-2xl flex items-center gap-3 ${
-        datosExtraidos.confianzaGlobal >= 80 ? 'bg-emerald-50 border border-emerald-200' :
-        datosExtraidos.confianzaGlobal >= 50 ? 'bg-amber-50 border border-amber-200' :
-        'bg-red-50 border border-red-200'
+        datosExtraidos.confianzaGlobal >= 80 ? 'bg-emerald-50 border border-[#bec8de30]' :
+        datosExtraidos.confianzaGlobal >= 50 ? 'bg-amber-50 border border-[#bec8de30]' :
+        'bg-red-50 border border-[#bec8de30]'
       }`}>
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
           datosExtraidos.confianzaGlobal >= 80 ? 'bg-emerald-100 text-emerald-600' :
@@ -92,21 +92,21 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
           <Shield className="w-5 h-5" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-slate-700">
-            {datosExtraidos.confianzaGlobal >= 80 ? 'Alta confianza — Listo para confirmar' :
-             datosExtraidos.confianzaGlobal >= 50 ? 'Confianza media — Verifica los campos marcados' :
-             'Baja confianza — Requiere edición manual'}
+          <p className="text-sm font-bold text-[#69738c]">
+            {datosExtraidos.confianzaGlobal >= 80 ? 'Alta confianza � Listo para confirmar' :
+             datosExtraidos.confianzaGlobal >= 50 ? 'Confianza media � Verifica los campos marcados' :
+             'Baja confianza � Requiere edici�n manual'}
           </p>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {datosExtraidos.camposDetectados.length} campos detectados · {datosExtraidos.camposFaltantes.length} faltantes · {tiempoProcesamiento}ms
+          <p className="text-xs text-[#9aa3b8] mt-0.5">
+            {datosExtraidos.camposDetectados.length} campos detectados � {datosExtraidos.camposFaltantes.length} faltantes � {tiempoProcesamiento}ms
           </p>
         </div>
       </div>
 
       {/* CONTRACT CARD */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white">
-          <p className="text-sm font-bold text-indigo-200 uppercase tracking-wide">Contrato Sugerido</p>
+      <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] shadow-sm overflow-hidden">
+        <div className="bg-[#6888ff] p-4 text-white">
+          <p className="text-sm font-bold text-white/70 uppercase tracking-wide">Contrato Sugerido</p>
           <p className="text-xl font-black mt-1">{contratoSugerido.titulo}</p>
         </div>
 
@@ -139,11 +139,11 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
             />
           )}
 
-          {/* PERÍODO */}
+          {/* PER�ODO */}
           <FieldRow
             icon={<Calendar className="w-4 h-4" />}
-            label="Período"
-            value={`${contratoSugerido.fechaInicio} → ${contratoSugerido.fechaFin}`}
+            label="Per�odo"
+            value={`${contratoSugerido.fechaInicio} ? ${contratoSugerido.fechaFin}`}
           />
 
           {/* MEDIOS */}
@@ -166,7 +166,7 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
 
           {/* MISSING FIELDS */}
           {datosExtraidos.camposFaltantes.length > 0 && (
-            <div className="pt-3 border-t border-slate-100">
+            <div className="pt-3 border-t border-[#bec8de30]">
               <p className="text-xs font-bold text-amber-600 flex items-center gap-1 mb-2">
                 <AlertTriangle className="w-3.5 h-3.5" /> Campos no detectados
               </p>
@@ -184,16 +184,16 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
 
       {/* MEDIOS BREAKDOWN */}
       {contratoSugerido.medios.length > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-100 p-4">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Desglose por Medio</p>
+        <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] p-4">
+          <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3">Desglose por Medio</p>
           {contratoSugerido.medios.map((medio) => (
-            <div key={medio.tipo} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+            <div key={medio.tipo} className="flex items-center justify-between py-2 border-b border-[#bec8de30] last:border-0">
               <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-indigo-500" />
-                <span className="text-sm font-medium text-slate-700">{medio.tipo}</span>
+                <Radio className="w-4 h-4 text-[#6888ff]" />
+                <span className="text-sm font-medium text-[#69738c]">{medio.tipo}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs font-bold text-slate-600">{formatCurrency(medio.valorUnitario)}</span>
+                <span className="text-xs font-bold text-[#69738c]">{formatCurrency(medio.valorUnitario)}</span>
                 <ConfianzaBadge value={medio.confianza} small />
               </div>
             </div>
@@ -203,13 +203,13 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
 
       {/* ACTIONS */}
       <div className="flex gap-3">
-        <button onClick={onBack} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2 active:scale-95">
+        <button onClick={onBack} className="flex-1 py-4 border border-[#bec8de30] rounded-2xl font-bold text-[#69738c] flex items-center justify-center gap-2 active:scale-95">
           <Edit3 className="w-5 h-5" /> Editar
         </button>
         <button
           onClick={handleConfirm}
           disabled={confirming}
-          className="flex-1 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-200 active:scale-95 disabled:opacity-50"
+          className="flex-1 py-4 bg-[#6888ff] text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-200 active:scale-95 disabled:opacity-50"
         >
           {confirming ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5" /> Confirmar</>}
         </button>
@@ -218,9 +218,9 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // SUB-COMPONENTS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 function FieldRow({ icon, label, value, confianza, badge, badgeColor }: {
   icon: React.ReactNode;
@@ -232,16 +232,16 @@ function FieldRow({ icon, label, value, confianza, badge, badgeColor }: {
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
+      <div className="w-8 h-8 rounded-lg bg-[#dfeaff] flex items-center justify-center text-[#9aa3b8]">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-bold text-slate-400 uppercase">{label}</p>
-        <p className="text-sm font-bold text-slate-700 truncate">{value || '—'}</p>
+        <p className="text-[10px] font-bold text-[#9aa3b8] uppercase">{label}</p>
+        <p className="text-sm font-bold text-[#69738c] truncate">{value || '�'}</p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {badge && (
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${badgeColor || 'bg-slate-50 text-slate-500'}`}>
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${badgeColor || 'bg-[#dfeaff] text-[#9aa3b8]'}`}>
             {badge}
           </span>
         )}

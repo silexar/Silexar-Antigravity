@@ -49,59 +49,59 @@ import {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     px-4 py-3
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSuccess: `
     bg-gradient-to-br from-green-500 to-emerald-600
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `,
   table: `
     w-full text-sm
   `,
   th: `
-    text-left px-4 py-3 text-slate-500 font-medium border-b border-slate-200
+    text-left px-4 py-3 text-[#69738c] font-medium border-b border-[#bec8de30]
   `,
   td: `
-    px-4 py-4 border-b border-slate-100
+    px-4 py-4 border-b border-[#bec8de30]
   `
 };
 
@@ -138,7 +138,7 @@ const formatFechaHora = (fecha: Date) => {
 
 const getTipoConfig = (tipo: TipoMovimiento): { label: string; color: string; bgColor: string; icon: React.ReactNode } => {
   const configs: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
-    'APERTURA_CUENTA': { label: 'Apertura', color: 'text-indigo-600', bgColor: 'bg-indigo-100', icon: <Wallet className="w-4 h-4" /> },
+    'APERTURA_CUENTA': { label: 'Apertura', color: 'text-[#6888ff]', bgColor: 'bg-indigo-100', icon: <Wallet className="w-4 h-4" /> },
     'CARGO_FACTURA': { label: 'Factura', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: <FileText className="w-4 h-4" /> },
     'CARGO_INTERES': { label: 'Interés', color: 'text-amber-600', bgColor: 'bg-amber-100', icon: <TrendingUp className="w-4 h-4" /> },
     'CARGO_MORA': { label: 'Mora', color: 'text-red-600', bgColor: 'bg-red-100', icon: <Clock className="w-4 h-4" /> },
@@ -150,9 +150,9 @@ const getTipoConfig = (tipo: TipoMovimiento): { label: string; color: string; bg
     'CREDITO_DESCUENTO': { label: 'Descuento', color: 'text-purple-600', bgColor: 'bg-purple-100', icon: <TrendingDown className="w-4 h-4" /> },
     'DEBITO_NOTA_DEBITO': { label: 'Nota Débito', color: 'text-orange-600', bgColor: 'bg-orange-100', icon: <ArrowUpRight className="w-4 h-4" /> },
     'AJUSTE_POSITIVO': { label: 'Ajuste +', color: 'text-amber-600', bgColor: 'bg-amber-100', icon: <TrendingUp className="w-4 h-4" /> },
-    'AJUSTE_NEGATIVO': { label: 'Ajuste -', color: 'text-slate-600', bgColor: 'bg-slate-100', icon: <TrendingDown className="w-4 h-4" /> }
+    'AJUSTE_NEGATIVO': { label: 'Ajuste -', color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]', icon: <TrendingDown className="w-4 h-4" /> }
   };
-  return configs[tipo] || { label: tipo, color: 'text-slate-600', bgColor: 'bg-slate-100', icon: <FileText className="w-4 h-4" /> };
+  return configs[tipo] || { label: tipo, color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]', icon: <FileText className="w-4 h-4" /> };
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -232,13 +232,13 @@ export default function CuentaCorrientePage() {
   if (!cuenta) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-slate-500">Cuenta corriente no encontrada</p>
+        <p className="text-[#69738c]">Cuenta corriente no encontrada</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`${neuro.panel} p-6 mb-6`}>
@@ -248,7 +248,7 @@ export default function CuentaCorrientePage() {
                 <Wallet className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Estado de Cuenta</h1>
+                <h1 className="text-2xl font-bold text-[#69738c]">Estado de Cuenta</h1>
                 <div className="flex items-center gap-3 mt-1">
                   <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
                     {cuenta.numeroContrato}
@@ -256,7 +256,7 @@ export default function CuentaCorrientePage() {
                   <span className={`${neuro.badge} ${
                     cuenta.estado === 'ACTIVA' ? 'bg-green-100 text-green-700' :
                     cuenta.estado === 'MORATORIA' ? 'bg-red-100 text-red-700' :
-                    'bg-slate-100 text-slate-700'
+                    'bg-[#dfeaff] text-[#69738c]'
                   }`}>
                     {cuenta.estado}
                   </span>
@@ -286,28 +286,28 @@ export default function CuentaCorrientePage() {
           <div className={`${neuro.card} p-4 mt-4`}>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <Building2 className="w-5 h-5 text-slate-400" />
+                <Building2 className="w-5 h-5 text-[#9aa3b8]" />
                 <div>
-                  <p className="font-semibold text-slate-800">{cuenta.clienteNombre}</p>
-                  <p className="text-sm text-slate-500">{cuenta.clienteRut}</p>
+                  <p className="font-semibold text-[#69738c]">{cuenta.clienteNombre}</p>
+                  <p className="text-sm text-[#69738c]">{cuenta.clienteRut}</p>
                 </div>
               </div>
-              <div className="h-10 w-px bg-slate-200" />
+              <div className="h-10 w-px bg-[#dfeaff]" />
               <div>
-                <p className="text-sm text-slate-500">Fecha apertura</p>
-                <p className="font-medium text-slate-700">{formatFecha(cuenta.fechaApertura)}</p>
+                <p className="text-sm text-[#69738c]">Fecha apertura</p>
+                <p className="font-medium text-[#69738c]">{formatFecha(cuenta.fechaApertura)}</p>
               </div>
-              <div className="h-10 w-px bg-slate-200" />
+              <div className="h-10 w-px bg-[#dfeaff]" />
               <div>
-                <p className="text-sm text-slate-500">Valor contrato</p>
-                <p className="font-medium text-slate-700">{formatCurrency(cuenta.valorTotalContrato)}</p>
+                <p className="text-sm text-[#69738c]">Valor contrato</p>
+                <p className="font-medium text-[#69738c]">{formatCurrency(cuenta.valorTotalContrato)}</p>
               </div>
               {cuenta.clienteEmail && (
                 <>
-                  <div className="h-10 w-px bg-slate-200" />
+                  <div className="h-10 w-px bg-[#dfeaff]" />
                   <div>
-                    <p className="text-sm text-slate-500">Email</p>
-                    <p className="font-medium text-slate-700">{cuenta.clienteEmail}</p>
+                    <p className="text-sm text-[#69738c]">Email</p>
+                    <p className="font-medium text-[#69738c]">{cuenta.clienteEmail}</p>
                   </div>
                 </>
               )}
@@ -320,17 +320,17 @@ export default function CuentaCorrientePage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={neuro.card}>
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-slate-500">Total Cargos</p>
+                <p className="text-sm text-[#69738c]">Total Cargos</p>
                 <ArrowUpRight className="w-5 h-5 text-blue-500" />
               </div>
-              <p className="text-2xl font-bold text-slate-800">{formatCurrency(cuenta.totalCargos)}</p>
+              <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(cuenta.totalCargos)}</p>
             </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className={neuro.card}>
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-slate-500">Total Abonos</p>
+                <p className="text-sm text-[#69738c]">Total Abonos</p>
                 <ArrowDownRight className="w-5 h-5 text-green-500" />
               </div>
               <p className="text-2xl font-bold text-green-600">{formatCurrency(cuenta.totalAbonos)}</p>
@@ -340,7 +340,7 @@ export default function CuentaCorrientePage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className={neuro.card}>
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-slate-500">Saldo Pendiente</p>
+                <p className="text-sm text-[#69738c]">Saldo Pendiente</p>
                 <Wallet className="w-5 h-5 text-purple-500" />
               </div>
               <p className={`text-2xl font-bold ${cuenta.saldoPendiente > 0 ? 'text-red-600' : 'text-green-600'}`}>
@@ -352,10 +352,10 @@ export default function CuentaCorrientePage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={neuro.card}>
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-slate-500">Último Pago</p>
+                <p className="text-sm text-[#69738c]">Último Pago</p>
                 <Calendar className="w-5 h-5 text-amber-500" />
               </div>
-              <p className="text-lg font-bold text-slate-800">
+              <p className="text-lg font-bold text-[#69738c]">
                 {cuenta.fechaUltimoPago ? formatFecha(cuenta.fechaUltimoPago) : 'Sin pagos'}
               </p>
             </div>
@@ -368,7 +368,7 @@ export default function CuentaCorrientePage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9aa3b8]" />
                 <input
                   type="text"
                   value={busqueda}
@@ -397,7 +397,7 @@ export default function CuentaCorrientePage() {
                   aria-label="Período desde"
                   className={`${neuro.input} w-40`}
                 />
-                <span className="text-slate-400">—</span>
+                <span className="text-[#9aa3b8]">—</span>
                 <input
                   type="date"
                   value={periodoHasta.toISOString().split('T')[0]}
@@ -409,7 +409,7 @@ export default function CuentaCorrientePage() {
             </div>
 
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-slate-500">
+              <span className="text-[#69738c]">
                 {resumenPeriodo.movimientos} movimientos | 
                 Cargos: <span className="text-blue-600 font-medium">{formatCurrency(resumenPeriodo.cargos)}</span> | 
                 Abonos: <span className="text-green-600 font-medium">{formatCurrency(resumenPeriodo.abonos)}</span>
@@ -440,15 +440,15 @@ export default function CuentaCorrientePage() {
                   return (
                     <React.Fragment key={mov.id}>
                       <tr 
-                        className="hover:bg-slate-50/50 cursor-pointer"
+                        className="hover:bg-[#dfeaff]/50 cursor-pointer"
                         onClick={() => setMovimientoExpandido(isExpanded ? null : mov.id)}
                       >
                         <td className={neuro.td}>
-                          <span className="text-slate-400">{mov.numeroMovimiento}</span>
+                          <span className="text-[#9aa3b8]">{mov.numeroMovimiento}</span>
                         </td>
                         <td className={neuro.td}>
-                          <p className="font-medium text-slate-700">{formatFecha(mov.fechaMovimiento)}</p>
-                          <p className="text-xs text-slate-400">{mov.fechaMovimiento.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}</p>
+                          <p className="font-medium text-[#69738c]">{formatFecha(mov.fechaMovimiento)}</p>
+                          <p className="text-xs text-[#9aa3b8]">{mov.fechaMovimiento.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}</p>
                         </td>
                         <td className={neuro.td}>
                           <span className={`${neuro.badge} ${tipoConfig.bgColor} ${tipoConfig.color} inline-flex items-center gap-1`}>
@@ -457,9 +457,9 @@ export default function CuentaCorrientePage() {
                           </span>
                         </td>
                         <td className={neuro.td}>
-                          <p className="font-medium text-slate-800">{mov.concepto}</p>
+                          <p className="font-medium text-[#69738c]">{mov.concepto}</p>
                           {mov.documentoNumero && (
-                            <p className="text-xs text-slate-500">Doc: {mov.documentoNumero}</p>
+                            <p className="text-xs text-[#69738c]">Doc: {mov.documentoNumero}</p>
                           )}
                         </td>
                         <td className={`${neuro.td} text-right`}>
@@ -478,7 +478,7 @@ export default function CuentaCorrientePage() {
                           </span>
                         </td>
                         <td className={neuro.td}>
-                          <button className="p-1 hover:bg-slate-100 rounded">
+                          <button className="p-1 hover:bg-[#dfeaff] rounded">
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
                         </td>
@@ -495,44 +495,44 @@ export default function CuentaCorrientePage() {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                               >
-                                <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
+                                <div className="px-6 py-4 bg-[#dfeaff]/50 border-b border-[#bec8de30]">
                                   <div className="grid grid-cols-4 gap-6">
                                     <div>
-                                      <p className="text-xs text-slate-500 mb-1">Monto Bruto</p>
+                                      <p className="text-xs text-[#69738c] mb-1">Monto Bruto</p>
                                       <p className="font-medium">{formatCurrency(mov.montoBruto)}</p>
                                     </div>
                                     <div>
-                                      <p className="text-xs text-slate-500 mb-1">IVA</p>
+                                      <p className="text-xs text-[#69738c] mb-1">IVA</p>
                                       <p className="font-medium">{formatCurrency(mov.montoIVA)}</p>
                                     </div>
                                     <div>
-                                      <p className="text-xs text-slate-500 mb-1">Retención</p>
+                                      <p className="text-xs text-[#69738c] mb-1">Retención</p>
                                       <p className="font-medium">{formatCurrency(mov.montoRetencion)}</p>
                                     </div>
                                     <div>
-                                      <p className="text-xs text-slate-500 mb-1">Monto Neto</p>
-                                      <p className="font-bold text-indigo-600">{formatCurrency(mov.montoNeto)}</p>
+                                      <p className="text-xs text-[#69738c] mb-1">Monto Neto</p>
+                                      <p className="font-bold text-[#6888ff]">{formatCurrency(mov.montoNeto)}</p>
                                     </div>
                                     {mov.medioPago && (
                                       <div>
-                                        <p className="text-xs text-slate-500 mb-1">Medio de Pago</p>
+                                        <p className="text-xs text-[#69738c] mb-1">Medio de Pago</p>
                                         <p className="font-medium">{mov.medioPago}</p>
                                       </div>
                                     )}
                                     {mov.bancoOrigen && (
                                       <div>
-                                        <p className="text-xs text-slate-500 mb-1">Banco</p>
+                                        <p className="text-xs text-[#69738c] mb-1">Banco</p>
                                         <p className="font-medium">{mov.bancoOrigen}</p>
                                       </div>
                                     )}
                                     {mov.numeroOperacion && (
                                       <div>
-                                        <p className="text-xs text-slate-500 mb-1">N° Operación</p>
+                                        <p className="text-xs text-[#69738c] mb-1">N° Operación</p>
                                         <p className="font-medium">{mov.numeroOperacion}</p>
                                       </div>
                                     )}
                                     <div>
-                                      <p className="text-xs text-slate-500 mb-1">Conciliado</p>
+                                      <p className="text-xs text-[#69738c] mb-1">Conciliado</p>
                                       <p className={`font-medium flex items-center gap-1 ${mov.conciliado ? 'text-green-600' : 'text-amber-600'}`}>
                                         {mov.conciliado ? <CheckCircle className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                                         {mov.conciliado ? 'Sí' : 'Pendiente'}
@@ -540,9 +540,9 @@ export default function CuentaCorrientePage() {
                                     </div>
                                   </div>
                                   {mov.detalleConcepto && (
-                                    <div className="mt-4 p-3 bg-white rounded-lg">
-                                      <p className="text-xs text-slate-500 mb-1">Detalle</p>
-                                      <p className="text-sm text-slate-700">{mov.detalleConcepto}</p>
+                                    <div className="mt-4 p-3 bg-[#dfeaff] rounded-lg">
+                                      <p className="text-xs text-[#69738c] mb-1">Detalle</p>
+                                      <p className="text-sm text-[#69738c]">{mov.detalleConcepto}</p>
                                     </div>
                                   )}
                                 </div>
@@ -560,8 +560,8 @@ export default function CuentaCorrientePage() {
 
           {movimientosFiltrados.length === 0 && (
             <div className="text-center py-12">
-              <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No hay movimientos en el período seleccionado</p>
+              <FileText className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
+              <p className="text-[#69738c]">No hay movimientos en el período seleccionado</p>
             </div>
           )}
         </div>
@@ -585,53 +585,53 @@ export default function CuentaCorrientePage() {
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Descargar Estado de Cuenta</h3>
-                <button onClick={() => setShowExportModal(false)} className="p-1 hover:bg-slate-100 rounded">
+                <h3 className="text-lg font-bold text-[#69738c]">Descargar Estado de Cuenta</h3>
+                <button onClick={() => setShowExportModal(false)} className="p-1 hover:bg-[#dfeaff] rounded">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-[#69738c] mb-4">
                 Período: {formatFecha(periodoDesde)} - {formatFecha(periodoHasta)}
               </p>
 
               <div className="space-y-3">
                 <button
                   onClick={() => handleExport('PDF')}
-                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-indigo-400 transition-all`}
+                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
                   <div className="p-3 rounded-xl bg-red-100">
                     <FileText className="w-6 h-6 text-red-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-semibold text-slate-800">PDF Profesional</p>
-                    <p className="text-sm text-slate-500">Documento con diseño corporativo</p>
+                    <p className="font-semibold text-[#69738c]">PDF Profesional</p>
+                    <p className="text-sm text-[#69738c]">Documento con diseño corporativo</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => handleExport('EXCEL')}
-                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-indigo-400 transition-all`}
+                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
                   <div className="p-3 rounded-xl bg-green-100">
                     <FileSpreadsheet className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-semibold text-slate-800">Excel (.xlsx)</p>
-                    <p className="text-sm text-slate-500">Hoja de cálculo con fórmulas</p>
+                    <p className="font-semibold text-[#69738c]">Excel (.xlsx)</p>
+                    <p className="text-sm text-[#69738c]">Hoja de cálculo con fórmulas</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => handleExport('CSV')}
-                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-indigo-400 transition-all`}
+                  className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
                   <div className="p-3 rounded-xl bg-blue-100">
                     <File className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-semibold text-slate-800">CSV</p>
-                    <p className="text-sm text-slate-500">Datos separados por comas</p>
+                    <p className="font-semibold text-[#69738c]">CSV</p>
+                    <p className="text-sm text-[#69738c]">Datos separados por comas</p>
                   </div>
                 </button>
               </div>
@@ -658,15 +658,15 @@ export default function CuentaCorrientePage() {
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-slate-800">Enviar Estado de Cuenta</h3>
-                <button onClick={() => setShowEmailModal(false)} className="p-1 hover:bg-slate-100 rounded">
+                <h3 className="text-lg font-bold text-[#69738c]">Enviar Estado de Cuenta</h3>
+                <button onClick={() => setShowEmailModal(false)} className="p-1 hover:bg-[#dfeaff] rounded">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-slate-600 mb-2">Email destinatario</label>
+                  <label className="block text-sm text-[#69738c] mb-2">Email destinatario</label>
                   <input
                     type="email"
                     defaultValue={cuenta.clienteEmail}
@@ -677,14 +677,14 @@ export default function CuentaCorrientePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 mb-2">Período</label>
-                  <p className="text-slate-800 font-medium">
+                  <label className="block text-sm text-[#69738c] mb-2">Período</label>
+                  <p className="text-[#69738c] font-medium">
                     {formatFecha(periodoDesde)} - {formatFecha(periodoHasta)}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 mb-2">Formato adjunto</label>
+                  <label className="block text-sm text-[#69738c] mb-2">Formato adjunto</label>
                   <div className="flex gap-3">
                     <button className={`${neuro.btnSecondary} flex-1 py-2 flex items-center justify-center gap-2`}>
                       <FileText className="w-4 h-4 text-red-500" />
@@ -698,7 +698,7 @@ export default function CuentaCorrientePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-600 mb-2">Mensaje adicional</label>
+                  <label className="block text-sm text-[#69738c] mb-2">Mensaje adicional</label>
                   <textarea
                     className={`${neuro.input} w-full h-24 resize-none`}
                     placeholder="Estimado cliente, adjuntamos su estado de cuenta..."

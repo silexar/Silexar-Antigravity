@@ -53,7 +53,7 @@ export interface MetricasOperativas {
 
 export interface AlertaOperativa {
   id: string;
-  tipo: 'vencimiento' | 'validacion' | 'distribucion' | 'emision';
+  tipo: 'vencimientos' | 'validacion' | 'distribucion' | 'emision';
   prioridad: 'critica' | 'alta' | 'media';
   mensaje: string;
   cunaId?: string;

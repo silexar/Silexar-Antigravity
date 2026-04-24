@@ -17,7 +17,7 @@ import { useMemo, useCallback } from 'react';
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type OrigenCreacion = 'scratch' | 'contrato' | 'vencimiento' | 'inbox' | 'campana';
+export type OrigenCreacion = 'scratch' | 'contrato' | 'vencimientos' | 'inbox' | 'campana';
 export type TipoCunaSugerido = 'audio' | 'mencion' | 'presentacion' | 'cierre' | 'promo_ida' | 'jingle';
 
 export interface ContextoContrato {
@@ -32,7 +32,7 @@ export interface ContextoContrato {
 }
 
 export interface ContextoVencimiento {
-  vencimientoId: string;
+  vencimientosId: string;
   anuncianteId: string;
   anuncianteNombre: string;
   programaId?: string;
@@ -86,7 +86,7 @@ export interface CreacionContextData {
 
 const STORAGE_KEYS = {
   CONTRATO: 'silexar_cuna_contexto_contrato',
-  VENCIMIENTO: 'silexar_cuna_contexto_vencimiento',
+  VENCIMIENTO: 'silexar_cuna_contexto_vencimientos',
   INBOX: 'silexar_cuna_contexto_inbox',
   CAMPANA: 'silexar_cuna_contexto_campana'
 };
@@ -129,7 +129,7 @@ export function useCreationContext(): CreacionContextData {
     const programaNombre = searchParams?.get('programaNombre');
     const tipoParam = searchParams?.get('tipo') as TipoCunaSugerido | null;
     const contratoId = searchParams?.get('contratoId');
-    const vencimientoId = searchParams?.get('vencimientoId');
+    const vencimientosId = searchParams?.get('vencimientosId');
     const inboxId = searchParams?.get('inboxId');
     const campanaId = searchParams?.get('campanaId');
     
@@ -156,13 +156,13 @@ export function useCreationContext(): CreacionContextData {
     }
     
     // 3. Contexto desde VENCIMIENTOS
-    if (fromParam === 'vencimiento' || vencimientoId) {
+    if (fromParam === 'vencimientos' || vencimientosId) {
       const storedVencimiento = getStoredContext<ContextoVencimiento>(STORAGE_KEYS.VENCIMIENTO);
       
       const tipoFaltante = storedVencimiento?.tipoMaterialFaltante || 'presentacion';
       
       return {
-        origen: 'vencimiento',
+        origen: 'vencimientos',
         tipoSugerido: tipoParam || tipoFaltante,
         datosPreLlenados: {
           anuncianteId: anuncianteId || storedVencimiento?.anuncianteId,
@@ -172,7 +172,7 @@ export function useCreationContext(): CreacionContextData {
         },
         mensajeContexto: storedVencimiento 
           ? `⏰ Creando ${tipoFaltante} para "${storedVencimiento.programaNombre}"`
-          : '⏰ Creando desde alertas de vencimiento',
+          : '⏰ Creando desde alertas de vencimientos',
         alertaContexto: storedVencimiento 
           ? `⚠️ Este programa vence el ${new Date(storedVencimiento.fechaVencimiento).toLocaleDateString('es-CL')}`
           : undefined,
@@ -278,7 +278,7 @@ export function buildCreacionUrl(
     programaNombre?: string;
     tipo?: TipoCunaSugerido;
     contratoId?: string;
-    vencimientoId?: string;
+    vencimientosId?: string;
     inboxId?: string;
     campanaId?: string;
   }

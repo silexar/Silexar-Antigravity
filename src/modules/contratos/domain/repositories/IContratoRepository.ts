@@ -31,6 +31,31 @@ export interface ResultadoBusqueda {
   totalPaginas: number
 }
 
+export interface AlertaCritica {
+  id: string
+  tipo: 'vencimientos_proximo' | 'pago_pendiente' | 'renovacion_sugerida' | 'revision_requerida'
+  prioridad: 'baja' | 'media' | 'alta' | 'critica'
+  titulo: string
+  descripcion: string
+  contratoId: string
+  numeroContrato: string
+  diasRestantes?: number
+  monto?: number
+  fechaLimite?: Date
+}
+
+export interface PrediccionRenovacion {
+  contratoId: string
+  numeroContrato: string
+  anunciante: string
+  valorContrato: number
+  fechaFin: Date
+  probabilidadRenovacion: number
+  factores: string[]
+  recomendacion: 'renovar' | 'negociar' | 'no_renovar'
+  proximoContact: Date
+}
+
 export interface IContratoRepository {
   // Operaciones básicas
   save(contrato: Contrato): Promise<void>
@@ -47,6 +72,10 @@ export interface IContratoRepository {
   // Búsqueda avanzada
   search(criteria: BusquedaCriteria): Promise<ResultadoBusqueda>
 
+  // Alertas y predicciones
+  obtenerAlertasCriticas(filtros: { diasAnticipacion?: number; estados?: string[]; ejecuticoId?: string }): Promise<AlertaCritica[]>
+  generarPrediccionRenovacion(filtros: { diasAnticipacion?: number; ejecuticoId?: string }): Promise<PrediccionRenovacion[]>
+
   // Métricas y reportes
   getPipelineData(filtros: unknown): Promise<unknown>
   getMetricasEjecutivo(ejecutivoId: string, periodo: { fechaDesde: Date | string; fechaHasta: Date | string }): Promise<unknown>
@@ -56,7 +85,7 @@ export interface IContratoRepository {
   // Utilidades
   getNextSequence(año: number): Promise<number>
   existeNumero(numero: string): Promise<boolean>
-  
+
   // Operaciones en lote
   saveMany(contratos: Contrato[]): Promise<void>
   updateEstadoMasivo(ids: string[], nuevoEstado: string): Promise<number>

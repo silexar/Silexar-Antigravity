@@ -44,44 +44,42 @@ export interface ContextoUsuario {
 // ─── Neumorphic styles ───────────────────────────────────────────
 
 export const neuro = {
-  overlay: `fixed inset-0 z-50 bg-[#F0EDE8]/60 backdrop-blur-md`,
+  overlay: `fixed inset-0 z-50 bg-[#dfeaff]/60`,
   modal: `
-    bg-gradient-to-br from-slate-50 via-white to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[20px_20px_60px_#c5c5c5,-20px_-20px_60px_#ffffff]
-    border border-slate-200/50
+    shadow-[20px_20px_60px_#bec8de,-20px_-20px_60px_#ffffff]
     overflow-hidden
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+    shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     transition-all duration-200
   `,
   card: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
   `,
   cardHover: `
-    hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
+    hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:scale-[1.02]
     cursor-pointer
     transition-all duration-200
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
-    text-[#2C2C2A] font-semibold
+    bg-[#6888ff]
+    text-white font-semibold
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     transition-all duration-200
   `,
-  badge: `px-3 py-1 rounded-lg shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff] text-xs font-medium`,
+  badge: `px-3 py-1 rounded-lg shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] text-xs font-medium`,
 };
 
 // ─── IA Command Engine ───────────────────────────────────────────
@@ -245,9 +243,9 @@ export class IACommandEngine {
         prioridad: 'alta', accionSugerida: 'Agendar reunión',
       },
       {
-        id: 'alerta-vencimiento', tipo: 'alerta',
+        id: 'alerta-vencimientos', tipo: 'alerta',
         titulo: '⚠️ 3 Contratos Vencen Esta Semana',
-        descripcion: 'Banco Estado, Ripley, Latam tienen vencimiento en los próximos 7 días.',
+        descripcion: 'Banco Estado, Ripley, Latam tienen vencimientos en los próximos 7 días.',
         prioridad: 'alta', accionSugerida: 'Ver contratos',
       },
     );
@@ -276,7 +274,7 @@ export function getPriorityColor(prioridad: string): string {
     case 'alta': return 'bg-red-100 text-red-700';
     case 'media': return 'bg-amber-100 text-amber-700';
     case 'baja': return 'bg-green-100 text-green-700';
-    default: return 'bg-slate-100 text-slate-700';
+    default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 }
 
@@ -286,6 +284,6 @@ export function getTipoIcon(tipo: string): React.ReactNode {
     case 'oportunidad': return React.createElement(Target, { className: 'w-5 h-5 text-green-500' });
     case 'recordatorio': return React.createElement(Clock, { className: 'w-5 h-5 text-amber-500' });
     case 'prediccion': return React.createElement(Brain, { className: 'w-5 h-5 text-purple-500' });
-    default: return React.createElement(Sparkles, { className: 'w-5 h-5 text-indigo-500' });
+    default: return React.createElement(Sparkles, { className: 'w-5 h-5 text-[#6888ff]' });
   }
 }

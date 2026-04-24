@@ -34,7 +34,7 @@ export interface PushToken {
 
 export interface NotificacionPush {
   id: string;
-  tipo: 'alerta' | 'aprobacion' | 'firma' | 'pago' | 'vencimiento' | 'mensaje' | 'sistema';
+  tipo: 'alerta' | 'aprobacion' | 'firma' | 'pago' | 'vencimientos' | 'mensaje' | 'sistema';
   titulo: string;
   cuerpo: string;
   icono?: string;
@@ -429,7 +429,7 @@ export async function enviarPushNotificacion(
     const tipoPermitido = (
       (notificacion.tipo === 'alerta' && config.alertasUrgentes) ||
       (notificacion.tipo === 'aprobacion' && config.aprobacionesPendientes) ||
-      (notificacion.tipo === 'vencimiento' && config.vencimientos) ||
+      (notificacion.tipo === 'vencimientos' && config.vencimientos) ||
       (notificacion.tipo === 'pago' && config.pagos) ||
       (notificacion.tipo === 'firma' && config.firmasPendientes) ||
       (notificacion.tipo === 'mensaje' && config.mensajesEquipo) ||

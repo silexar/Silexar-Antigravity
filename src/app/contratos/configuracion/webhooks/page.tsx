@@ -72,28 +72,28 @@ interface Entrega {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    rounded-3xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
-    rounded-2xl shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
+    rounded-2xl shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
-    rounded-xl shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
-    border-none focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    rounded-xl shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
+    border-none focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     px-4 py-3
   `,
   btn: `
     px-4 py-2 rounded-xl font-medium transition-all
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
   `,
-  btnPrimary: `bg-gradient-to-br from-indigo-500 to-purple-600 text-white`,
-  btnSecondary: `bg-gradient-to-br from-slate-50 to-slate-100 text-slate-700`,
+  btnPrimary: `bg-[#6888ff] text-white`,
+  btnSecondary: `bg-gradient-to-br from-[#dfeaff] to-[#dfeaff] text-[#69738c]`,
   badge: `px-3 py-1 rounded-lg text-xs font-medium`
 };
 
@@ -174,7 +174,7 @@ export default function WebhooksPage() {
 
   const estadoConfig = {
     ACTIVO: { color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle },
-    INACTIVO: { color: 'text-slate-600', bg: 'bg-slate-100', icon: Pause },
+    INACTIVO: { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Pause },
     SUSPENDIDO: { color: 'text-red-600', bg: 'bg-red-100', icon: AlertTriangle }
   };
 
@@ -188,17 +188,17 @@ export default function WebhooksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600">
+            <div className="p-4 rounded-2xl bg-[#6888ff]">
               <Webhook className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">Webhooks</h1>
-              <p className="text-slate-500">Configura integraciones con sistemas externos</p>
+              <h1 className="text-2xl font-bold text-[#69738c]">Webhooks</h1>
+              <p className="text-[#69738c]">Configura integraciones con sistemas externos</p>
             </div>
           </div>
           
@@ -215,15 +215,15 @@ export default function WebhooksPage() {
         <div className="grid grid-cols-4 gap-6 mb-8">
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Webhooks Activos</p>
-              <p className="text-2xl font-bold text-slate-800">
+              <p className="text-sm text-[#69738c] mb-1">Webhooks Activos</p>
+              <p className="text-2xl font-bold text-[#69738c]">
                 {webhooks.filter(w => w.estado === 'ACTIVO').length}
               </p>
             </div>
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Entregas Exitosas (7d)</p>
+              <p className="text-sm text-[#69738c] mb-1">Entregas Exitosas (7d)</p>
               <p className="text-2xl font-bold text-green-600">
                 {webhooks.reduce((acc, w) => acc + w.estadisticas.enviosExitosos, 0)}
               </p>
@@ -231,7 +231,7 @@ export default function WebhooksPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Entregas Fallidas</p>
+              <p className="text-sm text-[#69738c] mb-1">Entregas Fallidas</p>
               <p className="text-2xl font-bold text-red-600">
                 {webhooks.reduce((acc, w) => acc + w.estadisticas.enviosFallidos, 0)}
               </p>
@@ -239,8 +239,8 @@ export default function WebhooksPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Tasa de Éxito</p>
-              <p className="text-2xl font-bold text-indigo-600">
+              <p className="text-sm text-[#69738c] mb-1">Tasa de Éxito</p>
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {(() => {
                   const total = webhooks.reduce((acc, w) => acc + w.estadisticas.enviosExitosos + w.estadisticas.enviosFallidos, 0);
                   const exitosos = webhooks.reduce((acc, w) => acc + w.estadisticas.enviosExitosos, 0);
@@ -271,57 +271,57 @@ export default function WebhooksPage() {
                       </div>
                       <div>
                         <div className="flex items-center gap-3">
-                          <h3 className="font-semibold text-slate-800">{webhook.nombre}</h3>
+                          <h3 className="font-semibold text-[#69738c]">{webhook.nombre}</h3>
                           <span className={`${neuro.badge} ${estado.bg} ${estado.color} flex items-center gap-1`}>
                             <IconoEstado className="w-3 h-3" />
                             {webhook.estado}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-500 truncate max-w-md">{webhook.url}</p>
+                        <p className="text-sm text-[#69738c] truncate max-w-md">{webhook.url}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-6">
                       {/* Eventos */}
                       <div className="text-right">
-                        <p className="text-xs text-slate-400">Eventos</p>
-                        <p className="font-medium text-slate-700">{webhook.eventos.length}</p>
+                        <p className="text-xs text-[#9aa3b8]">Eventos</p>
+                        <p className="font-medium text-[#69738c]">{webhook.eventos.length}</p>
                       </div>
 
                       {/* Estadísticas */}
                       <div className="text-right">
-                        <p className="text-xs text-slate-400">Envíos</p>
+                        <p className="text-xs text-[#9aa3b8]">Envíos</p>
                         <p className="font-medium">
                           <span className="text-green-600">{webhook.estadisticas.enviosExitosos}</span>
-                          <span className="text-slate-400"> / </span>
+                          <span className="text-[#9aa3b8]"> / </span>
                           <span className="text-red-600">{webhook.estadisticas.enviosFallidos}</span>
                         </p>
                       </div>
 
                       {/* Última ejecución */}
                       <div className="text-right w-28">
-                        <p className="text-xs text-slate-400">Última ejecución</p>
-                        <p className="text-sm font-medium text-slate-700">{formatTiempo(webhook.ultimaEjecucion)}</p>
+                        <p className="text-xs text-[#9aa3b8]">Última ejecución</p>
+                        <p className="text-sm font-medium text-[#69738c]">{formatTiempo(webhook.ultimaEjecucion)}</p>
                       </div>
 
                       {/* Acciones */}
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={(e) => { e.stopPropagation(); setSelectedWebhook(webhook); setShowModal('historial'); }}
-                          className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-2 hover:bg-[#dfeaff] rounded-lg transition-colors"
                           title="Ver historial"
                         >
-                          <History className="w-4 h-4 text-slate-500" />
+                          <History className="w-4 h-4 text-[#69738c]" />
                         </button>
                         <button 
                           onClick={(e) => { e.stopPropagation(); ; }}
-                          className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-2 hover:bg-[#dfeaff] rounded-lg transition-colors"
                           title="Enviar prueba"
                         >
-                          <Send className="w-4 h-4 text-slate-500" />
+                          <Send className="w-4 h-4 text-[#69738c]" />
                         </button>
-                        <button aria-label="Más opciones" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                          <MoreVertical className="w-4 h-4 text-slate-500" />
+                        <button aria-label="Más opciones" className="p-2 hover:bg-[#dfeaff] rounded-lg transition-colors">
+                          <MoreVertical className="w-4 h-4 text-[#69738c]" />
                         </button>
                       </div>
                     </div>
@@ -330,7 +330,7 @@ export default function WebhooksPage() {
                   {/* Eventos suscritos */}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {webhook.eventos.map(evento => (
-                      <span key={evento} className={`${neuro.badge} bg-indigo-50 text-indigo-600`}>
+                      <span key={evento} className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                         {evento}
                       </span>
                     ))}
@@ -367,15 +367,15 @@ export default function WebhooksPage() {
                 onClick={e => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-slate-800">Nuevo Webhook</h2>
-                  <button aria-label="Cerrar" onClick={() => setShowModal(null)} className="p-1 hover:bg-slate-100 rounded">
+                  <h2 className="text-xl font-bold text-[#69738c]">Nuevo Webhook</h2>
+                  <button aria-label="Cerrar" onClick={() => setShowModal(null)} className="p-1 hover:bg-[#dfeaff] rounded">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Nombre</label>
+                    <label className="block text-sm font-medium text-[#69738c] mb-2">Nombre</label>
                     <input
                       type="text"
                       aria-label="Nombre del webhook"
@@ -385,23 +385,23 @@ export default function WebhooksPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">URL del Endpoint</label>
+                    <label className="block text-sm font-medium text-[#69738c] mb-2">URL del Endpoint</label>
                     <input
                       type="url"
                       aria-label="URL del Endpoint"
                       placeholder="https://tu-servidor.com/webhook"
                       className={`${neuro.input} w-full`}
                     />
-                    <p className="text-xs text-slate-500 mt-1">Debe ser HTTPS para mayor seguridad</p>
+                    <p className="text-xs text-[#69738c] mt-1">Debe ser HTTPS para mayor seguridad</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Eventos a Suscribir</label>
-                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-slate-50 rounded-xl">
+                    <label className="block text-sm font-medium text-[#69738c] mb-2">Eventos a Suscribir</label>
+                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-[#dfeaff] rounded-xl">
                       {eventosDisponibles.map(evento => (
-                        <label key={evento.id} className="flex items-center gap-2 p-2 hover:bg-white rounded cursor-pointer">
-                          <input type="checkbox" className="rounded text-indigo-600" />
-                          <span className="text-sm text-slate-700">{evento.label}</span>
+                        <label key={evento.id} className="flex items-center gap-2 p-2 hover:bg-[#dfeaff] rounded cursor-pointer">
+                          <input type="checkbox" className="rounded text-[#6888ff]" />
+                          <span className="text-sm text-[#69738c]">{evento.label}</span>
                         </label>
                       ))}
                     </div>
@@ -443,10 +443,10 @@ export default function WebhooksPage() {
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl font-bold text-slate-800">Historial de Entregas</h2>
-                    <p className="text-slate-500">{selectedWebhook.nombre}</p>
+                    <h2 className="text-xl font-bold text-[#69738c]">Historial de Entregas</h2>
+                    <p className="text-[#69738c]">{selectedWebhook.nombre}</p>
                   </div>
-                  <button aria-label="Cerrar" onClick={() => setShowModal(null)} className="p-1 hover:bg-slate-100 rounded">
+                  <button aria-label="Cerrar" onClick={() => setShowModal(null)} className="p-1 hover:bg-[#dfeaff] rounded">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -464,15 +464,15 @@ export default function WebhooksPage() {
                             <Clock className="w-5 h-5 text-amber-500" />
                           )}
                           <div>
-                            <p className="font-medium text-slate-800">{entrega.evento}</p>
-                            <p className="text-xs text-slate-500">
+                            <p className="font-medium text-[#69738c]">{entrega.evento}</p>
+                            <p className="text-xs text-[#69738c]">
                               {entrega.fechaCreacion.toLocaleString()} • {entrega.intentos} intento(s)
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
                           {entrega.respuesta && (
-                            <p className="text-sm text-slate-600">
+                            <p className="text-sm text-[#69738c]">
                               HTTP {entrega.respuesta.status} • {entrega.respuesta.duracionMs}ms
                             </p>
                           )}

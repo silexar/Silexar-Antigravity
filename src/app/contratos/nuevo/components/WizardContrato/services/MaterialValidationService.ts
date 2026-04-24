@@ -1,9 +1,9 @@
 /**
  * 🎬 SILEXAR PULSE - Material Validation Service
- * 
+ *
  * @description Servicio de validación de material creativo
  * con análisis de coherencia y gestión de faltantes.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -12,8 +12,13 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type EstadoMaterial = 'ACTIVO' | 'PENDIENTE' | 'VENCIDO' | 'RECHAZADO' | 'EN_REVISION';
-export type TipoMaterial = 'AUDIO' | 'VIDEO' | 'IMAGEN' | 'HTML5' | 'TEXTO';
+export type EstadoMaterial =
+  | "ACTIVO"
+  | "PENDIENTE"
+  | "VENCIDO"
+  | "RECHAZADO"
+  | "EN_REVISION";
+export type TipoMaterial = "AUDIO" | "VIDEO" | "IMAGEN" | "HTML5" | "TEXTO";
 
 export interface MaterialCreativo {
   id: string;
@@ -49,8 +54,8 @@ export interface ValidacionMaterial {
 }
 
 export interface ProblemaValidacion {
-  tipo: 'DURACION' | 'FORMATO' | 'VENCIMIENTO' | 'APROBACION' | 'COHERENCIA';
-  severidad: 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+  tipo: "DURACION" | "FORMATO" | "VENCIMIENTO" | "APROBACION" | "COHERENCIA";
+  severidad: "BAJA" | "MEDIA" | "ALTA" | "CRITICA";
   descripcion: string;
   solucion?: string;
 }
@@ -62,7 +67,7 @@ export interface MaterialFaltante {
   duracionRequerida: number;
   formatoRequerido: string;
   fechaLimite: Date;
-  prioridad: 'BAJA' | 'NORMAL' | 'ALTA' | 'URGENTE';
+  prioridad: "BAJA" | "NORMAL" | "ALTA" | "URGENTE";
 }
 
 export interface AnalisisCoherencia {
@@ -82,48 +87,48 @@ export interface AnalisisCoherencia {
 
 const mockMateriales: MaterialCreativo[] = [
   {
-    id: 'mat-001',
-    codigo: 'CNA-2025-00123',
-    nombre: 'SuperMax Navidad 30s',
-    tipo: 'AUDIO',
+    id: "mat-001",
+    codigo: "CNA-2025-00123",
+    nombre: "SuperMax Navidad 30s",
+    tipo: "AUDIO",
     duracion: 30,
-    formato: 'WAV',
-    estado: 'ACTIVO',
+    formato: "WAV",
+    estado: "ACTIVO",
     fechaCreacion: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     fechaVencimiento: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-    anuncianteId: 'anun-001',
+    anuncianteId: "anun-001",
     aprobadoLegal: true,
     aprobadoCliente: true,
-    tags: ['navidad', 'promocion', 'retail']
+    tags: ["navidad", "promocion", "retail"],
   },
   {
-    id: 'mat-002',
-    codigo: 'CNA-2025-00124',
-    nombre: 'SuperMax Navidad 20s',
-    tipo: 'AUDIO',
+    id: "mat-002",
+    codigo: "CNA-2025-00124",
+    nombre: "SuperMax Navidad 20s",
+    tipo: "AUDIO",
     duracion: 20,
-    formato: 'WAV',
-    estado: 'ACTIVO',
+    formato: "WAV",
+    estado: "ACTIVO",
     fechaCreacion: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
-    anuncianteId: 'anun-001',
+    anuncianteId: "anun-001",
     aprobadoLegal: true,
     aprobadoCliente: true,
-    tags: ['navidad', 'promocion']
+    tags: ["navidad", "promocion"],
   },
   {
-    id: 'mat-003',
-    codigo: 'CNA-2025-00125',
-    nombre: 'SuperMax Video Central',
-    tipo: 'VIDEO',
+    id: "mat-003",
+    codigo: "CNA-2025-00125",
+    nombre: "SuperMax Video Central",
+    tipo: "VIDEO",
     duracion: 30,
-    formato: 'MP4',
-    estado: 'PENDIENTE',
+    formato: "MP4",
+    estado: "PENDIENTE",
     fechaCreacion: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    anuncianteId: 'anun-001',
+    anuncianteId: "anun-001",
     aprobadoLegal: false,
     aprobadoCliente: true,
-    tags: ['navidad', 'video', 'tv']
-  }
+    tags: ["navidad", "video", "tv"],
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -156,15 +161,19 @@ class MaterialValidationServiceClass {
     totalMateriales: number;
   }> {
     // Simular consulta
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const materiales = mockMateriales.filter(m => m.anuncianteId === anuncianteId);
-    
+    const materiales = mockMateriales.filter((m) =>
+      m.anuncianteId === anuncianteId
+    );
+
     return {
-      materialesActivos: materiales.filter(m => m.estado === 'ACTIVO'),
-      materialesPendientes: materiales.filter(m => m.estado === 'PENDIENTE' || m.estado === 'EN_REVISION'),
-      materialesVencidos: materiales.filter(m => m.estado === 'VENCIDO'),
-      totalMateriales: materiales.length
+      materialesActivos: materiales.filter((m) => m.estado === "ACTIVO"),
+      materialesPendientes: materiales.filter((m) =>
+        m.estado === "PENDIENTE" || m.estado === "EN_REVISION"
+      ),
+      materialesVencidos: materiales.filter((m) => m.estado === "VENCIDO"),
+      totalMateriales: materiales.length,
     };
   }
 
@@ -177,25 +186,27 @@ class MaterialValidationServiceClass {
     medioTipo: string;
     fechaCampana: Date;
   }): Promise<ValidacionMaterial> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
-    const material = mockMateriales.find(m => m.codigo === params.codigoMaterial);
-    
+    const material = mockMateriales.find((m) =>
+      m.codigo === params.codigoMaterial
+    );
+
     if (!material) {
       return {
-        materialId: '',
+        materialId: "",
         materialCodigo: params.codigoMaterial,
         existe: false,
-        estadoActual: 'PENDIENTE',
+        estadoActual: "PENDIENTE",
         esApropiado: false,
         problemas: [{
-          tipo: 'COHERENCIA',
-          severidad: 'CRITICA',
-          descripcion: 'Material no encontrado en el sistema',
-          solucion: 'Crear o importar el material creativo'
+          tipo: "COHERENCIA",
+          severidad: "CRITICA",
+          descripcion: "Material no encontrado en el sistema",
+          solucion: "Crear o importar el material creativo",
         }],
-        sugerencias: ['Crear nuevo material desde el sistema de cuñas'],
-        compatibilidad: []
+        sugerencias: ["Crear nuevo material desde el sistema de cuñas"],
+        compatibilidad: [],
       };
     }
 
@@ -205,35 +216,42 @@ class MaterialValidationServiceClass {
     // Validar duración
     if (material.duracion !== params.duracionRequerida) {
       problemas.push({
-        tipo: 'DURACION',
-        severidad: 'ALTA',
-        descripcion: `Duración ${material.duracion}s no coincide con requerida ${params.duracionRequerida}s`,
-        solucion: 'Editar material o seleccionar versión correcta'
+        tipo: "DURACION",
+        severidad: "ALTA",
+        descripcion:
+          `Duración ${material.duracion}s no coincide con requerida ${params.duracionRequerida}s`,
+        solucion: "Editar material o seleccionar versión correcta",
       });
     }
 
-    // Validar vencimiento
-    if (material.fechaVencimiento && material.fechaVencimiento < params.fechaCampana) {
+    // Validar vencimientos
+    if (
+      material.fechaVencimiento &&
+      material.fechaVencimiento < params.fechaCampana
+    ) {
       problemas.push({
-        tipo: 'VENCIMIENTO',
-        severidad: 'ALTA',
-        descripcion: 'Material vencerá antes de finalizar la campaña',
-        solucion: 'Renovar vigencia del material'
+        tipo: "VENCIMIENTO",
+        severidad: "ALTA",
+        descripcion: "Material vencerá antes de finalizar la campaña",
+        solucion: "Renovar vigencia del material",
       });
     }
 
     // Validar aprobaciones
     if (!material.aprobadoLegal) {
       problemas.push({
-        tipo: 'APROBACION',
-        severidad: 'CRITICA',
-        descripcion: 'Material pendiente de aprobación legal',
-        solucion: 'Enviar a revisión legal'
+        tipo: "APROBACION",
+        severidad: "CRITICA",
+        descripcion: "Material pendiente de aprobación legal",
+        solucion: "Enviar a revisión legal",
       });
     }
 
     // Compatibilidad con medio
-    const compatibilidad = this.verificarCompatibilidad(material, params.medioTipo);
+    const compatibilidad = this.verificarCompatibilidad(
+      material,
+      params.medioTipo,
+    );
 
     return {
       materialId: material.id,
@@ -243,20 +261,23 @@ class MaterialValidationServiceClass {
       esApropiado: problemas.length === 0 && compatibilidad.compatible,
       problemas,
       sugerencias,
-      compatibilidad: [compatibilidad]
+      compatibilidad: [compatibilidad],
     };
   }
 
-  private verificarCompatibilidad(material: MaterialCreativo, medioTipo: string): {
+  private verificarCompatibilidad(
+    material: MaterialCreativo,
+    medioTipo: string,
+  ): {
     medioTipo: string;
     compatible: boolean;
     razon?: string;
   } {
     const compatibilidadMap: Record<string, TipoMaterial[]> = {
-      'RADIO': ['AUDIO'],
-      'TV': ['VIDEO', 'AUDIO'],
-      'DIGITAL': ['VIDEO', 'IMAGEN', 'HTML5'],
-      'VIA_PUBLICA': ['IMAGEN', 'VIDEO']
+      "RADIO": ["AUDIO"],
+      "TV": ["VIDEO", "AUDIO"],
+      "DIGITAL": ["VIDEO", "IMAGEN", "HTML5"],
+      "VIA_PUBLICA": ["IMAGEN", "VIDEO"],
     };
 
     const tiposCompatibles = compatibilidadMap[medioTipo] || [];
@@ -265,9 +286,11 @@ class MaterialValidationServiceClass {
     return {
       medioTipo,
       compatible,
-      razon: compatible 
+      razon: compatible
         ? `Material ${material.tipo} es compatible con ${medioTipo}`
-        : `Material ${material.tipo} no es compatible con ${medioTipo}. Se requiere: ${tiposCompatibles.join(', ')}`
+        : `Material ${material.tipo} no es compatible con ${medioTipo}. Se requiere: ${
+          tiposCompatibles.join(", ")
+        }`,
     };
   }
 
@@ -286,41 +309,45 @@ class MaterialValidationServiceClass {
     objetivoCampana: string;
     audienciaTarget?: string;
   }): Promise<AnalisisCoherencia> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
     // Simulación de análisis IA
     const factores = [
       {
-        nombre: 'Relevancia temática',
+        nombre: "Relevancia temática",
         valor: 85 + Math.floor(Math.random() * 15),
-        comentario: 'El mensaje se alinea con el objetivo de campaña'
+        comentario: "El mensaje se alinea con el objetivo de campaña",
       },
       {
-        nombre: 'Tono y estilo',
+        nombre: "Tono y estilo",
         valor: 75 + Math.floor(Math.random() * 20),
-        comentario: 'Consistente con la marca del anunciante'
+        comentario: "Consistente con la marca del anunciante",
       },
       {
-        nombre: 'Temporalidad',
+        nombre: "Temporalidad",
         valor: 90 + Math.floor(Math.random() * 10),
-        comentario: 'Apropiado para la temporada de la campaña'
+        comentario: "Apropiado para la temporada de la campaña",
       },
       {
-        nombre: 'Audiencia target',
+        nombre: "Audiencia target",
         valor: 70 + Math.floor(Math.random() * 25),
-        comentario: 'Mensaje resonante con el público objetivo'
-      }
+        comentario: "Mensaje resonante con el público objetivo",
+      },
     ];
 
-    const scorePromedio = factores.reduce((acc, f) => acc + f.valor, 0) / factores.length;
+    const scorePromedio = factores.reduce((acc, f) => acc + f.valor, 0) /
+      factores.length;
 
     return {
       score: Math.round(scorePromedio),
       esCoherente: scorePromedio >= 70,
       factores,
-      recomendaciones: scorePromedio < 80 
-        ? ['Considerar ajustar el mensaje para mayor impacto', 'Validar con focus group del target']
-        : ['Material óptimo para la campaña']
+      recomendaciones: scorePromedio < 80
+        ? [
+          "Considerar ajustar el mensaje para mayor impacto",
+          "Validar con focus group del target",
+        ]
+        : ["Material óptimo para la campaña"],
     };
   }
 
@@ -331,30 +358,40 @@ class MaterialValidationServiceClass {
   /**
    * Lista materiales faltantes para una especificación
    */
-  async listarMaterialFaltante(especificaciones: Array<{
-    medioId: string;
-    medioNombre: string;
-    medioTipo: string;
-    duracionSpot: number;
-    codigoMaterialAsignado?: string;
-    fechaInicio: Date;
-  }>): Promise<MaterialFaltante[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+  async listarMaterialFaltante(
+    especificaciones: Array<{
+      medioId: string;
+      medioNombre: string;
+      medioTipo: string;
+      duracionSpot: number;
+      codigoMaterialAsignado?: string;
+      fechaInicio: Date;
+    }>,
+  ): Promise<MaterialFaltante[]> {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     const faltantes: MaterialFaltante[] = [];
 
     for (const esp of especificaciones) {
       if (!esp.codigoMaterialAsignado) {
-        const diasHastaInicio = Math.ceil((esp.fechaInicio.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-        
+        const diasHastaInicio = Math.ceil(
+          (esp.fechaInicio.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+        );
+
         faltantes.push({
           medioId: esp.medioId,
           medioNombre: esp.medioNombre,
           medioTipo: esp.medioTipo,
           duracionRequerida: esp.duracionSpot,
           formatoRequerido: this.obtenerFormatoRequerido(esp.medioTipo),
-          fechaLimite: new Date(esp.fechaInicio.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 días antes
-          prioridad: diasHastaInicio <= 7 ? 'URGENTE' : diasHastaInicio <= 14 ? 'ALTA' : 'NORMAL'
+          fechaLimite: new Date(
+            esp.fechaInicio.getTime() - 3 * 24 * 60 * 60 * 1000,
+          ), // 3 días antes
+          prioridad: diasHastaInicio <= 7
+            ? "URGENTE"
+            : diasHastaInicio <= 14
+            ? "ALTA"
+            : "NORMAL",
         });
       }
     }
@@ -364,12 +401,12 @@ class MaterialValidationServiceClass {
 
   private obtenerFormatoRequerido(medioTipo: string): string {
     const formatos: Record<string, string> = {
-      'RADIO': 'WAV/MP3',
-      'TV': 'MP4/MOV',
-      'DIGITAL': 'MP4/GIF/HTML5',
-      'VIA_PUBLICA': 'JPEG/PNG'
+      "RADIO": "WAV/MP3",
+      "TV": "MP4/MOV",
+      "DIGITAL": "MP4/GIF/HTML5",
+      "VIA_PUBLICA": "JPEG/PNG",
     };
-    return formatos[medioTipo] || 'Consultar';
+    return formatos[medioTipo] || "Consultar";
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -394,13 +431,14 @@ class MaterialValidationServiceClass {
     solicitudId: string;
     urlModuloCunas: string;
   }> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     const solicitudId = `SOL-${Date.now()}`;
-    
+
     return {
       solicitudId,
-      urlModuloCunas: `/cunas/nueva?solicitud=${solicitudId}&contrato=${params.contratoId}`
+      urlModuloCunas:
+        `/cunas/nueva?solicitud=${solicitudId}&contrato=${params.contratoId}`,
     };
   }
 
@@ -413,17 +451,18 @@ class MaterialValidationServiceClass {
     duracion: number;
     tags?: string[];
   }): Promise<MaterialCreativo[]> {
-    await new Promise(resolve => setTimeout(resolve, 250));
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
-    return mockMateriales.filter(m => 
+    return mockMateriales.filter((m) =>
       m.anuncianteId === params.anuncianteId &&
-      m.estado === 'ACTIVO' &&
+      m.estado === "ACTIVO" &&
       m.duracion === params.duracion
     );
   }
 }
 
-export const MaterialValidationService = MaterialValidationServiceClass.getInstance();
+export const MaterialValidationService = MaterialValidationServiceClass
+  .getInstance();
 
 // Hook para uso en componentes React
 export function useMaterialValidation() {

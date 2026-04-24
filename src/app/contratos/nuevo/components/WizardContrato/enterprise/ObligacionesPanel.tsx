@@ -1,75 +1,113 @@
 /**
  * 📋 SILEXAR PULSE - Panel de Obligaciones TIER 0
- * 
+ *
  * @description Gestión visual de obligaciones contractuales
  * con tracking de estado, alertas y extracción IA.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
 
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  ClipboardList,
-  CheckCircle2,
-  Clock,
   AlertTriangle,
-  Calendar,
-  User,
-  FileText,
-  Plus,
-  Filter,
-  RefreshCw,
-  Sparkles,
-  Bell,
-  TrendingUp,
-  Package,
-  DollarSign,
   BarChart3,
+  Bell,
+  Calendar,
+  CheckCircle2,
+  ClipboardList,
+  Clock,
+  DollarSign,
+  FileText,
+  Filter,
+  Package,
+  Plus,
+  RefreshCw,
   Send,
-  X
-} from 'lucide-react';
-import { 
-  ObligacionContrato, 
-  TipoObligacion, 
+  Sparkles,
+  TrendingUp,
+  User,
+  X,
+} from "lucide-react";
+import {
   EstadoObligacion,
-  ResumenObligaciones 
-} from '../types/enterprise.types';
-import { useObligaciones } from '../services/ObligacionesService';
+  ObligacionContrato,
+  ResumenObligaciones,
+  TipoObligacion,
+} from "../types/enterprise.types";
+import { useObligaciones } from "../services/ObligacionesService";
 
 // ═══════════════════════════════════════════════════════════════
 // CONFIGURACIÓN
 // ═══════════════════════════════════════════════════════════════
 
-const ESTADO_CONFIG: Record<EstadoObligacion, { 
-  color: string; 
-  bgColor: string; 
+const ESTADO_CONFIG: Record<EstadoObligacion, {
+  color: string;
+  bgColor: string;
   icon: React.ElementType;
   label: string;
 }> = {
-  pendiente: { color: 'text-slate-500', bgColor: 'bg-slate-100', icon: Clock, label: 'Pendiente' },
-  en_progreso: { color: 'text-blue-500', bgColor: 'bg-blue-100', icon: RefreshCw, label: 'En Progreso' },
-  completada: { color: 'text-emerald-500', bgColor: 'bg-emerald-100', icon: CheckCircle2, label: 'Completada' },
-  vencida: { color: 'text-red-500', bgColor: 'bg-red-100', icon: AlertTriangle, label: 'Vencida' },
-  incumplida: { color: 'text-red-700', bgColor: 'bg-red-200', icon: X, label: 'Incumplida' },
-  dispensada: { color: 'text-purple-500', bgColor: 'bg-purple-100', icon: CheckCircle2, label: 'Dispensada' },
-  en_disputa: { color: 'text-amber-500', bgColor: 'bg-amber-100', icon: AlertTriangle, label: 'En Disputa' }
+  pendiente: {
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
+    icon: Clock,
+    label: "Pendiente",
+  },
+  en_progreso: {
+    color: "text-blue-500",
+    bgColor: "bg-blue-100",
+    icon: RefreshCw,
+    label: "En Progreso",
+  },
+  completada: {
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-100",
+    icon: CheckCircle2,
+    label: "Completada",
+  },
+  vencida: {
+    color: "text-red-500",
+    bgColor: "bg-red-100",
+    icon: AlertTriangle,
+    label: "Vencida",
+  },
+  incumplida: {
+    color: "text-red-700",
+    bgColor: "bg-red-200",
+    icon: X,
+    label: "Incumplida",
+  },
+  dispensada: {
+    color: "text-purple-500",
+    bgColor: "bg-purple-100",
+    icon: CheckCircle2,
+    label: "Dispensada",
+  },
+  en_disputa: {
+    color: "text-amber-500",
+    bgColor: "bg-amber-100",
+    icon: AlertTriangle,
+    label: "En Disputa",
+  },
 };
 
-const TIPO_CONFIG: Record<TipoObligacion, { icon: React.ElementType; label: string }> = {
-  entrega_material: { icon: Package, label: 'Entrega Material' },
-  pago: { icon: DollarSign, label: 'Pago' },
-  reporte: { icon: BarChart3, label: 'Reporte' },
-  aprobacion_material: { icon: CheckCircle2, label: 'Aprobación' },
-  exclusividad: { icon: User, label: 'Exclusividad' },
-  confidencialidad: { icon: FileText, label: 'Confidencialidad' },
-  entrega_pauta: { icon: Send, label: 'Entrega Pauta' },
-  facturacion: { icon: FileText, label: 'Facturación' },
-  renovacion: { icon: RefreshCw, label: 'Renovación' },
-  otro: { icon: ClipboardList, label: 'Otro' }
+const TIPO_CONFIG: Record<
+  TipoObligacion,
+  { icon: React.ElementType; label: string }
+> = {
+  entrega_material: { icon: Package, label: "Entrega Material" },
+  pago: { icon: DollarSign, label: "Pago" },
+  reporte: { icon: BarChart3, label: "Reporte" },
+  aprobacion_material: { icon: CheckCircle2, label: "Aprobación" },
+  exclusividad: { icon: User, label: "Exclusividad" },
+  confidencialidad: { icon: FileText, label: "Confidencialidad" },
+  entrega_pauta: { icon: Send, label: "Entrega Pauta" },
+  facturacion: { icon: FileText, label: "Facturación" },
+  renovacion: { icon: RefreshCw, label: "Renovación" },
+  otro: { icon: ClipboardList, label: "Otro" },
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -81,7 +119,7 @@ const ResumenCard: React.FC<{
   valor: number;
   icono: React.ElementType;
   color: string;
-  trend?: { valor: number; tipo: 'up' | 'down' };
+  trend?: { valor: number; tipo: "up" | "down" };
 }> = ({ titulo, valor, icono: Icon, color, trend }) => (
   <motion.div
     className={`p-4 rounded-xl ${color} transition-all`}
@@ -90,8 +128,13 @@ const ResumenCard: React.FC<{
     <div className="flex items-center justify-between">
       <Icon className="w-5 h-5 opacity-70" />
       {trend && (
-        <span className={`text-xs font-medium ${trend.tipo === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
-          {trend.tipo === 'up' ? '+' : ''}{trend.valor}%
+        <span
+          className={`text-xs font-medium ${
+            trend.tipo === "up" ? "text-emerald-600" : "text-red-600"
+          }`}
+        >
+          {trend.tipo === "up" ? "+" : ""}
+          {trend.valor}%
         </span>
       )}
     </div>
@@ -109,28 +152,36 @@ const ObligacionCard: React.FC<{
   const tipoConfig = TIPO_CONFIG[obligacion.tipo];
   const IconoEstado = estadoConfig.icon;
   const IconoTipo = tipoConfig.icon;
-  
+
   const diasRestantes = useMemo(() => {
     const ahora = new Date();
     return Math.ceil(
-      (obligacion.fechaLimite.getTime() - ahora.getTime()) / (24 * 60 * 60 * 1000)
+      (obligacion.fechaLimite.getTime() - ahora.getTime()) /
+        (24 * 60 * 60 * 1000),
     );
   }, [obligacion.fechaLimite]);
-  
-  const urgencia = diasRestantes <= 0 ? 'critica' : diasRestantes <= 3 ? 'alta' : diasRestantes <= 7 ? 'media' : 'baja';
-  
+
+  const urgencia = diasRestantes <= 0
+    ? "critica"
+    : diasRestantes <= 3
+    ? "alta"
+    : diasRestantes <= 7
+    ? "media"
+    : "baja";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`
         p-4 rounded-xl border-2 transition-all cursor-pointer
-        ${obligacion.estado === 'vencida' || obligacion.estado === 'incumplida'
-          ? 'border-red-200 bg-red-50'
-          : urgencia === 'alta'
-            ? 'border-amber-200 bg-amber-50'
-            : 'border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/30'
-        }
+        ${
+        obligacion.estado === "vencida" || obligacion.estado === "incumplida"
+          ? "border-red-200 bg-red-50"
+          : urgencia === "alta"
+          ? "border-amber-200 bg-amber-50"
+          : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#6888ff30] hover:bg-[#6888ff15]/30"
+      }
       `}
       onClick={onVerDetalles}
       whileHover={{ x: 4 }}
@@ -140,11 +191,13 @@ const ObligacionCard: React.FC<{
         <div className={`p-2 rounded-lg ${estadoConfig.bgColor}`}>
           <IconoTipo className={`w-5 h-5 ${estadoConfig.color}`} />
         </div>
-        
+
         {/* Contenido */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-semibold text-slate-800 truncate">{obligacion.titulo}</h4>
+            <h4 className="font-semibold text-[#69738c] truncate">
+              {obligacion.titulo}
+            </h4>
             {obligacion.extraidaPorIA && (
               <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-600 text-[10px] font-medium flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" />
@@ -152,17 +205,21 @@ const ObligacionCard: React.FC<{
               </span>
             )}
           </div>
-          
-          <p className="text-sm text-slate-600 line-clamp-1">{obligacion.descripcion}</p>
-          
-          <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+
+          <p className="text-sm text-[#69738c] line-clamp-1">
+            {obligacion.descripcion}
+          </p>
+
+          <div className="flex items-center gap-4 mt-2 text-xs text-[#9aa3b8]">
             <span className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              {obligacion.fechaLimite.toLocaleDateString('es-CL')}
+              {obligacion.fechaLimite.toLocaleDateString("es-CL")}
             </span>
             <span className="flex items-center gap-1">
               <User className="w-3 h-3" />
-              {obligacion.responsable.tipo === 'empresa' ? 'Empresa' : 'Cliente'}
+              {obligacion.responsable.tipo === "empresa"
+                ? "Empresa"
+                : "Cliente"}
             </span>
             {obligacion.penalizacion && (
               <span className="flex items-center gap-1 text-red-500">
@@ -172,30 +229,40 @@ const ObligacionCard: React.FC<{
             )}
           </div>
         </div>
-        
+
         {/* Estado y acciones */}
         <div className="flex flex-col items-end gap-2">
-          <span className={`
+          <span
+            className={`
             px-2 py-1 rounded-lg text-xs font-medium flex items-center gap-1
             ${estadoConfig.bgColor} ${estadoConfig.color}
-          `}>
+          `}
+          >
             <IconoEstado className="w-3 h-3" />
             {estadoConfig.label}
           </span>
-          
-          {diasRestantes <= 7 && obligacion.estado !== 'completada' && (
-            <span className={`
+
+          {diasRestantes <= 7 && obligacion.estado !== "completada" && (
+            <span
+              className={`
               text-xs font-medium
-              ${diasRestantes <= 0 ? 'text-red-600' : diasRestantes <= 3 ? 'text-amber-600' : 'text-slate-500'}
-            `}>
-              {diasRestantes <= 0 
-                ? `Vencida hace ${Math.abs(diasRestantes)} días`
-                : `${diasRestantes} días restantes`
+              ${
+                diasRestantes <= 0
+                  ? "text-red-600"
+                  : diasRestantes <= 3
+                  ? "text-amber-600"
+                  : "text-[#9aa3b8]"
               }
+            `}
+            >
+              {diasRestantes <= 0
+                ? `Vencida hace ${Math.abs(diasRestantes)} días`
+                : `${diasRestantes} días restantes`}
             </span>
           )}
-          
-          {obligacion.estado !== 'completada' && obligacion.estado !== 'incumplida' && (
+
+          {obligacion.estado !== "completada" &&
+            obligacion.estado !== "incumplida" && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -209,15 +276,16 @@ const ObligacionCard: React.FC<{
           )}
         </div>
       </div>
-      
+
       {/* Barra de progreso */}
-      {obligacion.porcentajeCompletado > 0 && obligacion.porcentajeCompletado < 100 && (
+      {obligacion.porcentajeCompletado > 0 &&
+        obligacion.porcentajeCompletado < 100 && (
         <div className="mt-3">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+          <div className="flex items-center justify-between text-xs text-[#9aa3b8] mb-1">
             <span>Progreso</span>
             <span>{obligacion.porcentajeCompletado}%</span>
           </div>
-          <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-[#dfeaff] rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-indigo-500 rounded-full"
               initial={{ width: 0 }}
@@ -239,10 +307,11 @@ const FiltroChip: React.FC<{
     onClick={onClick}
     className={`
       px-3 py-1.5 rounded-lg text-sm font-medium transition-all
-      ${activo 
-        ? 'bg-indigo-500 text-white' 
-        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-      }
+      ${
+      activo
+        ? "bg-indigo-500 text-white"
+        : "bg-[#dfeaff] text-[#69738c] hover:bg-[#dfeaff]"
+    }
     `}
   >
     {children}
@@ -260,107 +329,114 @@ interface ObligacionesPanelProps {
 
 export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
   contratoId,
-  onClose
+  onClose,
 }) => {
-  const [filtroEstado, setFiltroEstado] = useState<EstadoObligacion | 'todas'>('todas');
-  const [filtroTipo] = useState<TipoObligacion | 'todos'>('todos');
+  const [filtroEstado, setFiltroEstado] = useState<EstadoObligacion | "todas">(
+    "todas",
+  );
+  const [filtroTipo] = useState<TipoObligacion | "todos">("todos");
   const [mostrarCrear, setMostrarCrear] = useState(false);
-  
+
   const obligacionesService = useObligaciones(contratoId);
-  const obligaciones = contratoId 
+  const obligaciones = contratoId
     ? (obligacionesService.obtenerPorContrato as () => ObligacionContrato[])()
     : [];
   const resumen = obligacionesService.obtenerResumen();
-  
+
   // Mock para demo
   const mockObligaciones: ObligacionContrato[] = [
     {
-      id: '1',
-      contratoId: contratoId || 'c-001',
-      numeroContrato: 'CON-2024-00145',
-      tipo: 'entrega_material',
-      titulo: 'Entrega de Material Creativo',
-      descripcion: 'El cliente debe entregar spots de radio y material gráfico',
-      clausulaOrigen: 'Cláusula 5.1',
-      responsable: { tipo: 'cliente', personaNombre: 'Marketing Team' },
+      id: "1",
+      contratoId: contratoId || "c-001",
+      numeroContrato: "CON-2024-00145",
+      tipo: "entrega_material",
+      titulo: "Entrega de Material Creativo",
+      descripcion: "El cliente debe entregar spots de radio y material gráfico",
+      clausulaOrigen: "Cláusula 5.1",
+      responsable: { tipo: "cliente", personaNombre: "Marketing Team" },
       fechaInicio: new Date(),
       fechaLimite: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      frecuencia: 'unico',
+      frecuencia: "unico",
       diasAnticipacionAlerta: [7, 3, 1],
-      estado: 'pendiente',
+      estado: "pendiente",
       porcentajeCompletado: 0,
       documentosAdjuntos: [],
       alertasEnviadas: [],
-      creadoPor: 'sistema',
+      creadoPor: "sistema",
       fechaCreacion: new Date(),
       ultimaModificacion: new Date(),
       extraidaPorIA: true,
-      confianzaExtraccion: 95
+      confianzaExtraccion: 95,
     },
     {
-      id: '2',
-      contratoId: contratoId || 'c-001',
-      numeroContrato: 'CON-2024-00145',
-      tipo: 'pago',
-      titulo: 'Pago Cuota 1/3',
-      descripcion: 'Primera cuota del contrato por $15.000.000',
-      clausulaOrigen: 'Cláusula 3.2',
-      responsable: { tipo: 'cliente', personaNombre: 'Finanzas' },
+      id: "2",
+      contratoId: contratoId || "c-001",
+      numeroContrato: "CON-2024-00145",
+      tipo: "pago",
+      titulo: "Pago Cuota 1/3",
+      descripcion: "Primera cuota del contrato por $15.000.000",
+      clausulaOrigen: "Cláusula 3.2",
+      responsable: { tipo: "cliente", personaNombre: "Finanzas" },
       fechaInicio: new Date(),
       fechaLimite: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-      frecuencia: 'unico',
+      frecuencia: "unico",
       diasAnticipacionAlerta: [5, 2, 1],
-      estado: 'pendiente',
+      estado: "pendiente",
       porcentajeCompletado: 0,
       documentosAdjuntos: [],
       alertasEnviadas: [],
-      creadoPor: 'sistema',
+      creadoPor: "sistema",
       fechaCreacion: new Date(),
       ultimaModificacion: new Date(),
       extraidaPorIA: true,
       penalizacion: {
-        tipo: 'interes_mora',
+        tipo: "interes_mora",
         porcentaje: 1.5,
-        descripcion: 'Interés por mora del 1.5% mensual'
-      }
+        descripcion: "Interés por mora del 1.5% mensual",
+      },
     },
     {
-      id: '3',
-      contratoId: contratoId || 'c-001',
-      numeroContrato: 'CON-2024-00145',
-      tipo: 'reporte',
-      titulo: 'Reporte Mensual de Campaña',
-      descripcion: 'Generar y entregar reporte de performance',
-      clausulaOrigen: 'Cláusula 7.1',
-      responsable: { tipo: 'empresa', departamento: 'Analytics' },
+      id: "3",
+      contratoId: contratoId || "c-001",
+      numeroContrato: "CON-2024-00145",
+      tipo: "reporte",
+      titulo: "Reporte Mensual de Campaña",
+      descripcion: "Generar y entregar reporte de performance",
+      clausulaOrigen: "Cláusula 7.1",
+      responsable: { tipo: "empresa", departamento: "Analytics" },
       fechaInicio: new Date(),
       fechaLimite: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      frecuencia: 'mensual',
+      frecuencia: "mensual",
       diasAnticipacionAlerta: [3, 1],
-      estado: 'vencida',
+      estado: "vencida",
       porcentajeCompletado: 60,
       documentosAdjuntos: [],
       alertasEnviadas: [
-        { fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), canal: 'email', destinatario: 'analytics@silexar.com', leida: true }
+        {
+          fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          canal: "email",
+          destinatario: "analytics@silexar.com",
+          leida: true,
+        },
       ],
-      creadoPor: 'sistema',
+      creadoPor: "sistema",
       fechaCreacion: new Date(),
       ultimaModificacion: new Date(),
-      extraidaPorIA: true
-    }
+      extraidaPorIA: true,
+    },
   ];
-  
+
   const obligacionesFiltradas = useMemo(() => {
     const lista = obligaciones.length > 0 ? obligaciones : mockObligaciones;
-    
-    return lista.filter(o => {
-      if (filtroEstado !== 'todas' && o.estado !== filtroEstado) return false;
-      if (filtroTipo !== 'todos' && o.tipo !== filtroTipo) return false;
+
+    return lista.filter((o) => {
+      if (filtroEstado !== "todas" && o.estado !== filtroEstado) return false;
+      if (filtroTipo !== "todos" && o.tipo !== filtroTipo) return false;
       return true;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [obligaciones.length, filtroEstado, filtroTipo]);
-  
+
   const resumenData: ResumenObligaciones = resumen.total > 0 ? resumen : {
     total: mockObligaciones.length,
     porEstado: {
@@ -370,40 +446,44 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
       vencida: 1,
       incumplida: 0,
       dispensada: 0,
-      en_disputa: 0
+      en_disputa: 0,
     },
     vencidasHoy: 0,
     proximasVencer: 2,
     cumplimientoPorcentaje: 0,
-    obligacionesCriticas: mockObligaciones.filter(o => o.estado === 'vencida')
+    obligacionesCriticas: mockObligaciones.filter((o) =>
+      o.estado === "vencida"
+    ),
   };
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+      className="bg-[#dfeaff] rounded-3xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] overflow-hidden"
     >
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-slate-800 to-slate-900">
+      <div className="p-6 bg-[#69738c]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm">
+            <div className="p-3 rounded-2xl bg-[#dfeaff]/10 ">
               <ClipboardList className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Gestión de Obligaciones</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Gestión de Obligaciones
+              </h2>
               <p className="text-white/70 text-sm flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 Extracción automática con IA
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMostrarCrear(true)}
-              className="px-4 py-2 rounded-xl bg-white text-slate-800 font-medium flex items-center gap-2 hover:bg-slate-100 transition-colors"
+              className="px-4 py-2 rounded-xl bg-[#dfeaff] text-[#69738c] font-medium flex items-center gap-2 hover:bg-[#dfeaff] transition-colors"
             >
               <Plus className="w-4 h-4" />
               Nueva Obligación
@@ -411,7 +491,7 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
             {onClose && (
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="p-2 rounded-lg bg-[#dfeaff]/10 text-white hover:bg-[#dfeaff]/20 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -419,7 +499,7 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="p-6">
         {/* Resumen */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
@@ -427,7 +507,7 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
             titulo="Total"
             valor={resumenData.total}
             icono={ClipboardList}
-            color="bg-slate-100 text-slate-700"
+            color="bg-[#dfeaff] text-[#69738c]"
           />
           <ResumenCard
             titulo="Pendientes"
@@ -452,90 +532,94 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
             valor={Math.round(resumenData.cumplimientoPorcentaje)}
             icono={TrendingUp}
             color="bg-purple-50 text-purple-700"
-            trend={{ valor: 5, tipo: 'up' }}
+            trend={{ valor: 5, tipo: "up" }}
           />
         </div>
-        
+
         {/* Alertas críticas */}
         {resumenData.obligacionesCriticas.length > 0 && (
           <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
             <div className="flex items-center gap-2 mb-2">
               <Bell className="w-5 h-5 text-red-500" />
               <span className="font-semibold text-red-700">
-                {resumenData.obligacionesCriticas.length} obligaciones requieren atención urgente
+                {resumenData.obligacionesCriticas.length}{" "}
+                obligaciones requieren atención urgente
               </span>
             </div>
             <p className="text-sm text-red-600">
-              Hay obligaciones vencidas o próximas a vencer que necesitan acción inmediata.
+              Hay obligaciones vencidas o próximas a vencer que necesitan acción
+              inmediata.
             </p>
           </div>
         )}
-        
+
         {/* Filtros */}
         <div className="flex flex-wrap gap-4 mb-6">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
-            <span className="text-sm text-slate-500">Estado:</span>
+            <Filter className="w-4 h-4 text-[#9aa3b8]" />
+            <span className="text-sm text-[#9aa3b8]">Estado:</span>
             <div className="flex gap-1">
               <FiltroChip
-                activo={filtroEstado === 'todas'}
-                onClick={() => setFiltroEstado('todas')}
+                activo={filtroEstado === "todas"}
+                onClick={() => setFiltroEstado("todas")}
               >
                 Todas
               </FiltroChip>
               <FiltroChip
-                activo={filtroEstado === 'pendiente'}
-                onClick={() => setFiltroEstado('pendiente')}
+                activo={filtroEstado === "pendiente"}
+                onClick={() => setFiltroEstado("pendiente")}
               >
                 Pendientes
               </FiltroChip>
               <FiltroChip
-                activo={filtroEstado === 'vencida'}
-                onClick={() => setFiltroEstado('vencida')}
+                activo={filtroEstado === "vencida"}
+                onClick={() => setFiltroEstado("vencida")}
               >
                 Vencidas
               </FiltroChip>
               <FiltroChip
-                activo={filtroEstado === 'completada'}
-                onClick={() => setFiltroEstado('completada')}
+                activo={filtroEstado === "completada"}
+                onClick={() => setFiltroEstado("completada")}
               >
                 Completadas
               </FiltroChip>
             </div>
           </div>
         </div>
-        
+
         {/* Lista de obligaciones */}
         <div className="space-y-3">
           <AnimatePresence>
-            {obligacionesFiltradas.length > 0 ? (
-              obligacionesFiltradas.map(obligacion => (
-                <ObligacionCard
-                  key={obligacion.id}
-                  obligacion={obligacion}
-                  onCompletarClick={() => {
-                    ;
-                    obligacionesService.marcarCompletada(obligacion.id);
-                  }}
-                  onVerDetalles={() => {
-                    ;
-                  }}
-                />
-              ))
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="p-12 text-center"
-              >
-                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                <p className="text-slate-600">No hay obligaciones que mostrar</p>
-              </motion.div>
-            )}
+            {obligacionesFiltradas.length > 0
+              ? (
+                obligacionesFiltradas.map((obligacion) => (
+                  <ObligacionCard
+                    key={obligacion.id}
+                    obligacion={obligacion}
+                    onCompletarClick={() => {
+                      obligacionesService.marcarCompletada(obligacion.id);
+                    }}
+                    onVerDetalles={() => {
+                    }}
+                  />
+                ))
+              )
+              : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-12 text-center"
+                >
+                  <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                  <p className="text-[#69738c]">
+                    No hay obligaciones que mostrar
+                  </p>
+                </motion.div>
+              )}
           </AnimatePresence>
         </div>
       </div>
-      
+
       {/* Modal crear (placeholder) */}
       <AnimatePresence>
         {mostrarCrear && (
@@ -550,24 +634,23 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-white rounded-2xl p-6 max-w-md w-full mx-4"
-              onClick={e => e.stopPropagation()}
+              className="bg-[#dfeaff] rounded-2xl p-6 max-w-md w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-lg font-semibold mb-4">Nueva Obligación</h3>
-              <p className="text-slate-600 text-sm mb-4">
-                Las obligaciones se extraen automáticamente del contrato usando IA.
-                También puedes agregar manualmente.
+              <p className="text-[#69738c] text-sm mb-4">
+                Las obligaciones se extraen automáticamente del contrato usando
+                IA. También puedes agregar manualmente.
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setMostrarCrear(false)}
-                  className="flex-1 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+                  className="flex-1 px-4 py-2 rounded-lg border border-[#bec8de40] text-[#69738c] hover:bg-[#dfeaff]"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={() => {
-                    ;
                     setMostrarCrear(false);
                   }}
                   className="flex-1 px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 flex items-center justify-center gap-2"

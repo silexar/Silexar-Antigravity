@@ -1,14 +1,14 @@
-import { logger } from '@/lib/observability';
+import { logger } from "@/lib/observability";
 /**
  * 💰 SILEXAR PULSE - Cuenta Corriente Service TIER 0
- * 
+ *
  * @description Servicio para gestión de cuenta corriente de contratos:
  * - Apertura automática de cuenta al crear contrato
  * - Registro de todos los movimientos
  * - Cálculo de saldos en tiempo real
  * - Generación de estado de cuenta profesional
  * - Envío por email en múltiples formatos
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -17,42 +17,42 @@ import { logger } from '@/lib/observability';
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type TipoMovimiento = 
-  | 'APERTURA_CUENTA'
-  | 'CARGO_FACTURA'
-  | 'CARGO_INTERES'
-  | 'CARGO_MORA'
-  | 'ABONO_PAGO'
-  | 'ABONO_TRANSFERENCIA'
-  | 'ABONO_EFECTIVO'
-  | 'ABONO_CHEQUE'
-  | 'CREDITO_NOTA_CREDITO'
-  | 'CREDITO_DESCUENTO'
-  | 'CREDITO_PROMOCION'
-  | 'DEBITO_NOTA_DEBITO'
-  | 'DEBITO_PENALIZACION'
-  | 'AJUSTE_POSITIVO'
-  | 'AJUSTE_NEGATIVO';
+export type TipoMovimiento =
+  | "APERTURA_CUENTA"
+  | "CARGO_FACTURA"
+  | "CARGO_INTERES"
+  | "CARGO_MORA"
+  | "ABONO_PAGO"
+  | "ABONO_TRANSFERENCIA"
+  | "ABONO_EFECTIVO"
+  | "ABONO_CHEQUE"
+  | "CREDITO_NOTA_CREDITO"
+  | "CREDITO_DESCUENTO"
+  | "CREDITO_PROMOCION"
+  | "DEBITO_NOTA_DEBITO"
+  | "DEBITO_PENALIZACION"
+  | "AJUSTE_POSITIVO"
+  | "AJUSTE_NEGATIVO";
 
-export type EstadoCuenta = 'ACTIVA' | 'CERRADA' | 'MORATORIA' | 'CASTIGADA';
+export type EstadoCuenta = "ACTIVA" | "CERRADA" | "MORATORIA" | "CASTIGADA";
 
 export interface CuentaCorriente {
   id: string;
   contratoId: string;
   numeroContrato: string;
   fechaApertura: Date;
-  
+
   // Cliente
   clienteId: string;
   clienteRut: string;
   clienteNombre: string;
   clienteEmail?: string;
-  
+
   // Valores
   valorOriginalContrato: number;
   montoIVA: number;
   valorTotalContrato: number;
-  
+
   // Saldos
   totalCargos: number;
   totalAbonos: number;
@@ -60,13 +60,13 @@ export interface CuentaCorriente {
   totalDebitos: number;
   totalAjustes: number;
   saldoPendiente: number;
-  
+
   // Estado
   estado: EstadoCuenta;
   diasMoraActual: number;
   fechaUltimoMovimiento?: Date;
   fechaUltimoPago?: Date;
-  
+
   // Movimientos
   movimientos: Movimiento[];
 }
@@ -77,32 +77,32 @@ export interface Movimiento {
   fechaMovimiento: Date;
   fechaValor: Date;
   tipoMovimiento: TipoMovimiento;
-  
+
   // Documento
   documentoTipo?: string;
   documentoNumero?: string;
   documentoUrl?: string;
-  
+
   // Montos
   montoBruto: number;
   montoIVA: number;
   montoRetencion: number;
   montoNeto: number;
   esCargo: boolean;
-  
+
   // Saldos
   saldoAnterior: number;
   saldoPosterior: number;
-  
+
   // Descripción
   concepto: string;
   detalleConcepto?: string;
-  
+
   // Pago
   medioPago?: string;
   bancoOrigen?: string;
   numeroOperacion?: string;
-  
+
   // Estado
   conciliado: boolean;
   anulado: boolean;
@@ -113,20 +113,20 @@ export interface EstadoCuentaGenerado {
   periodoDesde: Date;
   periodoHasta: Date;
   fechaGeneracion: Date;
-  
+
   // Datos cuenta
   cuentaCorriente: CuentaCorriente;
   movimientosPeriodo: Movimiento[];
-  
+
   // Resumen
   saldoInicial: number;
   saldoFinal: number;
   totalCargos: number;
   totalAbonos: number;
   cantidadMovimientos: number;
-  
+
   // Documento
-  formatoDocumento: 'PDF' | 'EXCEL' | 'CSV';
+  formatoDocumento: "PDF" | "EXCEL" | "CSV";
   urlDocumento?: string;
 }
 
@@ -137,7 +137,7 @@ export interface EstadoCuentaGenerado {
 class CuentaCorrienteEngine {
   private static instance: CuentaCorrienteEngine;
   private cuentas: Map<string, CuentaCorriente> = new Map();
-  
+
   private constructor() {
     this.inicializarDemoData();
   }
@@ -186,20 +186,25 @@ class CuentaCorrienteEngine {
       totalDebitos: 0,
       totalAjustes: 0,
       saldoPendiente: 0,
-      estado: 'ACTIVA',
+      estado: "ACTIVA",
       diasMoraActual: 0,
-      movimientos: []
+      movimientos: [],
     };
 
     // Registrar movimiento de apertura
     this.registrarMovimiento(cuenta.id, {
-      tipoMovimiento: 'APERTURA_CUENTA',
+      tipoMovimiento: "APERTURA_CUENTA",
       montoBruto: params.valorTotal,
       montoIVA: params.montoIVA,
-      concepto: `Apertura de cuenta corriente - Contrato ${params.numeroContrato}`,
-      detalleConcepto: `Valor neto: ${this.formatCurrency(params.valorNeto)} | IVA: ${this.formatCurrency(params.montoIVA)} | Total: ${this.formatCurrency(params.valorTotal)}`,
+      concepto:
+        `Apertura de cuenta corriente - Contrato ${params.numeroContrato}`,
+      detalleConcepto: `Valor neto: ${
+        this.formatCurrency(params.valorNeto)
+      } | IVA: ${this.formatCurrency(params.montoIVA)} | Total: ${
+        this.formatCurrency(params.valorTotal)
+      }`,
       usuario: params.usuario,
-      usuarioNombre: params.usuario
+      usuarioNombre: params.usuario,
     });
 
     this.cuentas.set(cuenta.id, cuenta);
@@ -231,14 +236,17 @@ class CuentaCorrienteEngine {
     usuarioNombre: string;
   }): Movimiento {
     const cuenta = this.cuentas.get(cuentaId);
-    if (!cuenta) throw new Error('Cuenta corriente no encontrada');
+    if (!cuenta) throw new Error("Cuenta corriente no encontrada");
 
-    const montoNeto = params.montoBruto + (params.montoIVA || 0) - (params.montoRetencion || 0);
+    const montoNeto = params.montoBruto + (params.montoIVA || 0) -
+      (params.montoRetencion || 0);
     const esCargo = this.esMovimientoCargo(params.tipoMovimiento);
     const saldoAnterior = cuenta.saldoPendiente;
-    
+
     // Calcular nuevo saldo
-    const saldoPosterior = esCargo ? saldoAnterior + montoNeto : saldoAnterior - montoNeto;
+    const saldoPosterior = esCargo
+      ? saldoAnterior + montoNeto
+      : saldoAnterior - montoNeto;
 
     const movimiento: Movimiento = {
       id: `mov-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -262,25 +270,25 @@ class CuentaCorrienteEngine {
       bancoOrigen: params.bancoOrigen,
       numeroOperacion: params.numeroOperacion,
       conciliado: false,
-      anulado: false
+      anulado: false,
     };
 
     // Actualizar cuenta
     cuenta.movimientos.push(movimiento);
     cuenta.saldoPendiente = saldoPosterior;
     cuenta.fechaUltimoMovimiento = new Date();
-    
+
     // Actualizar totales
-    if (params.tipoMovimiento.startsWith('CARGO')) {
+    if (params.tipoMovimiento.startsWith("CARGO")) {
       cuenta.totalCargos += montoNeto;
-    } else if (params.tipoMovimiento.startsWith('ABONO')) {
+    } else if (params.tipoMovimiento.startsWith("ABONO")) {
       cuenta.totalAbonos += montoNeto;
       cuenta.fechaUltimoPago = new Date();
-    } else if (params.tipoMovimiento.startsWith('CREDITO')) {
+    } else if (params.tipoMovimiento.startsWith("CREDITO")) {
       cuenta.totalCreditos += montoNeto;
-    } else if (params.tipoMovimiento.startsWith('DEBITO')) {
+    } else if (params.tipoMovimiento.startsWith("DEBITO")) {
       cuenta.totalDebitos += montoNeto;
-    } else if (params.tipoMovimiento.startsWith('AJUSTE')) {
+    } else if (params.tipoMovimiento.startsWith("AJUSTE")) {
       cuenta.totalAjustes += esCargo ? montoNeto : -montoNeto;
     }
 
@@ -301,15 +309,15 @@ class CuentaCorrienteEngine {
     usuarioNombre: string;
   }): Movimiento {
     return this.registrarMovimiento(cuentaId, {
-      tipoMovimiento: 'CARGO_FACTURA',
+      tipoMovimiento: "CARGO_FACTURA",
       montoBruto: factura.montoNeto,
       montoIVA: factura.montoIVA,
-      documentoTipo: 'FACTURA',
+      documentoTipo: "FACTURA",
       documentoNumero: factura.numero,
       documentoUrl: factura.urlPDF,
       concepto: `Factura ${factura.numero} - ${factura.concepto}`,
       usuario: factura.usuario,
-      usuarioNombre: factura.usuarioNombre
+      usuarioNombre: factura.usuarioNombre,
     });
   }
 
@@ -332,9 +340,11 @@ class CuentaCorrienteEngine {
       bancoOrigen: pago.banco,
       numeroOperacion: pago.numeroOperacion,
       concepto: pago.concepto || `Pago recibido ${pago.medioPago}`,
-      detalleConcepto: pago.numeroOperacion ? `Operación: ${pago.numeroOperacion}` : undefined,
+      detalleConcepto: pago.numeroOperacion
+        ? `Operación: ${pago.numeroOperacion}`
+        : undefined,
       usuario: pago.usuario,
-      usuarioNombre: pago.usuarioNombre
+      usuarioNombre: pago.usuarioNombre,
     });
   }
 
@@ -351,16 +361,16 @@ class CuentaCorrienteEngine {
     usuarioNombre: string;
   }): Movimiento {
     return this.registrarMovimiento(cuentaId, {
-      tipoMovimiento: 'CREDITO_NOTA_CREDITO',
+      tipoMovimiento: "CREDITO_NOTA_CREDITO",
       montoBruto: nota.monto,
       montoIVA: nota.montoIVA,
-      documentoTipo: 'NOTA_CREDITO',
+      documentoTipo: "NOTA_CREDITO",
       documentoNumero: nota.numero,
       documentoUrl: nota.urlPDF,
       concepto: `Nota de Crédito ${nota.numero}`,
       detalleConcepto: nota.motivo,
       usuario: nota.usuario,
-      usuarioNombre: nota.usuarioNombre
+      usuarioNombre: nota.usuarioNombre,
     });
   }
 
@@ -372,7 +382,9 @@ class CuentaCorrienteEngine {
    * Obtiene cuenta corriente por contrato
    */
   obtenerCuenta(contratoId: string): CuentaCorriente | undefined {
-    return Array.from(this.cuentas.values()).find(c => c.contratoId === contratoId);
+    return Array.from(this.cuentas.values()).find((c) =>
+      c.contratoId === contratoId
+    );
   }
 
   /**
@@ -385,11 +397,15 @@ class CuentaCorrienteEngine {
   /**
    * Obtiene movimientos de un período
    */
-  obtenerMovimientosPeriodo(cuentaId: string, desde: Date, hasta: Date): Movimiento[] {
+  obtenerMovimientosPeriodo(
+    cuentaId: string,
+    desde: Date,
+    hasta: Date,
+  ): Movimiento[] {
     const cuenta = this.cuentas.get(cuentaId);
     if (!cuenta) return [];
 
-    return cuenta.movimientos.filter(m => 
+    return cuenta.movimientos.filter((m) =>
       m.fechaMovimiento >= desde && m.fechaMovimiento <= hasta && !m.anulado
     );
   }
@@ -401,27 +417,37 @@ class CuentaCorrienteEngine {
   /**
    * Genera estado de cuenta para un período
    */
-  generarEstadoCuenta(cuentaId: string, desde: Date, hasta: Date): EstadoCuentaGenerado {
+  generarEstadoCuenta(
+    cuentaId: string,
+    desde: Date,
+    hasta: Date,
+  ): EstadoCuentaGenerado {
     const cuenta = this.cuentas.get(cuentaId);
-    if (!cuenta) throw new Error('Cuenta no encontrada');
+    if (!cuenta) throw new Error("Cuenta no encontrada");
 
-    const movimientosPeriodo = this.obtenerMovimientosPeriodo(cuentaId, desde, hasta);
-    
+    const movimientosPeriodo = this.obtenerMovimientosPeriodo(
+      cuentaId,
+      desde,
+      hasta,
+    );
+
     // Calcular saldo inicial (suma de movimientos antes del período)
-    const movimientosAnteriores = cuenta.movimientos.filter(m => m.fechaMovimiento < desde);
-    const saldoInicial = movimientosAnteriores.length > 0 
-      ? movimientosAnteriores[movimientosAnteriores.length - 1].saldoPosterior 
+    const movimientosAnteriores = cuenta.movimientos.filter((m) =>
+      m.fechaMovimiento < desde
+    );
+    const saldoInicial = movimientosAnteriores.length > 0
+      ? movimientosAnteriores[movimientosAnteriores.length - 1].saldoPosterior
       : 0;
-    
+
     // Calcular totales del período
     const totalCargos = movimientosPeriodo
-      .filter(m => m.esCargo)
+      .filter((m) => m.esCargo)
       .reduce((acc, m) => acc + m.montoNeto, 0);
-    
+
     const totalAbonos = movimientosPeriodo
-      .filter(m => !m.esCargo)
+      .filter((m) => !m.esCargo)
       .reduce((acc, m) => acc + m.montoNeto, 0);
-    
+
     const saldoFinal = saldoInicial + totalCargos - totalAbonos;
 
     return {
@@ -436,7 +462,7 @@ class CuentaCorrienteEngine {
       totalCargos,
       totalAbonos,
       cantidadMovimientos: movimientosPeriodo.length,
-      formatoDocumento: 'PDF'
+      formatoDocumento: "PDF",
     };
   }
 
@@ -449,7 +475,7 @@ class CuentaCorrienteEngine {
     hasta: Date;
     emailDestinatario: string;
     emailsCC?: string[];
-    formato: 'PDF' | 'EXCEL' | 'CSV';
+    formato: "PDF" | "EXCEL" | "CSV";
     mensajePersonalizado?: string;
   }): Promise<{
     enviado: boolean;
@@ -458,24 +484,33 @@ class CuentaCorrienteEngine {
   }> {
     try {
       // Generar estado de cuenta
-      const estadoCuenta = this.generarEstadoCuenta(params.cuentaId, params.desde, params.hasta);
-      
+      const estadoCuenta = this.generarEstadoCuenta(
+        params.cuentaId,
+        params.desde,
+        params.hasta,
+      );
+
       // Simular generación de documento
-      const urlDocumento = `/estados-cuenta/${estadoCuenta.id}.${params.formato.toLowerCase()}`;
-      
+      const urlDocumento =
+        `/estados-cuenta/${estadoCuenta.id}.${params.formato.toLowerCase()}`;
+
       // Simular envío
-      logger.info(`[CuentaCorriente] Enviando estado de cuenta a: ${params.emailDestinatario}`);
+      logger.info(
+        `[CuentaCorriente] Enviando estado de cuenta a: ${params.emailDestinatario}`,
+      );
       logger.info(`[CuentaCorriente] Formato: ${params.formato}`);
-      logger.info(`[CuentaCorriente] Período: ${params.desde.toLocaleDateString()} - ${params.hasta.toLocaleDateString()}`);
-      
+      logger.info(
+        `[CuentaCorriente] Período: ${params.desde.toLocaleDateString()} - ${params.hasta.toLocaleDateString()}`,
+      );
+
       return {
         enviado: true,
-        urlDocumento
+        urlDocumento,
       };
     } catch (error) {
       return {
         enviado: false,
-        error: error instanceof Error ? error.message : 'Error desconocido'
+        error: error instanceof Error ? error.message : "Error desconocido",
       };
     }
   }
@@ -485,11 +520,16 @@ class CuentaCorrienteEngine {
   // ═══════════════════════════════════════════════════════════════
 
   private esMovimientoCargo(tipo: TipoMovimiento): boolean {
-    return tipo.startsWith('CARGO') || tipo.startsWith('DEBITO') || tipo === 'APERTURA_CUENTA' || tipo === 'AJUSTE_POSITIVO';
+    return tipo.startsWith("CARGO") || tipo.startsWith("DEBITO") ||
+      tipo === "APERTURA_CUENTA" || tipo === "AJUSTE_POSITIVO";
   }
 
   private formatCurrency(value: number): string {
-    return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+      maximumFractionDigits: 0,
+    }).format(value);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -499,14 +539,14 @@ class CuentaCorrienteEngine {
   private inicializarDemoData(): void {
     // Crear cuenta demo
     const cuenta: CuentaCorriente = {
-      id: 'cc-demo-001',
-      contratoId: 'ctr-demo-001',
-      numeroContrato: 'CTR-2025-00089',
-      fechaApertura: new Date('2025-01-15'),
-      clienteId: 'cli-001',
-      clienteRut: '97.004.000-5',
-      clienteNombre: 'Banco Chile',
-      clienteEmail: 'pagos@bancochile.cl',
+      id: "cc-demo-001",
+      contratoId: "ctr-demo-001",
+      numeroContrato: "CTR-2025-00089",
+      fechaApertura: new Date("2025-01-15"),
+      clienteId: "cli-001",
+      clienteRut: "97.004.000-5",
+      clienteNombre: "Banco Chile",
+      clienteEmail: "pagos@bancochile.cl",
       valorOriginalContrato: 82000000,
       montoIVA: 15580000,
       valorTotalContrato: 97580000,
@@ -516,66 +556,69 @@ class CuentaCorrienteEngine {
       totalDebitos: 0,
       totalAjustes: 0,
       saldoPendiente: 32632000,
-      estado: 'ACTIVA',
+      estado: "ACTIVA",
       diasMoraActual: 0,
       fechaUltimoMovimiento: new Date(),
       fechaUltimoPago: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
-      movimientos: []
+      movimientos: [],
     };
 
     // Agregar movimientos demo
     const movimientosDemo: Partial<Movimiento>[] = [
       {
-        tipoMovimiento: 'APERTURA_CUENTA',
-        fechaMovimiento: new Date('2025-01-15'),
+        tipoMovimiento: "APERTURA_CUENTA",
+        fechaMovimiento: new Date("2025-01-15"),
         montoBruto: 82000000,
         montoIVA: 15580000,
         montoNeto: 97580000,
         esCargo: true,
-        concepto: 'Apertura cuenta corriente - Contrato CTR-2025-00089',
-        detalleConcepto: 'Campaña publicitaria integral: Radio FM + Digital + TV'
+        concepto: "Apertura cuenta corriente - Contrato CTR-2025-00089",
+        detalleConcepto:
+          "Campaña publicitaria integral: Radio FM + Digital + TV",
       },
       {
-        tipoMovimiento: 'CARGO_FACTURA',
-        fechaMovimiento: new Date('2025-01-20'),
-        documentoTipo: 'FACTURA',
-        documentoNumero: 'FAC-2025-001234',
+        tipoMovimiento: "CARGO_FACTURA",
+        fechaMovimiento: new Date("2025-01-20"),
+        documentoTipo: "FACTURA",
+        documentoNumero: "FAC-2025-001234",
         montoBruto: 27420000,
         montoIVA: 5209800,
         montoNeto: 32629800,
         esCargo: true,
-        concepto: 'Factura FAC-2025-001234 - Cuota 1/3 Enero 2025'
+        concepto: "Factura FAC-2025-001234 - Cuota 1/3 Enero 2025",
       },
       {
-        tipoMovimiento: 'ABONO_TRANSFERENCIA',
-        fechaMovimiento: new Date('2025-02-05'),
-        medioPago: 'TRANSFERENCIA',
-        bancoOrigen: 'Banco Chile',
-        numeroOperacion: 'TRF-89456123',
+        tipoMovimiento: "ABONO_TRANSFERENCIA",
+        fechaMovimiento: new Date("2025-02-05"),
+        medioPago: "TRANSFERENCIA",
+        bancoOrigen: "Banco Chile",
+        numeroOperacion: "TRF-89456123",
         montoBruto: 32632000,
         montoNeto: 32632000,
         esCargo: false,
-        concepto: 'Pago Factura FAC-2025-001234'
+        concepto: "Pago Factura FAC-2025-001234",
       },
       {
-        tipoMovimiento: 'CARGO_FACTURA',
-        fechaMovimiento: new Date('2025-02-15'),
-        documentoTipo: 'FACTURA',
-        documentoNumero: 'FAC-2025-001345',
+        tipoMovimiento: "CARGO_FACTURA",
+        fechaMovimiento: new Date("2025-02-15"),
+        documentoTipo: "FACTURA",
+        documentoNumero: "FAC-2025-001345",
         montoBruto: 27420000,
         montoIVA: 5209800,
         montoNeto: 32629800,
         esCargo: true,
-        concepto: 'Factura FAC-2025-001345 - Cuota 2/3 Febrero 2025'
-      }
+        concepto: "Factura FAC-2025-001345 - Cuota 2/3 Febrero 2025",
+      },
     ];
 
     let saldoAcumulado = 0;
     movimientosDemo.forEach((m, idx) => {
       const saldoAnterior = saldoAcumulado;
       const montoNeto = m.montoNeto || 0;
-      saldoAcumulado = m.esCargo ? saldoAcumulado + montoNeto : saldoAcumulado - montoNeto;
-      
+      saldoAcumulado = m.esCargo
+        ? saldoAcumulado + montoNeto
+        : saldoAcumulado - montoNeto;
+
       cuenta.movimientos.push({
         id: `mov-demo-${idx + 1}`,
         numeroMovimiento: idx + 1,
@@ -591,13 +634,13 @@ class CuentaCorrienteEngine {
         esCargo: m.esCargo || false,
         saldoAnterior,
         saldoPosterior: saldoAcumulado,
-        concepto: m.concepto || '',
+        concepto: m.concepto || "",
         detalleConcepto: m.detalleConcepto,
         medioPago: m.medioPago,
         bancoOrigen: m.bancoOrigen,
         numeroOperacion: m.numeroOperacion,
         conciliado: true,
-        anulado: false
+        anulado: false,
       });
     });
 
@@ -614,17 +657,34 @@ export const CuentaCorrienteService = CuentaCorrienteEngine.getInstance();
 
 export function useCuentaCorriente(contratoId: string) {
   const cuenta = CuentaCorrienteService.obtenerCuenta(contratoId);
-  
+
   return {
     cuenta,
-    registrarFactura: (factura: Parameters<typeof CuentaCorrienteService.registrarFactura>[1]) =>
-      cuenta ? CuentaCorrienteService.registrarFactura(cuenta.id, factura) : null,
-    registrarPago: (pago: Parameters<typeof CuentaCorrienteService.registrarPago>[1]) =>
-      cuenta ? CuentaCorrienteService.registrarPago(cuenta.id, pago) : null,
+    registrarFactura: (
+      factura: Parameters<typeof CuentaCorrienteService.registrarFactura>[1],
+    ) =>
+      cuenta
+        ? CuentaCorrienteService.registrarFactura(cuenta.id, factura)
+        : null,
+    registrarPago: (
+      pago: Parameters<typeof CuentaCorrienteService.registrarPago>[1],
+    ) => cuenta ? CuentaCorrienteService.registrarPago(cuenta.id, pago) : null,
     generarEstadoCuenta: (desde: Date, hasta: Date) =>
-      cuenta ? CuentaCorrienteService.generarEstadoCuenta(cuenta.id, desde, hasta) : null,
-    enviarPorEmail: (params: Omit<Parameters<typeof CuentaCorrienteService.enviarEstadoCuentaPorEmail>[0], 'cuentaId'>) =>
-      cuenta ? CuentaCorrienteService.enviarEstadoCuentaPorEmail({ ...params, cuentaId: cuenta.id }) : null
+      cuenta
+        ? CuentaCorrienteService.generarEstadoCuenta(cuenta.id, desde, hasta)
+        : null,
+    enviarPorEmail: (
+      params: Omit<
+        Parameters<typeof CuentaCorrienteService.enviarEstadoCuentaPorEmail>[0],
+        "cuentaId"
+      >,
+    ) =>
+      cuenta
+        ? CuentaCorrienteService.enviarEstadoCuentaPorEmail({
+          ...params,
+          cuentaId: cuenta.id,
+        })
+        : null,
   };
 }
 

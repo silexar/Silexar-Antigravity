@@ -225,6 +225,16 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     return NextResponse.next()
   }
 
+  // --- BYPASS PARA MODO DESARROLLO CORPORATIVO ---
+  if (process.env.NODE_ENV === 'development') {
+    const res = NextResponse.next()
+    res.headers.set('X-Silexar-User-Id', 'admin-123')
+    res.headers.set('X-Silexar-User-Role', 'SUPER_CEO')
+    res.headers.set('X-Silexar-Tenant-Id', 'system')
+    return res; // IMPORTANTE: No añadimos addSecurityHeaders para evitar bloquear eval() de Next.js Dev
+  }
+  // -----------------------------------------------
+
   // 2. Rate limit — auth: 10/min, general: 20/min
   const isAuth = isAuthPath(pathname)
   const rlResult = await edgeRateLimiter.checkRateLimit(

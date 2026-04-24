@@ -1,14 +1,11 @@
 /**
- * VALUE OBJECT: ESTADO CUNA — TIER 0
- *
- * Máquina de estados para el ciclo de vida de una cuña publicitaria.
- * Valida transiciones legales e impide las inválidas.
- *
- * Ciclo: borrador → pendiente_aprobacion → aprobada → en_aire ↔ pausada → finalizada
- *                                          └→ rechazada
+ * VALUE OBJECT: ESTADO CUÑA - TIER 0
+ * 
+ * Modela el estado de una cuña y encapsula las reglas de transición
+ * entre estados. Garantiza integridad de negocio.
  */
 
-export type EstadoCunaValor =
+export type EstadoCunaValor = 
   | 'borrador'
   | 'pendiente_aprobacion'
   | 'aprobada'
@@ -17,68 +14,124 @@ export type EstadoCunaValor =
   | 'finalizada'
   | 'rechazada';
 
-/** Transiciones permitidas por estado actual */
-const TRANSICIONES_VALIDAS: Record<EstadoCunaValor, EstadoCunaValor[]> = {
-  borrador:              ['pendiente_aprobacion'],
-  pendiente_aprobacion:  ['aprobada', 'rechazada', 'borrador'],
-  aprobada:              ['en_aire', 'borrador'],
-  en_aire:               ['pausada', 'finalizada'],
-  pausada:               ['en_aire', 'finalizada'],
-  finalizada:            [],
-  rechazada:             ['borrador'],
-};
+export interface EstadoTransitionRule {
+  from: EstadoCunaValor;
+  to: EstadoCunaValor;
+  allowed: boolean;
+  reason?: string;
+}
 
 export class EstadoCuna {
-  private constructor(private readonly _valor: EstadoCunaValor) {}
+  private constructor(private _valor: EstadoCunaValor) {
+    this.validate(_valor);
+  }
 
   static create(valor: EstadoCunaValor): EstadoCuna {
     return new EstadoCuna(valor);
-  }
-
-  static borrador(): EstadoCuna {
-    return new EstadoCuna('borrador');
-  }
-
-  /** Verifica si la transición al nuevo estado es legal */
-  puedeTransicionarA(nuevo: EstadoCunaValor): boolean {
-    return TRANSICIONES_VALIDAS[this._valor].includes(nuevo);
-  }
-
-  /**
-   * Retorna el nuevo EstadoCuna tras la transición.
-   * Lanza error si la transición no es válida.
-   */
-  transicionarA(nuevo: EstadoCunaValor): EstadoCuna {
-    if (!this.puedeTransicionarA(nuevo)) {
-      throw new Error(
-        `Transición de estado inválida: ${this._valor} → ${nuevo}. ` +
-        `Estados permitidos desde "${this._valor}": [${TRANSICIONES_VALIDAS[this._valor].join(', ')}]`
-      );
-    }
-    return new EstadoCuna(nuevo);
   }
 
   get valor(): EstadoCunaValor {
     return this._valor;
   }
 
-  get esFinal(): boolean {
-    return this._valor === 'finalizada';
+  /**
+   * Transiciona a un nuevo estado según reglas de negocio
+   * Lanza error si la transición no es válida
+   */
+  transicionarA(nuevoEstado: EstadoCunaValor): EstadoCuna {
+    const regla = this.getTransitionRule(this._valor, nuevoEstado);
+    
+    if (!regla.allowed) {
+      throw new Error(`Transición no permitida de ${this._valor} a ${nuevoEstado}: ${regla.reason}`);
+    }
+
+    return new EstadoCuna(nuevoEstado);
   }
 
-  get estaActiva(): boolean {
-    return this._valor === 'en_aire';
+  /**
+   * Verifica si una transición es válida
+   */
+  puedeTransicionarA(nuevoEstado: EstadoCunaValor): boolean {
+    return this.getTransitionRule(this._valor, nuevoEstado).allowed;
   }
 
-  get requiereAprobacion(): boolean {
-    return this._valor === 'pendiente_aprobacion';
+  private validate(valor: EstadoCunaValor): void {
+    const estadosValidos: EstadoCunaValor[] = [
+      'borrador',
+      'pendiente_aprobacion',
+      'aprobada',
+      'en_aire',
+      'pausada',
+      'finalizada',
+      'rechazada'
+    ];
+
+    if (!estadosValidos.includes(valor)) {
+      throw new Error(`Estado inválido: ${valor}`);
+    }
+  }
+
+  private getTransitionRule(from: EstadoCunaValor, to: EstadoCunaValor): EstadoTransitionRule {
+    // Reglas de transición
+    const reglas: EstadoTransitionRule[] = [
+      // Desde borrador
+      { from: 'borrador', to: 'pendiente_aprobacion', allowed: true },
+      { from: 'borrador', to: 'pausada', allowed: false, reason: 'Solo se puede enviar a aprobación' },
+      { from: 'borrador', to: 'en_aire', allowed: false, reason: 'Debe aprobarse primero' },
+      { from: 'borrador', to: 'finalizada', allowed: false, reason: 'Debe aprobarse primero' },
+      { from: 'borrador', to: 'rechazada', allowed: false, reason: 'No se puede rechazar una cuña en borrador' },
+      
+      // Desde pendiente_aprobacion
+      { from: 'pendiente_aprobacion', to: 'borrador', allowed: true },
+      { from: 'pendiente_aprobacion', to: 'aprobada', allowed: true },
+      { from: 'pendiente_aprobacion', to: 'rechazada', allowed: true },
+      { from: 'pendiente_aprobacion', to: 'en_aire', allowed: false, reason: 'Debe estar aprobada primero' },
+      { from: 'pendiente_aprobacion', to: 'pausada', allowed: false, reason: 'Debe estar aprobada primero' },
+      
+      // Desde aprobada
+      { from: 'aprobada', to: 'en_aire', allowed: true },
+      { from: 'aprobada', to: 'borrador', allowed: false, reason: 'No se puede retornar a borrador desde aprobada' },
+      { from: 'aprobada', to: 'pendiente_aprobacion', allowed: false, reason: 'Ya está aprobada' },
+      { from: 'aprobada', to: 'rechazada', allowed: false, reason: 'No se puede rechazar después de aprobada' },
+      
+      // Desde en_aire
+      { from: 'en_aire', to: 'pausada', allowed: true },
+      { from: 'en_aire', to: 'finalizada', allowed: true },
+      { from: 'en_aire', to: 'borrador', allowed: false, reason: 'No se puede editar mientras está en aire' },
+      { from: 'en_aire', to: 'pendiente_aprobacion', allowed: false, reason: 'No se puede editar mientras está en aire' },
+      
+      // Desde pausada
+      { from: 'pausada', to: 'en_aire', allowed: true },
+      { from: 'pausada', to: 'finalizada', allowed: true },
+      { from: 'pausada', to: 'borrador', allowed: false, reason: 'No se puede editar mientras está pausada' },
+      
+      // Desde finalizada
+      { from: 'finalizada', to: 'borrador', allowed: false, reason: 'No se puede editar una cuña finalizada' },
+      { from: 'finalizada', to: 'en_aire', allowed: false, reason: 'No se puede reactivar una cuña finalizada' },
+      { from: 'finalizada', to: 'pausada', allowed: false, reason: 'No se puede reactivar una cuña finalizada' },
+      
+      // Desde rechazada
+      { from: 'rechazada', to: 'borrador', allowed: true },
+      { from: 'rechazada', to: 'pendiente_aprobacion', allowed: false, reason: 'Debe volver a borrador primero' },
+    ];
+
+    // Buscar regla específica
+    const regla = reglas.find(r => r.from === from && r.to === to);
+    
+    if (regla) {
+      return regla;
+    }
+
+    // Regla por defecto (no permitida)
+    return {
+      from,
+      to,
+      allowed: false,
+      reason: 'Transición no definida'
+    };
   }
 
   equals(other: EstadoCuna): boolean {
     return this._valor === other._valor;
-  }
-
-  toString(): string {
-    return this._valor;
   }
 }

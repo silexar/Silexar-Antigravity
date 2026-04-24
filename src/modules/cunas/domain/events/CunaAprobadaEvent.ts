@@ -3,7 +3,7 @@
  *
  * Se dispara cuando una cuña pasa de pendiente_aprobacion → aprobada.
  * Kafka puede consumirlo para notificar al ejecutivo asignado,
- * habilitar la programación, y disparar alertas de vencimiento.
+ * habilitar la programación, y disparar alertas de vencimientos.
  */
 
 export class CunaAprobadaEvent {

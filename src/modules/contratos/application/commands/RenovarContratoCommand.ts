@@ -277,7 +277,7 @@ export class RenovarContratoCommandHandler {
     }
 
     // Validar estado del contrato
-    if (!['activo', 'proximo_vencimiento'].includes(contrato.estado)) {
+    if (!['activo', 'proximo_vencimientos'].includes(contrato.estado)) {
       throw new Error('El contrato debe estar activo o próximo a vencer para renovar');
     }
 
@@ -296,7 +296,7 @@ export class RenovarContratoCommandHandler {
     }
 
     if (diasHastaVencimiento > 180) {
-      throw new Error('La renovación solo puede iniciarse 180 días antes del vencimiento');
+      throw new Error('La renovación solo puede iniciarse 180 días antes del vencimientos');
     }
 
     return contrato;
@@ -682,7 +682,7 @@ export class RenovarContratoCommandHandler {
     descuentos.push({
       tipo: 'Renovación Temprana',
       porcentaje: RenovarContratoCommandHandler.DESCUENTO_RENOVACION_TEMPRANA,
-      condiciones: ['Renovar 60 días antes del vencimiento'],
+      condiciones: ['Renovar 60 días antes del vencimientos'],
       validoHasta: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
     });
 

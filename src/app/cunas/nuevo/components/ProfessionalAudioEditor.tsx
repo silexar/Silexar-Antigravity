@@ -54,9 +54,9 @@ const NeuromorphicPanel = ({
 }) => (
   <div className={`
     rounded-2xl p-4 
-    bg-gradient-to-br from-slate-800 to-slate-900
-    shadow-[inset_2px_2px_4px_rgba(255,255,255,0.05),inset_-2px_-2px_4px_rgba(0,0,0,0.3)]
-    border border-slate-700/50
+    bg-[#F0EDE8]
+    shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
+    border border-white/40
     ${className}
   `}>
     {children}
@@ -88,10 +88,10 @@ const TransportButton = ({
   
   const variants = {
     default: active 
-      ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-      : 'bg-gradient-to-br from-slate-600 to-slate-700 text-slate-300 hover:from-slate-500 hover:to-slate-600',
-    primary: 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]',
-    danger: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+      ? 'bg-[#F0EDE8] text-emerald-600 shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]'
+      : 'bg-[#F0EDE8] text-slate-500 hover:text-slate-700 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]',
+    primary: 'bg-[#F0EDE8] text-violet-600 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]',
+    danger: 'bg-[#F0EDE8] text-red-600 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]'
   };
   
   return (
@@ -130,12 +130,12 @@ const ToolButton = ({
     onClick={onClick}
     disabled={disabled || loading}
     className={`
-      flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium
-      transition-all duration-200 hover:scale-[1.02]
-      disabled:opacity-50 disabled:cursor-not-allowed
+      flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold
+      transition-all duration-300 hover:scale-[1.02]
+      disabled:opacity-50 disabled:cursor-not-allowed border border-white/30
       ${active
-        ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg'
-        : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 hover:text-white border border-slate-600/50'
+        ? 'bg-[#F0EDE8] text-violet-600 shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]'
+        : 'bg-[#F0EDE8] text-slate-500 hover:text-slate-700 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]'
       }
     `}
   >
@@ -231,7 +231,7 @@ const WaveformDisplay = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className="relative h-32 rounded-xl bg-gradient-to-b from-slate-800/80 to-slate-900/80 overflow-hidden cursor-crosshair border border-slate-700/50 group select-none"
+      className="relative h-32 rounded-xl bg-[#F0EDE8] shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] overflow-hidden cursor-crosshair border border-white/40 group select-none"
     >
       {/* Grid de fondo */}
       <div className="absolute inset-0 opacity-20">
@@ -245,7 +245,7 @@ const WaveformDisplay = ({
       </div>
       
       {/* Línea central */}
-      <div className="absolute left-0 right-0 top-1/2 h-px bg-slate-600/50" />
+      <div className="absolute left-0 right-0 top-1/2 h-px bg-slate-300/50 shadow-sm" />
       
       {/* Waveform L (arriba) */}
       <div className="absolute inset-x-0 top-0 h-1/2 flex items-end justify-center gap-px px-1">
@@ -285,7 +285,7 @@ const WaveformDisplay = ({
       
       {/* Indicador de posición */}
       <div 
-        className={`absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-75 ${isPlaying ? '' : 'opacity-70'}`}
+        className={`absolute top-0 bottom-0 w-0.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all duration-75 ${isPlaying ? '' : 'opacity-70'}`}
         style={{ left: `${progress}%` }}
       />
       
@@ -369,10 +369,10 @@ const AnalysisPanel = ({ analysis }: { analysis: AudioAnalysis | null }) => {
       {metrics.map((metric) => (
         <div 
           key={metric.label} 
-          className={`p-3 rounded-xl border transition-colors ${
+          className={`p-3 rounded-xl border transition-colors bg-[#F0EDE8] ${
             metric.ok 
-              ? 'bg-emerald-500/10 border-emerald-500/30' 
-              : 'bg-amber-500/10 border-amber-500/30'
+              ? 'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] border-white/40' 
+              : 'shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] border-amber-300/50'
           }`}
         >
           <div className="flex items-center justify-between mb-1">
@@ -598,14 +598,14 @@ export const ProfessionalAudioEditor: React.FC<ProfessionalAudioEditorProps> = (
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-            <Settings className="w-5 h-5 text-white" />
+          <div className="p-2.5 rounded-xl bg-[#F0EDE8] shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] border border-white/40">
+            <Settings className="w-5 h-5 text-violet-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-100">
+            <h3 className="text-lg font-bold text-slate-700">
               Editor Profesional DAW
             </h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm font-medium text-slate-500">
               {file?.name || 'Sin archivo cargado'}
             </p>
           </div>
@@ -657,12 +657,12 @@ export const ProfessionalAudioEditor: React.FC<ProfessionalAudioEditorProps> = (
           
           {/* Timeline */}
           <div className="flex-1 mx-6 text-center">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700/50">
-              <span className="font-mono text-lg text-emerald-400">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] border border-white/40">
+              <span className="font-mono text-lg font-bold text-emerald-600">
                 {formatTime(currentTime)}
               </span>
-              <span className="text-slate-500">/</span>
-              <span className="font-mono text-lg text-slate-400">
+              <span className="text-slate-400 font-bold">/</span>
+              <span className="font-mono text-lg font-bold text-slate-500">
                 {formatTime(duration)}
               </span>
             </div>
@@ -725,23 +725,23 @@ export const ProfessionalAudioEditor: React.FC<ProfessionalAudioEditorProps> = (
       </NeuromorphicPanel>
       
       {/* Tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-4">
         <button
           onClick={() => setActiveTab('edit')}
-          className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+          className={`flex-1 py-3 rounded-xl font-bold transition-all border border-white/40 ${
             activeTab === 'edit'
-              ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg'
-              : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
+              ? 'bg-[#EAF0F6] text-violet-600 shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]'
+              : 'bg-[#EAF0F6] text-slate-500 hover:text-slate-700 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff]'
           }`}
         >
           🎚️ Herramientas de Edición
         </button>
         <button
           onClick={() => setActiveTab('analysis')}
-          className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+          className={`flex-1 py-3 rounded-xl font-bold transition-all border border-white/40 ${
             activeTab === 'analysis'
-              ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg'
-              : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
+              ? 'bg-[#EAF0F6] text-violet-600 shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]'
+              : 'bg-[#EAF0F6] text-slate-500 hover:text-slate-700 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff]'
           }`}
         >
           📊 Análisis en Tiempo Real
@@ -749,7 +749,7 @@ export const ProfessionalAudioEditor: React.FC<ProfessionalAudioEditorProps> = (
       </div>
       
       {/* Contenido de Tabs */}
-      <NeuromorphicPanel className="bg-gradient-to-br from-slate-900 to-slate-950">
+      <NeuromorphicPanel className="mt-4">
         {activeTab === 'edit' && (
           <div className="space-y-4">
             <p className="text-sm text-slate-400 flex items-center gap-2">

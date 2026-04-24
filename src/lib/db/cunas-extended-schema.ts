@@ -127,7 +127,7 @@ export const presentaciones = pgTable('presentaciones', {
   // Validación con vencimientos
   validacionVencimientos: jsonb('validacion_vencimientos').$type<{
     esValida: boolean;
-    vencimientoId?: string;
+    vencimientosId?: string;
     programaId: string;
     observaciones: string[];
     fechaValidacion: Date;

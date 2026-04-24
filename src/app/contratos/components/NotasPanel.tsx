@@ -1,12 +1,12 @@
 /**
- * 📝 SILEXAR PULSE - Notes Panel Component TIER 0
+ * ?? SILEXAR PULSE - Notes Panel Component TIER 0
  * 
  * @description Panel de notas y comentarios para contratos con:
- * - Notas internas y públicas
+ * - Notas internas y p�blicas
  * - Menciones a usuarios (@usuario)
  * - Hilos de respuestas
  * - Adjuntos
- * - Filtros y búsqueda
+ * - Filtros y b�squeda
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -34,9 +34,9 @@ import {
   User
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export type TipoNota = 'COMENTARIO' | 'INSTRUCCION' | 'ALERTA' | 'RECORDATORIO' | 'DECISION' | 'NEGOCIACION';
 export type Visibilidad = 'INTERNA' | 'PUBLICA' | 'SOLO_APROBADORES';
@@ -73,62 +73,62 @@ export interface UsuarioMencionable {
   avatar?: string;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
     overflow-hidden
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     transition-all duration-200
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    border border-slate-200/30
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[3px_3px_6px_#d1d5db,-3px_-3px_6px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[3px_3px_6px_#d1d5db,-3px_-3px_6px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-2.5 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // MOCK DATA
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const mockNotas: NotaContrato[] = [
   {
     id: 'n-001',
     contratoId: 'ctr-001',
-    contenido: 'Confirmar con el cliente el horario prime de 20:00 a 22:00 hrs antes de continuar con la aprobación. @Ana.Garcia',
+    contenido: 'Confirmar con el cliente el horario prime de 20:00 a 22:00 hrs antes de continuar con la aprobaci�n. @Ana.Garcia',
     tipoNota: 'INSTRUCCION',
     visibilidad: 'INTERNA',
     prioridad: 'ALTA',
@@ -143,14 +143,14 @@ const mockNotas: NotaContrato[] = [
       {
         id: 'n-002',
         contratoId: 'ctr-001',
-        contenido: 'Cliente confirmó el horario. Se puede proceder.',
+        contenido: 'Cliente confirm� el horario. Se puede proceder.',
         tipoNota: 'COMENTARIO',
         visibilidad: 'INTERNA',
         prioridad: 'NORMAL',
         notaPadreId: 'n-001',
         cantidadRespuestas: 0,
         tieneAdjuntos: false,
-        autor: { id: 'u-003', nombre: 'Ana García', rol: 'Supervisora' },
+        autor: { id: 'u-003', nombre: 'Ana Garc�a', rol: 'Supervisora' },
         editado: false,
         fijado: false,
         fechaCreacion: new Date(Date.now() - 1 * 60 * 60 * 1000),
@@ -160,7 +160,7 @@ const mockNotas: NotaContrato[] = [
   {
     id: 'n-003',
     contratoId: 'ctr-001',
-    contenido: '⚠️ El cliente pidió revisar el descuento aplicado. Adjunto email de solicitud.',
+    contenido: '?? El cliente pidi� revisar el descuento aplicado. Adjunto email de solicitud.',
     tipoNota: 'NEGOCIACION',
     visibilidad: 'INTERNA',
     prioridad: 'URGENTE',
@@ -175,13 +175,13 @@ const mockNotas: NotaContrato[] = [
   {
     id: 'n-004',
     contratoId: 'ctr-001',
-    contenido: 'Se aprobó el descuento adicional del 5% por decisión del Gerente General.',
+    contenido: 'Se aprob� el descuento adicional del 5% por decisi�n del Gerente General.',
     tipoNota: 'DECISION',
     visibilidad: 'SOLO_APROBADORES',
     prioridad: 'NORMAL',
     cantidadRespuestas: 0,
     tieneAdjuntos: false,
-    autor: { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General' },
+    autor: { id: 'u-005', nombre: 'Patricia Mu�oz', rol: 'Gerente General' },
     editado: false,
     fijado: false,
     fechaCreacion: new Date(Date.now() - 10 * 60 * 1000),
@@ -189,26 +189,26 @@ const mockNotas: NotaContrato[] = [
 ];
 
 const mockUsuarios: UsuarioMencionable[] = [
-  { id: 'u-001', nombre: 'María López', rol: 'Ejecutivo Junior' },
+  { id: 'u-001', nombre: 'Mar�a L�pez', rol: 'Ejecutivo Junior' },
   { id: 'u-002', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior' },
-  { id: 'u-003', nombre: 'Ana García', rol: 'Supervisora' },
+  { id: 'u-003', nombre: 'Ana Garc�a', rol: 'Supervisora' },
   { id: 'u-004', nombre: 'Roberto Silva', rol: 'Gerente Comercial' },
-  { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General' }
+  { id: 'u-005', nombre: 'Patricia Mu�oz', rol: 'Gerente General' }
 ];
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTES AUXILIARES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const getTipoColor = (tipo: TipoNota) => {
   switch (tipo) {
-    case 'COMENTARIO': return 'bg-slate-100 text-slate-700';
+    case 'COMENTARIO': return 'bg-[#dfeaff] text-[#69738c]';
     case 'INSTRUCCION': return 'bg-blue-100 text-blue-700';
     case 'ALERTA': return 'bg-red-100 text-red-700';
     case 'RECORDATORIO': return 'bg-amber-100 text-amber-700';
     case 'DECISION': return 'bg-green-100 text-green-700';
     case 'NEGOCIACION': return 'bg-purple-100 text-purple-700';
-    default: return 'bg-slate-100 text-slate-700';
+    default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
 
@@ -217,8 +217,8 @@ const getPrioridadColor = (prioridad: Prioridad) => {
     case 'URGENTE': return 'bg-red-500';
     case 'ALTA': return 'bg-orange-500';
     case 'NORMAL': return 'bg-green-500';
-    case 'BAJA': return 'bg-slate-400';
-    default: return 'bg-slate-400';
+    case 'BAJA': return 'bg-[#9aa3b8]';
+    default: return 'bg-[#9aa3b8]';
   }
 };
 
@@ -244,9 +244,9 @@ const formatTimeAgo = (date: Date) => {
   return date.toLocaleDateString('es-CL');
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE DE NOTA INDIVIDUAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const NotaCard: React.FC<{
   nota: NotaContrato;
@@ -260,24 +260,24 @@ const NotaCard: React.FC<{
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`${isReply ? '' : neuro.card} ${isReply ? 'ml-8 border-l-2 border-indigo-200 pl-4' : 'p-4'}`}
+      className={`${isReply ? '' : neuro.card} ${isReply ? 'ml-8 border-l-2 border-[#6888ff30] pl-4' : 'p-4'}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+          <div className="w-9 h-9 rounded-xl bg-[#6888ff] flex items-center justify-center text-white text-sm font-bold">
             {nota.autor.nombre.split(' ').map(n => n[0]).join('')}
           </div>
           
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-800 text-sm">{nota.autor.nombre}</span>
+              <span className="font-semibold text-[#69738c] text-sm">{nota.autor.nombre}</span>
               {nota.autor.rol && (
-                <span className="text-xs text-slate-400">{nota.autor.rol}</span>
+                <span className="text-xs text-[#9aa3b8]">{nota.autor.rol}</span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="flex items-center gap-2 text-xs text-[#9aa3b8]">
               <Clock className="w-3 h-3" />
               <span>{formatTimeAgo(nota.fechaCreacion)}</span>
               {nota.editado && <span>(editado)</span>}
@@ -295,30 +295,30 @@ const NotaCard: React.FC<{
           </span>
           
           {/* Visibilidad */}
-          <span className="text-slate-400" title={nota.visibilidad}>
+          <span className="text-[#9aa3b8]" title={nota.visibilidad}>
             {getVisibilidadIcon(nota.visibilidad)}
           </span>
           
           {/* Pin */}
           {nota.fijado && (
-            <Pin className="w-4 h-4 text-indigo-500 rotate-45" />
+            <Pin className="w-4 h-4 text-[#6888ff] rotate-45" />
           )}
           
           {/* Menu */}
           <div className="relative">
             <button
-              aria-label="Más opciones"
+              aria-label="M�s opciones"
               onClick={() => setShowMenu(!showMenu)}
-              className="p-1 rounded-lg hover:bg-slate-100"
+              className="p-1 rounded-lg hover:bg-[#dfeaff]"
             >
-              <MoreHorizontal className="w-4 h-4 text-slate-400" />
+              <MoreHorizontal className="w-4 h-4 text-[#9aa3b8]" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="mt-3 text-sm text-slate-700 leading-relaxed">
+      <div className="mt-3 text-sm text-[#69738c] leading-relaxed">
         {nota.contenido}
       </div>
 
@@ -339,10 +339,10 @@ const NotaCard: React.FC<{
       )}
 
       {/* Actions */}
-      <div className="mt-3 flex items-center gap-4 pt-2 border-t border-slate-100">
+      <div className="mt-3 flex items-center gap-4 pt-2 border-t border-[#bec8de30]">
         <button 
           onClick={() => onReply(nota.id)}
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-1.5 text-xs text-[#9aa3b8] hover:text-[#6888ff] transition-colors"
         >
           <Reply className="w-4 h-4" />
           Responder
@@ -351,7 +351,7 @@ const NotaCard: React.FC<{
         {nota.cantidadRespuestas > 0 && (
           <button 
             onClick={() => setShowReplies(!showReplies)}
-            className="flex items-center gap-1.5 text-xs text-indigo-600"
+            className="flex items-center gap-1.5 text-xs text-[#6888ff]"
           >
             <MessageSquare className="w-4 h-4" />
             {nota.cantidadRespuestas} respuesta{nota.cantidadRespuestas > 1 ? 's' : ''}
@@ -384,9 +384,9 @@ const NotaCard: React.FC<{
   );
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export default function NotasPanel({ 
   contratoId 
@@ -456,20 +456,20 @@ export default function NotasPanel({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-indigo-500" />
+          <h3 className="font-bold text-lg text-[#69738c] flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-[#6888ff]" />
             Notas del Contrato
-            <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+            <span className={`${neuro.badge} bg-[#dfeaff] text-[#6888ff]`}>
               {notas.length}
             </span>
           </h3>
           
           <div className="flex items-center gap-2">
-            {/* Búsqueda */}
+            {/* B�squeda */}
             <div className={`${neuro.input} px-3 py-1.5 flex items-center gap-2`}>
-              <Search className="w-4 h-4 text-slate-400" />
+              <Search className="w-4 h-4 text-[#9aa3b8]" />
               <input
                 type="text"
                 placeholder="Buscar..."
@@ -489,7 +489,7 @@ export default function NotasPanel({
               <option value="TODOS">Todos</option>
               <option value="COMENTARIO">Comentarios</option>
               <option value="INSTRUCCION">Instrucciones</option>
-              <option value="NEGOCIACION">Negociación</option>
+              <option value="NEGOCIACION">Negociaci�n</option>
               <option value="DECISION">Decisiones</option>
               <option value="ALERTA">Alertas</option>
             </select>
@@ -498,16 +498,16 @@ export default function NotasPanel({
       </div>
 
       {/* Nueva nota */}
-      <div className="p-6 border-b border-slate-200/50">
+      <div className="p-6 border-b border-[#bec8de30]">
         <div className={`${neuro.input} p-4`}>
           {respondiendo && (
-            <div className="mb-2 flex items-center gap-2 text-xs text-indigo-600">
+            <div className="mb-2 flex items-center gap-2 text-xs text-[#6888ff]">
               <Reply className="w-3 h-3" />
               Respondiendo a nota
               <button
                 aria-label="Cerrar"
                 onClick={() => setRespondiendo(null)}
-                className="ml-auto p-0.5 hover:bg-slate-200 rounded"
+                className="ml-auto p-0.5 hover:bg-[#dfeaff] rounded"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -531,12 +531,12 @@ export default function NotasPanel({
                 onChange={(e) => setTipoNota(e.target.value as TipoNota)}
                 className={`${neuro.input} px-2 py-1 text-xs`}
               >
-                <option value="COMENTARIO">💬 Comentario</option>
-                <option value="INSTRUCCION">📋 Instrucción</option>
-                <option value="NEGOCIACION">🤝 Negociación</option>
-                <option value="DECISION">✅ Decisión</option>
-                <option value="ALERTA">⚠️ Alerta</option>
-                <option value="RECORDATORIO">⏰ Recordatorio</option>
+                <option value="COMENTARIO">?? Comentario</option>
+                <option value="INSTRUCCION">?? Instrucci�n</option>
+                <option value="NEGOCIACION">?? Negociaci�n</option>
+                <option value="DECISION">? Decisi�n</option>
+                <option value="ALERTA">?? Alerta</option>
+                <option value="RECORDATORIO">? Recordatorio</option>
               </select>
               
               {/* Visibilidad */}
@@ -545,9 +545,9 @@ export default function NotasPanel({
                 onChange={(e) => setVisibilidad(e.target.value as Visibilidad)}
                 className={`${neuro.input} px-2 py-1 text-xs`}
               >
-                <option value="INTERNA">🔒 Interna</option>
-                <option value="PUBLICA">👁️ Pública</option>
-                <option value="SOLO_APROBADORES">🛡️ Solo aprobadores</option>
+                <option value="INTERNA">?? Interna</option>
+                <option value="PUBLICA">??? P�blica</option>
+                <option value="SOLO_APROBADORES">??? Solo aprobadores</option>
               </select>
               
               {/* Prioridad */}
@@ -556,10 +556,10 @@ export default function NotasPanel({
                 onChange={(e) => setPrioridad(e.target.value as Prioridad)}
                 className={`${neuro.input} px-2 py-1 text-xs`}
               >
-                <option value="BAJA">🟢 Baja</option>
-                <option value="NORMAL">🟡 Normal</option>
-                <option value="ALTA">🟠 Alta</option>
-                <option value="URGENTE">🔴 Urgente</option>
+                <option value="BAJA">?? Baja</option>
+                <option value="NORMAL">?? Normal</option>
+                <option value="ALTA">?? Alta</option>
+                <option value="URGENTE">?? Urgente</option>
               </select>
               
               {/* Mencionar */}
@@ -578,12 +578,12 @@ export default function NotasPanel({
                       <button
                         key={u.id}
                         onClick={() => handleMention(u)}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                        className="w-full px-3 py-2 text-left text-sm hover:bg-[#dfeaff] rounded-lg flex items-center gap-2"
                       >
-                        <User className="w-4 h-4 text-slate-400" />
+                        <User className="w-4 h-4 text-[#9aa3b8]" />
                         <div>
-                          <p className="font-medium text-slate-800">{u.nombre}</p>
-                          <p className="text-xs text-slate-400">{u.rol}</p>
+                          <p className="font-medium text-[#69738c]">{u.nombre}</p>
+                          <p className="text-xs text-[#9aa3b8]">{u.rol}</p>
                         </div>
                       </button>
                     ))}
@@ -620,10 +620,10 @@ export default function NotasPanel({
         ))}
         
         {notasOrdenadas.length === 0 && (
-          <div className="text-center py-12 text-slate-400">
+          <div className="text-center py-12 text-[#9aa3b8]">
             <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>No hay notas aún</p>
-            <p className="text-sm">Sé el primero en agregar una nota</p>
+            <p>No hay notas a�n</p>
+            <p className="text-sm">S� el primero en agregar una nota</p>
           </div>
         )}
       </div>

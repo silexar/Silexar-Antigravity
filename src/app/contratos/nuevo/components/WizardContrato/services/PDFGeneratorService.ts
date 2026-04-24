@@ -1,9 +1,9 @@
 /**
  * 📄 SILEXAR PULSE - PDF Generator Service TIER 0
- * 
+ *
  * @description Servicio de generación de PDFs profesionales para
  * contratos con plantillas personalizables, preview y exportación.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -16,25 +16,25 @@ export interface PlantillaPDF {
   id: string;
   nombre: string;
   codigo: string;
-  tipoDocumento: 'CONTRATO' | 'ORDEN_COMPRA' | 'PROPUESTA' | 'FACTURA';
-  
+  tipoDocumento: "CONTRATO" | "ORDEN_COMPRA" | "PROPUESTA" | "FACTURA";
+
   // Configuración
-  orientacion: 'portrait' | 'landscape';
-  tamañoPapel: 'letter' | 'legal' | 'a4';
+  orientacion: "portrait" | "landscape";
+  tamañoPapel: "letter" | "legal" | "a4";
   margenes: { top: number; right: number; bottom: number; left: number };
-  
+
   // Branding
   logoUrl?: string;
   colorPrimario: string;
   colorSecundario: string;
-  
+
   // Secciones
   incluirLineas: boolean;
   incluirClausulas: boolean;
   incluirFirmas: boolean;
   incluirAnexos: boolean;
   incluirHistorial: boolean;
-  
+
   esDefault: boolean;
 }
 
@@ -44,7 +44,7 @@ export interface DatosContratoPDF {
   numero: string;
   tipoContrato: string;
   estado: string;
-  
+
   // Cliente
   cliente: {
     nombre: string;
@@ -53,7 +53,7 @@ export interface DatosContratoPDF {
     contacto: string;
     email: string;
   };
-  
+
   // Empresa
   empresa: {
     nombre: string;
@@ -61,12 +61,12 @@ export interface DatosContratoPDF {
     direccion: string;
     logo?: string;
   };
-  
+
   // Fechas
   fechaCreacion: string;
   fechaInicio: string;
   fechaFin: string;
-  
+
   // Valores
   valorBruto: number;
   descuento: number;
@@ -74,20 +74,20 @@ export interface DatosContratoPDF {
   iva: number;
   valorTotal: number;
   moneda: string;
-  
+
   // Condiciones
   terminosPago: number;
   facturacionEstilo: string;
-  
+
   // Líneas
   lineas: LineaContratoPDF[];
-  
+
   // Cláusulas
   clausulas: ClausulaPDF[];
-  
+
   // Firmas
   firmas: FirmaPDF[];
-  
+
   // Anexos
   anexos?: { nombre: string; url: string }[];
 }
@@ -125,7 +125,7 @@ export interface OpcionesPDF {
   marcaAguaTexto?: string;
   protegerContraseña?: boolean;
   contraseña?: string;
-  calidad?: 'borrador' | 'normal' | 'alta';
+  calidad?: "borrador" | "normal" | "alta";
 }
 
 export interface ResultadoPDF {
@@ -144,56 +144,56 @@ export interface ResultadoPDF {
 
 const PLANTILLAS_DEFAULT: PlantillaPDF[] = [
   {
-    id: 'plt-standard',
-    nombre: 'Contrato Estándar',
-    codigo: 'CONTRATO_STANDARD',
-    tipoDocumento: 'CONTRATO',
-    orientacion: 'portrait',
-    tamañoPapel: 'letter',
+    id: "plt-standard",
+    nombre: "Contrato Estándar",
+    codigo: "CONTRATO_STANDARD",
+    tipoDocumento: "CONTRATO",
+    orientacion: "portrait",
+    tamañoPapel: "letter",
     margenes: { top: 40, right: 40, bottom: 40, left: 40 },
-    colorPrimario: '#4F46E5',
-    colorSecundario: '#7C3AED',
+    colorPrimario: "#4F46E5",
+    colorSecundario: "#7C3AED",
     incluirLineas: true,
     incluirClausulas: true,
     incluirFirmas: true,
     incluirAnexos: false,
     incluirHistorial: false,
-    esDefault: true
+    esDefault: true,
   },
   {
-    id: 'plt-detallado',
-    nombre: 'Contrato Detallado',
-    codigo: 'CONTRATO_DETALLADO',
-    tipoDocumento: 'CONTRATO',
-    orientacion: 'portrait',
-    tamañoPapel: 'letter',
+    id: "plt-detallado",
+    nombre: "Contrato Detallado",
+    codigo: "CONTRATO_DETALLADO",
+    tipoDocumento: "CONTRATO",
+    orientacion: "portrait",
+    tamañoPapel: "letter",
     margenes: { top: 30, right: 30, bottom: 30, left: 30 },
-    colorPrimario: '#4F46E5',
-    colorSecundario: '#7C3AED',
+    colorPrimario: "#4F46E5",
+    colorSecundario: "#7C3AED",
     incluirLineas: true,
     incluirClausulas: true,
     incluirFirmas: true,
     incluirAnexos: true,
     incluirHistorial: true,
-    esDefault: false
+    esDefault: false,
   },
   {
-    id: 'plt-oc',
-    nombre: 'Orden de Compra',
-    codigo: 'ORDEN_COMPRA',
-    tipoDocumento: 'ORDEN_COMPRA',
-    orientacion: 'portrait',
-    tamañoPapel: 'letter',
+    id: "plt-oc",
+    nombre: "Orden de Compra",
+    codigo: "ORDEN_COMPRA",
+    tipoDocumento: "ORDEN_COMPRA",
+    orientacion: "portrait",
+    tamañoPapel: "letter",
     margenes: { top: 40, right: 40, bottom: 40, left: 40 },
-    colorPrimario: '#059669',
-    colorSecundario: '#10B981',
+    colorPrimario: "#059669",
+    colorSecundario: "#10B981",
     incluirLineas: true,
     incluirClausulas: false,
     incluirFirmas: true,
     incluirAnexos: false,
     incluirHistorial: false,
-    esDefault: false
-  }
+    esDefault: false,
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -394,7 +394,11 @@ class PDFGeneratorEngine {
   <!-- Header -->
   <div class="header">
     <div>
-      ${datos.empresa.logo ? `<img src="${datos.empresa.logo}" class="logo" />` : `<div class="doc-title">${datos.empresa.nombre}</div>`}
+      ${
+      datos.empresa.logo
+        ? `<img src="${datos.empresa.logo}" class="logo" />`
+        : `<div class="doc-title">${datos.empresa.nombre}</div>`
+    }
     </div>
     <div class="header-info">
       <div class="doc-title">${datos.tipoContrato}</div>
@@ -436,7 +440,9 @@ class PDFGeneratorEngine {
     </div>
   </div>
 
-  ${plantilla.incluirLineas ? `
+  ${
+      plantilla.incluirLineas
+        ? `
   <!-- Líneas -->
   <div class="section">
     <div class="section-title">Especificaciones de Pauta</div>
@@ -453,63 +459,97 @@ class PDFGeneratorEngine {
         </tr>
       </thead>
       <tbody>
-        ${datos.lineas.map(l => `
+        ${
+          datos.lineas.map((l) => `
         <tr>
           <td>${l.numero}</td>
           <td>${l.medio}</td>
           <td>${l.programa || l.descripcion}</td>
           <td>${l.cantidad} ${l.unidad}</td>
-          <td>$${l.valorUnitario.toLocaleString('es-CL')}</td>
+          <td>$${l.valorUnitario.toLocaleString("es-CL")}</td>
           <td>${l.descuento}%</td>
-          <td style="font-weight:bold">$${l.valorNeto.toLocaleString('es-CL')}</td>
+          <td style="font-weight:bold">$${
+            l.valorNeto.toLocaleString("es-CL")
+          }</td>
         </tr>
-        `).join('')}
+        `).join("")
+        }
       </tbody>
     </table>
     
     <div style="width: 300px; margin-left: auto;">
       <div class="totals-box">
-        <div class="total-row"><span>Valor Bruto:</span><span>$${datos.valorBruto.toLocaleString('es-CL')}</span></div>
-        <div class="total-row"><span>Descuento (${datos.descuento}%):</span><span>-$${Math.round(datos.valorBruto * datos.descuento / 100).toLocaleString('es-CL')}</span></div>
-        <div class="total-row"><span>Subtotal Neto:</span><span>$${datos.valorNeto.toLocaleString('es-CL')}</span></div>
-        <div class="total-row"><span>IVA (19%):</span><span>$${datos.iva.toLocaleString('es-CL')}</span></div>
-        <div class="total-row total-final"><span>TOTAL ${datos.moneda}:</span><span>$${datos.valorTotal.toLocaleString('es-CL')}</span></div>
+        <div class="total-row"><span>Valor Bruto:</span><span>$${
+          datos.valorBruto.toLocaleString("es-CL")
+        }</span></div>
+        <div class="total-row"><span>Descuento (${datos.descuento}%):</span><span>-$${
+          Math.round(datos.valorBruto * datos.descuento / 100).toLocaleString(
+            "es-CL",
+          )
+        }</span></div>
+        <div class="total-row"><span>Subtotal Neto:</span><span>$${
+          datos.valorNeto.toLocaleString("es-CL")
+        }</span></div>
+        <div class="total-row"><span>IVA (19%):</span><span>$${
+          datos.iva.toLocaleString("es-CL")
+        }</span></div>
+        <div class="total-row total-final"><span>TOTAL ${datos.moneda}:</span><span>$${
+          datos.valorTotal.toLocaleString("es-CL")
+        }</span></div>
       </div>
     </div>
   </div>
-  ` : ''}
+  `
+        : ""
+    }
 
-  ${plantilla.incluirClausulas && datos.clausulas.length > 0 ? `
+  ${
+      plantilla.incluirClausulas && datos.clausulas.length > 0
+        ? `
   <!-- Cláusulas -->
   <div class="section" style="page-break-before: always;">
     <div class="section-title">Cláusulas del Contrato</div>
-    ${datos.clausulas.map(c => `
+    ${
+          datos.clausulas.map((c) => `
     <div class="clausula">
       <div class="clausula-titulo">${c.numero}. ${c.titulo}</div>
       <div>${c.contenido}</div>
     </div>
-    `).join('')}
+    `).join("")
+        }
   </div>
-  ` : ''}
+  `
+        : ""
+    }
 
-  ${plantilla.incluirFirmas ? `
+  ${
+      plantilla.incluirFirmas
+        ? `
   <!-- Firmas -->
   <div class="section" style="page-break-inside: avoid;">
     <div class="section-title">Firmas Autorizadas</div>
     <div class="firmas-grid">
-      ${datos.firmas.map(f => `
+      ${
+          datos.firmas.map((f) => `
       <div class="firma-box">
         <div class="firma-nombre">${f.nombre}</div>
         <div class="firma-cargo">${f.cargo}</div>
-        <div style="color:#64748b; font-size:9px; margin-top:5px;">${f.rol}${f.fechaFirma ? ` • Firmado: ${f.fechaFirma}` : ''}</div>
+        <div style="color:#64748b; font-size:9px; margin-top:5px;">${f.rol}${
+            f.fechaFirma ? ` • Firmado: ${f.fechaFirma}` : ""
+          }</div>
       </div>
-      `).join('')}
+      `).join("")
+        }
     </div>
   </div>
-  ` : ''}
+  `
+        : ""
+    }
 
   <div class="footer">
-    Documento generado por Silexar Pulse • ${new Date().toLocaleString('es-CL')} • Página <span class="page-number"></span>
+    Documento generado por Silexar Pulse • ${
+      new Date().toLocaleString("es-CL")
+    } • Página <span class="page-number"></span>
   </div>
 </body>
 </html>
@@ -521,37 +561,43 @@ class PDFGeneratorEngine {
    */
   async generarPDF(
     datos: DatosContratoPDF,
-    opciones: OpcionesPDF = {}
+    opciones: OpcionesPDF = {},
   ): Promise<ResultadoPDF> {
     try {
-      const plantilla = opciones.plantillaId 
-        ? this.plantillas.find(p => p.id === opciones.plantillaId) 
-        : this.plantillas.find(p => p.esDefault);
+      const plantilla = opciones.plantillaId
+        ? this.plantillas.find((p) => p.id === opciones.plantillaId)
+        : this.plantillas.find((p) => p.esDefault);
 
       if (!plantilla) {
-        return { exito: false, error: 'Plantilla no encontrada', nombreArchivo: '', tamañoBytes: 0, paginas: 0 };
+        return {
+          exito: false,
+          error: "Plantilla no encontrada",
+          nombreArchivo: "",
+          tamañoBytes: 0,
+          paginas: 0,
+        };
       }
 
       const html = this.generarHTML(datos, plantilla);
-      
+
       // En producción, aquí iría la generación real con puppeteer/jsPDF
       // Por ahora retornamos mock
-      const nombreArchivo = `${datos.numero.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-      
+      const nombreArchivo = `${datos.numero.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+
       return {
         exito: true,
         url: `/api/contratos/${datos.id}/pdf`,
         nombreArchivo,
         tamañoBytes: 256000,
-        paginas: 3
+        paginas: 3,
       };
     } catch (error) {
       return {
         exito: false,
         error: `Error generando PDF: ${error}`,
-        nombreArchivo: '',
+        nombreArchivo: "",
         tamañoBytes: 0,
-        paginas: 0
+        paginas: 0,
       };
     }
   }
@@ -560,12 +606,12 @@ class PDFGeneratorEngine {
    * Genera preview HTML para mostrar en modal
    */
   generarPreview(datos: DatosContratoPDF, plantillaId?: string): string {
-    const plantilla = plantillaId 
-      ? this.plantillas.find(p => p.id === plantillaId) 
-      : this.plantillas.find(p => p.esDefault);
+    const plantilla = plantillaId
+      ? this.plantillas.find((p) => p.id === plantillaId)
+      : this.plantillas.find((p) => p.esDefault);
 
-    if (!plantilla) return '<p>Error: Plantilla no encontrada</p>';
-    
+    if (!plantilla) return "<p>Error: Plantilla no encontrada</p>";
+
     return this.generarHTML(datos, plantilla);
   }
 
@@ -580,7 +626,7 @@ class PDFGeneratorEngine {
    * Obtiene plantilla por código
    */
   getPlantillaPorCodigo(codigo: string): PlantillaPDF | undefined {
-    return this.plantillas.find(p => p.codigo === codigo);
+    return this.plantillas.find((p) => p.codigo === codigo);
   }
 }
 

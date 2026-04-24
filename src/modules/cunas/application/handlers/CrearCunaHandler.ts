@@ -2,28 +2,40 @@
  * HANDLER: CREAR CUÑA — TIER 0
  *
  * Orquesta el caso de uso de creación de cuña:
- * 1. Reserva atómica del CunaId
- * 2. Construcción de la entidad Cuna
- * 3. Persistencia via ICunaRepository
- * 4. Retorna Result<Cuna, string>
+ * 1. Valida que el anunciante exista
+ * 2. Reserva atómicamente el CunaId
+ * 3. Construcción de la entidad Cuna
+ * 4. Persistencia via ICunaRepository
+ * 5. Retorna Result<Cuna, string>
  */
 
 import { Result } from '@/modules/shared/domain/Result';
 import { Cuna } from '../../domain/entities/Cuna';
 import type { ICunaRepository } from '../../domain/repositories/ICunaRepository';
 import type { CrearCunaCommand } from '../commands/CrearCunaCommand';
+import { AnuncianteValidatorService } from '../services/AnuncianteValidatorService';
+
+const defaultValidator: AnuncianteValidatorService = {
+  validarAnunciante: async () => true,
+} as unknown as AnuncianteValidatorService;
 
 export class CrearCunaHandler {
-  constructor(private readonly repository: ICunaRepository) {}
+  constructor(
+    private readonly repository: ICunaRepository,
+    private readonly anuncianteValidatorService: AnuncianteValidatorService = defaultValidator
+  ) {}
 
   async execute(command: CrearCunaCommand): Promise<Result<Cuna, string>> {
     try {
       const { input } = command;
 
-      // 1. Reservar el siguiente CunaId atómicamente (evita colisiones)
+      // 1. Validar que el anunciante exista
+      await this.anuncianteValidatorService.validarAnunciante(input.anuncianteId);
+
+      // 2. Reservar el siguiente CunaId atómicamente (evita colisiones)
       const cunaId = await this.repository.reserveNextCodigo(input.tenantId);
 
-      // 2. Construir la entidad Cuna con reglas de dominio
+      // 3. Construir la entidad Cuna con reglas de dominio
       const cuna = Cuna.create({
         tenantId: input.tenantId,
         codigo: cunaId.valor,
@@ -41,14 +53,13 @@ export class CrearCunaHandler {
         bitrate: input.bitrate ?? null,
         sampleRate: input.sampleRate ?? null,
         tamanoBytes: input.tamanoBytes ?? null,
-        versionAnteriorId: null,
         fechaInicioVigencia: input.fechaInicioVigencia ?? null,
         fechaFinVigencia: input.fechaFinVigencia ?? null,
         urgencia: input.urgencia ?? null,
         subidoPorId: input.subidoPorId,
       });
 
-      // 3. Persistir
+      // 4. Persistir
       await this.repository.save(cuna);
 
       return Result.ok(cuna);

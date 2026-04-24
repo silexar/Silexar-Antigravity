@@ -81,6 +81,7 @@ export const cunas = pgTable('cunas', {
   id: uuid('id').primaryKey().defaultRandom(),
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   codigo: varchar('codigo', { length: 30 }).notNull(), // Código único ej: "CUN-2025-0001"
+  spxCode: varchar('spx_code', { length: 20 }).unique(), // Identificador SPX único ascendente ej: "SPX-0001"
 
   // Relaciones Globales (Ecosistema)
   anuncianteId: uuid('anunciante_id').references(() => anunciantes.id).notNull(),
@@ -151,6 +152,7 @@ export const cunas = pgTable('cunas', {
   campanaIdx: index('cunas_campana_idx').on(table.campanaId),
   contratoIdx: index('cunas_contrato_idx').on(table.contratoId),
   codigoIdx: index('cunas_codigo_idx').on(table.codigo),
+  spxCodeIdx: index('cunas_spx_code_idx').on(table.spxCode),
   tipoCunaIdx: index('cunas_tipo_idx').on(table.tipoCuna),
   estadoIdx: index('cunas_estado_idx').on(table.estado),
   vigenciaIdx: index('cunas_vigencia_idx').on(table.fechaInicioVigencia, table.fechaFinVigencia),

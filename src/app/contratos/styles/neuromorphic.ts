@@ -1,42 +1,65 @@
 /**
  * 🎨 SILEXAR PULSE - Neuromorphic Design System TIER 0
  * 
- * @description Sistema de diseño neuromorphic reutilizable
- * con estilos consistentes para todo el módulo de contratos.
+ * @description Sistema de diseño neuromórfico oficial con tokens
+ * consistentes para todo el módulo de contratos.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
 
 // ═══════════════════════════════════════════════════════════════
-// COLORES BASE
+// TOKENS OFICIALES NEUMORPHISM
 // ═══════════════════════════════════════════════════════════════
+
+export const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+} as const;
 
 export const neuroColors = {
   // Fondos principales
-  bgLight: 'from-slate-100 via-slate-50 to-slate-100',
-  bgCard: 'from-slate-50 to-slate-100',
-  bgInset: 'from-slate-100 to-slate-50',
+  bgLight: 'from-[#dfeaff] via-[#e8f0ff] to-[#dfeaff]',
+  bgCard: 'from-[#dfeaff] to-[#e8f0ff]',
+  bgInset: 'from-[#e8f0ff] to-[#dfeaff]',
   
-  // Sombras
+  // Sombras oficiales
   shadowLight: '#ffffff',
-  shadowDark: '#d1d5db',
-  shadowDarker: '#c9cbd0',
+  shadowDark: '#bec8de',
+  shadowDarker: '#a8b4cc',
   
   // Acentos
-  accentPrimary: 'from-indigo-500 to-purple-600',
+  accentPrimary: 'from-[#6888ff] to-[#5572ee]',
   accentSuccess: 'from-emerald-400 to-teal-500',
   accentWarning: 'from-amber-400 to-orange-500',
   accentDanger: 'from-red-400 to-rose-500',
   
   // Texto
-  textPrimary: 'text-slate-800',
-  textSecondary: 'text-slate-500',
-  textMuted: 'text-slate-400'
+  textPrimary: 'text-[#69738c]',
+  textSecondary: 'text-[#9aa3b8]',
+  textMuted: 'text-[#b0b8cc]'
 };
 
 // ═══════════════════════════════════════════════════════════════
-// CLASES NEUROMORPHIC
+// SOMBRAS NEUMORPHIC
+// ═══════════════════════════════════════════════════════════════
+
+export const S = {
+  raised: `shadow-[8px_8px_16px_${N.dark},-8px_-8px_16px_${N.light}]`,
+  sm: `shadow-[4px_4px_8px_${N.dark},-4px_-4px_8px_${N.light}]`,
+  xs: `shadow-[2px_2px_4px_${N.dark},-2px_-2px_4px_${N.light}]`,
+  inset: `shadow-[inset_4px_4px_8px_${N.dark},inset_-4px_-4px_8px_${N.light}]`,
+  insetSm: `shadow-[inset_2px_2px_5px_${N.dark},inset_-2px_-2px_5px_${N.light}]`,
+  insetXs: `shadow-[inset_2px_2px_4px_${N.dark},inset_-2px_-2px_4px_${N.light}]`,
+};
+
+// ═══════════════════════════════════════════════════════════════
+// CLASES NEUROMORPHIC OFICIALES
 // ═══════════════════════════════════════════════════════════════
 
 export const neuro = {
@@ -44,69 +67,66 @@ export const neuro = {
   // CONTENEDORES
   // ═══════════════════════════════════════════════════════════════
   
-  /** Página completa con gradiente neuromorphic */
+  /** Página completa con fondo neumórfico oficial */
   page: `
-    bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100
+    bg-[#dfeaff]
     min-h-screen
+    text-[#69738c]
   `,
   
-  /** Card elevada con sombras suaves */
+  /** Card elevada con sombras oficiales */
   card: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
   `,
   
   /** Card más pequeña */
   cardSm: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/50
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
   `,
   
   /** Card con efecto hundido/inset */
   cardInset: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff]
-    border border-slate-200/30
+    shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
   `,
   
   /** Card inset más pequeña */
   cardInsetSm: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
-    border border-slate-200/30
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
   `,
   
   // ═══════════════════════════════════════════════════════════════
   // BOTONES
   // ═══════════════════════════════════════════════════════════════
   
-  /** Botón primario con gradiente */
+  /** Botón primario con acento oficial */
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    hover:from-indigo-600 hover:to-purple-700
-    active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
+    shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
+    hover:bg-[#5572ee]
+    active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.2)]
     transition-all duration-200
     px-6 py-3
   `,
   
-  /** Botón secundario neutral */
+  /** Botón secundario neumórfico */
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium
+    bg-[#dfeaff]
+    text-[#69738c] font-medium
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    active:shadow-[inset_2px_2px_4px_#d1d5db]
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]
+    active:shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
     transition-all duration-200
     px-4 py-2
   `,
@@ -116,8 +136,8 @@ export const neuro = {
     bg-gradient-to-br from-emerald-400 to-teal-500
     text-white font-semibold
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     transition-all duration-200
     px-6 py-3
@@ -128,8 +148,8 @@ export const neuro = {
     bg-gradient-to-br from-red-400 to-rose-500
     text-white font-semibold
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     transition-all duration-200
     px-6 py-3
@@ -137,22 +157,22 @@ export const neuro = {
   
   /** Botón icono circular */
   btnIcon: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    active:shadow-[inset_2px_2px_4px_#d1d5db]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
+    active:shadow-[inset_2px_2px_4px_#bec8de]
     transition-all duration-200
     p-3
   `,
   
   /** Botón flotante (FAB) */
   fab: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white
     rounded-2xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff,0_8px_32px_rgba(99,102,241,0.4)]
-    hover:shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff,0_12px_40px_rgba(99,102,241,0.5)]
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff,0_8px_32px_rgba(104,136,255,0.4)]
+    hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff,0_12px_40px_rgba(104,136,255,0.5)]
     active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     transition-all duration-200
     p-4
@@ -162,46 +182,46 @@ export const neuro = {
   // INPUTS
   // ═══════════════════════════════════════════════════════════════
   
-  /** Input de texto */
+  /** Input de texto hundido */
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/30 focus:outline-none
     transition-all duration-200
     px-4 py-3
-    text-slate-700
-    placeholder:text-slate-400
+    text-[#69738c]
+    placeholder:text-[#9aa3b8]
     w-full
   `,
   
-  /** Select */
+  /** Select hundido */
   select: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/30 focus:outline-none
     transition-all duration-200
     px-4 py-3 pr-10
-    text-slate-700
+    text-[#69738c]
     cursor-pointer
     appearance-none
     w-full
   `,
   
-  /** Textarea */
+  /** Textarea hundida */
   textarea: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/30 focus:outline-none
     transition-all duration-200
     px-4 py-3
-    text-slate-700
-    placeholder:text-slate-400
+    text-[#69738c]
+    placeholder:text-[#9aa3b8]
     resize-none
     w-full
   `,
@@ -213,9 +233,9 @@ export const neuro = {
   /** Toggle container (off state) */
   toggleOff: `
     relative w-14 h-7
-    bg-gradient-to-br from-slate-200 to-slate-100
+    bg-[#dfeaff]
     rounded-full
-    shadow-[inset_2px_2px_4px_#c9cbd0,inset_-2px_-2px_4px_#ffffff]
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
     cursor-pointer
     transition-all duration-300
   `,
@@ -223,7 +243,7 @@ export const neuro = {
   /** Toggle container (on state) */
   toggleOn: `
     relative w-14 h-7
-    bg-gradient-to-br from-indigo-400 to-purple-500
+    bg-[#6888ff]
     rounded-full
     shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
     cursor-pointer
@@ -246,46 +266,47 @@ export const neuro = {
   /** Badge elevado */
   badge: `
     px-3 py-1
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-sm font-medium
+    text-[#69738c]
   `,
   
   /** Badge con color */
   badgePrimary: `
     px-3 py-1
-    bg-gradient-to-br from-indigo-100 to-purple-100
-    text-indigo-700
+    bg-[#6888ff]/10
+    text-[#6888ff]
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `,
   
   badgeSuccess: `
     px-3 py-1
-    bg-gradient-to-br from-emerald-100 to-teal-100
+    bg-emerald-100
     text-emerald-700
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `,
   
   badgeWarning: `
     px-3 py-1
-    bg-gradient-to-br from-amber-100 to-orange-100
+    bg-amber-100
     text-amber-700
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `,
   
   badgeDanger: `
     px-3 py-1
-    bg-gradient-to-br from-red-100 to-rose-100
+    bg-red-100
     text-red-700
     rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `,
   
@@ -295,32 +316,32 @@ export const neuro = {
   
   /** Avatar/Icon container */
   avatar: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
     flex items-center justify-center
   `,
   
   /** Divider horizontal */
   divider: `
     h-px
-    bg-gradient-to-r from-transparent via-slate-300 to-transparent
+    bg-gradient-to-r from-transparent via-[#bec8de] to-transparent
     shadow-[0_1px_0_#ffffff]
   `,
   
   /** Progress bar container */
   progressBg: `
     h-2
-    bg-gradient-to-r from-slate-200 to-slate-100
+    bg-[#dfeaff]
     rounded-full
-    shadow-[inset_1px_1px_2px_#c9cbd0,inset_-1px_-1px_2px_#ffffff]
+    shadow-[inset_1px_1px_2px_#bec8de,inset_-1px_-1px_2px_#ffffff]
     overflow-hidden
   `,
   
   /** Progress bar fill */
   progressFill: `
     h-full
-    bg-gradient-to-r from-indigo-400 to-purple-500
+    bg-[#6888ff]
     rounded-full
     transition-all duration-500
   `,
@@ -328,11 +349,31 @@ export const neuro = {
   /** Slider track */
   slider: `
     w-full h-2
-    bg-gradient-to-r from-slate-200 to-slate-100
+    bg-[#dfeaff]
     rounded-full
-    shadow-[inset_1px_1px_2px_#c9cbd0,inset_-1px_-1px_2px_#ffffff]
+    shadow-[inset_1px_1px_2px_#bec8de,inset_-1px_-1px_2px_#ffffff]
     appearance-none
     cursor-pointer
+  `,
+  
+  // ═══════════════════════════════════════════════════════════════
+  // NAVIGATION
+  // ═══════════════════════════════════════════════════════════════
+  
+  /** Nav Item Activo */
+  navActive: `
+    bg-[#dfeaff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
+    text-[#6888ff]
+    rounded-xl
+  `,
+  
+  /** Nav Item Inactivo */
+  navInactive: `
+    text-[#69738c]
+    hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]
+    rounded-xl
+    transition-all
   `,
   
   // ═══════════════════════════════════════════════════════════════
@@ -341,7 +382,7 @@ export const neuro = {
   
   /** Hover glow effect */
   hoverGlow: `
-    hover:shadow-[0_0_30px_rgba(99,102,241,0.3)]
+    hover:shadow-[0_0_30px_rgba(104,136,255,0.3)]
     transition-shadow duration-300
   `,
   
@@ -379,10 +420,10 @@ export function neuroShadow(
   const { offset, blur } = sizes[size];
   
   if (type === 'inset') {
-    return `shadow-[inset_${offset}px_${offset}px_${blur}px_#d1d5db,inset_-${offset}px_-${offset}px_${blur}px_#ffffff]`;
+    return `shadow-[inset_${offset}px_${offset}px_${blur}px_#bec8de,inset_-${offset}px_-${offset}px_${blur}px_#ffffff]`;
   }
   
-  return `shadow-[${offset}px_${offset}px_${blur}px_#d1d5db,-${offset}px_-${offset}px_${blur}px_#ffffff]`;
+  return `shadow-[${offset}px_${offset}px_${blur}px_#bec8de,-${offset}px_-${offset}px_${blur}px_#ffffff]`;
 }
 
 /**
@@ -392,12 +433,41 @@ export function neuroGradient(
   type: 'primary' | 'success' | 'warning' | 'danger' | 'neutral' = 'neutral'
 ): string {
   const gradients = {
-    primary: 'from-indigo-500 to-purple-600',
+    primary: 'from-[#6888ff] to-[#5572ee]',
     success: 'from-emerald-400 to-teal-500',
     warning: 'from-amber-400 to-orange-500',
     danger: 'from-red-400 to-rose-500',
-    neutral: 'from-slate-50 to-slate-100'
+    neutral: 'from-[#dfeaff] to-[#e8f0ff]'
   };
   
   return `bg-gradient-to-br ${gradients[type]}`;
+}
+
+/**
+ * Genera estilo inline para sombra neumórfica
+ */
+export function neuStyle(
+  size: 'sm' | 'md' | 'lg' | 'xl' | 'none' = 'md',
+  type: 'raised' | 'inset' = 'raised'
+): React.CSSProperties {
+  if (size === 'none') return {};
+  
+  const sizes = {
+    sm: { offset: 4, blur: 8 },
+    md: { offset: 8, blur: 16 },
+    lg: { offset: 12, blur: 24 },
+    xl: { offset: 16, blur: 32 }
+  };
+  
+  const { offset, blur } = sizes[size];
+  
+  if (type === 'inset') {
+    return {
+      boxShadow: `inset ${offset}px ${offset}px ${blur}px ${N.dark}, inset -${offset}px -${offset}px ${blur}px ${N.light}`
+    };
+  }
+  
+  return {
+    boxShadow: `${offset}px ${offset}px ${blur}px ${N.dark}, -${offset}px -${offset}px ${blur}px ${N.light}`
+  };
 }

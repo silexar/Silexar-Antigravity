@@ -3,6 +3,7 @@
  * 
  * @description Dashboard de renovaciones con motor predictivo,
  * análisis de factores y acciones automáticas.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -30,6 +31,25 @@ import {
   XCircle,
   Brain
 } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -103,6 +123,31 @@ const factoresIA = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// COMPONENTES NEUMORPHIC
+// ═══════════════════════════════════════════════════════════════
+
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 // COMPONENTES AUXILIARES
 // ═══════════════════════════════════════════════════════════════
 
@@ -117,34 +162,34 @@ const ContratoRenovacionCard: React.FC<{
   onToggle: () => void;
 }> = ({ contrato, expandido, onToggle }) => {
   const nivelConfig = {
-    ALTA: { bg: 'bg-green-50', border: 'border-green-200', icon: <CheckCircle2 className="w-5 h-5 text-green-500" />, label: '✅ Alta Probabilidad' },
-    MEDIA: { bg: 'bg-amber-50', border: 'border-amber-200', icon: <AlertTriangle className="w-5 h-5 text-amber-500" />, label: '⚠️ Riesgo Medio' },
-    BAJA: { bg: 'bg-orange-50', border: 'border-orange-200', icon: <AlertCircle className="w-5 h-5 text-orange-500" />, label: '🟠 Riesgo Alto' },
-    CRITICA: { bg: 'bg-red-50', border: 'border-red-200', icon: <XCircle className="w-5 h-5 text-red-500" />, label: '❌ Riesgo Crítico' }
+    ALTA: { bg: 'rgba(34,197,94,0.08)', border: '#22c55e40', icon: <CheckCircle2 className="w-5 h-5" style={{ color: '#22c55e' }} />, label: '✅ Alta Probabilidad', color: '#22c55e' },
+    MEDIA: { bg: 'rgba(245,158,11,0.08)', border: '#f59e0b40', icon: <AlertTriangle className="w-5 h-5" style={{ color: '#f59e0b' }} />, label: '⚠️ Riesgo Medio', color: '#f59e0b' },
+    BAJA: { bg: 'rgba(249,115,22,0.08)', border: '#f9731640', icon: <AlertCircle className="w-5 h-5" style={{ color: '#f97316' }} />, label: '🟠 Riesgo Alto', color: '#f97316' },
+    CRITICA: { bg: 'rgba(239,68,68,0.08)', border: '#ef444440', icon: <XCircle className="w-5 h-5" style={{ color: '#ef4444' }} />, label: '❌ Riesgo Crítico', color: '#ef4444' }
   }[contrato.nivelProbabilidad];
 
   const diasRestantes = formatDias(contrato.fechaVencimiento);
 
   return (
-    <motion.div layout className={`rounded-xl border-2 overflow-hidden ${nivelConfig.bg} ${nivelConfig.border}`}>
+    <motion.div layout className="rounded-2xl overflow-hidden" style={{ background: nivelConfig.bg, border: `1px solid ${nivelConfig.border}` }}>
       <button onClick={onToggle} className="w-full p-4 text-left">
         <div className="flex items-start gap-4">
           {nivelConfig.icon}
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h4 className="font-bold text-slate-800">{contrato.clienteNombre}</h4>
-              <span className="text-sm text-slate-500">• Vence: {diasRestantes} días</span>
+              <h4 className="font-bold text-sm" style={{ color: N.text }}>{contrato.clienteNombre}</h4>
+              <span className="text-sm" style={{ color: N.textSub }}>• Vence: {diasRestantes} días</span>
             </div>
             <div className="flex items-center gap-4 text-sm">
-              <span className="font-bold text-slate-700">Prob: {contrato.probabilidadRenovacion}%</span>
-              <span className="text-slate-600">Valor: {formatCurrency(contrato.valorActual)}</span>
+              <span className="font-black" style={{ color: N.text }}>Prob: {contrato.probabilidadRenovacion}%</span>
+              <span style={{ color: N.textSub }}>Valor: {formatCurrency(contrato.valorActual)}</span>
             </div>
           </div>
-          <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${expandido ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-5 h-5 transition-transform ${expandido ? 'rotate-180' : ''}`} style={{ color: N.textSub }} />
         </div>
         <div className="mt-2 flex items-center gap-2">
-          <Target className="w-4 h-4 text-indigo-500" />
-          <span className="text-sm text-indigo-700 font-medium">🎯 Acción: {contrato.accionRecomendada}</span>
+          <Target className="w-4 h-4" style={{ color: N.accent }} />
+          <span className="text-sm font-bold" style={{ color: N.accent }}>🎯 Acción: {contrato.accionRecomendada}</span>
         </div>
       </button>
 
@@ -154,26 +199,27 @@ const ContratoRenovacionCard: React.FC<{
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-200 p-4 bg-white"
+            className="p-4"
+            style={{ borderTop: `1px solid ${N.dark}30`, background: N.base }}
           >
             {/* Factores */}
             <div className="mb-4">
-              <p className="text-sm font-semibold text-slate-700 mb-2">Factores analizados:</p>
+              <p className="text-sm font-bold mb-2" style={{ color: N.text }}>Factores analizados:</p>
               <div className="space-y-2">
                 {contrato.factores.map((f, idx) => (
                   <div key={idx} className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">{f.nombre}</span>
+                    <span className="text-sm" style={{ color: N.textSub }}>{f.nombre}</span>
                     <div className="flex items-center gap-2">
-                      <div className="w-24 h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="w-24 h-2 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
                         <div 
-                          className={`h-full rounded-full ${
-                            f.impacto === 'positivo' ? 'bg-green-500' :
-                            f.impacto === 'negativo' ? 'bg-red-500' : 'bg-amber-500'
-                          }`}
-                          style={{ width: `${f.valor}%` }}
+                          className="h-full rounded-full"
+                          style={{ 
+                            width: `${f.valor}%`,
+                            background: f.impacto === 'positivo' ? '#22c55e' : f.impacto === 'negativo' ? '#ef4444' : '#f59e0b'
+                          }}
                         />
                       </div>
-                      <span className="text-sm font-medium text-slate-700 w-10">{f.valor}%</span>
+                      <span className="text-sm font-bold w-10" style={{ color: N.text }}>{f.valor}%</span>
                     </div>
                   </div>
                 ))}
@@ -182,15 +228,15 @@ const ContratoRenovacionCard: React.FC<{
 
             {/* Acciones */}
             <div className="flex gap-2">
-              <button className="flex-1 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium flex items-center justify-center gap-1 text-sm">
+              <button className="flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1 transition-all" style={{ background: `${N.accent}12`, color: N.accent, boxShadow: neuXs }}>
                 <Phone className="w-4 h-4" />
                 Contactar
               </button>
-              <button className="flex-1 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium flex items-center justify-center gap-1 text-sm">
+              <button className="flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1 transition-all" style={{ background: 'rgba(168,85,247,0.12)', color: '#a855f7', boxShadow: neuXs }}>
                 <FileText className="w-4 h-4" />
                 Propuesta
               </button>
-              <button className="flex-1 py-2 rounded-lg bg-green-100 text-green-700 font-medium flex items-center justify-center gap-1 text-sm">
+              <button className="flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1 transition-all" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', boxShadow: neuXs }}>
                 <Mail className="w-4 h-4" />
                 Email
               </button>
@@ -221,89 +267,98 @@ export default function RenovacionesDashboard() {
   const valorEnRiesgo = contratos.filter(c => c.probabilidadRenovacion < 70).reduce((acc, c) => acc + c.valorActual, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-purple-50/30">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div className="max-w-[1400px] mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg">
-                <RefreshCw className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-800">🔮 Motor Predictivo de Renovaciones</h1>
-                <p className="text-slate-500 text-sm">Cortex-Flow • Análisis en tiempo real</p>
-              </div>
+    <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
+      <div className="max-w-[1400px] mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: neu }}>
+              <RefreshCw className="w-8 h-8" style={{ color: N.accent }} />
             </div>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-xl bg-indigo-100 text-indigo-700 font-medium flex items-center gap-2">
-                <Target className="w-4 h-4" />
-                Generar Plan Acción
-              </button>
-              <button className="px-4 py-2 rounded-xl bg-purple-100 text-purple-700 font-medium flex items-center gap-2">
-                <Send className="w-4 h-4" />
-                Alertar Ejecutivos
-              </button>
+            <div>
+              <h1 className="text-3xl font-black" style={{ color: N.text }}>🔮 Motor Predictivo de Renovaciones</h1>
+              <p className="text-sm" style={{ color: N.textSub }}>Cortex-Flow • Análisis en tiempo real</p>
             </div>
+          </div>
+          <div className="flex gap-2">
+            <NeuButton variant="secondary">
+              <Target className="w-4 h-4" />
+              Generar Plan Acción
+            </NeuButton>
+            <NeuButton variant="primary">
+              <Send className="w-4 h-4" />
+              Alertar Ejecutivos
+            </NeuButton>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-6">
         {/* Métricas */}
-        <div className="grid md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-white border border-slate-200">
+        <div className="grid md:grid-cols-4 gap-5">
+          <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-5 h-5 text-indigo-500" />
-              <span className="text-sm text-slate-600">Próximos a vencer (30d)</span>
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <Calendar className="w-5 h-5" style={{ color: N.accent }} />
+              </div>
+              <span className="text-sm" style={{ color: N.textSub }}>Próximos a vencer (30d)</span>
             </div>
-            <p className="text-3xl font-bold text-slate-800">{contratos.length}</p>
-          </div>
-          <div className="p-4 rounded-xl bg-white border border-slate-200">
+            <p className="text-3xl font-black" style={{ color: N.text }}>{contratos.length}</p>
+          </NeuCard>
+          <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="w-5 h-5 text-green-500" />
-              <span className="text-sm text-slate-600">Valor Total</span>
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />
+              </div>
+              <span className="text-sm" style={{ color: N.textSub }}>Valor Total</span>
             </div>
-            <p className="text-3xl font-bold text-slate-800">{formatCurrency(valorTotal)}</p>
-          </div>
-          <div className="p-4 rounded-xl bg-white border border-slate-200">
+            <p className="text-3xl font-black" style={{ color: N.text }}>{formatCurrency(valorTotal)}</p>
+          </NeuCard>
+          <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="w-5 h-5 text-amber-500" />
-              <span className="text-sm text-slate-600">Valor en Riesgo</span>
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <AlertTriangle className="w-5 h-5" style={{ color: '#f59e0b' }} />
+              </div>
+              <span className="text-sm" style={{ color: N.textSub }}>Valor en Riesgo</span>
             </div>
-            <p className="text-3xl font-bold text-amber-600">{formatCurrency(valorEnRiesgo)}</p>
-          </div>
-          <div className="p-4 rounded-xl bg-white border border-slate-200">
+            <p className="text-3xl font-black" style={{ color: '#f59e0b' }}>{formatCurrency(valorEnRiesgo)}</p>
+          </NeuCard>
+          <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-emerald-500" />
-              <span className="text-sm text-slate-600">Tasa Renovación Histórica</span>
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
+              </div>
+              <span className="text-sm" style={{ color: N.textSub }}>Tasa Renovación Histórica</span>
             </div>
-            <p className="text-3xl font-bold text-emerald-600">78%</p>
-          </div>
+            <p className="text-3xl font-black" style={{ color: '#22c55e' }}>78%</p>
+          </NeuCard>
         </div>
 
         {/* Panel de Análisis */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white">
-          <div className="flex items-center gap-2 mb-4">
-            <Brain className="w-6 h-6 text-amber-400" />
-            <h2 className="text-lg font-bold">🤖 FACTORES ANALIZADOS POR IA</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-3">
-            {factoresIA.map((factor, idx) => (
-              <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-white/10">
-                <CheckCircle2 className="w-4 h-4 text-green-400" />
-                <span className="text-sm">{factor}</span>
+        <NeuCard className="p-6 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5" style={{ background: 'radial-gradient(circle at 20% 50%, #a855f7 0%, transparent 70%)' }} />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <Brain className="w-6 h-6" style={{ color: '#f59e0b' }} />
               </div>
-            ))}
+              <h2 className="font-black" style={{ color: N.text }}>🤖 FACTORES ANALIZADOS POR IA</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-3">
+              {factoresIA.map((factor, idx) => (
+                <div key={idx} className="flex items-center gap-2 p-2 rounded-xl" style={{ background: 'rgba(104,136,255,0.08)' }}>
+                  <CheckCircle2 className="w-4 h-4" style={{ color: '#22c55e' }} />
+                  <span className="text-sm" style={{ color: N.text }}>{factor}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </NeuCard>
 
         {/* Contratos por nivel */}
         <div className="space-y-6">
           {/* Alta Probabilidad */}
           {contratosAgrupados.ALTA.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-green-700 mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#22c55e' }}>
                 <CheckCircle2 className="w-5 h-5" />
                 ✅ ALTA PROBABILIDAD RENOVACIÓN (85%+)
               </h3>
@@ -323,7 +378,7 @@ export default function RenovacionesDashboard() {
           {/* Riesgo Medio */}
           {contratosAgrupados.MEDIA.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-amber-700 mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#f59e0b' }}>
                 <AlertTriangle className="w-5 h-5" />
                 ⚠️ RIESGO MEDIO (50-70%)
               </h3>
@@ -343,7 +398,7 @@ export default function RenovacionesDashboard() {
           {/* Riesgo Alto/Crítico */}
           {(contratosAgrupados.BAJA.length > 0 || contratosAgrupados.CRITICA.length > 0) && (
             <div>
-              <h3 className="text-lg font-bold text-red-700 mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#ef4444' }}>
                 <XCircle className="w-5 h-5" />
                 ❌ RIESGO ALTO/CRÍTICO (&lt;50%)
               </h3>

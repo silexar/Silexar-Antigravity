@@ -319,18 +319,18 @@ export function ShortcutsHelpPanel({
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-[#F0EDE8]/60 backdrop-blur-md flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-[#F0EDE8]/60  flex items-center justify-center"
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
+        className="bg-[#dfeaff] rounded-3xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-800">⌨️ Atajos de Teclado</h2>
+        <div className="px-6 py-4 border-b border-[#bec8de30] flex items-center justify-between">
+          <h2 className="text-xl font-bold text-[#69738c]">⌨️ Atajos de Teclado</h2>
           <button 
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-100 text-[#888780]"
+            className="p-2 rounded-xl hover:bg-[#dfeaff] text-[#888780]"
           >
             ✕
           </button>
@@ -343,15 +343,15 @@ export function ShortcutsHelpPanel({
             
             return (
               <div key={cat} className="mb-6">
-                <h3 className="font-bold text-slate-600 mb-3">{getCategoriaLabel(cat)}</h3>
+                <h3 className="font-bold text-[#69738c] mb-3">{getCategoriaLabel(cat)}</h3>
                 <div className="space-y-2">
                   {catShortcuts.map(shortcut => (
                     <div 
                       key={shortcut.id}
-                      className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-slate-50"
+                      className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-[#dfeaff]"
                     >
-                      <span className="text-slate-700">{shortcut.descripcion}</span>
-                      <kbd className="px-3 py-1 bg-slate-100 rounded-lg text-sm font-mono text-slate-600 shadow-sm">
+                      <span className="text-[#69738c]">{shortcut.descripcion}</span>
+                      <kbd className="px-3 py-1 bg-[#dfeaff] rounded-lg text-sm font-mono text-[#69738c] shadow-sm">
                         {KeyboardShortcuts.formatKeys(shortcut.keys)}
                       </kbd>
                     </div>
@@ -362,8 +362,8 @@ export function ShortcutsHelpPanel({
           })}
         </div>
 
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 text-center text-sm text-[#888780]">
-          Presiona <kbd className="px-2 py-0.5 bg-white rounded shadow-sm font-mono">?</kbd> para mostrar este panel
+        <div className="px-6 py-4 bg-[#dfeaff] border-t border-[#bec8de30] text-center text-sm text-[#888780]">
+          Presiona <kbd className="px-2 py-0.5 bg-[#dfeaff] rounded shadow-sm font-mono">?</kbd> para mostrar este panel
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/cron/rrss",
-      "schedule": "*/5 * * * *"
+      "path": "/api/cron/limpiar-expirados",
+      "schedule": "0 3 * * *"
     }
   ]
 }

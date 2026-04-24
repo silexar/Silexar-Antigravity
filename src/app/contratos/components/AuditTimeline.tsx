@@ -1,8 +1,8 @@
 /**
- * 📜 SILEXAR PULSE - Audit Timeline Component TIER 0
+ * ?? SILEXAR PULSE - Audit Timeline Component TIER 0
  * 
- * @description Línea de tiempo completa de auditoría que muestra
- * cada acción realizada en el contrato. Esencial para auditorías externas.
+ * @description L�nea de tiempo completa de auditor�a que muestra
+ * cada acci�n realizada en el contrato. Esencial para auditor�as externas.
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -38,9 +38,9 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 type TipoAccion = 
   | 'CREACION'
@@ -104,54 +104,54 @@ interface EventoAuditoria {
   ubicacion?: string;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // MOCK DATA
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const mockEventos: EventoAuditoria[] = [
   {
@@ -171,7 +171,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'EDICION',
     fecha: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
     usuario: { id: 'u-001', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior', email: 'carlos@silexar.cl' },
-    descripcion: 'Modificación de valor total',
+    descripcion: 'Modificaci�n de valor total',
     campoAfectado: 'valorTotal',
     valorAnterior: '$75.000.000',
     valorNuevo: '$80.000.000',
@@ -194,9 +194,9 @@ const mockEventos: EventoAuditoria[] = [
     id: 'ev-004',
     tipo: 'APROBACION',
     fecha: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-    usuario: { id: 'u-002', nombre: 'Ana García', rol: 'Supervisora', email: 'ana@silexar.cl' },
-    descripcion: 'Aprobación nivel 1 - Supervisora',
-    detalleJson: { nivel: 1, comentario: 'Cliente estratégico, descuento autorizado' },
+    usuario: { id: 'u-002', nombre: 'Ana Garc�a', rol: 'Supervisora', email: 'ana@silexar.cl' },
+    descripcion: 'Aprobaci�n nivel 1 - Supervisora',
+    detalleJson: { nivel: 1, comentario: 'Cliente estrat�gico, descuento autorizado' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
   },
@@ -205,7 +205,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'APROBACION',
     fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     usuario: { id: 'u-003', nombre: 'Roberto Silva', rol: 'Gerente Comercial', email: 'roberto@silexar.cl' },
-    descripcion: 'Aprobación nivel 2 - Gerente Comercial',
+    descripcion: 'Aprobaci�n nivel 2 - Gerente Comercial',
     detalleJson: { nivel: 2, tiempoRespuesta: '4 horas' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
@@ -224,7 +224,7 @@ const mockEventos: EventoAuditoria[] = [
     id: 'ev-007',
     tipo: 'FIRMA',
     fecha: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    usuario: { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General', email: 'patricia@silexar.cl' },
+    usuario: { id: 'u-005', nombre: 'Patricia Mu�oz', rol: 'Gerente General', email: 'patricia@silexar.cl' },
     descripcion: 'Firma digital de representante legal',
     detalleJson: { proveedor: 'DocuSign', envelopeId: 'env-abc123' },
     nivelRiesgo: 'bajo',
@@ -235,7 +235,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'ENVIO_EMAIL',
     fecha: new Date(Date.now() - 12 * 60 * 60 * 1000),
     usuario: { id: 'u-001', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior', email: 'carlos@silexar.cl' },
-    descripcion: 'Envío de contrato firmado al cliente',
+    descripcion: 'Env�o de contrato firmado al cliente',
     detalleJson: { destinatario: 'contacto@bancochile.cl', estado: 'entregado' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
@@ -245,7 +245,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'VISUALIZACION',
     fecha: new Date(Date.now() - 2 * 60 * 60 * 1000),
     usuario: { id: 'ext-001', nombre: 'Auditor Externo - Deloitte', rol: 'Auditor', email: 'auditor@deloitte.com', ip: '200.73.45.123' },
-    descripcion: 'Acceso de auditoría externa',
+    descripcion: 'Acceso de auditor�a externa',
     nivelRiesgo: 'medio',
     requiereAtencion: false,
     dispositivo: 'Desktop Firefox',
@@ -256,40 +256,40 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'DESCARGA',
     fecha: new Date(Date.now() - 1 * 60 * 60 * 1000),
     usuario: { id: 'ext-001', nombre: 'Auditor Externo - Deloitte', rol: 'Auditor', email: 'auditor@deloitte.com' },
-    descripcion: 'Descarga de documentación para auditoría',
+    descripcion: 'Descarga de documentaci�n para auditor�a',
     documentoId: 'doc-005',
     nivelRiesgo: 'medio',
     requiereAtencion: false
   }
 ];
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // HELPERS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const getAccionInfo = (tipo: TipoAccion) => {
   const info: Record<TipoAccion, { icon: React.ReactNode; color: string; label: string }> = {
-    CREACION: { icon: <FileText className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Creación' },
-    EDICION: { icon: <Edit className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600', label: 'Edición' },
-    APROBACION: { icon: <Check className="w-4 h-4" />, color: 'bg-emerald-100 text-emerald-600', label: 'Aprobación' },
+    CREACION: { icon: <FileText className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Creaci�n' },
+    EDICION: { icon: <Edit className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600', label: 'Edici�n' },
+    APROBACION: { icon: <Check className="w-4 h-4" />, color: 'bg-emerald-100 text-emerald-600', label: 'Aprobaci�n' },
     RECHAZO: { icon: <X className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Rechazo' },
     FIRMA: { icon: <PenTool className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Firma' },
-    ENVIO_EMAIL: { icon: <Mail className="w-4 h-4" />, color: 'bg-indigo-100 text-indigo-600', label: 'Email' },
+    ENVIO_EMAIL: { icon: <Mail className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#6888ff]', label: 'Email' },
     ENVIO_WHATSAPP: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'WhatsApp' },
     SUBIDA_DOCUMENTO: { icon: <Upload className="w-4 h-4" />, color: 'bg-cyan-100 text-cyan-600', label: 'Subida' },
     DESCARGA: { icon: <Download className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Descarga' },
-    VISUALIZACION: { icon: <Eye className="w-4 h-4" />, color: 'bg-slate-100 text-slate-600', label: 'Visualización' },
-    IMPRESION: { icon: <Printer className="w-4 h-4" />, color: 'bg-slate-100 text-slate-600', label: 'Impresión' },
+    VISUALIZACION: { icon: <Eye className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Visualizaci�n' },
+    IMPRESION: { icon: <Printer className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Impresi�n' },
     CAMBIO_ESTADO: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600', label: 'Cambio Estado' },
     CAMBIO_DESCUENTO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Descuento' },
     CAMBIO_PRECIO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Precio' },
-    COMENTARIO: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-slate-100 text-slate-600', label: 'Comentario' },
+    COMENTARIO: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Comentario' },
     ALERTA: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Alerta' },
-    VERSIONADO: { icon: <GitBranch className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Versión' },
-    ELIMINACION: { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Eliminación' },
-    RESTAURACION: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Restauración' },
+    VERSIONADO: { icon: <GitBranch className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Versi�n' },
+    ELIMINACION: { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Eliminaci�n' },
+    RESTAURACION: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Restauraci�n' },
     CAMBIO_PERMISO: { icon: <Shield className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Permiso' },
-    ACCESO_AUDITORIA: { icon: <Shield className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Auditoría' }
+    ACCESO_AUDITORIA: { icon: <Shield className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Auditor�a' }
   };
   return info[tipo] || info.VISUALIZACION;
 };
@@ -314,9 +314,9 @@ const formatFecha = (date: Date) => {
   });
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export default function AuditTimeline({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -348,18 +348,18 @@ export default function AuditTimeline({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+            <div className="p-3 rounded-xl bg-[#6888ff]">
               <Clock className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-800">
-                Línea de Tiempo de Auditoría
+              <h3 className="font-bold text-lg text-[#69738c]">
+                L�nea de Tiempo de Auditor�a
               </h3>
-              <p className="text-sm text-slate-500">
-                {eventos.length} eventos registrados • {numeroContrato}
+              <p className="text-sm text-[#9aa3b8]">
+                {eventos.length} eventos registrados � {numeroContrato}
               </p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function AuditTimeline({
             </button>
             <button className={`${neuro.btnPrimary} px-4 py-2 text-sm flex items-center gap-2`}>
               <ExternalLink className="w-4 h-4" />
-              Reporte Auditoría
+              Reporte Auditor�a
             </button>
           </div>
         </div>
@@ -384,9 +384,9 @@ export default function AuditTimeline({
             className={`${neuro.input} px-4 py-2 text-sm`}
           >
             <option value="TODOS">Todos los tipos</option>
-            <option value="CREACION">Creación</option>
-            <option value="EDICION">Edición</option>
-            <option value="APROBACION">Aprobación</option>
+            <option value="CREACION">Creaci�n</option>
+            <option value="EDICION">Edici�n</option>
+            <option value="APROBACION">Aprobaci�n</option>
             <option value="FIRMA">Firma</option>
             <option value="CAMBIO_DESCUENTO">Cambios de descuento</option>
             <option value="VISUALIZACION">Visualizaciones</option>
@@ -399,16 +399,16 @@ export default function AuditTimeline({
             className={`${neuro.input} px-4 py-2 text-sm`}
           >
             <option value="TODOS">Todos los niveles</option>
-            <option value="bajo">🟢 Bajo riesgo</option>
-            <option value="medio">🟡 Riesgo medio</option>
-            <option value="alto">🟠 Alto riesgo</option>
-            <option value="critico">🔴 Crítico</option>
+            <option value="bajo">?? Bajo riesgo</option>
+            <option value="medio">?? Riesgo medio</option>
+            <option value="alto">?? Alto riesgo</option>
+            <option value="critico">?? Cr�tico</option>
           </select>
 
           {eventos.filter(e => e.requiereAtencion).length > 0 && (
             <span className={`${neuro.badge} bg-red-100 text-red-700`}>
               <AlertTriangle className="w-3 h-3 inline mr-1" />
-              {eventos.filter(e => e.requiereAtencion).length} requieren atención
+              {eventos.filter(e => e.requiereAtencion).length} requieren atenci�n
             </span>
           )}
         </div>
@@ -420,15 +420,15 @@ export default function AuditTimeline({
           <div key={fecha} className="mb-8">
             {/* Fecha header */}
             <div className="flex items-center gap-3 mb-4">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <span className="text-sm font-semibold text-slate-600">{fecha}</span>
-              <div className="flex-1 h-px bg-slate-200" />
+              <Calendar className="w-4 h-4 text-[#9aa3b8]" />
+              <span className="text-sm font-semibold text-[#69738c]">{fecha}</span>
+              <div className="flex-1 h-px bg-[#dfeaff]" />
             </div>
 
-            {/* Eventos del día */}
+            {/* Eventos del d�a */}
             <div className="relative pl-8">
-              {/* Línea vertical */}
-              <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-slate-200" />
+              {/* L�nea vertical */}
+              <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-[#dfeaff]" />
 
               {eventosDelDia.map((evento, idx) => {
                 const accionInfo = getAccionInfo(evento.tipo);
@@ -442,7 +442,7 @@ export default function AuditTimeline({
                     transition={{ delay: idx * 0.05 }}
                     className="relative mb-4"
                   >
-                    {/* Punto en la línea */}
+                    {/* Punto en la l�nea */}
                     <div className={`absolute left-[-20px] w-6 h-6 rounded-full ${accionInfo.color} flex items-center justify-center`}>
                       {accionInfo.icon}
                     </div>
@@ -465,16 +465,16 @@ export default function AuditTimeline({
                             </span>
                             {evento.requiereAtencion && (
                               <span className={`${neuro.badge} bg-red-100 text-red-700`}>
-                                ⚠️ Requiere atención
+                                ?? Requiere atenci�n
                               </span>
                             )}
                           </div>
 
-                          <p className="font-semibold text-slate-800 mt-2">
+                          <p className="font-semibold text-[#69738c] mt-2">
                             {evento.descripcion}
                           </p>
 
-                          <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+                          <div className="flex items-center gap-4 mt-2 text-xs text-[#9aa3b8]">
                             <span className="flex items-center gap-1">
                               <User className="w-3 h-3" />
                               {evento.usuario.nombre}
@@ -484,14 +484,14 @@ export default function AuditTimeline({
                           </div>
                         </div>
 
-                        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-5 h-5 text-[#9aa3b8] transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                       </div>
 
                       {/* Cambios de valor */}
                       {evento.valorAnterior && evento.valorNuevo && (
-                        <div className="mt-3 p-3 bg-slate-50 rounded-xl flex items-center gap-3">
+                        <div className="mt-3 p-3 bg-[#dfeaff] rounded-xl flex items-center gap-3">
                           <span className="text-red-500 line-through">{evento.valorAnterior}</span>
-                          <ArrowRight className="w-4 h-4 text-slate-400" />
+                          <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                           <span className="text-green-600 font-semibold">{evento.valorNuevo}</span>
                         </div>
                       )}
@@ -503,40 +503,40 @@ export default function AuditTimeline({
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="mt-4 pt-4 border-t border-slate-100 overflow-hidden"
+                            className="mt-4 pt-4 border-t border-[#bec8de30] overflow-hidden"
                           >
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <p className="text-slate-500">Email</p>
+                                <p className="text-[#9aa3b8]">Email</p>
                                 <p className="font-medium">{evento.usuario.email}</p>
                               </div>
                               {evento.usuario.ip && (
                                 <div>
-                                  <p className="text-slate-500">IP</p>
+                                  <p className="text-[#9aa3b8]">IP</p>
                                   <p className="font-mono text-xs">{evento.usuario.ip}</p>
                                 </div>
                               )}
                               {evento.dispositivo && (
                                 <div>
-                                  <p className="text-slate-500">Dispositivo</p>
+                                  <p className="text-[#9aa3b8]">Dispositivo</p>
                                   <p className="font-medium">{evento.dispositivo}</p>
                                 </div>
                               )}
                               {evento.ubicacion && (
                                 <div>
-                                  <p className="text-slate-500">Ubicación</p>
+                                  <p className="text-[#9aa3b8]">Ubicaci�n</p>
                                   <p className="font-medium">{evento.ubicacion}</p>
                                 </div>
                               )}
                               {evento.seccion && (
                                 <div>
-                                  <p className="text-slate-500">Sección</p>
+                                  <p className="text-[#9aa3b8]">Secci�n</p>
                                   <p className="font-medium">{evento.seccion}</p>
                                 </div>
                               )}
                               {evento.campoAfectado && (
                                 <div>
-                                  <p className="text-slate-500">Campo afectado</p>
+                                  <p className="text-[#9aa3b8]">Campo afectado</p>
                                   <p className="font-mono text-xs">{evento.campoAfectado}</p>
                                 </div>
                               )}
@@ -544,8 +544,8 @@ export default function AuditTimeline({
 
                             {evento.detalleJson && (
                               <div className="mt-4">
-                                <p className="text-slate-500 text-sm mb-2">Datos adicionales</p>
-                                <pre className="bg-slate-800 text-green-400 p-3 rounded-lg text-xs overflow-x-auto">
+                                <p className="text-[#9aa3b8] text-sm mb-2">Datos adicionales</p>
+                                <pre className="bg-[#69738c] text-green-400 p-3 rounded-lg text-xs overflow-x-auto">
                                   {JSON.stringify(evento.detalleJson, null, 2)}
                                 </pre>
                               </div>
@@ -563,22 +563,22 @@ export default function AuditTimeline({
 
         {eventosFiltrados.length === 0 && (
           <div className="text-center py-12">
-            <Clock className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500">No hay eventos que mostrar</p>
+            <Clock className="w-16 h-16 text-[#9aa3b8] mx-auto mb-4" />
+            <p className="text-[#9aa3b8]">No hay eventos que mostrar</p>
           </div>
         )}
       </div>
 
       {/* Footer con resumen */}
-      <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-200/50">
-        <div className="flex items-center justify-between text-sm text-slate-600">
+      <div className="px-6 py-4 bg-[#dfeaff]/50 border-t border-[#bec8de30]">
+        <div className="flex items-center justify-between text-sm text-[#69738c]">
           <div className="flex items-center gap-6">
             <span><strong>{eventos.length}</strong> eventos totales</span>
             <span><strong>{eventos.filter(e => e.tipo === 'APROBACION').length}</strong> aprobaciones</span>
             <span><strong>{eventos.filter(e => e.nivelRiesgo === 'alto' || e.nivelRiesgo === 'critico').length}</strong> alto riesgo</span>
           </div>
-          <p className="text-xs text-slate-400">
-            Última actualización: {new Date().toLocaleString('es-CL')}
+          <p className="text-xs text-[#9aa3b8]">
+            �ltima actualizaci�n: {new Date().toLocaleString('es-CL')}
           </p>
         </div>
       </div>

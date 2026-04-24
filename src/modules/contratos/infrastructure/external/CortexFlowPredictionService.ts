@@ -21,7 +21,7 @@ export interface CortexFlowAnalysisRequest {
 export interface CortexFlowAnalysisResponse {
   contratoId: string
   timestamp: Date
-  
+
   // Predicciones de renovación
   renewalPrediction: {
     probability: number
@@ -34,7 +34,7 @@ export interface CortexFlowAnalysisResponse {
     recommendedActions: string[]
     optimalRenewalTiming: Date
   }
-  
+
   // Análisis de riesgo de incumplimiento
   defaultRisk: {
     probability: number
@@ -42,7 +42,7 @@ export interface CortexFlowAnalysisResponse {
     earlyWarningSignals: string[]
     mitigationStrategies: string[]
   }
-  
+
   // Oportunidades de upselling
   upsellingOpportunities: {
     type: string
@@ -52,7 +52,7 @@ export interface CortexFlowAnalysisResponse {
     timeframe: string
     requiredActions: string[]
   }[]
-  
+
   // Optimización de precios
   pricingOptimization: {
     currentPricing: number
@@ -64,7 +64,7 @@ export interface CortexFlowAnalysisResponse {
       recommendedAdjustment: number
     }
   }
-  
+
   // Análisis de satisfacción del cliente
   customerSatisfaction: {
     currentScore: number
@@ -73,7 +73,7 @@ export interface CortexFlowAnalysisResponse {
     keyDrivers: string[]
     improvementAreas: string[]
   }
-  
+
   // Métricas de performance
   performanceMetrics: {
     deliveryCompliance: number
@@ -81,7 +81,7 @@ export interface CortexFlowAnalysisResponse {
     responseTime: number
     issueResolutionRate: number
   }
-  
+
   // Recomendaciones estratégicas
   strategicRecommendations: {
     category: 'retention' | 'growth' | 'optimization' | 'risk_mitigation'
@@ -98,6 +98,8 @@ export class CortexFlowPredictionService {
   private baseUrl: string
   private apiKey: string
   private timeout: number = 10000
+  private cache: Map<string, { data: CortexFlowAnalysisResponse; timestamp: number }> = new Map()
+  private readonly CACHE_TTL = 60 * 60 * 1000 // 1 hora
 
   constructor(config: { baseUrl: string; apiKey: string; timeout?: number }) {
     this.baseUrl = config.baseUrl
@@ -106,6 +108,16 @@ export class CortexFlowPredictionService {
   }
 
   async analyzeContract(request: CortexFlowAnalysisRequest): Promise<CortexFlowAnalysisResponse> {
+    // Generar cache key
+    const cacheKey = this.generateCacheKey(request.contratoId, 'analyze')
+
+    // Verificar cache (válido por 1 hora)
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      logger.debug('[CortexFlow] Cache hit for contract analysis', { contratoId: request.contratoId })
+      return cached.data
+    }
+
     try {
       const response = await this.makeRequest('/api/v1/contracts/analyze', {
         method: 'POST',
@@ -135,11 +147,259 @@ export class CortexFlowPredictionService {
       }
 
       const data = await response.json()
-      return this.mapAnalysisResponse(data)
+      const result = this.mapAnalysisResponse(data)
+
+      // Guardar en cache
+      this.cache.set(cacheKey, { data: result, timestamp: Date.now() })
+
+      return result
 
     } catch (error) {
       logger.error('Error analyzing contract with Cortex-Flow:', error)
-      return this.fallbackAnalysis(request)
+      const fallback = this.fallbackAnalysis(request)
+
+      // Guardar fallback en cache
+      this.cache.set(cacheKey, { data: fallback, timestamp: Date.now() })
+
+      return fallback
+    }
+  }
+
+  /**
+   * Predecir probabilidad de renovación de un contrato
+   */
+  async predecirRenovacion(contratoId: string, anuncianteId: string): Promise<{
+    probabilidad: number;
+    confianza: number;
+    factores: Array<{ factor: string; impacto: number; descripcion: string }>;
+    timingOptimo: Date;
+    accionesRecomendadas: string[];
+  }> {
+    const cacheKey = this.generateCacheKey(contratoId, 'renovacion')
+
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      const data = cached.data
+      return {
+        probabilidad: data.renewalPrediction.probability,
+        confianza: data.renewalPrediction.confidence,
+        factores: data.renewalPrediction.factors,
+        timingOptimo: data.renewalPrediction.optimalRenewalTiming,
+        accionesRecomendadas: data.renewalPrediction.recommendedActions
+      }
+    }
+
+    // Usar análisis completo si no hay cache
+    const analysis = await this.analyzeContract({
+      contratoId,
+      anuncianteId,
+      valorContrato: 0,
+      tipoContrato: 'A',
+      fechaInicio: new Date(),
+      fechaFin: new Date()
+    })
+
+    return {
+      probabilidad: analysis.renewalPrediction.probability,
+      confianza: analysis.renewalPrediction.confidence,
+      factores: analysis.renewalPrediction.factors,
+      timingOptimo: analysis.renewalPrediction.optimalRenewalTiming,
+      accionesRecomendadas: analysis.renewalPrediction.recommendedActions
+    }
+  }
+
+  /**
+   * Predecir probabilidad de cierre (ganar el contrato)
+   */
+  async predecirCierre(contratoId: string, valor: number): Promise<{
+    probabilidad: number;
+    nivelRiesgo: 'bajo' | 'medio' | 'alto';
+    senalesAlerta: string[];
+    estrategiasMitigacion: string[];
+  }> {
+    const cacheKey = this.generateCacheKey(contratoId, 'cierre')
+
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      const data = cached.data
+      return {
+        probabilidad: 1 - data.defaultRisk.probability,
+        nivelRiesgo: data.defaultRisk.riskLevel,
+        senalesAlerta: data.defaultRisk.earlyWarningSignals,
+        estrategiasMitigacion: data.defaultRisk.mitigationStrategies
+      }
+    }
+
+    // Análisis completo
+    const analysis = await this.analyzeContract({
+      contratoId,
+      anuncianteId: '',
+      valorContrato: valor,
+      tipoContrato: 'A',
+      fechaInicio: new Date(),
+      fechaFin: new Date()
+    })
+
+    return {
+      probabilidad: 1 - analysis.defaultRisk.probability,
+      nivelRiesgo: analysis.defaultRisk.riskLevel,
+      senalesAlerta: analysis.defaultRisk.earlyWarningSignals,
+      estrategiasMitigacion: analysis.defaultRisk.mitigationStrategies
+    }
+  }
+
+  /**
+   * Generar insights sobre el contrato
+   */
+  async generarInsights(contratoId: string): Promise<{
+    oportunidadesUpselling: Array<{
+      tipo: string;
+      descripcion: string;
+      valorEstimado: number;
+      probabilidad: number;
+      horizonte: string;
+    }>;
+    metricasRendimiento: {
+      cumplimientoEntrega: number;
+      calidad: number;
+      tiempoRespuesta: number;
+    };
+    satisfaccionCliente: {
+      scoreActual: number;
+      scorePredicho: number;
+      tendencia: 'mejorando' | 'estable' | 'declinando';
+    };
+    recomendaciones: Array<{
+      categoria: string;
+      prioridad: 'alta' | 'media' | 'baja';
+      titulo: string;
+      descripcion: string;
+      impactoEsperado: string;
+    }>;
+  }> {
+    const cacheKey = this.generateCacheKey(contratoId, 'insights')
+
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      const data = cached.data
+      return {
+        oportunidadesUpselling: data.upsellingOpportunities.map(o => ({
+          tipo: o.type,
+          descripcion: o.description,
+          valorEstimado: o.estimatedValue,
+          probabilidad: o.probability,
+          horizonte: o.timeframe
+        })),
+        metricasRendimiento: {
+          cumplimientoEntrega: data.performanceMetrics.deliveryCompliance,
+          calidad: data.performanceMetrics.qualityScore,
+          tiempoRespuesta: data.performanceMetrics.responseTime
+        },
+        satisfaccionCliente: {
+          scoreActual: data.customerSatisfaction.currentScore,
+          scorePredicho: data.customerSatisfaction.predictedScore3Months,
+          tendencia: data.customerSatisfaction.trend
+        },
+        recomendaciones: data.strategicRecommendations.map(r => ({
+          categoria: r.category,
+          prioridad: r.priority,
+          titulo: r.title,
+          descripcion: r.description,
+          impactoEsperado: r.expectedImpact
+        }))
+      }
+    }
+
+    // Análisis completo
+    const analysis = await this.analyzeContract({
+      contratoId,
+      anuncianteId: '',
+      valorContrato: 0,
+      tipoContrato: 'A',
+      fechaInicio: new Date(),
+      fechaFin: new Date()
+    })
+
+    return {
+      oportunidadesUpselling: analysis.upsellingOpportunities.map(o => ({
+        tipo: o.type,
+        descripcion: o.description,
+        valorEstimado: o.estimatedValue,
+        probabilidad: o.probability,
+        horizonte: o.timeframe
+      })),
+      metricasRendimiento: {
+        cumplimientoEntrega: analysis.performanceMetrics.deliveryCompliance,
+        calidad: analysis.performanceMetrics.qualityScore,
+        tiempoRespuesta: analysis.performanceMetrics.responseTime
+      },
+      satisfaccionCliente: {
+        scoreActual: analysis.customerSatisfaction.currentScore,
+        scorePredicho: analysis.customerSatisfaction.predictedScore3Months,
+        tendencia: analysis.customerSatisfaction.trend
+      },
+      recomendaciones: analysis.strategicRecommendations.map(r => ({
+        categoria: r.category,
+        prioridad: r.priority,
+        titulo: r.title,
+        descripcion: r.description,
+        impactoEsperado: r.expectedImpact
+      }))
+    }
+  }
+
+  /**
+   * Optimizar precio de un contrato
+   */
+  async optimizarPricing(contratoId: string, valorActual: number): Promise<{
+    precioActual: number;
+    precioOptimo: number;
+    ajusteRecomendado: number;
+    elasticidadPrecio: number;
+    analisisCompetitivo: {
+      precioPromedioMercado: number;
+      posicionVsMercado: 'sobre' | 'en' | 'bajo';
+      ajusteSugerido: number;
+    };
+  }> {
+    const cacheKey = this.generateCacheKey(contratoId, 'pricing')
+
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      const data = cached.data
+      return {
+        precioActual: data.pricingOptimization.currentPricing,
+        precioOptimo: data.pricingOptimization.optimalPricing,
+        ajusteRecomendado: data.pricingOptimization.optimalPricing - data.pricingOptimization.currentPricing,
+        elasticidadPrecio: data.pricingOptimization.priceElasticity,
+        analisisCompetitivo: {
+          precioPromedioMercado: data.pricingOptimization.competitorAnalysis.averageMarketPrice,
+          posicionVsMercado: data.pricingOptimization.competitorAnalysis.positionVsMarket,
+          ajusteSugerido: data.pricingOptimization.competitorAnalysis.recommendedAdjustment
+        }
+      }
+    }
+
+    // Análisis completo
+    const analysis = await this.analyzeContract({
+      contratoId,
+      anuncianteId: '',
+      valorContrato: valorActual,
+      tipoContrato: 'A',
+      fechaInicio: new Date(),
+      fechaFin: new Date()
+    })
+
+    return {
+      precioActual: analysis.pricingOptimization.currentPricing,
+      precioOptimo: analysis.pricingOptimization.optimalPricing,
+      ajusteRecomendado: analysis.pricingOptimization.optimalPricing - analysis.pricingOptimization.currentPricing,
+      elasticidadPrecio: analysis.pricingOptimization.priceElasticity,
+      analisisCompetitivo: {
+        precioPromedioMercado: analysis.pricingOptimization.competitorAnalysis.averageMarketPrice,
+        posicionVsMercado: analysis.pricingOptimization.competitorAnalysis.positionVsMarket,
+        ajusteSugerido: analysis.pricingOptimization.competitorAnalysis.recommendedAdjustment
+      }
     }
   }
 
@@ -270,7 +530,7 @@ export class CortexFlowPredictionService {
     return {
       contratoId: data.contract_id as string,
       timestamp: new Date(data.timestamp || Date.now()),
-      
+
       renewalPrediction: {
         probability: data.renewal_prediction?.probability || 0.75,
         confidence: data.renewal_prediction?.confidence || 0.85,
@@ -278,16 +538,16 @@ export class CortexFlowPredictionService {
         recommendedActions: data.renewal_prediction?.recommended_actions || [],
         optimalRenewalTiming: new Date(data.renewal_prediction?.optimal_timing || Date.now() + 90 * 24 * 60 * 60 * 1000)
       },
-      
+
       defaultRisk: {
         probability: data.default_risk?.probability || 0.15,
         riskLevel: data.default_risk?.risk_level || 'medio',
         earlyWarningSignals: data.default_risk?.warning_signals || [],
         mitigationStrategies: data.default_risk?.mitigation_strategies || []
       },
-      
+
       upsellingOpportunities: data.upselling_opportunities || [],
-      
+
       pricingOptimization: {
         currentPricing: data.pricing_optimization?.current_pricing || 0,
         optimalPricing: data.pricing_optimization?.optimal_pricing || 0,
@@ -298,7 +558,7 @@ export class CortexFlowPredictionService {
           recommendedAdjustment: 0
         }
       },
-      
+
       customerSatisfaction: {
         currentScore: data.customer_satisfaction?.current_score || 85,
         predictedScore3Months: data.customer_satisfaction?.predicted_score_3m || 87,
@@ -306,14 +566,14 @@ export class CortexFlowPredictionService {
         keyDrivers: data.customer_satisfaction?.key_drivers || [],
         improvementAreas: data.customer_satisfaction?.improvement_areas || []
       },
-      
+
       performanceMetrics: {
         deliveryCompliance: data.performance_metrics?.delivery_compliance || 95,
         qualityScore: data.performance_metrics?.quality_score || 88,
         responseTime: data.performance_metrics?.response_time || 2.5,
         issueResolutionRate: data.performance_metrics?.issue_resolution_rate || 92
       },
-      
+
       strategicRecommendations: data.strategic_recommendations || []
     }
   }
@@ -322,11 +582,11 @@ export class CortexFlowPredictionService {
     // Análisis básico cuando Cortex-Flow no está disponible
     const baseRenewalProbability = 0.75
     const baseDefaultRisk = 0.15
-    
+
     // Ajustes básicos según tipo de contrato
     let renewalAdjustment = 0
     let riskAdjustment = 0
-    
+
     switch (request.tipoContrato) {
       case 'A':
         renewalAdjustment = 0.1
@@ -337,20 +597,20 @@ export class CortexFlowPredictionService {
         riskAdjustment = 0.05
         break
     }
-    
+
     // Ajustes por valor del contrato
     if (request.valorContrato > 100000000) {
       renewalAdjustment += 0.05 // Contratos grandes tienden a renovarse más
       riskAdjustment -= 0.02
     }
-    
+
     const renewalProbability = Math.max(0.1, Math.min(0.95, baseRenewalProbability + renewalAdjustment))
     const defaultRisk = Math.max(0.05, Math.min(0.5, baseDefaultRisk + riskAdjustment))
-    
+
     return {
       contratoId: request.contratoId,
       timestamp: new Date(),
-      
+
       renewalPrediction: {
         probability: renewalProbability,
         confidence: 0.6, // Baja confianza para análisis básico
@@ -359,13 +619,13 @@ export class CortexFlowPredictionService {
           { factor: 'Valor del contrato', impact: request.valorContrato > 100000000 ? 5 : 0, description: 'Valor del contrato' }
         ],
         recommendedActions: [
-          'Contactar cliente 30 días antes del vencimiento',
+          'Contactar cliente 30 días antes del vencimientos',
           'Preparar propuesta de renovación personalizada',
           'Revisar satisfacción del cliente'
         ],
         optimalRenewalTiming: new Date(request.fechaFin.getTime() - 30 * 24 * 60 * 60 * 1000) // 30 días antes
       },
-      
+
       defaultRisk: {
         probability: defaultRisk,
         riskLevel: defaultRisk > 0.3 ? 'alto' : defaultRisk > 0.2 ? 'medio' : 'bajo',
@@ -380,7 +640,7 @@ export class CortexFlowPredictionService {
           'Flexibilidad en términos de pago si es necesario'
         ]
       },
-      
+
       upsellingOpportunities: [
         {
           type: 'Expansión de servicios',
@@ -391,7 +651,7 @@ export class CortexFlowPredictionService {
           requiredActions: ['Análisis de necesidades', 'Propuesta personalizada']
         }
       ],
-      
+
       pricingOptimization: {
         currentPricing: request.valorContrato,
         optimalPricing: request.valorContrato * 1.05, // 5% de incremento sugerido
@@ -402,7 +662,7 @@ export class CortexFlowPredictionService {
           recommendedAdjustment: request.valorContrato * 0.05
         }
       },
-      
+
       customerSatisfaction: {
         currentScore: 85,
         predictedScore3Months: 87,
@@ -410,14 +670,14 @@ export class CortexFlowPredictionService {
         keyDrivers: ['Calidad del servicio', 'Tiempo de respuesta', 'Relación precio-valor'],
         improvementAreas: ['Comunicación proactiva', 'Innovación en servicios']
       },
-      
+
       performanceMetrics: {
         deliveryCompliance: 95,
         qualityScore: 88,
         responseTime: 2.5,
         issueResolutionRate: 92
       },
-      
+
       strategicRecommendations: [
         {
           category: 'retention',
@@ -443,6 +703,28 @@ export class CortexFlowPredictionService {
 
   private generateRequestId(): string {
     return `flow_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+  }
+
+  private generateCacheKey(contratoId: string, tipo: string): string {
+    return `cortex_flow_${contratoId}_${tipo}`
+  }
+
+  /**
+   * Limpiar cache de forma manual
+   */
+  clearCache(): void {
+    this.cache.clear()
+    logger.info('[CortexFlow] Cache cleared')
+  }
+
+  /**
+   * Obtener estadísticas del cache
+   */
+  getCacheStats(): { size: number; entries: string[] } {
+    return {
+      size: this.cache.size,
+      entries: Array.from(this.cache.keys())
+    }
   }
 
   // Métodos de monitoreo y configuración

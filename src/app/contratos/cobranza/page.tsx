@@ -82,49 +82,49 @@ interface CasoCobranza {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnDanger: `
     bg-gradient-to-br from-red-500 to-rose-600
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     px-4 py-3
   `
 };
@@ -283,7 +283,7 @@ const getCanalIcon = (canal: CanalContacto) => {
 const getResultadoConfig = (resultado: ResultadoContacto) => {
   const configs = {
     exitoso: { label: 'Exitoso', color: 'text-green-600', icon: <CheckCircle className="w-4 h-4" /> },
-    sin_respuesta: { label: 'Sin respuesta', color: 'text-slate-500', icon: <XCircle className="w-4 h-4" /> },
+    sin_respuesta: { label: 'Sin respuesta', color: 'text-[#69738c]', icon: <XCircle className="w-4 h-4" /> },
     promesa_pago: { label: 'Promesa de pago', color: 'text-blue-600', icon: <Calendar className="w-4 h-4" /> },
     rechazo: { label: 'Rechazo', color: 'text-red-600', icon: <XCircle className="w-4 h-4" /> },
     numero_erroneo: { label: 'Número erróneo', color: 'text-amber-600', icon: <AlertTriangle className="w-4 h-4" /> },
@@ -323,7 +323,7 @@ export default function CobranzaAutomatizadaPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`${neuro.panel} p-6 mb-6`}>
@@ -333,27 +333,27 @@ export default function CobranzaAutomatizadaPanel() {
                 <Phone className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Centro de Cobranza</h1>
-                <p className="text-slate-500">Gestión automatizada multi-canal</p>
+                <h1 className="text-2xl font-bold text-[#69738c]">Centro de Cobranza</h1>
+                <p className="text-[#69738c]">Gestión automatizada multi-canal</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
               {/* Quick stats */}
-              <div className="flex items-center gap-6 bg-white/50 rounded-xl px-6 py-3">
+              <div className="flex items-center gap-6 bg-[#dfeaff]/50 rounded-xl px-6 py-3">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{stats.casosActivos}</p>
-                  <p className="text-xs text-slate-500">Casos activos</p>
+                  <p className="text-2xl font-bold text-[#69738c]">{stats.casosActivos}</p>
+                  <p className="text-xs text-[#69738c]">Casos activos</p>
                 </div>
-                <div className="h-8 w-px bg-slate-200" />
+                <div className="h-8 w-px bg-[#dfeaff]" />
                 <div className="text-center">
                   <p className="text-2xl font-bold text-red-600">{formatCurrency(stats.montoTotal)}</p>
-                  <p className="text-xs text-slate-500">Total vencido</p>
+                  <p className="text-xs text-[#69738c]">Total vencido</p>
                 </div>
-                <div className="h-8 w-px bg-slate-200" />
+                <div className="h-8 w-px bg-[#dfeaff]" />
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-600">{formatCurrency(stats.recuperacionEstimada)}</p>
-                  <p className="text-xs text-slate-500">Recup. estimada</p>
+                  <p className="text-xs text-[#69738c]">Recup. estimada</p>
                 </div>
               </div>
 
@@ -368,7 +368,7 @@ export default function CobranzaAutomatizadaPanel() {
         <div className="grid grid-cols-3 gap-6">
           {/* Lista de casos */}
           <div className={`${neuro.panel} p-6 col-span-2`}>
-            <h2 className="font-bold text-lg text-slate-800 mb-4">Cola de Cobranza</h2>
+            <h2 className="font-bold text-lg text-[#69738c] mb-4">Cola de Cobranza</h2>
 
             <div className="space-y-3">
               {casos.map(caso => {
@@ -379,7 +379,7 @@ export default function CobranzaAutomatizadaPanel() {
                     key={caso.id}
                     onClick={() => setCasoSeleccionado(caso)}
                     className={`${neuro.card} p-4 cursor-pointer hover:shadow-lg transition-all ${
-                      casoSeleccionado?.id === caso.id ? 'ring-2 ring-indigo-400' : ''
+                      casoSeleccionado?.id === caso.id ? 'ring-2 ring-[#6888ff]' : ''
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -394,26 +394,26 @@ export default function CobranzaAutomatizadaPanel() {
 
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <p className="font-semibold text-slate-800">{caso.clienteNombre}</p>
+                            <p className="font-semibold text-[#69738c]">{caso.clienteNombre}</p>
                             <span className={`${neuro.badge} ${nivelConfig.bgColor} ${nivelConfig.color}`}>
                               {nivelConfig.label}
                             </span>
                           </div>
-                          <p className="text-sm text-slate-500">{caso.folio}</p>
-                          <p className="text-xs text-slate-400">{caso.historialContactos.length} contactos previos</p>
+                          <p className="text-sm text-[#69738c]">{caso.folio}</p>
+                          <p className="text-xs text-[#9aa3b8]">{caso.historialContactos.length} contactos previos</p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-6">
                         {/* Próxima acción */}
                         <div className="text-center">
-                          <div className="flex items-center gap-1 text-indigo-600">
+                          <div className="flex items-center gap-1 text-[#6888ff]">
                             {getCanalIcon(caso.proximaAccion.canal)}
                             <span className="text-xs font-medium">
                               {formatFechaHora(caso.proximaAccion.fecha)}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-400">Próxima acción</p>
+                          <p className="text-xs text-[#9aa3b8]">Próxima acción</p>
                         </div>
 
                         {/* Días mora */}
@@ -425,23 +425,23 @@ export default function CobranzaAutomatizadaPanel() {
                           }`}>
                             {caso.diasMora}
                           </p>
-                          <p className="text-xs text-slate-400">días mora</p>
+                          <p className="text-xs text-[#9aa3b8]">días mora</p>
                         </div>
 
                         {/* Monto */}
                         <div className="text-right">
-                          <p className="font-bold text-lg text-slate-800">{formatCurrency(caso.montoVencido)}</p>
+                          <p className="font-bold text-lg text-[#69738c]">{formatCurrency(caso.montoVencido)}</p>
                           <div className="flex items-center gap-1">
                             <Sparkles className={`w-3 h-3 ${
                               caso.probabilidadRecuperacion > 70 ? 'text-green-500' :
                               caso.probabilidadRecuperacion > 50 ? 'text-amber-500' :
                               'text-red-500'
                             }`} />
-                            <span className="text-xs text-slate-500">{caso.probabilidadRecuperacion}% prob.</span>
+                            <span className="text-xs text-[#69738c]">{caso.probabilidadRecuperacion}% prob.</span>
                           </div>
                         </div>
 
-                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                        <ChevronRight className="w-5 h-5 text-[#9aa3b8]" />
                       </div>
                     </div>
                   </motion.div>
@@ -455,7 +455,7 @@ export default function CobranzaAutomatizadaPanel() {
             {casoSeleccionado ? (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-lg text-slate-800">{casoSeleccionado.clienteNombre}</h3>
+                  <h3 className="font-bold text-lg text-[#69738c]">{casoSeleccionado.clienteNombre}</h3>
                   <button
                     onClick={() => setRegistrandoContacto(true)}
                     className={`${neuro.btnPrimary} px-3 py-2 text-sm flex items-center gap-1`}
@@ -469,15 +469,15 @@ export default function CobranzaAutomatizadaPanel() {
                 <div className={`${neuro.card} p-4 mb-4`}>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-slate-400" />
+                      <Phone className="w-4 h-4 text-[#9aa3b8]" />
                       <span>{casoSeleccionado.telefono}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-slate-400" />
+                      <Mail className="w-4 h-4 text-[#9aa3b8]" />
                       <span>{casoSeleccionado.email}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-slate-400" />
+                      <DollarSign className="w-4 h-4 text-[#9aa3b8]" />
                       <span className="font-bold text-red-600">{formatCurrency(casoSeleccionado.montoVencido)} vencido</span>
                     </div>
                   </div>
@@ -500,7 +500,7 @@ export default function CobranzaAutomatizadaPanel() {
                 </div>
 
                 {/* Historial */}
-                <h4 className="font-semibold text-sm text-slate-600 mb-2">Historial de contactos</h4>
+                <h4 className="font-semibold text-sm text-[#69738c] mb-2">Historial de contactos</h4>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {casoSeleccionado.historialContactos.map(contacto => {
                     const resultadoConfig = getResultadoConfig(contacto.resultado);
@@ -508,7 +508,7 @@ export default function CobranzaAutomatizadaPanel() {
                     return (
                       <div key={contacto.id} className={`${neuro.card} p-3`}>
                         <div className="flex items-start gap-2">
-                          <div className="p-1.5 rounded-lg bg-slate-100">
+                          <div className="p-1.5 rounded-lg bg-[#dfeaff]">
                             {getCanalIcon(contacto.canal)}
                           </div>
                           <div className="flex-1">
@@ -517,13 +517,13 @@ export default function CobranzaAutomatizadaPanel() {
                                 {resultadoConfig.icon}
                                 {resultadoConfig.label}
                               </span>
-                              <span className="text-xs text-slate-400">
+                              <span className="text-xs text-[#9aa3b8]">
                                 {formatFechaHora(contacto.fecha)}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-500">{contacto.agente}</p>
+                            <p className="text-xs text-[#69738c]">{contacto.agente}</p>
                             {contacto.notas && (
-                              <p className="text-xs text-slate-600 mt-1">{contacto.notas}</p>
+                              <p className="text-xs text-[#69738c] mt-1">{contacto.notas}</p>
                             )}
                             {contacto.promesaPago && (
                               <div className={`text-xs mt-1 p-2 rounded ${
@@ -547,8 +547,8 @@ export default function CobranzaAutomatizadaPanel() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Phone className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500">Selecciona un caso para ver detalles</p>
+                <Phone className="w-16 h-16 text-[#9aa3b8] mx-auto mb-4" />
+                <p className="text-[#69738c]">Selecciona un caso para ver detalles</p>
               </div>
             )}
           </div>
@@ -571,11 +571,11 @@ export default function CobranzaAutomatizadaPanel() {
                 className={`${neuro.panel} p-6 max-w-md w-full mx-4`}
                 onClick={e => e.stopPropagation()}
               >
-                <h3 className="text-lg font-bold text-slate-800 mb-4">Registrar Contacto</h3>
+                <h3 className="text-lg font-bold text-[#69738c] mb-4">Registrar Contacto</h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm text-slate-600 mb-2">Canal</label>
+                    <label className="block text-sm text-[#69738c] mb-2">Canal</label>
                     <select
                       value={nuevoContacto.canal}
                       onChange={e => setNuevoContacto({ ...nuevoContacto, canal: e.target.value as CanalContacto })}
@@ -590,7 +590,7 @@ export default function CobranzaAutomatizadaPanel() {
                   </div>
 
                   <div>
-                    <label className="block text-sm text-slate-600 mb-2">Resultado</label>
+                    <label className="block text-sm text-[#69738c] mb-2">Resultado</label>
                     <select
                       value={nuevoContacto.resultado}
                       onChange={e => setNuevoContacto({ ...nuevoContacto, resultado: e.target.value as ResultadoContacto })}
@@ -608,7 +608,7 @@ export default function CobranzaAutomatizadaPanel() {
                   {nuevoContacto.resultado === 'promesa_pago' && (
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm text-slate-600 mb-2">Monto promesa</label>
+                        <label className="block text-sm text-[#69738c] mb-2">Monto promesa</label>
                         <input
                           type="number"
                           aria-label="Monto promesa"
@@ -617,7 +617,7 @@ export default function CobranzaAutomatizadaPanel() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm text-slate-600 mb-2">Fecha promesa</label>
+                        <label className="block text-sm text-[#69738c] mb-2">Fecha promesa</label>
                         <input
                           type="date"
                           aria-label="Fecha promesa"
@@ -628,7 +628,7 @@ export default function CobranzaAutomatizadaPanel() {
                   )}
 
                   <div>
-                    <label className="block text-sm text-slate-600 mb-2">Notas</label>
+                    <label className="block text-sm text-[#69738c] mb-2">Notas</label>
                     <textarea
                       value={nuevoContacto.notas}
                       onChange={e => setNuevoContacto({ ...nuevoContacto, notas: e.target.value })}

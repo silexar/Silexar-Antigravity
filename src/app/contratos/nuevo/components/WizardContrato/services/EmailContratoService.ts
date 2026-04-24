@@ -1,12 +1,12 @@
 /**
  * 📧 SILEXAR PULSE - Email Contract Service TIER 0
- * 
+ *
  * @description Servicio de envío de contratos por email con:
  * - Plantillas personalizables
  * - Adjuntos automáticos (PDF, firmado)
  * - Tracking de apertura
  * - Notificaciones
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -15,7 +15,13 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type EstadoEnvio = 'PENDIENTE' | 'ENVIADO' | 'ENTREGADO' | 'ABIERTO' | 'ERROR' | 'REBOTADO';
+export type EstadoEnvio =
+  | "PENDIENTE"
+  | "ENVIADO"
+  | "ENTREGADO"
+  | "ABIERTO"
+  | "ERROR"
+  | "REBOTADO";
 
 export interface PlantillaEmail {
   id: string;
@@ -31,31 +37,31 @@ export interface PlantillaEmail {
 export interface DestinatarioEmail {
   email: string;
   nombre: string;
-  tipo: 'TO' | 'CC' | 'CCO';
+  tipo: "TO" | "CC" | "CCO";
 }
 
 export interface DatosEnvioContrato {
   contratoId: string;
   numeroContrato: string;
   tipoContrato: string;
-  
+
   cliente: {
     nombre: string;
     contacto: string;
     email: string;
   };
-  
+
   ejecutivo: {
     nombre: string;
     email: string;
     telefono: string;
   };
-  
+
   valorTotal: number;
   moneda: string;
   fechaInicio: string;
   fechaFin: string;
-  
+
   urlFirma?: string;
   urlPDF?: string;
 }
@@ -95,10 +101,10 @@ export interface HistorialEmail {
 
 const PLANTILLAS_EMAIL: PlantillaEmail[] = [
   {
-    id: 'email-nuevo-contrato',
-    nombre: 'Nuevo Contrato',
-    codigo: 'NUEVO_CONTRATO',
-    asunto: '[Silexar] Contrato {{numeroContrato}} - {{clienteNombre}}',
+    id: "email-nuevo-contrato",
+    nombre: "Nuevo Contrato",
+    codigo: "NUEVO_CONTRATO",
+    asunto: "[Silexar] Contrato {{numeroContrato}} - {{clienteNombre}}",
     cuerpoHtml: `
       <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #4F46E5, #7C3AED); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -128,7 +134,7 @@ const PLANTILLAS_EMAIL: PlantillaEmail[] = [
               </tr>
               <tr>
                 <td style="padding: 8px 0; color: #64748b;">Valor Total:</td>
-                <td style="padding: 8px 0; font-weight: bold; font-size: 18px; color: #4F46E5; text-align: right;">{{moneda}} ${'$'}{{valorTotal}}</td>
+                <td style="padding: 8px 0; font-weight: bold; font-size: 18px; color: #4F46E5; text-align: right;">{{moneda}} ${"$"}{{valorTotal}}</td>
               </tr>
             </table>
           </div>
@@ -181,7 +187,7 @@ Es un placer enviarle el contrato de servicios publicitarios acordado.
 DETALLES:
 - Cliente: {{clienteNombre}}
 - Vigencia: {{fechaInicio}} - {{fechaFin}}
-- Valor Total: {{moneda}} ${'$'}{{valorTotal}}
+- Valor Total: {{moneda}} ${"$"}{{valorTotal}}
 
 {{#if urlFirma}}
 Para firmar el contrato visite: {{urlFirma}}
@@ -193,14 +199,14 @@ Saludos cordiales,
 {{ejecutivoNombre}}
 {{ejecutivoEmail}} | {{ejecutivoTelefono}}
     `,
-    tipoContrato: ['NUEVO', 'RENOVACION'],
-    activo: true
+    tipoContrato: ["NUEVO", "RENOVACION"],
+    activo: true,
   },
   {
-    id: 'email-recordatorio-firma',
-    nombre: 'Recordatorio de Firma',
-    codigo: 'RECORDATORIO_FIRMA',
-    asunto: '[Recordatorio] Contrato {{numeroContrato}} pendiente de firma',
+    id: "email-recordatorio-firma",
+    nombre: "Recordatorio de Firma",
+    codigo: "RECORDATORIO_FIRMA",
+    asunto: "[Recordatorio] Contrato {{numeroContrato}} pendiente de firma",
     cuerpoHtml: `
       <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -243,9 +249,9 @@ Si ya firmó el documento, por favor ignore este mensaje.
 Saludos,
 {{ejecutivoNombre}}
     `,
-    tipoContrato: ['NUEVO', 'RENOVACION', 'ENMIENDA'],
-    activo: true
-  }
+    tipoContrato: ["NUEVO", "RENOVACION", "ENMIENDA"],
+    activo: true,
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -270,25 +276,37 @@ class EmailContratoEngine {
    */
   async enviarContrato(
     datos: DatosEnvioContrato,
-    opciones: OpcionesEnvio = {}
+    opciones: OpcionesEnvio = {},
   ): Promise<ResultadoEnvio> {
     try {
       // Obtener plantilla
       const plantilla = opciones.plantillaId
-        ? PLANTILLAS_EMAIL.find(p => p.id === opciones.plantillaId)
-        : PLANTILLAS_EMAIL.find(p => p.codigo === 'NUEVO_CONTRATO');
+        ? PLANTILLAS_EMAIL.find((p) => p.id === opciones.plantillaId)
+        : PLANTILLAS_EMAIL.find((p) => p.codigo === "NUEVO_CONTRATO");
 
       if (!plantilla) {
-        return { exito: false, estado: 'ERROR', error: 'Plantilla no encontrada' };
+        return {
+          exito: false,
+          estado: "ERROR",
+          error: "Plantilla no encontrada",
+        };
       }
 
       // Compilar template
       const asunto = this.compilarTemplate(plantilla.asunto, datos, opciones);
-      const cuerpoHtml = this.compilarTemplate(plantilla.cuerpoHtml, datos, opciones);
+      const cuerpoHtml = this.compilarTemplate(
+        plantilla.cuerpoHtml,
+        datos,
+        opciones,
+      );
 
       // Preparar destinatarios
       const destinatarios: DestinatarioEmail[] = [
-        { email: datos.cliente.email, nombre: datos.cliente.contacto, tipo: 'TO' }
+        {
+          email: datos.cliente.email,
+          nombre: datos.cliente.contacto,
+          tipo: "TO",
+        },
       ];
 
       if (opciones.destinatariosAdicionales) {
@@ -299,36 +317,36 @@ class EmailContratoEngine {
         destinatarios.push({
           email: datos.ejecutivo.email,
           nombre: datos.ejecutivo.nombre,
-          tipo: 'CC'
+          tipo: "CC",
         });
       }
 
       // Simular envío
       const emailId = `email-${Date.now()}`;
-      
+
       // Registrar en historial
       const registro: HistorialEmail = {
         id: emailId,
         contratoId: datos.contratoId,
         destinatarios,
         asunto,
-        estado: 'ENVIADO',
+        estado: "ENVIADO",
         fechaEnvio: new Date(),
-        cantidadAperturas: 0
+        cantidadAperturas: 0,
       };
       this.historial.push(registro);
 
       return {
         exito: true,
         emailId,
-        estado: 'ENVIADO',
-        fechaEnvio: new Date()
+        estado: "ENVIADO",
+        fechaEnvio: new Date(),
       };
     } catch (error) {
       return {
         exito: false,
-        estado: 'ERROR',
-        error: `Error enviando email: ${error}`
+        estado: "ERROR",
+        error: `Error enviando email: ${error}`,
       };
     }
   }
@@ -339,7 +357,7 @@ class EmailContratoEngine {
   private compilarTemplate(
     template: string,
     datos: DatosEnvioContrato,
-    opciones: OpcionesEnvio
+    opciones: OpcionesEnvio,
   ): string {
     const variables: Record<string, string> = {
       numeroContrato: datos.numeroContrato,
@@ -350,27 +368,30 @@ class EmailContratoEngine {
       ejecutivoNombre: datos.ejecutivo.nombre,
       ejecutivoEmail: datos.ejecutivo.email,
       ejecutivoTelefono: datos.ejecutivo.telefono,
-      valorTotal: datos.valorTotal.toLocaleString('es-CL'),
+      valorTotal: datos.valorTotal.toLocaleString("es-CL"),
       moneda: datos.moneda,
       fechaInicio: datos.fechaInicio,
       fechaFin: datos.fechaFin,
-      urlFirma: datos.urlFirma || '',
-      urlPDF: datos.urlPDF || '',
-      mensaje: opciones.mensaje || '',
-      año: new Date().getFullYear().toString()
+      urlFirma: datos.urlFirma || "",
+      urlPDF: datos.urlPDF || "",
+      mensaje: opciones.mensaje || "",
+      año: new Date().getFullYear().toString(),
     };
 
     let resultado = template;
-    
+
     // Reemplazar variables simples
     Object.entries(variables).forEach(([key, value]) => {
-      resultado = resultado.replace(new RegExp(`{{${key}}}`, 'g'), value);
+      resultado = resultado.replace(new RegExp(`{{${key}}}`, "g"), value);
     });
 
     // Procesar condicionales simples
-    resultado = resultado.replace(/{{#if (\w+)}}([\s\S]*?){{\/if}}/g, (_, variable, content) => {
-      return variables[variable] ? content : '';
-    });
+    resultado = resultado.replace(
+      /{{#if (\w+)}}([\s\S]*?){{\/if}}/g,
+      (_, variable, content) => {
+        return variables[variable] ? content : "";
+      },
+    );
 
     return resultado;
   }
@@ -378,9 +399,11 @@ class EmailContratoEngine {
   /**
    * Envía recordatorio de firma
    */
-  async enviarRecordatorioFirma(datos: DatosEnvioContrato): Promise<ResultadoEnvio> {
+  async enviarRecordatorioFirma(
+    datos: DatosEnvioContrato,
+  ): Promise<ResultadoEnvio> {
     return this.enviarContrato(datos, {
-      plantillaId: 'email-recordatorio-firma'
+      plantillaId: "email-recordatorio-firma",
     });
   }
 
@@ -388,23 +411,23 @@ class EmailContratoEngine {
    * Obtiene historial de emails de un contrato
    */
   getHistorialContrato(contratoId: string): HistorialEmail[] {
-    return this.historial.filter(h => h.contratoId === contratoId);
+    return this.historial.filter((h) => h.contratoId === contratoId);
   }
 
   /**
    * Obtiene plantillas disponibles
    */
   getPlantillas(): PlantillaEmail[] {
-    return PLANTILLAS_EMAIL.filter(p => p.activo);
+    return PLANTILLAS_EMAIL.filter((p) => p.activo);
   }
 
   /**
    * Registra apertura de email (webhook)
    */
   registrarApertura(emailId: string): void {
-    const email = this.historial.find(h => h.id === emailId);
+    const email = this.historial.find((h) => h.id === emailId);
     if (email) {
-      email.estado = 'ABIERTO';
+      email.estado = "ABIERTO";
       email.fechaApertura = email.fechaApertura || new Date();
       email.cantidadAperturas++;
     }

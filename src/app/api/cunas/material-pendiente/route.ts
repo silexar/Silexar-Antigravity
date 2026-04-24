@@ -24,8 +24,8 @@ interface MaterialPendiente {
   anuncianteNombre: string;
   contratoId: string | null;
   contratoNumero: string | null;
-  vencimientoId: string | null;
-  vencimientoNombre: string | null;
+  vencimientosId: string | null;
+  vencimientosNombre: string | null;
   tipoMaterial: string;
   descripcion: string;
   duracionEsperada: number | null;
@@ -65,8 +65,8 @@ const materialesMock: MaterialPendiente[] = [
     anuncianteNombre: 'Banco de Chile',
     contratoId: 'cont-001',
     contratoNumero: 'CNT-2026-0001',
-    vencimientoId: 'venc-001',
-    vencimientoNombre: 'Auspicio Matinal Enero',
+    vencimientosId: 'venc-001',
+    vencimientosNombre: 'Auspicio Matinal Enero',
     tipoMaterial: 'presentacion',
     descripcion: 'Presentación de programa Matinal Buenos Días',
     duracionEsperada: 10,
@@ -90,8 +90,8 @@ const materialesMock: MaterialPendiente[] = [
     anuncianteNombre: 'Banco de Chile',
     contratoId: 'cont-001',
     contratoNumero: 'CNT-2026-0001',
-    vencimientoId: 'venc-001',
-    vencimientoNombre: 'Auspicio Matinal Enero',
+    vencimientosId: 'venc-001',
+    vencimientosNombre: 'Auspicio Matinal Enero',
     tipoMaterial: 'cierre',
     descripcion: 'Cierre de programa Matinal Buenos Días',
     duracionEsperada: 10,
@@ -115,8 +115,8 @@ const materialesMock: MaterialPendiente[] = [
     anuncianteNombre: 'Coca-Cola',
     contratoId: 'cont-002',
     contratoNumero: 'CNT-2026-0002',
-    vencimientoId: null,
-    vencimientoNombre: null,
+    vencimientosId: null,
+    vencimientosNombre: null,
     tipoMaterial: 'spot',
     descripcion: 'Spot Campaña Verano 30 segundos',
     duracionEsperada: 30,
@@ -140,8 +140,8 @@ const materialesMock: MaterialPendiente[] = [
     anuncianteNombre: 'Falabella',
     contratoId: 'cont-003',
     contratoNumero: 'CNT-2025-0045',
-    vencimientoId: 'venc-002',
-    vencimientoNombre: 'Auspicio Noticiero Central',
+    vencimientosId: 'venc-002',
+    vencimientosNombre: 'Auspicio Noticiero Central',
     tipoMaterial: 'spot',
     descripcion: 'Spot CyberDay 2026',
     duracionEsperada: 30,
@@ -165,8 +165,8 @@ const materialesMock: MaterialPendiente[] = [
     anuncianteNombre: 'Entel',
     contratoId: 'cont-004',
     contratoNumero: 'CNT-2026-0003',
-    vencimientoId: null,
-    vencimientoNombre: null,
+    vencimientosId: null,
+    vencimientosNombre: null,
     tipoMaterial: 'mencion',
     descripcion: 'Texto de mención para campaña 5G',
     duracionEsperada: 20,
@@ -304,7 +304,7 @@ export const POST = withApiRoute(
       const body = await req.json();
       const { anuncianteId, tipoMaterial, descripcion, duracionEsperada, 
               fechaLimiteEntrega, contactoNombre, contactoEmail, contactoTelefono,
-              vencimientoId, contratoId } = body;
+              vencimientosId, contratoId } = body;
 
       return await withTenantContext(ctx.tenantId, async () => {
         const nuevoMaterial: MaterialPendiente = {
@@ -313,8 +313,8 @@ export const POST = withApiRoute(
           anuncianteNombre: 'Anunciante', // En producción se buscaría
           contratoId: contratoId || null,
           contratoNumero: contratoId ? `CNT-2026-${Date.now().toString().slice(-4)}` : null,
-          vencimientoId: vencimientoId || null,
-          vencimientoNombre: vencimientoId ? 'Auspicio vinculado' : null,
+          vencimientosId: vencimientosId || null,
+          vencimientosNombre: vencimientosId ? 'Auspicio vinculado' : null,
           tipoMaterial,
           descripcion,
           duracionEsperada: duracionEsperada || null,

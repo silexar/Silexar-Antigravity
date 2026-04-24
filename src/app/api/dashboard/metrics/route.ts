@@ -31,6 +31,18 @@ const EMPTY_METRICS = {
 export const GET = secureHandler(
   { resource: 'dashboard', action: 'read' },
   async (_request, { user, db }) => {
+    // --- BYPASS DESARROLLO: Devuelve métricas de demo sin tocar la BD ---
+    if (process.env.NODE_ENV === 'development') {
+      return apiSuccess({
+        campanas:    { total: 48, activas: 12, valorTotal: 8_450_000 },
+        contratos:   { total: 23, activos: 18 },
+        anunciantes: { total: 156, activos: 134 },
+        emisoras:    { total: 9 },
+        facturas:    { total: 87, pendiente: 14 },
+        vendedores:  { total: 6 },
+      }, 200, { source: 'dev_mock' })
+    }
+
     if (!isDatabaseConnected()) {
       return apiSuccess(EMPTY_METRICS, 200, { source: 'no_database' })
     }

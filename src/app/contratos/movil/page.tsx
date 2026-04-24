@@ -110,7 +110,7 @@ export default function ContratosMovilPage() {
   const noLeidas = alertas.filter(a => !a.leida).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-indigo-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] to-indigo-50 pb-24">
       {/* ═══════════════════════════════════════════════════════ */}
       {/*  HEADER                                                */}
       {/* ═══════════════════════════════════════════════════════ */}
@@ -127,7 +127,7 @@ export default function ContratosMovilPage() {
             ) : (
               <WifiOff className="w-5 h-5 text-amber-300" />
             )}
-            <button className="p-2 rounded-xl bg-white/10 relative active:scale-90">
+            <button className="p-2 rounded-xl bg-[#dfeaff]/10 relative active:scale-90">
               <Bell className="w-5 h-5" />
               {noLeidas > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center">
@@ -176,7 +176,7 @@ export default function ContratosMovilPage() {
                 icon={<Plus className="w-5 h-5 text-white" />}
                 titulo="Nuevo Contrato Express"
                 onClick={() => router.push('/contratos/movil/express')}
-                color="bg-gradient-to-r from-indigo-500 to-purple-600"
+                color="bg-[#6888ff]"
               />
               <AccionRapida
                 icon={<Phone className="w-5 h-5 text-white" />}
@@ -218,21 +218,21 @@ export default function ContratosMovilPage() {
             {/* PIPELINE PREVIEW */}
             {dashboard?.pipeline && (
               <>
-                <SectionTitle icon={<BarChart3 className="w-5 h-5 text-indigo-500" />} title="PIPELINE" />
-                <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+                <SectionTitle icon={<BarChart3 className="w-5 h-5 text-[#6888ff]" />} title="PIPELINE" />
+                <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] p-4 shadow-sm">
                   {dashboard.pipeline.map((etapa) => (
                     <div key={etapa.etapa} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: etapa.color }} />
-                        <span className="text-sm font-medium text-slate-700">{etapa.etapa}</span>
+                        <span className="text-sm font-medium text-[#69738c]">{etapa.etapa}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-slate-400">{etapa.cantidad} ctr</span>
-                        <span className="text-xs font-bold text-slate-700">{formatCurrency(etapa.valor)}</span>
+                        <span className="text-xs text-[#9aa3b8]">{etapa.cantidad} ctr</span>
+                        <span className="text-xs font-bold text-[#69738c]">{formatCurrency(etapa.valor)}</span>
                       </div>
                     </div>
                   ))}
-                  <button onClick={() => setTabActiva('pipeline')} className="w-full text-center pt-3 text-xs font-bold text-indigo-600">
+                  <button onClick={() => setTabActiva('pipeline')} className="w-full text-center pt-3 text-xs font-bold text-[#6888ff]">
                     Ver Pipeline Completo →
                   </button>
                 </div>
@@ -242,17 +242,17 @@ export default function ContratosMovilPage() {
             {/* ACTIVIDAD RECIENTE */}
             {dashboard?.actividadReciente && (
               <>
-                <SectionTitle icon={<Clock className="w-5 h-5 text-slate-400" />} title="ACTIVIDAD RECIENTE" />
+                <SectionTitle icon={<Clock className="w-5 h-5 text-[#9aa3b8]" />} title="ACTIVIDAD RECIENTE" />
                 <div className="space-y-2">
                   {dashboard.actividadReciente.map(act => (
-                    <div key={act.id} className="bg-white rounded-xl p-3 flex items-center gap-3 border border-slate-100">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-indigo-500" />
+                    <div key={act.id} className="bg-[#dfeaff] rounded-xl p-3 flex items-center gap-3 border border-[#bec8de30]">
+                      <div className="w-8 h-8 rounded-lg bg-[#6888ff]/10 flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-[#6888ff]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-700 truncate">{act.descripcion}</p>
+                        <p className="text-sm font-medium text-[#69738c] truncate">{act.descripcion}</p>
                       </div>
-                      <span className="text-xs text-slate-400 shrink-0">{act.hace}</span>
+                      <span className="text-xs text-[#9aa3b8] shrink-0">{act.hace}</span>
                     </div>
                   ))}
                 </div>
@@ -260,13 +260,13 @@ export default function ContratosMovilPage() {
             )}
 
             {/* SENTINEL STATUS */}
-            <div className="p-4 rounded-2xl bg-slate-800 text-white flex items-center gap-3">
+            <div className="p-4 rounded-2xl bg-[#dfeaff] text-white flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
               <div className="flex-1">
                 <p className="text-sm font-bold">Sentinel Activo</p>
-                <p className="text-xs text-slate-400">Sincronización automática · {online ? 'Online' : 'Offline'}</p>
+                <p className="text-xs text-[#9aa3b8]">Sincronización automática · {online ? 'Online' : 'Offline'}</p>
               </div>
-              <Search className="w-4 h-4 text-slate-400" />
+              <Search className="w-4 h-4 text-[#9aa3b8]" />
             </div>
           </>
         )}
@@ -291,7 +291,7 @@ export default function ContratosMovilPage() {
           <div className="space-y-3">
             {/* Sub-vista back button */}
             {subVista !== 'menu' && (
-              <button onClick={() => setSubVista('menu')} className="flex items-center gap-1 text-sm text-indigo-600 font-bold mb-2 active:scale-95">
+              <button onClick={() => setSubVista('menu')} className="flex items-center gap-1 text-sm text-[#6888ff] font-bold mb-2 active:scale-95">
                 <ChevronRight className="w-4 h-4 rotate-180" /> Volver
               </button>
             )}
@@ -302,13 +302,13 @@ export default function ContratosMovilPage() {
                 {/* COLA IA */}
                 <ValidationQueueView />
 
-                <SectionTitle icon={<MoreHorizontal className="w-5 h-5 text-slate-400" />} title="MÁS OPCIONES" />
+                <SectionTitle icon={<MoreHorizontal className="w-5 h-5 text-[#9aa3b8]" />} title="MÁS OPCIONES" />
                 <MasOpcion icon={<DollarSign className="w-5 h-5" />} label="Cobranza" desc="Gestión de pagos vencidos" color="bg-red-100 text-red-600" onClick={() => setSubVista('cobranza')} />
                 <MasOpcion icon={<Shield className="w-5 h-5" />} label="Cuenta Corriente" desc="Balance y movimientos" color="bg-emerald-100 text-emerald-600" onClick={() => setSubVista('cuenta')} />
-                <MasOpcion icon={<FileText className="w-5 h-5" />} label="Facturación" desc="Emisión y consulta de facturas" color="bg-indigo-100 text-indigo-600" onClick={() => setSubVista('facturacion')} />
+                <MasOpcion icon={<FileText className="w-5 h-5" />} label="Facturación" desc="Emisión y consulta de facturas" color="bg-indigo-100 text-[#6888ff]" onClick={() => setSubVista('facturacion')} />
                 <MasOpcion icon={<RefreshCw className="w-5 h-5" />} label="Renovaciones" desc="Contratos por renovar" color="bg-amber-100 text-amber-600" onClick={() => setSubVista('renovaciones')} />
                 <MasOpcion icon={<Activity className="w-5 h-5" />} label="Tráfico Comercial" desc="Flujo y conversión de leads" color="bg-cyan-100 text-cyan-600" onClick={() => setSubVista('traffic')} />
-                <MasOpcion icon={<Briefcase className="w-5 h-5" />} label="Workspace" desc="Tareas y notas del ejecutivo" color="bg-slate-100 text-slate-600" onClick={() => setSubVista('workspace')} />
+                <MasOpcion icon={<Briefcase className="w-5 h-5" />} label="Workspace" desc="Tareas y notas del ejecutivo" color="bg-[#dfeaff] text-[#69738c]" onClick={() => setSubVista('workspace')} />
                 <MasOpcion icon={<Download className="w-5 h-5" />} label="Exportaciones" desc="Exportar reportes PDF/CSV" color="bg-blue-100 text-blue-600" onClick={() => setSubVista('exportar')} />
                 <MasOpcion icon={<BarChart3 className="w-5 h-5" />} label="Reportes" desc="Builder de reportes" color="bg-purple-100 text-purple-600" onClick={() => setSubVista('reportes')} />
                 <MasOpcion icon={<Brain className="w-5 h-5" />} label="Comando IA" desc="Asistente inteligente" color="bg-violet-100 text-violet-600" onClick={() => setSubVista('comando')} />
@@ -322,7 +322,7 @@ export default function ContratosMovilPage() {
                 <MasOpcion icon={<Building2 className="w-5 h-5" />} label="Ficha Cliente" desc="Vista 360° del cliente" color="bg-blue-100 text-blue-600" onClick={() => setSubVista('fichacliente')} />
                 <MasOpcion icon={<Mic className="w-5 h-5" />} label="Notas de Voz" desc="Graba y la IA transcribe" color="bg-red-100 text-red-600" onClick={() => setSubVista('voicenotes')} />
                 <MasOpcion icon={<RefreshCw className="w-5 h-5" />} label="Seguimientos" desc="Auto-seguimiento inteligente" color="bg-cyan-100 text-cyan-600" onClick={() => setSubVista('seguimientos')} />
-                <MasOpcion icon={<Settings className="w-5 h-5" />} label="Configuración" desc="Permisos, emails, webhooks" color="bg-slate-100 text-slate-600" onClick={() => setSubVista('config')} />
+                <MasOpcion icon={<Settings className="w-5 h-5" />} label="Configuración" desc="Permisos, emails, webhooks" color="bg-[#dfeaff] text-[#69738c]" onClick={() => setSubVista('config')} />
               </>
             )}
 
@@ -368,7 +368,7 @@ export default function ContratosMovilPage() {
       {/*  SMART CAPTURE OVERLAY                                 */}
       {/* ═══════════════════════════════════════════════════════ */}
       {showSmartCapture && (
-        <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-100 to-indigo-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#dfeaff] to-indigo-50 overflow-y-auto">
           <div className="p-4 pt-12">
             <SmartCaptureView onClose={() => setShowSmartCapture(false)} />
           </div>
@@ -397,7 +397,7 @@ export default function ContratosMovilPage() {
 
 function KPIMini({ icon, valor, label }: { icon: React.ReactNode; valor: string; label: string }) {
   return (
-    <div className="bg-white/10 rounded-xl p-3 text-center">
+    <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
       <div className="flex justify-center mb-1">{icon}</div>
       <p className="text-2xl font-black">{valor}</p>
       <p className="text-[10px] text-indigo-200 font-bold uppercase">{label}</p>
@@ -407,7 +407,7 @@ function KPIMini({ icon, valor, label }: { icon: React.ReactNode; valor: string;
 
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+    <h2 className="text-xs font-black text-[#69738c] uppercase tracking-widest flex items-center gap-2">
       {icon} {title}
     </h2>
   );
@@ -418,10 +418,10 @@ function AccionRapida({ icon, titulo, badge, onClick, color, highlight }: {
 }) {
   return (
     <button onClick={onClick} className={`w-full p-4 rounded-2xl ${color} flex items-center gap-3 relative active:scale-[0.97] transition-transform ${highlight ? 'shadow-xl ring-2 ring-white/30' : ''}`}>
-      <div className="p-2 rounded-xl bg-white/20">{icon}</div>
+      <div className="p-2 rounded-xl bg-[#dfeaff]/20">{icon}</div>
       <span className="font-bold text-white flex-1 text-left">{titulo}</span>
       {badge !== undefined && badge > 0 && (
-        <span className="px-2.5 py-1 rounded-full bg-white text-slate-800 text-sm font-bold">{badge}</span>
+        <span className="px-2.5 py-1 rounded-full bg-[#dfeaff] text-[#69738c] text-sm font-bold">{badge}</span>
       )}
       <ChevronRight className="w-5 h-5 text-white/70" />
     </button>
@@ -435,15 +435,15 @@ function AlertaCard({ alerta }: { alerta: AlertaContrato }) {
     vencimiento: { bg: 'bg-orange-50', border: 'border-orange-200', icon: <Clock className="w-5 h-5 text-orange-500" /> },
     renovacion: { bg: 'bg-blue-50', border: 'border-blue-200', icon: <RefreshCw className="w-5 h-5 text-blue-500" /> },
     pago: { bg: 'bg-emerald-50', border: 'border-emerald-200', icon: <Target className="w-5 h-5 text-emerald-500" /> },
-    info: { bg: 'bg-slate-50', border: 'border-slate-200', icon: <Bell className="w-5 h-5 text-slate-500" /> },
-  }[alerta.tipo] || { bg: 'bg-slate-50', border: 'border-slate-200', icon: <Bell className="w-5 h-5 text-slate-500" /> };
+    info: { bg: 'bg-[#dfeaff]', border: 'border-[#bec8de30]', icon: <Bell className="w-5 h-5 text-[#69738c]" /> },
+  }[alerta.tipo] || { bg: 'bg-[#dfeaff]', border: 'border-[#bec8de30]', icon: <Bell className="w-5 h-5 text-[#69738c]" /> };
 
   return (
     <div className={`p-3 rounded-xl border ${config.bg} ${config.border} flex items-center gap-3`}>
       {config.icon}
       <div className="flex-1 min-w-0">
-        <p className="font-bold text-slate-800 text-sm">{alerta.titulo}</p>
-        <p className="text-xs text-slate-600 truncate">{alerta.descripcion}</p>
+        <p className="font-bold text-[#69738c] text-sm">{alerta.titulo}</p>
+        <p className="text-xs text-[#69738c] truncate">{alerta.descripcion}</p>
       </div>
       {!alerta.leida && <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />}
     </div>
@@ -454,13 +454,13 @@ function MasOpcion({ icon, label, desc, color, onClick }: {
   icon: React.ReactNode; label: string; desc: string; color: string; onClick?: () => void;
 }) {
   return (
-    <button onClick={onClick} className="w-full bg-white rounded-xl border border-slate-100 p-4 flex items-center gap-4 active:scale-[0.98] transition-transform">
+    <button onClick={onClick} className="w-full bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4 flex items-center gap-4 active:scale-[0.98] transition-transform">
       <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center`}>{icon}</div>
       <div className="text-left flex-1">
-        <p className="font-bold text-slate-800 text-sm">{label}</p>
-        <p className="text-xs text-slate-500">{desc}</p>
+        <p className="font-bold text-[#69738c] text-sm">{label}</p>
+        <p className="text-xs text-[#69738c]">{desc}</p>
       </div>
-      <ChevronRight className="w-4 h-4 text-slate-300" />
+      <ChevronRight className="w-4 h-4 text-[#9aa3b8]" />
     </button>
   );
 }
@@ -478,7 +478,7 @@ function BottomNav({ activa, onChange, alertCount }: {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-2 safe-area-bottom z-30">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#dfeaff] border-t border-[#bec8de30] px-2 py-2 safe-area-bottom z-30">
       <div className="flex justify-around max-w-lg mx-auto">
         {tabs.map(tab => (
           <button
@@ -486,7 +486,7 @@ function BottomNav({ activa, onChange, alertCount }: {
             onClick={() => onChange(tab.id)}
             className={`flex flex-col items-center gap-0.5 py-1.5 px-2 rounded-xl transition-colors relative ${
               tab.special ? 'text-white' :
-              activa === tab.id ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400'
+              activa === tab.id ? 'text-[#6888ff] bg-[#6888ff]/10' : 'text-[#9aa3b8]'
             }`}
           >
             {tab.special ? (

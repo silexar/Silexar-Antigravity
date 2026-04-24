@@ -202,9 +202,9 @@ export const contratosVencimientos = pgTable('contratos_vencimientos', {
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   contratoId: uuid('contrato_id').references(() => contratos.id, { onDelete: 'cascade' }).notNull(),
   
-  // Información del vencimiento
+  // Información del vencimientos
   numeroCuota: integer('numero_cuota').notNull(),
-  fechaVencimiento: date('fecha_vencimiento').notNull(),
+  fechaVencimiento: date('fecha_vencimientos').notNull(),
   monto: decimal('monto', { precision: 14, scale: 2 }).notNull(),
   
   // Estado de facturación

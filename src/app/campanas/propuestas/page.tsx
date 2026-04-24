@@ -11,23 +11,6 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-// Slider removed - not used
 import {
   FileText,
   Download,
@@ -47,8 +30,11 @@ import {
   Sparkles,
   Loader2,
   Share2,
-  Copy
+  Copy,
+  X
 } from 'lucide-react';
+
+import { NeoPageHeader, NeoCard, NeoButton, NeoInput, NeoTextarea, NeoSelect, NeoBadge, NeoCheckbox, N } from '../_lib/neumorphic';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -108,6 +94,19 @@ const FORMATOS_DIGITALES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// COMPONENTES AUXILIARES
+// ═══════════════════════════════════════════════════════════════
+
+function NeoProgress({ value, className = '' }: { value: number; className?: string }) {
+  const pct = Math.min(100, Math.max(0, value));
+  return (
+    <div className={`w-full rounded-full overflow-hidden ${className}`} style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}>
+      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: N.accent }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
@@ -115,6 +114,8 @@ export default function GeneradorPropuestas() {
   const [paso, setPaso] = useState(1);
   const [generando, setGenerando] = useState(false);
   const [propuestaGenerada, setPropuestaGenerada] = useState(false);
+  const [tabActivo, setTabActivo] = useState<'fm' | 'digital'>('fm');
+  const [panelPreview, setPanelPreview] = useState(false);
   
   const [data, setData] = useState<DatosPropuesta>({
     clienteId: '',
@@ -227,157 +228,184 @@ export default function GeneradorPropuestas() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
-            <FileText className="w-7 h-7 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">📄 Generador de Propuestas</h1>
-            <p className="text-gray-500">Crea propuestas comerciales profesionales</p>
-          </div>
-        </div>
+    <div className="min-h-screen p-6" style={{ background: N.base }}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        <NeoPageHeader
+          title="Generador de Propuestas"
+          subtitle="Crea propuestas comerciales profesionales"
+          icon={FileText}
+          backHref="/campanas"
+        />
 
-        {/* Progress */}
-        <div className="flex items-center gap-4">
-          {[1, 2, 3, 4].map(n => (
-            <div key={n} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                paso >= n ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-500'
-              }`}>
-                {paso > n ? <CheckCircle2 className="w-5 h-5" /> : n}
-              </div>
-              {n < 4 && (
-                <div className={`w-12 h-1 ${paso > n ? 'bg-purple-600' : 'bg-gray-200'}`} />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6">
-        {/* CONTENIDO PRINCIPAL */}
-        <div className="col-span-2">
-          {/* PASO 1: CLIENTE */}
-          {paso === 1 && (
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Building2 className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-bold">Paso 1: Seleccionar Cliente</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Cliente / Anunciante</Label>
-                  <Select value={data.clienteId} onValueChange={handleSelectCliente}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar cliente..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CLIENTES_MOCK.map(c => (
-                        <SelectItem key={c.id} value={c.id}>{c.nombre}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+        {/* Progress Wizard */}
+        <NeoCard padding="small">
+          <div className="flex items-center justify-center gap-4">
+            {[1, 2, 3, 4].map(n => (
+              <div key={n} className="flex items-center">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black transition-all"
+                  style={{
+                    background: paso >= n ? N.accent : N.base,
+                    color: paso >= n ? '#fff' : N.textSub,
+                    boxShadow: paso >= n 
+                      ? `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}`
+                      : `2px 2px 4px ${N.dark}, -2px -2px 4px ${N.light}`
+                  }}
+                >
+                  {paso > n ? <CheckCircle2 className="w-5 h-5" /> : n}
                 </div>
-
-                {data.clienteId && (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Contacto</Label>
-                        <Input
-                          value={data.contactoNombre}
-                          onChange={(e) => updateField('contactoNombre', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Email</Label>
-                        <Input
-                          type="email"
-                          aria-label="Email"
-                          value={data.contactoEmail}
-                          onChange={(e) => updateField('contactoEmail', e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Nombre de la Campaña</Label>
-                      <Input
-                        placeholder="Ej: Campaña Verano 2025"
-                        value={data.nombreCampana}
-                        onChange={(e) => updateField('nombreCampana', e.target.value)}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Objetivo de la Campaña</Label>
-                      <Textarea
-                        placeholder="Describe el objetivo principal..."
-                        value={data.objetivo}
-                        onChange={(e) => updateField('objetivo', e.target.value)}
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          Fecha Inicio
-                        </Label>
-                        <Input
-                          type="date"
-                          aria-label="Fecha Inicio"
-                          value={data.fechaInicio}
-                          onChange={(e) => updateField('fechaInicio', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          Fecha Fin
-                        </Label>
-                        <Input
-                          type="date"
-                          aria-label="Fecha Fin"
-                          value={data.fechaFin}
-                          onChange={(e) => updateField('fechaFin', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </>
+                {n < 4 && (
+                  <div 
+                    className="w-12 h-1 rounded-full mx-1"
+                    style={{
+                      background: paso > n ? N.accent : N.base,
+                      boxShadow: paso > n ? 'none' : `inset 1px 1px 2px ${N.dark}, inset -1px -1px 2px ${N.light}`
+                    }}
+                  />
                 )}
               </div>
-            </Card>
-          )}
+            ))}
+          </div>
+        </NeoCard>
 
-          {/* PASO 2: MIX DE MEDIOS */}
-          {paso === 2 && (
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Radio className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-bold">Paso 2: Mix de Medios</h2>
-              </div>
+        <div className="grid grid-cols-3 gap-6">
+          {/* CONTENIDO PRINCIPAL */}
+          <div className="col-span-2 space-y-4">
+            {/* PASO 1: CLIENTE */}
+            {paso === 1 && (
+              <NeoCard>
+                <div className="flex items-center gap-2 mb-6">
+                  <Building2 className="w-5 h-5" style={{ color: N.accent }} />
+                  <h2 className="text-lg font-black" style={{ color: N.text }}>Paso 1: Seleccionar Cliente</h2>
+                </div>
 
-              <Tabs defaultValue="fm">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="fm" className="gap-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Cliente / Anunciante</label>
+                    <NeoSelect value={data.clienteId} onChange={(e) => handleSelectCliente(e.target.value)}>
+                      <option value="">Seleccionar cliente...</option>
+                      {CLIENTES_MOCK.map(c => (
+                        <option key={c.id} value={c.id}>{c.nombre}</option>
+                      ))}
+                    </NeoSelect>
+                  </div>
+
+                  {data.clienteId && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Contacto</label>
+                          <NeoInput
+                            value={data.contactoNombre}
+                            onChange={(e) => updateField('contactoNombre', e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Email</label>
+                          <NeoInput
+                            type="email"
+                            aria-label="Email"
+                            value={data.contactoEmail}
+                            onChange={(e) => updateField('contactoEmail', e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Nombre de la Campaña</label>
+                        <NeoInput
+                          placeholder="Ej: Campaña Verano 2025"
+                          value={data.nombreCampana}
+                          onChange={(e) => updateField('nombreCampana', e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Objetivo de la Campaña</label>
+                        <NeoTextarea
+                          placeholder="Describe el objetivo principal..."
+                          value={data.objetivo}
+                          onChange={(e) => updateField('objetivo', e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-wider flex items-center gap-2" style={{ color: N.textSub }}>
+                            <Calendar className="w-4 h-4" />
+                            Fecha Inicio
+                          </label>
+                          <NeoInput
+                            type="date"
+                            aria-label="Fecha Inicio"
+                            value={data.fechaInicio}
+                            onChange={(e) => updateField('fechaInicio', e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-wider flex items-center gap-2" style={{ color: N.textSub }}>
+                            <Calendar className="w-4 h-4" />
+                            Fecha Fin
+                          </label>
+                          <NeoInput
+                            type="date"
+                            aria-label="Fecha Fin"
+                            value={data.fechaFin}
+                            onChange={(e) => updateField('fechaFin', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </NeoCard>
+            )}
+
+            {/* PASO 2: MIX DE MEDIOS */}
+            {paso === 2 && (
+              <NeoCard>
+                <div className="flex items-center gap-2 mb-6">
+                  <Radio className="w-5 h-5" style={{ color: N.accent }} />
+                  <h2 className="text-lg font-black" style={{ color: N.text }}>Paso 2: Mix de Medios</h2>
+                </div>
+
+                {/* Tabs nativos neumórficos */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setTabActivo('fm')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
+                    style={{
+                      background: tabActivo === 'fm' ? N.accent : N.base,
+                      color: tabActivo === 'fm' ? '#fff' : N.text,
+                      boxShadow: tabActivo === 'fm' 
+                        ? `inset 2px 2px 4px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(255,255,255,0.3)`
+                        : `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`
+                    }}
+                  >
                     <Radio className="w-4 h-4" />
                     Radio FM
-                  </TabsTrigger>
-                  <TabsTrigger value="digital" className="gap-2">
+                  </button>
+                  <button
+                    onClick={() => setTabActivo('digital')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
+                    style={{
+                      background: tabActivo === 'digital' ? N.accent : N.base,
+                      color: tabActivo === 'digital' ? '#fff' : N.text,
+                      boxShadow: tabActivo === 'digital' 
+                        ? `inset 2px 2px 4px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(255,255,255,0.3)`
+                        : `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`
+                    }}
+                  >
                     <Smartphone className="w-4 h-4" />
                     Digital
-                  </TabsTrigger>
-                </TabsList>
+                  </button>
+                </div>
 
-                <TabsContent value="fm">
+                {tabActivo === 'fm' && (
                   <div className="space-y-4">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm font-bold" style={{ color: N.textSub }}>
                       Selecciona las emisoras y define la cantidad de spots por emisora.
                     </p>
 
@@ -387,19 +415,24 @@ export default function GeneradorPropuestas() {
                         return (
                           <div
                             key={emisora.id}
-                            className={`p-4 border rounded-lg transition-all ${
-                              seleccionada ? 'border-purple-300 bg-purple-50' : 'hover:border-gray-300'
-                            }`}
+                            className="p-4 rounded-2xl transition-all"
+                            style={{
+                              background: N.base,
+                              boxShadow: seleccionada 
+                                ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}`
+                                : `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`,
+                              border: seleccionada ? `2px solid ${N.accent}` : '2px solid transparent'
+                            }}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <Checkbox
+                                <NeoCheckbox
                                   checked={!!seleccionada}
                                   onCheckedChange={() => toggleEmisora(emisora.id)}
                                 />
                                 <div>
-                                  <p className="font-medium">{emisora.nombre}</p>
-                                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                                  <p className="font-bold" style={{ color: N.text }}>{emisora.nombre}</p>
+                                  <div className="flex items-center gap-3 text-xs font-bold" style={{ color: N.textSub }}>
                                     <span>{emisora.audiencia.toLocaleString()} oyentes</span>
                                     <span>Rating: {emisora.rating}</span>
                                     <span>${emisora.tarifa.toLocaleString()}/spot</span>
@@ -410,17 +443,17 @@ export default function GeneradorPropuestas() {
                               {seleccionada && (
                                 <div className="flex items-center gap-3">
                                   <div className="text-right">
-                                    <Input
+                                    <NeoInput
                                       type="number"
                                       aria-label={`Spots para ${emisora.nombre}`}
                                       value={seleccionada.spots}
                                       onChange={(e) => updateSpots(emisora.id, parseInt(e.target.value) || 0)}
                                       className="w-20 h-8 text-center"
                                     />
-                                    <span className="text-xs text-gray-500">spots</span>
+                                    <span className="text-xs font-bold" style={{ color: N.textSub }}>spots</span>
                                   </div>
                                   <div className="text-right">
-                                    <p className="font-bold text-purple-600">
+                                    <p className="font-black" style={{ color: N.accent }}>
                                       ${seleccionada.costo.toLocaleString()}
                                     </p>
                                   </div>
@@ -432,16 +465,19 @@ export default function GeneradorPropuestas() {
                       })}
                     </div>
                   </div>
-                </TabsContent>
+                )}
 
-                <TabsContent value="digital">
+                {tabActivo === 'digital' && (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                      <Checkbox
+                    <div 
+                      className="flex items-center gap-2 p-3 rounded-xl"
+                      style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}
+                    >
+                      <NeoCheckbox
                         checked={data.incluirDigital}
                         onCheckedChange={(checked) => updateField('incluirDigital', !!checked)}
                       />
-                      <span className="font-medium">Incluir componente digital en la propuesta</span>
+                      <span className="font-bold" style={{ color: N.text }}>Incluir componente digital en la propuesta</span>
                     </div>
 
                     {data.incluirDigital && (
@@ -449,11 +485,14 @@ export default function GeneradorPropuestas() {
                         {FORMATOS_DIGITALES.map(formato => (
                           <div
                             key={formato.id}
-                            className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                              data.formatosDigitales.includes(formato.id)
-                                ? 'border-blue-300 bg-blue-50'
-                                : 'hover:border-gray-300'
-                            }`}
+                            className="p-4 rounded-2xl cursor-pointer transition-all"
+                            style={{
+                              background: N.base,
+                              boxShadow: data.formatosDigitales.includes(formato.id)
+                                ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}`
+                                : `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`,
+                              border: data.formatosDigitales.includes(formato.id) ? `2px solid ${N.accent}` : '2px solid transparent'
+                            }}
                             onClick={() => {
                               setData(prev => ({
                                 ...prev,
@@ -464,10 +503,10 @@ export default function GeneradorPropuestas() {
                             }}
                           >
                             <div className="flex items-center gap-2">
-                              <Checkbox checked={data.formatosDigitales.includes(formato.id)} />
-                              <span className="font-medium">{formato.nombre}</span>
+                              <NeoCheckbox checked={data.formatosDigitales.includes(formato.id)} onCheckedChange={() => {}} />
+                              <span className="font-bold" style={{ color: N.text }}>{formato.nombre}</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs font-bold mt-1" style={{ color: N.textSub }}>
                               CPM: ${formato.cpm.toLocaleString()}
                             </p>
                           </div>
@@ -475,292 +514,358 @@ export default function GeneradorPropuestas() {
                       </div>
                     )}
                   </div>
-                </TabsContent>
-              </Tabs>
-            </Card>
-          )}
+                )}
+              </NeoCard>
+            )}
 
-          {/* PASO 3: SIMULADOR ROI */}
-          {paso === 3 && (
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-bold">Paso 3: Simulador de Resultados</h2>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                {/* Métricas proyectadas */}
-                <div className="space-y-4">
-                  <h3 className="font-medium text-gray-700">📊 Proyecciones de Campaña</h3>
-                  
-                  <div className="p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-purple-700">Reach Estimado</span>
-                      <span className="text-2xl font-bold text-purple-900">{metricas.reach}%</span>
-                    </div>
-                    <Progress value={parseFloat(metricas.reach)} className="h-2" />
-                  </div>
-
-                  <div className="p-4 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-xl">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-blue-700">Frequency</span>
-                      <span className="text-2xl font-bold text-blue-900">{metricas.frequency}x</span>
-                    </div>
-                    <p className="text-xs text-blue-600">Promedio de exposiciones por persona</p>
-                  </div>
-
-                  <div className="p-4 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-green-700">GRPs Totales</span>
-                      <span className="text-2xl font-bold text-green-900">{metricas.grps}</span>
-                    </div>
-                    <p className="text-xs text-green-600">Gross Rating Points</p>
-                  </div>
+            {/* PASO 3: SIMULADOR ROI */}
+            {paso === 3 && (
+              <NeoCard>
+                <div className="flex items-center gap-2 mb-6">
+                  <TrendingUp className="w-5 h-5" style={{ color: N.accent }} />
+                  <h2 className="text-lg font-black" style={{ color: N.text }}>Paso 3: Simulador de Resultados</h2>
                 </div>
 
-                {/* Audiencia */}
-                <div className="space-y-4">
-                  <h3 className="font-medium text-gray-700">👥 Audiencia Potencial</h3>
-
-                  <div className="p-4 bg-white border rounded-xl">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Users className="w-8 h-8 text-purple-600" />
-                      <div>
-                        <p className="text-2xl font-bold">
-                          {metricas.audienciaTotal.toLocaleString()}
-                        </p>
-                        <p className="text-sm text-gray-500">Oyentes únicos potenciales</p>
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Métricas proyectadas */}
+                  <div className="space-y-4">
+                    <h3 className="font-bold" style={{ color: N.text }}>📊 Proyecciones de Campaña</h3>
+                    
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Reach Estimado</span>
+                        <span className="text-2xl font-black" style={{ color: N.accent }}>{metricas.reach}%</span>
                       </div>
+                      <NeoProgress value={parseFloat(metricas.reach)} className="h-2" />
+                    </div>
+
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Frequency</span>
+                        <span className="text-2xl font-black" style={{ color: N.accent }}>{metricas.frequency}x</span>
+                      </div>
+                      <p className="text-xs font-bold" style={{ color: N.textSub }}>Promedio de exposiciones por persona</p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>GRPs Totales</span>
+                        <span className="text-2xl font-black" style={{ color: '#22c55e' }}>{metricas.grps}</span>
+                      </div>
+                      <p className="text-xs font-bold" style={{ color: N.textSub }}>Gross Rating Points</p>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-white border rounded-xl">
-                    <h4 className="text-sm font-medium mb-3">Distribución por Emisora</h4>
-                    <div className="space-y-2">
-                      {data.emisorasSeleccionadas.map(em => {
-                        const emisora = EMISORAS_PROPUESTA.find(e => e.id === em.id);
-                        const porcentaje = emisora 
-                          ? (emisora.audiencia / metricas.audienciaTotal) * 100 
-                          : 0;
-                        return (
-                          <div key={em.id}>
-                            <div className="flex items-center justify-between text-xs mb-1">
-                              <span>{em.nombre}</span>
-                              <span>{porcentaje.toFixed(1)}%</span>
+                  {/* Audiencia */}
+                  <div className="space-y-4">
+                    <h3 className="font-bold" style={{ color: N.text }}>👥 Audiencia Potencial</h3>
+
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <Users className="w-8 h-8" style={{ color: N.accent }} />
+                        <div>
+                          <p className="text-2xl font-black" style={{ color: N.text }}>
+                            {metricas.audienciaTotal.toLocaleString()}
+                          </p>
+                          <p className="text-xs font-bold" style={{ color: N.textSub }}>Oyentes únicos potenciales</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <h4 className="text-xs font-black uppercase tracking-wider mb-3" style={{ color: N.textSub }}>Distribución por Emisora</h4>
+                      <div className="space-y-2">
+                        {data.emisorasSeleccionadas.map(em => {
+                          const emisora = EMISORAS_PROPUESTA.find(e => e.id === em.id);
+                          const porcentaje = emisora 
+                            ? (emisora.audiencia / metricas.audienciaTotal) * 100 
+                            : 0;
+                          return (
+                            <div key={em.id}>
+                              <div className="flex items-center justify-between text-xs mb-1">
+                                <span className="font-bold" style={{ color: N.text }}>{em.nombre}</span>
+                                <span className="font-black" style={{ color: N.accent }}>{porcentaje.toFixed(1)}%</span>
+                              </div>
+                              <NeoProgress value={porcentaje} className="h-1.5" />
                             </div>
-                            <Progress value={porcentaje} className="h-1.5" />
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Card>
-          )}
+              </NeoCard>
+            )}
 
-          {/* PASO 4: PREVIEW Y GENERAR */}
-          {paso === 4 && (
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Eye className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-bold">Paso 4: Preview y Generar</h2>
-              </div>
+            {/* PASO 4: PREVIEW Y GENERAR */}
+            {paso === 4 && (
+              <NeoCard>
+                <div className="flex items-center gap-2 mb-6">
+                  <Eye className="w-5 h-5" style={{ color: N.accent }} />
+                  <h2 className="text-lg font-black" style={{ color: N.text }}>Paso 4: Preview y Generar</h2>
+                </div>
 
-              {!propuestaGenerada ? (
-                <div className="space-y-6">
-                  {/* Resumen */}
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <h3 className="font-bold mb-3">📋 Resumen de la Propuesta</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-500">Cliente:</span>
-                        <p className="font-medium">{data.clienteNombre}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Campaña:</span>
-                        <p className="font-medium">{data.nombreCampana}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Período:</span>
-                        <p className="font-medium">{data.fechaInicio} - {data.fechaFin}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Emisoras:</span>
-                        <p className="font-medium">{data.emisorasSeleccionadas.length}</p>
+                {!propuestaGenerada ? (
+                  <div className="space-y-6">
+                    {/* Resumen */}
+                    <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                      <h3 className="font-black mb-3" style={{ color: N.text }}>📋 Resumen de la Propuesta</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span style={{ color: N.textSub }}>Cliente:</span>
+                          <p className="font-bold" style={{ color: N.text }}>{data.clienteNombre}</p>
+                        </div>
+                        <div>
+                          <span style={{ color: N.textSub }}>Campaña:</span>
+                          <p className="font-bold" style={{ color: N.text }}>{data.nombreCampana}</p>
+                        </div>
+                        <div>
+                          <span style={{ color: N.textSub }}>Período:</span>
+                          <p className="font-bold" style={{ color: N.text }}>{data.fechaInicio} - {data.fechaFin}</p>
+                        </div>
+                        <div>
+                          <span style={{ color: N.textSub }}>Emisoras:</span>
+                          <p className="font-bold" style={{ color: N.text }}>{data.emisorasSeleccionadas.length}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Generar */}
-                  <div className="flex justify-center">
-                    <Button
-                      size="lg"
-                      className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600"
-                      onClick={handleGenerar}
-                      disabled={generando}
+                    {/* Generar */}
+                    <div className="flex justify-center">
+                      <NeoButton
+                        variant="primary"
+                        onClick={handleGenerar}
+                        disabled={generando}
+                      >
+                        {generando ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Generando Propuesta...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-5 h-5" />
+                            Generar Propuesta PDF
+                          </>
+                        )}
+                      </NeoButton>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-6">
+                    <div 
+                      className="w-20 h-20 mx-auto rounded-full flex items-center justify-center"
+                      style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}
                     >
-                      {generando ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Generando Propuesta...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-5 h-5" />
-                          Generar Propuesta PDF
-                        </>
-                      )}
-                    </Button>
+                      <CheckCircle2 className="w-10 h-10" style={{ color: '#22c55e' }} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black" style={{ color: N.text }}>¡Propuesta Generada!</h3>
+                      <p className="text-sm font-bold" style={{ color: N.textSub }}>La propuesta está lista para descargar o enviar.</p>
+                    </div>
+
+                    <div className="flex justify-center gap-3">
+                      <NeoButton variant="secondary" onClick={() => setPanelPreview(true)}>
+                        <Eye className="w-4 h-4" />
+                        Ver Preview
+                      </NeoButton>
+                      <NeoButton variant="secondary">
+                        <Download className="w-4 h-4" />
+                        Descargar PDF
+                      </NeoButton>
+                      <NeoButton variant="primary">
+                        <Send className="w-4 h-4" />
+                        Enviar a Cliente
+                      </NeoButton>
+                    </div>
+
+                    <div className="flex justify-center gap-2">
+                      <NeoButton variant="ghost" size="sm">
+                        <Copy className="w-3 h-3" />
+                        Copiar Link
+                      </NeoButton>
+                      <NeoButton variant="ghost" size="sm">
+                        <Share2 className="w-3 h-3" />
+                        Compartir
+                      </NeoButton>
+                    </div>
                   </div>
+                )}
+              </NeoCard>
+            )}
+
+            {/* Navegación */}
+            <div className="flex justify-between">
+              <NeoButton
+                variant="secondary"
+                onClick={() => setPaso(p => Math.max(1, p - 1))}
+                disabled={paso === 1}
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Anterior
+              </NeoButton>
+              <NeoButton
+                variant="primary"
+                onClick={() => setPaso(p => Math.min(4, p + 1))}
+                disabled={paso === 4}
+              >
+                Siguiente
+                <ArrowRight className="w-4 h-4" />
+              </NeoButton>
+            </div>
+          </div>
+
+          {/* SIDEBAR: RESUMEN EN VIVO */}
+          <div className="space-y-4">
+            <NeoCard padding="small">
+              <h3 className="font-black mb-4 flex items-center gap-2" style={{ color: N.text }}>
+                <DollarSign className="w-5 h-5" style={{ color: N.accent }} />
+                💰 Inversión Total
+              </h3>
+              
+              <div className="text-center mb-4">
+                <p className="text-3xl font-black" style={{ color: N.accent }}>
+                  ${metricas.costoTotal.toLocaleString('es-CL')}
+                </p>
+                <p className="text-xs font-bold" style={{ color: N.textSub }}>CLP + IVA</p>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between p-2 rounded-xl" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                  <span className="font-bold" style={{ color: N.textSub }}>Radio FM</span>
+                  <span className="font-black" style={{ color: N.text }}>${metricas.costoFM.toLocaleString()}</span>
                 </div>
-              ) : (
-                <div className="text-center space-y-6">
-                  <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-10 h-10 text-green-600" />
+                {data.incluirDigital && (
+                  <div className="flex justify-between p-2 rounded-xl" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                    <span className="font-bold" style={{ color: N.textSub }}>Digital</span>
+                    <span className="font-black" style={{ color: N.text }}>Por cotizar</span>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">¡Propuesta Generada!</h3>
-                    <p className="text-gray-500">La propuesta está lista para descargar o enviar.</p>
-                  </div>
+                )}
+              </div>
+            </NeoCard>
 
-                  <div className="flex justify-center gap-3">
-                    <Button variant="outline" className="gap-2">
-                      <Eye className="w-4 h-4" />
-                      Ver Preview
-                    </Button>
-                    <Button variant="outline" className="gap-2">
-                      <Download className="w-4 h-4" />
-                      Descargar PDF
-                    </Button>
-                    <Button className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600">
-                      <Send className="w-4 h-4" />
-                      Enviar a Cliente
-                    </Button>
-                  </div>
-
-                  <div className="flex justify-center gap-2">
-                    <Button variant="ghost" size="sm" className="gap-1">
-                      <Copy className="w-3 h-3" />
-                      Copiar Link
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-1">
-                      <Share2 className="w-3 h-3" />
-                      Compartir
-                    </Button>
-                  </div>
+            <NeoCard padding="small">
+              <h3 className="font-black mb-3 flex items-center gap-2" style={{ color: N.text }}>
+                <Target className="w-5 h-5" style={{ color: N.accent }} />
+                📊 Métricas Clave
+              </h3>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold" style={{ color: N.textSub }}>Reach</span>
+                  <NeoBadge color="purple">
+                    {metricas.reach}%
+                  </NeoBadge>
                 </div>
-              )}
-            </Card>
-          )}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold" style={{ color: N.textSub }}>Frequency</span>
+                  <NeoBadge color="blue">
+                    {metricas.frequency}x
+                  </NeoBadge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold" style={{ color: N.textSub }}>GRPs</span>
+                  <NeoBadge color="green">
+                    {metricas.grps}
+                  </NeoBadge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold" style={{ color: N.textSub }}>Audiencia</span>
+                  <NeoBadge color="yellow">
+                    {(metricas.audienciaTotal / 1000).toFixed(0)}K
+                  </NeoBadge>
+                </div>
+              </div>
+            </NeoCard>
 
-          {/* Navegación */}
-          <div className="flex justify-between mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setPaso(p => Math.max(1, p - 1))}
-              disabled={paso === 1}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Anterior
-            </Button>
-            <Button
-              onClick={() => setPaso(p => Math.min(4, p + 1))}
-              disabled={paso === 4}
-              className="gap-2"
-            >
-              Siguiente
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            <NeoCard padding="small">
+              <h3 className="font-black mb-3" style={{ color: N.text }}>✅ Checklist</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className={`w-4 h-4 ${data.clienteId ? '' : ''}`} style={{ color: data.clienteId ? '#22c55e' : N.textSub }} />
+                  <span className="font-bold" style={{ color: data.clienteId ? N.text : N.textSub }}>Cliente seleccionado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" style={{ color: data.nombreCampana ? '#22c55e' : N.textSub }} />
+                  <span className="font-bold" style={{ color: data.nombreCampana ? N.text : N.textSub }}>Nombre de campaña</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" style={{ color: data.emisorasSeleccionadas.length > 0 ? '#22c55e' : N.textSub }} />
+                  <span className="font-bold" style={{ color: data.emisorasSeleccionadas.length > 0 ? N.text : N.textSub }}>Mix de medios</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" style={{ color: data.fechaInicio && data.fechaFin ? '#22c55e' : N.textSub }} />
+                  <span className="font-bold" style={{ color: data.fechaInicio && data.fechaFin ? N.text : N.textSub }}>Fechas definidas</span>
+                </div>
+              </div>
+            </NeoCard>
           </div>
         </div>
 
-        {/* SIDEBAR: RESUMEN EN VIVO */}
-        <div className="space-y-4">
-          <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-purple-600" />
-              💰 Inversión Total
-            </h3>
-            
-            <div className="text-center mb-4">
-              <p className="text-3xl font-bold text-purple-700">
-                ${metricas.costoTotal.toLocaleString('es-CL')}
-              </p>
-              <p className="text-sm text-purple-600">CLP + IVA</p>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between p-2 bg-white rounded">
-                <span className="text-gray-600">Radio FM</span>
-                <span className="font-medium">${metricas.costoFM.toLocaleString()}</span>
+        {/* Panel Preview inline (sin modal bloqueante) */}
+        {panelPreview && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-10">
+            <div className="absolute inset-0" onClick={() => setPanelPreview(false)} />
+            <NeoCard className="relative w-full max-w-3xl max-h-[85vh] overflow-auto" style={{ zIndex: 10 }}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-black text-lg" style={{ color: N.text }}>Vista Previa de Propuesta</h3>
+                <NeoButton variant="ghost" size="icon" onClick={() => setPanelPreview(false)}>
+                  <X className="w-4 h-4" />
+                </NeoButton>
               </div>
-              {data.incluirDigital && (
-                <div className="flex justify-between p-2 bg-white rounded">
-                  <span className="text-gray-600">Digital</span>
-                  <span className="font-medium">Por cotizar</span>
+              <div className="p-6 rounded-2xl space-y-4" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                <div className="text-center border-b pb-4" style={{ borderColor: `${N.dark}40` }}>
+                  <h2 className="text-2xl font-black" style={{ color: N.text }}>{data.nombreCampana || 'Propuesta Comercial'}</h2>
+                  <p className="text-sm font-bold" style={{ color: N.textSub }}>{data.clienteNombre}</p>
                 </div>
-              )}
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Target className="w-5 h-5 text-blue-600" />
-              📊 Métricas Clave
-            </h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Reach</span>
-                <Badge variant="outline" className="bg-purple-50">
-                  {metricas.reach}%
-                </Badge>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-bold" style={{ color: N.textSub }}>Contacto:</span>
+                    <p style={{ color: N.text }}>{data.contactoNombre}</p>
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: N.textSub }}>Email:</span>
+                    <p style={{ color: N.text }}>{data.contactoEmail}</p>
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: N.textSub }}>Período:</span>
+                    <p style={{ color: N.text }}>{data.fechaInicio} - {data.fechaFin}</p>
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: N.textSub }}>Inversión:</span>
+                    <p className="font-black" style={{ color: N.accent }}>${metricas.costoTotal.toLocaleString('es-CL')}</p>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-bold" style={{ color: N.textSub }}>Objetivo:</span>
+                  <p style={{ color: N.text }}>{data.objetivo || 'No especificado'}</p>
+                </div>
+                <div>
+                  <span className="font-bold" style={{ color: N.textSub }}>Emisoras seleccionadas:</span>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {data.emisorasSeleccionadas.map(em => (
+                      <NeoBadge key={em.id} color="blue">{em.nombre}</NeoBadge>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 mt-4">
+                  <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                    <p className="font-black" style={{ color: N.accent }}>{metricas.reach}%</p>
+                    <p className="text-xs font-bold" style={{ color: N.textSub }}>Reach</p>
+                  </div>
+                  <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                    <p className="font-black" style={{ color: N.accent }}>{metricas.frequency}x</p>
+                    <p className="text-xs font-bold" style={{ color: N.textSub }}>Frequency</p>
+                  </div>
+                  <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+                    <p className="font-black" style={{ color: '#22c55e' }}>{metricas.grps}</p>
+                    <p className="text-xs font-bold" style={{ color: N.textSub }}>GRPs</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Frequency</span>
-                <Badge variant="outline" className="bg-blue-50">
-                  {metricas.frequency}x
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">GRPs</span>
-                <Badge variant="outline" className="bg-green-50">
-                  {metricas.grps}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Audiencia</span>
-                <Badge variant="outline" className="bg-amber-50">
-                  {(metricas.audienciaTotal / 1000).toFixed(0)}K
-                </Badge>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="font-bold text-gray-900 mb-3">✅ Checklist</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className={`w-4 h-4 ${data.clienteId ? 'text-green-500' : 'text-gray-300'}`} />
-                <span className={data.clienteId ? '' : 'text-gray-400'}>Cliente seleccionado</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className={`w-4 h-4 ${data.nombreCampana ? 'text-green-500' : 'text-gray-300'}`} />
-                <span className={data.nombreCampana ? '' : 'text-gray-400'}>Nombre de campaña</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className={`w-4 h-4 ${data.emisorasSeleccionadas.length > 0 ? 'text-green-500' : 'text-gray-300'}`} />
-                <span className={data.emisorasSeleccionadas.length > 0 ? '' : 'text-gray-400'}>Mix de medios</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className={`w-4 h-4 ${data.fechaInicio && data.fechaFin ? 'text-green-500' : 'text-gray-300'}`} />
-                <span className={data.fechaInicio && data.fechaFin ? '' : 'text-gray-400'}>Fechas definidas</span>
-              </div>
-            </div>
-          </Card>
-        </div>
+            </NeoCard>
+          </div>
+        )}
       </div>
     </div>
   );

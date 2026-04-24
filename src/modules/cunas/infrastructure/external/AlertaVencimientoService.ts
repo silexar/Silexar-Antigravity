@@ -1,7 +1,7 @@
 /**
  * EXTERNAL SERVICE: ALERTA VENCIMIENTO — TIER 0
  *
- * Programa alertas automáticas de vencimiento de cuñas.
+ * Programa alertas automáticas de vencimientos de cuñas.
  * Alertas: 7 días antes (aviso), 1 día antes (urgente).
  *
  * Estado actual: STUB — la implementación real usa el scheduler de alertas
@@ -19,7 +19,7 @@ export interface AlertaProgramada {
 
 export class AlertaVencimientoService {
   /**
-   * Programa las dos alertas estándar de vencimiento para una cuña.
+   * Programa las dos alertas estándar de vencimientos para una cuña.
    * Solo aplica si la cuña tiene fechaFinVigencia definida.
    */
   async scheduleAlerts(cuna: Cuna): Promise<AlertaProgramada[]> {

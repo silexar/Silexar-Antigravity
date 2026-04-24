@@ -96,28 +96,30 @@ export class ProgramaAuspicio {
   get revenuePotencial(): number { return this.props.revenuePotencial }
   get listaEsperaCount(): number { return this.props.listaEsperaCount }
   get estado(): string { return this.props.estado }
+  get fechaCreacion(): Date { return this.props.fechaCreacion }
+  get fechaActualizacion(): Date { return this.props.fechaActualizacion }
   get version(): number { return this.props.version }
   get domainEvents(): string[] { return [...this._domainEvents] }
 
   /** Total general de cupos (todos los tipos) */
   get totalCupos(): number {
     return this.props.cuposTipoA.capacidadTotal +
-           this.props.cuposTipoB.capacidadTotal +
-           this.props.cuposMenciones.capacidadTotal
+      this.props.cuposTipoB.capacidadTotal +
+      this.props.cuposMenciones.capacidadTotal
   }
 
   /** Total de cupos ocupados (todos los tipos) */
   get totalOcupados(): number {
     return this.props.cuposTipoA.cuposOcupados +
-           this.props.cuposTipoB.cuposOcupados +
-           this.props.cuposMenciones.cuposOcupados
+      this.props.cuposTipoB.cuposOcupados +
+      this.props.cuposMenciones.cuposOcupados
   }
 
   /** Total de cupos disponibles */
   get totalDisponibles(): number {
     return this.props.cuposTipoA.disponibles +
-           this.props.cuposTipoB.disponibles +
-           this.props.cuposMenciones.disponibles
+      this.props.cuposTipoB.disponibles +
+      this.props.cuposMenciones.disponibles
   }
 
   /** Porcentaje general de ocupación */

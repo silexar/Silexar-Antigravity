@@ -1,9 +1,9 @@
 /**
- * ‚ö° MOBILE: Floating Action Button Global
+ * ? MOBILE: Floating Action Button Global
  * 
- * Bot√≥n flotante con acciones r√°pidas: Smart Capture,
+ * BotÛn flotante con acciones r·pidas: Smart Capture,
  * Nueva nota, Escanear documento, Llamar cliente.
- * Expandible con animaci√≥n radial.
+ * Expandible con animaciÛn radial.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -36,9 +36,9 @@ export function FloatingActionButton({ onSmartCapture, onNuevoContrato, onEscane
   const [open, setOpen] = useState(false);
 
   const actions: FABAction[] = [
-    { id: 'capture', icon: <Sparkles className="w-5 h-5" />, label: 'Smart Capture', color: 'bg-gradient-to-r from-violet-600 to-fuchsia-600', onClick: () => { setOpen(false); onSmartCapture(); } },
-    { id: 'contrato', icon: <FileText className="w-5 h-5" />, label: 'Nuevo Contrato', color: 'bg-gradient-to-r from-indigo-500 to-blue-600', onClick: () => { setOpen(false); onNuevoContrato(); } },
-    { id: 'escanear', icon: <Camera className="w-5 h-5" />, label: 'Escanear Doc', color: 'bg-gradient-to-r from-emerald-500 to-green-600', onClick: () => { setOpen(false); onEscanear(); } },
+    { id: 'capture', icon: <Sparkles className="w-5 h-5" />, label: 'Smart Capture', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onSmartCapture(); } },
+    { id: 'contrato', icon: <FileText className="w-5 h-5" />, label: 'Nuevo Contrato', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onNuevoContrato(); } },
+    { id: 'escanear', icon: <Camera className="w-5 h-5" />, label: 'Escanear Doc', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onEscanear(); } },
     { id: 'llamar', icon: <Phone className="w-5 h-5" />, label: 'Llamar Cliente', color: 'bg-gradient-to-r from-blue-500 to-cyan-500', onClick: () => { setOpen(false); onLlamar(); } },
   ];
 
@@ -55,7 +55,7 @@ export function FloatingActionButton({ onSmartCapture, onNuevoContrato, onEscane
           <div key={a.id}
             className="flex items-center gap-3 animate-in slide-in-from-bottom-2"
             style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'forwards' }}>
-            <span className="px-3 py-1.5 bg-white rounded-lg shadow-lg text-xs font-bold text-slate-700">
+            <span className="px-3 py-1.5 bg-[#dfeaff] rounded-lg shadow-lg text-xs font-bold text-[#69738c]">
               {a.label}
             </span>
             <button onClick={a.onClick}
@@ -70,7 +70,7 @@ export function FloatingActionButton({ onSmartCapture, onNuevoContrato, onEscane
       <button
         onClick={() => setOpen(!open)}
         className={`fixed bottom-28 right-4 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${
-          open ? 'bg-slate-800 rotate-45' : 'bg-gradient-to-r from-indigo-600 to-purple-600'
+          open ? 'bg-[#69738c] rotate-45' : 'bg-[#6888ff]'
         }`}>
         {open ? <X className="w-6 h-6 text-white" /> : <Zap className="w-6 h-6 text-white" />}
       </button>

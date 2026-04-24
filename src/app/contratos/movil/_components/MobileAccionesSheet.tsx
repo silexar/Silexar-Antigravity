@@ -1,5 +1,5 @@
 /**
- * ⚡ MOBILE: Acciones Bottom Sheet
+ * ? MOBILE: Acciones Bottom Sheet
  * 
  * Bottom sheet para ejecutar acciones sobre contratos: aprobar, rechazar,
  * firmar, comentar. Conectado al POST /api/mobile/contratos.
@@ -17,9 +17,9 @@ import {
 } from 'lucide-react';
 import { useContratosAcciones } from '../../_shared/useContratos';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // INTERFACES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface MobileAccionesSheetProps {
   isOpen: boolean;
@@ -33,9 +33,9 @@ interface MobileAccionesSheetProps {
 
 type AccionActiva = 'aprobar' | 'rechazar' | 'firmar' | 'comentar' | null;
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function MobileAccionesSheet({
   isOpen, onClose, contratoId, contratoNumero, clienteNombre,
@@ -94,25 +94,25 @@ export function MobileAccionesSheet({
   return (
     <>
       {/* BACKDROP */}
-      <div className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm" onClick={handleClose} />
+      <div className="fixed inset-0 bg-black/40 z-40 " onClick={handleClose} />
 
       {/* SHEET */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#dfeaff] rounded-t-3xl shadow-2xl">
         {/* HANDLE */}
         <div className="flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1 bg-slate-200 rounded-full" />
+          <div className="w-10 h-1 bg-[#dfeaff] rounded-full" />
         </div>
 
         {/* HEADER */}
         <div className="flex items-center justify-between px-5 pb-3">
           <div>
-            <h2 className="text-lg font-black text-slate-800">
-              {success ? 'Acción Completada' : accionActiva ? `${accionActiva.charAt(0).toUpperCase() + accionActiva.slice(1)} Contrato` : 'Acciones'}
+            <h2 className="text-lg font-black text-[#69738c]">
+              {success ? 'Acci�n Completada' : accionActiva ? `${accionActiva.charAt(0).toUpperCase() + accionActiva.slice(1)} Contrato` : 'Acciones'}
             </h2>
-            <p className="text-xs text-slate-400">{contratoNumero} · {clienteNombre}</p>
+            <p className="text-xs text-[#9aa3b8]">{contratoNumero} � {clienteNombre}</p>
           </div>
-          <button onClick={handleClose} aria-label="Cerrar" className="p-2 rounded-full bg-slate-100 active:scale-90">
-            <X className="w-5 h-5 text-slate-500" />
+          <button onClick={handleClose} aria-label="Cerrar" className="p-2 rounded-full bg-[#dfeaff] active:scale-90">
+            <X className="w-5 h-5 text-[#9aa3b8]" />
           </button>
         </div>
 
@@ -123,8 +123,8 @@ export function MobileAccionesSheet({
               <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               </div>
-              <p className="font-bold text-slate-700">{successMessage}</p>
-              <button onClick={handleClose} className="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl active:scale-95">
+              <p className="font-bold text-[#69738c]">{successMessage}</p>
+              <button onClick={handleClose} className="w-full py-3.5 bg-[#6888ff] text-white font-bold rounded-xl active:scale-95">
                 Cerrar
               </button>
             </div>
@@ -133,40 +133,40 @@ export function MobileAccionesSheet({
             <div className="space-y-4">
               {accionActiva === 'aprobar' && (
                 <>
-                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-[#bec8de30] flex items-start gap-3">
                     <Shield className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
-                    <p className="text-xs text-emerald-700">Al aprobar, este contrato avanzará a la siguiente etapa del pipeline.</p>
+                    <p className="text-xs text-emerald-700">Al aprobar, este contrato avanzar� a la siguiente etapa del pipeline.</p>
                   </div>
                   <textarea
                     value={comentarioText}
                     onChange={(e) => setComentarioText(e.target.value)}
-                    placeholder="Comentario de aprobación (opcional)..."
+                    placeholder="Comentario de aprobaci�n (opcional)..."
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-400 outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none"
                   />
                 </>
               )}
 
               {accionActiva === 'rechazar' && (
                 <>
-                  <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
+                  <div className="p-4 rounded-xl bg-red-50 border border-[#bec8de30] flex items-start gap-3">
                     <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
-                    <p className="text-xs text-red-700">El contrato será devuelto al ejecutivo con el motivo de rechazo.</p>
+                    <p className="text-xs text-red-700">El contrato ser� devuelto al ejecutivo con el motivo de rechazo.</p>
                   </div>
                   <textarea
                     value={motivoText}
                     onChange={(e) => setMotivoText(e.target.value)}
                     placeholder="Motivo del rechazo (requerido)..."
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-red-200 text-sm focus:ring-2 focus:ring-red-400 outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none"
                   />
                 </>
               )}
 
               {accionActiva === 'firmar' && (
-                <div className="p-4 rounded-xl bg-purple-50 border border-purple-200 flex items-start gap-3">
+                <div className="p-4 rounded-xl bg-purple-50 border border-[#bec8de30] flex items-start gap-3">
                   <Star className="w-5 h-5 text-purple-600 mt-0.5 shrink-0" />
-                  <p className="text-xs text-purple-700">Se aplicará tu firma digital certificada al contrato. Esta acción es irreversible.</p>
+                  <p className="text-xs text-purple-700">Se aplicar� tu firma digital certificada al contrato. Esta acci�n es irreversible.</p>
                 </div>
               )}
 
@@ -176,14 +176,14 @@ export function MobileAccionesSheet({
                   onChange={(e) => setComentarioText(e.target.value)}
                   placeholder="Escribe tu comentario..."
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400 outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none"
                 />
               )}
 
               <div className="flex gap-3">
                 <button
                   onClick={() => setAccionActiva(null)}
-                  className="flex-1 py-3.5 border border-slate-200 rounded-xl font-bold text-slate-600 active:scale-95"
+                  className="flex-1 py-3.5 border border-[#bec8de30] rounded-xl font-bold text-[#69738c] active:scale-95"
                 >
                   Volver
                 </button>
@@ -216,7 +216,7 @@ export function MobileAccionesSheet({
                 <ActionRow icon={<MessageSquare className="w-5 h-5" />} label="Comentar" desc="Agregar nota al contrato" color="bg-blue-100 text-blue-600" onClick={() => setAccionActiva('comentar')} />
               )}
               <ActionRow icon={<Phone className="w-5 h-5" />} label="Llamar Cliente" desc="Contacto directo" color="bg-cyan-100 text-cyan-600" />
-              <ActionRow icon={<Mail className="w-5 h-5" />} label="Email" desc="Enviar comunicación" color="bg-amber-100 text-amber-600" />
+              <ActionRow icon={<Mail className="w-5 h-5" />} label="Email" desc="Enviar comunicaci�n" color="bg-amber-100 text-amber-600" />
             </div>
           )}
         </div>
@@ -225,9 +225,9 @@ export function MobileAccionesSheet({
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // SUB-COMPONENT
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 function ActionRow({ icon, label, desc, color, onClick }: {
   icon: React.ReactNode;
@@ -239,16 +239,16 @@ function ActionRow({ icon, label, desc, color, onClick }: {
   return (
     <button
       onClick={onClick}
-      className="w-full p-4 rounded-xl border border-slate-100 flex items-center gap-4 active:scale-[0.98] transition-transform bg-white"
+      className="w-full p-4 rounded-xl border border-[#bec8de30] flex items-center gap-4 active:scale-[0.98] transition-transform bg-[#dfeaff]"
     >
       <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center`}>
         {icon}
       </div>
       <div className="text-left flex-1">
-        <p className="font-bold text-slate-800 text-sm">{label}</p>
-        <p className="text-xs text-slate-500">{desc}</p>
+        <p className="font-bold text-[#69738c] text-sm">{label}</p>
+        <p className="text-xs text-[#9aa3b8]">{desc}</p>
       </div>
-      <CheckCircle2 className="w-4 h-4 text-slate-200" />
+      <CheckCircle2 className="w-4 h-4 text-[#9aa3b8]" />
     </button>
   );
 }

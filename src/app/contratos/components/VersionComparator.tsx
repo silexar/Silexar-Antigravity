@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔄 SILEXAR PULSE - Contract Version Comparator TIER 0
  * 
  * @description Comparador lado a lado de versiones de contrato.
@@ -79,34 +79,34 @@ interface CambioDiff {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
@@ -312,7 +312,7 @@ const getTipoBadge = (tipo: CambioDiff['tipo']) => {
     case 'agregado': return 'bg-green-100 text-green-700';
     case 'eliminado': return 'bg-red-100 text-red-700';
     case 'modificado': return 'bg-amber-100 text-amber-700';
-    default: return 'bg-slate-100 text-slate-700';
+    default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
 
@@ -351,15 +351,15 @@ export default function VersionComparator({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+            <div className="p-3 rounded-xl bg-[#6888ff]">
               <GitCompare className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-800">Comparador de Versiones</h3>
-              <p className="text-sm text-slate-500">
+              <h3 className="font-bold text-lg text-[#69738c]">Comparador de Versiones</h3>
+              <p className="text-sm text-[#9aa3b8]">
                 {cambios.length} cambios detectados
                 {cambiosCriticos > 0 && ` • ${cambiosCriticos} críticos`}
                 {cambiosAltos > 0 && ` • ${cambiosAltos} importantes`}
@@ -381,7 +381,7 @@ export default function VersionComparator({
               ))}
             </select>
             
-            <ArrowRight className="w-5 h-5 text-slate-400" />
+            <ArrowRight className="w-5 h-5 text-[#9aa3b8]" />
             
             <select
               value={versionDer}
@@ -404,10 +404,10 @@ export default function VersionComparator({
           {/* Versión antigua */}
           <div className={`${neuro.card} p-4`}>
             <div className="flex items-center justify-between mb-4">
-              <span className={`${neuro.badge} bg-slate-100 text-slate-700`}>
+              <span className={`${neuro.badge} bg-[#dfeaff] text-[#69738c]`}>
                 Versión {versionIzq}
               </span>
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-[#9aa3b8]">
                 <User className="w-4 h-4 inline mr-1" />
                 {versionAntigua?.creadoPor}
               </div>
@@ -416,27 +416,27 @@ export default function VersionComparator({
             {versionAntigua && (
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Estado</span>
+                  <span className="text-[#9aa3b8]">Estado</span>
                   <span className="font-semibold">{versionAntigua.datos.estado}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Valor Bruto</span>
+                  <span className="text-[#9aa3b8]">Valor Bruto</span>
                   <span className="font-semibold">{formatCurrency(versionAntigua.datos.valorBruto)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Descuento</span>
+                  <span className="text-[#9aa3b8]">Descuento</span>
                   <span className="font-semibold">{versionAntigua.datos.descuento}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Valor Neto</span>
+                  <span className="text-[#9aa3b8]">Valor Neto</span>
                   <span className="font-semibold">{formatCurrency(versionAntigua.datos.valorNeto)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Líneas</span>
+                  <span className="text-[#9aa3b8]">Líneas</span>
                   <span className="font-semibold">{versionAntigua.datos.lineas.length}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Cláusulas</span>
+                  <span className="text-[#9aa3b8]">Cláusulas</span>
                   <span className="font-semibold">{versionAntigua.datos.clausulas.length}</span>
                 </div>
               </div>
@@ -444,12 +444,12 @@ export default function VersionComparator({
           </div>
 
           {/* Versión nueva */}
-          <div className={`${neuro.card} p-4 ring-2 ring-indigo-300`}>
+          <div className={`${neuro.card} p-4 ring-2 ring-[#6888ff]`}>
             <div className="flex items-center justify-between mb-4">
-              <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+              <span className={`${neuro.badge} bg-[#dfeaff] text-[#6888ff]`}>
                 Versión {versionDer} (Actual)
               </span>
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-[#9aa3b8]">
                 <User className="w-4 h-4 inline mr-1" />
                 {versionNueva?.creadoPor}
               </div>
@@ -458,37 +458,37 @@ export default function VersionComparator({
             {versionNueva && (
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Estado</span>
+                  <span className="text-[#9aa3b8]">Estado</span>
                   <span className={`font-semibold ${versionAntigua?.datos.estado !== versionNueva.datos.estado ? 'text-amber-600' : ''}`}>
                     {versionNueva.datos.estado}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Valor Bruto</span>
+                  <span className="text-[#9aa3b8]">Valor Bruto</span>
                   <span className={`font-semibold ${versionAntigua?.datos.valorBruto !== versionNueva.datos.valorBruto ? 'text-green-600' : ''}`}>
                     {formatCurrency(versionNueva.datos.valorBruto)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Descuento</span>
+                  <span className="text-[#9aa3b8]">Descuento</span>
                   <span className={`font-semibold ${versionAntigua?.datos.descuento !== versionNueva.datos.descuento ? 'text-red-600' : ''}`}>
                     {versionNueva.datos.descuento}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Valor Neto</span>
+                  <span className="text-[#9aa3b8]">Valor Neto</span>
                   <span className={`font-semibold ${versionAntigua?.datos.valorNeto !== versionNueva.datos.valorNeto ? 'text-green-600' : ''}`}>
                     {formatCurrency(versionNueva.datos.valorNeto)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Líneas</span>
+                  <span className="text-[#9aa3b8]">Líneas</span>
                   <span className={`font-semibold ${versionAntigua?.datos.lineas.length !== versionNueva.datos.lineas.length ? 'text-purple-600' : ''}`}>
                     {versionNueva.datos.lineas.length}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Cláusulas</span>
+                  <span className="text-[#9aa3b8]">Cláusulas</span>
                   <span className={`font-semibold ${versionAntigua?.datos.clausulas.length !== versionNueva.datos.clausulas.length ? 'text-purple-600' : ''}`}>
                     {versionNueva.datos.clausulas.length}
                   </span>
@@ -500,7 +500,7 @@ export default function VersionComparator({
 
         {/* Lista de cambios */}
         <div className="mt-6">
-          <h4 className="font-bold text-slate-800 mb-4">Cambios detectados</h4>
+          <h4 className="font-bold text-[#69738c] mb-4">Cambios detectados</h4>
           
           <div className="space-y-3">
             {cambios.map((cambio, idx) => (
@@ -518,7 +518,7 @@ export default function VersionComparator({
                 </div>
                 
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-800">{cambio.label}</p>
+                  <p className="font-semibold text-[#69738c]">{cambio.label}</p>
                   <div className="flex items-center gap-2 mt-1 text-sm">
                     {!!cambio.valorAnterior && (
                       <span className="text-red-500 line-through">
@@ -528,7 +528,7 @@ export default function VersionComparator({
                       </span>
                     )}
                     {!!cambio.valorAnterior && !!cambio.valorNuevo && (
-                      <ArrowRight className="w-4 h-4 text-slate-400" />
+                      <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                     )}
                     {!!cambio.valorNuevo && (
                       <span className="text-green-600 font-semibold">
@@ -544,7 +544,7 @@ export default function VersionComparator({
                   cambio.importancia === 'critica' ? 'bg-red-100 text-red-700' :
                   cambio.importancia === 'alta' ? 'bg-orange-100 text-orange-700' :
                   cambio.importancia === 'media' ? 'bg-amber-100 text-amber-700' :
-                  'bg-slate-100 text-slate-700'
+                  'bg-[#dfeaff] text-[#69738c]'
                 }`}>
                   {cambio.importancia}
                 </span>
@@ -555,15 +555,15 @@ export default function VersionComparator({
           {cambios.length === 0 && (
             <div className="text-center py-8">
               <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
-              <p className="text-slate-600">No hay cambios entre estas versiones</p>
+              <p className="text-[#69738c]">No hay cambios entre estas versiones</p>
             </div>
           )}
         </div>
 
         {/* Motivo del cambio */}
         {versionNueva?.motivoCambio && (
-          <div className="mt-6 p-4 bg-indigo-50 rounded-2xl">
-            <p className="text-sm text-indigo-800">
+          <div className="mt-6 p-4 bg-[#dfeaff] rounded-2xl">
+            <p className="text-sm text-[#6888ff]">
               <strong>Motivo del cambio:</strong> {versionNueva.motivoCambio}
             </p>
           </div>

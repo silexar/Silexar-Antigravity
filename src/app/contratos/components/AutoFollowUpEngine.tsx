@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔄 DESKTOP: Motor de Auto-Seguimiento Inteligente
  * 
  * Sistema automático que genera y gestiona seguimientos:
@@ -60,12 +60,12 @@ export function AutoFollowUpEngine() {
 
   return (
     <div className="neo-card rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-blue-100 flex items-center justify-between">
+      <div className="px-6 py-4 bg-[#dfeaff] border-b border-[#bec8de30] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <RefreshCw className="w-5 h-5 text-blue-600" />
           <div>
-            <h3 className="font-black text-lg text-slate-800">Auto-Seguimiento IA</h3>
-            <p className="text-xs text-slate-500">{pendientes.length} pendientes · {urgentes} urgentes</p>
+            <h3 className="font-black text-lg text-[#69738c]">Auto-Seguimiento IA</h3>
+            <p className="text-xs text-[#9aa3b8]">{pendientes.length} pendientes · {urgentes} urgentes</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -75,7 +75,7 @@ export function AutoFollowUpEngine() {
         </div>
       </div>
 
-      <div className="divide-y divide-slate-50">
+      <div className="divide-y divide-[#bec8de30]">
         {pendientes.map(s => {
           const isExp = expandedId === s.id;
           return (
@@ -84,26 +84,26 @@ export function AutoFollowUpEngine() {
                 {tipoIcon[s.tipo]}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-bold text-sm text-slate-800">{s.titulo}</p>
+                    <p className="font-bold text-sm text-[#69738c]">{s.titulo}</p>
                     <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${
                       s.prioridad === 'urgente' ? 'bg-red-100 text-red-600' :
-                      s.prioridad === 'hoy' ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-500'
+                      s.prioridad === 'hoy' ? 'bg-amber-100 text-amber-600' : 'bg-[#dfeaff] text-[#9aa3b8]'
                     }`}>{s.prioridad === 'urgente' ? '⚡ URGENTE' : s.fechaSugerida}</span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5">{s.cliente} · {s.diasSinContacto}d sin contacto</p>
+                  <p className="text-xs text-[#9aa3b8] mt-0.5">{s.cliente} · {s.diasSinContacto}d sin contacto</p>
                 </div>
               </div>
 
               {isExp && (
                 <div className="mt-3 ml-7 space-y-3">
-                  <p className="text-sm text-slate-600">{s.descripcion}</p>
+                  <p className="text-sm text-[#69738c]">{s.descripcion}</p>
 
                   {s.emailBorrador && (
-                    <div className="p-3 bg-violet-50 rounded-xl border border-violet-100">
-                      <p className="text-[10px] font-bold text-violet-700 flex items-center gap-1 mb-1">
+                    <div className="p-3 bg-[#dfeaff] rounded-xl border border-[#bec8de30]">
+                      <p className="text-[10px] font-bold text-[#6888ff] flex items-center gap-1 mb-1">
                         <Sparkles className="w-3 h-3" /> Borrador IA
                       </p>
-                      <pre className="text-xs text-violet-600 whitespace-pre-wrap font-sans">{s.emailBorrador}</pre>
+                      <pre className="text-xs text-[#6888ff] whitespace-pre-wrap font-sans">{s.emailBorrador}</pre>
                       <button className="mt-2 px-4 py-1.5 bg-violet-600 text-white text-xs font-bold rounded-lg hover:bg-violet-700 flex items-center gap-1">
                         <Send className="w-3 h-3" /> Enviar borrador
                       </button>
@@ -116,7 +116,7 @@ export function AutoFollowUpEngine() {
                       <CheckCircle2 className="w-3 h-3" /> Completado
                     </button>
                     <button onClick={() => posponer(s.id)}
-                      className="px-4 py-2 border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 flex items-center gap-1">
+                      className="px-4 py-2 border border-[#bec8de30] text-[#69738c] text-xs font-bold rounded-xl hover:bg-[#dfeaff] flex items-center gap-1">
                       <Clock className="w-3 h-3" /> Posponer
                     </button>
                     {s.tipo === 'llamar' && (

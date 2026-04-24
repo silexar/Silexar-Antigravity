@@ -209,7 +209,7 @@ export default async function RootLayout({
                     setTimeout(function() {
                       const perfData = performance.getEntriesByType('navigation')[0];
                       if (perfData && perfData.loadEventEnd > 3000) {
-                        logger.warn('🐌 Slow page load detected:', perfData.loadEventEnd + 'ms');
+                        console.warn('🐌 Slow page load detected:', perfData.loadEventEnd + 'ms');
                       }
                     }, 0);
                   });
@@ -217,7 +217,7 @@ export default async function RootLayout({
                 
                 // CSP Violation Reporting
                 document.addEventListener('securitypolicyviolation', function(e) {
-                  logger.error('🚨 CSP Violation:', {
+                  console.error('🚨 CSP Violation:', {
                     blockedURI: e.blockedURI,
                     violatedDirective: e.violatedDirective,
                     originalPolicy: e.originalPolicy
@@ -239,9 +239,9 @@ export default async function RootLayout({
                   }
                 });
                 
-                logger.info('🛡️ TIER 0 Security System Active');
-                logger.info('🚀 SILEXAR PULSE QUANTUM v2040.6.0');
-                logger.info('⚡ Fortune 10 Ready');
+                console.info('🛡️ TIER 0 Security System Active');
+                console.info('🚀 SILEXAR PULSE QUANTUM v2040.6.0');
+                console.info('⚡ Fortune 10 Ready');
               })();
             `,
             }}

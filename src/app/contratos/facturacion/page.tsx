@@ -73,41 +73,41 @@ interface KPI {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `,
   btnSuccess: `
     bg-gradient-to-br from-green-500 to-emerald-600
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `
 };
@@ -201,13 +201,13 @@ const formatFecha = (fecha: Date) => {
 const getEstadoConfig = (estado: string) => {
   const configs: Record<string, { label: string; color: string; bgColor: string }> = {
     'EMITIDA': { label: 'Emitida', color: 'text-blue-600', bgColor: 'bg-blue-100' },
-    'ENVIADA_CLIENTE': { label: 'Enviada', color: 'text-indigo-600', bgColor: 'bg-indigo-100' },
+    'ENVIADA_CLIENTE': { label: 'Enviada', color: 'text-[#6888ff]', bgColor: 'bg-indigo-100' },
     'PAGADA_PARCIAL': { label: 'Pago Parcial', color: 'text-amber-600', bgColor: 'bg-amber-100' },
     'PAGADA_TOTAL': { label: 'Pagada', color: 'text-green-600', bgColor: 'bg-green-100' },
     'VENCIDA': { label: 'Vencida', color: 'text-orange-600', bgColor: 'bg-orange-100' },
     'EN_COBRANZA': { label: 'En Cobranza', color: 'text-red-600', bgColor: 'bg-red-100' }
   };
-  return configs[estado] || { label: estado, color: 'text-slate-600', bgColor: 'bg-slate-100' };
+  return configs[estado] || { label: estado, color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]' };
 };
 
 const getRiesgoConfig = (riesgo: FacturaResumen['riesgo']) => {
@@ -289,7 +289,7 @@ export default function FacturacionDashboardPage() {
   }, [facturas]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`${neuro.panel} p-6 mb-6`}>
@@ -299,8 +299,8 @@ export default function FacturacionDashboardPage() {
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Centro de Facturación</h1>
-                <p className="text-slate-500">Gestión inteligente de cobros y cartera</p>
+                <h1 className="text-2xl font-bold text-[#69738c]">Centro de Facturación</h1>
+                <p className="text-[#69738c]">Gestión inteligente de cobros y cartera</p>
               </div>
             </div>
 
@@ -342,8 +342,8 @@ export default function FacturacionDashboardPage() {
                     </div>
                   )}
                 </div>
-                <p className="text-2xl font-bold text-slate-800">{kpi.valor}</p>
-                <p className="text-sm text-slate-500">{kpi.label}</p>
+                <p className="text-2xl font-bold text-[#69738c]">{kpi.valor}</p>
+                <p className="text-sm text-[#69738c]">{kpi.label}</p>
               </div>
             </motion.div>
           ))}
@@ -353,7 +353,7 @@ export default function FacturacionDashboardPage() {
           {/* Lista de Facturas */}
           <div className={`${neuro.panel} p-6 col-span-2`}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-lg text-slate-800">Facturas</h2>
+              <h2 className="font-bold text-lg text-[#69738c]">Facturas</h2>
               <div className="flex items-center gap-2">
                 <select
                   value={filtroEstado}
@@ -378,7 +378,7 @@ export default function FacturacionDashboardPage() {
                     key={factura.id}
                     onClick={() => setFacturaSeleccionada(factura)}
                     className={`${neuro.card} p-4 cursor-pointer hover:shadow-lg transition-all ${
-                      facturaSeleccionada?.id === factura.id ? 'ring-2 ring-indigo-400' : ''
+                      facturaSeleccionada?.id === factura.id ? 'ring-2 ring-[#6888ff]' : ''
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -391,12 +391,12 @@ export default function FacturacionDashboardPage() {
                         }`} />
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold text-slate-800">{factura.folio}</p>
+                            <p className="font-semibold text-[#69738c]">{factura.folio}</p>
                             <span className={`${neuro.badge} ${estadoConfig.bgColor} ${estadoConfig.color}`}>
                               {estadoConfig.label}
                             </span>
                           </div>
-                          <p className="text-sm text-slate-500">{factura.clienteNombre}</p>
+                          <p className="text-sm text-[#69738c]">{factura.clienteNombre}</p>
                         </div>
                       </div>
 
@@ -410,7 +410,7 @@ export default function FacturacionDashboardPage() {
                                 {factura.probabilidadPago}%
                               </span>
                             </div>
-                            <p className="text-xs text-slate-400">Prob. cobro</p>
+                            <p className="text-xs text-[#9aa3b8]">Prob. cobro</p>
                           </div>
                         )}
 
@@ -424,20 +424,20 @@ export default function FacturacionDashboardPage() {
                           }`}>
                             {factura.diasMora > 0 ? `+${factura.diasMora}` : factura.diasMora}
                           </p>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-[#9aa3b8]">
                             {factura.diasMora > 0 ? 'días mora' : factura.diasMora < 0 ? 'días para vencer' : 'al día'}
                           </p>
                         </div>
 
                         {/* Monto */}
                         <div className="text-right min-w-28">
-                          <p className="font-bold text-slate-800">{formatCurrency(factura.montoPendiente)}</p>
+                          <p className="font-bold text-[#69738c]">{formatCurrency(factura.montoPendiente)}</p>
                           {factura.montoPendiente !== factura.montoTotal && (
-                            <p className="text-xs text-slate-400">de {formatCurrency(factura.montoTotal)}</p>
+                            <p className="text-xs text-[#9aa3b8]">de {formatCurrency(factura.montoTotal)}</p>
                           )}
                         </div>
 
-                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                        <ChevronRight className="w-5 h-5 text-[#9aa3b8]" />
                       </div>
                     </div>
                   </motion.div>
@@ -450,8 +450,8 @@ export default function FacturacionDashboardPage() {
           <div className="space-y-6">
             {/* Distribución de Cartera */}
             <div className={`${neuro.panel} p-6`}>
-              <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-indigo-500" />
+              <h3 className="font-bold text-[#69738c] mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-[#6888ff]" />
                 Antigüedad de Cartera
               </h3>
 
@@ -459,10 +459,10 @@ export default function FacturacionDashboardPage() {
                 {distribucion.map((d) => (
                   <div key={d.label}>
                     <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-slate-600">{d.label}</span>
-                      <span className="font-semibold text-slate-800">{formatCurrency(d.monto)}</span>
+                      <span className="text-[#69738c]">{d.label}</span>
+                      <span className="font-semibold text-[#69738c]">{formatCurrency(d.monto)}</span>
                     </div>
-                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${d.color}`}
                         style={{ width: `${d.porcentaje}%` }}
@@ -475,51 +475,51 @@ export default function FacturacionDashboardPage() {
 
             {/* Acciones Rápidas */}
             <div className={`${neuro.panel} p-6`}>
-              <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <h3 className="font-bold text-[#69738c] mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
                 Acciones Rápidas
               </h3>
 
               <div className="space-y-2">
-                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-indigo-400 transition-all`}>
+                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
                   <div className="p-2 rounded-lg bg-blue-100">
                     <Send className="w-4 h-4 text-blue-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-medium text-sm text-slate-800">Enviar recordatorios</p>
-                    <p className="text-xs text-slate-500">3 facturas por vencer</p>
+                    <p className="font-medium text-sm text-[#69738c]">Enviar recordatorios</p>
+                    <p className="text-xs text-[#69738c]">3 facturas por vencer</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                  <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
 
-                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-indigo-400 transition-all`}>
+                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
                   <div className="p-2 rounded-lg bg-amber-100">
                     <Phone className="w-4 h-4 text-amber-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-medium text-sm text-slate-800">Ejecutar cobranza</p>
-                    <p className="text-xs text-slate-500">2 facturas vencidas</p>
+                    <p className="font-medium text-sm text-[#69738c]">Ejecutar cobranza</p>
+                    <p className="text-xs text-[#69738c]">2 facturas vencidas</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                  <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
 
-                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-indigo-400 transition-all`}>
+                <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
                   <div className="p-2 rounded-lg bg-green-100">
                     <DollarSign className="w-4 h-4 text-green-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-medium text-sm text-slate-800">Conciliar pagos</p>
-                    <p className="text-xs text-slate-500">5 movimientos sin conciliar</p>
+                    <p className="font-medium text-sm text-[#69738c]">Conciliar pagos</p>
+                    <p className="text-xs text-[#69738c]">5 movimientos sin conciliar</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                  <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
               </div>
             </div>
 
             {/* Predicción IA */}
             <div className={`${neuro.panel} p-6 bg-gradient-to-br from-indigo-50 to-purple-50`}>
-              <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-500" />
+              <h3 className="font-bold text-[#69738c] mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#6888ff]" />
                 Predicción Cortex-Flow
               </h3>
 
@@ -527,17 +527,17 @@ export default function FacturacionDashboardPage() {
                 <div className={neuro.card}>
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-slate-600">Recuperación 30 días</span>
+                      <span className="text-sm text-[#69738c]">Recuperación 30 días</span>
                       <span className="font-bold text-green-600">{formatCurrency(98500000)}</span>
                     </div>
-                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full" style={{ width: '72%' }} />
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">72% de la cartera pendiente</p>
+                    <p className="text-xs text-[#69738c] mt-1">72% de la cartera pendiente</p>
                   </div>
                 </div>
 
-                <div className="text-sm text-slate-600">
+                <div className="text-sm text-[#69738c]">
                   <p className="flex items-center gap-2 mb-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
                     85% de clientes pagará a tiempo

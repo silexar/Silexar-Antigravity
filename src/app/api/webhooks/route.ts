@@ -21,7 +21,7 @@ import { apiServerError } from '@/lib/api/response';
 export type EventoWebhook = 
   | 'contrato.creado' | 'contrato.actualizado' | 'contrato.aprobado'
   | 'contrato.rechazado' | 'contrato.firmado' | 'contrato.activado'
-  | 'contrato.completado' | 'contrato.cancelado' | 'contrato.vencimiento_proximo'
+  | 'contrato.completado' | 'contrato.cancelado' | 'contrato.vencimientos_proximo'
   | 'contrato.vencido' | 'factura.creada' | 'factura.emitida'
   | 'factura.vencida' | 'factura.pagada' | 'factura.anulada'
   | 'pago.recibido' | 'pago.rechazado' | 'pago.reembolsado'
@@ -95,7 +95,7 @@ const CONFIG = {
     { evento: 'contrato.activado', descripcion: 'Contrato activado' },
     { evento: 'contrato.completado', descripcion: 'Contrato completado/finalizado' },
     { evento: 'contrato.cancelado', descripcion: 'Contrato cancelado' },
-    { evento: 'contrato.vencimiento_proximo', descripcion: 'Contrato próximo a vencer' },
+    { evento: 'contrato.vencimientos_proximo', descripcion: 'Contrato próximo a vencer' },
     { evento: 'contrato.vencido', descripcion: 'Contrato vencido' },
     { evento: 'factura.creada', descripcion: 'Factura creada' },
     { evento: 'factura.emitida', descripcion: 'Factura emitida al SII' },

@@ -32,6 +32,8 @@ export class CortexRiskIntegrationService {
   private baseUrl: string
   private apiKey: string
   private timeout: number = 5000
+  private cache: Map<string, { data: CortexRiskEvaluationResponse; timestamp: number }> = new Map()
+  private readonly CACHE_TTL = 60 * 60 * 1000 // 1 hora
 
   constructor(config: { baseUrl: string; apiKey: string; timeout?: number }) {
     this.baseUrl = config.baseUrl
@@ -40,6 +42,16 @@ export class CortexRiskIntegrationService {
   }
 
   async evaluateClient(request: CortexRiskEvaluationRequest): Promise<CortexRiskEvaluationResponse> {
+    // Generar cache key
+    const cacheKey = this.generateCacheKey(request)
+
+    // Verificar cache (válido por 1 hora)
+    const cached = this.cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      logger.debug('[CortexRisk] Cache hit for client evaluation', { rutCliente: request.rutCliente })
+      return cached.data
+    }
+
     try {
       const response = await this.makeRequest('/api/v1/risk/evaluate', {
         method: 'POST',
@@ -65,13 +77,22 @@ export class CortexRiskIntegrationService {
       }
 
       const data = await response.json()
-      
-      return this.mapResponse(data)
+      const result = this.mapResponse(data)
+
+      // Guardar en cache
+      this.cache.set(cacheKey, { data: result, timestamp: Date.now() })
+
+      return result
     } catch (error) {
       logger.error('Error evaluating client risk:', error)
-      
+
       // Fallback: análisis básico local
-      return this.fallbackEvaluation(request)
+      const fallback = this.fallbackEvaluation(request)
+
+      // También guardar fallback en cache (para no repetir cálculos)
+      this.cache.set(cacheKey, { data: fallback, timestamp: Date.now() })
+
+      return fallback
     }
   }
 
@@ -99,7 +120,7 @@ export class CortexRiskIntegrationService {
       return data.results.map((result) => this.mapResponse(result))
     } catch (error) {
       logger.error('Error in bulk evaluation:', error)
-      
+
       // Fallback: evaluaciones individuales
       return Promise.all(requests.map(req => this.fallbackEvaluation(req)))
     }
@@ -207,37 +228,37 @@ export class CortexRiskIntegrationService {
     // Análisis básico cuando Cortex-Risk no está disponible
     let score = 650 // Score base
     const factors: string[] = ['Análisis básico - Cortex-Risk no disponible']
-    
+
     // Ajustes básicos por valor del contrato
     if (request.contractValue > 100000000) {
       score -= 50
       factors.push('Contrato de alto valor')
     }
-    
+
     // Ajustes por términos de pago
     if (request.paymentTerms > 60) {
       score -= 30
       factors.push('Términos de pago extendidos')
     }
-    
+
     // Ajustes por tipo de contrato
     if (request.contractType === 'C') {
       score -= 20
       factors.push('Contrato tipo C - Mayor riesgo')
     }
-    
+
     // Ajustes por canje
     if (request.isExchange) {
       score -= 40
       factors.push('Contrato de canje - Sin flujo de efectivo')
     }
-    
+
     // Determinar nivel de riesgo
     const riskLevel = this.mapRiskLevel(score)
-    
+
     // Generar recomendaciones básicas
     const recommendations: string[] = []
-    
+
     if (riskLevel === 'alto') {
       recommendations.push('Requiere garantía bancaria')
       recommendations.push('Términos máximos de 15 días')
@@ -249,7 +270,7 @@ export class CortexRiskIntegrationService {
       recommendations.push('Cliente de bajo riesgo')
       recommendations.push('Términos estándar aplicables')
     }
-    
+
     return {
       score: Math.max(300, Math.min(900, score)), // Limitar entre 300-900
       riskLevel,
@@ -264,7 +285,7 @@ export class CortexRiskIntegrationService {
 
   private calculateCreditLimit(score: number, contractValue: number): number {
     const baseLimit = contractValue * 2 // 2x el valor del contrato como base
-    
+
     if (score >= 750) return baseLimit * 1.5
     if (score >= 650) return baseLimit
     if (score >= 550) return baseLimit * 0.7
@@ -277,12 +298,34 @@ export class CortexRiskIntegrationService {
       'medio': 30,
       'alto': 15
     }
-    
+
     return termsMap[riskLevel]
   }
 
   private generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+  }
+
+  private generateCacheKey(request: CortexRiskEvaluationRequest): string {
+    return `cortex_risk_${request.rutCliente}_${request.contractValue}_${request.paymentTerms}_${request.contractType}`
+  }
+
+  /**
+   * Limpiar cache de forma manual
+   */
+  clearCache(): void {
+    this.cache.clear()
+    logger.info('[CortexRisk] Cache cleared')
+  }
+
+  /**
+   * Obtener estadísticas del cache
+   */
+  getCacheStats(): { size: number; entries: string[] } {
+    return {
+      size: this.cache.size,
+      entries: Array.from(this.cache.keys())
+    }
   }
 
   // Métodos de configuración y monitoreo

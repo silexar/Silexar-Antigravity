@@ -1,417 +1,346 @@
 /**
- * 📊 SILEXAR PULSE - Paso 3: Especificaciones TIER 0
- * 
- * @description Tercer paso del wizard - Líneas de especificación,
- * validación de inventario en tiempo real y material creativo.
- * 
- * @version 2025.3.0
+ * 📊 SILEXAR PULSE - Paso 3: Especificaciones de Pauta TIER 0
+ *
+ * @description Selección de emisoras, paquetes y configuración
+ * de pauta con grilla semanal o rango de fechas.
+ *
+ * @version 2025.5.0
  * @tier TIER_0_FORTUNE_10
  */
 
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  BarChart3,
-  Plus,
-  Trash2,
-  AlertTriangle,
+  Calendar,
   CheckCircle2,
-  Radio,
-  Tv,
-  Globe,
-  Newspaper,
-  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+  DollarSign,
+  Hash,
   Package,
-  AlertCircle,
-  Zap,
-  Search,
-  X
-} from 'lucide-react';
-import { 
-  WizardContratoState, 
-  WizardAction,
+  Plus,
+  Radio,
+  Trash2,
+  X,
+} from "lucide-react";
+import {
   EspecificacionPauta,
-  ValidacionInventario,
-  formatCurrency
-} from '../types/wizard.types';
-import PanelEspecificacionesDigitales from './PanelEspecificacionesDigitales';
+  formatCurrency,
+  GrillaDiaSemana,
+  TipoPauta,
+  WizardAction,
+  WizardContratoState,
+} from "../types/wizard.types";
 
-// ═══════════════════════════════════════════════════════════════
-// DATOS MOCK DE MEDIOS
-// ═══════════════════════════════════════════════════════════════
+const N = {
+  base: "#dfeaff",
+  dark: "#bec8de",
+  light: "#ffffff",
+  accent: "#6888ff",
+  text: "#69738c",
+  sub: "#9aa3b8",
+};
 
-const mediosDisponibles = [
-  { id: 'med-001', nombre: 'Radio Corazón Prime', categoria: 'Radio', icono: Radio, tarifa: 450000 },
-  { id: 'med-002', nombre: 'FM Dos Nacional', categoria: 'Radio', icono: Radio, tarifa: 380000 },
-  { id: 'med-003', nombre: 'Canal 13 Prime', categoria: 'Televisión', icono: Tv, tarifa: 3500000 },
-  { id: 'med-004', nombre: 'TVN Nocturno', categoria: 'Televisión', icono: Tv, tarifa: 2800000 },
-  { id: 'med-005', nombre: 'Portal Digital Premium', categoria: 'Digital', icono: Globe, tarifa: 180000 },
-  { id: 'med-006', nombre: 'El Mercurio Nacional', categoria: 'Prensa', icono: Newspaper, tarifa: 1200000 },
+const DIAS_SEMANA: { key: GrillaDiaSemana["dia"]; label: string }[] = [
+  { key: "L", label: "Lun" },
+  { key: "M", label: "Mar" },
+  { key: "X", label: "Mié" },
+  { key: "J", label: "Jue" },
+  { key: "V", label: "Vie" },
+  { key: "S", label: "Sáb" },
+  { key: "D", label: "Dom" },
 ];
 
+const TIPOS_PAUTA: { tipo: TipoPauta; label: string }[] = [
+  { tipo: "auspicios", label: "Auspicios" },
+  { tipo: "prime", label: "Prime" },
+  { tipo: "repartida", label: "Repartida" },
+  { tipo: "prime_determinada", label: "Prime Det." },
+  { tipo: "repartida_determinada", label: "Repartida Det." },
+  { tipo: "tanda", label: "Tanda" },
+  { tipo: "tanda_noche", label: "Tanda Noche" },
+  { tipo: "menciones", label: "Menciones" },
+];
+
+const grillaInicial = (): GrillaDiaSemana[] =>
+  DIAS_SEMANA.map((d) => ({ dia: d.key, cantidad: 0, activo: true }));
+
 // ═══════════════════════════════════════════════════════════════
-// COMPONENTE LÍNEA DE ESPECIFICACIÓN
+// SELECTOR DE EMISORA
 // ═══════════════════════════════════════════════════════════════
 
-interface LineaEspecificacionCardProps {
-  linea: EspecificacionPauta;
-  onUpdate: (data: Partial<EspecificacionPauta>) => void;
-  onRemove: () => void;
-  validacion?: ValidacionInventario;
+interface EmisoraItem {
+  id: string;
+  nombre: string;
+  ciudad?: string;
 }
 
-const LineaEspecificacionCard: React.FC<LineaEspecificacionCardProps> = ({
-  linea,
-  onUpdate,
-  onRemove,
-  validacion
-}) => {
-  const medio = mediosDisponibles.find(m => m.id === linea.medioId);
-  const Icon = medio?.icono || Package;
-  
-  const getValidacionColor = () => {
-    if (!validacion) return 'bg-slate-100 border-slate-200';
-    switch (validacion.estado) {
-      case 'disponible': return 'bg-emerald-50 border-emerald-200';
-      case 'limitado': return 'bg-amber-50 border-amber-200';
-      case 'saturado': return 'bg-orange-50 border-orange-200';
-      case 'no_disponible': return 'bg-red-50 border-red-200';
-      default: return 'bg-slate-100 border-slate-200';
-    }
-  };
-  
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      className={`p-5 rounded-2xl border-2 ${getValidacionColor()} transition-colors duration-300`}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-white shadow-sm">
-            <Icon className="w-6 h-6 text-indigo-500" />
-          </div>
-          <div>
-            <h4 className="font-semibold text-slate-800">{linea.medioNombre}</h4>
-            <p className="text-sm text-slate-500">{linea.productoNombre}</p>
-          </div>
-        </div>
-        <button
-          aria-label="Eliminar"
-          onClick={onRemove}
-          className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+const SelectorEmisora: React.FC<{
+  emisoras: EmisoraItem[];
+  selectedId?: string;
+  onSelect: (e: EmisoraItem) => void;
+}> = ({ emisoras, selectedId, onSelect }) => (
+  <div className="grid grid-cols-3 gap-2">
+    {emisoras.map((e) => {
+      const active = e.id === selectedId;
+      return (
+        <motion.button
+          key={e.id}
+          onClick={() => onSelect(e)}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`p-2 rounded-xl text-left transition-all ${
+            active
+              ? "bg-[#6888ff] text-white shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+              : "bg-[#dfeaff] text-[#69738c] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+          }`}
         >
-          <Trash2 className="w-4 h-4 text-red-400" />
-        </button>
-      </div>
-      
-      {/* Campos */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div>
-          <label className="text-xs text-slate-500 block mb-1">Fecha Inicio</label>
-          <input
-            type="date"
-            aria-label="Fecha Inicio"
-            value={linea.fechaInicio ? new Date(linea.fechaInicio).toISOString().split('T')[0] : ''}
-            onChange={(e) => onUpdate({ fechaInicio: new Date(e.target.value) })}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-slate-500 block mb-1">Fecha Fin</label>
-          <input
-            type="date"
-            aria-label="Fecha Fin"
-            value={linea.fechaFin ? new Date(linea.fechaFin).toISOString().split('T')[0] : ''}
-            onChange={(e) => onUpdate({ fechaFin: new Date(e.target.value) })}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-slate-500 block mb-1">Cantidad</label>
-          <input
-            type="number"
-            min={1}
-            aria-label="Cantidad"
-            value={linea.cantidad}
-            onChange={(e) => {
-              const cantidad = parseInt(e.target.value) || 1;
-              const totalNeto = cantidad * linea.tarifaUnitaria * (1 - (linea.descuento || 0) / 100);
-              onUpdate({ cantidad, subtotal: cantidad * linea.tarifaUnitaria, totalNeto });
-            }}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-slate-500 block mb-1">Descuento %</label>
-          <input
-            type="number"
-            aria-label="Descuento en porcentaje"
-            min={0}
-            max={50}
-            value={linea.descuento || 0}
-            onChange={(e) => {
-              const descuento = parseFloat(e.target.value) || 0;
-              const totalNeto = linea.cantidad * linea.tarifaUnitaria * (1 - descuento / 100);
-              onUpdate({ descuento, totalNeto });
-            }}
-            className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400/50 outline-none"
-          />
-        </div>
-      </div>
-      
-      {/* Valores y validación */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-200/50">
-        <div className="flex items-center gap-4">
-          {validacion && (
-            <div className="flex items-center gap-2">
-              {validacion.estado === 'disponible' && (
-                <>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span className="text-sm text-emerald-700">Disponible ({validacion.disponibilidadPorcentaje}%)</span>
-                </>
-              )}
-              {validacion.estado === 'limitado' && (
-                <>
-                  <AlertTriangle className="w-4 h-4 text-amber-500" />
-                  <span className="text-sm text-amber-700">Limitado ({validacion.disponibilidadPorcentaje}%)</span>
-                </>
-              )}
-              {validacion.estado === 'saturado' && (
-                <>
-                  <AlertCircle className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm text-orange-700">Saturado</span>
-                </>
-              )}
-              {validacion.estado === 'no_disponible' && (
-                <>
-                  <X className="w-4 h-4 text-red-500" />
-                  <span className="text-sm text-red-700">No disponible</span>
-                </>
-              )}
-            </div>
+          <Radio className={`w-4 h-4 mb-0.5 ${active ? "text-white" : "text-[#9aa3b8]"}`} />
+          <p className={`text-[11px] font-semibold truncate ${active ? "text-white" : "text-[#69738c]"}`}>
+            {e.nombre}
+          </p>
+          {e.ciudad && (
+            <p className={`text-[10px] truncate ${active ? "text-white/70" : "text-[#9aa3b8]"}`}>
+              {e.ciudad}
+            </p>
           )}
-        </div>
-        <div className="text-right">
-          <p className="text-xs text-slate-500">Total Neto</p>
-          <p className="text-lg font-bold text-indigo-600">{formatCurrency(linea.totalNeto)}</p>
-        </div>
+        </motion.button>
+      );
+    })}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// SELECTOR DE PAQUETE
+// ═══════════════════════════════════════════════════════════════
+
+interface PaqueteItem {
+  id: string;
+  nombre: string;
+  tipo: string;
+  precioActual: number;
+  horarioInicio?: string;
+  horarioFin?: string;
+}
+
+const SelectorPaquete: React.FC<{
+  paquetes: PaqueteItem[];
+  selectedId?: string;
+  onSelect: (p: PaqueteItem) => void;
+}> = ({ paquetes, selectedId, onSelect }) => (
+  <div className="grid grid-cols-2 gap-2">
+    {paquetes.map((p) => {
+      const active = p.id === selectedId;
+      return (
+        <motion.button
+          key={p.id}
+          onClick={() => onSelect(p)}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`p-2 rounded-xl text-left transition-all border ${
+            active
+              ? "bg-[#6888ff15] border-[#6888ff40] text-[#6888ff]"
+              : "bg-[#dfeaff] border-[#bec8de20] text-[#69738c]"
+          }`}
+        >
+          <p className="text-[11px] font-semibold truncate">{p.nombre}</p>
+          <p className="text-[10px] text-[#9aa3b8]">
+            {p.tipo} {p.horarioInicio && `• ${p.horarioInicio.slice(0, 5)}`}
+          </p>
+          <p className="text-[11px] font-bold text-[#6888ff]">
+            {formatCurrency(p.precioActual)}
+          </p>
+        </motion.button>
+      );
+    })}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// SELECTOR DE TIPO DE PAUTA
+// ═══════════════════════════════════════════════════════════════
+
+const SelectorTipoPauta: React.FC<{
+  selected?: TipoPauta;
+  onSelect: (t: TipoPauta) => void;
+}> = ({ selected, onSelect }) => (
+  <div className="grid grid-cols-4 gap-2">
+    {TIPOS_PAUTA.map(({ tipo, label }) => {
+      const active = tipo === selected;
+      return (
+        <motion.button
+          key={tipo}
+          onClick={() => onSelect(tipo)}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`p-2 rounded-xl text-center transition-all text-[11px] font-medium ${
+            active
+              ? "bg-[#6888ff] text-white shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+              : "bg-[#dfeaff] text-[#69738c] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]"
+          }`}
+        >
+          {label}
+        </motion.button>
+      );
+    })}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURADOR AUSPICIOS
+// ═══════════════════════════════════════════════════════════════
+
+const fmtDate = (d: Date | string | null | undefined): string => {
+  if (!d) return "";
+  const date = d instanceof Date ? d : new Date(d);
+  if (isNaN(date.getTime())) return "";
+  return date.toISOString().split("T")[0];
+};
+
+const ConfiguradorAuspicios: React.FC<{
+  fechaInicio: Date | null;
+  fechaFin: Date | null;
+  cantidad?: number;
+  onChange: (f: { fechaInicio: Date | null; fechaFin: Date | null; cantidad: number }) => void;
+}> = ({ fechaInicio, fechaFin, cantidad, onChange }) => {
+  const calcularDias = (ini: Date | null, fin: Date | null) => {
+    if (!ini || !fin) return 0;
+    return Math.max(1, Math.ceil((fin.getTime() - ini.getTime()) / (1000 * 60 * 60 * 24)));
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <div className="space-y-0.5">
+        <label className="block text-[10px] font-semibold text-[#69738c] uppercase tracking-wide">Inicio</label>
+        <input
+          type="date"
+          value={fmtDate(fechaInicio)}
+          onChange={(e) => {
+            const ini = e.target.value ? new Date(e.target.value) : null;
+            const fin = fechaFin;
+            const dias = calcularDias(ini, fin);
+            onChange({ fechaInicio: ini, fechaFin: fin, cantidad: dias });
+          }}
+          className="w-full rounded-lg py-1.5 px-2 bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-xs text-[#69738c]"
+        />
       </div>
-      
-      {/* Conflictos */}
-      {validacion?.conflictos && validacion.conflictos.length > 0 && (
-        <div className="mt-3 p-3 rounded-lg bg-red-50 border border-red-100">
-          <p className="text-sm font-medium text-red-700 mb-1">Conflictos detectados:</p>
-          {validacion.conflictos.map((conflicto, i) => (
-            <p key={`${conflicto}-${i}`} className="text-xs text-red-600">• {conflicto.descripcion}</p>
-          ))}
-        </div>
-      )}
-      
-      {/* Sugerencia de horarios alternativos */}
-      {validacion?.horariosSugeridos && validacion.horariosSugeridos.length > 0 && (
-        <div className="mt-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
-          <p className="text-sm font-medium text-indigo-700 mb-1">💡 Horarios alternativos:</p>
-          <div className="flex flex-wrap gap-2">
-            {validacion.horariosSugeridos.map((h, i) => (
-              <span key={`${h}-${i}`} className="px-2 py-1 text-xs bg-white rounded border border-indigo-200 text-indigo-600">
-                {h.inicio} - {h.fin} ({h.disponibilidad}%)
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-    </motion.div>
+      <div className="space-y-0.5">
+        <label className="block text-[10px] font-semibold text-[#69738c] uppercase tracking-wide">Fin</label>
+        <input
+          type="date"
+          value={fmtDate(fechaFin)}
+          onChange={(e) => {
+            const fin = e.target.value ? new Date(e.target.value) : null;
+            const ini = fechaInicio;
+            const dias = calcularDias(ini, fin);
+            onChange({ fechaInicio: ini, fechaFin: fin, cantidad: dias });
+          }}
+          className="w-full rounded-lg py-1.5 px-2 bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-xs text-[#69738c]"
+        />
+      </div>
+      <div className="space-y-0.5">
+        <label className="block text-[10px] font-semibold text-[#69738c] uppercase tracking-wide">Cantidad</label>
+        <input
+          type="number"
+          value={cantidad || 0}
+          readOnly
+          className="w-full rounded-lg py-1.5 px-2 bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] border-none outline-none text-xs text-[#6888ff] font-bold"
+        />
+      </div>
+    </div>
   );
 };
 
 // ═══════════════════════════════════════════════════════════════
-// MODAL AGREGAR LÍNEA
+// CONFIGURADOR GRILLA SEMANAL
 // ═══════════════════════════════════════════════════════════════
 
-interface AgregarLineaModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAdd: (linea: EspecificacionPauta) => void;
-  fechaInicioContrato: Date | null;
-  fechaFinContrato: Date | null;
-}
-
-const AgregarLineaModal: React.FC<AgregarLineaModalProps> = ({
-  isOpen,
-  onClose,
-  onAdd,
-  fechaInicioContrato,
-  fechaFinContrato
-}) => {
-  const [selectedMedio, setSelectedMedio] = useState<typeof mediosDisponibles[0] | null>(null);
-  const [cantidad, setCantidad] = useState(10);
-  const [search, setSearch] = useState('');
-  
-  const filteredMedios = mediosDisponibles.filter(m =>
-    m.nombre.toLowerCase().includes(search.toLowerCase()) ||
-    m.categoria.toLowerCase().includes(search.toLowerCase())
-  );
-  
-  const handleAdd = () => {
-    if (!selectedMedio) return;
-    
-    const linea: EspecificacionPauta = {
-      id: `linea-${Date.now()}`,
-      medioId: selectedMedio.id,
-      medioNombre: selectedMedio.nombre,
-      productoId: selectedMedio.id,
-      productoNombre: selectedMedio.categoria,
-      fechaInicio: fechaInicioContrato || new Date(),
-      fechaFin: fechaFinContrato || new Date(),
-      cantidad,
-      tarifaUnitaria: selectedMedio.tarifa,
-      subtotal: cantidad * selectedMedio.tarifa,
-      totalNeto: cantidad * selectedMedio.tarifa
-    };
-    
-    onAdd(linea);
-    onClose();
-    setSelectedMedio(null);
-    setCantidad(10);
+const ConfiguradorGrillaSemanal: React.FC<{
+  grilla: GrillaDiaSemana[];
+  onChange: (g: GrillaDiaSemana[]) => void;
+}> = ({ grilla, onChange }) => {
+  const update = (dia: GrillaDiaSemana["dia"], patch: Partial<GrillaDiaSemana>) => {
+    onChange(grilla.map((d) => (d.dia === dia ? { ...d, ...patch } : d)));
   };
-  
-  if (!isOpen) return null;
-  
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden"
-      >
-        {/* Header */}
-        <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Agregar Línea de Especificación</h3>
-            <button aria-label="Cerrar" onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
-              <X className="w-5 h-5" />
+    <div className="grid grid-cols-7 gap-1.5">
+      {DIAS_SEMANA.map(({ key, label }) => {
+        const dia = grilla.find((d) => d.dia === key)!;
+        return (
+          <div key={key} className="space-y-1">
+            <button
+              onClick={() => update(key, { activo: !dia.activo })}
+              className={`w-full py-1 rounded-lg text-[10px] font-bold transition-all ${
+                dia.activo
+                  ? "bg-[#6888ff] text-white shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+                  : "bg-[#dfeaff] text-[#9aa3b8] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]"
+              }`}
+            >
+              {label}
             </button>
-          </div>
-        </div>
-        
-        {/* Contenido */}
-        <div className="p-6">
-          {/* Búsqueda */}
-          <div className="relative mb-4">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar medio por nombre o categoría..."
-              aria-label="Buscar medio por nombre o categoría"
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:border-indigo-300 outline-none"
+              type="number"
+              min={0}
+              value={dia.cantidad}
+              disabled={!dia.activo}
+              onChange={(e) => update(key, { cantidad: Number(e.target.value) || 0 })}
+              className={`w-full rounded-lg py-1 px-1 text-center text-[11px] font-bold border-none outline-none ${
+                dia.activo
+                  ? "bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] text-[#6888ff]"
+                  : "bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] text-[#9aa3b8]"
+              }`}
             />
           </div>
-          
-          {/* Lista de medios */}
-          <div className="grid grid-cols-2 gap-3 max-h-60 overflow-y-auto mb-6">
-            {filteredMedios.map((medio) => {
-              const Icon = medio.icono;
-              const isSelected = selectedMedio?.id === medio.id;
-              
-              return (
-                <button
-                  key={medio.id}
-                  onClick={() => setSelectedMedio(medio)}
-                  className={`
-                    p-4 rounded-xl text-left transition-all duration-200
-                    ${isSelected
-                      ? 'bg-indigo-100 border-2 border-indigo-400 scale-[1.02]'
-                      : 'bg-slate-50 border-2 border-transparent hover:border-slate-200'
-                    }
-                  `}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-5 h-5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
-                    <div>
-                      <p className={`font-medium ${isSelected ? 'text-indigo-700' : 'text-slate-700'}`}>
-                        {medio.nombre}
-                      </p>
-                      <p className="text-xs text-slate-500">{medio.categoria}</p>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm font-semibold text-indigo-600">
-                    {formatCurrency(medio.tarifa)}/unidad
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-          
-          {/* Cantidad */}
-          {selectedMedio && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              className="mb-6"
-            >
-              <label className="block text-sm font-medium text-slate-600 mb-2">
-                Cantidad de unidades
-              </label>
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  min={1}
-                  aria-label="Cantidad de unidades"
-                  value={cantidad}
-                  onChange={(e) => setCantidad(parseInt(e.target.value) || 1)}
-                  className="w-32 px-4 py-3 rounded-xl bg-slate-50 border-2 border-transparent focus:border-indigo-300 outline-none text-center font-medium"
-                />
-                <div className="flex-1 p-4 rounded-xl bg-indigo-50">
-                  <p className="text-sm text-indigo-600">Subtotal estimado</p>
-                  <p className="text-2xl font-bold text-indigo-700">
-                    {formatCurrency(cantidad * selectedMedio.tarifa)}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-        
-        {/* Footer */}
-        <div className="p-6 bg-slate-50 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-200 transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleAdd}
-            disabled={!selectedMedio}
-            className={`
-              px-6 py-3 rounded-xl font-medium text-white
-              ${selectedMedio
-                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-lg'
-                : 'bg-slate-300 cursor-not-allowed'
-              }
-              transition-all duration-200
-            `}
-          >
-            <Plus className="w-4 h-4 inline mr-2" />
-            Agregar Línea
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// LÍNEA ESPECIFICACIÓN COMPACTA
+// ═══════════════════════════════════════════════════════════════
+
+const LineaEspecificacionCompacta: React.FC<{
+  linea: EspecificacionPauta;
+  onRemove: () => void;
+}> = ({ linea, onRemove }) => {
+  const tipo = linea.tipoPauta || "sin tipo";
+  const cantidadTotal =
+    tipo === "auspicios"
+      ? linea.cantidad || 0
+      : linea.grillaSemanal?.reduce((s, d) => s + (d.activo ? d.cantidad : 0), 0) || 0;
+
+  const emisora = linea.emisoraNombre || linea.medioNombre || "Sin emisora";
+  const paquete = linea.paqueteNombre || linea.productoNombre || "Sin paquete";
+
+  return (
+    <div className="flex items-center gap-2 p-2 rounded-xl bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]">
+      <div className="w-7 h-7 rounded-lg bg-[#6888ff] flex items-center justify-center text-white shrink-0">
+        <Radio className="w-3.5 h-3.5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[11px] font-semibold text-[#69738c] truncate">
+          {emisora} → {paquete}
+        </p>
+        <p className="text-[10px] text-[#9aa3b8]">
+          {String(tipo).replace("_", " ")} • {cantidadTotal} emisiones
+        </p>
+      </div>
+      <div className="text-right shrink-0">
+        <p className="text-[11px] font-bold text-[#6888ff]">{formatCurrency(linea.totalNeto || 0)}</p>
+      </div>
+      <button
+        onClick={onRemove}
+        aria-label="Eliminar"
+        className="p-1.5 hover:bg-[#bec8de30] rounded-lg transition-colors shrink-0"
+      >
+        <Trash2 className="w-3.5 h-3.5 text-[#9aa3b8]" />
+      </button>
+    </div>
   );
 };
 
@@ -422,169 +351,292 @@ const AgregarLineaModal: React.FC<AgregarLineaModalProps> = ({
 interface StepEspecificacionesProps {
   state: WizardContratoState;
   dispatch: React.Dispatch<WizardAction>;
-  validarInventario: () => void;
 }
 
 export const StepEspecificaciones: React.FC<StepEspecificacionesProps> = ({
   state,
   dispatch,
-  validarInventario
 }) => {
-  const [showModal, setShowModal] = useState(false);
-  
-  const totalLineas = state.lineasEspecificacion.reduce((sum, l) => sum + l.totalNeto, 0);
-  const lineasConProblemas = state.lineasEspecificacion.filter(l => {
-    const val = state.validacionesInventario.find(v => v.medioId === l.medioId);
-    return val && val.estado !== 'disponible';
-  }).length;
-  
+  const [emisoras, setEmisoras] = useState<EmisoraItem[]>([]);
+  const [paquetes, setPaquetes] = useState<PaqueteItem[]>([]);
+  const [loadingEmisoras, setLoadingEmisoras] = useState(false);
+  const [loadingPaquetes, setLoadingPaquetes] = useState(false);
+
+  // Línea en construcción
+  const [draft, setDraft] = useState<Partial<EspecificacionPauta> & { id: string }>({
+    id: `esp-${Date.now()}`,
+    grillaSemanal: grillaInicial(),
+    fechaInicio: null,
+    fechaFin: null,
+    tipoPauta: "auspicios",
+    tarifaUnitaria: 0,
+    totalNeto: 0,
+  });
+
+  const [step, setStep] = useState<1 | 2 | 3 | 0>(0);
+
+  useEffect(() => {
+    setLoadingEmisoras(true);
+    fetch("/api/emisoras")
+      .then((r) => r.json())
+      .then((data) => {
+        const items = Array.isArray(data.data) ? data.data : data;
+        if (Array.isArray(items)) {
+          setEmisoras(
+            items.map((e: any) => ({
+              id: e.id,
+              nombre: e.nombre,
+              ciudad: e.ciudad,
+            }))
+          );
+        }
+      })
+      .catch(() => setEmisoras([]))
+      .finally(() => setLoadingEmisoras(false));
+  }, []);
+
+  useEffect(() => {
+    if (!draft.emisoraId) return;
+    setLoadingPaquetes(true);
+    fetch(`/api/paquetes?editoraId=${draft.emisoraId}&estado=ACTIVO&limite=50`)
+      .then((r) => r.json())
+      .then((data) => {
+        const items = Array.isArray(data.data) ? data.data : data.items || [];
+        if (Array.isArray(items)) {
+          setPaquetes(
+            items.map((p: any) => ({
+              id: p.id,
+              nombre: p.nombre || p.programaNombre,
+              tipo: p.tipo,
+              precioActual: Number(p.precioActual) || 0,
+              horarioInicio: p.horarioInicio,
+              horarioFin: p.horarioFin,
+            }))
+          );
+        }
+      })
+      .catch(() => setPaquetes([]))
+      .finally(() => setLoadingPaquetes(false));
+  }, [draft.emisoraId]);
+
+  const totalGeneral = state.lineasEspecificacion.reduce((s, l) => s + l.totalNeto, 0);
+
+  const agregarLinea = () => {
+    if (!draft.emisoraId || !draft.paqueteId || !draft.tipoPauta) return;
+    const linea: EspecificacionPauta = {
+      id: draft.id,
+      emisoraId: draft.emisoraId,
+      emisoraNombre: draft.emisoraNombre || "",
+      paqueteId: draft.paqueteId,
+      paqueteNombre: draft.paqueteNombre || "",
+      tipoPauta: draft.tipoPauta,
+      fechaInicio: draft.fechaInicio || null,
+      fechaFin: draft.fechaFin || null,
+      grillaSemanal: draft.grillaSemanal,
+      cantidad: draft.cantidad,
+      duracion: draft.duracion,
+      tarifaUnitaria: draft.tarifaUnitaria || 0,
+      descuento: draft.descuento,
+      totalNeto: draft.totalNeto || 0,
+    };
+    dispatch({ type: "ADD_LINEA_ESPECIFICACION", payload: linea });
+    setDraft({
+      id: `esp-${Date.now()}`,
+      grillaSemanal: grillaInicial(),
+      fechaInicio: null,
+      fechaFin: null,
+      tipoPauta: "auspicios",
+      tarifaUnitaria: 0,
+      totalNeto: 0,
+    });
+    setStep(0);
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Título del paso */}
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100">
-          <BarChart3 className="w-7 h-7 text-purple-600" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">Especificaciones de Pauta</h2>
-          <p className="text-slate-500">Configure las líneas de pauta y valide disponibilidad</p>
-        </div>
-      </div>
-      
-      {/* Barra de acciones */}
-      <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.04)]">
-        <div className="flex items-center gap-4">
-          <motion.button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Plus className="w-5 h-5" />
-            Agregar Línea
-          </motion.button>
-          
-          <motion.button
-            onClick={validarInventario}
-            disabled={state.lineasEspecificacion.length === 0 || state.isLoading}
-            className={`
-              flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all
-              ${state.lineasEspecificacion.length === 0 || state.isLoading
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                : 'bg-emerald-500 text-white hover:bg-emerald-600'
-              }
-            `}
-            whileHover={state.lineasEspecificacion.length > 0 && !state.isLoading ? { scale: 1.02 } : {}}
-            whileTap={state.lineasEspecificacion.length > 0 && !state.isLoading ? { scale: 0.98 } : {}}
-          >
-            {state.isLoading ? (
-              <RefreshCw className="w-5 h-5 animate-spin" />
-            ) : (
-              <Zap className="w-5 h-5" />
-            )}
-            Validar Inventario
-          </motion.button>
-        </div>
-        
-        {/* Resumen */}
-        <div className="flex items-center gap-6">
-          <div className="text-right">
-            <p className="text-xs text-slate-500">Líneas</p>
-            <p className="text-lg font-bold text-slate-700">{state.lineasEspecificacion.length}</p>
-          </div>
-          {lineasConProblemas > 0 && (
-            <div className="text-right">
-              <p className="text-xs text-amber-600">Con problemas</p>
-              <p className="text-lg font-bold text-amber-600">{lineasConProblemas}</p>
-            </div>
-          )}
-          <div className="text-right">
-            <p className="text-xs text-slate-500">Total</p>
-            <p className="text-lg font-bold text-indigo-600">{formatCurrency(totalLineas)}</p>
-          </div>
+    <div className="space-y-2">
+      {/* Header resumen */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => setStep(1)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#6888ff] text-white text-xs font-medium shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Agregar Línea
+        </button>
+        <div className="text-right">
+          <p className="text-[10px] text-[#9aa3b8]">Líneas {state.lineasEspecificacion.length}</p>
+          <p className="text-sm font-bold text-[#6888ff]">{formatCurrency(totalGeneral)}</p>
         </div>
       </div>
-      
-      {/* Lista de líneas */}
-      <div className="space-y-4">
-        <AnimatePresence mode="popLayout">
-          {state.lineasEspecificacion.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="p-12 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 text-center"
-            >
-              <Package className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-              <h3 className="text-lg font-medium text-slate-600 mb-2">No hay líneas de especificación</h3>
-              <p className="text-slate-400 mb-4">Agregue líneas para definir la pauta del contrato</p>
-              <button
-                onClick={() => setShowModal(true)}
-                className="px-6 py-3 rounded-xl bg-indigo-100 text-indigo-600 font-medium hover:bg-indigo-200 transition-colors"
-              >
-                <Plus className="w-4 h-4 inline mr-2" />
-                Agregar primera línea
-              </button>
-            </motion.div>
-          ) : (
-            state.lineasEspecificacion.map((linea) => (
-              <LineaEspecificacionCard
+
+      {/* Líneas agregadas */}
+      <AnimatePresence>
+        {state.lineasEspecificacion.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-1.5"
+          >
+            {state.lineasEspecificacion.map((linea) => (
+              <LineaEspecificacionCompacta
                 key={linea.id}
                 linea={linea}
-                onUpdate={(data) => dispatch({ type: 'UPDATE_LINEA_ESPECIFICACION', payload: { id: linea.id, data } })}
-                onRemove={() => dispatch({ type: 'REMOVE_LINEA_ESPECIFICACION', payload: linea.id })}
-                validacion={state.validacionesInventario.find(v => v.medioId === linea.medioId)}
+                onRemove={() => dispatch({ type: "REMOVE_LINEA_ESPECIFICACION", payload: linea.id })}
               />
-            ))
-          )}
-        </AnimatePresence>
-      </div>
-      
-      {/* Alert de material creativo */}
-      {state.materialesPendientes.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-5 rounded-2xl bg-amber-50 border border-amber-200"
-        >
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-semibold text-amber-800 mb-1">Material Creativo Pendiente</h4>
-              <p className="text-sm text-amber-700 mb-3">
-                Se requiere material creativo para las siguientes líneas:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {state.materialesPendientes.map((mat, i) => (
-                  <span key={`${mat}-${i}`} className="px-3 py-1 rounded-lg bg-amber-100 text-amber-800 text-sm">
-                    {mat}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-      
-      {/* Modal agregar línea */}
-      <AnimatePresence>
-        {showModal && (
-          <AgregarLineaModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            onAdd={(linea) => dispatch({ type: 'ADD_LINEA_ESPECIFICACION', payload: linea })}
-            fechaInicioContrato={state.fechaInicio}
-            fechaFinContrato={state.fechaFin}
-          />
+            ))}
+          </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Panel de especificaciones digitales */}
-      {(state.medio === 'digital' || state.medio === 'hibrido') && (
-        <PanelEspecificacionesDigitales
-          data={state.especificacionDigital || { plataformas: [], trackingLinks: [], moneda: 'CLP' }}
-          onUpdate={(payload) => dispatch({ type: 'SET_ESPECIFICACION_DIGITAL', payload })}
-        />
-      )}
+      {/* Panel de agregar línea */}
+      <AnimatePresence>
+        {step > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="p-3 rounded-2xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] space-y-2"
+          >
+            {/* Stepper mini */}
+            <div className="flex items-center gap-2 mb-1">
+              <button
+                onClick={() => setStep(Math.max(0, step - 1) as 0 | 1 | 2 | 3)}
+                className="p-1 rounded-lg hover:bg-[#bec8de30]"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#9aa3b8]" />
+              </button>
+              <div className="flex-1 flex items-center gap-1">
+                {[1, 2, 3].map((s) => (
+                  <div
+                    key={s}
+                    className={`h-1 flex-1 rounded-full transition-colors ${
+                      s <= step ? "bg-[#6888ff]" : "bg-[#bec8de50]"
+                    }`}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => setStep(0)}
+                className="p-1 rounded-lg hover:bg-[#bec8de30]"
+              >
+                <X className="w-4 h-4 text-[#9aa3b8]" />
+              </button>
+            </div>
+
+            {/* Paso 1: Emisora */}
+            {step === 1 && (
+              <div className="space-y-1.5">
+                <h4 className="text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
+                  1. Seleccionar Emisora
+                </h4>
+                {loadingEmisoras ? (
+                  <div className="text-center py-3 text-[#9aa3b8] text-xs">
+                    <div className="w-5 h-5 border-2 border-[#6888ff] border-t-transparent rounded-full animate-spin mx-auto mb-1" />
+                    Cargando emisoras...
+                  </div>
+                ) : (
+                  <SelectorEmisora
+                    emisoras={emisoras}
+                    selectedId={draft.emisoraId}
+                    onSelect={(e) => {
+                      setDraft((d) => ({
+                        ...d,
+                        emisoraId: e.id,
+                        emisoraNombre: e.nombre,
+                        paqueteId: undefined,
+                        paqueteNombre: undefined,
+                      }));
+                      setStep(2);
+                    }}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Paso 2: Paquete */}
+            {step === 2 && (
+              <div className="space-y-1.5">
+                <h4 className="text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
+                  2. Seleccionar Paquete
+                </h4>
+                {loadingPaquetes ? (
+                  <div className="text-center py-3 text-[#9aa3b8] text-xs">
+                    <div className="w-5 h-5 border-2 border-[#6888ff] border-t-transparent rounded-full animate-spin mx-auto mb-1" />
+                    Cargando paquetes...
+                  </div>
+                ) : (
+                  <SelectorPaquete
+                    paquetes={paquetes}
+                    selectedId={draft.paqueteId}
+                    onSelect={(p) => {
+                      setDraft((d) => ({
+                        ...d,
+                        paqueteId: p.id,
+                        paqueteNombre: p.nombre,
+                        tarifaUnitaria: p.precioActual,
+                        totalNeto: p.precioActual,
+                      }));
+                      setStep(3);
+                    }}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Paso 3: Configurar pauta */}
+            {step === 3 && (
+              <div className="space-y-2">
+                <h4 className="text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
+                  3. Configurar Pauta
+                </h4>
+
+                <SelectorTipoPauta
+                  selected={draft.tipoPauta}
+                  onSelect={(tipo) => setDraft((d) => ({ ...d, tipoPauta: tipo }))}
+                />
+
+                {draft.tipoPauta === "auspicios" ? (
+                  <ConfiguradorAuspicios
+                    fechaInicio={draft.fechaInicio || null}
+                    fechaFin={draft.fechaFin || null}
+                    cantidad={draft.cantidad}
+                    onChange={({ fechaInicio, fechaFin, cantidad }) => {
+                      const total = Math.round((draft.tarifaUnitaria || 0) * cantidad);
+                      setDraft((d) => ({ ...d, fechaInicio, fechaFin, cantidad, totalNeto: total }));
+                    }}
+                  />
+                ) : (
+                  <ConfiguradorGrillaSemanal
+                    grilla={draft.grillaSemanal || grillaInicial()}
+                    onChange={(g) => {
+                      const cantidadTotal = g.reduce((s, d) => s + (d.activo ? d.cantidad : 0), 0);
+                      const total = Math.round((draft.tarifaUnitaria || 0) * cantidadTotal);
+                      setDraft((d) => ({ ...d, grillaSemanal: g, totalNeto: total }));
+                    }}
+                  />
+                )}
+
+                {/* Total preview */}
+                <div className="flex items-center justify-between p-2 rounded-lg bg-[#6888ff15]">
+                  <span className="text-[11px] text-[#69738c]">Total línea</span>
+                  <span className="text-sm font-bold text-[#6888ff]">
+                    {formatCurrency(draft.totalNeto || 0)}
+                  </span>
+                </div>
+
+                <button
+                  onClick={agregarLinea}
+                  disabled={!draft.emisoraId || !draft.paqueteId}
+                  className="w-full py-2 rounded-xl text-xs font-semibold text-white bg-[#6888ff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] disabled:opacity-50 transition-all"
+                >
+                  Agregar Línea
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

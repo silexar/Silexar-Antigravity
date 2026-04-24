@@ -353,6 +353,82 @@ export const estadoAlertaEnum = pgEnum("estado_alerta", [
   "cerrada",
 ]);
 
+export const estadoRegistroAireEnum = pgEnum("estado_registro_aire", [
+  "pendiente",
+  "procesando",
+  "procesado",
+  "error",
+]);
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: REGISTROS DE AIRE (Grabaciones 24h)
+// ═══════════════════════════════════════════════════════════════
+
+export const registrosAire = pgTable(
+  "registros_aire",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .references(() => tenants.id, { onDelete: "cascade" })
+      .notNull(),
+
+    // Fuente
+    emisoraId: uuid("emisora_id")
+      .references(() => emisoras.id)
+      .notNull(),
+    fechaEmision: date("fecha_emision").notNull(),
+
+    // Archivo
+    urlArchivo: varchar("url_archivo", { length: 500 }).notNull(),
+    duracionSegundos: integer("duracion_segundos").notNull(),
+    formato: varchar("formato", { length: 10 }).notNull(), // mp3, wav, flac
+    tamanioBytes: integer("tamanio_bytes"),
+
+    // Integridad
+    hashSha256: varchar("hash_sha256", { length: 64 }),
+
+    // Metadatos técnicos
+    metadata: jsonb("metadata").$type<{
+      bitrate?: number;
+      sampleRate?: number;
+      channels?: number;
+      codec?: string;
+    }>().default({}),
+
+    // Estado
+    estado: estadoRegistroAireEnum("estado").default("pendiente").notNull(),
+    errorMensaje: text("error_mensaje"),
+
+    // Procesamiento
+    procesadoPorId: uuid("procesado_por_id").references(() => users.id),
+    fechaProcesamiento: timestamp("fecha_procesamiento"),
+
+    // Auditoría
+    creadoPorId: uuid("creado_por_id").references(() => users.id),
+    fechaCreacion: timestamp("fecha_creacion").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdx: index("aire_tenant_idx").on(table.tenantId),
+    emisoraIdx: index("aire_emisora_idx").on(table.emisoraId),
+    fechaIdx: index("aire_fecha_idx").on(table.fechaEmision),
+    estadoIdx: index("aire_estado_idx").on(table.estado),
+  }),
+);
+
+export const registrosAireRelations = relations(
+  registrosAire,
+  ({ one }) => ({
+    emisora: one(emisoras, {
+      fields: [registrosAire.emisoraId],
+      references: [emisoras.id],
+    }),
+    procesadoPor: one(users, {
+      fields: [registrosAire.procesadoPorId],
+      references: [users.id],
+    }),
+  }),
+);
+
 // ═══════════════════════════════════════════════════════════════
 // TABLA: VERIFICACIONES DE EMISIÓN (Shazam Militar)
 // ═══════════════════════════════════════════════════════════════
@@ -376,6 +452,7 @@ export const verificacionesEmision = pgTable(
     horaInicio: time("hora_inicio").notNull(),
     horaFin: time("hora_fin").notNull(),
     emisorasIds: jsonb("emisoras_ids").$type<string[]>().default([]),
+    registrosAireIds: jsonb("registros_aire_ids").$type<string[]>().default([]),
 
     // Materiales buscados
     materialesIds: jsonb("materiales_ids").$type<string[]>().default([]),
@@ -653,6 +730,9 @@ export const linksTemporales = pgTable(
     verificacionId: uuid("verificacion_id").references(
       () => verificacionesEmision.id,
     ),
+    clipEvidenciaId: uuid("clip_evidencia_id").references(
+      () => clipsEvidencia.id,
+    ),
     tipoLink: varchar("tipo_link", { length: 20 }).default("unico").notNull(), // 'unico' | 'basket'
     itemsJson: jsonb("items_json").$type<Array<{
       materialNombre: string;
@@ -679,8 +759,12 @@ export const linksTemporales = pgTable(
     estado: estadoLinkTemporalEnum("estado").default("activo").notNull(),
     fechaCreacion: timestamp("fecha_creacion").defaultNow().notNull(),
     fechaExpiracion: timestamp("fecha_expiracion").notNull(),
-    fechaAcceso: timestamp("fecha_acceso"), // Cuando el cliente lo abrió
-    fechaDescarga: timestamp("fecha_descarga"), // Cuando descargó
+    fechaAcceso: timestamp("fecha_acceso"), // Cuando el cliente lo abrió (último)
+    fechaDescarga: timestamp("fecha_descarga"), // Cuando descargó (último)
+
+    // Control de usos
+    usosPermitidos: integer("usos_permitidos").default(0), // 0 = ilimitado
+    usosRealizados: integer("usos_realizados").default(0),
 
     // Tracking
     accesosCount: integer("accesos_count").default(0),
@@ -702,24 +786,143 @@ export const linksTemporales = pgTable(
 
 export const linksTemporalesRelations = relations(
   linksTemporales,
-  ({ one }) => ({
+  ({ one, many }) => ({
     verificacion: one(verificacionesEmision, {
       fields: [linksTemporales.verificacionId],
       references: [verificacionesEmision.id],
+    }),
+    clipEvidencia: one(clipsEvidencia, {
+      fields: [linksTemporales.clipEvidenciaId],
+      references: [clipsEvidencia.id],
     }),
     creadoPor: one(users, {
       fields: [linksTemporales.creadoPorId],
       references: [users.id],
     }),
+    accesos: many(accesosLinkTemporal),
   }),
 );
 
-export type LinkTemporal = typeof linksTemporales.$inferSelect;
-export type NuevoLinkTemporal = typeof linksTemporales.$inferInsert;
+// ═══════════════════════════════════════════════════════════════
+// TABLA: CLIPS DE EVIDENCIA
+// ═══════════════════════════════════════════════════════════════
+
+export const clipsEvidencia = pgTable(
+  "clips_evidencia",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .references(() => tenants.id, { onDelete: "cascade" })
+      .notNull(),
+
+    // Relaciones
+    verificacionId: uuid("verificacion_id")
+      .references(() => verificacionesEmision.id, { onDelete: "cascade" })
+      .notNull(),
+    deteccionId: uuid("deteccion_id").references(() => registroDeteccion.id),
+
+    // Archivo
+    urlArchivo: varchar("url_archivo", { length: 500 }).notNull(),
+    duracionSegundos: integer("duracion_segundos").notNull(),
+    formato: varchar("formato", { length: 10 }).notNull(), // wav, mp3, flac
+
+    // Metadatos del corte
+    horaInicioClip: time("hora_inicio_clip").notNull(),
+    horaFinClip: time("hora_fin_clip").notNull(),
+
+    // Hash de integridad
+    hashSha256: varchar("hash_sha256", { length: 64 }).notNull(),
+
+    // Transcripción (para menciones)
+    transcripcion: text("transcripcion"),
+
+    // Estado y expiración
+    aprobado: boolean("aprobado").default(false).notNull(),
+    aprobadoPorId: uuid("aprobado_por_id").references(() => users.id),
+    fechaAprobacion: timestamp("fecha_aprobacion"),
+    fechaExpiracion: timestamp("fecha_expiracion").notNull(),
+
+    // Auditoría
+    creadoPorId: uuid("creado_por_id").references(() => users.id),
+    fechaCreacion: timestamp("fecha_creacion").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdx: index("clips_tenant_idx").on(table.tenantId),
+    verificacionIdx: index("clips_verif_idx").on(table.verificacionId),
+    expiracionIdx: index("clips_expiracion_idx").on(table.fechaExpiracion),
+    hashIdx: index("clips_hash_idx").on(table.hashSha256),
+  }),
+);
+
+export const clipsEvidenciaRelations = relations(
+  clipsEvidencia,
+  ({ one }) => ({
+    verificacion: one(verificacionesEmision, {
+      fields: [clipsEvidencia.verificacionId],
+      references: [verificacionesEmision.id],
+    }),
+    deteccion: one(registroDeteccion, {
+      fields: [clipsEvidencia.deteccionId],
+      references: [registroDeteccion.id],
+    }),
+    aprobadoPor: one(users, {
+      fields: [clipsEvidencia.aprobadoPorId],
+      references: [users.id],
+    }),
+  }),
+);
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: ACCESOS A LINKS TEMPORALES (Auditoría completa)
+// ═══════════════════════════════════════════════════════════════
+
+export const accesosLinkTemporal = pgTable(
+  "accesos_link_temporal",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .references(() => tenants.id, { onDelete: "cascade" })
+      .notNull(),
+
+    linkTemporalId: uuid("link_temporal_id")
+      .references(() => linksTemporales.id, { onDelete: "cascade" })
+      .notNull(),
+
+    // Información del acceso
+    ipAddress: varchar("ip_address", { length: 50 }),
+    userAgent: varchar("user_agent", { length: 500 }),
+    accion: varchar("accion", { length: 20 }).notNull(), // 'visualizacion' | 'descarga'
+
+    // Auditoría
+    fechaAcceso: timestamp("fecha_acceso").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdx: index("accesos_tenant_idx").on(table.tenantId),
+    linkIdx: index("accesos_link_idx").on(table.linkTemporalId),
+    fechaIdx: index("accesos_fecha_idx").on(table.fechaAcceso),
+  }),
+);
+
+export const accesosLinkTemporalRelations = relations(
+  accesosLinkTemporal,
+  ({ one }) => ({
+    linkTemporal: one(linksTemporales, {
+      fields: [accesosLinkTemporal.linkTemporalId],
+      references: [linksTemporales.id],
+    }),
+  }),
+);
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS EXPORTADOS
 // ═══════════════════════════════════════════════════════════════
+
+export type RegistroAire = typeof registrosAire.$inferSelect;
+export type NuevoRegistroAire = typeof registrosAire.$inferInsert;
+export type ClipEvidencia = typeof clipsEvidencia.$inferSelect;
+export type NuevoClipEvidencia = typeof clipsEvidencia.$inferInsert;
+export type AccesoLinkTemporal = typeof accesosLinkTemporal.$inferSelect;
+export type NuevoAccesoLinkTemporal = typeof accesosLinkTemporal.$inferInsert;
 
 export type Tanda = typeof tandas.$inferSelect;
 export type SpotTanda = typeof spotsTanda.$inferSelect;

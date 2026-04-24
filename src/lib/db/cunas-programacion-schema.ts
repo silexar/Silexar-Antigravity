@@ -105,7 +105,7 @@ export const programacionCunas = pgTable('programacion_cunas', {
   // Relaciones
   bloqueId: uuid('bloque_id').references(() => bloquesProgramacion.id).notNull(),
   cunaId: uuid('cuna_id').references(() => cunas.id).notNull(),
-  vencimientoId: uuid('vencimiento_id').references(() => vencimientos.id), // Vinculación con auspicio
+  vencimientosId: uuid('vencimientos_id').references(() => vencimientos.id), // Vinculación con auspicio
   
   // Posición
   posicionEnBloque: integer('posicion_en_bloque').default(1), // Orden dentro del bloque
@@ -191,7 +191,7 @@ export const materialPendiente = pgTable('material_pendiente', {
   // Relaciones
   anuncianteId: uuid('anunciante_id').references(() => anunciantes.id).notNull(),
   contratoId: uuid('contrato_id').references(() => contratos.id),
-  vencimientoId: uuid('vencimiento_id').references(() => vencimientos.id),
+  vencimientosId: uuid('vencimientos_id').references(() => vencimientos.id),
   cunaAsignadaId: uuid('cuna_asignada_id').references(() => cunas.id), // Si ya se asignó
   
   // Descripción del material esperado
@@ -295,7 +295,7 @@ export const cunasVencimientos = pgTable('cunas_vencimientos', {
   
   // Relaciones
   cunaId: uuid('cuna_id').references(() => cunas.id).notNull(),
-  vencimientoId: uuid('vencimiento_id').references(() => vencimientos.id).notNull(),
+  vencimientosId: uuid('vencimientos_id').references(() => vencimientos.id).notNull(),
   
   // Tipo de uso
   tipoUso: varchar('tipo_uso', { length: 50 }).notNull(), // 'presentacion', 'cierre', 'spot_principal'
@@ -313,7 +313,7 @@ export const cunasVencimientos = pgTable('cunas_vencimientos', {
   fechaCreacion: timestamp('fecha_creacion').defaultNow()
 }, (table) => ({
   cunaIdx: index('cv_cuna_idx').on(table.cunaId),
-  vencimientoIdx: index('cv_vencimiento_idx').on(table.vencimientoId),
+  vencimientosIdx: index('cv_vencimientos_idx').on(table.vencimientosId),
   validadoIdx: index('cv_validado_idx').on(table.validado)
 }));
 

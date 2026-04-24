@@ -386,7 +386,7 @@ El presente contrato tendrá vigencia desde el {{fecha_inicio}} hasta el {{fecha
 TERCERO: VALOR Y FORMA DE PAGO
 El valor total del contrato es de {{moneda}} {{valor_total}}, que se pagará de la siguiente forma:
 {{#each plan_pagos}}
-- Cuota {{@index}}: {{moneda}} {{monto}} con vencimiento {{fecha_vencimiento}}
+- Cuota {{@index}}: {{moneda}} {{monto}} con vencimientos {{fecha_vencimientos}}
 {{/each}}
 
 CUARTO: OBLIGACIONES DE LA EMPRESA

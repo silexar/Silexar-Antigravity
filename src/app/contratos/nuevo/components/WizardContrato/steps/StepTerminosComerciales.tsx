@@ -1,117 +1,168 @@
 /**
  * 💰 SILEXAR PULSE - Paso 2: Términos Comerciales TIER 0
- * 
+ *
  * @description Segundo paso del wizard - Análisis de riesgo Cortex-AI,
- * configuración de términos de pago y valores del contrato.
- * 
- * @version 2025.3.0
+ * configuración de términos de pago y visualización de cuotas.
+ *
+ * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
 
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  DollarSign,
-  Shield,
-  TrendingUp,
-  TrendingDown,
   AlertTriangle,
-  CheckCircle2,
   Calendar,
-  Percent,
-  CreditCard,
-  Zap,
+  CheckCircle2,
+  ChevronRight,
+  FileText,
+  Info,
+  Receipt,
   RefreshCw,
-  Info
-} from 'lucide-react';
-import { 
-  WizardContratoState, 
-  WizardAction,
+  Shield,
+  Tag,
+  TrendingDown,
+  TrendingUp,
+  User,
+  X,
+  Zap,
+} from "lucide-react";
+import {
+  CuotaFacturacion,
   formatCurrency,
-  calcularValorNeto,
   getNivelRiesgoColor,
-  Moneda
-} from '../types/wizard.types';
+  Moneda,
+  WizardAction,
+  WizardContratoState,
+} from "../types/wizard.types";
+
+// ═══════════════════════════════════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════════════════════════════════
+
+const getMonthLabel = (date: Date): string => {
+  return date.toLocaleDateString("es-CL", { month: "short" }).replace(".", "").toUpperCase();
+};
+
+const getYearLabel = (date: Date): string => {
+  return date.getFullYear().toString().slice(-2);
+};
+
+// Generar cuotas distribuidas por mes desde fecha inicio
+const generarCuotas = (
+  valorNeto: number,
+  numCuotas: number,
+  fechaInicio: Date | null,
+): Array<{ mes: string; anio: string; valor: number; facturado: boolean }> => {
+  if (!fechaInicio || numCuotas <= 0 || valorNeto <= 0) return [];
+  const base = Math.floor(valorNeto / numCuotas);
+  const resto = valorNeto - base * numCuotas;
+  const cuotas: Array<{ mes: string; anio: string; valor: number; facturado: boolean }> = [];
+  const d = new Date(fechaInicio);
+  for (let i = 0; i < numCuotas; i++) {
+    const mesDate = new Date(d.getFullYear(), d.getMonth() + i, 1);
+    cuotas.push({
+      mes: getMonthLabel(mesDate),
+      anio: getYearLabel(mesDate),
+      valor: i === numCuotas - 1 ? base + resto : base,
+      facturado: false,
+    });
+  }
+  return cuotas;
+};
 
 // ═══════════════════════════════════════════════════════════════
 // PANEL DE ANÁLISIS CORTEX-RISK
 // ═══════════════════════════════════════════════════════════════
 
 const AnalisisCortexRisk: React.FC<{
-  analisis: WizardContratoState['analisisRiesgo'];
-  anunciante: WizardContratoState['anunciante'];
+  analisis: WizardContratoState["analisisRiesgo"];
+  anunciante: WizardContratoState["anunciante"];
   isLoading: boolean;
 }> = ({ analisis, anunciante, isLoading }) => {
   if (!anunciante) {
     return (
-      <div className="p-8 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 text-center">
-        <Shield className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-        <p className="text-slate-400">Seleccione un anunciante para ver el análisis de riesgo</p>
+      <div className="p-3 rounded-xl bg-[#dfeaff] text-center">
+        <Shield className="w-6 h-6 mx-auto mb-1 text-[#9aa3b8]" />
+        <p className="text-xs text-[#9aa3b8]">
+          Seleccione un anunciante para ver el análisis de riesgo
+        </p>
       </div>
     );
   }
-  
+
   if (isLoading) {
     return (
-      <div className="p-8 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 text-center">
+      <div className="p-3 rounded-xl bg-[#6888ff15] text-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
-          <RefreshCw className="w-10 h-10 mx-auto mb-3 text-indigo-500" />
+          <RefreshCw className="w-6 h-6 mx-auto mb-1 text-[#6888ff]" />
         </motion.div>
-        <p className="text-indigo-600 font-medium">Analizando riesgo crediticio...</p>
-        <p className="text-sm text-indigo-400 mt-1">Cortex-AI procesando datos</p>
+        <p className="text-xs text-[#6888ff] font-medium">
+          Analizando riesgo crediticio...
+        </p>
       </div>
     );
   }
-  
-  // Usar datos del anunciante si no hay análisis
+
   const data = analisis || {
-    score: anunciante.scoreRiesgo,
+    score: anunciante.scoreRiesgo ?? 750,
     maxScore: 1000,
-    nivelRiesgo: anunciante.nivelRiesgo,
-    factoresPositivos: ['Historial de pagos excelente', 'Cliente establecido', 'Industria estable'],
+    nivelRiesgo: anunciante.nivelRiesgo ?? "bajo",
+    factoresPositivos: [
+      "Historial de pagos excelente",
+      "Cliente establecido",
+      "Industria estable",
+    ],
     factoresNegativos: [],
-    recomendaciones: anunciante.terminosPreferenciales,
+    recomendaciones: anunciante.terminosPreferenciales ?? {
+      terminosPago: 30,
+      limiteCredito: 50000000,
+      descuentoMaximo: 15,
+      requiereGarantia: false,
+    },
     indicadores: {
       historialPagos: 100,
-      tendenciaFacturacion: 'estable' as const,
-      industria: 'estable' as const,
-      contratosExitosos: anunciante.historialContratos.exitosos
+      tendenciaFacturacion: "estable" as const,
+      industria: "estable" as const,
+      contratosExitosos: anunciante.historialContratos?.exitosos ?? 0,
     },
     fechaActualizacion: new Date(),
-    confianza: 95
+    confianza: 95,
   };
-  
-  const scorePercentage = (data.score / data.maxScore) * 100;
-  
+
+  const recs = data.recomendaciones;
+
+  const scorePercentage = Math.min((data.score / data.maxScore) * 100, 100);
+
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-[8px_8px_24px_rgba(0,0,0,0.08),-8px_-8px_24px_rgba(255,255,255,0.9)] overflow-hidden">
+    <div className="rounded-xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] overflow-hidden">
       {/* Header */}
-      <div className="p-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <div className="p-2 bg-[#6888ff] text-white">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-white/20">
-              <Shield className="w-6 h-6" />
+          <div className="flex items-center gap-2">
+            <div className="p-1 rounded-lg bg-[#dfeaff]/20">
+              <Shield className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-lg">Análisis Cortex-Risk</h3>
-              <p className="text-sm text-white/80">{anunciante.nombre}</p>
+              <h3 className="font-bold text-sm">Análisis Cortex-Risk</h3>
+              <p className="text-[11px] text-white/80">{anunciante.nombre}</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-black">{data.score}</p>
-            <p className="text-xs text-white/70">de {data.maxScore} puntos</p>
+            <p className="text-xl font-black">{data.score}</p>
+            <p className="text-[11px] text-white/70">de {data.maxScore}</p>
           </div>
         </div>
       </div>
-      
-      {/* Score visual */}
-      <div className="p-5">
-        <div className="relative h-4 bg-slate-200 rounded-full overflow-hidden mb-4">
+
+      {/* Score visual + indicadores */}
+      <div className="p-2">
+        <div className="relative h-1.5 bg-[#dfeaff] rounded-full overflow-hidden mb-2">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${scorePercentage}%` }}
@@ -119,80 +170,83 @@ const AnalisisCortexRisk: React.FC<{
             className={`h-full rounded-full bg-gradient-to-r ${getNivelRiesgoColor(data.nivelRiesgo)}`}
           />
         </div>
-        
-        {/* Indicadores */}
-        <div className="grid grid-cols-4 gap-3 mb-5">
-          <div className="text-center p-3 bg-white rounded-xl shadow-sm">
-            <p className="text-lg font-bold text-emerald-600">{data.indicadores.historialPagos}%</p>
-            <p className="text-xs text-slate-500">Pagos Puntuales</p>
-          </div>
-          <div className="text-center p-3 bg-white rounded-xl shadow-sm">
-            <div className="flex items-center justify-center gap-1">
-              {data.indicadores.tendenciaFacturacion === 'creciente' && <TrendingUp className="w-4 h-4 text-emerald-500" />}
-              {data.indicadores.tendenciaFacturacion === 'decreciente' && <TrendingDown className="w-4 h-4 text-red-500" />}
-              <p className="text-lg font-bold text-slate-700 capitalize">{data.indicadores.tendenciaFacturacion}</p>
+
+        <div className="grid grid-cols-4 gap-1.5 mb-2">
+          {[
+            { label: "Pagos Puntuales", value: `${data.indicadores.historialPagos}%` },
+            {
+              label: "Tendencia",
+              value: (
+                <span className="flex items-center justify-center gap-0.5">
+                  {data.indicadores.tendenciaFacturacion === "creciente" && <TrendingUp className="w-3 h-3 text-[#6888ff]" />}
+                  {data.indicadores.tendenciaFacturacion === "decreciente" && <TrendingDown className="w-3 h-3 text-[#9aa3b8]" />}
+                  <span className="capitalize">{data.indicadores.tendenciaFacturacion}</span>
+                </span>
+              ),
+            },
+            { label: "Contratos OK", value: data.indicadores.contratosExitosos.toString() },
+            { label: "Confianza IA", value: `${data.confianza}%` },
+          ].map((item, i) => (
+            <div key={i} className="text-center p-1.5 bg-[#dfeaff] rounded-lg shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]">
+              <p className="text-sm font-bold text-[#6888ff]">{item.value}</p>
+              <p className="text-[10px] text-[#9aa3b8] leading-tight">{item.label}</p>
             </div>
-            <p className="text-xs text-slate-500">Tendencia</p>
-          </div>
-          <div className="text-center p-3 bg-white rounded-xl shadow-sm">
-            <p className="text-lg font-bold text-blue-600">{data.indicadores.contratosExitosos}</p>
-            <p className="text-xs text-slate-500">Contratos OK</p>
-          </div>
-          <div className="text-center p-3 bg-white rounded-xl shadow-sm">
-            <p className="text-lg font-bold text-purple-600">{data.confianza}%</p>
-            <p className="text-xs text-slate-500">Confianza IA</p>
-          </div>
+          ))}
         </div>
-        
-        {/* Factores */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-emerald-700 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
+
+        {/* Factores + Recomendaciones lado a lado */}
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <h4 className="text-[11px] font-semibold text-[#6888ff] flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
               Factores Positivos
             </h4>
             {data.factoresPositivos.map((factor, i) => (
-              <div key={`${factor}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <div key={`${factor}-${i}`} className="flex items-center gap-1 text-[11px] text-[#69738c]">
+                <span className="w-1 h-1 rounded-full bg-[#6888ff] shrink-0" />
                 {factor}
               </div>
             ))}
+            {data.factoresNegativos.length > 0 && (
+              <>
+                <h4 className="text-[11px] font-semibold text-[#9aa3b8] flex items-center gap-1 mt-1">
+                  <AlertTriangle className="w-3 h-3" />
+                  Factores de Riesgo
+                </h4>
+                {data.factoresNegativos.map((factor, i) => (
+                  <div key={`neg-${factor}-${i}`} className="flex items-center gap-1 text-[11px] text-[#69738c]">
+                    <span className="w-1 h-1 rounded-full bg-[#9aa3b8] shrink-0" />
+                    {factor}
+                  </div>
+                ))}
+              </>
+            )}
           </div>
-          {data.factoresNegativos.length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-amber-700 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                Factores de Riesgo
-              </h4>
-              {data.factoresNegativos.map((factor, i) => (
-                <div key={`${factor}-${i}`} className="flex items-center gap-2 text-sm text-slate-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  {factor}
-                </div>
-              ))}
+
+          {/* Recomendaciones (movidas al lado derecho) */}
+          <div className="p-2 bg-[#6888ff15] rounded-lg">
+            <h4 className="text-[11px] font-semibold text-[#6888ff] mb-1.5 flex items-center gap-1">
+              <Zap className="w-3 h-3" />
+              Recomendaciones
+            </h4>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-[#9aa3b8]">Plazo máx.</span>
+                <span className="font-bold text-[#6888ff]">
+                  {"diasPago" in recs ? recs.diasPago : recs.terminosPago} días
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-[#9aa3b8]">Descuento máx.</span>
+                <span className="font-bold text-[#6888ff]">{recs.descuentoMaximo}%</span>
+              </div>
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-[#9aa3b8]">Límite crédito</span>
+                <span className="font-bold text-[#6888ff]">
+                  ${(recs.limiteCredito / 1000000).toFixed(0)}M
+                </span>
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Recomendaciones */}
-      <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-t border-indigo-100">
-        <h4 className="text-sm font-semibold text-indigo-700 mb-3 flex items-center gap-2">
-          <Zap className="w-4 h-4" />
-          Recomendaciones Automáticas
-        </h4>
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="p-2 bg-white rounded-lg">
-            <p className="text-lg font-bold text-indigo-600">{'diasPago' in data.recomendaciones ? data.recomendaciones.diasPago : data.recomendaciones.terminosPago} días</p>
-            <p className="text-xs text-slate-500">Plazo Máximo</p>
-          </div>
-          <div className="p-2 bg-white rounded-lg">
-            <p className="text-lg font-bold text-emerald-600">{data.recomendaciones.descuentoMaximo}%</p>
-            <p className="text-xs text-slate-500">Descuento Máx</p>
-          </div>
-          <div className="p-2 bg-white rounded-lg">
-            <p className="text-lg font-bold text-purple-600">${(data.recomendaciones.limiteCredito / 1000000).toFixed(0)}M</p>
-            <p className="text-xs text-slate-500">Límite Crédito</p>
           </div>
         </div>
       </div>
@@ -204,94 +258,28 @@ const AnalisisCortexRisk: React.FC<{
 // COMPONENTES DE FORMULARIO
 // ═══════════════════════════════════════════════════════════════
 
-const CurrencyInput: React.FC<{
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  moneda: Moneda;
-  required?: boolean;
-}> = ({ label, value, onChange, moneda, required }) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-slate-600">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <div className="relative">
-      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-      <input
-        type="number"
-        value={value || ''}
-        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        aria-label={label}
-        className="
-          w-full rounded-xl py-3.5 pl-12 pr-16 bg-slate-50
-          shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
-          border-2 border-transparent
-          outline-none focus:ring-2 focus:ring-indigo-400/50
-          text-slate-700 font-medium text-lg
-          transition-all duration-200
-        "
-        placeholder="0"
-      />
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">
-        {moneda}
-      </span>
-    </div>
-  </div>
-);
-
-const PercentageInput: React.FC<{
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  max?: number;
-}> = ({ label, value, onChange, max = 100 }) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-slate-600">{label}</label>
-    <div className="relative">
-      <Percent className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-      <input
-        type="number"
-        min={0}
-        max={max}
-        value={value || ''}
-        onChange={(e) => onChange(Math.min(parseFloat(e.target.value) || 0, max))}
-        aria-label={label}
-        className="
-          w-full rounded-xl py-3.5 pl-12 pr-4 bg-slate-50
-          shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
-          border-2 border-transparent
-          outline-none focus:ring-2 focus:ring-indigo-400/50
-          text-slate-700
-          transition-all duration-200
-        "
-        placeholder="0"
-      />
-    </div>
-  </div>
-);
-
 const SelectInput: React.FC<{
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
 }> = ({ label, value, onChange, options }) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-slate-600">{label}</label>
+  <div className="space-y-1">
+    <label className="block text-xs font-medium text-[#69738c]">{label}</label>
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="
-        w-full rounded-xl py-3.5 px-4 bg-slate-50
-        shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
+        w-full rounded-xl py-2 px-3 bg-[#dfeaff]
+        shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
         border-2 border-transparent
-        outline-none focus:ring-2 focus:ring-indigo-400/50
-        text-slate-700
+        outline-none focus:ring-2 focus:ring-[#6888ff]/50
+        text-[#69738c] text-sm
         transition-all duration-200
         appearance-none cursor-pointer
       "
     >
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
@@ -306,32 +294,35 @@ const NumberInput: React.FC<{
   max?: number;
   icon?: React.ElementType;
   suffix?: string;
-}> = ({ label, value, onChange, min = 0, max = 999, icon: Icon, suffix }) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-slate-600">{label}</label>
+  readOnly?: boolean;
+}> = ({ label, value, onChange, min = 0, max = 999, icon: Icon, suffix, readOnly }) => (
+  <div className="space-y-1">
+    <label className="block text-xs font-medium text-[#69738c]">{label}</label>
     <div className="relative">
       {Icon && (
-        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
       )}
       <input
         type="number"
         min={min}
         max={max}
-        value={value || ''}
+        value={value || ""}
         onChange={(e) => onChange(parseInt(e.target.value) || 0)}
+        readOnly={readOnly}
         aria-label={label}
         className={`
-          w-full rounded-xl py-3.5 bg-slate-50
-          shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
+          w-full rounded-xl py-2 bg-[#dfeaff]
+          shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
           border-2 border-transparent
-          outline-none focus:ring-2 focus:ring-indigo-400/50
-          text-slate-700
+          outline-none focus:ring-2 focus:ring-[#6888ff]/50
+          text-[#69738c] text-sm
           transition-all duration-200
-          ${Icon ? 'pl-12' : 'pl-4'} ${suffix ? 'pr-16' : 'pr-4'}
+          ${readOnly ? "opacity-70 cursor-default" : ""}
+          ${Icon ? "pl-9" : "pl-3"} ${suffix ? "pr-10" : "pr-3"}
         `}
       />
       {suffix && (
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9aa3b8] text-xs">
           {suffix}
         </span>
       )}
@@ -345,27 +336,357 @@ const Toggle: React.FC<{
   checked: boolean;
   onChange: (checked: boolean) => void;
 }> = ({ label, description, checked, onChange }) => (
-  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.04)]">
+  <div className="flex items-center justify-between p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]">
     <div>
-      <p className="font-medium text-slate-700">{label}</p>
-      {description && <p className="text-sm text-slate-400">{description}</p>}
+      <p className="font-medium text-xs text-[#69738c]">{label}</p>
+      {description && <p className="text-[11px] text-[#9aa3b8]">{description}</p>}
     </div>
     <button
       type="button"
       onClick={() => onChange(!checked)}
       className={`
-        w-14 h-8 rounded-full transition-all duration-200 relative
-        ${checked ? 'bg-gradient-to-r from-indigo-500 to-purple-600' : 'bg-slate-300'}
+        w-10 h-6 rounded-full transition-all duration-200 relative
+        ${checked ? "bg-[#6888ff]" : "bg-[#dfeaff]"}
       `}
     >
-      <motion.span 
-        className="absolute top-1 w-6 h-6 bg-white rounded-full shadow-md"
-        animate={{ left: checked ? '1.75rem' : '0.25rem' }}
+      <motion.span
+        className="absolute top-1 w-4 h-4 bg-[#dfeaff] rounded-full shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
+        animate={{ left: checked ? "1.25rem" : "0.25rem" }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
       />
     </button>
   </div>
 );
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL DE OPCIONES ESPECIALES
+// ═══════════════════════════════════════════════════════════════
+
+const ModalOpcionesEspeciales: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  state: WizardContratoState;
+  dispatch: React.Dispatch<WizardAction>;
+}> = ({ open, onClose, state, dispatch }) => {
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#69738c]/30"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="w-full max-w-md mx-4 rounded-2xl bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-sm text-[#69738c] flex items-center gap-2">
+                <Info className="w-4 h-4 text-[#6888ff]" />
+                Opciones Especiales
+              </h3>
+              <button
+                onClick={onClose}
+                className="p-1 rounded-lg bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] text-[#9aa3b8] hover:text-[#69738c]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {/* Canje */}
+              <div className="space-y-2">
+                <Toggle
+                  label="Contrato de Canje"
+                  description="Incluye servicios intercambiados"
+                  checked={state.esCanje}
+                  onChange={(checked) =>
+                    dispatch({
+                      type: "SET_CANJE",
+                      payload: {
+                        esCanje: checked,
+                        porcentaje: checked ? state.porcentajeCanje : 0,
+                      },
+                    })}
+                />
+                {state.esCanje && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                  >
+                    <NumberInput
+                      label="Porcentaje de Canje"
+                      value={state.porcentajeCanje}
+                      onChange={(value) =>
+                        dispatch({
+                          type: "SET_CANJE",
+                          payload: { esCanje: true, porcentaje: value },
+                        })}
+                      min={0}
+                      max={100}
+                      suffix="%"
+                    />
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Facturar comisión de agencia (solo si es agencia) */}
+              {state.anunciante?.esAgencia && (
+                <div className="space-y-2">
+                  <Toggle
+                    label="Facturar Comisión de Agencia"
+                    description="Generar factura separada por comisión"
+                    checked={state.facturarComisionAgencia}
+                    onChange={(checked) =>
+                      dispatch({
+                        type: "SET_COMISION_AGENCIA",
+                        payload: {
+                          comision: state.comisionAgencia,
+                          facturar: checked,
+                        },
+                      })}
+                  />
+                  {state.facturarComisionAgencia && (
+                    <NumberInput
+                      label="Porcentaje de Comisión"
+                      value={state.comisionAgencia}
+                      onChange={(value) =>
+                        dispatch({
+                          type: "SET_COMISION_AGENCIA",
+                          payload: { comision: value, facturar: true },
+                        })}
+                      min={0}
+                      max={30}
+                      suffix="%"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 rounded-xl bg-[#6888ff] text-white text-xs font-bold shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+              >
+                Aceptar
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL FACTURAR CUOTA
+// ═══════════════════════════════════════════════════════════════
+
+const ModalFacturarCuota: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  cuota: { indice: number; mes: string; anio: string; valor: number } | null;
+  moneda: Moneda;
+  onConfirmar: (data: {
+    indice: number;
+    fechaFacturacion: Date;
+    numeroFactura: string;
+    montoFacturado: number;
+  }) => void;
+}> = ({ open, onClose, cuota, moneda, onConfirmar }) => {
+  const [numeroFactura, setNumeroFactura] = useState("");
+
+  if (!cuota) return null;
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#69738c]/30"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="w-full max-w-sm mx-4 rounded-2xl bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-sm text-[#69738c] flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-[#6888ff]" />
+                Facturar Cuota
+              </h3>
+              <button
+                onClick={onClose}
+                className="p-1 rounded-lg bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] text-[#9aa3b8] hover:text-[#69738c]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#6888ff15] mb-3">
+              <p className="text-[11px] text-[#9aa3b8] uppercase tracking-wider">Cuota {cuota.indice + 1}</p>
+              <p className="text-lg font-black text-[#6888ff]">
+                {cuota.mes} '{cuota.anio}
+              </p>
+              <p className="text-sm font-bold text-[#69738c]">
+                {formatCurrency(cuota.valor, moneda)}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-[#69738c]">Nº Factura</label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
+                  <input
+                    type="text"
+                    value={numeroFactura}
+                    onChange={(e) => setNumeroFactura(e.target.value)}
+                    placeholder="Ej: FAC-001-2026"
+                    className="
+                      w-full rounded-xl py-2 pl-9 pr-3 bg-[#dfeaff]
+                      shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
+                      border-2 border-transparent
+                      outline-none focus:ring-2 focus:ring-[#6888ff]/50
+                      text-[#69738c] text-sm
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2 rounded-xl bg-[#dfeaff] text-[#69738c] text-xs font-bold shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  onConfirmar({
+                    indice: cuota.indice,
+                    fechaFacturacion: new Date(),
+                    numeroFactura: numeroFactura || `FAC-${cuota.indice + 1}`,
+                    montoFacturado: cuota.valor,
+                  });
+                  setNumeroFactura("");
+                  onClose();
+                }}
+                className="flex-1 px-4 py-2 rounded-xl bg-[#6888ff] text-white text-xs font-bold shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+              >
+                Confirmar Facturación
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL DETALLE FACTURA
+// ═══════════════════════════════════════════════════════════════
+
+const ModalDetalleFactura: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  cuota: CuotaFacturacion | null;
+  moneda: Moneda;
+}> = ({ open, onClose, cuota, moneda }) => {
+  if (!cuota) return null;
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#69738c]/30"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="w-full max-w-sm mx-4 rounded-2xl bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-sm text-[#69738c] flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                Detalle de Factura
+              </h3>
+              <button
+                onClick={onClose}
+                className="p-1 rounded-lg bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] text-[#9aa3b8] hover:text-[#69738c]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-[#6888ff15]">
+                <p className="text-[11px] text-[#9aa3b8] uppercase tracking-wider">Cuota {cuota.indice + 1}</p>
+                <p className="text-lg font-black text-[#6888ff]">
+                  {formatCurrency(cuota.montoFacturado ?? 0, moneda)}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]">
+                  <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Nº Factura</p>
+                  <p className="text-sm font-bold text-[#69738c]">{cuota.numeroFactura || "—"}</p>
+                </div>
+                <div className="p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]">
+                  <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Fecha Emisión</p>
+                  <p className="text-sm font-bold text-[#69738c]">
+                    {cuota.fechaFacturacion
+                      ? new Date(cuota.fechaFacturacion).toLocaleDateString("es-CL")
+                      : "—"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]">
+                <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Estado</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-xs font-medium text-emerald-600">Facturada</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 rounded-xl bg-[#6888ff] text-white text-xs font-bold shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+              >
+                Cerrar
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -376,228 +697,347 @@ interface StepTerminosComercialesProps {
   dispatch: React.Dispatch<WizardAction>;
 }
 
-export const StepTerminosComerciales: React.FC<StepTerminosComercialesProps> = ({
-  state,
-  dispatch
-}) => {
-  // Recalcular valor neto cuando cambia bruto o descuento
-  useEffect(() => {
-    const valorNeto = calcularValorNeto(state.valorBruto, state.descuentoPorcentaje);
-    if (valorNeto !== state.valorNeto) {
-      dispatch({ type: 'SET_VALORES', payload: { bruto: state.valorBruto, descuento: state.descuentoPorcentaje } });
-    }
-  }, [state.valorBruto, state.descuentoPorcentaje, state.valorNeto, dispatch]);
-  
+export const StepTerminosComerciales: React.FC<StepTerminosComercialesProps> = (
+  { state, dispatch },
+) => {
+  const [modalOpcionesOpen, setModalOpcionesOpen] = useState(false);
+  const [modalFacturarOpen, setModalFacturarOpen] = useState(false);
+  const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
+  const [cuotaSeleccionada, setCuotaSeleccionada] = useState<{
+    indice: number;
+    mes: string;
+    anio: string;
+    valor: number;
+  } | null>(null);
+
+  // Calcular cuotas
+  const cuotas = useMemo(() => {
+    if (state.terminosPago.modalidad !== "cuotas") return [];
+    return generarCuotas(
+      state.valorNeto,
+      state.terminosPago.numeroCuotas || 1,
+      state.fechaInicio,
+    );
+  }, [state.valorNeto, state.terminosPago.modalidad, state.terminosPago.numeroCuotas, state.fechaInicio]);
+
+  const ivaPercent = state.anunciante?.ivaPorcentaje ?? 19;
+  const montoIva = Math.round(state.valorNeto * ivaPercent / 100);
+
   return (
-    <div className="space-y-8">
-      {/* Título del paso */}
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100">
-          <DollarSign className="w-7 h-7 text-emerald-600" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">Términos Comerciales</h2>
-          <p className="text-slate-500">Configure valores, descuentos y condiciones de pago</p>
-        </div>
-      </div>
-      
-      {/* Panel de análisis de riesgo */}
-      <AnalisisCortexRisk
-        analisis={state.analisisRiesgo}
-        anunciante={state.anunciante}
-        isLoading={state.isLoading}
-      />
-      
-      {/* Valores del contrato */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-[8px_8px_24px_rgba(0,0,0,0.08),-8px_-8px_24px_rgba(255,255,255,0.9)]">
-        <h3 className="text-lg font-semibold text-slate-700 mb-5 flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-indigo-500" />
-          Valores del Contrato
-        </h3>
-        
-        <div className="grid md:grid-cols-3 gap-6">
-          <CurrencyInput
-            label="Valor Bruto"
-            value={state.valorBruto}
-            onChange={(value) => dispatch({ type: 'SET_VALORES', payload: { bruto: value, descuento: state.descuentoPorcentaje } })}
-            moneda={state.moneda}
-            required
+    <div className="space-y-2">
+      {/* Fila superior: Cortex-Risk | Datos Anunciante */}
+      <div className="grid grid-cols-5 gap-2">
+        {/* Análisis de riesgo (3 cols) */}
+        <div className="col-span-3">
+          <AnalisisCortexRisk
+            analisis={state.analisisRiesgo}
+            anunciante={state.anunciante}
+            isLoading={state.isLoading}
           />
-          
-          <PercentageInput
-            label="Descuento"
-            value={state.descuentoPorcentaje}
-            onChange={(value) => dispatch({ type: 'SET_VALORES', payload: { bruto: state.valorBruto, descuento: value } })}
-            max={state.anunciante?.terminosPreferenciales.descuentoMaximo || 30}
-          />
-          
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-slate-600">Valor Neto</label>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-              <p className="text-2xl font-bold text-emerald-700">
-                {formatCurrency(state.valorNeto, state.moneda)}
-              </p>
-              <p className="text-xs text-emerald-600">
-                Ahorro: {formatCurrency(state.valorBruto - state.valorNeto, state.moneda)}
+        </div>
+
+        {/* Datos del anunciante (2 cols) */}
+        <div className="col-span-2 rounded-xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] p-3 flex flex-col justify-between">
+          <div>
+            <h3 className="text-xs font-semibold text-[#69738c] mb-2 flex items-center gap-1">
+              <User className="w-3.5 h-3.5 text-[#6888ff]" />
+              Datos del Anunciante
+            </h3>
+
+            {/* Número deudor */}
+            <div className="mb-2">
+              <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Nº Deudor</p>
+              <p className="text-sm font-bold text-[#6888ff]">
+                {state.anunciante?.numeroDeudor || "—"}
               </p>
             </div>
+
+            {/* Comisión Agencia flag del Step 1 */}
+            <div className="mb-2">
+              <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Comisión Agencia</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                {state.tieneComisionAgencia ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />
+                    <span className="text-xs font-medium text-[#69738c]">
+                      Aplicada ({state.comisionAgencia}%)
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-4 h-4 rounded-full bg-[#dfeaff] shadow-[inset_1px_1px_2px_#bec8de,inset_-1px_-1px_2px_#ffffff]" />
+                    <span className="text-xs text-[#9aa3b8]">Sin comisión</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* IVA del anunciante */}
+            <div className="mb-2">
+              <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">IVA Configurado</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-sm font-bold text-[#6888ff]">{ivaPercent}%</span>
+                <span className="text-[10px] text-[#9aa3b8]">(config. anunciante)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Badge moneda */}
+          <div className="mt-2 flex items-center gap-1.5">
+            <Tag className="w-3 h-3 text-[#6888ff]" />
+            <span className="text-[11px] font-medium text-[#69738c]">
+              Moneda: <span className="font-bold text-[#6888ff]">{state.moneda}</span>
+            </span>
           </div>
         </div>
-        
-        {/* Selector de moneda */}
-        <div className="mt-4 grid md:grid-cols-4 gap-4">
-          <SelectInput
-            label="Moneda"
-            value={state.moneda}
-            onChange={(value) => dispatch({ type: 'SET_MONEDA', payload: value as Moneda })}
-            options={[
-              { value: 'CLP', label: 'Peso Chileno (CLP)' },
-              { value: 'USD', label: 'Dólar (USD)' },
-              { value: 'UF', label: 'UF' }
-            ]}
-          />
-        </div>
       </div>
-      
+
       {/* Términos de pago */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-[8px_8px_24px_rgba(0,0,0,0.08),-8px_-8px_24px_rgba(255,255,255,0.9)]">
-        <h3 className="text-lg font-semibold text-slate-700 mb-5 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-indigo-500" />
+      <div className="p-3 rounded-xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]">
+        <h3 className="text-sm font-semibold text-[#69738c] mb-2 flex items-center gap-1">
+          <Calendar className="w-4 h-4 text-[#6888ff]" />
           Términos de Pago
         </h3>
-        
-        <div className="grid md:grid-cols-3 gap-6">
+
+        <div className="grid grid-cols-4 gap-2">
           <NumberInput
             label="Días de Pago"
             value={state.terminosPago.diasPago}
-            onChange={(value) => dispatch({ type: 'SET_TERMINOS_PAGO', payload: { diasPago: value } })}
+            onChange={(value) =>
+              dispatch({
+                type: "SET_TERMINOS_PAGO",
+                payload: { diasPago: value },
+              })}
             min={1}
             max={90}
             icon={Calendar}
             suffix="días"
           />
-          
+
           <SelectInput
-            label="Modalidad de Facturación"
+            label="Modalidad"
             value={state.terminosPago.modalidad}
-            onChange={(value) => dispatch({ type: 'SET_TERMINOS_PAGO', payload: { modalidad: value as 'hitos' | 'cuotas' } })}
+            onChange={(value) =>
+              dispatch({
+                type: "SET_TERMINOS_PAGO",
+                payload: { modalidad: value as "por_campana" | "cuotas" },
+              })}
             options={[
-              { value: 'cuotas', label: 'Por Cuotas' },
-              { value: 'hitos', label: 'Por Hitos' }
+              { value: "por_campana", label: "Por campaña" },
+              { value: "cuotas", label: "Cuotas" },
             ]}
           />
-          
+
+          <AnimatePresence>
+            {state.terminosPago.modalidad === "cuotas" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="w-[85px]"
+              >
+                <NumberInput
+                  label="Nº Cuotas"
+                  value={state.terminosPago.numeroCuotas || 1}
+                  onChange={(value) =>
+                    dispatch({
+                      type: "SET_TERMINOS_PAGO",
+                      payload: { numeroCuotas: value },
+                    })}
+                  min={1}
+                  max={12}
+                  suffix="cuotas"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <SelectInput
-            label="Tipo de Factura"
+            label="Tipo Factura"
             value={state.terminosPago.tipoFactura}
-            onChange={(value) => dispatch({ type: 'SET_TERMINOS_PAGO', payload: { tipoFactura: value as 'posterior' | 'adelantado' } })}
+            onChange={(value) =>
+              dispatch({
+                type: "SET_TERMINOS_PAGO",
+                payload: { tipoFactura: value as "posterior" | "adelantado" | "efectivo" },
+              })}
             options={[
-              { value: 'posterior', label: 'Posterior al servicio' },
-              { value: 'adelantado', label: 'Adelantado' }
+              { value: "posterior", label: "Posterior al servicio" },
+              { value: "adelantado", label: "Adelantado" },
+              { value: "efectivo", label: "Efectivo" },
             ]}
           />
         </div>
-        
-        {state.terminosPago.modalidad === 'cuotas' && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="mt-4"
-          >
-            <NumberInput
-              label="Número de Cuotas"
-              value={state.terminosPago.numeroCuotas || 1}
-              onChange={(value) => dispatch({ type: 'SET_TERMINOS_PAGO', payload: { numeroCuotas: value } })}
-              min={1}
-              max={12}
-              suffix="cuotas"
-            />
-          </motion.div>
-        )}
-      </div>
-      
-      {/* Opciones especiales */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-[8px_8px_24px_rgba(0,0,0,0.08),-8px_-8px_24px_rgba(255,255,255,0.9)]">
-        <h3 className="text-lg font-semibold text-slate-700 mb-5 flex items-center gap-2">
-          <Info className="w-5 h-5 text-indigo-500" />
-          Opciones Especiales
-        </h3>
-        
-        <div className="space-y-4">
-          <Toggle
-            label="Contrato de Canje"
-            description="Incluye servicios intercambiados"
-            checked={state.esCanje}
-            onChange={(checked) => dispatch({ type: 'SET_CANJE', payload: { esCanje: checked, porcentaje: checked ? state.porcentajeCanje : 0 } })}
-          />
-          
-          {state.esCanje && (
+
+        {/* Viewer horizontal de cuotas — full width */}
+        <AnimatePresence>
+          {state.terminosPago.modalidad === "cuotas" && cuotas.length > 0 && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-2"
             >
-              <PercentageInput
-                label="Porcentaje de Canje"
-                value={state.porcentajeCanje}
-                onChange={(value) => dispatch({ type: 'SET_CANJE', payload: { esCanje: true, porcentaje: value } })}
-                max={100}
-              />
+              <p className="text-[11px] text-[#9aa3b8] mb-1">Distribución de cuotas</p>
+              <div className="flex gap-1">
+                {cuotas.map((c, i) => {
+                  const facturada = state.cuotasFacturacion.find(
+                    (cf) => cf.indice === i
+                  );
+                  const isFacturada = !!facturada?.facturada;
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      onClick={() => {
+                        setCuotaSeleccionada({ indice: i, mes: c.mes, anio: c.anio, valor: c.valor });
+                        if (isFacturada) {
+                          setModalDetalleOpen(true);
+                        } else {
+                          setModalFacturarOpen(true);
+                        }
+                      }}
+                      className={`
+                        flex-1 min-w-0 p-1 rounded-lg text-center cursor-pointer
+                        transition-all duration-200 select-none overflow-hidden
+                        ${isFacturada
+                          ? "bg-emerald-50 shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] ring-1 ring-emerald-400/40"
+                          : "bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]"
+                        }
+                      `}
+                      title={isFacturada ? "Cuota facturada — clic para ver detalle" : "Clic para facturar"}
+                    >
+                      <div className="flex items-center justify-center gap-0.5 mb-0.5">
+                        <span className={`text-[9px] font-black ${isFacturada ? "text-emerald-600" : "text-[#6888ff]"}`}>
+                          {c.mes}
+                        </span>
+                        <span className="text-[8px] text-[#9aa3b8]">'{c.anio}</span>
+                      </div>
+                      <p className={`text-[10px] font-bold leading-tight ${isFacturada ? "text-emerald-700" : "text-[#69738c]"}`}>
+                        {formatCurrency(c.valor, state.moneda)}
+                      </p>
+                      <div className="mt-0.5 flex items-center justify-center">
+                        {isFacturada ? (
+                          <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                        ) : (
+                          <span className="w-3 h-3 rounded-full bg-[#dfeaff] shadow-[inset_1px_1px_2px_#bec8de,inset_-1px_-1px_2px_#ffffff]" />
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </motion.div>
           )}
-          
-          {state.anunciante?.esAgencia && (
-            <>
-              <Toggle
-                label="Facturar Comisión de Agencia"
-                description="Generar factura separada por comisión"
-                checked={state.facturarComisionAgencia}
-                onChange={(checked) => dispatch({ type: 'SET_COMISION_AGENCIA', payload: { comision: state.comisionAgencia, facturar: checked } })}
-              />
-              
-              {state.facturarComisionAgencia && (
-                <PercentageInput
-                  label="Porcentaje de Comisión"
-                  value={state.comisionAgencia}
-                  onChange={(value) => dispatch({ type: 'SET_COMISION_AGENCIA', payload: { comision: value, facturar: true } })}
-                  max={30}
-                />
-              )}
-            </>
+        </AnimatePresence>
+      </div>
+
+      {/* Fila inferior: Opciones especiales + Resumen */}
+      <div className="grid grid-cols-5 gap-2">
+        {/* Botón Opciones Especiales */}
+        <div className="col-span-2 rounded-xl bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] p-3">
+          <h3 className="text-xs font-semibold text-[#69738c] mb-2 flex items-center gap-1">
+            <Info className="w-3.5 h-3.5 text-[#6888ff]" />
+            Opciones Especiales
+          </h3>
+          <button
+            onClick={() => setModalOpcionesOpen(true)}
+            className="w-full flex items-center justify-between p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] hover:shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff] transition-all"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#6888ff]" />
+              <span className="text-xs text-[#69738c]">
+                {state.esCanje ? "Canje activo" : "Sin opciones activas"}
+              </span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#9aa3b8]" />
+          </button>
+
+          {state.esCanje && (
+            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#6888ff]">
+              <Receipt className="w-3 h-3" />
+              Canje: {state.porcentajeCanje}% del valor
+            </div>
           )}
         </div>
+
+        {/* Resumen Valor Total Neto del Step 1 */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="col-span-3 rounded-xl bg-[#6888ff] text-white p-3 flex flex-col justify-between"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-bold text-sm">Resumen del Contrato</h3>
+              <p className="text-white/70 text-xs">Valores desde Paso 1</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-white/70">Valor Total Neto</p>
+              <p className="text-2xl font-black">
+                {formatCurrency(state.valorNeto, state.moneda)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2 pt-2 border-t border-white/20 grid grid-cols-4 gap-2 text-center">
+            <div>
+              <p className="text-white/70 text-[10px]">Valor Bruto</p>
+              <p className="font-bold text-xs">{formatCurrency(state.valorBruto, state.moneda)}</p>
+            </div>
+            <div>
+              <p className="text-white/70 text-[10px]">Descuento</p>
+              <p className="font-bold text-xs">{state.descuentoPorcentaje}%</p>
+            </div>
+            <div>
+              <p className="text-white/70 text-[10px]">IVA ({ivaPercent}%)</p>
+              <p className="font-bold text-xs">{formatCurrency(montoIva, state.moneda)}</p>
+            </div>
+            <div>
+              <p className="text-white/70 text-[10px]">Plazo</p>
+              <p className="font-bold text-xs">{state.terminosPago.diasPago} días</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
-      
-      {/* Resumen de valores */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="p-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-lg">Resumen del Contrato</h3>
-            <p className="text-white/70 text-sm">Valores calculados automáticamente</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-white/70">Valor Total Neto</p>
-            <p className="text-4xl font-black">{formatCurrency(state.valorNeto, state.moneda)}</p>
-          </div>
-        </div>
-        <div className="mt-4 pt-4 border-t border-white/20 grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-white/70 text-xs">Plazo Pago</p>
-            <p className="font-bold">{state.terminosPago.diasPago} días</p>
-          </div>
-          <div>
-            <p className="text-white/70 text-xs">Descuento</p>
-            <p className="font-bold">{state.descuentoPorcentaje}%</p>
-          </div>
-          <div>
-            <p className="text-white/70 text-xs">Cuotas</p>
-            <p className="font-bold">{state.terminosPago.numeroCuotas || 1}</p>
-          </div>
-        </div>
-      </motion.div>
+
+      {/* Modal Opciones Especiales */}
+      <ModalOpcionesEspeciales
+        open={modalOpcionesOpen}
+        onClose={() => setModalOpcionesOpen(false)}
+        state={state}
+        dispatch={dispatch}
+      />
+
+      {/* Modal Facturar Cuota */}
+      <ModalFacturarCuota
+        open={modalFacturarOpen}
+        onClose={() => setModalFacturarOpen(false)}
+        cuota={cuotaSeleccionada}
+        moneda={state.moneda}
+        onConfirmar={(data) => {
+          dispatch({
+            type: "SET_CUOTA_FACTURADA",
+            payload: {
+              indice: data.indice,
+              facturada: true,
+              fechaFacturacion: data.fechaFacturacion,
+              numeroFactura: data.numeroFactura,
+              montoFacturado: data.montoFacturado,
+            },
+          });
+        }}
+      />
+
+      {/* Modal Detalle Factura */}
+      <ModalDetalleFactura
+        open={modalDetalleOpen}
+        onClose={() => setModalDetalleOpen(false)}
+        cuota={cuotaSeleccionada ? (state.cuotasFacturacion.find((c) => c.indice === cuotaSeleccionada.indice) ?? null) : null}
+        moneda={state.moneda}
+      />
     </div>
   );
 };

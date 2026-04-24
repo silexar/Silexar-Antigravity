@@ -1,7 +1,7 @@
 /**
- * ðŸ§¾ MOBILE: FacturaciÃ³n View
+ * ?? MOBILE: Facturación View
  * 
- * EmisiÃ³n y consulta de facturas. Paridad con desktop: contratos/facturacion/page.tsx
+ * Emisión y consulta de facturas. Paridad con desktop: contratos/facturacion/page.tsx
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -47,10 +47,10 @@ export function MobileFacturacionView() {
 
   const estadoConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
     emitida: { label: 'Emitida', color: 'text-blue-700', bg: 'bg-blue-100', icon: <FileText className="w-4 h-4" /> },
-    enviada: { label: 'Enviada', color: 'text-indigo-700', bg: 'bg-indigo-100', icon: <Send className="w-4 h-4" /> },
+    enviada: { label: 'Enviada', color: 'text-[#6888ff]', bg: 'bg-[#dfeaff]', icon: <Send className="w-4 h-4" /> },
     pagada: { label: 'Pagada', color: 'text-emerald-700', bg: 'bg-emerald-100', icon: <CheckCircle2 className="w-4 h-4" /> },
     vencida: { label: 'Vencida', color: 'text-red-700', bg: 'bg-red-100', icon: <AlertTriangle className="w-4 h-4" /> },
-    anulada: { label: 'Anulada', color: 'text-slate-700', bg: 'bg-slate-100', icon: <Clock className="w-4 h-4" /> },
+    anulada: { label: 'Anulada', color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: <Clock className="w-4 h-4" /> },
   };
 
   const totalEmitido = FACTURAS_MOCK.reduce((s, f) => s + f.monto, 0);
@@ -59,32 +59,32 @@ export function MobileFacturacionView() {
   return (
     <div className="space-y-5">
       {/* KPIs */}
-      <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl p-5 text-white shadow-xl">
-        <p className="text-xs font-bold text-indigo-200 uppercase tracking-widest">FacturaciÃ³n</p>
+      <div className="bg-[#6888ff] rounded-2xl p-5 text-white shadow-xl">
+        <p className="text-xs font-bold text-white/70 uppercase tracking-widest">Facturación</p>
         <div className="grid grid-cols-2 gap-4 mt-3">
           <div>
             <p className="text-2xl font-black">{formatCurrency(totalEmitido)}</p>
-            <p className="text-xs text-indigo-200">Total emitido</p>
+            <p className="text-xs text-white/70">Total emitido</p>
           </div>
           <div>
             <p className="text-2xl font-black">{formatCurrency(totalPagado)}</p>
-            <p className="text-xs text-indigo-200">Cobrado</p>
+            <p className="text-xs text-white/70">Cobrado</p>
           </div>
         </div>
       </div>
 
       {/* NEW BUTTON */}
-      <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-indigo-200">
+      <button className="w-full py-3 bg-[#6888ff] text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-[#6888ff]/20">
         <Plus className="w-5 h-5" /> Nueva Factura
       </button>
 
       {/* SEARCH */}
       <div className="relative">
-        <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-3 w-4 h-4 text-[#9aa3b8]" />
         <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar factura o cliente..."
           aria-label="Buscar factura o cliente"
-          className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-indigo-400 outline-none" />
+          className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#bec8de30] bg-[#dfeaff] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none" />
       </div>
 
       {/* FILTERS */}
@@ -92,7 +92,7 @@ export function MobileFacturacionView() {
         {(['todas', 'emitida', 'enviada', 'pagada', 'vencida'] as FiltroFactura[]).map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${
-              filtro === f ? 'bg-indigo-600 text-white' : 'bg-white text-slate-500 border border-slate-200'
+              filtro === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {f === 'todas' ? 'Todas' : estadoConfig[f]?.label}
           </button>
@@ -102,15 +102,15 @@ export function MobileFacturacionView() {
       {/* LIST */}
       <div className="space-y-3">
         {filtered.map(factura => (
-          <div key={factura.id} className="bg-white rounded-xl border border-slate-100 p-4">
+          <div key={factura.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${estadoConfig[factura.estado]?.bg} ${estadoConfig[factura.estado]?.color}`}>
                   {estadoConfig[factura.estado]?.icon}
                 </div>
                 <div>
-                  <p className="font-bold text-slate-800 text-sm">{factura.numero}</p>
-                  <p className="text-[10px] text-slate-400">{factura.cliente} Â· {factura.contrato}</p>
+                  <p className="font-bold text-[#69738c] text-sm">{factura.numero}</p>
+                  <p className="text-[10px] text-[#9aa3b8]">{factura.cliente} · {factura.contrato}</p>
                 </div>
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estadoConfig[factura.estado]?.bg} ${estadoConfig[factura.estado]?.color}`}>
@@ -118,12 +118,12 @@ export function MobileFacturacionView() {
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-black text-slate-800">{formatCurrency(factura.monto)}</p>
+              <p className="text-lg font-black text-[#69738c]">{formatCurrency(factura.monto)}</p>
               <div className="flex gap-2">
-                <button aria-label="Ver" className="p-2 rounded-lg bg-slate-50 active:scale-90"><Eye className="w-4 h-4 text-slate-500" /></button>
-                <button aria-label="Descargar" className="p-2 rounded-lg bg-slate-50 active:scale-90"><Download className="w-4 h-4 text-slate-500" /></button>
+                <button aria-label="Ver" className="p-2 rounded-lg bg-[#dfeaff] active:scale-90"><Eye className="w-4 h-4 text-[#9aa3b8]" /></button>
+                <button aria-label="Descargar" className="p-2 rounded-lg bg-[#dfeaff] active:scale-90"><Download className="w-4 h-4 text-[#9aa3b8]" /></button>
                 {factura.estado === 'emitida' && (
-                  <button aria-label="Enviar" className="p-2 rounded-lg bg-indigo-50 active:scale-90"><Send className="w-4 h-4 text-indigo-500" /></button>
+                  <button aria-label="Enviar" className="p-2 rounded-lg bg-[#dfeaff] active:scale-90"><Send className="w-4 h-4 text-[#6888ff]" /></button>
                 )}
               </div>
             </div>

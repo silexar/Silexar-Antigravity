@@ -393,11 +393,11 @@ export class DocumentoContrato {
   }
 
   /**
-   * Extiende la fecha de vencimiento
+   * Extiende la fecha de vencimientos
    */
   extenderVencimiento(diasExtension: number, motivo: string): void {
     if (!this._fechaVencimiento) {
-      throw new Error('El documento no tiene fecha de vencimiento configurada');
+      throw new Error('El documento no tiene fecha de vencimientos configurada');
     }
 
     const nuevaFecha = new Date(this._fechaVencimiento);

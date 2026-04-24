@@ -51,7 +51,7 @@ interface ProgramacionCuna {
   fechaFin: string;
   diasEspecificos: string[] | null;
   esActiva: boolean;
-  vencimientoId: string | null;
+  vencimientosId: string | null;
 }
 
 interface ConflictoCompetencia {
@@ -180,7 +180,7 @@ const programacionesMock: ProgramacionCuna[] = [
     fechaFin: '2026-01-31',
     diasEspecificos: null,
     esActiva: true,
-    vencimientoId: 'venc-001'
+    vencimientosId: 'venc-001'
   },
   {
     id: 'prog-002',
@@ -197,7 +197,7 @@ const programacionesMock: ProgramacionCuna[] = [
     fechaFin: '2026-01-15',
     diasEspecificos: ['lunes', 'miercoles', 'viernes'],
     esActiva: true,
-    vencimientoId: null
+    vencimientosId: null
   },
   {
     id: 'prog-003',
@@ -214,7 +214,7 @@ const programacionesMock: ProgramacionCuna[] = [
     fechaFin: '2026-02-28',
     diasEspecificos: null,
     esActiva: true,
-    vencimientoId: 'venc-002'
+    vencimientosId: 'venc-002'
   }
 ];
 
@@ -383,7 +383,7 @@ export const POST = withApiRoute(
         fechaFin,
         diasEspecificos: diasEspecificos || null,
         esActiva: true,
-        vencimientoId: null
+        vencimientosId: null
       };
 
       return NextResponse.json({

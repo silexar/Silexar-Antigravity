@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  /* ─── Colors ───────────────────────────────────────────────────────── */
-  --color-surface-base:   #F0EDE8;
-  --color-surface-raised: #F5F2EE;
-  --color-surface-inset:  #E8E5E0;
+  /* ─── Colors — Paleta Oficial Silexar Pulse TIER 0 ─────────────────── */
+  /* Base: #dfeaff (azul lavanda) | Acento: #6888ff | Texto: #69738c     */
+  --color-surface-base:   #dfeaff;
+  --color-surface-raised: #e8f0ff;
+  --color-surface-inset:  #d4e2ff;
 
-  --color-shadow-light: #FFFFFF;
-  --color-shadow-dark:  #D4D1CC;
+  --color-shadow-light: #ffffff;
+  --color-shadow-dark:  #bec8de;
 
   --color-primary-50:  #EEF3FD;
   --color-primary-100: #D5E4FB;
@@ -48,23 +49,23 @@
   --color-ai-400: #6A60E8;
   --color-ai-500: #534AB7;
 
-  --color-text-primary:   #2C2C2A;
-  --color-text-secondary: #5F5E5A;
-  --color-text-tertiary:  #888780;
+  --color-text-primary:   #69738c;
+  --color-text-secondary: #7d87a0;
+  --color-text-tertiary:  #9aa3b8;
 
   /* Neuromorphic shorthand backgrounds */
-  --color-neu-base:   #F0EDE8;
-  --color-neu-raised: #F5F2EE;
-  --color-neu-inset:  #E8E5E0;
+  --color-neu-base:   #dfeaff;
+  --color-neu-raised: #e8f0ff;
+  --color-neu-inset:  #d4e2ff;
 
-  /* ─── Box Shadows ──────────────────────────────────────────────────── */
-  --shadow-neu-raised:    6px 6px 14px #D4D1CC, -6px -6px 14px #FFFFFF;
-  --shadow-neu-raised-sm: 4px 4px 10px #D4D1CC, -4px -4px 10px #FFFFFF;
-  --shadow-neu-raised-xs: 2px 2px 6px #D4D1CC,  -2px -2px 6px #FFFFFF;
-  --shadow-neu-inset:     inset 3px 3px 8px #D4D1CC, inset -3px -3px 8px #FFFFFF;
-  --shadow-neu-inset-sm:  inset 2px 2px 5px #D4D1CC, inset -2px -2px 5px #FFFFFF;
-  --shadow-neu-pressed:   inset 2px 2px 5px #D4D1CC, inset -2px -2px 5px #FFFFFF;
-  --shadow-neu-focus:     0 0 0 3px rgba(29, 90, 232, 0.25), 4px 4px 10px #D4D1CC, -4px -4px 10px #FFFFFF;
+  /* ─── Box Shadows — Paleta #dfeaff ─────────────────────────────────── */
+  --shadow-neu-raised:    8px 8px 16px #bec8de, -8px -8px 16px #ffffff;
+  --shadow-neu-raised-sm: 4px 4px 8px #bec8de,  -4px -4px 8px #ffffff;
+  --shadow-neu-raised-xs: 3px 3px 6px #bec8de,  -3px -3px 6px #ffffff;
+  --shadow-neu-inset:     inset 4px 4px 8px #bec8de, inset -4px -4px 8px #ffffff;
+  --shadow-neu-inset-sm:  inset 2px 2px 5px #bec8de, inset -2px -2px 5px #ffffff;
+  --shadow-neu-pressed:   inset 3px 3px 6px #bec8de, inset -3px -3px 6px #ffffff;
+  --shadow-neu-focus:     0 0 0 3px rgba(104, 136, 255, 0.25), 4px 4px 8px #bec8de, -4px -4px 8px #ffffff;
   --shadow-neu-flat:      0 0 0 transparent;
   --shadow-neu-dark-raised:  6px 6px 14px #0a0a0a, -6px -6px 14px #2a2a2a;
   --shadow-neu-dark-inset:   inset 3px 3px 8px #0a0a0a, inset -3px -3px 8px #2a2a2a;
@@ -164,26 +165,29 @@
   padding-right: 1rem;
 }
 
-/* Light Neuromorphic OS Tier 0 palette */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Silexar Pulse TIER 0 — Paleta Neumórfica Oficial
+   Base: #dfeaff (HSL 219 100% 94%) | Acento: #6888ff | Texto: #69738c
+═══════════════════════════════════════════════════════════════════════════ */
 :root {
-  /* Backgrounds and surfaces: #F0EDE8 is HSL 36 17% 93% */
-  --background: 36 17% 93%;
-  --foreground: 217 33% 14%; /* deep slate text */
-  --card: 36 17% 93%; /* match background for true neumorphism */
-  --card-foreground: 217 33% 14%;
-  --popover: 36 17% 93%;
-  --popover-foreground: 217 33% 14%;
+  /* Backgrounds: #dfeaff → HSL 219 100% 94% */
+  --background: 219 100% 94%;
+  --foreground: 223 14% 48%; /* #69738c */
+  --card: 219 100% 94%;
+  --card-foreground: 223 14% 48%;
+  --popover: 219 100% 94%;
+  --popover-foreground: 223 14% 48%;
 
-  /* Brand primary (indigo/sky) */
-  --primary: 226 100% 64%; /* indigo-500 equivalent */
+  /* Acento primario: #6888ff → HSL 227 100% 70% */
+  --primary: 227 100% 70%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary and muted */
-  --secondary: 36 17% 88%; /* slightly darker for pressed states */
-  --secondary-foreground: 217 33% 14%;
-  --muted: 36 17% 88%;
-  --muted-foreground: 215 16% 47%;
-  --accent: 226 100% 64%;
+  /* Secundario */
+  --secondary: 219 60% 88%;
+  --secondary-foreground: 223 14% 48%;
+  --muted: 219 50% 89%;
+  --muted-foreground: 223 14% 62%; /* #9aa3b8 */
+  --accent: 227 100% 70%;
   --accent-foreground: 0 0% 100%;
 
   /* Status */
@@ -191,9 +195,9 @@
   --destructive-foreground: 0 0% 100%;
 
   /* Borders, inputs, focus ring */
-  --border: 36 17% 85%;
-  --input: 36 17% 90%;
-  --ring: 226 100% 64%;
+  --border: 219 40% 86%;
+  --input: 219 60% 90%;
+  --ring: 227 100% 70%;
 
   --radius: 1rem;
 }
@@ -203,42 +207,52 @@
 }
 
 body {
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
+  color: #69738c;
+  background: #dfeaff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Neumorphism helpers for soft, elegant surfaces */
+/* ─── Neumorphism Helpers — Paleta Oficial #dfeaff ────────────────── */
 .neo-surface {
-  background: hsl(var(--background));
-  box-shadow: 9px 9px 18px rgba(0, 0, 0, 0.06),
-    -9px -9px 18px rgba(255, 255, 255, 0.8);
+  background: #dfeaff;
+  box-shadow: 8px 8px 16px #bec8de, -8px -8px 16px #ffffff;
 }
 
 .neo-card {
-  background: hsl(var(--card));
-  box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.04),
-    -12px -12px 24px rgba(255, 255, 255, 0.9);
-  border: 1px solid hsl(var(--border));
+  background: #dfeaff;
+  box-shadow: 8px 8px 16px #bec8de, -8px -8px 16px #ffffff;
+  border-radius: 1.5rem;
 }
 
 .neo-pressable {
-  background: hsl(var(--card));
-  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.06),
-    -6px -6px 12px rgba(255, 255, 255, 0.9);
-  transition: transform 0.08s ease, box-shadow 0.12s ease;
+  background: #dfeaff;
+  box-shadow: 6px 6px 12px #bec8de, -6px -6px 12px #ffffff;
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.neo-pressable:hover {
+  box-shadow: 3px 3px 6px #bec8de, -3px -3px 6px #ffffff;
 }
 .neo-pressable:active {
-  transform: translateY(1px);
-  box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.06),
-    inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+  box-shadow: inset 4px 4px 8px #bec8de, inset -4px -4px 8px #ffffff;
 }
 
 .neo-input {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.03),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  background: #dfeaff;
+  box-shadow: inset 4px 4px 8px #bec8de, inset -4px -4px 8px #ffffff;
+  border: none;
+  outline: none;
 }
+.neo-input:focus {
+  box-shadow: inset 4px 4px 8px #bec8de, inset -4px -4px 8px #ffffff,
+              0 0 0 2px rgba(104, 136, 255, 0.3);
+}
+
+.neu-text { color: #69738c; }
+.neu-text-sub { color: #9aa3b8; }
+.neu-accent { color: #6888ff; }
+.neu-bg { background: #dfeaff; }
 
 /* ========================================
    🎨 NEUROMORPHIC MOBILE ENTERPRISE 2050
@@ -346,10 +360,10 @@ body {
 
 /* Dark Mode is Disabled - Forced Light Neumorphic */
 @media (prefers-color-scheme: dark) {
-  /* Overrides to keep it on #F0EDE8 to strictly follow Tier 0 skill */
+  /* Overrides to keep it on #EAF0F6 to strictly follow Tier 0 skill */
   :root {
-    --background: 36 17% 93%;
-    --foreground: 217 33% 14%;
+    --background: 210 33% 94%;
+    --foreground: 222 47% 11%;
   }
 }
 

@@ -4,7 +4,7 @@
  * @description Servicio de plantillas de email profesionales para:
  * - Envío de contratos a clientes
  * - Notificaciones de aprobación
- * - Recordatorios de vencimiento
+ * - Recordatorios de vencimientos
  * - Estados de cuenta
  * - Alertas de cobranza
  * 
@@ -682,7 +682,7 @@ class EmailTemplatesEngine {
       { tipo: 'CONTRATO_RECHAZADO', descripcion: 'Contrato requiere modificaciones' },
       { tipo: 'SOLICITUD_FIRMA', descripcion: 'Solicitud de firma digital' },
       { tipo: 'FIRMA_COMPLETADA', descripcion: 'Firma completada' },
-      { tipo: 'RECORDATORIO_VENCIMIENTO', descripcion: 'Recordatorio de vencimiento' },
+      { tipo: 'RECORDATORIO_VENCIMIENTO', descripcion: 'Recordatorio de vencimientos' },
       { tipo: 'RENOVACION_OFERTA', descripcion: 'Oferta de renovación' },
       { tipo: 'FACTURA_EMITIDA', descripcion: 'Factura emitida' },
       { tipo: 'RECORDATORIO_PAGO', descripcion: 'Recordatorio de pago' },

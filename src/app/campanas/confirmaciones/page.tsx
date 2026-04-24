@@ -1,164 +1,59 @@
 /**
- * 📄 Generador de Confirmaciones Horarias TIER0 Enterprise 2050
- * 
- * Sistema profesional para generar y enviar confirmaciones horarias:
- * - Templates personalizables por emisora/cliente
- * - Preview en tiempo real
- * - Generación PDF profesional
- * - Envío email integrado con tracking
- * - Historial de envíos
- * 
- * @enterprise TIER0 Fortune 10
- * @version 2050.1.0
+ * 📄 Confirmaciones Horarias — Neumórfico TIER 0
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { 
-  FileText, Download, Mail, Eye, Clock, Calendar,
-  CheckCircle2, Send, Printer, RefreshCw, History,
-  Settings, Palette, LayoutTemplate, Radio, Building2
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  FileText, Download, Mail, Eye, Send,
+  Printer, RefreshCw, History, Palette, LayoutTemplate, Radio, Receipt
 } from 'lucide-react';
-
-// ==================== INTERFACES ====================
+import { NeoPageHeader, NeoCard, NeoButton, NeoInput, NeoBadge, N } from '../_lib/neumorphic';
 
 interface Template {
-  id: string;
-  nombre: string;
-  emisora: string;
-  descripcion: string;
-  colorPrimario: string;
-  incluirLogo: boolean;
-  incluirMetricas: boolean;
-  incluirFirma: boolean;
+  id: string; nombre: string; emisora: string; descripcion: string;
+  colorPrimario: string; incluirLogo: boolean; incluirMetricas: boolean; incluirFirma: boolean;
 }
 
 interface CampanaConfirmacion {
-  numero: string;
-  nombre: string;
-  anunciante: string;
-  emisora: string;
-  fechaInicio: string;
-  fechaFin: string;
-  totalSpots: number;
-  valorNeto: number;
-  ejecutivo: string;
-  estado: 'pendiente' | 'generada' | 'enviada' | 'confirmada';
+  numero: string; nombre: string; anunciante: string; emisora: string;
+  fechaInicio: string; fechaFin: string; totalSpots: number; valorNeto: number;
+  ejecutivo: string; estado: 'pendiente' | 'generada' | 'enviada' | 'confirmada';
 }
 
 interface HistorialEnvio {
-  id: string;
-  fecha: string;
-  destinatarios: string[];
-  formato: 'pdf' | 'email' | 'excel';
-  estado: 'enviado' | 'abierto' | 'descargado' | 'error';
-  usuario: string;
+  id: string; fecha: string; destinatarios: string[];
+  formato: 'pdf' | 'email' | 'excel'; estado: 'enviado' | 'abierto' | 'descargado' | 'error'; usuario: string;
 }
 
-// ==================== DATOS MOCK ====================
-
 const MOCK_TEMPLATES: Template[] = [
-  {
-    id: 'tpl_t13',
-    nombre: 'T13 Radio Premium',
-    emisora: 'T13 Radio',
-    descripcion: 'Template oficial T13 Radio con colores corporativos',
-    colorPrimario: '#1E40AF',
-    incluirLogo: true,
-    incluirMetricas: true,
-    incluirFirma: true
-  },
-  {
-    id: 'tpl_play',
-    nombre: 'Play FM Moderno',
-    emisora: 'Play FM',
-    descripcion: 'Diseño moderno para audiencia joven',
-    colorPrimario: '#7C3AED',
-    incluirLogo: true,
-    incluirMetricas: false,
-    incluirFirma: true
-  },
-  {
-    id: 'tpl_simple',
-    nombre: 'Corporativo Simple',
-    emisora: 'Todas',
-    descripcion: 'Template minimalista para cualquier emisora',
-    colorPrimario: '#374151',
-    incluirLogo: false,
-    incluirMetricas: true,
-    incluirFirma: false
-  }
+  { id: 'tpl_t13', nombre: 'T13 Radio Premium', emisora: 'T13 Radio', descripcion: 'Template oficial T13 Radio con colores corporativos', colorPrimario: '#1E40AF', incluirLogo: true, incluirMetricas: true, incluirFirma: true },
+  { id: 'tpl_play', nombre: 'Play FM Moderno', emisora: 'Play FM', descripcion: 'Diseño moderno para audiencia joven', colorPrimario: '#7C3AED', incluirLogo: true, incluirMetricas: false, incluirFirma: true },
+  { id: 'tpl_simple', nombre: 'Corporativo Simple', emisora: 'Todas', descripcion: 'Template minimalista para cualquier emisora', colorPrimario: '#374151', incluirLogo: false, incluirMetricas: true, incluirFirma: false },
 ];
 
 const MOCK_CAMPANAS: CampanaConfirmacion[] = [
-  {
-    numero: 'CAM-2025-0015',
-    nombre: 'Campaña Verano Premium',
-    anunciante: 'BANCO DE CHILE',
-    emisora: 'T13 Radio',
-    fechaInicio: '2025-02-01',
-    fechaFin: '2025-02-28',
-    totalSpots: 156,
-    valorNeto: 12500000,
-    ejecutivo: 'Ana García',
-    estado: 'pendiente'
-  },
-  {
-    numero: 'CAM-2025-0012',
-    nombre: 'Lanzamiento App Q1',
-    anunciante: 'ENTEL',
-    emisora: 'Play FM',
-    fechaInicio: '2025-02-15',
-    fechaFin: '2025-03-15',
-    totalSpots: 240,
-    valorNeto: 18000000,
-    ejecutivo: 'Carlos Mendoza',
-    estado: 'generada'
-  }
+  { numero: 'CAM-2025-0015', nombre: 'Campaña Verano Premium', anunciante: 'BANCO DE CHILE', emisora: 'T13 Radio', fechaInicio: '2025-02-01', fechaFin: '2025-02-28', totalSpots: 156, valorNeto: 12500000, ejecutivo: 'Ana García', estado: 'pendiente' },
+  { numero: 'CAM-2025-0012', nombre: 'Lanzamiento App Q1', anunciante: 'ENTEL', emisora: 'Play FM', fechaInicio: '2025-02-15', fechaFin: '2025-03-15', totalSpots: 240, valorNeto: 18000000, ejecutivo: 'Carlos Mendoza', estado: 'generada' },
 ];
 
 const MOCK_HISTORIAL: HistorialEnvio[] = [
-  {
-    id: 'env_001',
-    fecha: '2025-02-08 10:30',
-    destinatarios: ['cliente@bancochile.cl', 'medios@carat.cl'],
-    formato: 'pdf',
-    estado: 'abierto',
-    usuario: 'Ana García'
-  },
-  {
-    id: 'env_002',
-    fecha: '2025-02-07 15:45',
-    destinatarios: ['marketing@entel.cl'],
-    formato: 'email',
-    estado: 'enviado',
-    usuario: 'Carlos Mendoza'
-  }
+  { id: 'env_001', fecha: '2025-02-08 10:30', destinatarios: ['cliente@bancochile.cl', 'medios@carat.cl'], formato: 'pdf', estado: 'abierto', usuario: 'Ana García' },
+  { id: 'env_002', fecha: '2025-02-07 15:45', destinatarios: ['marketing@entel.cl'], formato: 'email', estado: 'enviado', usuario: 'Carlos Mendoza' },
 ];
 
-// ==================== COMPONENTE PRINCIPAL ====================
-
 export default function ConfirmacionesPage() {
-  const [selectedCampana, setSelectedCampana] = useState<string>(MOCK_CAMPANAS[0].numero);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(MOCK_TEMPLATES[0].id);
-  const [destinatarios, setDestinatarios] = useState<string>('');
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'generar' | 'templates' | 'historial'>('generar');
+  const [selectedCampana, setSelectedCampana] = useState(MOCK_CAMPANAS[0].numero);
+  const [selectedTemplate, setSelectedTemplate] = useState(MOCK_TEMPLATES[0].id);
+  const [destinatarios, setDestinatarios] = useState('');
   const [formato, setFormato] = useState<'pdf' | 'email' | 'excel'>('pdf');
-  const [notasAdicionales, setNotasAdicionales] = useState<string>('');
+  const [notasAdicionales, setNotasAdicionales] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
-  
-  // Opciones de personalización
   const [incluirDesglose, setIncluirDesglose] = useState(true);
   const [incluirValores, setIncluirValores] = useState(true);
   const [incluirContacto, setIncluirContacto] = useState(true);
@@ -168,385 +63,270 @@ export default function ConfirmacionesPage() {
 
   const handleGenerarPreview = async () => {
     setIsGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(r => setTimeout(r, 1500));
     setIsGenerating(false);
     setPreviewReady(true);
   };
 
   const handleEnviar = async () => {
     setIsGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(r => setTimeout(r, 2000));
     setIsGenerating(false);
-    // Mock: Actualizar estado
   };
 
   const getEstadoColor = (estado: string) => {
-    const colors: Record<string, string> = {
-      'enviado': 'bg-blue-100 text-blue-800',
-      'abierto': 'bg-green-100 text-green-800',
-      'descargado': 'bg-purple-100 text-purple-800',
-      'error': 'bg-red-100 text-red-800'
-    };
-    return colors[estado] || 'bg-gray-100';
+    const colors: Record<string, string> = { enviado: '#3b82f6', abierto: '#22c55e', descargado: '#a855f7', error: '#ef4444' };
+    return colors[estado] || '#9aa3b8';
   };
 
+  const tabs = [
+    { id: 'generar' as const, label: 'Generar', icon: FileText },
+    { id: 'templates' as const, label: 'Templates', icon: LayoutTemplate },
+    { id: 'historial' as const, label: 'Historial', icon: History },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-xl">
-                <FileText className="w-8 h-8 text-blue-600" />
-              </div>
-              Confirmaciones Horarias TIER0
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Generador profesional de confirmaciones con envío automático
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="text-green-600 border-green-300 px-3 py-1">
-              <CheckCircle2 className="w-4 h-4 mr-1" />
-              Sistema Activo
-            </Badge>
-          </div>
+    <div className="min-h-screen p-6" style={{ background: N.base }}>
+      <div className="max-w-[1400px] mx-auto space-y-5">
+        <NeoPageHeader
+          title="Confirmaciones Horarias"
+          subtitle="Generador profesional de confirmaciones con envío automático"
+          icon={Receipt}
+          backHref="/campanas"
+        />
+
+        {/* Tabs */}
+        <div className="flex gap-2 p-1 rounded-2xl" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}` }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all"
+              style={activeTab === t.id
+                ? { background: N.accent, color: '#fff', boxShadow: `3px 3px 6px ${N.dark}` }
+                : { background: 'transparent', color: N.textSub }}>
+              <t.icon className="w-4 h-4" /> {t.label}
+            </button>
+          ))}
         </div>
 
-        <Tabs defaultValue="generar" className="space-y-6">
-          <TabsList className="bg-white shadow-sm border">
-            <TabsTrigger value="generar" className="gap-2">
-              <FileText className="w-4 h-4" />
-              Generar
-            </TabsTrigger>
-            <TabsTrigger value="templates" className="gap-2">
-              <LayoutTemplate className="w-4 h-4" />
-              Templates
-            </TabsTrigger>
-            <TabsTrigger value="historial" className="gap-2">
-              <History className="w-4 h-4" />
-              Historial
-            </TabsTrigger>
-          </TabsList>
-
-          {/* TAB: Generar */}
-          <TabsContent value="generar" className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Panel Izquierdo: Configuración */}
-              <div className="lg:col-span-2 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Settings className="w-5 h-5 text-gray-400" />
-                      Configuración de Documento
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Selección de Campaña */}
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Campaña</Label>
-                        <Select value={selectedCampana} onValueChange={setSelectedCampana}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Seleccionar campaña" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {MOCK_CAMPANAS.map(c => (
-                              <SelectItem key={c.numero} value={c.numero}>
-                                {c.numero} - {c.anunciante}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label>Template</Label>
-                        <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Seleccionar template" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {MOCK_TEMPLATES.map(t => (
-                              <SelectItem key={t.id} value={t.id}>
-                                {t.nombre}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Destinatarios */}
+        {/* TAB: Generar */}
+        {activeTab === 'generar' && (
+          <div className="grid lg:grid-cols-3 gap-5">
+            <div className="lg:col-span-2 space-y-5">
+              <NeoCard>
+                <h3 className="text-sm font-black flex items-center gap-2 mb-4" style={{ color: N.text }}>
+                  <FileText className="h-4 w-4" style={{ color: N.accent }} />
+                  Configuración de Documento
+                </h3>
+                <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label>Destinatarios</Label>
-                      <Input 
-                        value={destinatarios}
-                        onChange={(e) => setDestinatarios(e.target.value)}
-                        placeholder="email1@empresa.cl, email2@agencia.cl"
-                        className="mt-1"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">Separar múltiples emails con coma</p>
+                      <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Campaña</label>
+                      <select value={selectedCampana} onChange={e => setSelectedCampana(e.target.value)}
+                        className="w-full rounded-xl px-4 py-2.5 text-sm font-medium border-none focus:outline-none"
+                        style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}`, color: N.text }}>
+                        {MOCK_CAMPANAS.map(c => <option key={c.numero} value={c.numero}>{c.numero} - {c.anunciante}</option>)}
+                      </select>
                     </div>
-
-                    {/* Formato y Opciones */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <Label>Formato de Salida</Label>
-                        <Select value={formato} onValueChange={(v: 'pdf' | 'email' | 'excel') => setFormato(v)}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pdf">📄 PDF Descargable</SelectItem>
-                            <SelectItem value="email">📧 Email Directo</SelectItem>
-                            <SelectItem value="excel">📊 Excel Detallado</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <Label>Opciones de Contenido</Label>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Incluir desglose horario</span>
-                            <Switch checked={incluirDesglose} onCheckedChange={setIncluirDesglose} />
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Mostrar valores</span>
-                            <Switch checked={incluirValores} onCheckedChange={setIncluirValores} />
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Datos de contacto</span>
-                            <Switch checked={incluirContacto} onCheckedChange={setIncluirContacto} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Notas */}
                     <div>
-                      <Label>Notas Adicionales</Label>
-                      <Textarea 
-                        value={notasAdicionales}
-                        onChange={(e) => setNotasAdicionales(e.target.value)}
-                        placeholder="Observaciones o instrucciones especiales..."
-                        className="mt-1"
-                        rows={3}
-                      />
+                      <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Template</label>
+                      <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value)}
+                        className="w-full rounded-xl px-4 py-2.5 text-sm font-medium border-none focus:outline-none"
+                        style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}`, color: N.text }}>
+                        {MOCK_TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                      </select>
                     </div>
+                  </div>
 
-                    {/* Botones de Acción */}
-                    <div className="flex items-center gap-3 pt-4 border-t">
-                      <Button 
-                        onClick={handleGenerarPreview}
-                        disabled={isGenerating}
-                        className="bg-blue-600 hover:bg-blue-700 gap-2"
-                      >
-                        {isGenerating ? (
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                        Generar Preview
-                      </Button>
-                      
-                      <Button variant="outline" className="gap-2">
-                        <Download className="w-4 h-4" />
-                        Descargar
-                      </Button>
-                      
-                      <Button variant="outline" className="gap-2">
-                        <Printer className="w-4 h-4" />
-                        Imprimir
-                      </Button>
-                      
-                      <Button 
-                        onClick={handleEnviar}
-                        disabled={!previewReady || isGenerating}
-                        className="ml-auto bg-green-600 hover:bg-green-700 gap-2"
-                      >
-                        <Send className="w-4 h-4" />
-                        Enviar por Email
-                      </Button>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Destinatarios</label>
+                    <NeoInput value={destinatarios} onChange={e => setDestinatarios(e.target.value)} placeholder="email1@empresa.cl, email2@agencia.cl" />
+                    <p className="text-[10px] mt-1" style={{ color: N.textSub }}>Separar múltiples emails con coma</p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Formato de Salida</label>
+                      <select value={formato} onChange={e => setFormato(e.target.value as any)}
+                        className="w-full rounded-xl px-4 py-2.5 text-sm font-medium border-none focus:outline-none"
+                        style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}`, color: N.text }}>
+                        <option value="pdf">📄 PDF Descargable</option>
+                        <option value="email">📧 Email Directo</option>
+                        <option value="excel">📊 Excel Detallado</option>
+                      </select>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Panel Derecho: Preview */}
-              <div className="space-y-6">
-                {campanaActual && (
-                  <Card className="border-2 border-dashed border-blue-200 bg-blue-50/30">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm text-blue-600 flex items-center gap-2">
-                        <Eye className="w-4 h-4" />
-                        Vista Previa
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div 
-                        className="bg-white rounded-lg shadow-inner p-4 min-h-[400px] border"
-                        style={{ borderTopColor: templateActual?.colorPrimario, borderTopWidth: '4px' }}
-                      >
-                        {/* Mock Preview */}
-                        <div className="text-center mb-4">
-                          <Radio className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                          <h3 className="font-bold text-lg">{campanaActual.emisora}</h3>
-                          <p className="text-xs text-gray-500">Confirmación Horaria</p>
-                        </div>
-                        
-                        <div className="space-y-3 text-sm">
-                          <div className="flex justify-between border-b pb-2">
-                            <span className="text-gray-500">Campaña:</span>
-                            <span className="font-medium">{campanaActual.numero}</span>
+                    <div>
+                      <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Opciones de Contenido</label>
+                      <div className="space-y-2">
+                        {[
+                          { label: 'Incluir desglose horario', checked: incluirDesglose, onChange: setIncluirDesglose },
+                          { label: 'Mostrar valores', checked: incluirValores, onChange: setIncluirValores },
+                          { label: 'Datos de contacto', checked: incluirContacto, onChange: setIncluirContacto },
+                        ].map(opt => (
+                          <div key={opt.label} className="flex items-center justify-between">
+                            <span className="text-xs" style={{ color: N.text }}>{opt.label}</span>
+                            <button onClick={() => opt.onChange(!opt.checked)}
+                              className="w-8 h-4 rounded-full transition-all relative"
+                              style={{ background: opt.checked ? N.accent : N.base, boxShadow: opt.checked ? 'none' : `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }}>
+                              <div className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all"
+                                style={{ left: opt.checked ? '18px' : '2px' }} />
+                            </button>
                           </div>
-                          <div className="flex justify-between border-b pb-2">
-                            <span className="text-gray-500">Cliente:</span>
-                            <span className="font-medium">{campanaActual.anunciante}</span>
-                          </div>
-                          <div className="flex justify-between border-b pb-2">
-                            <span className="text-gray-500">Período:</span>
-                            <span className="font-medium text-xs">
-                              {campanaActual.fechaInicio} al {campanaActual.fechaFin}
-                            </span>
-                          </div>
-                          <div className="flex justify-between border-b pb-2">
-                            <span className="text-gray-500">Total Spots:</span>
-                            <span className="font-bold text-blue-600">{campanaActual.totalSpots}</span>
-                          </div>
-                          {incluirValores && (
-                            <div className="flex justify-between pt-2">
-                              <span className="text-gray-500">Valor Neto:</span>
-                              <span className="font-bold text-green-600">
-                                ${campanaActual.valorNeto.toLocaleString()}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="mt-6 pt-4 border-t text-center">
-                          <p className="text-xs text-gray-400">
-                            Documento generado automáticamente
-                          </p>
-                        </div>
+                        ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-wider mb-1 block" style={{ color: N.textSub }}>Notas Adicionales</label>
+                    <textarea value={notasAdicionales} onChange={e => setNotasAdicionales(e.target.value)} placeholder="Observaciones o instrucciones especiales..."
+                      rows={3} className="w-full rounded-xl px-4 py-3 text-sm border-none focus:outline-none resize-vertical"
+                      style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}`, color: N.text }} />
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-3 border-t flex-wrap" style={{ borderColor: `${N.dark}40` }}>
+                    <NeoButton variant="primary" onClick={handleGenerarPreview} disabled={isGenerating}>
+                      {isGenerating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />}
+                      Generar Preview
+                    </NeoButton>
+                    <NeoButton variant="secondary"><Download className="w-4 h-4" /> Descargar</NeoButton>
+                    <NeoButton variant="secondary"><Printer className="w-4 h-4" /> Imprimir</NeoButton>
+                    <div className="flex-1" />
+                    <NeoButton variant="primary" onClick={handleEnviar} disabled={!previewReady || isGenerating}>
+                      <Send className="w-4 h-4" /> Enviar por Email
+                    </NeoButton>
+                  </div>
+                </div>
+              </NeoCard>
             </div>
-          </TabsContent>
 
-          {/* TAB: Templates */}
-          <TabsContent value="templates">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Palette className="w-5 h-5 text-purple-500" />
-                    Templates Disponibles
-                  </CardTitle>
-                  <Button className="gap-2">
-                    <LayoutTemplate className="w-4 h-4" />
-                    Crear Template
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {MOCK_TEMPLATES.map(template => (
-                    <div 
-                      key={template.id}
-                      className="p-4 rounded-xl border-2 hover:border-blue-300 transition-colors cursor-pointer"
-                      style={{ borderTopColor: template.colorPrimario, borderTopWidth: '4px' }}
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <div 
-                          className="w-10 h-10 rounded-lg flex items-center justify-center"
-                          style={{ backgroundColor: template.colorPrimario + '20' }}
-                        >
-                          <Radio className="w-5 h-5" style={{ color: template.colorPrimario }} />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-gray-900">{template.nombre}</h4>
-                          <p className="text-xs text-gray-500">{template.emisora}</p>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-3">{template.descripcion}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {template.incluirLogo && <Badge variant="secondary" className="text-xs">Logo</Badge>}
-                        {template.incluirMetricas && <Badge variant="secondary" className="text-xs">Métricas</Badge>}
-                        {template.incluirFirma && <Badge variant="secondary" className="text-xs">Firma</Badge>}
-                      </div>
+            {/* Preview */}
+            <div>
+              {campanaActual && (
+                <NeoCard className="border-t-4" style={{ borderTopColor: templateActual?.colorPrimario || N.accent }}>
+                  <h3 className="text-xs font-black uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: N.accent }}>
+                    <Eye className="h-4 w-4" /> Vista Previa
+                  </h3>
+                  <div className="rounded-xl p-4" style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}` }}>
+                    <div className="text-center mb-4">
+                      <Radio className="w-8 h-8 mx-auto mb-2" style={{ color: N.textSub }} />
+                      <h4 className="font-bold text-lg" style={{ color: N.text }}>{campanaActual.emisora}</h4>
+                      <p className="text-[10px]" style={{ color: N.textSub }}>Confirmación Horaria</p>
                     </div>
-                  ))}
+                    <div className="space-y-2 text-sm">
+                      {[
+                        { label: 'Campaña:', value: campanaActual.numero },
+                        { label: 'Cliente:', value: campanaActual.anunciante },
+                        { label: 'Período:', value: `${campanaActual.fechaInicio} al ${campanaActual.fechaFin}` },
+                        { label: 'Total Spots:', value: campanaActual.totalSpots.toString(), bold: true, color: N.accent },
+                      ].map(row => (
+                        <div key={row.label} className="flex justify-between py-1 border-b" style={{ borderColor: `${N.dark}30` }}>
+                          <span style={{ color: N.textSub }}>{row.label}</span>
+                          <span className={`font-medium ${row.bold ? 'font-black' : ''}`} style={{ color: row.color || N.text }}>{row.value}</span>
+                        </div>
+                      ))}
+                      {incluirValores && (
+                        <div className="flex justify-between pt-1">
+                          <span style={{ color: N.textSub }}>Valor Neto:</span>
+                          <span className="font-black" style={{ color: '#22c55e' }}>${campanaActual.valorNeto.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-4 pt-3 border-t text-center" style={{ borderColor: `${N.dark}30` }}>
+                      <p className="text-[10px]" style={{ color: N.textSub }}>Documento generado automáticamente</p>
+                    </div>
+                  </div>
+                </NeoCard>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB: Templates */}
+        {activeTab === 'templates' && (
+          <NeoCard>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-black flex items-center gap-2" style={{ color: N.text }}>
+                <Palette className="h-4 w-4" style={{ color: '#a855f7' }} />
+                Templates Disponibles
+              </h3>
+              <NeoButton variant="primary" size="sm"><LayoutTemplate className="h-3.5 w-3.5" /> Crear Template</NeoButton>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              {MOCK_TEMPLATES.map(t => (
+                <div key={t.id} className="p-4 rounded-2xl cursor-pointer transition-all"
+                  style={{ background: N.base, boxShadow: `6px 6px 12px ${N.dark},-6px -6px 12px ${N.light}` }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `3px 3px 6px ${N.dark},-3px -3px 6px ${N.light}` }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 12px ${N.dark},-6px -6px 12px ${N.light}` }}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${t.colorPrimario}20` }}>
+                      <Radio className="w-5 h-5" style={{ color: t.colorPrimario }} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm" style={{ color: N.text }}>{t.nombre}</h4>
+                      <p className="text-[10px]" style={{ color: N.textSub }}>{t.emisora}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs mb-3" style={{ color: N.textSub }}>{t.descripcion}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {t.incluirLogo && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${N.accent}15`, color: N.accent }}>Logo</span>}
+                    {t.incluirMetricas && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${N.accent}15`, color: N.accent }}>Métricas</span>}
+                    {t.incluirFirma && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${N.accent}15`, color: N.accent }}>Firma</span>}
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              ))}
+            </div>
+          </NeoCard>
+        )}
 
-          {/* TAB: Historial */}
-          <TabsContent value="historial">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <History className="w-5 h-5 text-gray-400" />
-                  Historial de Envíos
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-slate-50">
-                      <TableHead>Fecha</TableHead>
-                      <TableHead>Destinatarios</TableHead>
-                      <TableHead>Formato</TableHead>
-                      <TableHead>Estado</TableHead>
-                      <TableHead>Usuario</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {MOCK_HISTORIAL.map(envio => (
-                      <TableRow key={envio.id}>
-                        <TableCell className="font-medium">{envio.fecha}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {envio.destinatarios.map((d) => (
-                              <Badge key={d} variant="outline" className="text-xs">{d}</Badge>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className="uppercase text-xs">{envio.formato}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getEstadoColor(envio.estado)}>
-                            {envio.estado}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-gray-500">{envio.usuario}</TableCell>
-                        <TableCell>
-                          <Button size="sm" variant="ghost">
-                            <RefreshCw className="w-4 h-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* Footer */}
-        <div className="text-center text-gray-500 text-sm">
-          <p>📄 Confirmaciones Horarias TIER0 - Powered by Document Engine</p>
-          <p>Generación Automática • Tracking de Apertura • Auditoría Completa</p>
-        </div>
+        {/* TAB: Historial */}
+        {activeTab === 'historial' && (
+          <NeoCard padding="none">
+            <div className="px-5 py-3 border-b" style={{ borderColor: `${N.dark}40` }}>
+              <h3 className="text-sm font-black flex items-center gap-2" style={{ color: N.text }}>
+                <History className="h-4 w-4" style={{ color: N.accent }} />
+                Historial de Envíos
+              </h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${N.dark}40` }}>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Fecha</th>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Destinatarios</th>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Formato</th>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Estado</th>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Usuario</th>
+                    <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {MOCK_HISTORIAL.map(env => (
+                    <tr key={env.id} style={{ borderBottom: `1px solid ${N.dark}30` }}>
+                      <td className="px-3 py-3 font-medium" style={{ color: N.text }}>{env.fecha}</td>
+                      <td className="px-3 py-3">
+                        <div className="flex flex-wrap gap-1">
+                          {env.destinatarios.map(d => (
+                            <span key={d} className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${N.accent}10`, color: N.accent }}>{d}</span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}`, color: N.textSub }}>{env.formato}</span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full text-white" style={{ background: getEstadoColor(env.estado) }}>{env.estado}</span>
+                      </td>
+                      <td className="px-3 py-3" style={{ color: N.textSub }}>{env.usuario}</td>
+                      <td className="px-3 py-3">
+                        <NeoButton variant="ghost" size="icon"><RefreshCw className="w-3.5 h-3.5" /></NeoButton>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </NeoCard>
+        )}
       </div>
     </div>
   );

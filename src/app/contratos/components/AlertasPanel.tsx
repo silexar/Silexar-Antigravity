@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔔 SILEXAR PULSE - Alerts Panel Component TIER 0
  * 
  * @description Panel de alertas inteligentes con notificaciones
@@ -35,34 +35,34 @@ import {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
@@ -76,7 +76,7 @@ const getPrioridadColor = (prioridad: string) => {
     case 'urgente': return 'bg-red-100 text-red-700 ring-2 ring-red-300';
     case 'alta': return 'bg-orange-100 text-orange-700';
     case 'media': return 'bg-amber-100 text-amber-700';
-    default: return 'bg-slate-100 text-slate-700';
+    default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
 
@@ -139,15 +139,15 @@ export default function AlertasPanel({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+            <div className="p-2 rounded-xl bg-[#6888ff]">
               <Bell className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-800">Alertas</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="font-bold text-lg text-[#69738c]">Alertas</h3>
+              <p className="text-xs text-[#9aa3b8]">
                 {resumen.total} activas • {resumen.urgentes} urgentes
               </p>
             </div>
@@ -211,26 +211,26 @@ export default function AlertasPanel({
                       </span>
                     </div>
 
-                    <p className="font-semibold text-slate-800 mt-2">
+                    <p className="font-semibold text-[#69738c] mt-2">
                       {alerta.titulo}
                     </p>
-                    <p className="text-sm text-slate-600 mt-1">
+                    <p className="text-sm text-[#69738c] mt-1">
                       {alerta.mensaje}
                     </p>
 
                     {alerta.numeroContrato && (
-                      <p className="text-xs text-slate-400 mt-2">
+                      <p className="text-xs text-[#9aa3b8] mt-2">
                         {alerta.numeroContrato} • {alerta.clienteNombre}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
+                    <div className="flex items-center gap-3 mt-3 text-xs text-[#9aa3b8]">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatTimeAgo(alerta.fechaCreacion)}
                       </span>
                       {alerta.creadoPor === 'IA' && (
-                        <span className="text-indigo-500">✨ Detectado por IA</span>
+                        <span className="text-[#6888ff]">✨ Detectado por IA</span>
                       )}
                     </div>
                   </div>
@@ -266,12 +266,12 @@ export default function AlertasPanel({
                           </button>
                           <button
                             onClick={() => handleIgnorar(alerta.id)}
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-[#dfeaff] rounded-lg flex items-center gap-2"
                           >
                             <BellOff className="w-4 h-4" />
                             Ignorar
                           </button>
-                          <button className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100 rounded-lg flex items-center gap-2">
+                          <button className="w-full px-3 py-2 text-left text-sm hover:bg-[#dfeaff] rounded-lg flex items-center gap-2">
                             <ExternalLink className="w-4 h-4" />
                             Ver contrato
                           </button>
@@ -287,9 +287,9 @@ export default function AlertasPanel({
 
         {alertasFiltradas.length === 0 && (
           <div className="text-center py-12">
-            <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">No hay alertas activas</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <Bell className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
+            <p className="text-[#9aa3b8]">No hay alertas activas</p>
+            <p className="text-xs text-[#9aa3b8] mt-1">
               ¡Todo está bajo control!
             </p>
           </div>
@@ -298,8 +298,8 @@ export default function AlertasPanel({
 
       {/* Footer */}
       {alertas.length > maxAlertas && (
-        <div className="px-6 py-3 bg-slate-50/50 border-t border-slate-200/50 text-center">
-          <a href="/contratos/alertas" className="text-sm text-indigo-600 hover:underline">
+        <div className="px-6 py-3 bg-[#dfeaff]/50 border-t border-[#bec8de30] text-center">
+          <a href="/contratos/alertas" className="text-sm text-[#6888ff] hover:underline">
             Ver todas las alertas ({alertas.length})
           </a>
         </div>

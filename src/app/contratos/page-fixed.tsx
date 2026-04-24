@@ -223,7 +223,7 @@ export default function ContratosPage() {
 
   const getEstadoColor = (estado: string) => {
     const colors = {
-      'borrador': 'bg-slate-500',
+      'borrador': 'bg-[#69738c]',
       'revision': 'bg-blue-500',
       'aprobacion': 'bg-yellow-500',
       'firmado': 'bg-purple-500',
@@ -249,7 +249,7 @@ export default function ContratosPage() {
               Gestión de Contratos TIER 0
               <Sparkles className="h-6 w-6 text-yellow-400" />
             </h1>
-            <p className="text-slate-300 text-lg">
+            <p className="text-[#9aa3b8] text-lg">
               Centro de control contractual con workflows automatizados Cortex-Flow
             </p>
             <div className="flex items-center gap-4 mt-2">
@@ -271,8 +271,8 @@ export default function ContratosPage() {
             <div className="text-3xl font-bold text-emerald-400">
               {formatCurrency(estadisticas.valorTotal)}
             </div>
-            <div className="text-slate-400">Valor Total en Contratos</div>
-            <div className="text-sm text-slate-500 mt-1">
+            <div className="text-[#9aa3b8]">Valor Total en Contratos</div>
+            <div className="text-sm text-[#69738c] mt-1">
               {estadisticas.workflowEfficiency.toFixed(1)}% Eficiencia Workflow
             </div>
             <Button 
@@ -287,7 +287,7 @@ export default function ContratosPage() {
 
         {/* KPIs Principales Fortune 10 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-emerald-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-emerald-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Total Contratos</CardTitle>
               <FileText className="h-4 w-4 text-emerald-400" />
@@ -302,7 +302,7 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-green-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-green-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Valor Facturado</CardTitle>
               <DollarSign className="h-4 w-4 text-green-400" />
@@ -317,7 +317,7 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-yellow-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-yellow-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Pendiente Cobro</CardTitle>
               <Clock className="h-4 w-4 text-yellow-400" />
@@ -332,7 +332,7 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-blue-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-blue-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Cumplimiento</CardTitle>
               <Target className="h-4 w-4 text-blue-400" />
@@ -347,7 +347,7 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-purple-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Satisfacción</CardTitle>
               <Users className="h-4 w-4 text-purple-400" />
@@ -362,7 +362,7 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-orange-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-orange-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-200">Alertas Activas</CardTitle>
               <AlertTriangle className="h-4 w-4 text-orange-400" />
@@ -380,7 +380,7 @@ export default function ContratosPage() {
 
         {/* Tabs Principal */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-4 bg-[#dfeaff]/50">
             <TabsTrigger value="dashboard" className="data-[state=active]:bg-emerald-600">
               📊 Dashboard
             </TabsTrigger>
@@ -399,7 +399,7 @@ export default function ContratosPage() {
           <TabsContent value="dashboard" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Distribución por Estado */}
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <PieChart className="h-5 w-5 text-emerald-400" />
@@ -412,11 +412,11 @@ export default function ContratosPage() {
                       <div key={estado} className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className={`w-3 h-3 rounded-full ${getEstadoColor(estado)}`} />
-                          <span className="text-slate-300 capitalize">{estado}</span>
+                          <span className="text-[#9aa3b8] capitalize">{estado}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="text-white font-medium">{cantidad}</span>
-                          <span className="text-slate-400 text-sm">
+                          <span className="text-[#9aa3b8] text-sm">
                             ({((cantidad / estadisticas.totalContratos) * 100).toFixed(0)}%)
                           </span>
                         </div>
@@ -427,7 +427,7 @@ export default function ContratosPage() {
               </Card>
 
               {/* Performance Overview */}
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-blue-400" />
@@ -438,21 +438,21 @@ export default function ContratosPage() {
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-300">Cumplimiento Promedio</span>
+                        <span className="text-[#9aa3b8]">Cumplimiento Promedio</span>
                         <span className="text-white">{estadisticas.promedioCumplimiento.toFixed(1)}%</span>
                       </div>
                       <Progress value={estadisticas.promedioCumplimiento} className="h-2" />
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-300">Satisfacción Cliente</span>
+                        <span className="text-[#9aa3b8]">Satisfacción Cliente</span>
                         <span className="text-white">{estadisticas.promedioSatisfaccion.toFixed(1)}%</span>
                       </div>
                       <Progress value={estadisticas.promedioSatisfaccion} className="h-2" />
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-300">Eficiencia Workflow</span>
+                        <span className="text-[#9aa3b8]">Eficiencia Workflow</span>
                         <span className="text-white">{estadisticas.workflowEfficiency.toFixed(1)}%</span>
                       </div>
                       <Progress value={estadisticas.workflowEfficiency} className="h-2" />
@@ -465,10 +465,10 @@ export default function ContratosPage() {
 
           {/* Tab Contratos */}
           <TabsContent value="contratos" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
               <CardHeader>
                 <CardTitle className="text-white">Lista de Contratos</CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-[#9aa3b8]">
                   Gestión completa de contratos con filtros avanzados
                 </CardDescription>
               </CardHeader>
@@ -476,18 +476,18 @@ export default function ContratosPage() {
                 {/* Filtros */}
                 <div className="flex items-center gap-4 mb-6">
                   <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9aa3b8] h-4 w-4" />
                     <Input
                       placeholder="Buscar contratos..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-slate-700 border-slate-600 text-white"
+                      className="pl-10 bg-[#dfeaff] border-[#bec8de30] text-white"
                     />
                   </div>
                   <select
                     value={filtroEstado}
                     onChange={(e) => setFiltroEstado(e.target.value)}
-                    className="bg-slate-700 border-slate-600 text-white rounded-md px-3 py-2"
+                    className="bg-[#dfeaff] border-[#bec8de30] text-white rounded-md px-3 py-2"
                   >
                     <option value="todos">Todos los estados</option>
                     <option value="borrador">Borrador</option>
@@ -508,13 +508,13 @@ export default function ContratosPage() {
                 {/* Tabla de Contratos */}
                 <div className="space-y-4">
                   {contratos.map((contrato) => (
-                    <Card key={contrato.id} className="bg-slate-700/50 border-slate-600 hover:border-emerald-500/50 transition-colors">
+                    <Card key={contrato.id} className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-emerald-500/50 transition-colors">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
                             <div>
                               <h3 className="text-white font-medium">{contrato.numero}</h3>
-                              <p className="text-slate-400 text-sm">{contrato.anunciante}</p>
+                              <p className="text-[#9aa3b8] text-sm">{contrato.anunciante}</p>
                             </div>
                             <Badge className={getEstadoColor(contrato.estado)}>
                               {contrato.estado}
@@ -525,7 +525,7 @@ export default function ContratosPage() {
                               <div className="text-white font-medium">
                                 {formatCurrency(contrato.valorNeto)}
                               </div>
-                              <div className="text-slate-400 text-sm">
+                              <div className="text-[#9aa3b8] text-sm">
                                 {contrato.workflow.progreso}% completado
                               </div>
                             </div>
@@ -544,7 +544,7 @@ export default function ContratosPage() {
 
           {/* Tab Workflows */}
           <TabsContent value="workflows" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Workflow className="h-5 w-5 text-purple-400" />
@@ -557,7 +557,7 @@ export default function ContratosPage() {
                   <h3 className="text-white text-lg font-medium mb-2">
                     Análisis Cortex-Flow en Progreso
                   </h3>
-                  <p className="text-slate-400">
+                  <p className="text-[#9aa3b8]">
                     Analizando patrones de workflow y optimizaciones...
                   </p>
                 </div>
@@ -567,7 +567,7 @@ export default function ContratosPage() {
 
           {/* Tab Analytics */}
           <TabsContent value="analytics" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-orange-400" />
@@ -580,7 +580,7 @@ export default function ContratosPage() {
                   <h3 className="text-white text-lg font-medium mb-2">
                     Dashboard Analytics
                   </h3>
-                  <p className="text-slate-400">
+                  <p className="text-[#9aa3b8]">
                     Métricas avanzadas y reportes en tiempo real
                   </p>
                 </div>

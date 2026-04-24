@@ -13,23 +13,6 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import {
   Search,
   Folder,
@@ -50,8 +33,11 @@ import {
   Copy,
   Plus,
   ChevronRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  X
 } from 'lucide-react';
+
+import { NeoPageHeader, NeoCard, NeoButton, NeoInput, NeoSelect, NeoBadge, N } from '../_lib/neumorphic';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -260,7 +246,7 @@ export default function BibliotecaCreativos() {
   const [filtroTipo, setFiltroTipo] = useState<string>('todos');
   const [filtroEstado, setFiltroEstado] = useState<string>('todos');
   const [vistaGrid, setVistaGrid] = useState(true);
-  const [dialogoDetalle, setDialogoDetalle] = useState(false);
+  const [panelDetalle, setPanelDetalle] = useState(false);
 
   // Filtrar creativos
   const creativosFiltrados = useMemo(() => {
@@ -284,11 +270,11 @@ export default function BibliotecaCreativos() {
   // Obtener icono de tipo
   const getIconoTipo = (tipo: TipoCreativoDAM) => {
     switch (tipo) {
-      case 'banner': return <FileImage className="w-5 h-5 text-blue-500" />;
-      case 'audio': return <FileAudio className="w-5 h-5 text-purple-500" />;
-      case 'video': return <FileVideo className="w-5 h-5 text-red-500" />;
-      case 'html5': return <FileCode className="w-5 h-5 text-orange-500" />;
-      default: return <FileImage className="w-5 h-5 text-gray-500" />;
+      case 'banner': return <FileImage className="w-5 h-5" style={{ color: N.accent }} />;
+      case 'audio': return <FileAudio className="w-5 h-5" style={{ color: '#a855f7' }} />;
+      case 'video': return <FileVideo className="w-5 h-5" style={{ color: '#ef4444' }} />;
+      case 'html5': return <FileCode className="w-5 h-5" style={{ color: '#f59e0b' }} />;
+      default: return <FileImage className="w-5 h-5" style={{ color: N.textSub }} />;
     }
   };
 
@@ -296,15 +282,15 @@ export default function BibliotecaCreativos() {
   const getEstadoBadge = (estado: string) => {
     switch (estado) {
       case 'aprobado':
-        return <Badge className="bg-green-100 text-green-700"><CheckCircle2 className="w-3 h-3 mr-1" />Aprobado</Badge>;
+        return <NeoBadge color="green"><CheckCircle2 className="w-3 h-3" />Aprobado</NeoBadge>;
       case 'qa_pendiente':
-        return <Badge className="bg-amber-100 text-amber-700"><Clock className="w-3 h-3 mr-1" />QA Pendiente</Badge>;
+        return <NeoBadge color="yellow"><Clock className="w-3 h-3" />QA Pendiente</NeoBadge>;
       case 'cliente_pendiente':
-        return <Badge className="bg-blue-100 text-blue-700"><Clock className="w-3 h-3 mr-1" />Cliente Pendiente</Badge>;
+        return <NeoBadge color="blue"><Clock className="w-3 h-3" />Cliente Pendiente</NeoBadge>;
       case 'rechazado':
-        return <Badge className="bg-red-100 text-red-700"><AlertTriangle className="w-3 h-3 mr-1" />Rechazado</Badge>;
+        return <NeoBadge color="red"><AlertTriangle className="w-3 h-3" />Rechazado</NeoBadge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-700">Borrador</Badge>;
+        return <NeoBadge color="gray">Borrador</NeoBadge>;
     }
   };
 
@@ -318,338 +304,352 @@ export default function BibliotecaCreativos() {
   // Abrir detalle
   const abrirDetalle = (creativo: CreativoDAM) => {
     setCreativoSeleccionado(creativo);
-    setDialogoDetalle(true);
+    setPanelDetalle(true);
+  };
+
+  const cerrarDetalle = () => {
+    setPanelDetalle(false);
+    setCreativoSeleccionado(null);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
-            <ImageIcon className="w-7 h-7 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">🎨 Biblioteca de Creativos</h1>
-            <p className="text-gray-500">DAM centralizado con versionado y métricas</p>
-          </div>
-        </div>
-        <Button className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600">
-          <Upload className="w-4 h-4" />
-          Subir Creativo
-        </Button>
-      </div>
+    <div className="min-h-screen p-6" style={{ background: N.base }}>
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        <NeoPageHeader
+          title="Biblioteca de Creativos"
+          subtitle="DAM centralizado con versionado y métricas"
+          icon={ImageIcon}
+          backHref="/campanas"
+        />
 
-      <div className="grid grid-cols-12 gap-6">
-        {/* SIDEBAR: CARPETAS */}
-        <div className="col-span-3">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                <Folder className="w-4 h-4" />
-                Carpetas
-              </h3>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="space-y-1">
-              <div
-                className={`p-2 rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                  !carpetaSeleccionada ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'
-                }`}
-                onClick={() => setCarpetaSeleccionada(null)}
-              >
-                <div className="flex items-center gap-2">
-                  <FolderOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Todos los creativos</span>
-                </div>
-                <span className="text-xs text-gray-500">{CREATIVOS_MOCK.length}</span>
-              </div>
-
-              {CARPETAS_MOCK.map(carpeta => (
-                <div key={carpeta.id}>
-                  <div
-                    className={`p-2 rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                      carpetaSeleccionada === carpeta.id ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'
-                    }`}
-                    onClick={() => setCarpetaSeleccionada(carpeta.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded ${carpeta.iconoColor}`}></div>
-                      <span className="text-sm font-medium">{carpeta.nombre}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">{carpeta.creativosCount}</span>
-                  </div>
-
-                  {carpeta.subcarpetas && (
-                    <div className="ml-4 space-y-1 mt-1">
-                      {carpeta.subcarpetas.map(sub => (
-                        <div
-                          key={sub.id}
-                          className={`p-2 rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                            carpetaSeleccionada === sub.id ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'
-                          }`}
-                          onClick={() => setCarpetaSeleccionada(sub.id)}
-                        >
-                          <div className="flex items-center gap-2">
-                            <ChevronRight className="w-3 h-3 text-gray-400" />
-                            <span className="text-sm">{sub.nombre}</span>
-                          </div>
-                          <span className="text-xs text-gray-500">{sub.creativosCount}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
+        <div className="flex justify-end">
+          <NeoButton variant="primary">
+            <Upload className="w-4 h-4" />
+            Subir Creativo
+          </NeoButton>
         </div>
 
-        {/* CONTENIDO PRINCIPAL */}
-        <div className="col-span-9">
-          {/* Filtros */}
-          <Card className="p-4 mb-4">
-            <div className="flex items-center gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar creativos..."
-                  value={busqueda}
-                  onChange={(e) => setBusqueda(e.target.value)}
-                  className="pl-10"
-                />
+        <div className="grid grid-cols-12 gap-6">
+          {/* SIDEBAR: CARPETAS */}
+          <div className="col-span-3">
+            <NeoCard padding="small">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-black flex items-center gap-2" style={{ color: N.text }}>
+                  <Folder className="w-4 h-4" />
+                  Carpetas
+                </h3>
+                <NeoButton variant="ghost" size="icon">
+                  <Plus className="w-4 h-4" />
+                </NeoButton>
               </div>
 
-              <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos los tipos</SelectItem>
-                  <SelectItem value="banner">Banners</SelectItem>
-                  <SelectItem value="audio">Audio</SelectItem>
-                  <SelectItem value="video">Video</SelectItem>
-                  <SelectItem value="html5">HTML5</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-                <SelectTrigger className="w-44">
-                  <SelectValue placeholder="Estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos los estados</SelectItem>
-                  <SelectItem value="aprobado">Aprobados</SelectItem>
-                  <SelectItem value="qa_pendiente">Pendiente QA</SelectItem>
-                  <SelectItem value="cliente_pendiente">Pendiente Cliente</SelectItem>
-                  <SelectItem value="rechazado">Rechazados</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex border rounded-lg">
-                <Button
-                  variant={vistaGrid ? "default" : "ghost"}
-                  size="icon"
-                  className="h-9 w-9 rounded-r-none"
-                  onClick={() => setVistaGrid(true)}
+              <div className="space-y-1">
+                <div
+                  className="p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all"
+                  style={{
+                    background: !carpetaSeleccionada ? N.base : 'transparent',
+                    boxShadow: !carpetaSeleccionada ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` : 'none',
+                    color: !carpetaSeleccionada ? N.accent : N.text
+                  }}
+                  onClick={() => setCarpetaSeleccionada(null)}
                 >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={!vistaGrid ? "default" : "ghost"}
-                  size="icon"
-                  className="h-9 w-9 rounded-l-none"
-                  onClick={() => setVistaGrid(false)}
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          {/* Grid de creativos */}
-          {vistaGrid ? (
-            <div className="grid grid-cols-4 gap-4">
-              {creativosFiltrados.map(creativo => (
-                <Card
-                  key={creativo.id}
-                  className="p-3 hover:shadow-lg transition-all cursor-pointer group"
-                  onClick={() => abrirDetalle(creativo)}
-                >
-                  {/* Thumbnail */}
-                  <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
-                    {creativo.tipo === 'banner' && creativo.thumbnailUrl ? (
-                      <Image
-                        src={creativo.thumbnailUrl}
-                        alt={creativo.nombre}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, 300px"
-                      />
-                    ) : (
-                      getIconoTipo(creativo.tipo)
-                    )}
+                  <div className="flex items-center gap-2">
+                    <FolderOpen className="w-4 h-4" />
+                    <span className="text-sm font-bold">Todos los creativos</span>
                   </div>
+                  <span className="text-xs font-bold" style={{ color: N.textSub }}>{CREATIVOS_MOCK.length}</span>
+                </div>
 
-                  {/* Info */}
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm text-gray-900 truncate">{creativo.nombre}</h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">{creativo.formato.toUpperCase()}</span>
-                      <span className="text-xs text-gray-500">{formatSize(creativo.tamanoBytes)}</span>
-                    </div>
-                    {getEstadoBadge(creativo.estado)}
-                  </div>
-
-                  {/* Hover actions */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="secondary" size="icon" className="h-7 w-7">
-                      <Eye className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card className="p-4">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-xs text-gray-500 border-b">
-                    <th className="pb-2">Nombre</th>
-                    <th className="pb-2">Tipo</th>
-                    <th className="pb-2">Formato</th>
-                    <th className="pb-2">Tamaño</th>
-                    <th className="pb-2">Estado</th>
-                    <th className="pb-2">Métricas</th>
-                    <th className="pb-2">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {creativosFiltrados.map(creativo => (
-                    <tr 
-                      key={creativo.id} 
-                      className="border-b hover:bg-gray-50 cursor-pointer"
-                      onClick={() => abrirDetalle(creativo)}
+                {CARPETAS_MOCK.map(carpeta => (
+                  <div key={carpeta.id}>
+                    <div
+                      className="p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all"
+                      style={{
+                        background: carpetaSeleccionada === carpeta.id ? N.base : 'transparent',
+                        boxShadow: carpetaSeleccionada === carpeta.id ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` : 'none',
+                        color: carpetaSeleccionada === carpeta.id ? N.accent : N.text
+                      }}
+                      onClick={() => setCarpetaSeleccionada(carpeta.id)}
                     >
-                      <td className="py-3">
-                        <div className="flex items-center gap-2">
-                          {getIconoTipo(creativo.tipo)}
-                          <span className="font-medium text-sm">{creativo.nombre}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 text-sm text-gray-600">{creativo.tipo}</td>
-                      <td className="py-3 text-sm text-gray-600">{creativo.formato.toUpperCase()}</td>
-                      <td className="py-3 text-sm text-gray-600">{formatSize(creativo.tamanoBytes)}</td>
-                      <td className="py-3">{getEstadoBadge(creativo.estado)}</td>
-                      <td className="py-3 text-sm text-gray-600">
-                        {creativo.impresiones.toLocaleString()} imp
-                      </td>
-                      <td className="py-3">
-                        <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-7 w-7">
-                            <Eye className="w-3 h-3" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7">
-                            <Download className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Card>
-          )}
-        </div>
-      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${carpeta.iconoColor}`}></div>
+                        <span className="text-sm font-bold">{carpeta.nombre}</span>
+                      </div>
+                      <span className="text-xs font-bold" style={{ color: N.textSub }}>{carpeta.creativosCount}</span>
+                    </div>
 
-      {/* Diálogo de detalle */}
-      <Dialog open={dialogoDetalle} onOpenChange={setDialogoDetalle}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {creativoSeleccionado && getIconoTipo(creativoSeleccionado.tipo)}
-              {creativoSeleccionado?.nombre}
-            </DialogTitle>
-          </DialogHeader>
-
-          {creativoSeleccionado && (
-            <div className="grid grid-cols-2 gap-6">
-              {/* Preview */}
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                {creativoSeleccionado.tipo === 'banner' ? (
-                  <FileImage className="w-16 h-16 text-gray-400" />
-                ) : creativoSeleccionado.tipo === 'audio' ? (
-                  <FileAudio className="w-16 h-16 text-gray-400" />
-                ) : (
-                  <FileVideo className="w-16 h-16 text-gray-400" />
-                )}
-              </div>
-
-              {/* Info */}
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Información</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div><span className="text-gray-500">Formato:</span> {creativoSeleccionado.formato.toUpperCase()}</div>
-                    <div><span className="text-gray-500">Tamaño:</span> {formatSize(creativoSeleccionado.tamanoBytes)}</div>
-                    {creativoSeleccionado.dimensiones && (
-                      <div>
-                        <span className="text-gray-500">Dimensiones:</span> {creativoSeleccionado.dimensiones.width}x{creativoSeleccionado.dimensiones.height}
+                    {carpeta.subcarpetas && (
+                      <div className="ml-4 space-y-1 mt-1">
+                        {carpeta.subcarpetas.map(sub => (
+                          <div
+                            key={sub.id}
+                            className="p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all"
+                            style={{
+                              background: carpetaSeleccionada === sub.id ? N.base : 'transparent',
+                              boxShadow: carpetaSeleccionada === sub.id ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` : 'none',
+                              color: carpetaSeleccionada === sub.id ? N.accent : N.text
+                            }}
+                            onClick={() => setCarpetaSeleccionada(sub.id)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <ChevronRight className="w-3 h-3" style={{ color: N.textSub }} />
+                              <span className="text-sm">{sub.nombre}</span>
+                            </div>
+                            <span className="text-xs font-bold" style={{ color: N.textSub }}>{sub.creativosCount}</span>
+                          </div>
+                        ))}
                       </div>
                     )}
-                    {creativoSeleccionado.duracion && (
-                      <div><span className="text-gray-500">Duración:</span> {creativoSeleccionado.duracion}s</div>
-                    )}
-                    <div><span className="text-gray-500">Versión:</span> v{creativoSeleccionado.version}</div>
                   </div>
+                ))}
+              </div>
+            </NeoCard>
+          </div>
+
+          {/* CONTENIDO PRINCIPAL */}
+          <div className="col-span-9">
+            {/* Filtros */}
+            <NeoCard padding="small" className="mb-4">
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: N.textSub }} />
+                  <NeoInput
+                    placeholder="Buscar creativos..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
 
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Estado</h4>
-                  {getEstadoBadge(creativoSeleccionado.estado)}
-                </div>
+                <NeoSelect value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} className="w-40">
+                  <option value="todos">Todos los tipos</option>
+                  <option value="banner">Banners</option>
+                  <option value="audio">Audio</option>
+                  <option value="video">Video</option>
+                  <option value="html5">HTML5</option>
+                </NeoSelect>
 
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Métricas</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="p-2 bg-blue-50 rounded text-center">
-                      <p className="text-lg font-bold text-blue-700">{creativoSeleccionado.impresiones.toLocaleString()}</p>
-                      <p className="text-xs text-blue-600">Impresiones</p>
-                    </div>
-                    <div className="p-2 bg-green-50 rounded text-center">
-                      <p className="text-lg font-bold text-green-700">{creativoSeleccionado.clicks.toLocaleString()}</p>
-                      <p className="text-xs text-green-600">Clicks</p>
-                    </div>
-                    <div className="p-2 bg-purple-50 rounded text-center">
-                      <p className="text-lg font-bold text-purple-700">{creativoSeleccionado.campanasUsado}</p>
-                      <p className="text-xs text-purple-600">Campañas</p>
-                    </div>
-                  </div>
-                </div>
+                <NeoSelect value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} className="w-44">
+                  <option value="todos">Todos los estados</option>
+                  <option value="aprobado">Aprobados</option>
+                  <option value="qa_pendiente">Pendiente QA</option>
+                  <option value="cliente_pendiente">Pendiente Cliente</option>
+                  <option value="rechazado">Rechazados</option>
+                </NeoSelect>
 
-                <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1 gap-1">
-                    <Download className="w-4 h-4" />
-                    Descargar
-                  </Button>
-                  <Button variant="outline" className="flex-1 gap-1">
-                    <History className="w-4 h-4" />
-                    Versiones
-                  </Button>
-                  <Button className="flex-1 gap-1">
-                    <Copy className="w-4 h-4" />
-                    Usar en Campaña
-                  </Button>
+                <div className="flex rounded-xl overflow-hidden" style={{ boxShadow: `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}` }}>
+                  <button
+                    className="h-9 w-9 flex items-center justify-center transition-all"
+                    style={{
+                      background: vistaGrid ? N.accent : N.base,
+                      color: vistaGrid ? '#fff' : N.textSub
+                    }}
+                    onClick={() => setVistaGrid(true)}
+                  >
+                    <Grid className="w-4 h-4" />
+                  </button>
+                  <button
+                    className="h-9 w-9 flex items-center justify-center transition-all"
+                    style={{
+                      background: !vistaGrid ? N.accent : N.base,
+                      color: !vistaGrid ? '#fff' : N.textSub
+                    }}
+                    onClick={() => setVistaGrid(false)}
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+            </NeoCard>
+
+            {/* Grid de creativos */}
+            {vistaGrid ? (
+              <div className="grid grid-cols-4 gap-4">
+                {creativosFiltrados.map(creativo => (
+                  <NeoCard
+                    key={creativo.id}
+                    padding="small"
+                    className="cursor-pointer group relative transition-all hover:scale-[1.02]"
+                    onClick={() => abrirDetalle(creativo)}
+                  >
+                    {/* Thumbnail */}
+                    <div className="aspect-video rounded-xl mb-3 flex items-center justify-center overflow-hidden relative" style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}>
+                      {creativo.tipo === 'banner' && creativo.thumbnailUrl ? (
+                        <Image
+                          src={creativo.thumbnailUrl}
+                          alt={creativo.nombre}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, 300px"
+                        />
+                      ) : (
+                        getIconoTipo(creativo.tipo)
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-sm truncate" style={{ color: N.text }}>{creativo.nombre}</h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase" style={{ color: N.textSub }}>{creativo.formato}</span>
+                        <span className="text-xs font-bold" style={{ color: N.textSub }}>{formatSize(creativo.tamanoBytes)}</span>
+                      </div>
+                      {getEstadoBadge(creativo.estado)}
+                    </div>
+
+                    {/* Hover actions */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <NeoButton variant="secondary" size="icon">
+                        <Eye className="w-3 h-3" />
+                      </NeoButton>
+                    </div>
+                  </NeoCard>
+                ))}
+              </div>
+            ) : (
+              <NeoCard padding="small">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ borderBottom: `2px solid ${N.dark}40` }}>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Nombre</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Tipo</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Formato</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Tamaño</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Estado</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Métricas</th>
+                      <th className="pb-2 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {creativosFiltrados.map(creativo => (
+                      <tr 
+                        key={creativo.id} 
+                        className="cursor-pointer transition-colors"
+                        style={{ borderBottom: `1px solid ${N.dark}30` }}
+                        onClick={() => abrirDetalle(creativo)}
+                      >
+                        <td className="py-3">
+                          <div className="flex items-center gap-2">
+                            {getIconoTipo(creativo.tipo)}
+                            <span className="font-bold text-sm" style={{ color: N.text }}>{creativo.nombre}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 text-sm" style={{ color: N.textSub }}>{creativo.tipo}</td>
+                        <td className="py-3 text-sm font-bold uppercase" style={{ color: N.textSub }}>{creativo.formato}</td>
+                        <td className="py-3 text-sm" style={{ color: N.textSub }}>{formatSize(creativo.tamanoBytes)}</td>
+                        <td className="py-3">{getEstadoBadge(creativo.estado)}</td>
+                        <td className="py-3 text-sm" style={{ color: N.textSub }}>
+                          {creativo.impresiones.toLocaleString()} imp
+                        </td>
+                        <td className="py-3">
+                          <div className="flex gap-1">
+                            <NeoButton variant="ghost" size="icon">
+                              <Eye className="w-3 h-3" />
+                            </NeoButton>
+                            <NeoButton variant="ghost" size="icon">
+                              <Download className="w-3 h-3" />
+                            </NeoButton>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </NeoCard>
+            )}
+          </div>
+        </div>
+
+        {/* Panel de detalle inline (sin modal bloqueante) */}
+        {panelDetalle && creativoSeleccionado && (
+          <div className="fixed inset-0 z-50 flex items-start justify-end pt-20 pr-6">
+            <div className="absolute inset-0" onClick={cerrarDetalle} />
+            <NeoCard className="relative w-full max-w-2xl max-h-[80vh] overflow-auto" style={{ zIndex: 10 }}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  {getIconoTipo(creativoSeleccionado.tipo)}
+                  <h3 className="font-black text-lg" style={{ color: N.text }}>{creativoSeleccionado.nombre}</h3>
+                </div>
+                <NeoButton variant="ghost" size="icon" onClick={cerrarDetalle}>
+                  <X className="w-4 h-4" />
+                </NeoButton>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                {/* Preview */}
+                <div className="aspect-video rounded-2xl flex items-center justify-center" style={{ background: N.base, boxShadow: `inset 4px 4px 8px ${N.dark}, inset -4px -4px 8px ${N.light}` }}>
+                  {creativoSeleccionado.tipo === 'banner' ? (
+                    <FileImage className="w-16 h-16" style={{ color: N.textSub }} />
+                  ) : creativoSeleccionado.tipo === 'audio' ? (
+                    <FileAudio className="w-16 h-16" style={{ color: N.textSub }} />
+                  ) : (
+                    <FileVideo className="w-16 h-16" style={{ color: N.textSub }} />
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-wider mb-2" style={{ color: N.textSub }}>Información</h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div><span style={{ color: N.textSub }}>Formato:</span> <span className="font-bold uppercase" style={{ color: N.text }}>{creativoSeleccionado.formato}</span></div>
+                      <div><span style={{ color: N.textSub }}>Tamaño:</span> <span className="font-bold" style={{ color: N.text }}>{formatSize(creativoSeleccionado.tamanoBytes)}</span></div>
+                      {creativoSeleccionado.dimensiones && (
+                        <div>
+                          <span style={{ color: N.textSub }}>Dimensiones:</span> <span className="font-bold" style={{ color: N.text }}>{creativoSeleccionado.dimensiones.width}x{creativoSeleccionado.dimensiones.height}</span>
+                        </div>
+                      )}
+                      {creativoSeleccionado.duracion && (
+                        <div><span style={{ color: N.textSub }}>Duración:</span> <span className="font-bold" style={{ color: N.text }}>{creativoSeleccionado.duracion}s</span></div>
+                      )}
+                      <div><span style={{ color: N.textSub }}>Versión:</span> <span className="font-bold" style={{ color: N.text }}>v{creativoSeleccionado.version}</span></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-wider mb-2" style={{ color: N.textSub }}>Estado</h4>
+                    {getEstadoBadge(creativoSeleccionado.estado)}
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-wider mb-2" style={{ color: N.textSub }}>Métricas</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}>
+                        <p className="text-lg font-black" style={{ color: N.accent }}>{creativoSeleccionado.impresiones.toLocaleString()}</p>
+                        <p className="text-xs font-bold" style={{ color: N.textSub }}>Impresiones</p>
+                      </div>
+                      <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}>
+                        <p className="text-lg font-black" style={{ color: '#22c55e' }}>{creativoSeleccionado.clicks.toLocaleString()}</p>
+                        <p className="text-xs font-bold" style={{ color: N.textSub }}>Clicks</p>
+                      </div>
+                      <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}` }}>
+                        <p className="text-lg font-black" style={{ color: '#a855f7' }}>{creativoSeleccionado.campanasUsado}</p>
+                        <p className="text-xs font-bold" style={{ color: N.textSub }}>Campañas</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <NeoButton variant="secondary" className="flex-1">
+                      <Download className="w-4 h-4" />
+                      Descargar
+                    </NeoButton>
+                    <NeoButton variant="secondary" className="flex-1">
+                      <History className="w-4 h-4" />
+                      Versiones
+                    </NeoButton>
+                    <NeoButton variant="primary" className="flex-1">
+                      <Copy className="w-4 h-4" />
+                      Usar en Campaña
+                    </NeoButton>
+                  </div>
+                </div>
+              </div>
+            </NeoCard>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

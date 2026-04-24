@@ -1,5 +1,5 @@
 /**
- * üè¢ MOBILE: Workspace View
+ * ?? MOBILE: Workspace View
  * 
  * Espacio de trabajo mobile del ejecutivo.
  * Paridad con desktop: contratos/workspace/page.tsx
@@ -35,17 +35,17 @@ interface NotaReciente {
 }
 
 const TAREAS_MOCK: TareaWorkspace[] = [
-  { id: 't-1', titulo: 'Enviar propuesta renovaci√≥n', contrato: 'CTR-0045', cliente: 'Falabella', prioridad: 'alta', tipo: 'tarea', vencimiento: '2025-02-28', completada: false },
+  { id: 't-1', titulo: 'Enviar propuesta renovaciÛn', contrato: 'CTR-0045', cliente: 'Falabella', prioridad: 'alta', tipo: 'tarea', vencimiento: '2025-02-28', completada: false },
   { id: 't-2', titulo: 'Seguimiento firma digital', contrato: 'CTR-0067', cliente: 'Banco Chile', prioridad: 'alta', tipo: 'seguimiento', vencimiento: '2025-02-27', completada: false },
   { id: 't-3', titulo: 'Revisar condiciones precio', contrato: 'CTR-0089', cliente: 'TechCorp', prioridad: 'media', tipo: 'revision', vencimiento: '2025-03-01', completada: false },
   { id: 't-4', titulo: 'Llamar para cierre', contrato: 'CTR-0056', cliente: 'Cencosud', prioridad: 'media', tipo: 'llamada', vencimiento: '2025-02-28', completada: true },
-  { id: 't-5', titulo: 'Preparar presentaci√≥n Q1', prioridad: 'baja', tipo: 'tarea', vencimiento: '2025-03-05', completada: false },
+  { id: 't-5', titulo: 'Preparar presentaciÛn Q1', prioridad: 'baja', tipo: 'tarea', vencimiento: '2025-03-05', completada: false },
 ];
 
 const NOTAS_MOCK: NotaReciente[] = [
-  { id: 'n-1', contenido: 'Cliente interesado en extender el contrato 6 meses m√°s con aumento del 10%', contrato: 'CTR-0045', fecha: '2025-02-27' },
-  { id: 'n-2', contenido: 'Pendiente aprobaci√≥n gerencia para descuento especial', contrato: 'CTR-0034', fecha: '2025-02-26' },
-  { id: 'n-3', contenido: 'Enviada propuesta por email, confirmar recepci√≥n ma√±ana', contrato: 'CTR-0067', fecha: '2025-02-25' },
+  { id: 'n-1', contenido: 'Cliente interesado en extender el contrato 6 meses m·s con aumento del 10%', contrato: 'CTR-0045', fecha: '2025-02-27' },
+  { id: 'n-2', contenido: 'Pendiente aprobaciÛn gerencia para descuento especial', contrato: 'CTR-0034', fecha: '2025-02-26' },
+  { id: 'n-3', contenido: 'Enviada propuesta por email, confirmar recepciÛn maÒana', contrato: 'CTR-0067', fecha: '2025-02-25' },
 ];
 
 const prioridadConfig: Record<string, { color: string; bg: string }> = {
@@ -75,23 +75,23 @@ export function MobileWorkspaceView() {
   return (
     <div className="space-y-5">
       {/* HEADER */}
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white shadow-xl">
+      <div className="bg-[#6888ff] rounded-2xl p-5 text-white shadow-xl">
         <div className="flex items-center gap-2 mb-2">
-          <Briefcase className="w-5 h-5 text-slate-300" />
-          <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Mi Workspace</p>
+          <Briefcase className="w-5 h-5 text-[#9aa3b8]" />
+          <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest">Mi Workspace</p>
         </div>
         <div className="grid grid-cols-3 gap-3 mt-3">
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{pendientes.length}</p>
-            <p className="text-[10px] text-slate-400">Pendientes</p>
+            <p className="text-[10px] text-[#9aa3b8]">Pendientes</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{completadas.length}</p>
-            <p className="text-[10px] text-slate-400">Completadas</p>
+            <p className="text-[10px] text-[#9aa3b8]">Completadas</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
             <p className="text-xl font-black">{NOTAS_MOCK.length}</p>
-            <p className="text-[10px] text-slate-400">Notas</p>
+            <p className="text-[10px] text-[#9aa3b8]">Notas</p>
           </div>
         </div>
       </div>
@@ -101,9 +101,9 @@ export function MobileWorkspaceView() {
         {(['tareas', 'notas'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-2 rounded-full text-xs font-bold flex-1 ${
-              tab === t ? 'bg-slate-800 text-white' : 'bg-white text-slate-500 border border-slate-200'
+              tab === t ? 'bg-[#69738c] text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
-            {t === 'tareas' ? '‚úÖ Tareas' : 'üìù Notas'}
+            {t === 'tareas' ? '? Tareas' : '?? Notas'}
           </button>
         ))}
       </div>
@@ -112,25 +112,25 @@ export function MobileWorkspaceView() {
         <>
           {/* PENDIENTES */}
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Pendientes ({pendientes.length})</p>
+            <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">Pendientes ({pendientes.length})</p>
             <div className="space-y-2">
               {pendientes.map(tarea => (
-                <div key={tarea.id} className="bg-white rounded-xl border border-slate-100 p-3 flex items-start gap-3">
-                  <button onClick={() => toggleTarea(tarea.id)} className="mt-0.5 w-5 h-5 rounded border-2 border-slate-300 shrink-0 active:scale-90" />
+                <div key={tarea.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-start gap-3">
+                  <button onClick={() => toggleTarea(tarea.id)} className="mt-0.5 w-5 h-5 rounded border-2 border-[#bec8de] shrink-0 active:scale-90" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate-800 text-sm">{tarea.titulo}</p>
+                    <p className="font-bold text-[#69738c] text-sm">{tarea.titulo}</p>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      {tarea.cliente && <span className="text-[10px] text-indigo-600 font-bold">{tarea.cliente}</span>}
-                      {tarea.contrato && <span className="text-[10px] text-slate-400">{tarea.contrato}</span>}
+                      {tarea.cliente && <span className="text-[10px] text-[#6888ff] font-bold">{tarea.cliente}</span>}
+                      {tarea.contrato && <span className="text-[10px] text-[#9aa3b8]">{tarea.contrato}</span>}
                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${prioridadConfig[tarea.prioridad]?.bg} ${prioridadConfig[tarea.prioridad]?.color}`}>
                         {tarea.prioridad}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-0.5">
+                    <p className="text-[10px] text-[#9aa3b8] mt-0.5 flex items-center gap-0.5">
                       <Calendar className="w-3 h-3" /> {tarea.vencimiento}
                     </p>
                   </div>
-                  <div className="text-slate-400">{tipoIcon[tarea.tipo]}</div>
+                  <div className="text-[#9aa3b8]">{tipoIcon[tarea.tipo]}</div>
                 </div>
               ))}
             </div>
@@ -139,14 +139,14 @@ export function MobileWorkspaceView() {
           {/* COMPLETADAS */}
           {completadas.length > 0 && (
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Completadas ({completadas.length})</p>
+              <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">Completadas ({completadas.length})</p>
               <div className="space-y-2">
                 {completadas.map(tarea => (
-                  <div key={tarea.id} className="bg-slate-50 rounded-xl border border-slate-100 p-3 flex items-center gap-3 opacity-60">
+                  <div key={tarea.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3 opacity-60">
                     <button onClick={() => toggleTarea(tarea.id)} className="w-5 h-5 rounded bg-emerald-500 text-white flex items-center justify-center shrink-0">
                       <CheckSquare className="w-3 h-3" />
                     </button>
-                    <p className="font-medium text-slate-500 text-sm line-through">{tarea.titulo}</p>
+                    <p className="font-medium text-[#9aa3b8] text-sm line-through">{tarea.titulo}</p>
                   </div>
                 ))}
               </div>
@@ -154,7 +154,7 @@ export function MobileWorkspaceView() {
           )}
 
           {/* ADD TASK */}
-          <button className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2 active:scale-95">
+          <button className="w-full py-3 border-2 border-dashed border-[#bec8de] rounded-xl text-[#9aa3b8] font-bold flex items-center justify-center gap-2 active:scale-95">
             <Plus className="w-5 h-5" /> Nueva Tarea
           </button>
         </>
@@ -162,15 +162,15 @@ export function MobileWorkspaceView() {
         /* NOTAS */
         <div className="space-y-3">
           {NOTAS_MOCK.map(nota => (
-            <div key={nota.id} className="bg-white rounded-xl border border-slate-100 p-4">
+            <div key={nota.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] text-indigo-600 font-bold">{nota.contrato}</span>
-                <span className="text-[10px] text-slate-400">{nota.fecha}</span>
+                <span className="text-[10px] text-[#6888ff] font-bold">{nota.contrato}</span>
+                <span className="text-[10px] text-[#9aa3b8]">{nota.fecha}</span>
               </div>
-              <p className="text-sm text-slate-700">{nota.contenido}</p>
+              <p className="text-sm text-[#69738c]">{nota.contenido}</p>
             </div>
           ))}
-          <button className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2 active:scale-95">
+          <button className="w-full py-3 border-2 border-dashed border-[#bec8de] rounded-xl text-[#9aa3b8] font-bold flex items-center justify-center gap-2 active:scale-95">
             <MessageSquare className="w-5 h-5" /> Nueva Nota
           </button>
         </div>

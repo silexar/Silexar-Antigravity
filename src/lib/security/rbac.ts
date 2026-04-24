@@ -30,7 +30,7 @@ export type UserRole =
 
 export type PermissionAction = 'create' | 'read' | 'update' | 'delete' | 'admin' | 'export' | 'approve';
 
-export type Resource = 
+export type Resource =
   | 'contratos'
   | 'campanas'
   | 'cunas'
@@ -46,7 +46,15 @@ export type Resource =
   | 'reportes'
   | 'configuracion'
   | 'dashboard'
-  | 'analytics';
+  | 'analytics'
+  | 'agencias-medios'
+  | 'vencimientos'
+  | 'vencimientos.programas'
+  | 'vencimientos.vencimientos'
+  | 'vencimientos.alertas'
+  | 'vencimientos.analytics'
+  | 'vencimientos.disponibilidad'
+  | 'vencimientos.search';
 
 export interface RBACPolicy {
   resource: Resource;
@@ -83,6 +91,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: ['read', 'update', 'admin'],
     dashboard: ['read', 'admin'],
     analytics: ['read', 'export', 'admin'],
+    'agencias-medios': ['read'],
+    vencimientos: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    'vencimientos.programas': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.vencimientos': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.alertas': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.analytics': ['read', 'export', 'admin'],
+    'vencimientos.disponibilidad': ['read', 'admin'],
+    'vencimientos.search': ['read', 'admin'],
   },
   ADMIN: {
     contratos: ['create', 'read', 'update', 'delete', 'export', 'approve'],
@@ -101,6 +117,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: ['read', 'update'],
     dashboard: ['read'],
     analytics: ['read', 'export'],
+    'agencias-medios': ['read'],
+    vencimientos: ['create', 'read', 'update', 'delete', 'export'],
+    'vencimientos.programas': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.vencimientos': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.alertas': ['create', 'read', 'update', 'delete', 'admin'],
+    'vencimientos.analytics': ['read', 'export', 'admin'],
+    'vencimientos.disponibilidad': ['read', 'admin'],
+    'vencimientos.search': ['read', 'admin'],
   },
   CLIENT_ADMIN: {
     contratos: ['create', 'read', 'update', 'export', 'approve'],
@@ -119,6 +143,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: ['read'],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   GERENTE_VENTAS: {
     contratos: ['create', 'read', 'update', 'export', 'approve'],
@@ -137,6 +169,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: [],
     dashboard: ['read'],
     analytics: ['read', 'export'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   EJECUTIVO_VENTAS: {
     contratos: ['create', 'read', 'update'],
@@ -155,6 +195,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: [],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   EJECUTIVO: {
     contratos: ['create', 'read', 'update', 'export'],
@@ -173,6 +221,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: [],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read', 'create', 'update'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   TM_SENIOR: {
     contratos: ['read'],
@@ -191,6 +247,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: ['read', 'export'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   FINANCIERO: {
     contratos: ['read', 'export', 'approve'],
@@ -209,6 +273,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: [],
     dashboard: ['read'],
     analytics: ['read', 'export'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   PROGRAMADOR: {
     contratos: ['read'],
@@ -227,6 +299,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   OPERADOR_EMISION: {
     contratos: ['read'],
@@ -245,6 +325,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: ['read'],
+    'vencimientos.programas': ['read'],
+    'vencimientos.vencimientos': ['read'],
+    'vencimientos.alertas': ['read'],
+    'vencimientos.analytics': ['read'],
+    'vencimientos.disponibilidad': ['read'],
+    'vencimientos.search': ['read'],
   },
   AGENCIA: {
     contratos: ['read'],
@@ -263,6 +351,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: [],
+    'vencimientos.programas': [],
+    'vencimientos.vencimientos': [],
+    'vencimientos.alertas': [],
+    'vencimientos.analytics': [],
+    'vencimientos.disponibilidad': [],
+    'vencimientos.search': [],
   },
   ANUNCIANTE: {
     contratos: ['read'],
@@ -281,6 +377,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: [],
+    'vencimientos.programas': [],
+    'vencimientos.vencimientos': [],
+    'vencimientos.alertas': [],
+    'vencimientos.analytics': [],
+    'vencimientos.disponibilidad': [],
+    'vencimientos.search': [],
   },
   VIEWER: {
     contratos: ['read'],
@@ -299,6 +403,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     configuracion: [],
     dashboard: ['read'],
     analytics: ['read'],
+    'agencias-medios': ['read'],
+    vencimientos: [],
+    'vencimientos.programas': [],
+    'vencimientos.vencimientos': [],
+    'vencimientos.alertas': [],
+    'vencimientos.analytics': [],
+    'vencimientos.disponibilidad': [],
+    'vencimientos.search': [],
   },
   USER: {
     contratos: ['read'],
@@ -317,6 +429,14 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     digital: ['read'],
     dashboard: ['read'],
     analytics: [],
+    'agencias-medios': ['read'],
+    vencimientos: [],
+    'vencimientos.programas': [],
+    'vencimientos.vencimientos': [],
+    'vencimientos.alertas': [],
+    'vencimientos.analytics': [],
+    'vencimientos.disponibilidad': [],
+    'vencimientos.search': [],
   },
 };
 
@@ -351,11 +471,11 @@ export const ROLE_HIERARCHY: Record<UserRole, number> = {
  */
 export function getAuthContext(request?: Request): AuthContext | null {
   if (!request) return null;
-  
+
   // Extraer token del header o cookie
   const authHeader = request.headers?.get?.('authorization');
   const token = authHeader?.replace('Bearer ', '');
-  
+
   if (!token) return null;
 
   // En producción, el middleware ya verificó el JWT
@@ -363,7 +483,7 @@ export function getAuthContext(request?: Request): AuthContext | null {
   const userId = request.headers?.get?.('x-silexar-user-id');
   const role = request.headers?.get?.('x-silexar-user-role') as UserRole;
   const tenantId = request.headers?.get?.('x-silexar-tenant-id');
-  
+
   if (!userId || !role || !tenantId) return null;
 
   return { userId, role, tenantId };
@@ -502,3 +622,4 @@ export default {
   ROLE_PERMISSIONS,
   ROLE_HIERARCHY,
 };
+

@@ -1,9 +1,9 @@
 /**
  * 🌅 SILEXAR PULSE - Dashboard de Turno Operador 2050
- * 
+ *
  * @description Panel principal para operadores con vista de su cola de trabajo,
  * alertas críticas, inbox de campañas y estadísticas de productividad.
- * 
+ *
  * @version 2050.1.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -11,18 +11,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-// Tabs components removed - not used in this view
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Inbox,
   AlertTriangle,
@@ -41,6 +29,7 @@ import {
   Edit2,
   Loader2
 } from 'lucide-react';
+import { NeoPageHeader, NeoCard, NeoButton, NeoBadge, NeoSelect, N } from '../_lib/neumorphic';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -263,163 +252,118 @@ export default function DashboardTurnoOperador() {
   // Obtener color de prioridad
   const getColorPrioridad = (prioridad: string) => {
     switch (prioridad) {
-      case 'urgente': return 'bg-red-100 text-red-700 border-red-300';
-      case 'alta': return 'bg-orange-100 text-orange-700 border-orange-300';
-      case 'normal': return 'bg-blue-100 text-blue-700 border-blue-300';
-      default: return 'bg-gray-100 text-gray-700 border-gray-300';
+      case 'urgente': return 'red' as const;
+      case 'alta': return 'yellow' as const;
+      case 'normal': return 'blue' as const;
+      default: return 'gray' as const;
     }
   };
 
   // Obtener color de tipo
   const getColorTipo = (tipo: string) => {
     switch (tipo) {
-      case 'urgente': return 'bg-red-500';
-      case 'nueva': return 'bg-green-500';
-      case 'modificacion': return 'bg-amber-500';
-      case 'confirmacion': return 'bg-blue-500';
-      default: return 'bg-gray-500';
+      case 'urgente': return '#ef4444';
+      case 'nueva': return '#22c55e';
+      case 'modificacion': return '#f59e0b';
+      case 'confirmacion': return N.accent;
+      default: return N.textSub;
     }
   };
 
   // Obtener icono de alerta
   const getIconoAlerta = (tipo: string) => {
     switch (tipo) {
-      case 'critica': return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      case 'advertencia': return <AlertTriangle className="w-4 h-4 text-amber-500" />;
-      default: return <Bell className="w-4 h-4 text-blue-500" />;
+      case 'critica': return <AlertTriangle className="w-4 h-4" style={{ color: '#ef4444' }} />;
+      case 'advertencia': return <AlertTriangle className="w-4 h-4" style={{ color: '#f59e0b' }} />;
+      default: return <Bell className="w-4 h-4" style={{ color: N.accent }} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <User className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              🌅 Dashboard de Turno
-            </h1>
-            <p className="text-sm text-gray-500">
-              {operador.operadorNombre} • Turno {operador.turnoInicio.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })} - {operador.turnoFin.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen p-6" style={{ background: N.base, color: N.text }}>
+      <div className="mb-6">
+        <NeoPageHeader
+          title="Dashboard de Turno"
+          subtitle={`${operador.operadorNombre} • Turno ${operador.turnoInicio.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })} - ${operador.turnoFin.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}`}
+          icon={User}
+          backHref="/campanas"
+        />
+      </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-400">
-            Última actualización: {ultimaActualizacion.toLocaleTimeString('es-CL')}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={refrescar}
-            disabled={cargando}
-            className="gap-1"
-          >
-            {cargando ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <RefreshCw className="w-4 h-4" />
-            )}
-            Refrescar
-          </Button>
-        </div>
+      {/* Última actualización + Refrescar */}
+      <div className="flex items-center justify-end gap-3 mb-6">
+        <span className="text-xs font-bold" style={{ color: N.textSub }}>
+          Última actualización: {ultimaActualizacion.toLocaleTimeString('es-CL')}
+        </span>
+        <NeoButton variant="secondary" size="sm" onClick={refrescar} disabled={cargando}>
+          {cargando ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <RefreshCw className="w-4 h-4" />
+          )}
+          Refrescar
+        </NeoButton>
       </div>
 
       {/* ALERTAS CRÍTICAS (siempre visible si hay) */}
       {contadores.alertasCriticas > 0 && (
-        <Card className="p-4 mb-6 border-red-200 bg-red-50 animate-pulse">
+        <NeoCard className="mb-6" style={{ border: '1px solid #ef444440' }}>
           <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            <h3 className="font-bold text-red-700">
+            <AlertTriangle className="w-5 h-5" style={{ color: '#ef4444' }} />
+            <h3 className="font-black" style={{ color: '#ef4444' }}>
               ⚠️ {contadores.alertasCriticas} Alerta(s) Crítica(s)
             </h3>
           </div>
           <div className="space-y-2">
             {alertas.filter(a => a.tipo === 'critica').map(alerta => (
-              <div key={alerta.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-red-200">
+              <div key={alerta.id} className="flex items-center justify-between rounded-2xl p-3"
+                style={{ background: N.base, boxShadow: `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}` }}>
                 <div className="flex items-center gap-3">
                   {getIconoAlerta(alerta.tipo)}
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{alerta.mensaje}</p>
+                    <p className="text-sm font-bold" style={{ color: N.text }}>{alerta.mensaje}</p>
                     {alerta.campanaCodigo && (
-                      <span className="text-xs text-gray-500">{alerta.campanaCodigo}</span>
+                      <span className="text-xs font-bold" style={{ color: N.textSub }}>{alerta.campanaCodigo}</span>
                     )}
                   </div>
                 </div>
                 {alerta.accion && (
-                  <Button size="sm" variant="destructive" className="gap-1">
+                  <NeoButton variant="danger" size="sm">
                     <Zap className="w-3 h-3" />
                     {alerta.accion}
-                  </Button>
+                  </NeoButton>
                 )}
               </div>
             ))}
           </div>
-        </Card>
+        </NeoCard>
       )}
 
       {/* GRID PRINCIPAL */}
       <div className="grid grid-cols-12 gap-6">
         {/* COLUMNA IZQUIERDA: INBOX */}
         <div className="col-span-8">
-          <Card className="p-4">
+          <NeoCard>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Inbox className="w-5 h-5 text-blue-600" />
-                <h2 className="font-bold text-gray-900">📥 Inbox de Campañas</h2>
+                <Inbox className="w-5 h-5" style={{ color: N.accent }} />
+                <h2 className="font-black" style={{ color: N.text }}>📥 Inbox de Campañas</h2>
               </div>
-              <Select value={filtroInbox} onValueChange={setFiltroInbox}>
-                <SelectTrigger className="w-40 h-8">
-                  <SelectValue placeholder="Filtrar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos ({inbox.length})</SelectItem>
-                  <SelectItem value="urgente">🔴 Urgentes ({contadores.urgentes})</SelectItem>
-                  <SelectItem value="nueva">🟢 Nuevas ({contadores.nuevas})</SelectItem>
-                  <SelectItem value="modificacion">🟡 Modificaciones ({contadores.modificaciones})</SelectItem>
-                  <SelectItem value="confirmacion">🔵 Confirmaciones ({contadores.confirmaciones})</SelectItem>
-                </SelectContent>
-              </Select>
+              <NeoSelect className="w-40 h-8 text-xs" value={filtroInbox} onChange={e => setFiltroInbox(e.target.value)}>
+                <option value="todos">Todos ({inbox.length})</option>
+                <option value="urgente">🔴 Urgentes ({contadores.urgentes})</option>
+                <option value="nueva">🟢 Nuevas ({contadores.nuevas})</option>
+                <option value="modificacion">🟡 Modificaciones ({contadores.modificaciones})</option>
+                <option value="confirmacion">🔵 Confirmaciones ({contadores.confirmaciones})</option>
+              </NeoSelect>
             </div>
 
             {/* Contadores rápidos */}
             <div className="grid grid-cols-4 gap-3 mb-4">
-              <div className="p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 transition-colors"
-                   onClick={() => setFiltroInbox('urgente')}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  <span className="text-xs font-medium text-red-700">Urgentes</span>
-                </div>
-                <p className="text-2xl font-bold text-red-700 mt-1">{contadores.urgentes}</p>
-              </div>
-              <div className="p-3 bg-green-50 rounded-lg border border-green-200 cursor-pointer hover:bg-green-100 transition-colors"
-                   onClick={() => setFiltroInbox('nueva')}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span className="text-xs font-medium text-green-700">Nuevas</span>
-                </div>
-                <p className="text-2xl font-bold text-green-700 mt-1">{contadores.nuevas}</p>
-              </div>
-              <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors"
-                   onClick={() => setFiltroInbox('modificacion')}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                  <span className="text-xs font-medium text-amber-700">Modificar</span>
-                </div>
-                <p className="text-2xl font-bold text-amber-700 mt-1">{contadores.modificaciones}</p>
-              </div>
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
-                   onClick={() => setFiltroInbox('confirmacion')}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  <span className="text-xs font-medium text-blue-700">Confirmar</span>
-                </div>
-                <p className="text-2xl font-bold text-blue-700 mt-1">{contadores.confirmaciones}</p>
-              </div>
+              <ContadorCard color="#ef4444" label="Urgentes" count={contadores.urgentes} onClick={() => setFiltroInbox('urgente')} />
+              <ContadorCard color="#22c55e" label="Nuevas" count={contadores.nuevas} onClick={() => setFiltroInbox('nueva')} />
+              <ContadorCard color="#f59e0b" label="Modificar" count={contadores.modificaciones} onClick={() => setFiltroInbox('modificacion')} />
+              <ContadorCard color={N.accent} label="Confirmar" count={contadores.confirmaciones} onClick={() => setFiltroInbox('confirmacion')} />
             </div>
 
             {/* Lista de campañas */}
@@ -427,27 +371,32 @@ export default function DashboardTurnoOperador() {
               {inboxFiltrado.map(campana => (
                 <div
                   key={campana.id}
-                  className={`p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer ${
-                    campana.prioridad === 'urgente' ? 'bg-red-50 border-red-200' : 'bg-white'
-                  }`}
+                  className="p-4 rounded-2xl cursor-pointer transition-all"
+                  style={{
+                    background: N.base,
+                    boxShadow: campana.prioridad === 'urgente'
+                      ? `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}`
+                      : `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`,
+                    border: campana.prioridad === 'urgente' ? `1px solid #ef444440` : '1px solid transparent'
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`w-2 h-10 rounded-full ${getColorTipo(campana.tipo)}`}></div>
+                      <div className="w-2 h-10 rounded-full" style={{ background: getColorTipo(campana.tipo) }} />
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs text-gray-500">{campana.codigo}</span>
-                          <Badge className={`text-xs ${getColorPrioridad(campana.prioridad)}`}>
+                          <span className="font-mono text-xs font-bold" style={{ color: N.textSub }}>{campana.codigo}</span>
+                          <NeoBadge color={getColorPrioridad(campana.prioridad)}>
                             {campana.prioridad.toUpperCase()}
-                          </Badge>
+                          </NeoBadge>
                         </div>
-                        <h4 className="font-semibold text-gray-900">{campana.nombre}</h4>
-                        <p className="text-sm text-gray-600">{campana.anunciante}</p>
+                        <h4 className="font-bold" style={{ color: N.text }}>{campana.nombre}</h4>
+                        <p className="text-sm font-bold" style={{ color: N.textSub }}>{campana.anunciante}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
-                      <div className="text-right text-xs text-gray-500">
+                      <div className="text-right text-xs font-bold" style={{ color: N.textSub }}>
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {campana.fechaInicio.toLocaleDateString('es-CL')} - {campana.fechaFin.toLocaleDateString('es-CL')}
@@ -457,7 +406,7 @@ export default function DashboardTurnoOperador() {
                           {campana.emisoras} emisoras • {campana.spotsTotal} spots
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" className="gap-1">
+                      <NeoButton size="sm" variant="secondary">
                         {campana.tipo === 'confirmacion' ? (
                           <>
                             <CheckCircle2 className="w-4 h-4" />
@@ -474,74 +423,65 @@ export default function DashboardTurnoOperador() {
                             Programar
                           </>
                         )}
-                      </Button>
+                      </NeoButton>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </Card>
+          </NeoCard>
         </div>
 
         {/* COLUMNA DERECHA: ESTADÍSTICAS Y ALERTAS */}
         <div className="col-span-4 space-y-4">
           {/* Mi Carga */}
-          <Card className="p-4">
+          <NeoCard>
             <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-5 h-5 text-purple-600" />
-              <h3 className="font-bold text-gray-900">📊 Mi Carga Hoy</h3>
+              <BarChart3 className="w-5 h-5" style={{ color: N.accent }} />
+              <h3 className="font-black" style={{ color: N.text }}>📊 Mi Carga Hoy</h3>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <p className="text-xs text-green-600">Programadas</p>
-                <p className="text-2xl font-bold text-green-700">{stats.programadas}</p>
-              </div>
-              <div className="p-3 bg-amber-50 rounded-lg">
-                <p className="text-xs text-amber-600">En Proceso</p>
-                <p className="text-2xl font-bold text-amber-700">{stats.enProceso}</p>
-              </div>
-              <div className="p-3 bg-red-50 rounded-lg">
-                <p className="text-xs text-red-600">Pendientes</p>
-                <p className="text-2xl font-bold text-red-700">{stats.pendientes}</p>
-              </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs text-blue-600">Spots Hoy</p>
-                <p className="text-2xl font-bold text-blue-700">{stats.spotsHoy}</p>
-              </div>
+              <StatBox label="Programadas" count={stats.programadas} color="#22c55e" />
+              <StatBox label="En Proceso" count={stats.enProceso} color="#f59e0b" />
+              <StatBox label="Pendientes" count={stats.pendientes} color="#ef4444" />
+              <StatBox label="Spots Hoy" count={stats.spotsHoy} color={N.accent} />
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Cumplimiento del turno</span>
-                <span className="font-semibold text-gray-900">{stats.porcentajeCumplimiento}%</span>
+                <span className="font-bold" style={{ color: N.textSub }}>Cumplimiento del turno</span>
+                <span className="font-black" style={{ color: N.text }}>{stats.porcentajeCumplimiento}%</span>
               </div>
-              <Progress value={stats.porcentajeCumplimiento} className="h-2" />
+              <div style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}`, borderRadius: '10px', height: '8px', overflow: 'hidden' }}>
+                <div style={{ width: `${stats.porcentajeCumplimiento}%`, height: '100%', background: N.accent, borderRadius: '10px' }} />
+              </div>
             </div>
-          </Card>
+          </NeoCard>
 
           {/* Alertas */}
-          <Card className="p-4">
+          <NeoCard>
             <div className="flex items-center gap-2 mb-4">
-              <Bell className="w-5 h-5 text-amber-600" />
-              <h3 className="font-bold text-gray-900">🔔 Alertas</h3>
+              <Bell className="w-5 h-5" style={{ color: N.accent }} />
+              <h3 className="font-black" style={{ color: N.text }}>🔔 Alertas</h3>
             </div>
-            
+
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
               {alertas.map(alerta => (
                 <div
                   key={alerta.id}
-                  className={`p-3 rounded-lg border ${
-                    alerta.tipo === 'critica' ? 'bg-red-50 border-red-200' :
-                    alerta.tipo === 'advertencia' ? 'bg-amber-50 border-amber-200' :
-                    'bg-blue-50 border-blue-200'
-                  }`}
+                  className="p-3 rounded-xl"
+                  style={{
+                    background: N.base,
+                    boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}`,
+                    border: `1px solid ${alerta.tipo === 'critica' ? '#ef4444' : alerta.tipo === 'advertencia' ? '#f59e0b' : N.accent}30`
+                  }}
                 >
                   <div className="flex items-start gap-2">
                     {getIconoAlerta(alerta.tipo)}
                     <div className="flex-1">
-                      <p className="text-sm text-gray-800">{alerta.mensaje}</p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-sm font-bold" style={{ color: N.text }}>{alerta.mensaje}</p>
+                      <p className="text-xs font-bold mt-1" style={{ color: N.textSub }}>
                         {alerta.fechaHora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
@@ -549,36 +489,63 @@ export default function DashboardTurnoOperador() {
                 </div>
               ))}
             </div>
-          </Card>
+          </NeoCard>
 
           {/* Acciones Rápidas */}
-          <Card className="p-4">
+          <NeoCard>
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-yellow-600" />
-              <h3 className="font-bold text-gray-900">⚡ Acciones Rápidas</h3>
+              <Zap className="w-5 h-5" style={{ color: N.accent }} />
+              <h3 className="font-black" style={{ color: N.text }}>⚡ Acciones Rápidas</h3>
             </div>
-            
+
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start gap-2">
+              <NeoButton variant="secondary" className="w-full justify-start">
                 <FileText className="w-4 h-4" />
                 Nueva Campaña Rápida
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
+              </NeoButton>
+              <NeoButton variant="secondary" className="w-full justify-start">
                 <Calendar className="w-4 h-4" />
                 Ver Log del Día
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
+              </NeoButton>
+              <NeoButton variant="secondary" className="w-full justify-start">
                 <Eye className="w-4 h-4" />
                 Vista Parrilla
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
+              </NeoButton>
+              <NeoButton variant="secondary" className="w-full justify-start">
                 <Target className="w-4 h-4" />
                 Mis Campañas Activas
-              </Button>
+              </NeoButton>
             </div>
-          </Card>
+          </NeoCard>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ContadorCard({ color, label, count, onClick }: { color: string; label: string; count: number; onClick: () => void }) {
+  return (
+    <div
+      className="p-3 rounded-2xl cursor-pointer transition-all"
+      onClick={onClick}
+      style={{ background: N.base, boxShadow: `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}` }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 4px ${N.dark}, -2px -2px 4px ${N.light}`; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`; }}
+    >
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full" style={{ background: color }} />
+        <span className="text-xs font-bold uppercase" style={{ color }}>{label}</span>
+      </div>
+      <p className="text-2xl font-black mt-1" style={{ color }}>{count}</p>
+    </div>
+  );
+}
+
+function StatBox({ label, count, color }: { label: string; count: number; color: string }) {
+  return (
+    <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }}>
+      <p className="text-xs font-bold uppercase" style={{ color }}>{label}</p>
+      <p className="text-2xl font-black" style={{ color }}>{count}</p>
     </div>
   );
 }

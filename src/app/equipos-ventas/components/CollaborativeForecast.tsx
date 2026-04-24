@@ -3,6 +3,10 @@
  * 
  * @description Forecast colaborativo avanzado con tabla multi-rep (commit/best/worst),
  * Cortex-Forecast insights, pipeline health, y actions required.
+ * Todo en español.
+ * 
+ * DESIGN: Neumorphic con base #dfeaff, sombras #bec8de y #ffffff
+ * Sistema correcto: bg-light-surface + shadow-neumorphic-outset/inset
  */
 
 'use client';
@@ -13,6 +17,22 @@ import {
   ChevronRight, Sparkles, Send,
   Zap, PieChart, Activity
 } from 'lucide-react';
+
+/* ─── COLORES NEUMÓRFICOS ───────────────────────────────────────────────── */
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8'
+};
+
+const gradientBase = 'linear-gradient(145deg, #e6e6e6, #ffffff)';
+
+const shadowOut = (s: number) => `${s}px ${s}px ${s * 2}px ${N.dark}, -${s}px -${s}px ${s * 2}px ${N.light}`;
+const shadowIn = (s: number) => `inset ${s}px ${s}px ${s * 2}px ${N.dark}, inset -${s}px -${s}px ${s * 2}px ${N.light}`;
 
 /* ─── MOCK DATA ───────────────────────────────────────────────── */
 
@@ -41,23 +61,23 @@ const teamTotal = {
 };
 
 const CORTEX_INSIGHTS = [
-  { type: 'success', icon: TrendingUp, text: 'High confidence: Team will exceed $1.4M (87% probability)', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-  { type: 'warning', icon: AlertTriangle, text: 'Risk: Carlos Chen needs pipeline build (only $240K pipe)', color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { type: 'opportunity', icon: Zap, text: 'Opportunity: 3 large deals could push team to $1.8M', color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  { type: 'action', icon: Target, text: 'Recommendation: Focus on Q1 pipeline generation NOW', color: 'text-purple-600 bg-purple-50 border-purple-200' },
+  { type: 'success', icon: TrendingUp, text: 'Alta confianza: El equipo excederá $1.4M (87% probabilidad)', color: '#059669', bg: '#d1fae5', border: '#10b981' },
+  { type: 'warning', icon: AlertTriangle, text: 'Riesgo: Carlos Chen necesita construir pipeline (solo $240K pipe)', color: '#d97706', bg: '#fef3c7', border: '#f59e0b' },
+  { type: 'opportunity', icon: Zap, text: 'Oportunidad: 3 deals grandes podrían llevar al equipo a $1.8M', color: '#2563eb', bg: '#dbeafe', border: '#3b82f6' },
+  { type: 'action', icon: Target, text: 'Recomendación: Enfocarse en generación de pipeline Q1 AHORA', color: '#7c3aed', bg: '#f3e8ff', border: '#8b5cf6' },
 ];
 
 const PIPELINE_HEALTH = [
-  { label: 'Total Pipeline', value: '$2.8M', detail: '2.3x coverage', color: 'bg-blue-500' },
-  { label: 'Qualified Pipeline', value: '$1.9M', detail: '1.6x coverage', color: 'bg-emerald-500' },
-  { label: 'Commit Category', value: '$1.29M', detail: 'confirmed deals', color: 'bg-purple-500' },
-  { label: 'Risk Assessment', value: '🟡 Medium', detail: 'coverage adequate', color: 'bg-amber-500' },
+  { label: 'Pipeline Total', value: '$2.8M', detail: '2.3x coverage', color: '#6888ff' },
+  { label: 'Pipeline Cualificado', value: '$1.9M', detail: '1.6x coverage', color: '#10b981' },
+  { label: 'Categoría Commit', value: '$1.29M', detail: 'deals confirmados', color: '#8b5cf6' },
+  { label: 'Evaluación de Riesgo', value: 'Medio', detail: 'coverage adecuado', color: '#f59e0b' },
 ];
 
 const ACTIONS_REQUIRED = [
-  { text: 'Carlos Chen: Build pipeline to 3x coverage ($1.8M needed)', urgency: 'high' },
-  { text: 'Team: Qualify 15 additional opportunities this month', urgency: 'medium' },
-  { text: 'Focus: Enterprise deals >$100K for Q1 acceleration', urgency: 'low' },
+  { text: 'Carlos Chen: Construir pipeline a 3x coverage ($1.8M necesario)', urgency: 'high' },
+  { text: 'Equipo: Cualificar 15 oportunidades adicionales este mes', urgency: 'medium' },
+  { text: 'Enfoque: Deals enterprise >$100K para aceleración Q1', urgency: 'low' },
 ];
 
 /* ─── HELPERS ─────────────────────────────────────────────────── */
@@ -74,56 +94,79 @@ export const CollaborativeForecast = () => {
     <div className="space-y-6 animate-in fade-in duration-500">
 
       {/* ──── HEADER ──── */}
-      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+      <div
+        className="rounded-2xl p-6 text-white relative overflow-hidden"
+        style={{
+          background: `linear-gradient(145deg, #6888ff, #5a77d9, #6888ff)`,
+          boxShadow: shadowOut(6)
+        }}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.1),transparent_50%)]" />
         <div className="relative z-10 flex justify-between items-start">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <PieChart size={18} className="text-blue-200" />
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-200">Collaborative Forecasting</span>
-              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">{FORECAST_META.quarter}</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-200">Pronóstico Colaborativo</span>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}
+              >
+                {FORECAST_META.quarter}
+              </span>
             </div>
-            <h2 className="text-2xl font-bold mt-1">{FORECAST_META.teamName} Team</h2>
+            <h2 className="text-2xl font-bold mt-1 text-white">Equipo {FORECAST_META.teamName}</h2>
             <p className="text-blue-200 text-sm">Manager: {FORECAST_META.manager}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-blue-200">Team Quota</p>
+            <p className="text-xs text-blue-200">Cuota del Equipo</p>
             <p className="text-2xl font-bold">{fmt(teamTotal.quota)}</p>
           </div>
         </div>
       </div>
 
       {/* ──── FORECAST TABLE ──── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-5 border-b border-slate-100">
-          <h3 className="font-bold text-slate-800 flex items-center gap-2">
-            <BarChart3 size={18} className="text-blue-500" /> Forecast Summary
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <div className="p-4 mb-4">
+          <h3 className="font-bold flex items-center gap-2" style={{ color: '#1e293b' }}>
+            <BarChart3 size={18} style={{ color: N.accent }} /> Resumen de Forecast
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-slate-50 text-left">
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rep</th>
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Commit</th>
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Best Case</th>
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Worst Case</th>
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Quota</th>
-                <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Attainment</th>
+              <tr className="text-left">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: N.text }}>Rep</th>
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style={{ color: N.text }}>Commit</th>
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style={{ color: N.text }}>Mejor Caso</th>
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style={{ color: N.text }}>Peor Caso</th>
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style={{ color: N.text }}>Cuota</th>
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style={{ color: N.text }}>Cumplimiento</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody>
               {REP_FORECASTS.map((rep) => {
                 const att = Math.round((rep.commit / rep.quota) * 100);
                 return (
-                  <tr key={rep.name} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-4 font-semibold text-slate-800 text-sm">{rep.name}</td>
-                    <td className="px-5 py-4 text-sm text-right font-mono font-semibold text-emerald-600">{fmt(rep.commit)}</td>
-                    <td className="px-5 py-4 text-sm text-right font-mono text-blue-600">{fmt(rep.bestCase)}</td>
-                    <td className="px-5 py-4 text-sm text-right font-mono text-red-500">{fmt(rep.worstCase)}</td>
-                    <td className="px-5 py-4 text-sm text-right font-mono text-slate-500">{fmt(rep.quota)}</td>
-                    <td className="px-5 py-4 text-right">
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${att >= 60 ? 'bg-emerald-100 text-emerald-700' : att >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                  <tr key={rep.name} className="transition-colors">
+                    <td className="px-4 py-4 font-semibold text-sm" style={{ color: '#1e293b' }}>{rep.name}</td>
+                    <td className="px-4 py-4 text-sm text-right font-mono font-semibold" style={{ color: '#059669' }}>{fmt(rep.commit)}</td>
+                    <td className="px-4 py-4 text-sm text-right font-mono" style={{ color: '#2563eb' }}>{fmt(rep.bestCase)}</td>
+                    <td className="px-4 py-4 text-sm text-right font-mono" style={{ color: '#dc2626' }}>{fmt(rep.worstCase)}</td>
+                    <td className="px-4 py-4 text-sm text-right font-mono" style={{ color: N.textSub }}>{fmt(rep.quota)}</td>
+                    <td className="px-4 py-4 text-right">
+                      <span
+                        className="text-xs font-bold px-2 py-1 rounded-full"
+                        style={{
+                          background: att >= 60 ? '#d1fae5' : att >= 40 ? '#fef3c7' : '#fee2e2',
+                          color: att >= 60 ? '#059669' : att >= 40 ? '#d97706' : '#dc2626'
+                        }}
+                      >
                         {att}%
                       </span>
                     </td>
@@ -131,14 +174,23 @@ export const CollaborativeForecast = () => {
                 );
               })}
               {/* TOTALS ROW */}
-              <tr className="bg-[#F0EDE8] text-white font-bold">
-                <td className="px-5 py-4 text-sm">TEAM TOTAL</td>
-                <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.commit)}</td>
-                <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.bestCase)}</td>
-                <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.worstCase)}</td>
-                <td className="px-5 py-4 text-sm text-right font-mono">{fmt(teamTotal.quota)}</td>
-                <td className="px-5 py-4 text-right">
-                  <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">
+              <tr
+                className="font-bold rounded-b-2xl"
+                style={{
+                  background: `linear-gradient(145deg, ${N.accent}, #5a77d9)`,
+                  color: 'white'
+                }}
+              >
+                <td className="px-4 py-4 text-sm rounded-bl-2xl">TOTAL EQUIPO</td>
+                <td className="px-4 py-4 text-sm text-right font-mono">{fmt(teamTotal.commit)}</td>
+                <td className="px-4 py-4 text-sm text-right font-mono">{fmt(teamTotal.bestCase)}</td>
+                <td className="px-4 py-4 text-sm text-right font-mono">{fmt(teamTotal.worstCase)}</td>
+                <td className="px-4 py-4 text-sm text-right font-mono">{fmt(teamTotal.quota)}</td>
+                <td className="px-4 py-4 text-right rounded-br-2xl">
+                  <span
+                    className="text-xs font-bold px-2 py-1 rounded-full"
+                    style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}
+                  >
                     {pct(teamTotal.commit, teamTotal.quota)}
                   </span>
                 </td>
@@ -149,77 +201,139 @@ export const CollaborativeForecast = () => {
       </div>
 
       {/* ──── CORTEX-FORECAST INSIGHTS ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <Brain size={18} className="text-violet-500" />
-          Cortex-Forecast Insights
-          <span className="text-xs bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full font-semibold border border-violet-200 flex items-center gap-1">
-            <Sparkles size={10} /> AI
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-4 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <Brain size={18} style={{ color: '#8b5cf6' }} />
+          Insights Cortex-Forecast
+          <span
+            className="text-xs px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 ml-auto"
+            style={{
+              background: '#f3e8ff',
+              color: '#8b5cf6'
+            }}
+          >
+            <Sparkles size={10} /> IA
           </span>
         </h3>
         <div className="space-y-2">
-          {CORTEX_INSIGHTS.map((insight, idx) => (
-            <div key={idx} className={`flex items-start gap-3 p-3 rounded-xl border ${insight.color} cursor-pointer hover:shadow-sm transition-all group`}>
-              <insight.icon size={16} className="mt-0.5 flex-shrink-0" />
-              <p className="text-sm font-medium flex-1">{insight.text}</p>
-              <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity mt-0.5" />
-            </div>
-          ))}
+          {CORTEX_INSIGHTS.map((insight, idx) => {
+            const IconComponent = insight.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-start gap-3 p-3 rounded-xl border cursor-pointer hover:scale-[1.01] transition-all group"
+                style={{
+                  background: insight.bg,
+                  borderColor: insight.border
+                }}
+              >
+                <IconComponent size={16} style={{ color: insight.color }} className="mt-0.5 flex-shrink-0" />
+                <p className="text-sm font-medium flex-1" style={{ color: '#1e293b' }}>{insight.text}</p>
+                <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity mt-0.5" style={{ color: insight.color }} />
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* ──── PIPELINE HEALTH ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <Activity size={18} className="text-blue-500" /> Pipeline Health
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-4 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <Activity size={18} style={{ color: N.accent }} /> Salud del Pipeline
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {PIPELINE_HEALTH.map((item) => (
-            <div key={item.label} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-              <p className="text-xs text-slate-400 uppercase font-semibold">{item.label}</p>
-              <p className="text-xl font-bold text-slate-800 mt-1">{item.value}</p>
-              <p className="text-xs text-slate-400 mt-0.5">{item.detail}</p>
+          {PIPELINE_HEALTH.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl p-4"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowOut(3)
+              }}
+            >
+              <p className="text-xs uppercase font-semibold mb-1" style={{ color: N.text }}>{item.label}</p>
+              <p className="text-xl font-bold" style={{ color: item.color }}>{item.value}</p>
+              <p className="text-xs mt-1" style={{ color: N.textSub }}>{item.detail}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* ──── ACTIONS REQUIRED ──── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <Target size={18} className="text-orange-500" /> Actions Required
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          background: gradientBase,
+          boxShadow: shadowOut(4)
+        }}
+      >
+        <h3
+          className="font-bold mb-4 flex items-center gap-2"
+          style={{ color: '#1e293b' }}
+        >
+          <Target size={18} style={{ color: '#dc2626' }} /> Acciones Requeridas
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {ACTIONS_REQUIRED.map((action, idx) => (
-            <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl border ${
-              action.urgency === 'high' ? 'border-red-200 bg-red-50' :
-              action.urgency === 'medium' ? 'border-amber-200 bg-amber-50' :
-              'border-blue-200 bg-blue-50'
-            }`}>
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                action.urgency === 'high' ? 'bg-red-500' : action.urgency === 'medium' ? 'bg-amber-500' : 'bg-blue-500'
-              }`} />
-              <p className="text-sm font-medium text-slate-700">{action.text}</p>
+            <div
+              key={idx}
+              className="flex items-start gap-3 p-3 rounded-xl"
+              style={{
+                background: gradientBase,
+                boxShadow: shadowIn(2)
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
+                style={{
+                  background: action.urgency === 'high' ? '#dc2626' : action.urgency === 'medium' ? '#f59e0b' : '#6888ff'
+                }}
+              />
+              <p className="text-sm" style={{ color: '#1e293b' }}>{action.text}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ──── ACTION BUTTONS ──── */}
-      <div className="flex flex-wrap gap-3">
-        {[
-          { label: 'Update Forecast', icon: BarChart3, primary: true },
-          { label: 'Pipeline Actions', icon: Target, primary: false },
-          { label: 'Submit to Leadership', icon: Send, primary: false, action: () => setSubmitted(true) },
-        ].map((btn) => (
-          <button key={btn.label} onClick={btn.action} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
-            btn.primary
-              ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/20'
-              : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:shadow-sm'
-          }`}>
-            <btn.icon size={16} /> {btn.label}
-          </button>
-        ))}
+      {/* ──── SUBMIT BUTTON ──── */}
+      <div className="flex gap-3">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-[1.02]"
+          style={{
+            background: `linear-gradient(145deg, ${N.accent}, #5a77d9)`,
+            boxShadow: shadowOut(4)
+          }}
+        >
+          <Send size={18} /> Enviar Forecast
+        </button>
+        <button
+          className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all"
+          style={{
+            background: gradientBase,
+            color: N.text,
+            boxShadow: shadowOut(4)
+          }}
+        >
+          <BarChart3 size={18} /> Ver Tendencias
+        </button>
       </div>
     </div>
   );

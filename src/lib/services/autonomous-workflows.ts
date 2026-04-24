@@ -89,7 +89,7 @@ const workflowsPreconfigurados: WorkflowDefinition[] = [
   {
     id: 'wf-002',
     nombre: 'Renovación Automática',
-    descripcion: 'Iniciar proceso de renovación 30 días antes del vencimiento',
+    descripcion: 'Iniciar proceso de renovación 30 días antes del vencimientos',
     trigger: { id: 't2', nombre: 'Contrato por vencer', tipo: 'tiempo', configuracion: { diasAntes: 30 }, activo: true },
     condiciones: [
       { campo: 'contrato.estado', operador: '==', valor: 'activo' },

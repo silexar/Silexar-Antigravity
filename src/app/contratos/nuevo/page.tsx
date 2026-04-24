@@ -21,6 +21,7 @@ import {
   Sparkles,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Clock,
   Shield,
   Zap,
@@ -29,6 +30,34 @@ import {
   MessageSquare,
   ChevronRight
 } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// NEUROMORPHIC DESIGN SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+const N = { base: '#dfeaff', dark: '#bec8de', light: '#ffffff', accent: '#6888ff', text: '#69738c', sub: '#9aa3b8' };
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+
+const NeuromorphicCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-2xl p-6 ${className}`} style={{ background: N.base, boxShadow: neu }}>
+    {children}
+  </div>
+);
+
+const NeuromorphicButton = ({ children, onClick, variant = 'secondary', className = '' }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string;
+}) => {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${className}`} style={s}>
+      {children}
+    </button>
+  );
+};
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -68,7 +97,7 @@ const tiposContrato: TipoContratoOption[] = [
     titulo: 'Nuevo Contrato',
     descripcion: 'Cliente nuevo o campaña nueva',
     beneficio: 'IA sugerirá términos óptimos',
-    beneficioIcono: <Sparkles className="w-4 h-4 text-indigo-500" />,
+    beneficioIcono: <Sparkles className="w-4 h-4 text-[#6888ff]" />,
     color: 'border-indigo-200 hover:border-indigo-400',
     bgGradient: 'from-indigo-50 to-indigo-100/50'
   },
@@ -117,17 +146,17 @@ const tiposContrato: TipoContratoOption[] = [
 // Wizard con carga dinámica
 const WizardContrato = dynamic(
   () => import('./components/WizardContrato'),
-  { 
+  {
     ssr: false,
     loading: () => (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: N.base }}>
+        <NeuromorphicCard className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: N.accent, boxShadow: neuSm }}>
             <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
           </div>
-          <h2 className="text-xl font-bold text-slate-700">Cargando Wizard...</h2>
-          <p className="text-slate-500 mt-1">Preparando formulario de contrato</p>
-        </div>
+          <h2 className="text-xl font-bold" style={{ color: N.text }}>Cargando Wizard...</h2>
+          <p className="text-sm mt-1" style={{ color: N.sub }}>Preparando formulario de contrato</p>
+        </NeuromorphicCard>
       </div>
     )
   }
@@ -137,45 +166,49 @@ const WizardContrato = dynamic(
 // COMPONENTE SELECTOR DE TIPO
 // ═══════════════════════════════════════════════════════════════
 
-function TipoContratoCard({ 
-  tipo, 
-  seleccionado, 
-  onClick 
-}: { 
-  tipo: TipoContratoOption; 
+function TipoContratoCard({
+  tipo,
+  seleccionado,
+  onClick
+}: {
+  tipo: TipoContratoOption;
   seleccionado: boolean;
   onClick: () => void;
 }) {
   return (
     <motion.button
       onClick={onClick}
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
       className={`
-        relative p-5 rounded-2xl border-2 transition-all text-left w-full
-        ${seleccionado 
-          ? `border-indigo-500 bg-gradient-to-br ${tipo.bgGradient} shadow-lg ring-2 ring-indigo-500/20` 
-          : `${tipo.color} bg-white hover:shadow-md`
+        relative p-4 rounded-2xl transition-all text-left w-full
+        ${seleccionado
+          ? `border-indigo-500 shadow-lg ring-2 ring-indigo-500/20`
+          : `border-2 ${tipo.color} hover:shadow-md`
         }
       `}
+      style={{ background: N.base, boxShadow: neu }}
     >
-      <div className="flex items-start gap-4">
-        <div className="text-4xl">{tipo.icono}</div>
+      <div className="flex items-center gap-4">
+        <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuSm }}>
+          <span className="text-2xl">{tipo.icono}</span>
+        </div>
         <div className="flex-1">
-          <h3 className="font-bold text-slate-800 text-lg">{tipo.titulo}</h3>
-          <p className="text-sm text-slate-600 mt-1">{tipo.descripcion}</p>
-          <div className="flex items-center gap-1.5 mt-2 text-sm">
+          <h3 className="font-bold text-base" style={{ color: N.text }}>{tipo.titulo}</h3>
+          <p className="text-sm mt-0.5" style={{ color: N.sub }}>{tipo.descripcion}</p>
+          <div className="flex items-center gap-1.5 mt-1.5 text-sm">
             {tipo.beneficioIcono}
-            <span className="text-slate-700">{tipo.beneficio}</span>
+            <span style={{ color: N.sub }}>{tipo.beneficio}</span>
           </div>
         </div>
         {seleccionado && (
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="p-1 rounded-full bg-indigo-500"
+            className="p-1.5 rounded-full flex items-center justify-center"
+            style={{ background: N.accent }}
           >
-            <CheckCircle2 className="w-5 h-5 text-white" />
+            <CheckCircle2 className="w-4 h-4 text-white" />
           </motion.div>
         )}
       </div>
@@ -190,8 +223,8 @@ function TipoContratoCard({
 function NuevoContratoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  const [fase, setFase] = useState<'selector' | 'wizard'>('selector');
+
+  const [fase, setFase] = useState<'selector' | 'wizard'>('wizard');
   const [tipoSeleccionado, setTipoSeleccionado] = useState<TipoContrato | null>(null);
   const [contexto, setContexto] = useState<ContextoCreacion>({ origen: 'directo' });
   const [detectando, setDetectando] = useState(true);
@@ -200,7 +233,7 @@ function NuevoContratoContent() {
   useEffect(() => {
     const detectarContexto = async () => {
       setDetectando(true);
-      
+
       // Buscar parámetros de URL
       const anuncianteId = searchParams?.get('anunciante');
       const contratoBaseId = searchParams?.get('renovar');
@@ -247,13 +280,9 @@ function NuevoContratoContent() {
   const handleComplete = (contratoId: string) => {
     router.push(`/contratos/${contratoId}?created=true`);
   };
-  
+
   const handleCancel = () => {
-    if (fase === 'wizard') {
-      setFase('selector');
-    } else {
-      router.push('/contratos/comando');
-    }
+    router.push('/contratos/comando');
   };
 
   const iniciarWizard = () => {
@@ -272,7 +301,7 @@ function NuevoContratoContent() {
   // Mostrar wizard
   if (fase === 'wizard') {
     return (
-      <WizardContrato 
+      <WizardContrato
         onComplete={handleComplete}
         onCancel={handleCancel}
         tipoContrato={tipoSeleccionado || 'nuevo'}
@@ -283,149 +312,125 @@ function NuevoContratoContent() {
 
   // Mostrar selector
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/30">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-            <span>Contratos</span>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-slate-800 font-medium">Nuevo Contrato</span>
-          </div>
+    <div className="min-h-screen flex flex-col" style={{ background: N.base }}>
+      {/* Header con botón de retorno simple */}
+      <div className="border-b border-[#bec8de30]" style={{ background: N.base }}>
+        <div className="max-w-xl mx-auto px-6 py-4">
+          <button
+            onClick={() => router.push('/contratos')}
+            className="p-2 rounded-xl transition-all hover:scale-105"
+            style={{ background: N.base, boxShadow: neuSm }}
+          >
+            <ArrowLeft className="w-5 h-5" style={{ color: N.text }} />
+          </button>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Título */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl mb-4">
-            <FileText className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">
-            🎯 ¿Qué tipo de contrato crearás?
-          </h1>
-          <p className="text-slate-600 max-w-xl mx-auto">
-            Selecciona el tipo de contrato para optimizar el proceso de creación con sugerencias inteligentes.
-          </p>
-        </motion.div>
-
-        {/* Contexto detectado */}
-        <AnimatePresence>
-          {contexto.origen !== 'directo' && !detectando && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mb-6"
-            >
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  {contexto.origen === 'anunciante' && <Building2 className="w-5 h-5 text-indigo-600" />}
-                  {contexto.origen === 'renovacion' && <RefreshCw className="w-5 h-5 text-green-600" />}
-                  {contexto.origen === 'oportunidad' && <Target className="w-5 h-5 text-purple-600" />}
-                  {contexto.origen === 'whatsapp' && <MessageSquare className="w-5 h-5 text-green-600" />}
-                  {contexto.origen === 'email' && <Mail className="w-5 h-5 text-blue-600" />}
-                  <div>
-                    <p className="font-medium text-slate-800">
-                      {contexto.origen === 'anunciante' && `📋 Creando contrato para: ${contexto.anuncianteNombre || contexto.anuncianteId}`}
-                      {contexto.origen === 'renovacion' && `🔄 Renovando contrato: ${contexto.contratoBaseId}`}
-                      {contexto.origen === 'oportunidad' && `🎯 Desde oportunidad comercial`}
-                      {contexto.origen === 'whatsapp' && `📱 Datos importados desde WhatsApp`}
-                      {contexto.origen === 'email' && `📧 Datos importados desde Email`}
-                    </p>
-                    <p className="text-sm text-slate-600">
-                      Los datos se pre-llenarán automáticamente
-                    </p>
-                  </div>
-                  <Sparkles className="w-5 h-5 text-amber-500 ml-auto" />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Loading */}
-        {detectando && (
-          <div className="text-center py-8">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin" />
-            <p className="text-slate-600">Detectando contexto...</p>
-          </div>
-        )}
-
-        {/* Grid de tipos */}
-        {!detectando && (
+      <div className="flex-1 flex items-center justify-center px-6 py-8">
+        <div className="w-full max-w-xl">
+          {/* Título centrado con icono a la izquierda del texto */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center gap-3 mb-8"
           >
-            {tiposContrato.map((tipo, index) => (
-              <motion.div
-                key={tipo.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * index }}
-              >
-                <TipoContratoCard
-                  tipo={tipo}
-                  seleccionado={tipoSeleccionado === tipo.id}
-                  onClick={() => setTipoSeleccionado(tipo.id)}
-                />
-              </motion.div>
-            ))}
+            <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neu }}>
+              <FileText className="w-6 h-6" style={{ color: N.accent }} />
+            </div>
+            <h1 className="text-xl font-bold" style={{ color: N.text }}>
+              Selecciona el tipo de contrato para optimizar el proceso
+            </h1>
           </motion.div>
-        )}
 
-        {/* Botón continuar */}
-        <AnimatePresence>
-          {tipoSeleccionado && !detectando && (
+          {/* Contexto detectado */}
+          <AnimatePresence>
+            {contexto.origen !== 'directo' && !detectando && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-6"
+              >
+                <NeuromorphicCard className="mb-6">
+                  <div className="flex items-center gap-3">
+                    {contexto.origen === 'anunciante' && <Building2 className="w-5 h-5 text-[#6888ff]" />}
+                    {contexto.origen === 'renovacion' && <RefreshCw className="w-5 h-5 text-green-600" />}
+                    {contexto.origen === 'oportunidad' && <Target className="w-5 h-5 text-purple-600" />}
+                    {contexto.origen === 'whatsapp' && <MessageSquare className="w-5 h-5 text-green-600" />}
+                    {contexto.origen === 'email' && <Mail className="w-5 h-5 text-blue-600" />}
+                    <div>
+                      <p className="font-medium text-[#69738c]">
+                        {contexto.origen === 'anunciante' && `📋 Creando contrato para: ${contexto.anuncianteNombre || contexto.anuncianteId}`}
+                        {contexto.origen === 'renovacion' && `🔄 Renovando contrato: ${contexto.contratoBaseId}`}
+                        {contexto.origen === 'oportunidad' && `🎯 Desde oportunidad comercial`}
+                        {contexto.origen === 'whatsapp' && `📱 Datos importados desde WhatsApp`}
+                        {contexto.origen === 'email' && `📧 Datos importados desde Email`}
+                      </p>
+                      <p className="text-sm text-[#69738c]">
+                        Los datos se pre-llenarán automáticamente
+                      </p>
+                    </div>
+                    <Sparkles className="w-5 h-5 text-amber-500 ml-auto" />
+                  </div>
+                </NeuromorphicCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Loading */}
+          {detectando && (
+            <div className="text-center py-8">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin" />
+              <p className="text-[#69738c]">Detectando contexto...</p>
+            </div>
+          )}
+
+          {/* Grid de tipos - 2 columnas con el último elemento ocupando ambas */}
+          {!detectando && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="mt-8 flex justify-center gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-2 gap-4"
             >
-              <button
-                onClick={handleCancel}
-                className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={iniciarWizard}
-                className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
-              >
-                Continuar
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              {tiposContrato.map((tipo, index) => (
+                <motion.div
+                  key={tipo.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className={index === 4 ? 'col-span-2' : ''}
+                >
+                  <TipoContratoCard
+                    tipo={tipo}
+                    seleccionado={tipoSeleccionado === tipo.id}
+                    onClick={() => setTipoSeleccionado(tipo.id)}
+                  />
+                </motion.div>
+              ))}
             </motion.div>
           )}
-        </AnimatePresence>
 
-        {/* Footer informativo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 grid grid-cols-3 gap-4"
-        >
-          {[
-            { icono: <Clock className="w-5 h-5" />, label: 'Tiempo promedio', valor: '5 min' },
-            { icono: <Shield className="w-5 h-5" />, label: 'Validaciones IA', valor: 'Automáticas' },
-            { icono: <Sparkles className="w-5 h-5" />, label: 'Sugerencias', valor: 'Personalizadas' }
-          ].map((item, idx) => (
-            <div key={idx} className="text-center p-4 rounded-xl bg-white border border-slate-200">
-              <div className="text-indigo-500 flex justify-center mb-2">{item.icono}</div>
-              <p className="text-xs text-slate-500">{item.label}</p>
-              <p className="font-semibold text-slate-800">{item.valor}</p>
-            </div>
-          ))}
-        </motion.div>
+          {/* Botón continuar */}
+          <AnimatePresence>
+            {tipoSeleccionado && !detectando && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="mt-8 flex justify-center gap-4"
+              >
+                <NeuromorphicButton variant="secondary" onClick={handleCancel}>
+                  Cancelar
+                </NeuromorphicButton>
+                <NeuromorphicButton variant="primary" onClick={iniciarWizard}>
+                  Continuar
+                  <ArrowRight className="w-5 h-5" />
+                </NeuromorphicButton>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
@@ -434,13 +439,13 @@ function NuevoContratoContent() {
 export default function NuevoContratoPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: N.base }}>
+        <NeuromorphicCard className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: N.accent, boxShadow: neuSm }}>
             <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
           </div>
-          <h2 className="text-xl font-bold text-slate-700">Cargando...</h2>
-        </div>
+          <h2 className="text-xl font-bold" style={{ color: N.text }}>Cargando...</h2>
+        </NeuromorphicCard>
       </div>
     }>
       <NuevoContratoContent />

@@ -39,7 +39,7 @@ import {
   AlertCircle,
   Info,
   Music,
-  ImageIcon,
+  Image as ImageIcon,
   Volume2,
   Sparkles
 } from 'lucide-react';

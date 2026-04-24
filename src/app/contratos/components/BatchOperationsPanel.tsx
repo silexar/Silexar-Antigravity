@@ -1,8 +1,8 @@
 /**
- * ⚡ SILEXAR PULSE - Batch Operations Panel TIER 0
+ * ? SILEXAR PULSE - Batch Operations Panel TIER 0
  * 
  * @description Panel de operaciones masivas para ejecutar
- * acciones en múltiples contratos simultáneamente.
+ * acciones en m�ltiples contratos simult�neamente.
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -33,9 +33,9 @@ import {
 } from 'lucide-react';
 import { Productivity } from '../nuevo/components/WizardContrato/services/ProductivityService';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export interface ContratoSeleccionado {
   id: string;
@@ -62,55 +62,55 @@ interface EstadoOperacion {
   tiempoTotal?: number;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnDanger: `
     bg-gradient-to-br from-red-500 to-red-600
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // OPERACIONES DISPONIBLES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const OPERACIONES = [
   { 
@@ -118,21 +118,21 @@ const OPERACIONES = [
     label: 'Aprobar todos', 
     icon: <Check className="w-4 h-4" />,
     color: 'bg-green-100 text-green-600',
-    confirmacion: '¿Aprobar {count} contratos seleccionados?'
+    confirmacion: '�Aprobar {count} contratos seleccionados?'
   },
   { 
     id: 'rechazar' as OperacionBatch, 
     label: 'Rechazar todos', 
     icon: <X className="w-4 h-4" />,
     color: 'bg-red-100 text-red-600',
-    confirmacion: '¿Rechazar {count} contratos? Esta acción requiere motivo.'
+    confirmacion: '�Rechazar {count} contratos? Esta acci�n requiere motivo.'
   },
   { 
     id: 'exportar' as OperacionBatch, 
     label: 'Exportar Excel', 
     icon: <Download className="w-4 h-4" />,
     color: 'bg-blue-100 text-blue-600',
-    confirmacion: null // No requiere confirmación
+    confirmacion: null // No requiere confirmaci�n
   },
   { 
     id: 'generarPDF' as OperacionBatch, 
@@ -145,8 +145,8 @@ const OPERACIONES = [
     id: 'enviarEmail' as OperacionBatch, 
     label: 'Enviar por email', 
     icon: <Mail className="w-4 h-4" />,
-    color: 'bg-indigo-100 text-indigo-600',
-    confirmacion: '¿Enviar {count} contratos a sus respectivos clientes?'
+    color: 'bg-[#dfeaff] text-[#6888ff]',
+    confirmacion: '�Enviar {count} contratos a sus respectivos clientes?'
   },
   { 
     id: 'cambiarEstado' as OperacionBatch, 
@@ -157,9 +157,9 @@ const OPERACIONES = [
   }
 ];
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export default function BatchOperationsPanel({
   contratosSeleccionados,
@@ -246,22 +246,22 @@ export default function BatchOperationsPanel({
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 ${neuro.panel} px-6 py-4 z-50`}
       >
         <div className="flex items-center gap-6">
-          {/* Info de selección */}
+          {/* Info de selecci�n */}
           <div className="flex items-center gap-4">
-            <div className="p-2 rounded-xl bg-indigo-100">
-              <Layers className="w-5 h-5 text-indigo-600" />
+            <div className="p-2 rounded-xl bg-[#dfeaff]">
+              <Layers className="w-5 h-5 text-[#6888ff]" />
             </div>
             <div>
-              <p className="font-bold text-slate-800">
+              <p className="font-bold text-[#69738c]">
                 {contratosSeleccionados.length} contratos seleccionados
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[#9aa3b8]">
                 Valor total: {formatCurrency(valorTotal)}
               </p>
             </div>
           </div>
 
-          <div className="w-px h-10 bg-slate-300" />
+          <div className="w-px h-10 bg-[#bec8de]" />
 
           {/* Operaciones */}
           <div className="flex items-center gap-2">
@@ -280,10 +280,10 @@ export default function BatchOperationsPanel({
               </button>
             ))}
 
-            {/* Más opciones */}
+            {/* M�s opciones */}
             <div className="relative group">
               <button className={`${neuro.btnSecondary} p-2 flex items-center gap-1`}>
-                <span className="text-sm">Más</span>
+                <span className="text-sm">M�s</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
               
@@ -292,7 +292,7 @@ export default function BatchOperationsPanel({
                   <button
                     key={op.id}
                     onClick={() => handleOperacion(op.id)}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-[#dfeaff] rounded-lg flex items-center gap-2"
                   >
                     <span className={`p-1 rounded-lg ${op.color}`}>
                       {op.icon}
@@ -304,13 +304,13 @@ export default function BatchOperationsPanel({
             </div>
           </div>
 
-          <div className="w-px h-10 bg-slate-300" />
+          <div className="w-px h-10 bg-[#bec8de]" />
 
-          {/* Limpiar selección */}
+          {/* Limpiar selecci�n */}
           <button
             onClick={onLimpiarSeleccion}
             className={`${neuro.btnSecondary} p-2`}
-            title="Limpiar selección"
+            title="Limpiar selecci�n"
           >
             <X className="w-5 h-5" />
           </button>
@@ -321,12 +321,12 @@ export default function BatchOperationsPanel({
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-500 rounded-b-3xl origin-left"
+            className="absolute bottom-0 left-0 right-0 h-1 bg-[#6888ff] rounded-b-3xl origin-left"
           />
         )}
       </motion.div>
 
-      {/* Modal de confirmación */}
+      {/* Modal de confirmaci�n */}
       <AnimatePresence>
         {showConfirmacion && operacionActiva && (
           <motion.div
@@ -347,10 +347,10 @@ export default function BatchOperationsPanel({
                 <div className="p-3 rounded-xl bg-amber-100">
                   <AlertTriangle className="w-6 h-6 text-amber-600" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-800">Confirmar operación</h3>
+                <h3 className="text-lg font-bold text-[#69738c]">Confirmar operaci�n</h3>
               </div>
 
-              <p className="text-slate-600 mb-4">
+              <p className="text-[#69738c] mb-4">
                 {OPERACIONES.find(o => o.id === operacionActiva)?.confirmacion?.replace(
                   '{count}',
                   String(contratosSeleccionados.length)
@@ -360,14 +360,14 @@ export default function BatchOperationsPanel({
               {/* Lista de contratos afectados */}
               <div className="max-h-40 overflow-y-auto mb-4 space-y-2">
                 {contratosSeleccionados.slice(0, 5).map(c => (
-                  <div key={c.id} className="flex items-center justify-between text-sm p-2 bg-slate-50 rounded-lg">
+                  <div key={c.id} className="flex items-center justify-between text-sm p-2 bg-[#dfeaff] rounded-lg">
                     <span className="font-medium">{c.numero}</span>
-                    <span className="text-slate-500">{c.cliente}</span>
+                    <span className="text-[#9aa3b8]">{c.cliente}</span>
                   </div>
                 ))}
                 {contratosSeleccionados.length > 5 && (
-                  <p className="text-sm text-slate-400 text-center">
-                    y {contratosSeleccionados.length - 5} más...
+                  <p className="text-sm text-[#9aa3b8] text-center">
+                    y {contratosSeleccionados.length - 5} m�s...
                   </p>
                 )}
               </div>
@@ -392,8 +392,8 @@ export default function BatchOperationsPanel({
                 >
                   <option value="">Seleccionar estado...</option>
                   <option value="BORRADOR">Borrador</option>
-                  <option value="EN_REVISION">En Revisión</option>
-                  <option value="PENDIENTE_APROBACION">Pendiente Aprobación</option>
+                  <option value="EN_REVISION">En Revisi�n</option>
+                  <option value="PENDIENTE_APROBACION">Pendiente Aprobaci�n</option>
                   <option value="APROBADO">Aprobado</option>
                   <option value="ACTIVO">Activo</option>
                   <option value="PAUSADO">Pausado</option>
@@ -446,14 +446,14 @@ export default function BatchOperationsPanel({
                     <div className="p-3 rounded-xl bg-green-100">
                       <CheckCircle className="w-6 h-6 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800">Operación completada</h3>
+                    <h3 className="text-lg font-bold text-[#69738c]">Operaci�n completada</h3>
                   </>
                 ) : (
                   <>
                     <div className="p-3 rounded-xl bg-amber-100">
                       <AlertTriangle className="w-6 h-6 text-amber-600" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800">Operación parcial</h3>
+                    <h3 className="text-lg font-bold text-[#69738c]">Operaci�n parcial</h3>
                   </>
                 )}
               </div>
@@ -472,8 +472,8 @@ export default function BatchOperationsPanel({
                   </div>
                 )}
                 {estadoOperacion.tiempoTotal && (
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                    <span className="text-slate-600">Tiempo total</span>
+                  <div className="flex items-center justify-between p-3 bg-[#dfeaff] rounded-xl">
+                    <span className="text-[#69738c]">Tiempo total</span>
                     <span className="font-medium">{(estadoOperacion.tiempoTotal / 1000).toFixed(1)}s</span>
                   </div>
                 )}
@@ -503,7 +503,7 @@ export default function BatchOperationsPanel({
         )}
       </AnimatePresence>
 
-      {/* Loader de operación */}
+      {/* Loader de operaci�n */}
       <AnimatePresence>
         {estadoOperacion.ejecutando && (
           <motion.div
@@ -513,9 +513,9 @@ export default function BatchOperationsPanel({
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
           >
             <div className={`${neuro.panel} p-8 text-center`}>
-              <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
-              <p className="text-lg font-semibold text-slate-800">Procesando operación...</p>
-              <p className="text-sm text-slate-500 mt-1">
+              <Loader2 className="w-12 h-12 text-[#6888ff] animate-spin mx-auto mb-4" />
+              <p className="text-lg font-semibold text-[#69738c]">Procesando operaci�n...</p>
+              <p className="text-sm text-[#9aa3b8] mt-1">
                 {contratosSeleccionados.length} contratos
               </p>
             </div>

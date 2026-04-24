@@ -72,34 +72,34 @@ interface EventoCalendario {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
@@ -224,7 +224,7 @@ const getTipoConfig = (tipo: TipoEvento) => {
     reunion: { icon: <Users className="w-3 h-3" />, color: 'text-green-600', bgColor: 'bg-green-100' },
     recordatorio: { icon: <Bell className="w-3 h-3" />, color: 'text-amber-600', bgColor: 'bg-amber-100' },
     pago: { icon: <DollarSign className="w-3 h-3" />, color: 'text-emerald-600', bgColor: 'bg-emerald-100' },
-    firma: { icon: <FileText className="w-3 h-3" />, color: 'text-indigo-600', bgColor: 'bg-indigo-100' },
+    firma: { icon: <FileText className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-indigo-100' },
     entrega: { icon: <CheckCircle className="w-3 h-3" />, color: 'text-teal-600', bgColor: 'bg-teal-100' }
   };
   return configs[tipo];
@@ -307,7 +307,7 @@ export default function CalendarioContratosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`${neuro.panel} p-6 mb-6`}>
@@ -317,8 +317,8 @@ export default function CalendarioContratosPage() {
                 <Calendar className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Calendario de Contratos</h1>
-                <p className="text-slate-500">
+                <h1 className="text-2xl font-bold text-[#69738c]">Calendario de Contratos</h1>
+                <p className="text-[#69738c]">
                   Vencimientos, renovaciones, obligaciones y eventos
                 </p>
               </div>
@@ -361,7 +361,7 @@ export default function CalendarioContratosPage() {
                 <ChevronLeft className="w-5 h-5" />
               </button>
               
-              <h2 className="text-xl font-bold text-slate-800">
+              <h2 className="text-xl font-bold text-[#69738c]">
                 {MESES[fechaActual.getMonth()]} {fechaActual.getFullYear()}
               </h2>
               
@@ -376,7 +376,7 @@ export default function CalendarioContratosPage() {
             {/* Días de la semana */}
             <div className="grid grid-cols-7 gap-1 mb-2">
               {DIAS_SEMANA.map(dia => (
-                <div key={dia} className="text-center text-sm font-semibold text-slate-500 py-2">
+                <div key={dia} className="text-center text-sm font-semibold text-[#69738c] py-2">
                   {dia}
                 </div>
               ))}
@@ -397,12 +397,12 @@ export default function CalendarioContratosPage() {
                     className={`
                       ${neuro.card} p-2 min-h-24 text-left relative
                       ${!esMesActual ? 'opacity-40' : ''}
-                      ${esSeleccionado ? 'ring-2 ring-indigo-400' : ''}
+                      ${esSeleccionado ? 'ring-2 ring-[#6888ff]' : ''}
                       ${esHoy ? 'ring-2 ring-blue-400' : ''}
                     `}
                   >
                     <span className={`text-sm font-semibold ${
-                      esHoy ? 'bg-blue-500 text-white px-2 py-0.5 rounded-full' : 'text-slate-700'
+                      esHoy ? 'bg-blue-500 text-white px-2 py-0.5 rounded-full' : 'text-[#69738c]'
                     }`}>
                       {fecha.getDate()}
                     </span>
@@ -421,7 +421,7 @@ export default function CalendarioContratosPage() {
                         );
                       })}
                       {eventosDelDia.length > 3 && (
-                        <div className="text-xs text-slate-400">
+                        <div className="text-xs text-[#9aa3b8]">
                           +{eventosDelDia.length - 3} más
                         </div>
                       )}
@@ -434,8 +434,8 @@ export default function CalendarioContratosPage() {
 
           {/* Panel lateral - Eventos del día */}
           <div className={`${neuro.panel} p-6`}>
-            <h3 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-indigo-500" />
+            <h3 className="font-bold text-lg text-[#69738c] mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#6888ff]" />
               {diaSeleccionado ? (
                 <span>
                   {diaSeleccionado.getDate()} de {MESES[diaSeleccionado.getMonth()]}
@@ -463,17 +463,17 @@ export default function CalendarioContratosPage() {
                         {config.icon}
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-sm text-slate-800">{evento.titulo}</p>
+                        <p className="font-semibold text-sm text-[#69738c]">{evento.titulo}</p>
                         {evento.clienteNombre && (
-                          <p className="text-xs text-slate-500">{evento.clienteNombre}</p>
+                          <p className="text-xs text-[#69738c]">{evento.clienteNombre}</p>
                         )}
                         {evento.horaInicio && (
-                          <p className="text-xs text-slate-400 mt-1">
+                          <p className="text-xs text-[#9aa3b8] mt-1">
                             {evento.horaInicio} - {evento.horaFin}
                           </p>
                         )}
                         {evento.valor && (
-                          <p className="text-sm font-bold text-slate-700 mt-1">
+                          <p className="text-sm font-bold text-[#69738c] mt-1">
                             {formatCurrency(evento.valor)}
                           </p>
                         )}
@@ -481,7 +481,7 @@ export default function CalendarioContratosPage() {
                       <span className={`${neuro.badge} ${
                         evento.prioridad === 'urgente' ? 'bg-red-100 text-red-700' :
                         evento.prioridad === 'alta' ? 'bg-orange-100 text-orange-700' :
-                        'bg-slate-100 text-slate-700'
+                        'bg-[#dfeaff] text-[#69738c]'
                       }`}>
                         {evento.prioridad}
                       </span>
@@ -492,15 +492,15 @@ export default function CalendarioContratosPage() {
 
               {eventosDelDia.length === 0 && (
                 <div className="text-center py-8">
-                  <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500">Sin eventos este día</p>
+                  <Calendar className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
+                  <p className="text-[#69738c]">Sin eventos este día</p>
                 </div>
               )}
             </div>
 
             {/* Resumen del mes */}
-            <div className="mt-6 pt-4 border-t border-slate-200">
-              <h4 className="text-sm font-semibold text-slate-600 mb-3">Resumen del mes</h4>
+            <div className="mt-6 pt-4 border-t border-[#bec8de30]">
+              <h4 className="text-sm font-semibold text-[#69738c] mb-3">Resumen del mes</h4>
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-center p-2 bg-red-50 rounded-lg">
                   <p className="text-lg font-bold text-red-600">
@@ -554,37 +554,37 @@ export default function CalendarioContratosPage() {
                   <div className={`p-2 rounded-lg ${getTipoConfig(showEventoModal.tipo).bgColor} ${getTipoConfig(showEventoModal.tipo).color}`}>
                     {getTipoConfig(showEventoModal.tipo).icon}
                   </div>
-                  <h3 className="font-bold text-lg text-slate-800">{showEventoModal.titulo}</h3>
+                  <h3 className="font-bold text-lg text-[#69738c]">{showEventoModal.titulo}</h3>
                 </div>
                 <button onClick={() => setShowEventoModal(null)}>
-                  <X className="w-5 h-5 text-slate-400" />
+                  <X className="w-5 h-5 text-[#9aa3b8]" />
                 </button>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <Calendar className="w-4 h-4 text-[#9aa3b8]" />
                   <span>{showEventoModal.fecha.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
                 </div>
 
                 {showEventoModal.horaInicio && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Clock className="w-4 h-4 text-slate-400" />
+                    <Clock className="w-4 h-4 text-[#9aa3b8]" />
                     <span>{showEventoModal.horaInicio} - {showEventoModal.horaFin}</span>
                   </div>
                 )}
 
                 {showEventoModal.clienteNombre && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-4 h-4 text-slate-400" />
+                    <Users className="w-4 h-4 text-[#9aa3b8]" />
                     <span>{showEventoModal.clienteNombre}</span>
                   </div>
                 )}
 
                 {showEventoModal.numeroContrato && (
                   <div className="flex items-center gap-2 text-sm">
-                    <FileText className="w-4 h-4 text-slate-400" />
-                    <a href={`/contratos/${showEventoModal.contratoId}`} className="text-indigo-600 hover:underline">
+                    <FileText className="w-4 h-4 text-[#9aa3b8]" />
+                    <a href={`/contratos/${showEventoModal.contratoId}`} className="text-[#6888ff] hover:underline">
                       {showEventoModal.numeroContrato}
                     </a>
                   </div>
@@ -592,13 +592,13 @@ export default function CalendarioContratosPage() {
 
                 {showEventoModal.valor && (
                   <div className="flex items-center gap-2 text-sm">
-                    <DollarSign className="w-4 h-4 text-slate-400" />
+                    <DollarSign className="w-4 h-4 text-[#9aa3b8]" />
                     <span className="font-semibold">{formatCurrency(showEventoModal.valor)}</span>
                   </div>
                 )}
 
                 {showEventoModal.descripcion && (
-                  <p className="text-sm text-slate-600 mt-2">{showEventoModal.descripcion}</p>
+                  <p className="text-sm text-[#69738c] mt-2">{showEventoModal.descripcion}</p>
                 )}
               </div>
 

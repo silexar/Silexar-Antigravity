@@ -1,296 +1,733 @@
-/**
- * 📻 SILEXAR PULSE - Página de Registro de Emisión
- * 
- * @description Centro de control para verificar y confirmar emisiones
- * 
- * @version 2025.1.0
- * @tier TIER_0_FORTUNE_10
- */
-
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import apiClient from '@/lib/api/client';
-import { 
-  Radio, 
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Clock,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
-  Music,
-  Fingerprint,
-  Mic,
-  User,
-  Zap,
-  Play,
-  RotateCcw,
-  Check
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Search, Building2, FileText, Radio, Calendar, Clock, ChevronRight,
+  User, Hash, CheckCircle, AlertCircle, Loader2, Music, SlidersHorizontal,
+  ArrowRight, X
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
-// TIPOS
-// ═══════════════════════════════════════════════════════════════
+type ModoBusqueda = 'anunciante' | 'campana' | 'spx' | 'radio';
 
-interface Registro {
+interface Entidad { id: string; nombre: string;[key: string]: any; }
+interface SpxItem {
   id: string;
-  spotTandaId: string;
-  cunaNombre: string;
-  horaProgra: string;
-  horaEmision: string | null;
-  emitido: boolean;
-  confirmado: boolean;
-  metodo: string | null;
-  confianza: number;
+  pautaId: string;
+  codigo: string;
+  spxCode: string | null;
+  nombre: string;
+  horaInicio: string;
+  horaFin: string | null;
+  fecha: string;
+  emisoraId: string;
+  emisoraNombre: string | null;
+  duracionSegundos: number | null;
 }
 
-interface Stats {
-  total: number;
-  emitidos: number;
-  confirmados: number;
-  pendientes: number;
-  noEmitidos: number;
-  porcentajeEmision: number;
-  confianzaPromedio: number;
-}
+const TABS: { key: ModoBusqueda; label: string; icon: React.ElementType }[] = [
+  { key: 'anunciante', label: 'Por Anunciante', icon: Building2 },
+  { key: 'campana', label: 'Por Campaña', icon: FileText },
+  { key: 'spx', label: 'Por SPX', icon: Hash },
+  { key: 'radio', label: 'Por Radio', icon: Radio },
+];
 
-// ═══════════════════════════════════════════════════════════════
-// COMPONENTES NEUROMÓRFICOS
-// ═══════════════════════════════════════════════════════════════
+// ─── Neumorphic tokens ───
+const BG = 'bg-[#dfeaff]';
+const TEXT = 'text-[#69738c]';
+const TEXT_LIGHT = 'text-[#9aa3b8]';
+const SHADOW_OUT = 'shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]';
+const SHADOW_IN = 'shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]';
+const SHADOW_IN_SM = 'shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]';
+const ACCENT = 'bg-[#6888ff]';
+const ACCENT_TEXT = 'text-[#6888ff]';
+const ACCENT_RING = 'ring-[#6888ff]';
 
-const GlassCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-2xl p-6 bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/50 transition-all ${className}`}>
-    {children}
-  </div>
-);
+export default function RegistroEmisionDashboard() {
+  const router = useRouter();
+  const [modo, setModo] = useState<ModoBusqueda>('anunciante');
+  const [loading, setLoading] = useState(false);
 
-const MetodoBadge = ({ metodo }: { metodo: string | null }) => {
-  const config: Record<string, { bg: string; icon: React.ElementType }> = {
-    manual: { bg: 'from-slate-400 to-slate-500', icon: User },
-    fingerprint: { bg: 'from-purple-400 to-purple-500', icon: Fingerprint },
-    shazam: { bg: 'from-cyan-400 to-cyan-500', icon: Music },
-    speech_to_text: { bg: 'from-emerald-400 to-emerald-500', icon: Mic },
-    automatico: { bg: 'from-blue-400 to-blue-500', icon: Zap }
-  };
-  const { bg, icon: Icon } = config[metodo || 'manual'] || config.manual;
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${bg}`}>
-      <Icon className="w-3 h-3" />
-      {metodo || 'N/A'}
-    </span>
-  );
-};
+  // ── Jerarquía de selección ──
+  const [anuncianteSel, setAnuncianteSel] = useState<Entidad | null>(null);
+  const [contratoSel, setContratoSel] = useState<Entidad | null>(null);
+  const [campanaSel, setCampanaSel] = useState<Entidad | null>(null);
+  const [fechaSel, setFechaSel] = useState<string>('');
+  const [spxSeleccionados, setSpxSeleccionados] = useState<SpxItem[]>([]);
+  const [toleranciaMinutos, setToleranciaMinutos] = useState(10);
 
-const ConfianzaBadge = ({ confianza }: { confianza: number }) => {
-  const color = confianza >= 90 ? 'text-emerald-600' : confianza >= 80 ? 'text-blue-600' : confianza >= 60 ? 'text-amber-600' : 'text-red-600';
-  return <span className={`font-bold ${color}`}>{confianza}%</span>;
-};
+  // ── Listas de resultados ──
+  const [anunciantes, setAnunciantes] = useState<Entidad[]>([]);
+  const [contratos, setContratos] = useState<Entidad[]>([]);
+  const [campanas, setCampanas] = useState<Entidad[]>([]);
+  const [spxList, setSpxList] = useState<SpxItem[]>([]);
+  const [emisoras, setEmisoras] = useState<Entidad[]>([]);
 
-// ═══════════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+  // ── Inputs de búsqueda directa ──
+  const [qAnunciante, setQAnunciante] = useState('');
+  const [qCampana, setQCampana] = useState('');
+  const [qSpx, setQSpx] = useState('');
+  const [qEmisora, setQEmisora] = useState('');
 
-export default function RegistroEmisionPage() {
-  const [registros, setRegistros] = useState<Registro[]>([]);
-  const [stats, setStats] = useState<Stats>({ total: 0, emitidos: 0, confirmados: 0, pendientes: 0, noEmitidos: 0, porcentajeEmision: 0, confianzaPromedio: 0 });
-  const [loading, setLoading] = useState(true);
-  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
-  const [filtro, setFiltro] = useState('todos');
+  // ── Modal Nueva Búsqueda ──
+  const [showNuevaBusquedaModal, setShowNuevaBusquedaModal] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const estadoParam = filtro !== 'todos' ? `&estado=${filtro}` : '';
-      const { data } = await apiClient.get<{ data: typeof registros; stats: typeof stats }>(`/api/registro-emision?fecha=${fecha}${estadoParam}`);
-      if (data?.data) {
-        setRegistros(data.data);
-        setStats(data.stats);
+  // ── Historial de búsquedas ──
+  interface HistorialBusqueda {
+    id: string;
+    anunciante: string;
+    campana: string;
+    spxCode: string;
+    fecha: string;
+    hora: string;
+    resultado: 'encontrado' | 'no_encontrado' | 'pendiente';
+  }
+  const [historialBusquedas, setHistorialBusquedas] = useState<HistorialBusqueda[]>([]);
+
+  // Cargar historial desde localStorage al iniciar
+  useEffect(() => {
+    const saved = localStorage.getItem('registro-emision-historial');
+    if (saved) {
+      try {
+        setHistorialBusquedas(JSON.parse(saved));
+      } catch (e) {
+        console.error('Error loading historial:', e);
       }
-    } catch {
-      // /* */;
-    } finally {
-      setLoading(false);
     }
-  }, [fecha, filtro]);
+  }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  // Guardar historial en localStorage cuando cambie
+  useEffect(() => {
+    localStorage.setItem('registro-emision-historial', JSON.stringify(historialBusquedas));
+  }, [historialBusquedas]);
 
-  const cambiarFecha = (dias: number) => {
-    const nuevaFecha = new Date(fecha);
-    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
-    setFecha(nuevaFecha.toISOString().split('T')[0]);
+  // Función para agregar al historial
+  const agregarAlHistorial = (anunciante: string, campana: string, spxCode: string, resultado: HistorialBusqueda['resultado']) => {
+    const nuevaEntrada: HistorialBusqueda = {
+      id: Date.now().toString(),
+      anunciante,
+      campana,
+      spxCode,
+      fecha: new Date().toLocaleDateString('es-CL'),
+      hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+      resultado
+    };
+    setHistorialBusquedas(prev => [nuevaEntrada, ...prev].slice(0, 20)); // Máximo 20 registros
   };
 
-  const confirmarEmision = async (id: string) => {
-    try {
-      await apiClient.put('/api/registro-emision', { id, confirmado: true, confianza: 100 });
-      fetchData();
-    } catch {
-      // /* */;
-    }
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cargar emisoras una vez
+  useEffect(() => {
+    fetch('/api/emisoras')
+      .then(r => r.json())
+      .then(j => setEmisoras(j.data || []))
+      .catch(() => setEmisoras([]));
+  }, []);
+
+  // ── Autocompletar Anunciante ──
+  const buscarAnunciantes = useCallback((q: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!q.trim()) { setAnunciantes([]); return; }
+    debounceRef.current = setTimeout(() => {
+      fetch(`/api/anunciantes?search=${encodeURIComponent(q)}&limit=10`)
+        .then(r => r.json())
+        .then(j => setAnunciantes(j.data || []))
+        .catch(() => setAnunciantes([]));
+    }, 300);
+  }, []);
+
+  useEffect(() => { buscarAnunciantes(qAnunciante); }, [qAnunciante, buscarAnunciantes]);
+
+  // ── Cargar contratos al seleccionar anunciante ──
+  useEffect(() => {
+    if (!anuncianteSel) { setContratos([]); return; }
+    fetch(`/api/contratos?anuncianteId=${anuncianteSel.id}&estado=activo&limit=50`)
+      .then(r => r.json())
+      .then(j => setContratos(j.data?.contratos || []))
+      .catch(() => setContratos([]));
+  }, [anuncianteSel]);
+
+  // ── Cargar campañas al seleccionar contrato ──
+  useEffect(() => {
+    if (!contratoSel) { setCampanas([]); return; }
+    fetch(`/api/campanas?contratoId=${contratoSel.id}&estado=en_aire&limit=50`)
+      .then(r => r.json())
+      .then(j => setCampanas(j.data || []))
+      .catch(() => setCampanas([]));
+  }, [contratoSel]);
+
+  // ── Cargar SPX al seleccionar campaña + fecha ──
+  useEffect(() => {
+    if (!campanaSel || !fechaSel) { setSpxList([]); return; }
+    setLoading(true);
+    fetch(`/api/registro-emision/buscar/spx?campanaId=${campanaSel.id}&fecha=${fechaSel}`)
+      .then(r => r.json())
+      .then(j => setSpxList(j.data || []))
+      .catch(() => setSpxList([]))
+      .finally(() => setLoading(false));
+  }, [campanaSel, fechaSel]);
+
+  // ── Búsqueda por campaña directa ──
+  const buscarCampanaDirecta = useCallback((q: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!q.trim()) { setCampanas([]); return; }
+    debounceRef.current = setTimeout(() => {
+      fetch(`/api/campanas?search=${encodeURIComponent(q)}&limit=10`)
+        .then(r => r.json())
+        .then(j => {
+          const list = j.data || [];
+          setCampanas(list);
+        })
+        .catch(() => setCampanas([]));
+    }, 300);
+  }, []);
+
+  useEffect(() => { if (modo === 'campana') buscarCampanaDirecta(qCampana); }, [qCampana, modo, buscarCampanaDirecta]);
+
+  // ── Búsqueda por SPX directa ──
+  const buscarSpxDirecta = useCallback((q: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!q.trim()) { setSpxList([]); return; }
+    debounceRef.current = setTimeout(() => {
+      fetch(`/api/registro-emision/buscar/spx?codigo=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(j => {
+          const list = j.data || [];
+          setSpxList(list);
+          if (list.length === 1) {
+            const s = list[0];
+            setCampanaSel({ id: s.campanaId || '', nombre: s.campanaNombre || '' });
+            setFechaSel(s.fecha);
+            setSpxSeleccionados([s]);
+          }
+        })
+        .catch(() => setSpxList([]));
+    }, 300);
+  }, []);
+
+  useEffect(() => { if (modo === 'spx') buscarSpxDirecta(qSpx); }, [qSpx, modo, buscarSpxDirecta]);
+
+  // ── Búsqueda por Radio + Fecha ──
+  useEffect(() => {
+    if (modo !== 'radio' || !qEmisora || !fechaSel) { setSpxList([]); return; }
+    setLoading(true);
+    fetch(`/api/registro-emision/buscar/spx?emisoraId=${qEmisora}&fecha=${fechaSel}`)
+      .then(r => r.json())
+      .then(j => setSpxList(j.data || []))
+      .catch(() => setSpxList([]))
+      .finally(() => setLoading(false));
+  }, [modo, qEmisora, fechaSel]);
+
+  const toggleSpx = (spx: SpxItem) => {
+    setSpxSeleccionados(prev =>
+      prev.find(s => s.pautaId === spx.pautaId)
+        ? prev.filter(s => s.pautaId !== spx.pautaId)
+        : [...prev, spx]
+    );
   };
 
-  const registrarManual = async (registro: Registro) => {
-    try {
-      await apiClient.post('/api/registro-emision', {
-        spotTandaId: registro.spotTandaId,
-        cunaNombre: registro.cunaNombre,
-        horaProgramada: registro.horaProgra,
-        metodo: 'manual',
-      });
-      fetchData();
-    } catch {
-      // /* */;
-    }
+  const calcularRango = (spx: SpxItem) => {
+    const [h, m] = spx.horaInicio.split(':').map(Number);
+    const totalMin = h * 60 + m;
+    const inicioMin = Math.max(0, totalMin - toleranciaMinutos);
+    const finMin = totalMin + toleranciaMinutos;
+    const fmt = (t: number) => `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}:00`;
+    return { inicio: fmt(inicioMin), fin: fmt(finMin) };
   };
 
+  const iniciarVerificacion = () => {
+    if (!campanaSel || spxSeleccionados.length === 0) return;
+    const rangos = spxSeleccionados.map(calcularRango);
+    const horaInicioGlobal = rangos.reduce((min, r) => r.inicio < min ? r.inicio : min, '23:59:59');
+    const horaFinGlobal = rangos.reduce((max, r) => r.fin > max ? r.fin : max, '00:00:00');
+
+    const params = new URLSearchParams({
+      campanaId: campanaSel.id,
+      fechaBusqueda: fechaSel,
+      horaInicio: horaInicioGlobal,
+      horaFin: horaFinGlobal,
+      emisorasIds: [...new Set(spxSeleccionados.map(s => s.emisoraId))].join(','),
+      materialesIds: spxSeleccionados.map(s => s.id).join(','),
+      tolerancia: String(toleranciaMinutos),
+    });
+    router.push(`/registro-emision/wizard?${params.toString()}`);
+  };
+
+  const resetTodo = () => {
+    console.log('[RegistroEmision] Nueva búsqueda clicked - resetting form');
+    setAnuncianteSel(null);
+    setContratoSel(null);
+    setCampanaSel(null);
+    setFechaSel('');
+    setSpxSeleccionados([]);
+    setSpxList([]);
+    setQAnunciante('');
+    setQCampana('');
+    setQSpx('');
+    setQEmisora('');
+  };
+
+  // ─── RENDER ───
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-teal-50 to-slate-100 p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
+    <main className={`min-h-screen ${BG} ${TEXT} p-4 md:p-8`}>
+      <div className="mx-auto max-w-6xl space-y-6">
+
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
-              <Radio className="w-10 h-10 text-teal-500" />
-              Registro de Emisión
-            </h1>
-            <p className="text-slate-500 mt-2">Verificación y confirmación de spots emitidos</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm border border-white/60 rounded-xl p-2 shadow-sm">
-              <button onClick={() => cambiarFecha(-1)} className="p-2 rounded-lg hover:bg-white active:scale-95 transition-all">
-                <ChevronLeft className="w-5 h-5 text-slate-600" />
+        <div className={`rounded-3xl ${BG} p-6 ${SHADOW_OUT}`}>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-wide text-slate-700">Registro de Emisión</h1>
+              <p className="mt-1 text-sm text-[#9aa3b8]">Verificación inteligente de spots y menciones</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => router.push('/registro-emision/nueva-busqueda')}
+                className={`rounded-full px-4 py-2 text-sm font-semibold ${ACCENT} text-white ${SHADOW_OUT} hover:bg-[#5572ee]`}
+              >
+                Nueva Búsqueda
               </button>
-              <div className="px-4 py-2 font-bold text-slate-800">
-                {new Date(fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
-              </div>
-              <button onClick={() => cambiarFecha(1)} className="p-2 rounded-lg hover:bg-white active:scale-95 transition-all">
-                <ChevronRight className="w-5 h-5 text-slate-600" />
+              <button
+                onClick={resetTodo}
+                className={`rounded-full px-4 py-2 text-sm font-semibold ${BG} ${SHADOW_OUT} hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]`}
+              >
+                Borrar Registros
               </button>
             </div>
-            <button onClick={fetchData} className="p-3 bg-white/60 backdrop-blur-sm border border-white/60 rounded-xl shadow-sm hover:bg-white active:scale-95 transition-all text-teal-600">
-              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-            </button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {[
-            { label: 'Total', value: stats.total, icon: Music, color: 'from-slate-400 to-slate-500' },
-            { label: 'Emitidos', value: stats.emitidos, icon: Play, color: 'from-blue-400 to-blue-500' },
-            { label: 'Confirmados', value: stats.confirmados, icon: CheckCircle, color: 'from-emerald-400 to-emerald-500' },
-            { label: 'Pendientes', value: stats.pendientes, icon: Clock, color: 'from-amber-400 to-amber-500' },
-            { label: 'No Emitidos', value: stats.noEmitidos, icon: XCircle, color: 'from-red-400 to-red-500' },
-            { label: 'Emisión', value: `${stats.porcentajeEmision}%`, icon: Radio, color: 'from-purple-400 to-purple-500' },
-            { label: 'Confianza', value: `${stats.confianzaPromedio}%`, icon: Fingerprint, color: 'from-teal-400 to-teal-500' }
-          ].map((stat, i) => (
-            <GlassCard key={`${stat}-${i}`} className="p-4">
-              <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color} shadow-sm border border-white/20`}>
-                  <stat.icon className="w-4 h-4 text-white" />
+        {/* Tabs de modo */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {TABS.map(t => {
+            const Icon = t.icon;
+            const active = modo === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => { setModo(t.key); resetTodo(); }}
+                className={`flex items-center justify-center gap-2 rounded-2xl py-3 text-sm font-semibold transition-all ${active
+                  ? `${ACCENT} text-white ${SHADOW_OUT}`
+                  : `${BG} ${SHADOW_OUT} hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]`
+                  }`}
+              >
+                <Icon className="h-4 w-4" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Panel de búsqueda según modo */}
+        <div className={`rounded-3xl ${BG} p-6 ${SHADOW_OUT}`}>
+          {modo === 'anunciante' && (
+            <div className="space-y-4">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-700">
+                <Building2 className="h-5 w-5" /> Buscar por Anunciante
+              </h2>
+              <div className={`relative rounded-xl ${SHADOW_IN}`}>
+                <Search className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]`} />
+                <input
+                  value={qAnunciante}
+                  onChange={e => { setQAnunciante(e.target.value); setAnuncianteSel(null); }}
+                  placeholder="Escriba el nombre del anunciante..."
+                  className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none placeholder:text-[#9aa3b8]`}
+                />
+              </div>
+              {!anuncianteSel && anunciantes.length > 0 && (
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {anunciantes.map(a => (
+                    <button
+                      key={a.id}
+                      onClick={() => { setAnuncianteSel(a); setQAnunciante(a.nombreRazonSocial || a.nombre); }}
+                      className={`flex items-center gap-3 rounded-xl ${BG} p-3 text-left ${SHADOW_OUT} hover:ring-2 ${ACCENT_RING}`}
+                    >
+                      <User className="h-4 w-4 text-[#6888ff]" />
+                      <div>
+                        <p className="text-sm font-medium">{a.nombreRazonSocial || a.nombre}</p>
+                        <p className="text-xs text-[#9aa3b8]">{a.rut || a.codigo}</p>
+                      </div>
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <p className="text-slate-500 text-xs font-semibold">{stat.label}</p>
-                  <p className="text-xl font-bold text-slate-800">{stat.value}</p>
+              )}
+            </div>
+          )}
+
+          {modo === 'campana' && (
+            <div className="space-y-4">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-700">
+                <FileText className="h-5 w-5" /> Buscar por Campaña
+              </h2>
+              <div className={`relative rounded-xl ${SHADOW_IN}`}>
+                <Search className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]`} />
+                <input
+                  value={qCampana}
+                  onChange={e => { setQCampana(e.target.value); setCampanaSel(null); }}
+                  placeholder="Número o nombre de campaña..."
+                  className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none placeholder:text-[#9aa3b8]`}
+                />
+              </div>
+            </div>
+          )}
+
+          {modo === 'spx' && (
+            <div className="space-y-4">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-700">
+                <Hash className="h-5 w-5" /> Buscar por Código SPX
+              </h2>
+              <div className={`relative rounded-xl ${SHADOW_IN}`}>
+                <Search className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]`} />
+                <input
+                  value={qSpx}
+                  onChange={e => { setQSpx(e.target.value); setSpxSeleccionados([]); }}
+                  placeholder="Ej: SPX-0001"
+                  className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none placeholder:text-[#9aa3b8]`}
+                />
+              </div>
+            </div>
+          )}
+
+          {modo === 'radio' && (
+            <div className="space-y-4">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-700">
+                <Radio className="h-5 w-5" /> Buscar por Radio y Fecha
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <select
+                  value={qEmisora}
+                  onChange={e => setQEmisora(e.target.value)}
+                  className={`rounded-xl ${BG} p-3 text-sm ${SHADOW_IN} outline-none`}
+                >
+                  <option value="">Seleccione emisora</option>
+                  {emisoras.map(e => (
+                    <option key={e.id} value={e.id}>{e.nombre}</option>
+                  ))}
+                </select>
+                <input
+                  type="date"
+                  value={fechaSel}
+                  onChange={e => setFechaSel(e.target.value)}
+                  className={`rounded-xl ${BG} p-3 text-sm ${SHADOW_IN} outline-none`}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Resultados jerárquicos */}
+        <div className="grid gap-4 lg:grid-cols-2">
+
+          {/* Columna izquierda: selección jerárquica */}
+          <div className="space-y-4">
+
+            {/* Contratos */}
+            {anuncianteSel && !contratoSel && (
+              <div className={`rounded-3xl ${BG} p-5 ${SHADOW_OUT}`}>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <FileText className="h-4 w-4" /> Contratos vigentes de {anuncianteSel.nombreRazonSocial || anuncianteSel.nombre}
+                </h3>
+                <div className="space-y-2">
+                  {contratos.length === 0 && <p className="text-xs text-[#9aa3b8]">No hay contratos activos.</p>}
+                  {contratos.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => setContratoSel(c)}
+                      className={`w-full rounded-xl ${BG} p-3 text-left ${SHADOW_OUT} hover:ring-2 ${ACCENT_RING}`}
+                    >
+                      <p className="text-sm font-medium">{c.numeroContrato || c.titulo}</p>
+                      <p className="text-xs text-[#9aa3b8]">{c.clienteNombre} · {c.estado}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
-            </GlassCard>
-          ))}
-        </div>
+            )}
 
-        {/* Filtros */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {[
-            { id: 'todos', label: 'Todos', icon: Music },
-            { id: 'confirmado', label: 'Confirmados', icon: CheckCircle },
-            { id: 'pendiente', label: 'Pendientes', icon: Clock },
-            { id: 'no_emitido', label: 'No Emitidos', icon: XCircle }
-          ].map((f) => (
-            <button
-              key={f.id}
-              onClick={() => setFiltro(f.id)}
-              className={`px-4 py-2 rounded-xl flex items-center gap-2 whitespace-nowrap transition-all font-semibold ${
-                filtro === f.id 
-                  ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md shadow-teal-200/50' 
-                  : 'bg-white/60 backdrop-blur-sm shadow-sm border border-white/60 text-slate-600 hover:bg-white active:scale-95'
-              }`}
-            >
-              <f.icon className="w-4 h-4" />
-              {f.label}
-            </button>
-          ))}
-        </div>
+            {/* Campañas */}
+            {contratoSel && !campanaSel && (
+              <div className={`rounded-3xl ${BG} p-5 ${SHADOW_OUT}`}>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <FileText className="h-4 w-4" /> Campañas vigentes del contrato
+                </h3>
+                <div className="space-y-2">
+                  {campanas.length === 0 && <p className="text-xs text-[#9aa3b8]">No hay campañas activas.</p>}
+                  {campanas.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => setCampanaSel(c)}
+                      className={`w-full rounded-xl ${BG} p-3 text-left ${SHADOW_OUT} hover:ring-2 ${ACCENT_RING}`}
+                    >
+                      <p className="text-sm font-medium">{c.codigo} — {c.nombre}</p>
+                      <p className="text-xs text-[#9aa3b8]">{c.anuncianteNombre} · {c.estado}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {/* Lista de registros */}
-        <GlassCard>
-          <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-            <Music className="w-6 h-6 text-teal-500" />
-            Detalle de Emisiones
-          </h2>
-          
-          {loading ? (
-            <div className="text-center py-16"><RefreshCw className="w-10 h-10 animate-spin text-teal-500 mx-auto" /></div>
-          ) : registros.length === 0 ? (
-            <div className="text-center py-16"><div className="w-24 h-24 bg-white/50 backdrop-blur-md border border-white/60 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm"><Radio className="w-10 h-10 text-slate-300" /></div><p className="text-slate-500 font-bold">Sin registros de emisión hoy</p></div>
-          ) : (
-            <div className="space-y-3">
-              {registros.map((reg) => (
-                <div key={reg.id} className={`p-4 rounded-xl border bg-white/60 backdrop-blur-sm shadow-sm transition-all hover:shadow-md ${
-                  reg.confirmado ? 'border-emerald-200' :
-                  !reg.emitido ? 'border-red-200' :
-                  'border-amber-200'
-                }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        reg.confirmado ? 'bg-emerald-500' : !reg.emitido ? 'bg-red-500' : 'bg-amber-500'
-                      }`}>
-                        {reg.confirmado ? <CheckCircle className="w-5 h-5 text-white" /> : 
-                         !reg.emitido ? <XCircle className="w-5 h-5 text-white" /> : 
-                         <AlertCircle className="w-5 h-5 text-white" />}
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-800">{reg.cunaNombre}</p>
-                        <div className="flex items-center gap-3 text-sm text-slate-500">
-                          <span className="font-mono">{reg.horaProgra}</span>
-                          {reg.horaEmision && <span>→ {reg.horaEmision}</span>}
+            {/* Selector de fecha para campaña seleccionada */}
+            {campanaSel && !fechaSel && (
+              <div className={`rounded-3xl ${BG} p-5 ${SHADOW_OUT}`}>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <Calendar className="h-4 w-4" /> Seleccione fecha de búsqueda
+                </h3>
+                <input
+                  type="date"
+                  value={fechaSel}
+                  onChange={e => setFechaSel(e.target.value)}
+                  className={`w-full rounded-xl ${BG} p-3 text-sm ${SHADOW_IN} outline-none`}
+                />
+              </div>
+            )}
+
+            {/* Lista SPX */}
+            {fechaSel && spxList.length > 0 && (
+              <div className={`rounded-3xl ${BG} p-5 ${SHADOW_OUT}`}>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <Music className="h-4 w-4" /> SPX codes disponibles ({spxList.length})
+                </h3>
+                <div className="space-y-2 max-h-80 overflow-auto">
+                  {spxList.map(spx => {
+                    const sel = spxSeleccionados.find(s => s.pautaId === spx.pautaId);
+                    return (
+                      <button
+                        key={spx.pautaId}
+                        onClick={() => toggleSpx(spx)}
+                        className={`w-full rounded-xl p-3 text-left transition-all ${sel
+                          ? `${ACCENT} text-white ${SHADOW_OUT}`
+                          : `${BG} ${SHADOW_OUT} hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]`
+                          }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className={`text-sm font-medium ${sel ? 'text-white' : ''}`}>
+                              {spx.spxCode || spx.codigo} — {spx.nombre}
+                            </p>
+                            <p className={`text-xs ${sel ? 'text-white/80' : TEXT_LIGHT}`}>
+                              {spx.emisoraNombre} · {spx.horaInicio} · {spx.duracionSegundos}s
+                            </p>
+                          </div>
+                          {sel && <CheckCircle className="h-5 w-5" />}
                         </div>
-                      </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {fechaSel && !loading && spxList.length === 0 && (
+              <div className={`rounded-3xl ${BG} p-5 ${SHADOW_OUT} flex items-center gap-3 text-amber-600`}>
+                <AlertCircle className="h-5 w-5" />
+                <p className="text-sm">No se encontraron SPX codes para la fecha seleccionada.</p>
+              </div>
+            )}
+
+            {loading && (
+              <div className={`rounded-3xl ${BG} p-8 ${SHADOW_OUT} flex justify-center`}>
+                <Loader2 className="h-8 w-8 animate-spin text-[#6888ff]" />
+              </div>
+            )}
+          </div>
+
+          {/* Columna derecha: resumen y acción */}
+          <div className="space-y-4">
+            <div className={`rounded-3xl ${BG} p-6 ${SHADOW_OUT} sticky top-4`}>
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-slate-700">
+                <SlidersHorizontal className="h-5 w-5" /> Resumen de búsqueda
+              </h3>
+
+              <div className="space-y-3">
+                <ResumenRow label="Anunciante" value={anuncianteSel?.nombreRazonSocial || anuncianteSel?.nombre || '—'} />
+                <ResumenRow label="Contrato" value={contratoSel?.numeroContrato || contratoSel?.titulo || '—'} />
+                <ResumenRow label="Campaña" value={campanaSel ? `${campanaSel.codigo} — ${campanaSel.nombre}` : '—'} />
+                <ResumenRow label="Fecha" value={fechaSel || '—'} />
+                <ResumenRow label="SPX seleccionados" value={spxSeleccionados.length ? `${spxSeleccionados.length} item(s)` : '—'} />
+
+                {spxSeleccionados.length > 0 && (
+                  <div className={`rounded-xl p-3 ${SHADOW_IN}`}>
+                    <p className="mb-2 text-xs font-semibold text-[#9aa3b8]">RANGOS DE BÚSQUEDA (±{toleranciaMinutos} min)</p>
+                    <div className="space-y-1">
+                      {spxSeleccionados.map(spx => {
+                        const r = calcularRango(spx);
+                        return (
+                          <div key={spx.pautaId} className="flex justify-between text-xs">
+                            <span>{spx.spxCode || spx.codigo}</span>
+                            <span className="font-mono">{r.inicio} → {r.fin}</span>
+                          </div>
+                        );
+                      })}
                     </div>
-                    
-                    <div className="flex items-center gap-4">
-                      {reg.metodo && <MetodoBadge metodo={reg.metodo} />}
-                      {reg.confianza > 0 && <ConfianzaBadge confianza={reg.confianza} />}
-                      
-                      <div className="flex gap-2">
-                        {!reg.emitido && (
-                          <button onClick={() => registrarManual(reg)} className="p-2 rounded-xl bg-white border border-blue-200 shadow-sm hover:bg-blue-50 active:scale-95 text-blue-600 transition-all">
-                            <RotateCcw className="w-4 h-4" />
-                          </button>
-                        )}
-                        {reg.emitido && !reg.confirmado && (
-                          <button onClick={() => confirmarEmision(reg.id)} className="px-4 py-2 font-bold text-sm rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-200/50 border border-transparent hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2">
-                            <Check className="w-4 h-4" /> Validar
-                          </button>
-                        )}
+                  </div>
+                )}
+
+                {/* Tolerancia */}
+                <div className={`rounded-xl p-3 ${SHADOW_IN}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-[#9aa3b8]">TOLERANCIA DE BÚSQUEDA</span>
+                    <span className="text-sm font-bold text-[#6888ff]">{toleranciaMinutos} min</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={30}
+                    value={toleranciaMinutos}
+                    onChange={e => setToleranciaMinutos(Number(e.target.value))}
+                    className="mt-2 w-full accent-[#6888ff]"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={iniciarVerificacion}
+                disabled={!campanaSel || spxSeleccionados.length === 0}
+                className={`mt-6 flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-bold text-white transition-all ${spxSeleccionados.length > 0 && campanaSel
+                  ? `${ACCENT} ${SHADOW_OUT} hover:bg-[#5572ee]`
+                  : 'bg-slate-300 cursor-not-allowed'
+                  }`}
+              >
+                <ArrowRight className="h-5 w-5" />
+                Iniciar Verificación
+              </button>
+
+              <p className="mt-3 text-center text-xs text-[#9aa3b8]">
+                El sistema buscará en los registros de aire dentro de los rangos calculados.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── HISTORIAL DE BÚSQUEDAS ── */}
+        {historialBusquedas.length > 0 && (
+          <div className={`rounded-3xl ${BG} p-6 ${SHADOW_OUT}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-700 flex items-center gap-2">
+                <Clock className="h-5 w-5 text-[#6888ff]" />
+                Historial de Búsquedas
+              </h2>
+              <button
+                onClick={() => setHistorialBusquedas([])}
+                className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+              >
+                Limpiar historial
+              </button>
+            </div>
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {historialBusquedas.map(item => (
+                <div key={item.id} className={`rounded-xl p-4 bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] flex items-center justify-between`}>
+                  <div className="flex items-center gap-4">
+                    {item.resultado === 'encontrado' && (
+                      <div className="p-2 rounded-lg bg-emerald-100">
+                        <CheckCircle className="h-5 w-5 text-emerald-600" />
                       </div>
+                    )}
+                    {item.resultado === 'no_encontrado' && (
+                      <div className="p-2 rounded-lg bg-red-100">
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                      </div>
+                    )}
+                    {item.resultado === 'pendiente' && (
+                      <div className="p-2 rounded-lg bg-amber-100">
+                        <Clock className="h-5 w-5 text-amber-600" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold text-slate-700">{item.anunciante}</p>
+                      <p className="text-xs text-slate-500">{item.campana} • SPX: {item.spxCode}</p>
                     </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-medium text-slate-500">{item.fecha}</p>
+                    <p className="text-xs text-slate-400">{item.hora}</p>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </GlassCard>
-
-        <div className="text-center text-slate-400 text-sm">
-          <p>📻 Registro de Emisión - SILEXAR PULSE TIER 0</p>
-        </div>
+          </div>
+        )}
       </div>
+
+      {/* ── MODAL NUEVA BÚSQUEDA ── */}
+      {showNuevaBusquedaModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowNuevaBusquedaModal(false)} />
+          <div className={`relative ${BG} rounded-3xl p-6 w-full max-w-lg ${SHADOW_OUT}`}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-slate-700">Nueva Búsqueda Rápida</h2>
+              <button
+                onClick={() => setShowNuevaBusquedaModal(false)}
+                className="p-2 rounded-full hover:bg-white/50 transition-colors"
+              >
+                <X className="h-5 w-5 text-slate-500" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Anunciante</label>
+                <div className={`relative rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]`}>
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]" />
+                  <input
+                    type="text"
+                    placeholder="Nombre del anunciante..."
+                    className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none placeholder:text-[#9aa3b8]`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Código SPX</label>
+                <div className={`relative rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]`}>
+                  <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]" />
+                  <input
+                    type="text"
+                    placeholder="Ej: SPX-12345"
+                    className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none placeholder:text-[#9aa3b8]`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Fecha de búsqueda</label>
+                <div className={`relative rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]`}>
+                  <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa3b8]" />
+                  <input
+                    type="date"
+                    className={`w-full rounded-xl bg-transparent py-3 pl-10 pr-4 text-sm outline-none`}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowNuevaBusquedaModal(false)}
+                className={`flex-1 rounded-xl py-3 font-semibold text-slate-600 ${BG} shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]`}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  agregarAlHistorial('Anunciante Demo', 'Campaña Demo', 'SPX-123', 'pendiente');
+                  setShowNuevaBusquedaModal(false);
+                }}
+                className={`flex-1 rounded-xl py-3 font-semibold text-white ${ACCENT} shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] hover:bg-[#5572ee]`}
+              >
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
+
+function ResumenRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-[#bec8de]/30 pb-2">
+      <span className="text-xs font-semibold text-slate-500">{label}</span>
+      <span className="text-sm font-medium text-slate-700">{value}</span>
     </div>
   );
 }

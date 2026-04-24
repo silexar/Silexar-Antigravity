@@ -98,7 +98,7 @@ interface Paso {
 // ═══════════════════════════════════════════════════════════════
 
 const NeuromorphicCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-2xl p-6 bg-gradient-to-br from-slate-50 to-slate-100 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.9)] ${className}`}>
+  <div className={`rounded-2xl p-6 bg-[#EAF0F6] shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] border border-white/40 ${className}`}>
     {children}
   </div>
 );
@@ -122,14 +122,14 @@ const NeuromorphicInput = ({
       aria-label={label}
       disabled={disabled}
       className={`
-        w-full rounded-xl py-3 px-4 bg-slate-50 
-        shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] 
+        w-full rounded-xl py-3 px-4 bg-[#EAF0F6] 
+        shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] 
         border-2 ${error ? 'border-red-300' : 'border-transparent'}
         outline-none focus:ring-2 focus:ring-emerald-400/50 
-        text-slate-700 disabled:opacity-50
+        text-slate-700 font-bold disabled:opacity-50
       `}
     />
-    {error && <p className="text-xs text-red-500">{error}</p>}
+    {error && <p className="text-xs text-red-500 font-bold">{error}</p>}
   </div>
 );
 
@@ -149,7 +149,7 @@ const NeuromorphicTextarea = ({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
-      className="w-full rounded-xl py-3 px-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] border-none outline-none focus:ring-2 focus:ring-emerald-400/50 text-slate-700 resize-none"
+      className="w-full rounded-xl py-3 px-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] border-transparent outline-none focus:ring-2 focus:ring-emerald-400/50 text-slate-700 font-bold resize-none"
     />
   </div>
 );
@@ -168,7 +168,7 @@ const NeuromorphicSelect = ({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-xl py-3 px-4 bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06)] border-none outline-none focus:ring-2 focus:ring-emerald-400/50 text-slate-700"
+      className="w-full rounded-xl py-3 px-4 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] border-transparent outline-none focus:ring-2 focus:ring-emerald-400/50 text-slate-700 font-bold cursor-pointer"
     >
       <option value="">Seleccionar...</option>
       {options.map(opt => (
@@ -185,16 +185,16 @@ const NeuromorphicButton = ({
   disabled?: boolean; className?: string;
 }) => {
   const variants = {
-    primary: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[4px_4px_12px_rgba(16,185,129,0.4)]',
-    secondary: 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700 shadow-[4px_4px_12px_rgba(0,0,0,0.1)]',
-    danger: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[4px_4px_12px_rgba(239,68,68,0.4)]'
+    primary: 'bg-[#EAF0F6] text-emerald-600 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]',
+    secondary: 'bg-[#EAF0F6] text-indigo-600 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]',
+    danger: 'bg-[#EAF0F6] text-red-600 shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff] active:shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]'
   };
   
   return (
     <button 
       onClick={onClick} 
       disabled={disabled}
-      className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+      className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center gap-2 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border border-white/30 ${variants[variant]} ${className}`}
     >
       {children}
     </button>
@@ -284,10 +284,10 @@ const TipoSelector = ({ tipo, onChange }: { tipo: TipoCuna; onChange: (t: TipoCu
             key={t.value}
             onClick={() => onChange(t.value)}
             className={`
-              p-4 rounded-xl border-2 transition-all duration-200 text-left relative
+              p-4 rounded-xl border-2 transition-all duration-300 text-left relative
               ${tipo === t.value 
-                ? 'border-emerald-400 bg-emerald-50 shadow-lg scale-[1.02] ring-2 ring-emerald-200' 
-                : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+                ? 'border-emerald-400 bg-[#EAF0F6] shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff] scale-[1.01]' 
+                : 'border-transparent bg-[#EAF0F6] shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff] hover:shadow-[4px_4px_8px_#c8d0d8,-4px_-4px_8px_#ffffff]'
               }
             `}
           >
@@ -453,7 +453,7 @@ function CrearCunaPageContent() {
   // ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-emerald-50/30 to-slate-100 p-6 lg:p-8">
+    <div className="min-h-screen bg-[#F0EDE8] text-slate-700 p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Header */}
@@ -549,10 +549,10 @@ function CrearCunaPageContent() {
                   `}
                 >
                   <div className={`
-                    w-10 h-10 rounded-full flex items-center justify-center mb-1
-                    ${paso.id === pasoActual ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white' : ''}
-                    ${paso.id < pasoActual ? 'bg-emerald-100 text-emerald-600' : ''}
-                    ${paso.id > pasoActual ? 'bg-slate-100 text-slate-400' : ''}
+                    w-10 h-10 rounded-full flex items-center justify-center mb-1 font-bold shadow-[8px_8px_16px_#c8d0d8,-8px_-8px_16px_#ffffff]
+                    ${paso.id === pasoActual ? 'bg-[#EAF0F6] text-emerald-500 shadow-[inset_4px_4px_8px_#c8d0d8,inset_-4px_-4px_8px_#ffffff]' : ''}
+                    ${paso.id < pasoActual ? 'bg-[#EAF0F6] text-emerald-600' : ''}
+                    ${paso.id > pasoActual ? 'bg-[#EAF0F6] text-slate-400' : ''}
                   `}>
                     {paso.id < pasoActual ? <Check className="w-5 h-5" /> : <paso.icon className="w-5 h-5" />}
                   </div>
@@ -908,16 +908,5 @@ function CrearCunaPageContent() {
 // ═══════════════════════════════════════════════════════════════
 
 export default function CrearCunaPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-emerald-50/30 to-slate-100 p-6 lg:p-8 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-emerald-500 mx-auto mb-4" />
-          <p className="text-slate-600 font-medium">Cargando wizard...</p>
-        </div>
-      </div>
-    }>
-      <CrearCunaPageContent />
-    </Suspense>
-  );
+  return <CrearCunaPageContent />;
 }

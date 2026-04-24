@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Briefcase } from 'lucide-react';
+import { NeoPageHeader, NeoCard, NeoButton, NeoBadge, N } from '../_lib/neumorphic';
 
 // ═══════════════════════════════════════════════════════════════
 // DASHBOARD EJECUTIVO COMERCIAL - Vista de ventas
@@ -43,116 +45,123 @@ export default function DashboardEjecutivo() {
 
   const formatCurrency = (val: number) => `$${(val / 1000000).toFixed(1)}M`;
 
+  const estadoColor = (estado: CampanaCartera['estado']) => {
+    switch (estado) {
+      case 'pendiente_renovar': return 'yellow' as const;
+      case 'por_vencer': return 'red' as const;
+      case 'activa': return 'green' as const;
+    }
+  };
+
+  const estadoLabel = (estado: CampanaCartera['estado']) => {
+    switch (estado) {
+      case 'pendiente_renovar': return '🔄 RENOVAR';
+      case 'por_vencer': return '⏰ POR VENCER';
+      case 'activa': return '✅ ACTIVA';
+    }
+  };
+
+  const cumplimientoColor = (c: number) => {
+    if (c >= 95) return '#22c55e';
+    if (c >= 80) return '#f59e0b';
+    return '#ef4444';
+  };
+
   return (
-    <div style={{ padding: '24px', background: 'linear-gradient(135deg, #0f172a, #1e293b)', minHeight: '100vh', color: '#e2e8f0' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>💼 Dashboard Ejecutivo Comercial</h1>
-          <p style={{ color: '#94a3b8' }}>Tu cartera y metas de ventas</p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-            💰 Cotizador IA
-          </button>
-          <button style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid #10b981', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer' }}>
-            👥 Mis Clientes
-          </button>
-        </div>
+    <div style={{ padding: '24px', background: N.base, minHeight: '100vh', color: N.text }}>
+      <div className="mb-6">
+        <NeoPageHeader
+          title="Dashboard Ejecutivo Comercial"
+          subtitle="Tu cartera y metas de ventas"
+          icon={Briefcase}
+          backHref="/campanas"
+        />
+      </div>
+
+      {/* Acciones */}
+      <div className="flex gap-3 mb-6">
+        <NeoButton variant="primary">💰 Cotizador IA</NeoButton>
+        <NeoButton variant="secondary">👥 Mis Clientes</NeoButton>
       </div>
 
       {/* Meta de Ventas */}
-      <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))', borderRadius: '16px', padding: '24px', marginBottom: '24px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>🎯 Meta del Mes</h2>
-          <span style={{ color: '#34d399', fontWeight: 'bold', fontSize: '24px' }}>{meta.porcentaje}%</span>
+      <NeoCard className="mb-6" style={{ border: `1px solid ${N.accent}30` }}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-black" style={{ color: N.text }}>🎯 Meta del Mes</h2>
+          <span className="text-2xl font-black" style={{ color: N.accent }}>{meta.porcentaje}%</span>
         </div>
-        <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', height: '20px', overflow: 'hidden' }}>
-          <div style={{ 
-            width: `${meta.porcentaje}%`, 
-            height: '100%', 
-            background: 'linear-gradient(90deg, #10b981, #34d399)',
+        <div style={{ background: N.base, boxShadow: `inset 3px 3px 6px ${N.dark}, inset -3px -3px 6px ${N.light}`, borderRadius: '10px', height: '20px', overflow: 'hidden' }}>
+          <div style={{
+            width: `${meta.porcentaje}%`,
+            height: '100%',
+            background: N.accent,
             borderRadius: '10px',
             transition: 'width 0.5s ease'
           }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', color: '#94a3b8' }}>
+        <div className="flex justify-between mt-3 text-xs font-bold" style={{ color: N.textSub }}>
           <span>Actual: {formatCurrency(meta.actual)}</span>
           <span>Meta: {formatCurrency(meta.meta)}</span>
           <span>Falta: {formatCurrency(meta.meta - meta.actual)}</span>
         </div>
-      </div>
+      </NeoCard>
 
       {/* Métricas */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-        <MetricaCard icono="💰" titulo="Ventas Mes" valor={formatCurrency(metricas.ventasMes)} color="#10b981" tendencia="+12%" />
-        <MetricaCard icono="📊" titulo="Cumplimiento" valor={`${metricas.cumplimientoCartera}%`} color="#3b82f6" tendencia="+2%" />
+        <MetricaCard icono="💰" titulo="Ventas Mes" valor={formatCurrency(metricas.ventasMes)} color="#22c55e" tendencia="+12%" />
+        <MetricaCard icono="📊" titulo="Cumplimiento" valor={`${metricas.cumplimientoCartera}%`} color={N.accent} tendencia="+2%" />
         <MetricaCard icono="🔄" titulo="Por Renovar" valor={metricas.campanasRenovar.toString()} color="#f59e0b" tendencia="" />
-        <MetricaCard icono="🏆" titulo="Comisión Est." valor={formatCurrency(metricas.comisionEstimada)} color="#8b5cf6" tendencia="+8%" />
+        <MetricaCard icono="🏆" titulo="Comisión Est." valor={formatCurrency(metricas.comisionEstimada)} color="#a855f7" tendencia="+8%" />
       </div>
 
       {/* Mi Cartera */}
-      <div style={{ background: 'rgba(15, 23, 42, 0.8)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>📋 Mi Cartera de Campañas</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <NeoCard>
+        <h2 className="text-lg font-black mb-4" style={{ color: N.text }}>📋 Mi Cartera de Campañas</h2>
+        <div className="flex flex-col gap-3">
           {campanas.map(c => (
-            <div key={c.id} style={{ 
-              background: 'rgba(30, 41, 59, 0.8)',
-              borderRadius: '12px', 
-              padding: '16px', 
-              border: `1px solid ${c.estado === 'pendiente_renovar' ? '#f59e0b' : c.estado === 'por_vencer' ? '#ef4444' : '#22c55e'}40`,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
-                  <span style={{ fontWeight: 'bold' }}>{c.nombre}</span>
-                  <span style={{ 
-                    background: c.estado === 'pendiente_renovar' ? '#f59e0b20' : c.estado === 'por_vencer' ? '#ef444420' : '#22c55e20',
-                    color: c.estado === 'pendiente_renovar' ? '#f59e0b' : c.estado === 'por_vencer' ? '#ef4444' : '#22c55e',
-                    padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 'bold'
-                  }}>
-                    {c.estado === 'pendiente_renovar' ? '🔄 RENOVAR' : c.estado === 'por_vencer' ? '⏰ POR VENCER' : '✅ ACTIVA'}
-                  </span>
-                </div>
-                <p style={{ color: '#94a3b8', fontSize: '14px' }}>{c.cliente}</p>
-              </div>
-              <div style={{ textAlign: 'center', padding: '0 20px' }}>
-                <p style={{ fontSize: '24px', fontWeight: 'bold', color: c.cumplimiento >= 95 ? '#22c55e' : c.cumplimiento >= 80 ? '#f59e0b' : '#ef4444' }}>{c.cumplimiento}%</p>
-                <p style={{ color: '#94a3b8', fontSize: '12px' }}>Cumplimiento</p>
-              </div>
-              <div style={{ textAlign: 'center', padding: '0 20px' }}>
-                <p style={{ fontSize: '18px', fontWeight: 'bold' }}>{formatCurrency(c.valor)}</p>
-                <p style={{ color: '#94a3b8', fontSize: '12px' }}>Valor</p>
-              </div>
-              <button style={{ 
-                background: c.estado === 'pendiente_renovar' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'rgba(59, 130, 246, 0.2)',
-                color: c.estado === 'pendiente_renovar' ? 'white' : '#60a5fa',
-                border: c.estado === 'pendiente_renovar' ? 'none' : '1px solid #3b82f6',
-                padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'
+            <div key={c.id} className="flex items-center justify-between rounded-2xl p-4"
+              style={{
+                background: N.base,
+                boxShadow: `6px 6px 12px ${N.dark}, -6px -6px 12px ${N.light}`,
+                border: `1px solid ${c.estado === 'pendiente_renovar' ? '#f59e0b' : c.estado === 'por_vencer' ? '#ef4444' : '#22c55e'}40`
               }}>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="font-bold" style={{ color: N.text }}>{c.nombre}</span>
+                  <NeoBadge color={estadoColor(c.estado)}>{estadoLabel(c.estado)}</NeoBadge>
+                </div>
+                <p className="text-xs font-bold" style={{ color: N.textSub }}>{c.cliente}</p>
+              </div>
+              <div className="text-center px-5">
+                <p className="text-2xl font-black" style={{ color: cumplimientoColor(c.cumplimiento) }}>{c.cumplimiento}%</p>
+                <p className="text-[10px] font-bold uppercase" style={{ color: N.textSub }}>Cumplimiento</p>
+              </div>
+              <div className="text-center px-5">
+                <p className="text-xl font-black" style={{ color: N.text }}>{formatCurrency(c.valor)}</p>
+                <p className="text-[10px] font-bold uppercase" style={{ color: N.textSub }}>Valor</p>
+              </div>
+              <NeoButton variant={c.estado === 'pendiente_renovar' ? 'primary' : 'secondary'} size="sm">
                 {c.estado === 'pendiente_renovar' ? '🔄 Renovar' : 'Ver Detalle'}
-              </button>
+              </NeoButton>
             </div>
           ))}
         </div>
-      </div>
+      </NeoCard>
     </div>
   );
 }
 
 function MetricaCard({ icono, titulo, valor, color, tendencia }: { icono: string; titulo: string; valor: string; color: string; tendencia: string }) {
   return (
-    <div style={{ background: 'rgba(15, 23, 42, 0.8)', borderRadius: '16px', padding: '20px', border: `1px solid ${color}40` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-        <span style={{ fontSize: '24px' }}>{icono}</span>
-        <span style={{ color: '#94a3b8', fontSize: '14px' }}>{titulo}</span>
+    <NeoCard style={{ border: `1px solid ${color}40` }}>
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-2xl">{icono}</span>
+        <span className="text-xs font-bold uppercase" style={{ color: N.textSub }}>{titulo}</span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-        <span style={{ fontSize: '28px', fontWeight: 'bold', color }}>{valor}</span>
-        {tendencia && <span style={{ color: '#22c55e', fontSize: '14px', fontWeight: 'bold' }}>{tendencia}</span>}
+      <div className="flex items-baseline gap-3">
+        <span className="text-3xl font-black" style={{ color }}>{valor}</span>
+        {tendencia && <span className="text-sm font-bold" style={{ color: '#22c55e' }}>{tendencia}</span>}
       </div>
-    </div>
+    </NeoCard>
   );
 }

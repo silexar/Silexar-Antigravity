@@ -1,26 +1,38 @@
 /**
  * COMMAND: ACTUALIZAR CUÑA — TIER 0
  *
- * Partial update de campos editables de una cuña existente.
+ * Encapsula los datos validados necesarios para actualizar una cuña existente.
+ * La validación Zod ocurre en la API route antes de construir el command.
+ *
+ * FIX DRY: tipos importados desde el dominio para evitar divergencia.
  */
 
-import { z } from 'zod';
+import type { TipoCunaValor } from '../../domain/entities/Cuna';
+import type { FormatoAudioValor } from '../../domain/entities/Audio';
 
-export const ActualizarCunaInputSchema = z.object({
-  id: z.string().uuid(),
-  tenantId: z.string().uuid(),
-  modificadoPorId: z.string().uuid(),
-  nombre: z.string().min(5).max(100).optional(),
-  descripcion: z.string().max(1000).nullable().optional(),
-  campanaId: z.string().uuid().nullable().optional(),
-  contratoId: z.string().uuid().nullable().optional(),
-  productoNombre: z.string().max(255).nullable().optional(),
-  fechaFinVigencia: z.coerce.date().nullable().optional(),
-  urgencia: z.string().max(50).nullable().optional(),
-  notas: z.string().max(2000).nullable().optional(),
-});
-
-export type ActualizarCunaInput = z.infer<typeof ActualizarCunaInputSchema>;
+export interface ActualizarCunaInput {
+  id: string;
+  tenantId: string;
+  nombre?: string;
+  tipo?: TipoCunaValor;
+  anuncianteId?: string;
+  campanaId?: string | null;
+  contratoId?: string | null;
+  productoNombre?: string | null;
+  descripcion?: string | null;
+  pathAudio?: string;
+  duracionSegundos?: number;
+  duracionMilisegundos?: number | null;
+  formatoAudio?: FormatoAudioValor;
+  bitrate?: number | null;
+  sampleRate?: number | null;
+  tamanoBytes?: number | null;
+  fechaInicioVigencia?: Date | null;
+  fechaFinVigencia?: Date | null;
+  urgencia?: string | null;
+  notas?: string | null;
+  modificadoPorId: string;
+}
 
 export class ActualizarCunaCommand {
   constructor(public readonly input: ActualizarCunaInput) {}

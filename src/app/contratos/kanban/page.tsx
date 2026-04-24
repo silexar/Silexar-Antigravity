@@ -3,6 +3,7 @@
  * 
  * @description Dashboard ejecutivo con vista Kanban interactiva,
  * drag & drop, métricas por columna y acciones rápidas.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -31,6 +32,25 @@ import {
   Sparkles,
   Target
 } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -75,10 +95,10 @@ interface ColumnaKanban {
 // ═══════════════════════════════════════════════════════════════
 
 const columnas: ColumnaKanban[] = [
-  { id: 'BORRADOR', titulo: 'Borrador', icono: '📋', color: 'text-slate-600', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
-  { id: 'NEGOCIACION', titulo: 'Negociación', icono: '📝', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
-  { id: 'APROBACION', titulo: 'Aprobación', icono: '⏳', color: 'text-orange-600', bgColor: 'bg-orange-50', borderColor: 'border-orange-200' },
-  { id: 'FIRMADO', titulo: 'Firmado', icono: '✅', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200' }
+  { id: 'BORRADOR', titulo: 'Borrador', icono: '📋', color: '#69738c', bgColor: 'rgba(105,115,140,0.08)', borderColor: '#bec8de' },
+  { id: 'NEGOCIACION', titulo: 'Negociación', icono: '📝', color: '#f59e0b', bgColor: 'rgba(245,158,11,0.08)', borderColor: '#f59e0b40' },
+  { id: 'APROBACION', titulo: 'Aprobación', icono: '⏳', color: '#f97316', bgColor: 'rgba(249,115,22,0.08)', borderColor: '#f9731640' },
+  { id: 'FIRMADO', titulo: 'Firmado', icono: '✅', color: '#22c55e', bgColor: 'rgba(34,197,94,0.08)', borderColor: '#22c55e40' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -147,58 +167,65 @@ const ContratoCard: React.FC<{
   isDragging?: boolean;
 }> = ({ contrato, onView, onEdit, isDragging }) => {
   const urgenciaColor = {
-    critico: 'border-l-red-500 bg-red-50/50',
-    urgente: 'border-l-amber-500 bg-amber-50/50',
-    normal: 'border-l-slate-300 bg-white'
+    critico: { border: '#ef4444', bg: 'rgba(239,68,68,0.04)' },
+    urgente: { border: '#f59e0b', bg: 'rgba(245,158,11,0.04)' },
+    normal: { border: '#bec8de', bg: 'transparent' }
   }[contrato.urgencia];
 
   return (
     <motion.div
       layout
       whileHover={{ scale: 1.02, y: -2 }}
-      className={`p-3 rounded-xl border-l-4 border border-slate-200 cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md transition-shadow ${urgenciaColor} ${isDragging ? 'opacity-50 shadow-lg' : ''}`}
+      className={`p-3 rounded-2xl cursor-grab active:cursor-grabbing transition-all ${isDragging ? 'opacity-50' : ''}`}
+      style={{ 
+        background: N.base, 
+        boxShadow: neuSm,
+        borderLeft: `4px solid ${urgenciaColor.border}`
+      }}
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-bold text-slate-800 truncate">{contrato.clienteNombre}</h4>
-          <p className="text-xs text-slate-500 truncate">{contrato.campana}</p>
+          <h4 className="font-bold text-sm truncate" style={{ color: N.text }}>{contrato.clienteNombre}</h4>
+          <p className="text-xs truncate" style={{ color: N.textSub }}>{contrato.campana}</p>
         </div>
-        <button className="p-1 rounded hover:bg-slate-100">
-          <MoreHorizontal className="w-4 h-4 text-slate-400" />
+        <button className="p-1 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs }}>
+          <MoreHorizontal className="w-4 h-4" style={{ color: N.textSub }} />
         </button>
       </div>
 
       <div className="flex items-center justify-between mb-2">
-        <span className="text-lg font-bold text-slate-800">{formatCurrency(contrato.valor)}</span>
-        <span className="text-xs text-slate-500">{contrato.ejecutivoNombre}</span>
+        <span className="text-lg font-black" style={{ color: N.text }}>{formatCurrency(contrato.valor)}</span>
+        <span className="text-xs" style={{ color: N.textSub }}>{contrato.ejecutivoNombre}</span>
       </div>
 
       {/* Acción principal */}
       <div className="flex items-center justify-between">
         {contrato.acciones[0] && (
-          <button
-            onClick={(e) => { e.stopPropagation(); }}
-            className={`px-2 py-1 rounded-lg text-xs font-medium flex items-center gap-1 ${
+          <span
+            className={`px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 ${
               contrato.acciones[0].urgente
-                ? 'bg-red-100 text-red-700 animate-pulse'
-                : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado'
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-slate-100 text-slate-700'
+                ? 'animate-pulse'
+                : ''
             }`}
+            style={{
+              background: contrato.acciones[0].urgente ? 'rgba(239,68,68,0.12)' : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' ? 'rgba(34,197,94,0.12)' : N.base,
+              color: contrato.acciones[0].urgente ? '#ef4444' : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' ? '#22c55e' : N.text,
+              boxShadow: contrato.acciones[0].urgente ? 'none' : insetSm
+            }}
           >
             {contrato.urgencia === 'critico' && <AlertTriangle className="w-3 h-3" />}
             {contrato.urgencia === 'urgente' && <Clock className="w-3 h-3" />}
             {contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' && <CheckCircle2 className="w-3 h-3" />}
             {contrato.acciones[0].tipo === 'llamar' && <Phone className="w-3 h-3" />}
             {contrato.acciones[0].label}
-          </button>
+          </span>
         )}
         <div className="flex items-center gap-1">
-          <button onClick={onView} className="p-1 rounded hover:bg-slate-100" title="Ver">
-            <Eye className="w-4 h-4 text-slate-400" />
+          <button onClick={onView} className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs }} title="Ver">
+            <Eye className="w-4 h-4" style={{ color: N.accent }} />
           </button>
-          <button onClick={onEdit} className="p-1 rounded hover:bg-slate-100" title="Editar">
-            <Edit3 className="w-4 h-4 text-slate-400" />
+          <button onClick={onEdit} className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs }} title="Editar">
+            <Edit3 className="w-4 h-4" style={{ color: '#f59e0b' }} />
           </button>
         </div>
       </div>
@@ -211,16 +238,16 @@ const ColumnaHeader: React.FC<{
   cantidad: number;
   valorTotal: number;
 }> = ({ columna, cantidad, valorTotal }) => (
-  <div className={`p-3 rounded-t-xl ${columna.bgColor} border-b ${columna.borderColor}`}>
+  <div className="p-3 rounded-t-2xl" style={{ background: columna.bgColor, borderBottom: `1px solid ${columna.borderColor}` }}>
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span className="text-xl">{columna.icono}</span>
-        <span className={`font-bold ${columna.color}`}>{columna.titulo}</span>
-        <span className="px-2 py-0.5 rounded-full bg-white text-slate-600 text-xs font-medium">
+        <span className="font-bold text-sm" style={{ color: columna.color }}>{columna.titulo}</span>
+        <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: N.base, boxShadow: neuXs, color: N.text }}>
           {cantidad}
         </span>
       </div>
-      <span className="text-sm font-bold text-slate-700">{formatCurrency(valorTotal)}</span>
+      <span className="text-sm font-black" style={{ color: N.text }}>{formatCurrency(valorTotal)}</span>
     </div>
   </div>
 );
@@ -286,56 +313,58 @@ export default function KanbanDashboard() {
   }, [contratos]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/30">
+    <div className="min-h-screen flex flex-col" style={{ background: N.base }}>
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div className="max-w-[1800px] mx-auto px-6 py-4">
+      <header className="shrink-0 px-6 py-4" style={{ background: N.base, boxShadow: neuSm }}>
+        <div className="max-w-[1800px] mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-                <LayoutGrid className="w-7 h-7 text-white" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <LayoutGrid className="w-7 h-7" style={{ color: N.accent }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">🎯 Pipeline Comercial Visual</h1>
-                <p className="text-slate-500 text-sm">Tiempo real • Drag & Drop activo</p>
+                <h1 className="text-2xl font-black" style={{ color: N.text }}>🎯 Pipeline Comercial Visual</h1>
+                <p className="text-sm" style={{ color: N.textSub }}>Tiempo real • Drag & Drop activo</p>
               </div>
             </div>
             
             {/* Métricas rápidas */}
             <div className="flex items-center gap-6">
               <div className="text-right">
-                <p className="text-xs text-slate-500">Total Pipeline</p>
-                <p className="text-2xl font-bold text-indigo-600">{formatCurrency(totalGeneral.valor)}</p>
+                <p className="text-xs" style={{ color: N.textSub }}>Total Pipeline</p>
+                <p className="text-2xl font-black" style={{ color: N.accent }}>{formatCurrency(totalGeneral.valor)}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-slate-500">Contratos</p>
-                <p className="text-2xl font-bold text-slate-800">{totalGeneral.cantidad}</p>
+                <p className="text-xs" style={{ color: N.textSub }}>Contratos</p>
+                <p className="text-2xl font-black" style={{ color: N.text }}>{totalGeneral.cantidad}</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Toolbar */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-[1800px] mx-auto px-6 py-3 flex items-center justify-between gap-4">
+      <div className="px-6 py-3" style={{ background: N.base, borderBottom: `1px solid ${N.dark}30` }}>
+        <div className="max-w-[1800px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
           {/* Búsqueda y filtros */}
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 w-full">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: N.textSub }} />
               <input
                 type="text"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
                 placeholder="Buscar cliente o contrato..."
                 aria-label="Buscar cliente o contrato"
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50"
+                className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none"
+                style={{ background: N.base, boxShadow: inset, color: N.text }}
               />
             </div>
             <select
               value={filtroEjecutivo}
               onChange={(e) => setFiltroEjecutivo(e.target.value)}
-              className="px-4 py-2 rounded-xl border border-slate-200"
+              className="rounded-xl py-2.5 px-4 text-sm focus:outline-none cursor-pointer"
+              style={{ background: N.base, boxShadow: inset, color: N.text }}
             >
               <option value="todos">Todos los ejecutivos</option>
               {ejecutivosUnicos.map(ej => (
@@ -348,23 +377,31 @@ export default function KanbanDashboard() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push('/contratos/nuevo')}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium flex items-center gap-2 hover:shadow-lg transition-shadow"
+              className="px-4 py-2.5 rounded-xl font-bold text-sm text-white transition-all flex items-center gap-2"
+              style={{ background: N.accent, boxShadow: neuSm }}
             >
               <Plus className="w-4 h-4" />
               Nuevo
             </button>
-            <button className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50">
+            <button 
+              className="px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
+              style={{ background: N.base, boxShadow: neuSm, color: N.text }}
+            >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <button
               onClick={() => router.push('/contratos/comando')}
-              className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
+              style={{ background: N.base, boxShadow: neuSm, color: N.text }}
             >
               <BarChart3 className="w-4 h-4" />
               Métricas
             </button>
-            <button className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50">
+            <button 
+              className="px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
+              style={{ background: N.base, boxShadow: neuSm, color: N.text }}
+            >
               <Smartphone className="w-4 h-4" />
               Móvil
             </button>
@@ -373,80 +410,85 @@ export default function KanbanDashboard() {
       </div>
 
       {/* Kanban Grid */}
-      <div className="max-w-[1800px] mx-auto px-6 py-6">
-        <div className="grid grid-cols-4 gap-4">
-          {columnas.map(columna => (
-            <div
-              key={columna.id}
-              className={`rounded-xl border ${columna.borderColor} bg-white overflow-hidden`}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const contratoId = e.dataTransfer.getData('contratoId');
-                if (contratoId) {
-                  handleDragEnd(contratoId, columna.id);
-                }
-              }}
-            >
-              <ColumnaHeader
-                columna={columna}
-                cantidad={totalesPorColumna[columna.id]?.cantidad || 0}
-                valorTotal={totalesPorColumna[columna.id]?.valor || 0}
-              />
+      <main className="flex-1 p-6 overflow-x-auto">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {columnas.map(columna => (
+              <div
+                key={columna.id}
+                className="rounded-2xl overflow-hidden"
+                style={{ background: N.base, boxShadow: neu }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const contratoId = e.dataTransfer.getData('contratoId');
+                  if (contratoId) {
+                    handleDragEnd(contratoId, columna.id);
+                  }
+                }}
+              >
+                <ColumnaHeader
+                  columna={columna}
+                  cantidad={totalesPorColumna[columna.id]?.cantidad || 0}
+                  valorTotal={totalesPorColumna[columna.id]?.valor || 0}
+                />
 
-              <div className="p-3 space-y-3 min-h-[400px]">
-                <AnimatePresence>
-                  {contratosPorEstado[columna.id]?.map(contrato => (
-                    <div
-                      key={contrato.id}
-                      draggable
-                      onDragStart={(e) => {
-                        setDraggingId(contrato.id);
-                        e.dataTransfer.setData('contratoId', contrato.id);
-                      }}
-                      onDragEnd={() => setDraggingId(null)}
-                    >
-                      <ContratoCard
-                        contrato={contrato}
-                        onView={() => router.push(`/contratos/${contrato.id}`)}
-                        onEdit={() => router.push(`/contratos/${contrato.id}/editar`)}
-                        isDragging={draggingId === contrato.id}
-                      />
+                <div className="p-3 space-y-3 min-h-[400px]">
+                  <AnimatePresence>
+                    {contratosPorEstado[columna.id]?.map(contrato => (
+                      <div
+                        key={contrato.id}
+                        draggable
+                        onDragStart={(e) => {
+                          setDraggingId(contrato.id);
+                          e.dataTransfer.setData('contratoId', contrato.id);
+                        }}
+                        onDragEnd={() => setDraggingId(null)}
+                      >
+                        <ContratoCard
+                          contrato={contrato}
+                          onView={() => router.push(`/contratos/${contrato.id}`)}
+                          onEdit={() => router.push(`/contratos/${contrato.id}/editar`)}
+                          isDragging={draggingId === contrato.id}
+                        />
+                      </div>
+                    ))}
+                  </AnimatePresence>
+
+                  {(contratosPorEstado[columna.id]?.length || 0) === 0 && (
+                    <div className="py-8 text-center">
+                      <div className="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{ background: N.base, boxShadow: inset }}>
+                        <Target className="w-6 h-6" style={{ color: N.textSub }} />
+                      </div>
+                      <p className="text-sm" style={{ color: N.textSub }}>Sin contratos</p>
                     </div>
-                  ))}
-                </AnimatePresence>
-
-                {(contratosPorEstado[columna.id]?.length || 0) === 0 && (
-                  <div className="py-8 text-center text-slate-400">
-                    <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Sin contratos</p>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </main>
 
       {/* Footer con resumen */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800 text-white py-3 px-6">
-        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-6">
+      <footer className="shrink-0 px-6 py-3" style={{ background: N.base, boxShadow: `0 -4px 16px ${N.dark}40` }}>
+        <div className="max-w-[1800px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-6 flex-wrap">
             {columnas.map(col => (
               <div key={col.id} className="flex items-center gap-2">
                 <span>{col.icono}</span>
-                <span className="text-slate-400">{col.titulo}:</span>
-                <span className="font-bold">{formatCurrency(totalesPorColumna[col.id]?.valor || 0)}</span>
+                <span className="text-xs" style={{ color: N.textSub }}>{col.titulo}:</span>
+                <span className="font-bold text-sm" style={{ color: N.text }}>{formatCurrency(totalesPorColumna[col.id]?.valor || 0)}</span>
               </div>
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-slate-400">Pipeline Total:</span>
-            <span className="text-2xl font-bold text-emerald-400">{formatCurrency(totalGeneral.valor)}</span>
-            <Sparkles className="w-5 h-5 text-amber-400" />
+            <span className="text-xs" style={{ color: N.textSub }}>Pipeline Total:</span>
+            <span className="text-2xl font-black" style={{ color: '#22c55e' }}>{formatCurrency(totalGeneral.valor)}</span>
+            <Sparkles className="w-5 h-5" style={{ color: '#f59e0b' }} />
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

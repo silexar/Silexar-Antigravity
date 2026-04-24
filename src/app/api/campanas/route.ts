@@ -40,6 +40,7 @@ export const GET = withApiRoute(
       const search = searchParams.get('search') || ''
       const estado = searchParams.get('estado') || ''
       const tipo = searchParams.get('tipo') || ''
+      const contratoId = searchParams.get('contratoId') || ''
       
       const page = parseInt(searchParams.get('page') || '1')
       const pageSize = parseInt(searchParams.get('pageSize') || '20')
@@ -57,6 +58,9 @@ export const GET = withApiRoute(
       }
       if (tipo) {
         whereClauses.push(eq(campanas.tipoCampana, tipo as typeof campanas.tipoCampana._.data))
+      }
+      if (contratoId) {
+        whereClauses.push(eq(campanas.contratoId, contratoId))
       }
 
       const whereCondition = and(...whereClauses)
@@ -161,7 +165,7 @@ export const POST = withApiRoute(
           new ValorPropiedadDrizzleRepository(tenantId)
         )
         const validacion = await propiedadesAPI.validarCoherenciaPropiedades(body.propiedades)
-        if (validacion.isFailure) {
+        if (!validacion.isSuccess) {
           return apiError(
             'VALIDATION_ERROR',
             `Campaña Rechazada: ${validacion.error?.message || 'Error de coherencia en propiedades comerciales.'}`,

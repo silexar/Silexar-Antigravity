@@ -60,13 +60,18 @@ const nextConfig = {
 
   // Security headers — applied to ALL responses
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
+    const cspValue = isDev
+      ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' ws: wss: http: https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+      : "default-src 'self'; script-src 'self' 'strict-dynamic' https:; style-src 'self'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://api.anthropic.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests";
+
     return [
       {
         source: '/:path*',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'strict-dynamic' https:; style-src 'self'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://api.anthropic.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+            value: cspValue
           },
           {
             key: 'Strict-Transport-Security',

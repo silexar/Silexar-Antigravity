@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 👥 SILEXAR PULSE - Collaboration Panel TIER 0
  * 
  * @description Panel de colaboración en tiempo real que muestra:
@@ -42,35 +42,35 @@ import {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/50
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    border border-slate-200/30
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-lg
-    shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
     px-3 py-2 text-sm
   `,
   btn: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-lg
-    shadow-[3px_3px_6px_#d1d5db,-3px_-3px_6px_#ffffff]
-    hover:shadow-[1px_1px_3px_#d1d5db,-1px_-1px_3px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-lg
+    shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]
+    hover:shadow-[1px_1px_3px_#bec8de,-1px_-1px_3px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-2 py-0.5 rounded-md
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
@@ -181,7 +181,7 @@ export default function CollaborationPanel({
         className={`${neuro.panel} p-3 fixed bottom-6 left-6 z-40`}
       >
         <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-indigo-600" />
+          <Users className="w-5 h-5 text-[#6888ff]" />
           <div className="flex -space-x-2">
             {usuarios.slice(0, 3).map(u => (
               <div
@@ -210,20 +210,20 @@ export default function CollaborationPanel({
       className={`${neuro.panel} w-72 flex flex-col max-h-[70vh]`}
     >
       {/* Header */}
-      <div className="p-4 border-b border-slate-200/50">
+      <div className="p-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-600" />
-            <span className="font-semibold text-sm text-slate-800">Colaboración</span>
+            <Users className="w-5 h-5 text-[#6888ff]" />
+            <span className="font-semibold text-sm text-[#69738c]">Colaboración</span>
             <span className={`${neuro.badge} bg-green-100 text-green-700`}>
               {usuarios.length} online
             </span>
           </div>
           <button 
             onClick={() => onMinimizar?.(true)}
-            className="p-1 hover:bg-slate-100 rounded"
+            className="p-1 hover:bg-[#dfeaff] rounded"
           >
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <ChevronRight className="w-4 h-4 text-[#9aa3b8]" />
           </button>
         </div>
 
@@ -233,8 +233,8 @@ export default function CollaborationPanel({
             onClick={() => setTab('usuarios')}
             className={`flex-1 py-2 text-xs font-medium rounded-lg transition-all ${
               tab === 'usuarios' 
-                ? 'bg-indigo-100 text-indigo-700' 
-                : 'text-slate-500 hover:bg-slate-100'
+                ? 'bg-[#dfeaff] text-[#6888ff]' 
+                : 'text-[#9aa3b8] hover:bg-[#dfeaff]'
             }`}
           >
             Usuarios
@@ -243,8 +243,8 @@ export default function CollaborationPanel({
             onClick={() => setTab('comentarios')}
             className={`flex-1 py-2 text-xs font-medium rounded-lg transition-all relative ${
               tab === 'comentarios' 
-                ? 'bg-indigo-100 text-indigo-700' 
-                : 'text-slate-500 hover:bg-slate-100'
+                ? 'bg-[#dfeaff] text-[#6888ff]' 
+                : 'text-[#9aa3b8] hover:bg-[#dfeaff]'
             }`}
           >
             Comentarios
@@ -283,12 +283,12 @@ export default function CollaborationPanel({
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="font-semibold text-sm text-slate-800">{usuario.nombre}</p>
-                      <div className="flex items-center gap-1 text-xs text-slate-500">
+                      <p className="font-semibold text-sm text-[#69738c]">{usuario.nombre}</p>
+                      <div className="flex items-center gap-1 text-xs text-[#9aa3b8]">
                         {getActividadIcon(usuario.actividad)}
                         <span>{getActividadLabel(usuario.actividad)}</span>
                         {usuario.seccionActual && (
-                          <span className="text-slate-400">• {usuario.seccionActual}</span>
+                          <span className="text-[#9aa3b8]">• {usuario.seccionActual}</span>
                         )}
                       </div>
                     </div>
@@ -297,7 +297,7 @@ export default function CollaborationPanel({
               ))}
 
               {usuarios.length === 0 && (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-[#9aa3b8]">
                   <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Solo tú conectado</p>
                 </div>
@@ -325,17 +325,17 @@ export default function CollaborationPanel({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-xs text-slate-800">
+                        <span className="font-semibold text-xs text-[#69738c]">
                           {com.autorNombre}
                         </span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-[#9aa3b8]">
                           {tiempoRelativo(com.fechaCreacion)}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="text-sm text-[#69738c] mt-1">
                         {com.texto.split(/(@\w+)/g).map((part, i) =>
                           part.startsWith('@') ? (
-                            <span key={`part-${i}`} className="text-indigo-600 font-medium">{part}</span>
+                            <span key={`part-${i}`} className="text-[#6888ff] font-medium">{part}</span>
                           ) : part
                         )}
                       </p>
@@ -349,7 +349,7 @@ export default function CollaborationPanel({
                               return acc;
                             }, {} as Record<string, number>)
                           ).map(([emoji, count]) => (
-                            <span key={emoji} className="text-xs bg-slate-100 px-2 py-0.5 rounded">
+                            <span key={emoji} className="text-xs bg-[#dfeaff] px-2 py-0.5 rounded">
                               {emoji} {count}
                             </span>
                           ))}
@@ -358,7 +358,7 @@ export default function CollaborationPanel({
 
                       {/* Acciones */}
                       <div className="flex items-center gap-2 mt-2">
-                        <button className="text-xs text-slate-400 hover:text-slate-600">
+                        <button className="text-xs text-[#9aa3b8] hover:text-[#69738c]">
                           Responder
                         </button>
                         {!com.resuelto && (
@@ -374,7 +374,7 @@ export default function CollaborationPanel({
               ))}
 
               {comentarios.length === 0 && (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-[#9aa3b8]">
                   <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Sin comentarios</p>
                 </div>
@@ -386,7 +386,7 @@ export default function CollaborationPanel({
 
       {/* Input de comentario */}
       {tab === 'comentarios' && (
-        <div className="p-4 border-t border-slate-200/50">
+        <div className="p-4 border-t border-[#bec8de30]">
           <div className="flex gap-2">
             <input
               type="text"
@@ -406,10 +406,10 @@ export default function CollaborationPanel({
             </button>
           </div>
           <div className="flex items-center gap-2 mt-2">
-            <button className="text-slate-400 hover:text-slate-600">
+            <button className="text-[#9aa3b8] hover:text-[#69738c]">
               <Smile className="w-4 h-4" />
             </button>
-            <button className="text-slate-400 hover:text-indigo-600">
+            <button className="text-[#9aa3b8] hover:text-[#6888ff]">
               <AtSign className="w-4 h-4" />
             </button>
           </div>

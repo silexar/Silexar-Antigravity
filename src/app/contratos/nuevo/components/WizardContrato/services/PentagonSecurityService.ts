@@ -1,9 +1,9 @@
 /**
  * 🔐 SILEXAR PULSE - Pentagon Security Service TIER 0
- * 
+ *
  * @description Seguridad anti-hacker nivel Pentágono con
  * encriptación cuántica, zero-trust y auditoría inmutable.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -12,8 +12,19 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type NivelSensibilidad = 'PUBLICO' | 'INTERNO' | 'CONFIDENCIAL' | 'SECRETO' | 'TOP_SECRET';
-export type TipoAmenaza = 'INTRUSION' | 'DATA_LEAK' | 'BRUTE_FORCE' | 'ANOMALY' | 'PRIVILEGE_ESCALATION' | 'SQL_INJECTION';
+export type NivelSensibilidad =
+  | "PUBLICO"
+  | "INTERNO"
+  | "CONFIDENCIAL"
+  | "SECRETO"
+  | "TOP_SECRET";
+export type TipoAmenaza =
+  | "INTRUSION"
+  | "DATA_LEAK"
+  | "BRUTE_FORCE"
+  | "ANOMALY"
+  | "PRIVILEGE_ESCALATION"
+  | "SQL_INJECTION";
 
 export interface SesionSegura {
   id: string;
@@ -42,7 +53,7 @@ export interface EventoSeguridad {
   id: string;
   timestamp: Date;
   tipo: TipoAmenaza;
-  severidad: 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+  severidad: "BAJA" | "MEDIA" | "ALTA" | "CRITICA";
   descripcion: string;
   ipOrigen?: string;
   userId?: string;
@@ -68,7 +79,7 @@ export interface AuditLog {
 export interface ConfiguracionDLP {
   enabled: boolean;
   patronesSensibles: RegExp[];
-  accionesBloqueo: ('log' | 'alert' | 'block' | 'quarantine')[];
+  accionesBloqueo: ("log" | "alert" | "block" | "quarantine")[];
   whitelist: string[];
   nivelMinimo: NivelSensibilidad;
 }
@@ -90,19 +101,19 @@ class PentagonSecurityServiceClass {
   private sesiones: Map<string, SesionSegura> = new Map();
   private eventosSeguridad: EventoSeguridad[] = [];
   private auditLogs: AuditLog[] = [];
-  private ultimoHash: string = 'GENESIS_BLOCK_0000000000000000';
-  
+  private ultimoHash: string = "GENESIS_BLOCK_0000000000000000";
+
   private configuracionDLP: ConfiguracionDLP = {
     enabled: true,
     patronesSensibles: [
       /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/, // Tarjetas
       /\b\d{2}[-.]?\d{3}[-.]?\d{3}[-]?\d{1}\b/, // RUT
       /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i, // Emails masivos
-      /password|contraseña|clave|secret/i
+      /password|contraseña|clave|secret/i,
     ],
-    accionesBloqueo: ['log', 'alert', 'block'],
+    accionesBloqueo: ["log", "alert", "block"],
     whitelist: [],
-    nivelMinimo: 'CONFIDENCIAL'
+    nivelMinimo: "CONFIDENCIAL",
   };
 
   private constructor() {}
@@ -128,14 +139,17 @@ class PentagonSecurityServiceClass {
   }> {
     // Simulación de encriptación Kyber/Dilithium (post-cuántico)
     const keyId = `key-${nivel}-${Date.now()}`;
-    const algoritmo = nivel === 'TOP_SECRET' ? 'CRYSTALS-Kyber-1024' : 'CRYSTALS-Kyber-768';
-    
+    const algoritmo = nivel === "TOP_SECRET"
+      ? "CRYSTALS-Kyber-1024"
+      : "CRYSTALS-Kyber-768";
+
     // En producción: usar librería de criptografía post-cuántica
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(datos);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", dataBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const datosCifrados = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const datosCifrados = hashArray.map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     return { datosCifrados, keyId, algoritmo };
   }
@@ -150,14 +164,16 @@ class PentagonSecurityServiceClass {
   }> {
     const encoder = new TextEncoder();
     const data = encoder.encode(mensaje + Date.now());
-    const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+    const hashBuffer = await crypto.subtle.digest("SHA-512", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const firma = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const firma = hashArray.map((b) => b.toString(16).padStart(2, "0")).join(
+      "",
+    );
 
     return {
       firma,
-      algoritmo: 'CRYSTALS-Dilithium',
-      timestamp: new Date().toISOString()
+      algoritmo: "CRYSTALS-Dilithium",
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -176,7 +192,7 @@ class PentagonSecurityServiceClass {
     contexto: Record<string, unknown>;
   }): Promise<ValidacionAcceso> {
     const sesion = this.sesiones.get(params.sesionId);
-    
+
     // Verificaciones múltiples (never trust, always verify)
     const verificaciones: string[] = [];
     let permitido = true;
@@ -185,99 +201,127 @@ class PentagonSecurityServiceClass {
     if (!sesion) {
       return {
         permitido: false,
-        razon: 'Sesión no válida o expirada',
-        nivelRequerido: 'INTERNO',
-        nivelUsuario: 'PUBLICO',
+        razon: "Sesión no válida o expirada",
+        nivelRequerido: "INTERNO",
+        nivelUsuario: "PUBLICO",
         verificacionesAdicionales: [],
-        alertaGenerada: true
+        alertaGenerada: true,
       };
     }
-    verificaciones.push('sesion_valida');
+    verificaciones.push("sesion_valida");
 
     // 2. Verificar MFA
     if (!sesion.mfaCompletado) {
       return {
         permitido: false,
-        razon: 'MFA requerido',
-        nivelRequerido: 'INTERNO',
-        nivelUsuario: 'PUBLICO',
-        verificacionesAdicionales: ['mfa_required'],
-        alertaGenerada: false
+        razon: "MFA requerido",
+        nivelRequerido: "INTERNO",
+        nivelUsuario: "PUBLICO",
+        verificacionesAdicionales: ["mfa_required"],
+        alertaGenerada: false,
       };
     }
-    verificaciones.push('mfa_verificado');
+    verificaciones.push("mfa_verificado");
 
     // 3. Verificar dispositivo
     if (!sesion.dispositivoVerificado) {
-      verificaciones.push('dispositivo_nuevo');
+      verificaciones.push("dispositivo_nuevo");
       // Reducir confianza pero permitir con restricciones
     }
 
     // 4. Verificar comportamiento anómalo
-    const esAnomalo = await this.detectarAnomaliaComportamiento(params.userId, params.accion);
+    const esAnomalo = await this.detectarAnomaliaComportamiento(
+      params.userId,
+      params.accion,
+    );
     if (esAnomalo) {
       permitido = false;
       await this.registrarEventoSeguridad({
-        tipo: 'ANOMALY',
-        severidad: 'ALTA',
+        tipo: "ANOMALY",
+        severidad: "ALTA",
         descripcion: `Comportamiento anómalo detectado: ${params.accion}`,
         userId: params.userId,
-        recursoAfectado: params.recurso
+        recursoAfectado: params.recurso,
       });
     }
-    verificaciones.push('behavioral_check');
+    verificaciones.push("behavioral_check");
 
     // 5. Verificar nivel de acceso
     const nivelRequerido = this.obtenerNivelRequerido(params.recurso);
     const nivelUsuario = await this.obtenerNivelUsuario(params.userId);
-    
+
     if (this.compararNiveles(nivelUsuario, nivelRequerido) < 0) {
       permitido = false;
     }
-    verificaciones.push('nivel_acceso');
+    verificaciones.push("nivel_acceso");
 
     // 6. Verificar horario y ubicación
     if (!this.verificarContextoAcceso(sesion, params.contexto)) {
-      verificaciones.push('contexto_sospechoso');
+      verificaciones.push("contexto_sospechoso");
       // Log pero permitir con monitoreo adicional
     }
 
     return {
       permitido,
-      razon: permitido ? undefined : 'Acceso denegado por políticas de seguridad',
+      razon: permitido
+        ? undefined
+        : "Acceso denegado por políticas de seguridad",
       nivelRequerido,
       nivelUsuario,
       verificacionesAdicionales: verificaciones,
-      alertaGenerada: !permitido
+      alertaGenerada: !permitido,
     };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async detectarAnomaliaComportamiento(_userId: string, _accion: string): Promise<boolean> {
+  private async detectarAnomaliaComportamiento(
+    _userId: string,
+    _accion: string,
+  ): Promise<boolean> {
     // Simulación de ML para detección de anomalías
     return Math.random() < 0.01; // 1% de falsos positivos simulados
   }
 
   private obtenerNivelRequerido(recurso: string): NivelSensibilidad {
-    if (recurso.includes('contracts') || recurso.includes('finance')) return 'CONFIDENCIAL';
-    if (recurso.includes('admin') || recurso.includes('security')) return 'SECRETO';
-    if (recurso.includes('system') || recurso.includes('keys')) return 'TOP_SECRET';
-    return 'INTERNO';
+    if (recurso.includes("contracts") || recurso.includes("finance")) {
+      return "CONFIDENCIAL";
+    }
+    if (recurso.includes("admin") || recurso.includes("security")) {
+      return "SECRETO";
+    }
+    if (recurso.includes("system") || recurso.includes("keys")) {
+      return "TOP_SECRET";
+    }
+    return "INTERNO";
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async obtenerNivelUsuario(_userId: string): Promise<NivelSensibilidad> {
+  private async obtenerNivelUsuario(
+    _userId: string,
+  ): Promise<NivelSensibilidad> {
     // Simulación - en producción consultar IAM
-    return 'CONFIDENCIAL';
+    return "CONFIDENCIAL";
   }
 
-  private compararNiveles(usuario: NivelSensibilidad, requerido: NivelSensibilidad): number {
-    const orden = ['PUBLICO', 'INTERNO', 'CONFIDENCIAL', 'SECRETO', 'TOP_SECRET'];
+  private compararNiveles(
+    usuario: NivelSensibilidad,
+    requerido: NivelSensibilidad,
+  ): number {
+    const orden = [
+      "PUBLICO",
+      "INTERNO",
+      "CONFIDENCIAL",
+      "SECRETO",
+      "TOP_SECRET",
+    ];
     return orden.indexOf(usuario) - orden.indexOf(requerido);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private verificarContextoAcceso(_sesion: SesionSegura, _contexto: Record<string, unknown>): boolean {
+  private verificarContextoAcceso(
+    _sesion: SesionSegura,
+    _contexto: Record<string, unknown>,
+  ): boolean {
     // Verificar horario laboral, ubicación esperada, etc.
     return true;
   }
@@ -296,12 +340,12 @@ class PentagonSecurityServiceClass {
     recomendaciones: string[];
   }> {
     // Simulación de análisis ML
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     return {
       scoreRiesgo: 15, // 0-100, bajo es mejor
-      patronesDetectados: ['acceso_normal', 'horario_habitual'],
-      recomendaciones: []
+      patronesDetectados: ["acceso_normal", "horario_habitual"],
+      recomendaciones: [],
     };
   }
 
@@ -312,44 +356,49 @@ class PentagonSecurityServiceClass {
   /**
    * Verifica contenido para prevenir filtración de datos
    */
-  analizarContenidoDLP(contenido: string, destino: 'interno' | 'externo'): {
+  analizarContenidoDLP(contenido: string, destino: "interno" | "externo"): {
     permitido: boolean;
     datosDetectados: { tipo: string; ubicacion: number }[];
     accionTomada: string;
   } {
     if (!this.configuracionDLP.enabled) {
-      return { permitido: true, datosDetectados: [], accionTomada: 'none' };
+      return { permitido: true, datosDetectados: [], accionTomada: "none" };
     }
 
     const datosDetectados: { tipo: string; ubicacion: number }[] = [];
-    
+
     for (const patron of this.configuracionDLP.patronesSensibles) {
-      const matches = contenido.matchAll(new RegExp(patron, 'g'));
+      const matches = contenido.matchAll(new RegExp(patron, "g"));
       for (const match of matches) {
         datosDetectados.push({
-          tipo: patron.source.includes('\\d{4}') ? 'tarjeta_credito' :
-                patron.source.includes('\\d{2}') ? 'rut' :
-                patron.source.includes('@') ? 'email' : 'sensible',
-          ubicacion: match.index || 0
+          tipo: patron.source.includes("\\d{4}")
+            ? "tarjeta_credito"
+            : patron.source.includes("\\d{2}")
+            ? "rut"
+            : patron.source.includes("@")
+            ? "email"
+            : "sensible",
+          ubicacion: match.index || 0,
         });
       }
     }
 
-    const permitido = datosDetectados.length === 0 || destino === 'interno';
-    
+    const permitido = datosDetectados.length === 0 || destino === "interno";
+
     if (!permitido) {
       this.registrarEventoSeguridad({
-        tipo: 'DATA_LEAK',
-        severidad: 'ALTA',
-        descripcion: `Intento de filtración de ${datosDetectados.length} datos sensibles`,
-        recursoAfectado: destino
+        tipo: "DATA_LEAK",
+        severidad: "ALTA",
+        descripcion:
+          `Intento de filtración de ${datosDetectados.length} datos sensibles`,
+        recursoAfectado: destino,
       });
     }
 
     return {
       permitido,
       datosDetectados,
-      accionTomada: permitido ? 'allowed' : 'blocked'
+      accionTomada: permitido ? "allowed" : "blocked",
     };
   }
 
@@ -372,15 +421,19 @@ class PentagonSecurityServiceClass {
     const contenidoHash = JSON.stringify({
       ...params,
       timestamp: timestamp.toISOString(),
-      hashAnterior: this.ultimoHash
+      hashAnterior: this.ultimoHash,
     });
 
     const { firma } = await this.generarFirmaDigital(contenidoHash);
-    
+
     const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(contenidoHash));
+    const hashBuffer = await crypto.subtle.digest(
+      "SHA-256",
+      encoder.encode(contenidoHash),
+    );
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashIntegridad = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashIntegridad = hashArray.map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     const log: AuditLog = {
       id: `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -393,7 +446,7 @@ class PentagonSecurityServiceClass {
       ipOrigen: params.ipOrigen,
       hashIntegridad,
       hashAnterior: this.ultimoHash,
-      firma
+      firma,
     };
 
     this.auditLogs.push(log);
@@ -411,17 +464,17 @@ class PentagonSecurityServiceClass {
     erroresEncontrados: number;
     primerError?: { indice: number; tipo: string };
   }> {
-    let hashEsperado = 'GENESIS_BLOCK_0000000000000000';
+    let hashEsperado = "GENESIS_BLOCK_0000000000000000";
     let erroresEncontrados = 0;
     let primerError: { indice: number; tipo: string } | undefined;
 
     for (let i = 0; i < this.auditLogs.length; i++) {
       const log = this.auditLogs[i];
-      
+
       if (log.hashAnterior !== hashEsperado) {
         erroresEncontrados++;
         if (!primerError) {
-          primerError = { indice: i, tipo: 'cadena_rota' };
+          primerError = { indice: i, tipo: "cadena_rota" };
         }
       }
 
@@ -432,7 +485,7 @@ class PentagonSecurityServiceClass {
       integra: erroresEncontrados === 0,
       totalRegistros: this.auditLogs.length,
       erroresEncontrados,
-      primerError
+      primerError,
     };
   }
 
@@ -446,26 +499,29 @@ class PentagonSecurityServiceClass {
   async verificarCompliance(): Promise<ComplianceStatus[]> {
     return [
       {
-        framework: 'SOX',
+        framework: "SOX",
         cumplimiento: 98,
         ultimaAuditoria: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         hallazgos: 2,
-        recomendaciones: ['Actualizar política de retención']
+        recomendaciones: ["Actualizar política de retención"],
       },
       {
-        framework: 'GDPR',
+        framework: "GDPR",
         cumplimiento: 95,
         ultimaAuditoria: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
         hallazgos: 3,
-        recomendaciones: ['Revisar consentimientos', 'Actualizar política privacidad']
+        recomendaciones: [
+          "Revisar consentimientos",
+          "Actualizar política privacidad",
+        ],
       },
       {
-        framework: 'ISO 27001',
+        framework: "ISO 27001",
         cumplimiento: 97,
         ultimaAuditoria: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
         hallazgos: 1,
-        recomendaciones: ['Completar capacitación seguridad']
-      }
+        recomendaciones: ["Completar capacitación seguridad"],
+      },
     ];
   }
 
@@ -473,21 +529,26 @@ class PentagonSecurityServiceClass {
   // GESTIÓN DE EVENTOS DE SEGURIDAD
   // ═══════════════════════════════════════════════════════════════
 
-  private async registrarEventoSeguridad(params: Omit<EventoSeguridad, 'id' | 'timestamp' | 'mitigacionAplicada' | 'acciones'>): Promise<void> {
+  private async registrarEventoSeguridad(
+    params: Omit<
+      EventoSeguridad,
+      "id" | "timestamp" | "mitigacionAplicada" | "acciones"
+    >,
+  ): Promise<void> {
     const evento: EventoSeguridad = {
       id: `sec-${Date.now()}`,
       timestamp: new Date(),
       ...params,
       mitigacionAplicada: false,
-      acciones: []
+      acciones: [],
     };
 
     this.eventosSeguridad.push(evento);
 
     // Auto-mitigación según severidad
-    if (params.severidad === 'CRITICA') {
-      evento.acciones.push('sesion_bloqueada');
-      evento.acciones.push('alerta_soc');
+    if (params.severidad === "CRITICA") {
+      evento.acciones.push("sesion_bloqueada");
+      evento.acciones.push("alerta_soc");
       evento.mitigacionAplicada = true;
     }
   }
@@ -497,11 +558,12 @@ class PentagonSecurityServiceClass {
    */
   getEventosSeguridad(horas: number = 24): EventoSeguridad[] {
     const limite = Date.now() - horas * 60 * 60 * 1000;
-    return this.eventosSeguridad.filter(e => e.timestamp.getTime() >= limite);
+    return this.eventosSeguridad.filter((e) => e.timestamp.getTime() >= limite);
   }
 }
 
-export const PentagonSecurityService = PentagonSecurityServiceClass.getInstance();
+export const PentagonSecurityService = PentagonSecurityServiceClass
+  .getInstance();
 
 // Hook para uso en componentes React
 export function usePentagonSecurity() {

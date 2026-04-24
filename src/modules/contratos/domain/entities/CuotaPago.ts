@@ -244,7 +244,7 @@ export class CuotaPago {
     }
 
     if (props.fechaVencimiento < new Date('2020-01-01')) {
-      throw new Error('La fecha de vencimiento no puede ser anterior a 2020');
+      throw new Error('La fecha de vencimientos no puede ser anterior a 2020');
     }
 
     if (!props.planPagosId) {

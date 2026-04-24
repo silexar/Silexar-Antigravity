@@ -36,6 +36,20 @@
       "when": 1774354207385,
       "tag": "0004_complete_rls_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1744739320289,
+      "tag": "0005_registro_emision_clips_accesos",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1744896000000,
+      "tag": "0006_add_spx_code_to_cunas",
+      "breakpoints": true
     }
   ]
 }

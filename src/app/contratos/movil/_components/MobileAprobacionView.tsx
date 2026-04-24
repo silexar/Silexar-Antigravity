@@ -1,9 +1,9 @@
 /**
- * ✅ MOBILE: Vista de Aprobaciones de Contrato
+ * ? MOBILE: Vista de Aprobaciones de Contrato
  * 
- * Muestra los contratos pendientes de aprobación del ejecutivo.
+ * Muestra los contratos pendientes de aprobaci�n del ejecutivo.
  * El aprobador puede aprobar, rechazar o solicitar cambios
- * directamente desde el móvil con notificaciones push.
+ * directamente desde el m�vil con notificaciones push.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -19,9 +19,9 @@ import {
   ThumbsUp, ThumbsDown,
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface AprobacionPendiente {
   id: string;
@@ -37,37 +37,37 @@ interface AprobacionPendiente {
   urgente: boolean;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // DATOS MOCK
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const APROBACIONES_MOCK: AprobacionPendiente[] = [
   {
     id: 'apr-001', contratoNumero: 'SP-2025-0012', cliente: 'Banco Chile',
-    ejecutivo: 'María González', valor: 85000000, descuento: 15,
+    ejecutivo: 'Mar�a Gonz�lez', valor: 85000000, descuento: 15,
     lineasPauta: 3, nivelRequerido: 'gerencia',
     motivo: 'Monto superior a $80M ($85.0M)',
     fechaSolicitud: '2025-03-01', urgente: true,
   },
   {
     id: 'apr-002', contratoNumero: 'SP-2025-0015', cliente: 'LATAM',
-    ejecutivo: 'Carlos Pérez', valor: 200000000, descuento: 20,
+    ejecutivo: 'Carlos P�rez', valor: 200000000, descuento: 20,
     lineasPauta: 5, nivelRequerido: 'directorio',
     motivo: 'Monto superior a $150M ($200.0M)',
     fechaSolicitud: '2025-03-01', urgente: true,
   },
   {
     id: 'apr-003', contratoNumero: 'SP-2025-0018', cliente: 'Cencosud',
-    ejecutivo: 'Ana López', valor: 45000000, descuento: 12,
+    ejecutivo: 'Ana L�pez', valor: 45000000, descuento: 12,
     lineasPauta: 2, nivelRequerido: 'jefatura',
     motivo: 'Descuento superior al 10% (12%)',
     fechaSolicitud: '2025-02-28', urgente: false,
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function MobileAprobacionView() {
   const [aprobaciones, setAprobaciones] = useState(APROBACIONES_MOCK);
@@ -78,7 +78,7 @@ export function MobileAprobacionView() {
 
   const handleAccion = async (id: string, accion: 'aprobar' | 'rechazar') => {
     setProcesando(id);
-    // Simular llamada API — en producción: POST /api/contratos/{id}/aprobar
+    // Simular llamada API � en producci�n: POST /api/contratos/{id}/aprobar
     ;
     await new Promise(resolve => setTimeout(resolve, 1200));
     setAprobaciones(prev => prev.filter(a => a.id !== id));
@@ -94,30 +94,30 @@ export function MobileAprobacionView() {
     <div className="space-y-4">
       {/* HEADER */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+        <div className="w-10 h-10 rounded-xl bg-[#6888ff] flex items-center justify-center shadow-lg">
           <Shield className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="font-bold text-lg text-slate-800">Aprobaciones</h3>
-          <p className="text-xs text-slate-500">
+          <h3 className="font-bold text-lg text-[#69738c]">Aprobaciones</h3>
+          <p className="text-xs text-[#9aa3b8]">
             {pendientes} pendiente{pendientes !== 1 ? 's' : ''}
-            {urgentes > 0 && <span className="text-red-500 font-bold"> · {urgentes} urgente{urgentes !== 1 ? 's' : ''}</span>}
+            {urgentes > 0 && <span className="text-red-500 font-bold"> � {urgentes} urgente{urgentes !== 1 ? 's' : ''}</span>}
           </p>
         </div>
       </div>
 
       {/* LISTA */}
       {aprobaciones.length === 0 ? (
-        <div className="text-center py-12 bg-emerald-50 rounded-2xl border border-emerald-100">
+        <div className="text-center py-12 bg-emerald-50 rounded-2xl border border-[#bec8de30]">
           <CheckCircle2 className="w-16 h-16 text-emerald-300 mx-auto" />
-          <p className="mt-4 text-lg font-black text-emerald-600">Todo al día</p>
+          <p className="mt-4 text-lg font-black text-emerald-600">Todo al d�a</p>
           <p className="text-sm text-emerald-500 mt-1">No hay aprobaciones pendientes</p>
         </div>
       ) : (
         <div className="space-y-3">
           {aprobaciones.map(apr => (
-            <div key={apr.id} className={`bg-white rounded-2xl border overflow-hidden shadow-sm ${
-              apr.urgente ? 'border-red-200' : 'border-slate-100'
+            <div key={apr.id} className={`bg-[#dfeaff] rounded-2xl border overflow-hidden shadow-sm ${
+              apr.urgente ? 'border-red-200' : 'border-[#bec8de30]'
             }`}>
               {/* HEADER CARD */}
               <button
@@ -135,16 +135,16 @@ export function MobileAprobacionView() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-bold text-sm text-slate-800 truncate">{apr.cliente}</p>
+                    <p className="font-bold text-sm text-[#69738c] truncate">{apr.cliente}</p>
                     {apr.urgente && (
                       <span className="px-1.5 py-0.5 bg-red-500 text-white text-[8px] font-bold rounded-full">URGENTE</span>
                     )}
                   </div>
-                  <p className="text-[10px] text-slate-400">{apr.contratoNumero} · {apr.ejecutivo}</p>
+                  <p className="text-[10px] text-[#9aa3b8]">{apr.contratoNumero} � {apr.ejecutivo}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-slate-700">{fmtMonto(apr.valor)}</p>
-                  <ChevronDown className={`w-4 h-4 text-slate-300 transition-transform ml-auto ${
+                  <p className="text-sm font-bold text-[#69738c]">{fmtMonto(apr.valor)}</p>
+                  <ChevronDown className={`w-4 h-4 text-[#9aa3b8] transition-transform ml-auto ${
                     expandedId === apr.id ? 'rotate-180' : ''
                   }`} />
                 </div>
@@ -152,19 +152,19 @@ export function MobileAprobacionView() {
 
               {/* DETALLE EXPANDIDO */}
               {expandedId === apr.id && (
-                <div className="px-4 pb-4 space-y-3 border-t border-slate-50">
+                <div className="px-4 pb-4 space-y-3 border-t border-[#bec8de30]">
                   {/* INFO */}
                   <div className="grid grid-cols-2 gap-2 pt-3">
                     <InfoChip icon={<DollarSign className="w-3 h-3" />} label="Valor" value={fmtMonto(apr.valor)} />
                     <InfoChip icon={<Building2 className="w-3 h-3" />} label="Descuento" value={`${apr.descuento}%`} />
-                    <InfoChip icon={<FileText className="w-3 h-3" />} label="Líneas" value={String(apr.lineasPauta)} />
+                    <InfoChip icon={<FileText className="w-3 h-3" />} label="L�neas" value={String(apr.lineasPauta)} />
                     <InfoChip icon={<User className="w-3 h-3" />} label="Ejecutivo" value={apr.ejecutivo.split(' ')[0]} />
                   </div>
 
                   {/* MOTIVO */}
-                  <div className="p-2 rounded-lg bg-amber-50 border border-amber-100">
+                  <div className="p-2 rounded-lg bg-amber-50 border border-[#bec8de30]">
                     <p className="text-[10px] font-bold text-amber-700 flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3" /> Motivo de aprobación
+                      <AlertTriangle className="w-3 h-3" /> Motivo de aprobaci�n
                     </p>
                     <p className="text-xs text-amber-600 mt-0.5">{apr.motivo}</p>
                   </div>
@@ -177,7 +177,7 @@ export function MobileAprobacionView() {
                         onChange={(e) => setComentario(e.target.value)}
                         placeholder="Escribir comentario (opcional)..."
                         rows={3}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-400 outline-none resize-none"
+                        className="w-full px-3 py-2 rounded-xl border border-[#bec8de30] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none resize-none"
                       />
                     </div>
                   )}
@@ -187,21 +187,21 @@ export function MobileAprobacionView() {
                     <button
                       onClick={() => handleAccion(apr.id, 'rechazar')}
                       disabled={procesando === apr.id}
-                      className="flex-1 py-3 bg-red-50 border border-red-200 text-red-600 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50"
+                      className="flex-1 py-3 bg-red-50 border border-[#bec8de30] text-red-600 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50"
                     >
                       {procesando === apr.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <ThumbsDown className="w-4 h-4" />}
                       Rechazar
                     </button>
                     <button
                       onClick={() => setShowComentario(showComentario === apr.id ? null : apr.id)}
-                      className="py-3 px-3 border border-slate-200 text-slate-600 rounded-xl text-xs flex items-center justify-center active:scale-[0.97]"
+                      className="py-3 px-3 border border-[#bec8de30] text-[#69738c] rounded-xl text-xs flex items-center justify-center active:scale-[0.97]"
                     >
                       <MessageSquare className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleAccion(apr.id, 'aprobar')}
                       disabled={procesando === apr.id}
-                      className="flex-[2] py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-emerald-200"
+                      className="flex-[2] py-3 bg-[#6888ff] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-emerald-200"
                     >
                       {procesando === apr.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <ThumbsUp className="w-4 h-4" />}
                       Aprobar
@@ -209,7 +209,7 @@ export function MobileAprobacionView() {
                   </div>
 
                   {/* FECHA */}
-                  <p className="text-[9px] text-slate-400 text-center flex items-center justify-center gap-1">
+                  <p className="text-[9px] text-[#9aa3b8] text-center flex items-center justify-center gap-1">
                     <Clock className="w-3 h-3" /> Solicitado: {fmtDate(apr.fechaSolicitud)}
                   </p>
                 </div>
@@ -222,16 +222,16 @@ export function MobileAprobacionView() {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // SUB-COMPONENTES
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 function InfoChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="px-2 py-1.5 bg-slate-50 rounded-lg flex items-center gap-1.5">
-      <span className="text-slate-400">{icon}</span>
-      <span className="text-[10px] text-slate-400">{label}:</span>
-      <span className="text-xs font-bold text-slate-700">{value}</span>
+    <div className="px-2 py-1.5 bg-[#dfeaff] rounded-lg flex items-center gap-1.5">
+      <span className="text-[#9aa3b8]">{icon}</span>
+      <span className="text-[10px] text-[#9aa3b8]">{label}:</span>
+      <span className="text-xs font-bold text-[#69738c]">{value}</span>
     </div>
   );
 }

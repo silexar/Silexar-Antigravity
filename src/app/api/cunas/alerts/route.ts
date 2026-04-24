@@ -1,7 +1,7 @@
 /**
  * SILEXAR PULSE - API Gestión de Alertas Enterprise TIER 0
  *
- * Endpoint para programar y gestionar alertas de vencimiento
+ * Endpoint para programar y gestionar alertas de vencimientos
  * Sistema de notificaciones automáticas 24/7
  *
  * @version 2050.1.0

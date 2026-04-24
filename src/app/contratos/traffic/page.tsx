@@ -209,7 +209,7 @@ const MedioIcon: React.FC<{ tipo: string }> = ({ tipo }) => {
 
 const EstadoBadge: React.FC<{ estado: OrdenPauta['estado'] }> = ({ estado }) => {
   const config = {
-    programado: { bg: 'bg-slate-100', text: 'text-slate-700', icon: Clock, label: 'Programado' },
+    programado: { bg: 'bg-[#dfeaff]', text: 'text-[#69738c]', icon: Clock, label: 'Programado' },
     en_ejecucion: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Play, label: 'En Ejecución' },
     pausado: { bg: 'bg-amber-100', text: 'text-amber-700', icon: Pause, label: 'Pausado' },
     completado: { bg: 'bg-emerald-100', text: 'text-emerald-700', icon: CheckCircle2, label: 'Completado' },
@@ -300,9 +300,9 @@ const OrdenRow: React.FC<{
   }[orden.prioridad];
 
   return (
-    <motion.div layout className={`bg-white rounded-xl border border-slate-200 overflow-hidden border-l-4 ${prioridadColor}`}>
+    <motion.div layout className={`bg-[#dfeaff] rounded-xl border border-[#bec8de30] overflow-hidden border-l-4 ${prioridadColor}`}>
       <div
-        className="p-4 cursor-pointer hover:bg-slate-50 transition-colors"
+        className="p-4 cursor-pointer hover:bg-[#dfeaff] transition-colors"
         onClick={onToggle}
       >
         <div className="flex items-center gap-4">
@@ -314,11 +314,11 @@ const OrdenRow: React.FC<{
           {/* Info principal */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold text-slate-800">{orden.anuncianteNombre}</h4>
-              <span className="text-slate-400">•</span>
-              <span className="text-sm text-slate-600">{orden.campana}</span>
+              <h4 className="font-semibold text-[#69738c]">{orden.anuncianteNombre}</h4>
+              <span className="text-[#9aa3b8]">•</span>
+              <span className="text-sm text-[#69738c]">{orden.campana}</span>
             </div>
-            <p className="text-sm text-slate-500">{orden.medio} - {orden.programa}</p>
+            <p className="text-sm text-[#69738c]">{orden.medio} - {orden.programa}</p>
           </div>
           
           {/* Estado material */}
@@ -329,11 +329,11 @@ const OrdenRow: React.FC<{
           
           {/* Progreso */}
           <div className="w-32">
-            <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-xs text-[#69738c] mb-1">
               <span>{orden.cunasEmitidas}/{orden.totalCunas}</span>
               <span>{orden.porcentajeEjecucion.toFixed(0)}%</span>
             </div>
-            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
               <motion.div
                 className={`h-full rounded-full ${
                   orden.estado === 'con_problemas' ? 'bg-red-500' :
@@ -351,7 +351,7 @@ const OrdenRow: React.FC<{
           
           {/* Expandir */}
           <motion.div animate={{ rotate: isExpanded ? 90 : 0 }}>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+            <ChevronRight className="w-5 h-5 text-[#9aa3b8]" />
           </motion.div>
         </div>
       </div>
@@ -363,29 +363,29 @@ const OrdenRow: React.FC<{
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-slate-200 bg-slate-50"
+            className="border-t border-[#bec8de30] bg-[#dfeaff]"
           >
             <div className="p-4 grid grid-cols-4 gap-6">
               <div>
-                <p className="text-xs text-slate-500 mb-1">Contrato</p>
+                <p className="text-xs text-[#69738c] mb-1">Contrato</p>
                 <p className="font-mono text-sm">{orden.numeroContrato}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">Período</p>
+                <p className="text-xs text-[#69738c] mb-1">Período</p>
                 <p className="text-sm">
                   {orden.fechaInicio.toLocaleDateString()} - {orden.fechaFin.toLocaleDateString()}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">Código Material</p>
+                <p className="text-xs text-[#69738c] mb-1">Código Material</p>
                 <p className="font-mono text-sm">{orden.codigoMaterial || 'Sin asignar'}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">Ejecutivo</p>
+                <p className="text-xs text-[#69738c] mb-1">Ejecutivo</p>
                 <p className="text-sm">{orden.ejecutivoNombre}</p>
               </div>
               
-              <div className="col-span-4 flex items-center gap-3 pt-2 border-t border-slate-200">
+              <div className="col-span-4 flex items-center gap-3 pt-2 border-t border-[#bec8de30]">
                 <button className="px-3 py-1.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 flex items-center gap-1">
                   <Eye className="w-4 h-4" /> Ver Programación
                 </button>
@@ -399,7 +399,7 @@ const OrdenRow: React.FC<{
                     <XCircle className="w-4 h-4" /> {orden.cunasRechazadas} Rechazadas
                   </button>
                 )}
-                <button className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 text-sm hover:bg-slate-100 flex items-center gap-1 ml-auto">
+                <button className="px-3 py-1.5 rounded-lg border border-[#bec8de30] text-[#69738c] text-sm hover:bg-[#dfeaff] flex items-center gap-1 ml-auto">
                   <Download className="w-4 h-4" /> Exportar Log
                 </button>
               </div>
@@ -440,9 +440,9 @@ export default function TrafficPage() {
   }, [ordenes, filtroEstado, filtroMedio, busqueda]);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-blue-50/30">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
+      <div className="bg-[#dfeaff] border-b border-[#bec8de30] sticky top-0 z-20">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -450,8 +450,8 @@ export default function TrafficPage() {
                 <Radio className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Traffic & Operaciones</h1>
-                <p className="text-slate-500 text-sm flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-[#69738c]">Traffic & Operaciones</h1>
+                <p className="text-[#69738c] text-sm flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-blue-500" />
                   Tracking de pauta en tiempo real
                 </p>
@@ -463,7 +463,7 @@ export default function TrafficPage() {
                 <RefreshCw className="w-4 h-4" />
                 Sincronizar
               </button>
-              <button className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-medium flex items-center gap-2 hover:bg-slate-50 transition-colors">
+              <button className="px-4 py-2 rounded-xl border border-[#bec8de30] text-[#69738c] font-medium flex items-center gap-2 hover:bg-[#dfeaff] transition-colors">
                 <Download className="w-4 h-4" />
                 Exportar
               </button>
@@ -512,23 +512,23 @@ export default function TrafficPage() {
         {/* Filtros */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9aa3b8]" />
             <input
               type="text"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar por anunciante, campaña o medio..."
               aria-label="Buscar por anunciante, campaña o medio"
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-400/50"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-[#bec8de30] outline-none focus:ring-2 focus:ring-blue-400/50"
             />
           </div>
           
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-[#9aa3b8]" />
             <select
               value={filtroEstado}
               onChange={(e) => setFiltroEstado(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              className="px-3 py-2 rounded-lg border border-[#bec8de30] text-sm"
             >
               <option value="todos">Todos los estados</option>
               <option value="programado">Programado</option>
@@ -540,7 +540,7 @@ export default function TrafficPage() {
             <select
               value={filtroMedio}
               onChange={(e) => setFiltroMedio(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              className="px-3 py-2 rounded-lg border border-[#bec8de30] text-sm"
             >
               <option value="todos">Todos los medios</option>
               <option value="RADIO">Radio</option>
@@ -549,7 +549,7 @@ export default function TrafficPage() {
             </select>
           </div>
           
-          <span className="text-sm text-slate-500 ml-auto">
+          <span className="text-sm text-[#69738c] ml-auto">
             {ordenesFiltradas.length} órdenes
           </span>
         </div>
@@ -568,9 +568,9 @@ export default function TrafficPage() {
           </AnimatePresence>
           
           {ordenesFiltradas.length === 0 && (
-            <div className="p-12 text-center bg-white rounded-xl border border-slate-200">
-              <Radio className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No hay órdenes que coincidan con los filtros</p>
+            <div className="p-12 text-center bg-[#dfeaff] rounded-xl border border-[#bec8de30]">
+              <Radio className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
+              <p className="text-[#69738c]">No hay órdenes que coincidan con los filtros</p>
             </div>
           )}
         </div>

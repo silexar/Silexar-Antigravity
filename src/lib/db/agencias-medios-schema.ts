@@ -19,6 +19,7 @@ import { tenants, users } from './users-schema';
 
 export const agenciaStatusEnum = pgEnum('agencia_status', ['activa', 'inactiva', 'suspendida', 'pendiente']);
 export const tipoAgenciaMediosEnum = pgEnum('tipo_agencia_medios', ['medios', 'creativa', 'digital', 'integral', 'btl']);
+export const nivelColaboracionEnum = pgEnum('nivel_colaboracion', ['estrategico', 'preferencial', 'estandar', 'transaccional', 'prospecto']);
 
 // ═══════════════════════════════════════════════════════════════
 // TABLA: AGENCIAS DE MEDIOS
@@ -29,54 +30,71 @@ export const agenciasMedios = pgTable('agencias_medios', {
   id: uuid('id').primaryKey().defaultRandom(),
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   codigo: varchar('codigo', { length: 20 }).notNull(), // Código interno ej: "AGM-0001"
-  
+
   // Información legal
   rut: varchar('rut', { length: 12 }),
   nombreRazonSocial: varchar('nombre_razon_social', { length: 255 }).notNull(),
   nombreComercial: varchar('nombre_comercial', { length: 255 }), // Nombre de fantasía
   giroActividad: text('giro_actividad'),
   tipoAgencia: tipoAgenciaMediosEnum('tipo_agencia').default('medios').notNull(),
-  
+
   // Dirección
   direccion: text('direccion'),
   ciudad: varchar('ciudad', { length: 100 }),
   comunaProvincia: varchar('comuna_provincia', { length: 100 }),
   pais: varchar('pais', { length: 100 }).default('Chile'),
   codigoPostal: varchar('codigo_postal', { length: 20 }),
-  
+
   // Contacto principal
   emailContacto: varchar('email_contacto', { length: 255 }),
   telefonoContacto: varchar('telefono_contacto', { length: 20 }),
   paginaWeb: varchar('pagina_web', { length: 255 }),
-  
+
   // Ejecutivo de cuenta asignado
   nombreEjecutivo: varchar('nombre_ejecutivo', { length: 255 }),
   emailEjecutivo: varchar('email_ejecutivo', { length: 255 }),
   telefonoEjecutivo: varchar('telefono_ejecutivo', { length: 20 }),
-  
+
   // Comisiones
   comisionPorcentaje: decimal('comision_porcentaje', { precision: 5, scale: 2 }).default('15.00'), // 15% por defecto
   comisionFija: decimal('comision_fija', { precision: 12, scale: 2 }),
   tipoComision: varchar('tipo_comision', { length: 20 }).default('porcentaje'), // 'porcentaje', 'fija', 'mixta'
-  
+
+  // Campos extendidos para el nuevo módulo TIER 0
+  nivelColaboracion: nivelColaboracionEnum('nivel_colaboracion').default('estandar'),
+  scorePartnership: decimal('score_partnership', { precision: 5, scale: 2 }).default('500.00'), // 0-1000
+  tendenciaScore: varchar('tendencia_score', { length: 10 }).default('stable'), // 'up', 'down', 'stable'
+  fechaUltimaActualizacionScore: timestamp('fecha_ultima_actualizacion_score'),
+
+  // Especializaciones y capacidades (JSON)
+  especializacionesVerticales: text('especializaciones_verticales'), // JSON array
+  capacidadesDigitales: text('capacidades_digitales'), // JSON array
+  certificaciones: text('certificaciones'), // JSON array
+
+  // Información financiera extendida
+  revenueAnual: decimal('revenue_anual', { precision: 14, scale: 2 }),
+  fechaFundacion: timestamp('fecha_fundacion'),
+  empleadosCantidad: decimal('empleados_cantidad', { precision: 8, scale: 0 }),
+  region: varchar('region', { length: 100 }),
+
   // Configuración de facturación
   tieneFacturacionElectronica: boolean('tiene_facturacion_electronica').default(false).notNull(),
   diasCredito: varchar('dias_credito', { length: 10 }).default('30'), // 30, 45, 60 días
   emailFacturacion: varchar('email_facturacion', { length: 255 }),
-  
+
   // Estado y control
   estado: agenciaStatusEnum('estado').default('activa').notNull(),
   activa: boolean('activa').default(true).notNull(),
-  
+
   // Notas
   notas: text('notas'),
-  
+
   // Auditoría
   creadoPorId: uuid('creado_por_id').references(() => users.id).notNull(),
   fechaCreacion: timestamp('fecha_creacion').defaultNow().notNull(),
   modificadoPorId: uuid('modificado_por_id').references(() => users.id),
   fechaModificacion: timestamp('fecha_modificacion'),
-  
+
   // Soft delete
   eliminado: boolean('eliminado').default(false).notNull(),
   fechaEliminacion: timestamp('fecha_eliminacion'),
@@ -99,22 +117,33 @@ export const contactosAgencia = pgTable('contactos_agencia', {
   id: uuid('id').primaryKey().defaultRandom(),
   tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
   agenciaId: uuid('agencia_id').references(() => agenciasMedios.id, { onDelete: 'cascade' }).notNull(),
-  
+
   // Datos del contacto
   nombre: varchar('nombre', { length: 255 }).notNull(),
+  apellido: varchar('apellido', { length: 255 }),
   cargo: varchar('cargo', { length: 100 }),
+  departamento: varchar('departamento', { length: 100 }),
   email: varchar('email', { length: 255 }),
   telefono: varchar('telefono', { length: 20 }),
-  celular: varchar('celular', { length: 20 }),
-  
+  telefonoMovil: varchar('telefono_movil', { length: 20 }),
+
+  // Campos extendidos para TIER 0
+  rol: varchar('rol', { length: 50 }).default('contact_principal'),
+  nivelDecision: varchar('nivel_decision', { length: 20 }).default('operativo'),
+  esDecisor: boolean('es_decisor').default(false),
+  esInfluencer: boolean('es_influencer').default(false),
+  linkedIn: varchar('linkedin', { length: 255 }),
+  fotoUrl: varchar('foto_url', { length: 255 }),
+  notas: text('notas'),
+
   // Rol del contacto
   esPrincipal: boolean('es_principal').default(false).notNull(),
   recibeFacturas: boolean('recibe_facturas').default(false).notNull(),
   recibeReportes: boolean('recibe_reportes').default(false).notNull(),
-  
+
   // Estado
   activo: boolean('activo').default(true).notNull(),
-  
+
   // Auditoría
   fechaCreacion: timestamp('fecha_creacion').defaultNow().notNull(),
   fechaModificacion: timestamp('fecha_modificacion')

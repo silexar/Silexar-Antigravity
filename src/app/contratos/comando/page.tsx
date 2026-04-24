@@ -3,6 +3,7 @@
  * 
  * @description Pantalla principal para gestión comercial diaria
  * con métricas en tiempo real, búsqueda inteligente y tabla avanzada.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -38,6 +39,25 @@ import {
   ChevronRight,
   Bell
 } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -245,6 +265,31 @@ const mockContratos: ContratoComercial[] = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// COMPONENTES NEUMORPHIC
+// ═══════════════════════════════════════════════════════════════
+
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 // COMPONENTES AUXILIARES
 // ═══════════════════════════════════════════════════════════════
 
@@ -255,20 +300,18 @@ const formatCurrency = (value: number) => {
   return `$${value.toLocaleString()}`;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _EstadoBadge: React.FC<{ estado: ContratoComercial['estado'] }> = ({ estado }) => {
   const config = {
-    borrador: { bg: 'bg-blue-100', text: 'text-blue-700', icon: '🆕', label: 'Borrador' },
-    negociacion: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: '🔄', label: 'Negociación' },
-    aprobacion: { bg: 'bg-orange-100', text: 'text-orange-700', icon: '⏳', label: 'Aprobación' },
-    aprobado: { bg: 'bg-green-100', text: 'text-green-700', icon: '✅', label: 'Aprobado' },
-    rechazado: { bg: 'bg-red-100', text: 'text-red-700', icon: '🚫', label: 'Rechazado' },
-    renovacion: { bg: 'bg-purple-100', text: 'text-purple-700', icon: '🔄', label: 'Renovación' }
+    borrador: { bg: 'rgba(104,136,255,0.12)', text: N.accent, label: 'Borrador' },
+    negociacion: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', label: 'Negociación' },
+    aprobacion: { bg: 'rgba(249,115,22,0.12)', text: '#f97316', label: 'Aprobación' },
+    aprobado: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e', label: 'Aprobado' },
+    rechazado: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444', label: 'Rechazado' },
+    renovacion: { bg: 'rgba(168,85,247,0.12)', text: '#a855f7', label: 'Renovación' }
   }[estado];
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${config.bg} ${config.text}`}>
-      <span>{config.icon}</span>
+    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: config.bg, color: config.text, boxShadow: insetSm }}>
       {config.label}
     </span>
   );
@@ -276,15 +319,14 @@ const _EstadoBadge: React.FC<{ estado: ContratoComercial['estado'] }> = ({ estad
 
 const UrgenciaBadge: React.FC<{ urgencia: ContratoComercial['urgencia']; horas?: number }> = ({ urgencia, horas }) => {
   const config = {
-    critico: { bg: 'bg-red-500', text: 'text-white', icon: '🚨', label: horas ? `${horas}h` : 'Crítico' },
-    urgente: { bg: 'bg-orange-500', text: 'text-white', icon: '⚡', label: horas ? `${horas}h` : 'Urgente' },
-    semana: { bg: 'bg-blue-500', text: 'text-white', icon: '📅', label: 'Esta Semana' },
-    normal: { bg: 'bg-slate-200', text: 'text-slate-700', icon: '📋', label: 'Sin Prisa' }
+    critico: { bg: '#ef4444', text: '#fff', label: horas ? `${horas}h` : 'Crítico' },
+    urgente: { bg: '#f97316', text: '#fff', label: horas ? `${horas}h` : 'Urgente' },
+    semana: { bg: N.accent, text: '#fff', label: 'Esta Semana' },
+    normal: { bg: N.dark, text: N.text, label: 'Sin Prisa' }
   }[urgencia];
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${config.bg} ${config.text}`}>
-      <span>{config.icon}</span>
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold" style={{ background: config.bg, color: config.text }}>
       {config.label}
     </span>
   );
@@ -293,14 +335,14 @@ const UrgenciaBadge: React.FC<{ urgencia: ContratoComercial['urgencia']; horas?:
 const ValidacionIcon: React.FC<{ ok: boolean; procesando?: boolean; label: string }> = ({ ok, procesando, label }) => {
   if (procesando) {
     return (
-      <div className="flex items-center gap-1 text-blue-600">
+      <div className="flex items-center gap-1" style={{ color: N.accent }}>
         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
         <span className="text-xs">{label}</span>
       </div>
     );
   }
   return (
-    <div className={`flex items-center gap-1 ${ok ? 'text-green-600' : 'text-amber-600'}`}>
+    <div className="flex items-center gap-1" style={{ color: ok ? '#22c55e' : '#f59e0b' }}>
       {ok ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
       <span className="text-xs">{label}</span>
     </div>
@@ -313,14 +355,14 @@ const MetricaCard: React.FC<{
   icono?: React.ReactNode;
   color?: string;
   subvalor?: string;
-}> = ({ valor, label, icono, color = 'text-slate-800', subvalor }) => (
+}> = ({ valor, label, icono, color = N.text, subvalor }) => (
   <div className="flex flex-col">
     <div className="flex items-center gap-2">
       {icono}
-      <span className={`text-2xl font-bold ${color}`}>{valor}</span>
+      <span className="text-2xl font-black" style={{ color }}>{valor}</span>
     </div>
-    <span className="text-xs text-slate-500">{label}</span>
-    {subvalor && <span className="text-xs text-slate-400 mt-0.5">{subvalor}</span>}
+    <span className="text-xs" style={{ color: N.textSub }}>{label}</span>
+    {subvalor && <span className="text-xs" style={{ color: N.textSub }}>{subvalor}</span>}
   </div>
 );
 
@@ -334,24 +376,22 @@ const ContratoRow: React.FC<{
   onEdit: () => void;
   onApprove: () => void;
 }> = ({ contrato, onView, onEdit, onApprove }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_showActions, _setShowActions] = useState(false);
-
   return (
     <motion.tr
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors"
+      className="transition-all hover:bg-[#6888ff]/5"
+      style={{ borderBottom: `1px solid ${N.dark}30` }}
     >
       {/* Estado/Urgencia */}
       <td className="px-4 py-3">
         <div className="space-y-1">
           <UrgenciaBadge urgencia={contrato.urgencia} horas={contrato.horasRestantes} />
-          <p className="text-xs font-mono text-indigo-600 hover:underline cursor-pointer" onClick={onView}>
+          <p className="text-xs font-mono font-bold cursor-pointer hover:underline" style={{ color: N.accent }} onClick={onView}>
             {contrato.numeroContrato}
           </p>
-          <p className="text-sm font-bold text-slate-800">{formatCurrency(contrato.valorNeto)}</p>
-          <p className="text-xs text-slate-500">{contrato.ejecutivoNombre}</p>
+          <p className="font-black text-sm" style={{ color: N.text }}>{formatCurrency(contrato.valorNeto)}</p>
+          <p className="text-xs" style={{ color: N.textSub }}>{contrato.ejecutivoNombre}</p>
         </div>
       </td>
 
@@ -359,20 +399,20 @@ const ContratoRow: React.FC<{
       <td className="px-4 py-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-slate-400" />
-            <span className="font-semibold text-slate-800">{contrato.clienteNombre}</span>
+            <Building2 className="w-4 h-4" style={{ color: N.textSub }} />
+            <span className="font-bold text-sm" style={{ color: N.text }}>{contrato.clienteNombre}</span>
           </div>
-          <p className="text-sm text-slate-600 pl-6">{contrato.campana}</p>
+          <p className="text-sm pl-6" style={{ color: N.textSub }}>{contrato.campana}</p>
           <div className="flex items-center gap-3 text-xs pl-6">
-            <span className="text-slate-500">
-              📊 Score: <strong className={contrato.scoreRiesgo >= 700 ? 'text-green-600' : 'text-amber-600'}>
+            <span style={{ color: N.textSub }}>
+              📊 Score: <strong style={{ color: contrato.scoreRiesgo >= 700 ? '#22c55e' : '#f59e0b' }}>
                 {contrato.scoreRiesgo}/1000
               </strong> • {contrato.scoreRiesgo >= 700 ? 'Bajo Riesgo' : 'Revisar'}
             </span>
           </div>
           <div className="text-xs pl-6">
-            <span className="text-slate-500">
-              🎯 Renovación: <strong className={contrato.probabilidadRenovacion >= 80 ? 'text-green-600' : 'text-amber-600'}>
+            <span style={{ color: N.textSub }}>
+              🎯 Renovación: <strong style={{ color: contrato.probabilidadRenovacion >= 80 ? '#22c55e' : '#f59e0b' }}>
                 {contrato.probabilidadRenovacion}%
               </strong> probable
             </span>
@@ -383,20 +423,20 @@ const ContratoRow: React.FC<{
       {/* Fechas/Timeline */}
       <td className="px-4 py-3">
         <div className="space-y-2">
-          <p className="text-sm text-slate-700">
+          <p className="text-sm" style={{ color: N.text }}>
             📅 {contrato.fechaInicio.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })} - {contrato.fechaFin.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })}
           </p>
-          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
             <div 
-              className={`h-full rounded-full ${
-                contrato.porcentajeTiempo > 80 ? 'bg-red-500' :
-                contrato.porcentajeTiempo > 50 ? 'bg-amber-500' : 'bg-green-500'
-              }`}
-              style={{ width: `${contrato.porcentajeTiempo}%` }}
+              className="h-full rounded-full transition-all"
+              style={{ 
+                width: `${contrato.porcentajeTiempo}%`,
+                background: contrato.porcentajeTiempo > 80 ? '#ef4444' : contrato.porcentajeTiempo > 50 ? '#f59e0b' : '#22c55e'
+              }}
             />
           </div>
-          <p className="text-xs text-slate-500">{contrato.porcentajeTiempo}% tiempo usado</p>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs" style={{ color: N.textSub }}>{contrato.porcentajeTiempo}% tiempo usado</p>
+          <p className="text-xs" style={{ color: N.text }}>
             ⏰ Vence: <strong>{contrato.diasRestantes} días</strong>
           </p>
         </div>
@@ -405,14 +445,14 @@ const ContratoRow: React.FC<{
       {/* Valores/Rentabilidad */}
       <td className="px-4 py-3">
         <div className="space-y-1 text-sm">
-          <p className="text-slate-600">💰 Bruto: <strong>{formatCurrency(contrato.valorBruto)}</strong></p>
-          <p className="text-slate-600">💵 Neto: <strong className="text-emerald-600">{formatCurrency(contrato.valorNeto)}</strong></p>
-          <p className="text-slate-600">
-            📊 Margen: <strong className={contrato.margen >= 35 ? 'text-green-600' : 'text-amber-600'}>
+          <p style={{ color: N.textSub }}>💰 Bruto: <strong style={{ color: N.text }}>{formatCurrency(contrato.valorBruto)}</strong></p>
+          <p style={{ color: N.textSub }}>💵 Neto: <strong style={{ color: '#22c55e' }}>{formatCurrency(contrato.valorNeto)}</strong></p>
+          <p style={{ color: N.textSub }}>
+            📊 Margen: <strong style={{ color: contrato.margen >= 35 ? '#22c55e' : '#f59e0b' }}>
               {contrato.margen}%
             </strong>
           </p>
-          <p className="text-slate-600">
+          <p style={{ color: N.textSub }}>
             💳 <strong>{contrato.cuotasPagadas}/{contrato.cuotasTotal}</strong> Cuotas
           </p>
         </div>
@@ -431,31 +471,31 @@ const ContratoRow: React.FC<{
       {/* Acciones */}
       <td className="px-4 py-3">
         <div className="flex flex-wrap gap-1">
-          <button onClick={onView} aria-label="Ver" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Ver">
+          <button onClick={onView} aria-label="Ver" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.accent }} title="Ver">
             <Eye className="w-4 h-4" />
           </button>
-          <button onClick={onEdit} aria-label="Editar" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Editar">
+          <button onClick={onEdit} aria-label="Editar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#f59e0b' }} title="Editar">
             <Edit3 className="w-4 h-4" />
           </button>
-          <button onClick={onApprove} aria-label="Aprobar" className="p-1.5 rounded-lg hover:bg-green-100 text-green-600" title="Aprobar">
+          <button onClick={onApprove} aria-label="Aprobar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#22c55e' }} title="Aprobar">
             <CheckCircle2 className="w-4 h-4" />
           </button>
-          <button aria-label="Llamar" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Llamar">
+          <button aria-label="Llamar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }} title="Llamar">
             <Phone className="w-4 h-4" />
           </button>
-          <button aria-label="Email" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Email">
+          <button aria-label="Email" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }} title="Email">
             <Mail className="w-4 h-4" />
           </button>
-          <button aria-label="Duplicar" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Duplicar">
+          <button aria-label="Duplicar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }} title="Duplicar">
             <Copy className="w-4 h-4" />
           </button>
-          <button aria-label="Renovar" className="p-1.5 rounded-lg hover:bg-purple-100 text-purple-600" title="Renovar">
+          <button aria-label="Renovar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#a855f7' }} title="Renovar">
             <RefreshCw className="w-4 h-4" />
           </button>
-          <button aria-label="Analizar" className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600" title="Analizar">
+          <button aria-label="Analizar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }} title="Analizar">
             <TrendingUp className="w-4 h-4" />
           </button>
-          <button aria-label="Activar" className="p-1.5 rounded-lg hover:bg-indigo-100 text-indigo-600" title="Activar">
+          <button aria-label="Activar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.accent }} title="Activar">
             <Rocket className="w-4 h-4" />
           </button>
         </div>
@@ -505,289 +545,278 @@ export default function CentroComandoPage() {
   const faltaParaMeta = metricas.metaMensual * (1 - metricas.metaCompletada / 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/30">
+    <div className="min-h-screen flex flex-col" style={{ background: N.base }}>
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div className="max-w-[1800px] mx-auto px-6 py-4">
+      <header className="shrink-0 px-6 py-4" style={{ background: N.base, boxShadow: neuSm }}>
+        <div className="max-w-[1800px] mx-auto">
           {/* Breadcrumb + Título */}
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
+          <div className="flex items-center gap-2 text-sm mb-2" style={{ color: N.textSub }}>
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-slate-800 font-medium">Contratos</span>
+            <span className="font-bold" style={{ color: N.text }}>Contratos</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-                <Layout className="w-7 h-7 text-white" />
+              <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+                <Layout className="w-7 h-7" style={{ color: N.accent }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">📋 Centro de Comando Comercial</h1>
-                <p className="text-slate-500 text-sm">Gestión comercial en tiempo real</p>
+                <h1 className="text-2xl font-black" style={{ color: N.text }}>📋 Centro de Comando Comercial</h1>
+                <p className="text-sm" style={{ color: N.textSub }}>Gestión comercial en tiempo real</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button aria-label="Notificaciones" className="p-2 rounded-lg hover:bg-slate-100 relative">
-                <Bell className="w-5 h-5 text-slate-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              <button aria-label="Notificaciones" className="p-2.5 rounded-xl relative transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-[1800px] mx-auto px-6 py-6">
-        {/* Panel de Métricas en Tiempo Real */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-slate-800 via-slate-900 to-indigo-900 rounded-2xl p-6 mb-6 text-white shadow-xl"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-amber-400" />
-            <h2 className="font-semibold">📊 ESTADO COMERCIAL TIEMPO REAL</h2>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <MetricaCard 
-              valor={metricas.contratosActivos} 
-              label="Contratos Activos" 
-              color="text-white"
-            />
-            <MetricaCard 
-              valor={formatCurrency(metricas.valorPipeline)} 
-              label="Pipeline" 
-              color="text-emerald-400"
-            />
-            <MetricaCard 
-              valor={metricas.esperandoAprobacion} 
-              label="Esperando Aprobación" 
-              color="text-amber-400"
-            />
-            <MetricaCard 
-              valor={metricas.firmadosHoy} 
-              label="Firmados Hoy" 
-              color="text-green-400"
-            />
-            <MetricaCard 
-              valor={`${metricas.tasaCierre}%`} 
-              label="Tasa Cierre" 
-              color="text-blue-400"
-            />
-            <MetricaCard 
-              valor={metricas.vencenSemana} 
-              label="Vencen Esta Semana" 
-              color="text-orange-400"
-            />
-          </div>
+      <main className="flex-1 p-6">
+        <div className="max-w-[1800px] mx-auto space-y-6">
+          {/* Panel de Métricas en Tiempo Real */}
+          <NeuCard className="p-6 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5" style={{ background: 'radial-gradient(circle at 20% 50%, #6888ff 0%, transparent 70%)' }} />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                  <Sparkles className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                </div>
+                <h2 className="font-black" style={{ color: N.text }}>📊 ESTADO COMERCIAL TIEMPO REAL</h2>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                <MetricaCard 
+                  valor={metricas.contratosActivos} 
+                  label="Contratos Activos" 
+                  color={N.text}
+                />
+                <MetricaCard 
+                  valor={formatCurrency(metricas.valorPipeline)} 
+                  label="Pipeline" 
+                  color="#22c55e"
+                />
+                <MetricaCard 
+                  valor={metricas.esperandoAprobacion} 
+                  label="Esperando Aprobación" 
+                  color="#f59e0b"
+                />
+                <MetricaCard 
+                  valor={metricas.firmadosHoy} 
+                  label="Firmados Hoy" 
+                  color="#22c55e"
+                />
+                <MetricaCard 
+                  valor={`${metricas.tasaCierre}%`} 
+                  label="Tasa Cierre" 
+                  color={N.accent}
+                />
+                <MetricaCard 
+                  valor={metricas.vencenSemana} 
+                  label="Vencen Esta Semana" 
+                  color="#f97316"
+                />
+              </div>
 
-          <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-indigo-400" />
-              <span>
-                💰 Meta Mensual: <strong>{formatCurrency(metricas.metaMensual)}</strong>
-                <span className="text-emerald-400 ml-2">({metricas.metaCompletada}% completado)</span>
-              </span>
+              <div className="mt-4 pt-4 flex flex-wrap items-center gap-6" style={{ borderTop: `1px solid ${N.dark}40` }}>
+                <div className="flex items-center gap-2">
+                  <Target className="w-5 h-5" style={{ color: N.accent }} />
+                  <span style={{ color: N.text }}>
+                    💰 Meta Mensual: <strong>{formatCurrency(metricas.metaMensual)}</strong>
+                    <span className="ml-2 font-bold" style={{ color: '#22c55e' }}>({metricas.metaCompletada}% completado)</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <span style={{ color: N.text }}>🎯 Faltan: <strong style={{ color: '#f59e0b' }}>{formatCurrency(faltaParaMeta)}</strong></span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid #ef444440' }}>
+                  <AlertTriangle className="w-4 h-4" style={{ color: '#ef4444' }} />
+                  <span className="text-sm" style={{ color: N.text }}>
+                    🚨 Próxima Acción: <strong>{metricas.proximaAccion.cliente}</strong> - Decisión en {metricas.proximaAccion.tiempo}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-amber-400" />
-              <span>🎯 Faltan: <strong className="text-amber-400">{formatCurrency(faltaParaMeta)}</strong></span>
-            </div>
-            <div className="flex items-center gap-2 bg-red-500/20 px-3 py-1 rounded-lg">
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-              <span className="text-sm">
-                🚨 Próxima Acción: <strong>{metricas.proximaAccion.cliente}</strong> - Decisión en {metricas.proximaAccion.tiempo}
-              </span>
-            </div>
-          </div>
-        </motion.div>
+          </NeuCard>
 
-        {/* Barra de Herramientas */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 mb-6 shadow-sm">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Búsqueda Inteligente */}
-            <div className="relative flex-1 min-w-[300px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                onFocus={() => setShowSugerencias(true)}
-                onBlur={() => setTimeout(() => setShowSugerencias(false), 200)}
-                aria-label="Buscar contratos"
-                placeholder="🔍 CON-2025-0123, SuperMax, '$50K-100K', 'aprobación pendiente'..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-400/50 text-sm"
-              />
-              <AnimatePresence>
-                {showSugerencias && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-slate-200 shadow-xl z-20 p-2"
-                  >
-                    <p className="text-xs text-slate-500 px-3 py-1">Sugerencias predictivas:</p>
-                    {sugerenciasBusqueda.map((sug) => (
-                      <button
-                        key={sug}
-                        onClick={() => setBusqueda(sug)}
-                        className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm text-slate-700 flex items-center gap-2"
-                      >
-                        <Sparkles className="w-4 h-4 text-indigo-400" />
-                        {sug}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Filtros */}
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-slate-400" />
-              <select
-                value={filtroEstado}
-                onChange={(e) => setFiltroEstado(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
-              >
-                <option value="todos">Estado Comercial</option>
-                <option value="borrador">🆕 Borrador</option>
-                <option value="negociacion">🔄 Negociación</option>
-                <option value="aprobacion">⏳ Esperando Aprobación</option>
-                <option value="aprobado">✅ Aprobado</option>
-                <option value="rechazado">🚫 Rechazado</option>
-                <option value="renovacion">🔄 Renovación</option>
-              </select>
-
-              <select
-                value={filtroValor}
-                onChange={(e) => setFiltroValor(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
-              >
-                <option value="todos">Valor Comercial</option>
-                <option value="0-10k">$0-10K</option>
-                <option value="10k-50k">$10K-50K</option>
-                <option value="50k-100k">$50K-100K</option>
-                <option value="100k-500k">$100K-500K</option>
-                <option value="500k+">$500K+</option>
-              </select>
-
-              <select
-                value={filtroUrgencia}
-                onChange={(e) => setFiltroUrgencia(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
-              >
-                <option value="todos">Urgencia</option>
-                <option value="critico">🚨 Crítico (&lt;24h)</option>
-                <option value="urgente">⚡ Urgente (&lt;48h)</option>
-                <option value="semana">📅 Esta Semana</option>
-                <option value="normal">📋 Sin Prisa</option>
-              </select>
-            </div>
-
-            {/* Acciones Rápidas */}
-            <div className="flex items-center gap-2 ml-auto">
-              <button
-                onClick={() => router.push('/contratos/nuevo')}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium flex items-center gap-2 hover:shadow-lg transition-shadow"
-              >
-                <Plus className="w-4 h-4" />
-                Nuevo Contrato
-              </button>
-              <button
-                onClick={() => router.push('/contratos/pipeline')}
-                className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50"
-              >
-                <Columns3 className="w-4 h-4" />
-                Pipeline
-              </button>
-              <button
-                onClick={() => router.push('/contratos/dashboard')}
-                className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50"
-              >
-                <BarChart3 className="w-4 h-4" />
-                Dashboard
-              </button>
-              <button className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50">
-                <Sparkles className="w-4 h-4 text-indigo-500" />
-                Predicciones IA
-              </button>
-              <button className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium flex items-center gap-2 hover:bg-slate-50">
-                <Smartphone className="w-4 h-4" />
-                Móvil
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Tabla Comercial */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[140px]">
-                    Estado/Urgencia
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[280px]">
-                    Cliente/Oportunidad
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[150px]">
-                    Fechas/Timeline
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[140px]">
-                    Valores/Rentabilidad
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[120px]">
-                    Validaciones
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-[160px]">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+          {/* Barra de Herramientas */}
+          <NeuCard className="p-4">
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Búsqueda Inteligente */}
+              <div className="relative flex-1 min-w-[300px]">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: N.textSub }} />
+                <input
+                  type="text"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  onFocus={() => setShowSugerencias(true)}
+                  onBlur={() => setTimeout(() => setShowSugerencias(false), 200)}
+                  aria-label="Buscar contratos"
+                  placeholder="🔍 CON-2025-0123, SuperMax, '$50K-100K', 'aprobación pendiente'..."
+                  className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none"
+                  style={{ background: N.base, boxShadow: inset, color: N.text }}
+                />
                 <AnimatePresence>
-                  {contratosFiltrados.map(contrato => (
-                    <ContratoRow
-                      key={contrato.id}
-                      contrato={contrato}
-                      onView={() => router.push(`/contratos/${contrato.id}`)}
-                      onEdit={() => router.push(`/contratos/${contrato.id}/editar`)}
-                      onApprove={() => {}}
-                    />
-                  ))}
+                  {showSugerencias && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden z-20 p-2"
+                      style={{ background: N.base, boxShadow: neu }}
+                    >
+                      <p className="text-xs px-3 py-1" style={{ color: N.textSub }}>Sugerencias predictivas:</p>
+                      {sugerenciasBusqueda.map((sug) => (
+                        <button
+                          key={sug}
+                          onClick={() => setBusqueda(sug)}
+                          className="w-full text-left px-3 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all"
+                          style={{ color: N.text }}
+                        >
+                          <Sparkles className="w-4 h-4" style={{ color: N.accent }} />
+                          {sug}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
                 </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
+              </div>
 
-          {contratosFiltrados.length === 0 && (
-            <div className="p-12 text-center">
-              <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No hay contratos que coincidan con los filtros</p>
-            </div>
-          )}
+              {/* Filtros */}
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4" style={{ color: N.textSub }} />
+                <select
+                  value={filtroEstado}
+                  onChange={(e) => setFiltroEstado(e.target.value)}
+                  className="rounded-xl py-2.5 px-4 text-sm focus:outline-none cursor-pointer"
+                  style={{ background: N.base, boxShadow: inset, color: N.text }}
+                >
+                  <option value="todos">Estado Comercial</option>
+                  <option value="borrador">Borrador</option>
+                  <option value="negociacion">Negociación</option>
+                  <option value="aprobacion">Esperando Aprobación</option>
+                  <option value="aprobado">Aprobado</option>
+                  <option value="rechazado">Rechazado</option>
+                  <option value="renovacion">Renovación</option>
+                </select>
 
-          {/* Footer de tabla */}
-          <div className="px-4 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-            <span className="text-sm text-slate-500">
-              Mostrando <strong>{contratosFiltrados.length}</strong> de <strong>{contratos.length}</strong> contratos
-            </span>
-            <div className="flex items-center gap-2">
-              <button className="px-3 py-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-white">
-                Anterior
-              </button>
-              <span className="px-3 py-1 rounded-lg bg-indigo-500 text-white text-sm">1</span>
-              <button className="px-3 py-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-white">
-                2
-              </button>
-              <button className="px-3 py-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-white">
-                Siguiente
-              </button>
+                <select
+                  value={filtroValor}
+                  onChange={(e) => setFiltroValor(e.target.value)}
+                  className="rounded-xl py-2.5 px-4 text-sm focus:outline-none cursor-pointer"
+                  style={{ background: N.base, boxShadow: inset, color: N.text }}
+                >
+                  <option value="todos">Valor Comercial</option>
+                  <option value="0-10k">$0-10K</option>
+                  <option value="10k-50k">$10K-50K</option>
+                  <option value="50k-100k">$50K-100K</option>
+                  <option value="100k-500k">$100K-500K</option>
+                  <option value="500k+">$500K+</option>
+                </select>
+
+                <select
+                  value={filtroUrgencia}
+                  onChange={(e) => setFiltroUrgencia(e.target.value)}
+                  className="rounded-xl py-2.5 px-4 text-sm focus:outline-none cursor-pointer"
+                  style={{ background: N.base, boxShadow: inset, color: N.text }}
+                >
+                  <option value="todos">Urgencia</option>
+                  <option value="critico">Crítico (&lt;24h)</option>
+                  <option value="urgente">Urgente (&lt;48h)</option>
+                  <option value="semana">Esta Semana</option>
+                  <option value="normal">Sin Prisa</option>
+                </select>
+              </div>
+
+              {/* Acciones Rápidas */}
+              <div className="flex items-center gap-2 ml-auto">
+                <NeuButton variant="primary" onClick={() => router.push('/contratos/nuevo')}>
+                  <Plus className="w-4 h-4" />
+                  Nuevo Contrato
+                </NeuButton>
+                <NeuButton variant="secondary" onClick={() => router.push('/contratos/pipeline')}>
+                  <Columns3 className="w-4 h-4" />
+                  Pipeline
+                </NeuButton>
+                <NeuButton variant="secondary" onClick={() => router.push('/contratos/dashboard')}>
+                  <BarChart3 className="w-4 h-4" />
+                  Dashboard
+                </NeuButton>
+                <NeuButton variant="secondary">
+                  <Sparkles className="w-4 h-4" style={{ color: N.accent }} />
+                  Predicciones IA
+                </NeuButton>
+                <NeuButton variant="secondary">
+                  <Smartphone className="w-4 h-4" />
+                  Móvil
+                </NeuButton>
+              </div>
             </div>
-          </div>
+          </NeuCard>
+
+          {/* Tabla Comercial */}
+          <NeuCard className="overflow-hidden p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr style={{ borderBottom: `1px solid ${N.dark}40` }}>
+                    {['Estado/Urgencia', 'Cliente/Oportunidad', 'Fechas/Timeline', 'Valores/Rentabilidad', 'Validaciones', 'Acciones'].map(h => (
+                      <th key={h} className="text-left py-4 px-4 text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <AnimatePresence>
+                    {contratosFiltrados.map(contrato => (
+                      <ContratoRow
+                        key={contrato.id}
+                        contrato={contrato}
+                        onView={() => router.push(`/contratos/${contrato.id}`)}
+                        onEdit={() => router.push(`/contratos/${contrato.id}/editar`)}
+                        onApprove={() => {}}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </tbody>
+              </table>
+            </div>
+
+            {contratosFiltrados.length === 0 && (
+              <div className="p-12 text-center">
+                <div className="w-16 h-16 rounded-3xl mx-auto mb-4 flex items-center justify-center" style={{ background: N.base, boxShadow: inset }}>
+                  <FileText className="w-8 h-8" style={{ color: N.textSub }} />
+                </div>
+                <p style={{ color: N.textSub }}>No hay contratos que coincidan con los filtros</p>
+              </div>
+            )}
+
+            {/* Footer de tabla */}
+            <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: `1px solid ${N.dark}30`, background: 'rgba(190,200,222,0.08)' }}>
+              <span className="text-sm" style={{ color: N.textSub }}>
+                Mostrando <strong style={{ color: N.text }}>{contratosFiltrados.length}</strong> de <strong style={{ color: N.text }}>{contratos.length}</strong> contratos
+              </span>
+              <div className="flex items-center gap-2">
+                <button className="px-3 py-1 rounded-xl text-sm font-bold transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                  Anterior
+                </button>
+                <span className="px-3 py-1 rounded-xl text-sm font-bold text-white" style={{ background: N.accent, boxShadow: neuXs }}>1</span>
+                <button className="px-3 py-1 rounded-xl text-sm font-bold transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                  2
+                </button>
+                <button className="px-3 py-1 rounded-xl text-sm font-bold transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                  Siguiente
+                </button>
+              </div>
+            </div>
+          </NeuCard>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

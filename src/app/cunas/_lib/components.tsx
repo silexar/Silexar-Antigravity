@@ -35,12 +35,18 @@ export const NeuromorphicCard = ({
   glow?: boolean;
 }) => (
   <div className={`
-    rounded-2xl p-6 
-    bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-    ${hover ? 'transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:bg-white/80' : ''}
-    ${glow ? 'ring-2 ring-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.15)]' : ''}
+    rounded-2xl p-6
+    ${hover ? 'transition-all duration-300 cursor-pointer' : ''}
+    ${glow ? 'ring-1 ring-emerald-400/30' : ''}
     ${className}
-  `}>
+  `}
+  style={{
+    background: '#dfeaff',
+    boxShadow: hover
+      ? '8px 8px 16px #bec8de,-8px -8px 16px #ffffff'
+      : '8px 8px 16px #bec8de,-8px -8px 16px #ffffff',
+  }}
+  >
     {children}
   </div>
 );
@@ -60,15 +66,11 @@ export const NeuromorphicButton = ({
   className?: string;
   disabled?: boolean;
 }) => {
-  // Safe getters to prevent object injection
-  const getVariantClass = (v: typeof variant): string => {
-    switch (v) {
-      case 'primary': return 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_8px_16px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_20px_rgba(16,185,129,0.4)] border border-emerald-400/50';
-      case 'danger': return 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_8px_16px_rgba(239,68,68,0.3)] border border-red-400/50';
-      case 'ghost': return 'bg-transparent text-slate-600 hover:bg-slate-100/50 backdrop-blur-sm';
-      case 'secondary':
-      default: return 'bg-white/80 backdrop-blur-md text-slate-700 shadow-sm border border-slate-200/60 hover:bg-white hover:shadow-md hover:border-slate-300/80';
-    }
+  const variantStyle: Record<typeof variant, React.CSSProperties> = {
+    primary:   { background: '#6888ff', color: '#ffffff', boxShadow: '4px 4px 8px #bec8de,-2px -2px 6px #ffffff' },
+    secondary: { background: '#dfeaff', color: '#69738c', boxShadow: '6px 6px 12px #bec8de,-6px -6px 12px #ffffff' },
+    danger:    { background: '#dfeaff', color: '#ef4444', boxShadow: '4px 4px 8px #bec8de,-4px -4px 8px #ffffff' },
+    ghost:     { background: 'transparent', color: '#9aa3b8' },
   };
   const getSizeClass = (s: typeof size): string => {
     switch (s) {
@@ -80,15 +82,16 @@ export const NeuromorphicButton = ({
   };
   
   return (
-    <button 
-      onClick={onClick} 
+    <button
+      onClick={onClick}
       disabled={disabled}
       className={`
-        ${getSizeClass(size)} rounded-xl font-medium transition-all duration-200 
-        flex items-center gap-2 hover:scale-[1.02]
+        ${getSizeClass(size)} rounded-xl font-bold transition-all duration-300
+        flex items-center justify-center gap-2
         disabled:opacity-50 disabled:cursor-not-allowed
-        ${getVariantClass(variant)} ${className}
+        ${className}
       `}
+      style={variantStyle[variant]}
     >
       {children}
     </button>
@@ -138,7 +141,7 @@ export const UrgenciaBadge = ({ urgencia }: { urgencia: UrgenciaCuna }) => {
   return (
     <div className="flex items-center gap-2">
       <span className={`w-2.5 h-2.5 rounded-full ${color} ${pulse ? 'animate-pulse' : ''}`} />
-      <span className="text-xs text-slate-600">{label}</span>
+      <span className="text-xs font-medium" style={{ color: '#9aa3b8' }}>{label}</span>
     </div>
   );
 };
@@ -197,25 +200,28 @@ export const TiempoRestanteBadge = ({ proximaEmision }: { proximaEmision: string
 };
 
 export const EmisoraChip = ({ nombre, logo }: { nombre: string; logo?: string }) => (
-  <div className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-100">
+  <div
+    className="flex items-center gap-1.5 px-2 py-1 rounded-lg"
+    style={{ background: '#dfeaff', boxShadow: 'inset 2px 2px 4px #bec8de,inset -2px -2px 4px #ffffff' }}
+  >
     {logo ? (
       <Image src={logo} alt={nombre} width={16} height={16} className="rounded-full object-cover" />
     ) : (
-      <div className="w-4 h-4 rounded-full bg-purple-200 flex items-center justify-center">
-        <Radio className="w-2.5 h-2.5 text-purple-600" />
+      <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: '#dfeaff', boxShadow: '2px 2px 4px #bec8de,-2px -2px 4px #ffffff' }}>
+        <Radio className="w-2.5 h-2.5" style={{ color: '#6888ff' }} />
       </div>
     )}
-    <span className="text-xs font-medium text-purple-700 truncate max-w-[80px]">{nombre}</span>
+    <span className="text-xs font-bold truncate max-w-[80px]" style={{ color: '#69738c' }}>{nombre}</span>
   </div>
 );
 
 export const ProximaEmisionInfo = ({ horarioBloque, frecuencia, totalEmisoras }: { horarioBloque: string; frecuencia: string; totalEmisoras: number; }) => (
   <div className="flex flex-col gap-0.5 text-xs">
-    <div className="flex items-center gap-1 text-slate-700">
-      <Calendar className="w-3 h-3 text-slate-400" />
+    <div className="flex items-center gap-1" style={{ color: '#69738c' }}>
+      <Calendar className="w-3 h-3" style={{ color: '#9aa3b8' }} />
       <span className="font-medium">{horarioBloque}</span>
     </div>
-    <div className="flex items-center gap-2 text-slate-500">
+    <div className="flex items-center gap-2" style={{ color: '#9aa3b8' }}>
       <span className="flex items-center gap-0.5"><RefreshCw className="w-2.5 h-2.5" />{frecuencia}</span>
       <span className="flex items-center gap-0.5"><Radio className="w-2.5 h-2.5" />{totalEmisoras} emisora{totalEmisoras !== 1 ? 's' : ''}</span>
     </div>
@@ -226,30 +232,28 @@ export const ProximaEmisionInfo = ({ horarioBloque, frecuencia, totalEmisoras }:
 // MÉTRICA CARD
 // ═══════════════════════════════════════════════════════════════
 
-export const MetricaCard = ({ 
-  label, value, icon: Icon, color, trend, trendValue 
-}: { 
+export const MetricaCard = ({
+  label, value, icon: Icon, color, trend, trendValue
+}: {
   label: string; value: number | string; icon: React.ElementType; color: string;
   trend?: 'up' | 'down' | 'neutral'; trendValue?: string;
 }) => (
   <NeuromorphicCard hover className="relative overflow-hidden">
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-slate-500 text-sm font-medium">{label}</p>
-        <p className="text-3xl font-bold text-slate-800 mt-1">{value}</p>
+        <p className="text-sm font-medium" style={{ color: '#9aa3b8' }}>{label}</p>
+        <p className="text-3xl font-black mt-1" style={{ color: '#69738c' }}>{value}</p>
         {trend && trendValue && (
-          <div className={`flex items-center gap-1 mt-2 text-xs ${
-            trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-500' : 'text-slate-500'
-          }`}>
+          <div className="flex items-center gap-1 mt-2 text-xs" style={{ color: trend === 'up' ? '#22c55e' : trend === 'down' ? '#ef4444' : '#9aa3b8' }}>
             {trend === 'up' ? <ArrowUp className="w-3 h-3" /> : trend === 'down' ? <ArrowDown className="w-3 h-3" /> : null}
             <span>{trendValue}</span>
           </div>
         )}
       </div>
-      <div className={`p-4 rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
-        <Icon className="w-8 h-8 text-white" />
+      <div className="p-4 rounded-2xl" style={{ background: '#dfeaff', boxShadow: '4px 4px 8px #bec8de,-4px -4px 8px #ffffff' }}>
+        <Icon className="w-8 h-8" style={{ color }} />
       </div>
     </div>
-    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${color}`} />
+    <div className="absolute bottom-0 left-0 right-0 h-1 rounded-b-2xl" style={{ background: color }} />
   </NeuromorphicCard>
 );

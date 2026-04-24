@@ -49,7 +49,7 @@ src/modules/vencimientos/
 │   │   ├── TandaComercial.ts (Repartida, Prime, Noche, etc.)
 │   │   ├── SenalEspecial.ts (Temperatura, Micro, etc.)
 │   │   ├── ExclusividadRubro.ts (Conflictos automáticos)
-│   │   ├── VencimientoAuspicio.ts (Tracking de vencimientos)
+│   │   ├── VencimientosAuspicio.ts (Tracking de vencimientos)
 │   │   ├── AlertaProgramador.ts (Notificaciones automáticas)
 │   │   ├── DisponibilidadCupo.ts (Estado en tiempo real)
 │   │   ├── HistorialOcupacion.ts (Analytics históricos)
@@ -69,7 +69,7 @@ src/modules/vencimientos/
 │       ├── IProgramaAuspicioRepository.ts
 │       ├── ICupoComercialRepository.ts
 │       ├── ITarifarioRepository.ts
-│       ├── IVencimientoRepository.ts
+│       ├── IVencimientosRepository.ts
 │       └── IDisponibilidadRepository.ts
 ├── application/
 │   ├── commands/
@@ -80,7 +80,7 @@ src/modules/vencimientos/
 │   │   ├── ValidarDisponibilidadCommand.ts
 │   │   ├── ConfigurarTarifarioCommand.ts
 │   │   ├── CrearTandaComercialCommand.ts
-│   │   ├── GenerarAlertaVencimientoCommand.ts
+│   │   ├── GenerarAlertaVencimientosCommand.ts
 │   │   ├── ConfirmarInicioAuspicioCommand.ts
 │   │   ├── OptimizarPricingCommand.ts
 │   │   ├── GestionarExclusividadCommand.ts
@@ -100,7 +100,7 @@ src/modules/vencimientos/
 │       ├── ProgramaAuspicioHandler.ts
 │       ├── CupoManagementHandler.ts
 │       ├── TarifarioHandler.ts
-│       ├── VencimientoHandler.ts
+│       ├── VencimientosHandler.ts
 │       ├── DisponibilidadHandler.ts
 │       ├── AlertasHandler.ts
 │       ├── ExclusividadHandler.ts
@@ -112,7 +112,7 @@ src/modules/vencimientos/
 │   │   ├── PrismaProgramaRepository.ts
 │   │   ├── PrismaCupoRepository.ts
 │   │   ├── PrismaTarifarioRepository.ts
-│   │   └── PrismaVencimientoRepository.ts
+│   │   └── PrismaVencimientosRepository.ts
 │   ├── external/
 │   │   ├── ContratoSyncService.ts (Sincronización con módulo contratos)
 │   │   ├── CortexFlowPredictionService.ts (Predicciones IA)
@@ -127,7 +127,7 @@ src/modules/vencimientos/
 │   │   ├── RevenueOptimizationService.ts (Optimización ingresos)
 │   │   └── ComplianceValidationService.ts (Validación compliance)
 │   └── messaging/
-│       ├── VencimientoEventPublisher.ts
+│       ├── VencimientosEventPublisher.ts
 │       ├── CupoAlertPublisher.ts
 │       ├── DisponibilidadEventPublisher.ts
 │       └── TarifarioChangePublisher.ts
@@ -266,7 +266,7 @@ SONAR FM - GESTIÓN COMPLETA DE PROGRAMAS:
 │ │ 🚨 SONAR CLÁSICOS                                          │ │
 │ │    ⏰ Lunes a Viernes 11:00-15:00                          │ │
 │ │    📊 Ocupación: 89% (8/9 cupos)                           │ │
-│ │    🔚 Vencimiento: TeleTracker (Mañana)                    │ │
+│ │    🔚 Vencimientos: TeleTracker (Mañana)                    │ │
 │ │    💡 Acción: Preparar renovación o liberar cupo           │ │
 │ │    [📞 Contactar Cliente] [🔄 Gestionar Renovación]        │ │
 │ └─────────────────────────────────────────────────────────────┘ │
@@ -532,7 +532,7 @@ PASO 5: "VALIDACIÓN Y ACTIVACIÓN"
 │ │                                                             │ │
 │ │ 🤖 Automatizaciones que se activarán:                       │ │
 │ │ ✅ Sincronización con módulo contratos                      │ │
-│ │ ✅ Alertas de vencimiento automáticas                       │ │
+│ │ ✅ Alertas de vencimientos automáticas                       │ │
 │ │ ✅ Validación de conflictos en tiempo real                  │ │
 │ │ ✅ Reportes de ocupación semanales                          │ │
 │ │ ✅ Optimización de pricing trimestral                       │ │
@@ -650,10 +650,10 @@ CENTRO DE ALERTAS PROGRAMADORES:
 │ │ 📝 Comentarios: [Opcional - Razón del rechazo/posposición] │ │
 │ └─────────────────────────────────────────────────────────────┘ │
 │                                                                 │
-│ 🟡 ALERTAS DE VENCIMIENTO (Próximos 7 días):                   │
+│ 🟡 ALERTAS DE VENCIMIENTOS (Próximos 7 días):                   │
 │                                                                 │
 │ ┌─────────────────────────────────────────────────────────────┐ │
-│ │ 📅 VENCIMIENTO PRÓXIMO - PREPARAR CAMBIOS                   │ │
+│ │ 📅 VENCIMIENTOS PRÓXIMO - PREPARAR CAMBIOS                   │ │
 │ │                                                             │ │
 │ │ 🏢 Cliente: Cencosud                                        │ │
 │ │ 📺 Programa: Mesa Central Matinal                           │ │
@@ -1219,7 +1219,7 @@ Este módulo representa la evolución del DNA comercial de cualquier organizaci�
 🧠 INTELIGENCIA ARTIFICIAL AL SERVICIO DE RESULTADOS
 Cortex-Flow e Intelligence no son solo algoritmos: son cerebros digitales que aprenden, predicen y optimizan continuamente. Cada decisión comercial está respaldada por análisis cuánticos de millones de variables que ningún ser humano podría procesar simultáneamente. El resultado: decisiones perfectas, timing perfecto, resultados extraordinarios.
 ⚡ VELOCIDAD CUÁNTICA EN OPERACIONES COMERCIALES
-Mientras la competencia toma días para procesar cambios de inventario, Silexar con Vencimientos TIER 0 opera en tiempo real cuántico. Cada oportunidad se identifica, evalúa y ejecuta en microsegundos. Cada conflicto se previene antes de existir. Cada vencimiento se gestiona antes de convertirse en problema.
+Mientras la competencia toma días para procesar cambios de inventario, Silexar con Vencimientos TIER 0 opera en tiempo real cuántico. Cada oportunidad se identifica, evalúa y ejecuta en microsegundos. Cada conflicto se previene antes de existir. Cada vencimientos se gestiona antes de convertirse en problema.
 🌐 ECOSISTEMA SINÉRGICO TOTAL
 La verdadera magia ocurre en la sincronización perfecta con todo el ecosistema Silexar:
 

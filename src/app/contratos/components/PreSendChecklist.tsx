@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ✅ SILEXAR PULSE - Pre-Send Checklist TIER 0
  * 
  * @description Checklist de verificación previo al envío del contrato.
@@ -62,35 +62,35 @@ interface CategoriaChecklist {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
@@ -243,7 +243,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'firma',
     nombre: 'Firma Digital',
     icono: <PenTool className="w-5 h-5" />,
-    color: 'bg-indigo-100 text-indigo-600',
+    color: 'bg-[#dfeaff] text-[#6888ff]',
     items: [
       {
         id: 'fir-1',
@@ -278,7 +278,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'legal',
     nombre: 'Cumplimiento Legal',
     icono: <Shield className="w-5 h-5" />,
-    color: 'bg-slate-100 text-slate-600',
+    color: 'bg-[#dfeaff] text-[#69738c]',
     items: [
       {
         id: 'leg-1',
@@ -310,8 +310,8 @@ const getEstadoIcon = (estado: EstadoVerificacion) => {
     case 'ok': return <CheckCircle className="w-5 h-5 text-green-500" />;
     case 'error': return <XCircle className="w-5 h-5 text-red-500" />;
     case 'advertencia': return <AlertTriangle className="w-5 h-5 text-amber-500" />;
-    case 'verificando': return <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />;
-    default: return <div className="w-5 h-5 rounded-full bg-slate-200" />;
+    case 'verificando': return <Loader2 className="w-5 h-5 text-[#6888ff] animate-spin" />;
+    default: return <div className="w-5 h-5 rounded-full bg-[#dfeaff]" />;
   }
 };
 
@@ -363,15 +363,15 @@ export default function PreSendChecklist({
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600">
+            <div className="p-3 rounded-xl bg-[#6888ff]">
               <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-800">Checklist Pre-Envío</h3>
-              <p className="text-sm text-slate-500">
+              <h3 className="font-bold text-lg text-[#69738c]">Checklist Pre-Envío</h3>
+              <p className="text-sm text-[#9aa3b8]">
                 Verifica que todo esté listo antes de enviar
               </p>
             </div>
@@ -390,7 +390,7 @@ export default function PreSendChecklist({
         {/* Barra progreso */}
         <div className="mt-4">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-slate-600">
+            <span className="text-[#69738c]">
               {estadisticas.ok} de {estadisticas.total} verificaciones correctas
             </span>
             <div className="flex items-center gap-3">
@@ -406,7 +406,7 @@ export default function PreSendChecklist({
               )}
             </div>
           </div>
-          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
                 estadisticas.errores > 0 ? 'bg-red-500' :
@@ -439,8 +439,8 @@ export default function PreSendChecklist({
                     {categoria.icono}
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-800">{categoria.nombre}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="font-semibold text-[#69738c]">{categoria.nombre}</p>
+                    <p className="text-xs text-[#9aa3b8]">
                       {oks} de {total} completados
                     </p>
                   </div>
@@ -464,7 +464,7 @@ export default function PreSendChecklist({
                     </span>
                   )}
 
-                  <ChevronRight className={`w-5 h-5 text-slate-400 transition-transform ${
+                  <ChevronRight className={`w-5 h-5 text-[#9aa3b8] transition-transform ${
                     expanded === categoria.id ? 'rotate-90' : ''
                   }`} />
                 </div>
@@ -485,7 +485,7 @@ export default function PreSendChecklist({
                         className={`p-3 rounded-xl flex items-start gap-3 ${
                           item.estado === 'error' ? 'bg-red-50' :
                           item.estado === 'advertencia' ? 'bg-amber-50' :
-                          'bg-slate-50'
+                          'bg-[#dfeaff]'
                         }`}
                       >
                         {getEstadoIcon(item.estado)}
@@ -493,19 +493,19 @@ export default function PreSendChecklist({
                           <p className={`font-medium ${
                             item.estado === 'error' ? 'text-red-800' :
                             item.estado === 'advertencia' ? 'text-amber-800' :
-                            'text-slate-800'
+                            'text-[#69738c]'
                           }`}>
                             {item.nombre}
                             {item.obligatorio && (
                               <span className="text-red-500 ml-1">*</span>
                             )}
                           </p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-[#9aa3b8] mt-0.5">
                             {item.descripcion}
                           </p>
 
                           {item.detalle && (
-                            <p className="text-xs text-slate-600 mt-1 font-medium">
+                            <p className="text-xs text-[#69738c] mt-1 font-medium">
                               {item.detalle}
                             </p>
                           )}
@@ -521,7 +521,7 @@ export default function PreSendChecklist({
                         {item.urlAccion && (
                           <a
                             href={item.urlAccion}
-                            className="text-xs text-indigo-600 hover:underline"
+                            className="text-xs text-[#6888ff] hover:underline"
                           >
                             Corregir
                           </a>
@@ -537,8 +537,8 @@ export default function PreSendChecklist({
       </div>
 
       {/* Footer con acciones */}
-      <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-200/50 flex items-center justify-between">
-        <div className="text-sm text-slate-500">
+      <div className="px-6 py-4 bg-[#dfeaff]/50 border-t border-[#bec8de30] flex items-center justify-between">
+        <div className="text-sm text-[#9aa3b8]">
           {puedeEnviar ? (
             <span className="text-green-600 flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />

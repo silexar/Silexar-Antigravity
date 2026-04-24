@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🚦 MOBILE: Traffic View
  * 
  * Tráfico comercial de contratos.
@@ -80,7 +80,7 @@ export function MobileTrafficView() {
         {(['semana', 'mes', 'trimestre'] as const).map(p => (
           <button key={p} onClick={() => setPeriodo(p)}
             className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-              periodo === p ? 'bg-cyan-600 text-white' : 'bg-white text-slate-500 border border-slate-200'
+              periodo === p ? 'bg-cyan-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {p.charAt(0).toUpperCase() + p.slice(1)}
           </button>
@@ -90,9 +90,9 @@ export function MobileTrafficView() {
       {/* KPIs GRID */}
       <div className="grid grid-cols-2 gap-3">
         {METRICAS.map(m => (
-          <div key={m.label} className="bg-white rounded-xl border border-slate-100 p-3">
-            <p className="text-[10px] text-slate-400 font-bold uppercase">{m.label}</p>
-            <p className="text-lg font-black text-slate-800 mt-1">{formatVal(m)}</p>
+          <div key={m.label} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3">
+            <p className="text-[10px] text-[#9aa3b8] font-bold uppercase">{m.label}</p>
+            <p className="text-lg font-black text-[#69738c] mt-1">{formatVal(m)}</p>
             <div className="flex items-center gap-1 mt-0.5">
               {m.cambio >= 0 ? <TrendingUp className="w-3 h-3 text-emerald-500" /> : <TrendingDown className="w-3 h-3 text-red-500" />}
               <span className={`text-[10px] font-bold ${m.cambio >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{m.cambio > 0 ? '+' : ''}{m.cambio}%</span>
@@ -103,22 +103,22 @@ export function MobileTrafficView() {
 
       {/* FUNNEL */}
       <div>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Flujo de Conversión</p>
+        <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">Flujo de Conversión</p>
         <div className="space-y-2">
           {FLUJOS.map(flujo => (
-            <div key={flujo.de} className="bg-white rounded-xl border border-slate-100 p-3">
+            <div key={flujo.de} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-slate-700">{flujo.de}</span>
-                <ArrowRight className="w-3 h-3 text-slate-300" />
-                <span className="text-xs font-bold text-slate-700">{flujo.a}</span>
+                <span className="text-xs font-bold text-[#69738c]">{flujo.de}</span>
+                <ArrowRight className="w-3 h-3 text-[#9aa3b8]" />
+                <span className="text-xs font-bold text-[#69738c]">{flujo.a}</span>
                 <span className="ml-auto text-xs font-black text-cyan-600">{flujo.tasa}%</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style={{ width: `${flujo.tasa}%` }} />
               </div>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-[9px] text-slate-400">{flujo.cantidad} contratos</span>
-                <span className="text-[9px] text-slate-400">{formatCurrency(flujo.valor)}</span>
+                <span className="text-[9px] text-[#9aa3b8]">{flujo.cantidad} contratos</span>
+                <span className="text-[9px] text-[#9aa3b8]">{formatCurrency(flujo.valor)}</span>
               </div>
             </div>
           ))}
@@ -127,19 +127,19 @@ export function MobileTrafficView() {
 
       {/* EJECUTIVOS */}
       <div>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-1">Rendimiento Ejecutivos</p>
+        <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">Rendimiento Ejecutivos</p>
         <div className="space-y-2">
           {EJECUTIVOS.sort((a, b) => b.valor - a.valor).map((ej, i) => (
-            <div key={ej.nombre} className="bg-white rounded-xl border border-slate-100 p-3 flex items-center gap-3">
+            <div key={ej.nombre} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3">
               <span className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${
-                i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'
+                i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-[#dfeaff] text-[#9aa3b8]'
               }`}>#{i + 1}</span>
               <div className="flex-1">
-                <p className="font-bold text-sm text-slate-800">{ej.nombre}</p>
-                <p className="text-[10px] text-slate-400">{ej.leads} leads → {ej.cierres} cierres</p>
+                <p className="font-bold text-sm text-[#69738c]">{ej.nombre}</p>
+                <p className="text-[10px] text-[#9aa3b8]">{ej.leads} leads → {ej.cierres} cierres</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold text-slate-700">{formatCurrency(ej.valor)}</p>
+                <p className="text-sm font-bold text-[#69738c]">{formatCurrency(ej.valor)}</p>
                 <p className="text-[9px] text-emerald-600 font-bold">{ej.tasa}% conv.</p>
               </div>
             </div>

@@ -3,6 +3,7 @@
  * 
  * @description Constructor de reportes personalizados que permite
  * a cada usuario crear sus propios dashboards y reportes.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -27,6 +28,25 @@ import {
   RefreshCw,
   Share2
 } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -90,42 +110,29 @@ interface FiltroReporte {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ESTILOS NEUROMORPHIC
+// COMPONENTES NEUMORPHIC
 // ═══════════════════════════════════════════════════════════════
 
-const neuro = {
-  panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
-  `,
-  card: `
-    bg-gradient-to-br from-white to-slate-50
-    rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
-  `,
-  btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
-    text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  badge: `
-    px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    text-xs font-medium
-  `
-};
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
 
 // ═══════════════════════════════════════════════════════════════
 // WIDGETS DISPONIBLES
@@ -166,7 +173,7 @@ const mockDatos: Record<MetricaDisponible, unknown> = {
   valor_total: 8500000000,
   valor_promedio: 54487179,
   descuento_promedio: 12.5,
-  tiempo_aprobacion: 18, // horas
+  tiempo_aprobacion: 18,
   tasa_conversion: 86,
   contratos_por_estado: [
     { estado: 'Borrador', cantidad: 12 },
@@ -227,7 +234,7 @@ const WidgetRender: React.FC<{
       case 'metric':
         return (
           <div className="text-center py-6">
-            <p className="text-4xl font-bold text-slate-800">
+            <p className="text-4xl font-black" style={{ color: N.text }}>
               {typeof datos === 'number' 
                 ? widget.metrica.includes('valor') 
                   ? formatCurrency(datos)
@@ -248,14 +255,14 @@ const WidgetRender: React.FC<{
             <div className="space-y-2 py-2">
               {(datos as { estado?: string; cliente?: string; cantidad?: number; valor?: number }[]).slice(0, 5).map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500 w-20 truncate">{item.estado || item.cliente}</span>
-                  <div className="flex-1 h-4 bg-slate-200 rounded-full overflow-hidden">
+                  <span className="text-xs w-20 truncate" style={{ color: N.textSub }}>{item.estado || item.cliente}</span>
+                  <div className="flex-1 h-4 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
                     <div 
-                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
-                      style={{ width: `${((item.cantidad || item.valor || 0) / max) * 100}%` }}
+                      className="h-full rounded-full"
+                      style={{ width: `${((item.cantidad || item.valor || 0) / max) * 100}%`, background: N.accent }}
                     />
                   </div>
-                  <span className="text-xs font-semibold text-slate-700 w-16 text-right">
+                  <span className="text-xs font-bold w-16 text-right" style={{ color: N.text }}>
                     {item.cantidad || (item.valor ? formatCurrency(item.valor) : '')}
                   </span>
                 </div>
@@ -267,7 +274,7 @@ const WidgetRender: React.FC<{
 
       case 'pie_chart':
         if (Array.isArray(datos)) {
-          const colores = ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#f472b6'];
+          const colores = ['#6888ff', '#a855f7', '#22c55e', '#f59e0b', '#ef4444'];
           return (
             <div className="flex items-center gap-4 py-2">
               <div className="relative w-24 h-24">
@@ -292,7 +299,7 @@ const WidgetRender: React.FC<{
               </div>
               <div className="space-y-1">
                 {(datos as { medio: string; porcentaje: number }[]).map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs">
+                  <div key={idx} className="flex items-center gap-2 text-xs" style={{ color: N.text }}>
                     <div className="w-3 h-3 rounded" style={{ backgroundColor: colores[idx % colores.length] }} />
                     <span>{item.medio}: {item.porcentaje}%</span>
                   </div>
@@ -309,9 +316,9 @@ const WidgetRender: React.FC<{
           return (
             <div className="text-xs">
               {(datos as { nombre: string; contratos?: number; valor?: number }[]).slice(0, 5).map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-                  <span className="font-medium">{item.nombre || String((item as Record<string, unknown>).estado ?? '') || String((item as Record<string, unknown>).cliente ?? '')}</span>
-                  <span className="text-slate-500">
+                <div key={idx} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${N.dark}20` }}>
+                  <span className="font-bold" style={{ color: N.text }}>{item.nombre || String((item as Record<string, unknown>).estado ?? '') || String((item as Record<string, unknown>).cliente ?? '')}</span>
+                  <span style={{ color: N.textSub }}>
                     {item.contratos ? `${item.contratos} contratos` : ''}
                     {item.valor ? formatCurrency(item.valor) : ''}
                     {(item as Record<string, unknown>).cantidad ? String((item as Record<string, unknown>).cantidad) : ''}
@@ -327,37 +334,37 @@ const WidgetRender: React.FC<{
         const valor = typeof datos === 'number' ? datos : 0;
         return (
           <div className="py-4">
-            <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
+            <div className="h-4 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
               <div 
-                className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
-                style={{ width: `${Math.min(valor, 100)}%` }}
+                className="h-full rounded-full"
+                style={{ width: `${Math.min(valor, 100)}%`, background: '#22c55e' }}
               />
             </div>
-            <p className="text-center mt-2 text-2xl font-bold text-slate-800">{valor}%</p>
+            <p className="text-center mt-2 text-2xl font-black" style={{ color: N.text }}>{valor}%</p>
           </div>
         );
       }
     }
-    return <p className="text-slate-400 text-sm text-center py-4">Sin datos</p>;
+    return <p className="text-center py-4" style={{ color: N.textSub }}>Sin datos</p>;
   };
 
   return (
     <motion.div
       layout
-      className={`${neuro.card} p-4 ${getTamañoGrid(widget.tamaño)}`}
-      style={{ borderTop: `3px solid ${widget.color || '#6366f1'}` }}
+      className={`p-4 rounded-2xl ${getTamañoGrid(widget.tamaño)}`}
+      style={{ background: N.base, boxShadow: neuSm, borderTop: `3px solid ${widget.color || N.accent}` }}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <GripVertical className="w-4 h-4 text-slate-300 cursor-grab" />
-          <h4 className="font-semibold text-sm text-slate-800">{widget.titulo}</h4>
+          <GripVertical className="w-4 h-4 cursor-grab" style={{ color: N.textSub }} />
+          <h4 className="font-bold text-sm" style={{ color: N.text }}>{widget.titulo}</h4>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={onEdit} className="p-1 hover:bg-slate-100 rounded">
-            <Settings className="w-4 h-4 text-slate-400" />
+          <button onClick={onEdit} className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+            <Settings className="w-4 h-4" />
           </button>
-          <button onClick={onRemove} className="p-1 hover:bg-red-100 rounded">
-            <X className="w-4 h-4 text-slate-400 hover:text-red-500" />
+          <button onClick={onRemove} className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: '#ef4444' }}>
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -375,12 +382,12 @@ export default function ReportsBuilderPage() {
     id: 'rep-001',
     nombre: 'Mi Reporte Semanal',
     widgets: [
-      { id: 'w-1', tipo: 'metric', titulo: 'Contratos Creados', metrica: 'contratos_creados', tamaño: 'sm', orden: 1, color: '#6366f1' },
+      { id: 'w-1', tipo: 'metric', titulo: 'Contratos Creados', metrica: 'contratos_creados', tamaño: 'sm', orden: 1, color: '#6888ff' },
       { id: 'w-2', tipo: 'metric', titulo: 'Valor Total', metrica: 'valor_total', tamaño: 'sm', orden: 2, color: '#22c55e' },
-      { id: 'w-3', tipo: 'metric', titulo: 'Tasa Conversión', metrica: 'tasa_conversion', tamaño: 'sm', orden: 3, color: '#8b5cf6' },
+      { id: 'w-3', tipo: 'metric', titulo: 'Tasa Conversión', metrica: 'tasa_conversion', tamaño: 'sm', orden: 3, color: '#a855f7' },
       { id: 'w-4', tipo: 'metric', titulo: 'Vencimientos', metrica: 'vencimientos_proximos', tamaño: 'sm', orden: 4, color: '#f59e0b' },
-      { id: 'w-5', tipo: 'bar_chart', titulo: 'Por Estado', metrica: 'contratos_por_estado', tamaño: 'md', orden: 5, color: '#6366f1' },
-      { id: 'w-6', tipo: 'pie_chart', titulo: 'Por Medio', metrica: 'contratos_por_medio', tamaño: 'md', orden: 6, color: '#8b5cf6' },
+      { id: 'w-5', tipo: 'bar_chart', titulo: 'Por Estado', metrica: 'contratos_por_estado', tamaño: 'md', orden: 5, color: '#6888ff' },
+      { id: 'w-6', tipo: 'pie_chart', titulo: 'Por Medio', metrica: 'contratos_por_medio', tamaño: 'md', orden: 6, color: '#a855f7' },
       { id: 'w-7', tipo: 'list', titulo: 'Top Clientes', metrica: 'top_clientes', tamaño: 'lg', orden: 7, color: '#22c55e' }
     ],
     filtros: [],
@@ -404,7 +411,7 @@ export default function ReportsBuilderPage() {
       metrica,
       tamaño: tipo === 'metric' ? 'sm' : 'md',
       orden: reporte.widgets.length + 1,
-      color: '#6366f1'
+      color: N.accent
     };
     setReporte({
       ...reporte,
@@ -421,14 +428,14 @@ export default function ReportsBuilderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className={`${neuro.panel} p-6 mb-6`}>
-          <div className="flex items-center justify-between">
+        <NeuCard className="p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                <BarChart3 className="w-8 h-8 text-white" />
+              <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: neu }}>
+                <BarChart3 className="w-8 h-8" style={{ color: N.accent }} />
               </div>
               <div>
                 <input
@@ -436,17 +443,19 @@ export default function ReportsBuilderPage() {
                   value={reporte.nombre}
                   onChange={e => setReporte({ ...reporte, nombre: e.target.value })}
                   aria-label="Nombre del reporte"
-                  className="text-2xl font-bold text-slate-800 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded px-2 -ml-2"
+                  className="text-2xl font-black bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 rounded px-2 -ml-2"
+                  style={{ color: N.text }}
                 />
-                <p className="text-slate-500">Constructor de reportes personalizados</p>
+                <p className="text-sm" style={{ color: N.textSub }}>Constructor de reportes personalizados</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <select
                 value={reporte.periodo}
                 onChange={e => setReporte({ ...reporte, periodo: e.target.value as ReportePersonalizado['periodo'] })}
-                className={`${neuro.btnSecondary} px-4 py-2`}
+                className="rounded-xl py-2.5 px-4 text-sm focus:outline-none cursor-pointer"
+                style={{ background: N.base, boxShadow: inset, color: N.text }}
               >
                 <option value="dia">Hoy</option>
                 <option value="semana">Esta semana</option>
@@ -455,25 +464,22 @@ export default function ReportsBuilderPage() {
                 <option value="año">Este año</option>
               </select>
               
-              <button className={`${neuro.btnSecondary} p-2`} title="Refrescar">
+              <NeuButton variant="secondary" className="p-2">
                 <RefreshCw className="w-5 h-5" />
-              </button>
-              <button className={`${neuro.btnSecondary} p-2`} title="Compartir">
+              </NeuButton>
+              <NeuButton variant="secondary" className="p-2">
                 <Share2 className="w-5 h-5" />
-              </button>
-              <button className={`${neuro.btnSecondary} p-2`} title="Exportar">
+              </NeuButton>
+              <NeuButton variant="secondary" className="p-2">
                 <Download className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={() => setShowAddWidget(true)}
-                className={`${neuro.btnPrimary} px-4 py-2 flex items-center gap-2`}
-              >
+              </NeuButton>
+              <NeuButton variant="primary" onClick={() => setShowAddWidget(true)}>
                 <Plus className="w-5 h-5" />
                 Agregar widget
-              </button>
+              </NeuButton>
             </div>
           </div>
-        </div>
+        </NeuCard>
 
         {/* Grid de widgets */}
         <div className="grid grid-cols-4 gap-6">
@@ -490,16 +496,15 @@ export default function ReportsBuilderPage() {
         </div>
 
         {reporte.widgets.length === 0 && (
-          <div className={`${neuro.card} p-12 text-center`}>
-            <BarChart3 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500 mb-4">No hay widgets en este reporte</p>
-            <button 
-              onClick={() => setShowAddWidget(true)}
-              className={`${neuro.btnPrimary} px-6 py-3`}
-            >
+          <NeuCard className="p-12 text-center">
+            <div className="w-16 h-16 rounded-3xl mx-auto mb-4 flex items-center justify-center" style={{ background: N.base, boxShadow: inset }}>
+              <BarChart3 className="w-8 h-8" style={{ color: N.textSub }} />
+            </div>
+            <p className="mb-4" style={{ color: N.textSub }}>No hay widgets en este reporte</p>
+            <NeuButton variant="primary" onClick={() => setShowAddWidget(true)}>
               Agregar primer widget
-            </button>
-          </div>
+            </NeuButton>
+          </NeuCard>
         )}
       </div>
 
@@ -510,32 +515,35 @@ export default function ReportsBuilderPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            className="fixed inset-0 flex items-center justify-center z-50"
+            style={{ background: 'rgba(104,136,255,0.08)', backdropFilter: 'blur(4px)' }}
             onClick={() => setShowAddWidget(false)}
           >
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className={`${neuro.panel} p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto`}
+              className="p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto rounded-3xl"
+              style={{ background: N.base, boxShadow: neu }}
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold text-slate-800 mb-4">Agregar Widget</h3>
+              <h3 className="text-xl font-black mb-4" style={{ color: N.text }}>Agregar Widget</h3>
               
               <div className="grid grid-cols-2 gap-4">
                 {/* Tipo de widget */}
                 <div>
-                  <p className="text-sm font-semibold text-slate-600 mb-2">Tipo de visualización</p>
+                  <p className="text-sm font-bold mb-2" style={{ color: N.textSub }}>Tipo de visualización</p>
                   <div className="space-y-2">
                     {WIDGETS_CATALOGO.map(w => (
                       <button
                         key={w.tipo}
-                        className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-indigo-400`}
+                        className="w-full p-3 rounded-2xl flex items-center gap-3 transition-all"
+                        style={{ background: N.base, boxShadow: neuSm }}
                       >
-                        <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                        <div className="p-2 rounded-xl" style={{ background: `${N.accent}18`, color: N.accent }}>
                           {w.icon}
                         </div>
-                        <span className="font-medium">{w.label}</span>
+                        <span className="font-bold text-sm" style={{ color: N.text }}>{w.label}</span>
                       </button>
                     ))}
                   </div>
@@ -543,16 +551,17 @@ export default function ReportsBuilderPage() {
 
                 {/* Métrica */}
                 <div>
-                  <p className="text-sm font-semibold text-slate-600 mb-2">Métrica a mostrar</p>
+                  <p className="text-sm font-bold mb-2" style={{ color: N.textSub }}>Métrica a mostrar</p>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {METRICAS_CATALOGO.map(m => (
                       <button
                         key={m.id}
                         onClick={() => handleAddWidget('bar_chart', m.id)}
-                        className={`${neuro.card} w-full p-3 text-left hover:ring-2 hover:ring-indigo-400`}
+                        className="w-full p-3 rounded-2xl text-left transition-all"
+                        style={{ background: N.base, boxShadow: neuSm }}
                       >
-                        <p className="font-medium text-slate-800">{m.label}</p>
-                        <p className="text-xs text-slate-500">{m.categoria}</p>
+                        <p className="font-bold text-sm" style={{ color: N.text }}>{m.label}</p>
+                        <p className="text-xs" style={{ color: N.textSub }}>{m.categoria}</p>
                       </button>
                     ))}
                   </div>
@@ -560,12 +569,9 @@ export default function ReportsBuilderPage() {
               </div>
 
               <div className="mt-6 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowAddWidget(false)}
-                  className={`${neuro.btnSecondary} px-4 py-2`}
-                >
+                <NeuButton variant="secondary" onClick={() => setShowAddWidget(false)}>
                   Cancelar
-                </button>
+                </NeuButton>
               </div>
             </motion.div>
           </motion.div>

@@ -1,34 +1,34 @@
 /**
  * 🤖 SILEXAR PULSE - Panel Copilot TIER 0
- * 
+ *
  * @description Interfaz conversacional con el asistente IA
  * para creación y gestión de contratos.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
 
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  MessageSquare,
-  Send,
-  Sparkles,
-  Bot,
-  User,
   ArrowRight,
-  X,
+  Bot,
   Lightbulb,
   Maximize2,
+  MessageSquare,
   Minimize2,
+  Send,
+  Sparkles,
   Trash2,
-  Zap
-} from 'lucide-react';
-import { useCopilot } from '../services/CopilotService';
-import { MensajeCopilot, SugerenciaCopilot } from '../types/enterprise.types';
-import { WizardContratoState } from '../types/wizard.types';
+  User,
+  X,
+  Zap,
+} from "lucide-react";
+import { useCopilot } from "../services/CopilotService";
+import { MensajeCopilot, SugerenciaCopilot } from "../types/enterprise.types";
+import { WizardContratoState } from "../types/wizard.types";
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTES
@@ -36,43 +36,43 @@ import { WizardContratoState } from '../types/wizard.types';
 
 const MensajeChat: React.FC<{
   mensaje: MensajeCopilot;
-  onAccion?: (accion: NonNullable<MensajeCopilot['acciones']>[0]) => void;
+  onAccion?: (accion: NonNullable<MensajeCopilot["acciones"]>[0]) => void;
 }> = ({ mensaje, onAccion }) => {
-  const esUsuario = mensaje.rol === 'usuario';
-  
+  const esUsuario = mensaje.rol === "usuario";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex gap-3 ${esUsuario ? 'flex-row-reverse' : ''}`}
+      className={`flex gap-3 ${esUsuario ? "flex-row-reverse" : ""}`}
     >
       {/* Avatar */}
-      <div className={`
+      <div
+        className={`
         flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-        ${esUsuario 
-          ? 'bg-indigo-500' 
-          : 'bg-gradient-to-br from-purple-500 to-indigo-600'
-        }
-      `}>
-        {esUsuario ? (
-          <User className="w-4 h-4 text-white" />
-        ) : (
-          <Bot className="w-4 h-4 text-white" />
-        )}
+        ${esUsuario ? "bg-indigo-500" : "bg-[#6888ff]"}
+      `}
+      >
+        {esUsuario
+          ? <User className="w-4 h-4 text-white" />
+          : <Bot className="w-4 h-4 text-white" />}
       </div>
-      
+
       {/* Contenido */}
-      <div className={`max-w-[80%] ${esUsuario ? 'text-right' : ''}`}>
-        <div className={`
+      <div className={`max-w-[80%] ${esUsuario ? "text-right" : ""}`}>
+        <div
+          className={`
           px-4 py-3 rounded-2xl
-          ${esUsuario
-            ? 'bg-indigo-500 text-white rounded-tr-sm'
-            : 'bg-slate-100 text-slate-800 rounded-tl-sm'
+          ${
+            esUsuario
+              ? "bg-indigo-500 text-white rounded-tr-sm"
+              : "bg-[#dfeaff] text-[#69738c] rounded-tl-sm"
           }
-        `}>
+        `}
+        >
           <p className="text-sm whitespace-pre-wrap">{mensaje.contenido}</p>
         </div>
-        
+
         {/* Acciones sugeridas */}
         {mensaje.acciones && mensaje.acciones.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
@@ -80,7 +80,7 @@ const MensajeChat: React.FC<{
               <motion.button
                 key={accion.titulo}
                 onClick={() => onAccion?.(accion)}
-                className="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-medium hover:bg-indigo-100 transition-colors flex items-center gap-1"
+                className="px-3 py-1.5 rounded-lg bg-[#6888ff15] text-[#6888ff] text-xs font-medium hover:bg-[#6888ff25] transition-colors flex items-center gap-1"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -90,10 +90,17 @@ const MensajeChat: React.FC<{
             ))}
           </div>
         )}
-        
+
         {/* Timestamp */}
-        <p className={`text-[10px] text-slate-400 mt-1 ${esUsuario ? 'text-right' : ''}`}>
-          {mensaje.timestamp.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
+        <p
+          className={`text-[10px] text-[#9aa3b8] mt-1 ${
+            esUsuario ? "text-right" : ""
+          }`}
+        >
+          {mensaje.timestamp.toLocaleTimeString("es-CL", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </p>
       </div>
     </motion.div>
@@ -114,12 +121,13 @@ const SugerenciaChip: React.FC<{
       <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
       <div>
         <p className="text-sm font-medium text-amber-800">
-          {typeof sugerencia.valor === 'object' 
+          {typeof sugerencia.valor === "object"
             ? JSON.stringify(sugerencia.valor)
-            : String(sugerencia.valor)
-          }
+            : String(sugerencia.valor)}
         </p>
-        <p className="text-xs text-amber-600 mt-0.5">{sugerencia.razonamiento}</p>
+        <p className="text-xs text-amber-600 mt-0.5">
+          {sugerencia.razonamiento}
+        </p>
       </div>
     </div>
   </motion.button>
@@ -140,105 +148,106 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
   estadoWizard,
   onClose,
   isExpanded = false,
-  onToggleExpand
+  onToggleExpand,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mensajes, setMensajes] = useState<MensajeCopilot[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   const copilot = useCopilot(estadoWizard);
   const sugerencias = copilot.getSugerencias();
-  
+
   // Auto-scroll al nuevo mensaje
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [mensajes]);
-  
+
   // Mensaje inicial
   useEffect(() => {
     if (mensajes.length === 0) {
       const mensajeInicial: MensajeCopilot = {
-        id: 'initial',
-        rol: 'asistente',
-        contenido: '¡Hola! Soy el Copilot de Contratos. Puedo ayudarte a:\n\n• Crear contratos de forma rápida\n• Sugerir términos comerciales\n• Analizar riesgo de clientes\n• Generar cláusulas personalizadas\n\n¿En qué puedo ayudarte hoy?',
-        timestamp: new Date()
+        id: "initial",
+        rol: "asistente",
+        contenido:
+          "¡Hola! Soy el Copilot de Contratos. Puedo ayudarte a:\n\n• Crear contratos de forma rápida\n• Sugerir términos comerciales\n• Analizar riesgo de clientes\n• Generar cláusulas personalizadas\n\n¿En qué puedo ayudarte hoy?",
+        timestamp: new Date(),
       };
       setMensajes([mensajeInicial]);
     }
   }, [mensajes.length]);
-  
+
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return;
-    
+
     const mensajeUsuario: MensajeCopilot = {
       id: crypto.randomUUID(),
-      rol: 'usuario',
+      rol: "usuario",
       contenido: inputValue,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
-    setMensajes(prev => [...prev, mensajeUsuario]);
-    setInputValue('');
+
+    setMensajes((prev) => [...prev, mensajeUsuario]);
+    setInputValue("");
     setIsLoading(true);
-    
+
     try {
       const respuesta = await copilot.procesarMensaje(inputValue);
-      setMensajes(prev => [...prev, respuesta]);
+      setMensajes((prev) => [...prev, respuesta]);
     } catch (error) {
-      /* */;
+      /* */
       const mensajeError: MensajeCopilot = {
         id: crypto.randomUUID(),
-        rol: 'asistente',
-        contenido: 'Lo siento, hubo un error procesando tu solicitud. ¿Podrías intentarlo de nuevo?',
-        timestamp: new Date()
+        rol: "asistente",
+        contenido:
+          "Lo siento, hubo un error procesando tu solicitud. ¿Podrías intentarlo de nuevo?",
+        timestamp: new Date(),
       };
-      setMensajes(prev => [...prev, mensajeError]);
+      setMensajes((prev) => [...prev, mensajeError]);
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();
     }
   };
-  
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
-  
+
   const handleLimpiar = () => {
     copilot.limpiarHistorial();
     setMensajes([]);
   };
-  
-  const handleAccion = (accion: NonNullable<MensajeCopilot['acciones']>[0]) => {
-    ;
+
+  const handleAccion = (accion: NonNullable<MensajeCopilot["acciones"]>[0]) => {
     copilot.registrarAccion(accion.titulo);
-    
+
     if (accion.url) {
       window.location.href = accion.url;
     }
   };
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       className={`
-        bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden
+        bg-[#dfeaff] rounded-2xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] border border-[#bec8de40] overflow-hidden
         flex flex-col
-        ${isExpanded ? 'fixed inset-4 z-50' : 'w-96 h-[600px]'}
+        ${isExpanded ? "fixed inset-4 z-50" : "w-96 h-[600px]"}
       `}
     >
       {/* Header */}
-      <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-between">
+      <div className="p-4 bg-[#6888ff] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-white/20 backdrop-blur-sm">
+          <div className="p-2 rounded-xl bg-[#dfeaff]/20 ">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -246,19 +255,21 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
             <p className="text-xs text-white/70">Asistente IA de Contratos</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {onToggleExpand && (
             <button
               onClick={onToggleExpand}
-              className="p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors"
+              className="p-2 rounded-lg bg-[#dfeaff]/20 text-white hover:bg-[#dfeaff]/30 transition-colors"
             >
-              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {isExpanded
+                ? <Minimize2 className="w-4 h-4" />
+                : <Maximize2 className="w-4 h-4" />}
             </button>
           )}
           <button
             onClick={handleLimpiar}
-            className="p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors"
+            className="p-2 rounded-lg bg-[#dfeaff]/20 text-white hover:bg-[#dfeaff]/30 transition-colors"
             title="Limpiar conversación"
           >
             <Trash2 className="w-4 h-4" />
@@ -266,20 +277,22 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors"
+              className="p-2 rounded-lg bg-[#dfeaff]/20 text-white hover:bg-[#dfeaff]/30 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
-      
+
       {/* Sugerencias contextuales */}
       {sugerencias.length > 0 && (
         <div className="p-3 bg-amber-50 border-b border-amber-100">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-4 h-4 text-amber-500" />
-            <span className="text-xs font-medium text-amber-700">Sugerencias IA</span>
+            <span className="text-xs font-medium text-amber-700">
+              Sugerencias IA
+            </span>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {sugerencias.slice(0, 3).map((sug) => (
@@ -287,18 +300,17 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
                 key={sug.razonamiento}
                 sugerencia={sug}
                 onAplicar={() => {
-                  ;
                 }}
               />
             ))}
           </div>
         </div>
       )}
-      
+
       {/* Chat */}
       <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
-          {mensajes.map(mensaje => (
+          {mensajes.map((mensaje) => (
             <MensajeChat
               key={mensaje.id}
               mensaje={mensaje}
@@ -306,17 +318,17 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
             />
           ))}
         </AnimatePresence>
-        
+
         {isLoading && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex items-center gap-3"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#6888ff] flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="px-4 py-3 rounded-2xl bg-slate-100 rounded-tl-sm">
+            <div className="px-4 py-3 rounded-2xl bg-[#dfeaff] rounded-tl-sm">
               <div className="flex items-center gap-1">
                 <motion.div
                   className="w-2 h-2 rounded-full bg-indigo-400"
@@ -338,9 +350,9 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
           </motion.div>
         )}
       </div>
-      
+
       {/* Input */}
-      <div className="p-4 border-t border-slate-200 bg-slate-50">
+      <div className="p-4 border-t border-[#bec8de40] bg-[#dfeaff]">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
             <input
@@ -354,9 +366,9 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
               disabled={isLoading}
               className="
                 w-full px-4 py-3 pr-12 rounded-xl
-                bg-white border border-slate-200
-                outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400
-                text-slate-700 placeholder-slate-400
+                bg-[#dfeaff] border border-[#bec8de40]
+                outline-none focus:ring-2 focus:ring-[#6888ff]/50 focus:border-[#6888ff]
+                text-[#69738c] placeholder-[#9aa3b8]
                 disabled:opacity-50 disabled:cursor-not-allowed
                 transition-all
               "
@@ -367,28 +379,31 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
               className={`
                 absolute right-2 top-1/2 -translate-y-1/2
                 p-2 rounded-lg transition-all
-                ${inputValue.trim() && !isLoading
-                  ? 'bg-indigo-500 text-white hover:bg-indigo-600'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }
+                ${
+                inputValue.trim() && !isLoading
+                  ? "bg-indigo-500 text-white hover:bg-indigo-600"
+                  : "bg-[#dfeaff] text-[#9aa3b8] cursor-not-allowed"
+              }
               `}
             >
               <Send className="w-4 h-4" />
             </button>
           </div>
         </div>
-        
+
         {/* Quick actions */}
         <div className="flex flex-wrap gap-2 mt-3">
-          {['Crear contrato', 'Analizar riesgo', 'Sugerir términos'].map(action => (
-            <button
-              key={action}
-              onClick={() => setInputValue(action)}
-              className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 transition-colors"
-            >
-              {action}
-            </button>
-          ))}
+          {["Crear contrato", "Analizar riesgo", "Sugerir términos"].map(
+            (action) => (
+              <button
+                key={action}
+                onClick={() => setInputValue(action)}
+                className="px-3 py-1.5 rounded-lg bg-[#dfeaff] border border-[#bec8de40] text-xs text-[#69738c] hover:bg-[#dfeaff] transition-colors"
+              >
+                {action}
+              </button>
+            ),
+          )}
         </div>
       </div>
     </motion.div>
@@ -404,15 +419,17 @@ interface CopilotFABProps {
   hasUnread?: boolean;
 }
 
-export const CopilotFAB: React.FC<CopilotFABProps> = ({ onClick, hasUnread }) => (
+export const CopilotFAB: React.FC<CopilotFABProps> = (
+  { onClick, hasUnread },
+) => (
   <motion.button
     onClick={onClick}
     className="
       fixed bottom-6 right-6 z-40
       w-14 h-14 rounded-full
-      bg-gradient-to-br from-indigo-500 to-purple-600
-      shadow-[0_8px_32px_rgba(99,102,241,0.4)]
-      hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)]
+      bg-[#6888ff]
+      shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+      hover:shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
       flex items-center justify-center
       transition-all
     "
@@ -420,14 +437,14 @@ export const CopilotFAB: React.FC<CopilotFABProps> = ({ onClick, hasUnread }) =>
     whileTap={{ scale: 0.9 }}
   >
     <MessageSquare className="w-6 h-6 text-white" />
-    
+
     {hasUnread && (
       <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white" />
     )}
-    
+
     {/* Efecto de brillo */}
     <motion.div
-      className="absolute inset-0 rounded-full bg-white/20"
+      className="absolute inset-0 rounded-full bg-[#dfeaff]/20"
       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
       transition={{ duration: 2, repeat: Infinity }}
     />

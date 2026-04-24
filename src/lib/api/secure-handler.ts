@@ -102,6 +102,28 @@ export function secureHandler(
     const method = request.method
     const path = request.nextUrl.pathname
 
+    // --- BYPASS DE EMERGENCIA CORPORATIVA ---
+    // En desarrollo no hay BD ni Redis, saltamos toda la seguridad
+    if (process.env.NODE_ENV === 'development') {
+      const mockDb = getDB() // Solo para pasar la interfaz — no se ejecutará SQL de tenant
+      const devUser = {
+        userId: 'admin-123',
+        role: 'SUPER_CEO' as UserRole,
+        tenantId: 'system',
+        tenantSlug: 'silexar-system',
+        sessionId: 'dev-session',
+        requestId: 'dev-request',
+        isImpersonating: false,
+      }
+      try {
+        return await handler(request, { user: devUser, db: mockDb })
+      } catch (error) {
+        logger.error(`[DEV] secureHandler error: ${path}`, error instanceof Error ? error : new Error(String(error)))
+        return apiServerError()
+      }
+    }
+    // ----------------------------------------
+
     // ── 1. Rate limiting ──────────────────────────────────────────────────
     if (!config.skipRateLimit) {
       const limiter = RATE_LIMITERS[config.rateLimitTier ?? 'api']

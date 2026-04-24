@@ -1,9 +1,9 @@
 /**
  * 📡 SILEXAR PULSE - Broadcast Systems Integration Service
- * 
+ *
  * @description Integración con WideOrbit, Sara y Dalet para
  * validación cruzada de inventario y reservas automáticas.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -12,7 +12,7 @@
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
-export type SistemaEmision = 'WIDEORBIT' | 'SARA' | 'DALET';
+export type SistemaEmision = "WIDEORBIT" | "SARA" | "DALET";
 
 export interface DisponibilidadSistema {
   sistema: SistemaEmision;
@@ -25,7 +25,7 @@ export interface DisponibilidadSistema {
 }
 
 export interface ConflictoSistema {
-  tipo: 'VENDIDO' | 'RESERVADO' | 'MANTENIMIENTO' | 'EXCLUSIVIDAD';
+  tipo: "VENDIDO" | "RESERVADO" | "MANTENIMIENTO" | "EXCLUSIVIDAD";
   descripcion: string;
   fechas?: { desde: Date; hasta: Date };
   propietario?: string;
@@ -38,7 +38,7 @@ export interface ValidacionCruzada {
   fechaInicio: Date;
   fechaFin: Date;
   sistemas: DisponibilidadSistema[];
-  consenso: 'DISPONIBLE' | 'PARCIAL' | 'NO_DISPONIBLE';
+  consenso: "DISPONIBLE" | "PARCIAL" | "NO_DISPONIBLE";
   recomendacion: string;
 }
 
@@ -49,7 +49,7 @@ export interface Reserva {
   horario: string;
   fechaInicio: Date;
   fechaFin: Date;
-  estado: 'PENDIENTE' | 'CONFIRMADA' | 'EXPIRADA' | 'CANCELADA';
+  estado: "PENDIENTE" | "CONFIRMADA" | "EXPIRADA" | "CANCELADA";
   expiracion: Date;
   sistemasReservados: SistemaEmision[];
 }
@@ -58,10 +58,14 @@ export interface CambioInventario {
   id: string;
   medioId: string;
   medioNombre: string;
-  tipo: 'DISPONIBILIDAD_REDUCIDA' | 'CONFLICTO_NUEVO' | 'PRECIO_CAMBIADO' | 'HORARIO_MODIFICADO';
+  tipo:
+    | "DISPONIBILIDAD_REDUCIDA"
+    | "CONFLICTO_NUEVO"
+    | "PRECIO_CAMBIADO"
+    | "HORARIO_MODIFICADO";
   descripcion: string;
   timestamp: Date;
-  impacto: 'BAJO' | 'MEDIO' | 'ALTO';
+  impacto: "BAJO" | "MEDIO" | "ALTO";
   requiereAccion: boolean;
 }
 
@@ -84,7 +88,10 @@ export interface SugerenciaOptimizacion {
 
 class BroadcastIntegrationServiceClass {
   private static instance: BroadcastIntegrationServiceClass;
-  private suscripcionesCambios: Map<string, (cambio: CambioInventario) => void> = new Map();
+  private suscripcionesCambios: Map<
+    string,
+    (cambio: CambioInventario) => void
+  > = new Map();
   private reservasActivas: Map<string, Reserva> = new Map();
 
   private constructor() {}
@@ -116,24 +123,25 @@ class BroadcastIntegrationServiceClass {
     const [wideorbit, sara, dalet] = await Promise.all([
       this.consultarWideOrbit(params),
       this.consultarSara(params),
-      this.consultarDalet(params)
+      this.consultarDalet(params),
     ]);
 
     const sistemas = [wideorbit, sara, dalet];
-    const disponibles = sistemas.filter(s => s.disponible).length;
-    
-    let consenso: 'DISPONIBLE' | 'PARCIAL' | 'NO_DISPONIBLE';
+    const disponibles = sistemas.filter((s) => s.disponible).length;
+
+    let consenso: "DISPONIBLE" | "PARCIAL" | "NO_DISPONIBLE";
     let recomendacion: string;
 
     if (disponibles === 3) {
-      consenso = 'DISPONIBLE';
-      recomendacion = '✅ Inventario confirmado en todos los sistemas';
+      consenso = "DISPONIBLE";
+      recomendacion = "✅ Inventario confirmado en todos los sistemas";
     } else if (disponibles >= 1) {
-      consenso = 'PARCIAL';
-      recomendacion = `⚠️ Disponibilidad parcial: ${disponibles}/3 sistemas confirman`;
+      consenso = "PARCIAL";
+      recomendacion =
+        `⚠️ Disponibilidad parcial: ${disponibles}/3 sistemas confirman`;
     } else {
-      consenso = 'NO_DISPONIBLE';
-      recomendacion = '❌ No disponible en ningún sistema';
+      consenso = "NO_DISPONIBLE";
+      recomendacion = "❌ No disponible en ningún sistema";
     }
 
     return {
@@ -144,7 +152,7 @@ class BroadcastIntegrationServiceClass {
       fechaFin: params.fechaFin,
       sistemas,
       consenso,
-      recomendacion
+      recomendacion,
     };
   }
 
@@ -156,16 +164,16 @@ class BroadcastIntegrationServiceClass {
     fechaFin: Date;
   }): Promise<DisponibilidadSistema> {
     // Simulación de consulta a WideOrbit
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
     return {
-      sistema: 'WIDEORBIT',
+      sistema: "WIDEORBIT",
       disponible: Math.random() > 0.2,
       porcentajeLibre: 75 + Math.floor(Math.random() * 20),
       spotsDisponibles: 45 + Math.floor(Math.random() * 15),
       ultimaActualizacion: new Date(),
       conflictos: [],
-      alertas: []
+      alertas: [],
     };
   }
 
@@ -177,16 +185,16 @@ class BroadcastIntegrationServiceClass {
     fechaFin: Date;
   }): Promise<DisponibilidadSistema> {
     // Simulación de consulta a Sara
-    await new Promise(resolve => setTimeout(resolve, 250));
-    
+    await new Promise((resolve) => setTimeout(resolve, 250));
+
     return {
-      sistema: 'SARA',
+      sistema: "SARA",
       disponible: Math.random() > 0.15,
       porcentajeLibre: 80 + Math.floor(Math.random() * 15),
       spotsDisponibles: 50 + Math.floor(Math.random() * 10),
       ultimaActualizacion: new Date(),
       conflictos: [],
-      alertas: []
+      alertas: [],
     };
   }
 
@@ -198,16 +206,16 @@ class BroadcastIntegrationServiceClass {
     fechaFin: Date;
   }): Promise<DisponibilidadSistema> {
     // Simulación de consulta a Dalet
-    await new Promise(resolve => setTimeout(resolve, 350));
-    
+    await new Promise((resolve) => setTimeout(resolve, 350));
+
     return {
-      sistema: 'DALET',
+      sistema: "DALET",
       disponible: Math.random() > 0.25,
       porcentajeLibre: 70 + Math.floor(Math.random() * 25),
       spotsDisponibles: 40 + Math.floor(Math.random() * 20),
       ultimaActualizacion: new Date(),
       conflictos: [],
-      alertas: []
+      alertas: [],
     };
   }
 
@@ -228,7 +236,7 @@ class BroadcastIntegrationServiceClass {
   }): Promise<Reserva> {
     const duracion = params.duracionMinutos || 60; // 1 hora por defecto
     const expiracion = new Date(Date.now() + duracion * 60 * 1000);
-    
+
     const reserva: Reserva = {
       id: `res-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       contratoId: params.contratoId,
@@ -236,13 +244,13 @@ class BroadcastIntegrationServiceClass {
       horario: params.horario,
       fechaInicio: params.fechaInicio,
       fechaFin: params.fechaFin,
-      estado: 'PENDIENTE',
+      estado: "PENDIENTE",
       expiracion,
-      sistemasReservados: []
+      sistemasReservados: [],
     };
 
     // Intentar reservar en todos los sistemas
-    const sistemas: SistemaEmision[] = ['WIDEORBIT', 'SARA', 'DALET'];
+    const sistemas: SistemaEmision[] = ["WIDEORBIT", "SARA", "DALET"];
     for (const sistema of sistemas) {
       const exito = await this.reservarEnSistema(sistema, params);
       if (exito) {
@@ -250,7 +258,9 @@ class BroadcastIntegrationServiceClass {
       }
     }
 
-    reserva.estado = reserva.sistemasReservados.length > 0 ? 'CONFIRMADA' : 'PENDIENTE';
+    reserva.estado = reserva.sistemasReservados.length > 0
+      ? "CONFIRMADA"
+      : "PENDIENTE";
     this.reservasActivas.set(reserva.id, reserva);
 
     // Programar expiración
@@ -262,15 +272,18 @@ class BroadcastIntegrationServiceClass {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private async reservarEnSistema(_sistema: SistemaEmision, _params: unknown): Promise<boolean> {
+  private async reservarEnSistema(
+    _sistema: SistemaEmision,
+    _params: unknown,
+  ): Promise<boolean> {
     // Simulación de reserva
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     return Math.random() > 0.1; // 90% éxito
   }
 
   async confirmarReserva(reservaId: string): Promise<boolean> {
     const reserva = this.reservasActivas.get(reservaId);
-    if (!reserva || reserva.estado !== 'CONFIRMADA') {
+    if (!reserva || reserva.estado !== "CONFIRMADA") {
       return false;
     }
     // En producción, confirmar en todos los sistemas
@@ -281,7 +294,7 @@ class BroadcastIntegrationServiceClass {
     const reserva = this.reservasActivas.get(reservaId);
     if (!reserva) return false;
 
-    reserva.estado = 'CANCELADA';
+    reserva.estado = "CANCELADA";
     // Liberar en todos los sistemas
     this.reservasActivas.delete(reservaId);
     return true;
@@ -289,8 +302,8 @@ class BroadcastIntegrationServiceClass {
 
   private expirarReserva(reservaId: string): void {
     const reserva = this.reservasActivas.get(reservaId);
-    if (reserva && reserva.estado === 'CONFIRMADA') {
-      reserva.estado = 'EXPIRADA';
+    if (reserva && reserva.estado === "CONFIRMADA") {
+      reserva.estado = "EXPIRADA";
       // Liberar en sistemas
     }
   }
@@ -302,21 +315,24 @@ class BroadcastIntegrationServiceClass {
   /**
    * Suscribirse a cambios de inventario
    */
-  suscribirCambios(contratoId: string, callback: (cambio: CambioInventario) => void): () => void {
+  suscribirCambios(
+    contratoId: string,
+    callback: (cambio: CambioInventario) => void,
+  ): () => void {
     this.suscripcionesCambios.set(contratoId, callback);
-    
+
     // Simular monitoreo (en producción sería WebSocket)
     const intervalo = setInterval(() => {
       if (Math.random() > 0.9) { // 10% probabilidad de cambio
         const cambio: CambioInventario = {
           id: `chg-${Date.now()}`,
-          medioId: 'med-001',
-          medioNombre: 'Radio Ejemplo',
-          tipo: 'DISPONIBILIDAD_REDUCIDA',
-          descripcion: 'Disponibilidad reducida por venta reciente',
+          medioId: "med-001",
+          medioNombre: "Radio Ejemplo",
+          tipo: "DISPONIBILIDAD_REDUCIDA",
+          descripcion: "Disponibilidad reducida por venta reciente",
           timestamp: new Date(),
-          impacto: 'MEDIO',
-          requiereAccion: true
+          impacto: "MEDIO",
+          requiereAccion: true,
         };
         callback(cambio);
       }
@@ -335,16 +351,18 @@ class BroadcastIntegrationServiceClass {
   /**
    * Genera sugerencias de optimización basadas en datos
    */
-  async obtenerSugerenciasOptimizacion(medios: Array<{
-    id: string;
-    nombre: string;
-    horario: string;
-    tipo: string;
-  }>): Promise<SugerenciaOptimizacion[]> {
+  async obtenerSugerenciasOptimizacion(
+    medios: Array<{
+      id: string;
+      nombre: string;
+      horario: string;
+      tipo: string;
+    }>,
+  ): Promise<SugerenciaOptimizacion[]> {
     // Simulación de análisis IA
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    return medios.slice(0, 3).map(medio => ({
+    return medios.slice(0, 3).map((medio) => ({
       medioId: medio.id,
       medioNombre: medio.nombre,
       horarioActual: medio.horario,
@@ -352,19 +370,19 @@ class BroadcastIntegrationServiceClass {
       mejora: {
         audiencia: 12 + Math.floor(Math.random() * 20),
         costo: -(5 + Math.floor(Math.random() * 10)),
-        disponibilidad: 15 + Math.floor(Math.random() * 25)
+        disponibilidad: 15 + Math.floor(Math.random() * 25),
       },
-      razon: this.generarRazonSugerencia(medio.tipo)
+      razon: this.generarRazonSugerencia(medio.tipo),
     }));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private sugerirHorarioAlternativo(_horarioActual: string): string {
     const alternativas = [
-      '06:00 - 08:00 (Early Prime)',
-      '12:00 - 14:00 (Midday)',
-      '17:00 - 19:00 (Drive Time)',
-      '20:00 - 22:00 (Evening)'
+      "06:00 - 08:00 (Early Prime)",
+      "12:00 - 14:00 (Midday)",
+      "17:00 - 19:00 (Drive Time)",
+      "20:00 - 22:00 (Evening)",
     ];
     return alternativas[Math.floor(Math.random() * alternativas.length)];
   }
@@ -372,20 +390,20 @@ class BroadcastIntegrationServiceClass {
   private generarRazonSugerencia(tipo: string): string {
     const razones: Record<string, string[]> = {
       RADIO: [
-        'Mayor audiencia en este horario según datos recientes',
-        'Menor saturación publicitaria',
-        'Mejor fit con demografía objetivo'
+        "Mayor audiencia en este horario según datos recientes",
+        "Menor saturación publicitaria",
+        "Mejor fit con demografía objetivo",
       ],
       TV: [
-        'Rating más alto en este slot',
-        'Menor costo por GRP',
-        'Audiencia más concentrada'
+        "Rating más alto en este slot",
+        "Menor costo por GRP",
+        "Audiencia más concentrada",
       ],
       DIGITAL: [
-        'Mayor engagement en estas horas',
-        'CTR históricamente superior',
-        'Menor competencia de bids'
-      ]
+        "Mayor engagement en estas horas",
+        "CTR históricamente superior",
+        "Menor competencia de bids",
+      ],
     };
     const opciones = razones[tipo] || razones.RADIO;
     return opciones[Math.floor(Math.random() * opciones.length)];
@@ -395,23 +413,27 @@ class BroadcastIntegrationServiceClass {
   // EXPORTACIÓN A SISTEMAS
   // ═══════════════════════════════════════════════════════════════
 
-  async exportarOrdenPauta(contratoId: string, sistema: SistemaEmision): Promise<{
+  async exportarOrdenPauta(
+    contratoId: string,
+    sistema: SistemaEmision,
+  ): Promise<{
     exito: boolean;
     ordenId?: string;
     errores: string[];
   }> {
     // Simulación de exportación
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
     return {
       exito: true,
       ordenId: `ORD-${sistema}-${Date.now()}`,
-      errores: []
+      errores: [],
     };
   }
 }
 
-export const BroadcastIntegrationService = BroadcastIntegrationServiceClass.getInstance();
+export const BroadcastIntegrationService = BroadcastIntegrationServiceClass
+  .getInstance();
 
 // Hook para uso en componentes React
 export function useBroadcastIntegration() {

@@ -12,7 +12,7 @@ export enum PrioridadAlerta {
 }
 
 export enum CategoriaAlerta {
-  VENCIMIENTO = 'vencimiento',
+  VENCIMIENTO = 'vencimientos',
   APROBACION = 'aprobacion',
   INVENTARIO = 'inventario',
   RIESGO = 'riesgo',

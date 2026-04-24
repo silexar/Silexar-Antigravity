@@ -20,11 +20,13 @@ import { StepFacturacionCampana } from './StepFacturacionCampana';
 import { StepLineasCampana } from './StepLineasCampana';
 import { StepProgramacionCampana } from './StepProgramacionCampana';
 import { StepRevisionFinal } from './StepRevisionFinal';
-import { Save, Cloud, Trash2 } from 'lucide-react';
+import { Save, Cloud, Trash2, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 export default function CrearCampanaWizard() {
+  const router = useRouter();
   const { 
     state, 
     nextStep, 
@@ -124,15 +126,32 @@ export default function CrearCampanaWizard() {
     }
   };
 
+  const neoBase = '#dfeaff';
+  const neoDark = '#bec8de';
+  const neoLight = '#ffffff';
+  const neoText = '#69738c';
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
+      {/* Botón volver */}
+      <button
+        onClick={() => router.push('/campanas')}
+        className="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all"
+        style={{ background: neoBase, color: neoText, boxShadow: `4px 4px 8px ${neoDark},-4px -4px 8px ${neoLight}` }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 4px ${neoDark},-2px -2px 4px ${neoLight}` }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 8px ${neoDark},-4px -4px 8px ${neoLight}` }}
+      >
+        <ArrowLeft className="w-4 h-4" /> Volver a Campañas
+      </button>
+
       <WizardHeader 
         currentStep={state.currentStep}
         completedSteps={state.completedSteps}
       />
 
       {/* Auto-save Status Bar */}
-      <div className="flex items-center justify-between mb-4 px-4 py-2 bg-slate-50 rounded-lg border border-slate-100">
+      <div className="flex items-center justify-between mb-4 px-4 py-2 rounded-xl"
+        style={{ background: neoBase, boxShadow: `inset 3px 3px 6px ${neoDark},inset -3px -3px 6px ${neoLight}` }}>
         <div className="flex items-center gap-3">
           {hasUnsavedChanges ? (
             <Badge className="bg-yellow-100 text-yellow-700 gap-1">
@@ -173,7 +192,8 @@ export default function CrearCampanaWizard() {
         </div>
       </div>
       
-      <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 min-h-[500px] flex flex-col justify-between">
+      <div className="rounded-3xl p-8 min-h-[500px] flex flex-col justify-between"
+        style={{ background: neoBase, boxShadow: `8px 8px 16px ${neoDark},-8px -8px 16px ${neoLight}` }}>
         <div className="flex-1">
           {renderCurrentStep()}
         </div>

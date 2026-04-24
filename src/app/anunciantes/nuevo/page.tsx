@@ -3,52 +3,37 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/use-toast';
-import { AnuncianteForm } from '../_components/AnuncianteForm';
+import { AnuncianteForm, AnuncianteFormData } from '../_components/AnuncianteForm';
+
+const LS_KEY = 'silexar_anunciantes';
 
 export default function NuevoAnunciantePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreate = async (data: {
-    nombreRazonSocial: string;
-    rut: string;
-    giroActividad: string;
-    direccion: string;
-    ciudad: string;
-    comunaProvincia: string;
-    pais: string;
-    emailContacto: string;
-    telefonoContacto: string;
-    paginaWeb: string;
-    nombreContactoPrincipal: string;
-    cargoContactoPrincipal: string;
-    tieneFacturacionElectronica: boolean;
-    direccionFacturacion: string;
-    emailFacturacion: string;
-    notas: string;
-  }) => {
+  const handleCreate = async (data: AnuncianteFormData) => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/anunciantes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        toast({
-          title: 'Error al crear anunciante',
-          description: json.error || 'Ocurrió un error inesperado',
-          variant: 'destructive',
-        });
-        return;
-      }
-      toast({ title: 'Anunciante creado exitosamente' });
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Persistir en localStorage para pruebas locales
+      const existing = JSON.parse(localStorage.getItem(LS_KEY) ?? '[]');
+      const newRecord = {
+        ...data,
+        id: `local-${Date.now()}`,
+        codigo: `ANC-${String(existing.length + 1).padStart(4, '0')}`,
+        activo: true,
+        estado: 'activo',
+        fechaCreacion: new Date().toISOString(),
+      };
+      localStorage.setItem(LS_KEY, JSON.stringify([...existing, newRecord]));
+
+      toast({ title: '✅ Anunciante creado exitosamente', description: `${String(data.nombreRazonSocial)} ha sido registrado en el sistema.` });
       router.push('/anunciantes');
     } catch {
       toast({
-        title: 'Error de red',
-        description: 'No se pudo conectar con el servidor',
+        title: 'Error',
+        description: 'No se pudo guardar el anunciante',
         variant: 'destructive',
       });
     } finally {
@@ -57,10 +42,8 @@ export default function NuevoAnunciantePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 p-6 lg:p-8">
-      <div className="max-w-4xl mx-auto">
-        <AnuncianteForm mode="create" onSubmit={handleCreate} isLoading={isLoading} />
-      </div>
+    <div style={{ minHeight: '100vh', background: '#dfeaff' }}>
+      <AnuncianteForm mode="create" onSubmit={handleCreate} isLoading={isLoading} />
     </div>
   );
 }

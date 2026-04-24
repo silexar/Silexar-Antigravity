@@ -8,40 +8,76 @@
  * @tier TIER_0_FORTUNE_10
  */
 
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Globe,
-  Plus,
-  X,
+  CheckCircle2,
   DollarSign,
-  Target,
-  Link2,
-  Users,
   FileText,
-  CheckCircle2
-} from 'lucide-react';
-import { EspecificacionDigitalData } from '../types/wizard.types';
+  Globe,
+  Link2,
+  Plus,
+  Target,
+  Users,
+  X,
+} from "lucide-react";
+import { EspecificacionDigitalData } from "../types/wizard.types";
 
 // ═══════════════════════════════════════════════════════════════
 // CONFIGURACIÓN DE PLATAFORMAS
 // ═══════════════════════════════════════════════════════════════
 
 const PLATAFORMAS = [
-  { id: 'meta_ads', nombre: 'Meta Ads', color: 'from-blue-500 to-indigo-600' },
-  { id: 'google_ads', nombre: 'Google Ads', color: 'from-emerald-400 to-teal-600' },
-  { id: 'tiktok_ads', nombre: 'TikTok Ads', color: 'from-rose-400 to-pink-600' },
-  { id: 'linkedin_ads', nombre: 'LinkedIn Ads', color: 'from-sky-500 to-blue-700' },
-  { id: 'twitter_ads', nombre: 'Twitter Ads', color: 'from-slate-400 to-slate-600' },
-  { id: 'spotify', nombre: 'Spotify', color: 'from-green-400 to-emerald-600' },
-  { id: 'deezer', nombre: 'Deezer', color: 'from-orange-400 to-amber-600' },
-  { id: 'soundcloud', nombre: 'SoundCloud', color: 'from-orange-500 to-red-600' },
-  { id: 'youtube_ads', nombre: 'YouTube Ads', color: 'from-red-500 to-rose-600' },
-  { id: 'programmatic', nombre: 'Programmatic', color: 'from-violet-400 to-purple-600' },
-  { id: 'sitio_propio', nombre: 'Sitio Propio', color: 'from-cyan-400 to-blue-600' },
-  { id: 'app_propia', nombre: 'App Propia', color: 'from-fuchsia-400 to-purple-600' }
+  { id: "meta_ads", nombre: "Meta Ads", color: "from-blue-500 to-indigo-600" },
+  {
+    id: "google_ads",
+    nombre: "Google Ads",
+    color: "from-emerald-400 to-teal-600",
+  },
+  {
+    id: "tiktok_ads",
+    nombre: "TikTok Ads",
+    color: "from-rose-400 to-pink-600",
+  },
+  {
+    id: "linkedin_ads",
+    nombre: "LinkedIn Ads",
+    color: "from-sky-500 to-blue-700",
+  },
+  {
+    id: "twitter_ads",
+    nombre: "Twitter Ads",
+    color: "from-slate-400 to-slate-600",
+  },
+  { id: "spotify", nombre: "Spotify", color: "from-green-400 to-emerald-600" },
+  { id: "deezer", nombre: "Deezer", color: "from-orange-400 to-amber-600" },
+  {
+    id: "soundcloud",
+    nombre: "SoundCloud",
+    color: "from-orange-500 to-red-600",
+  },
+  {
+    id: "youtube_ads",
+    nombre: "YouTube Ads",
+    color: "from-red-500 to-rose-600",
+  },
+  {
+    id: "programmatic",
+    nombre: "Programmatic",
+    color: "from-violet-400 to-purple-600",
+  },
+  {
+    id: "sitio_propio",
+    nombre: "Sitio Propio",
+    color: "from-cyan-400 to-blue-600",
+  },
+  {
+    id: "app_propia",
+    nombre: "App Propia",
+    color: "from-fuchsia-400 to-purple-600",
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -54,17 +90,30 @@ const NeuromorphicInput: React.FC<{
   onChange: (value: string) => void;
   placeholder?: string;
   icon?: React.ElementType;
-  type?: 'text' | 'number' | 'url';
+  type?: "text" | "number" | "url";
   className?: string;
   min?: number;
-}> = ({ label, value, onChange, placeholder, icon: Icon, type = 'text', className = '', min }) => (
+}> = (
+  {
+    label,
+    value,
+    onChange,
+    placeholder,
+    icon: Icon,
+    type = "text",
+    className = "",
+    min,
+  },
+) => (
   <div className={`space-y-2 ${className}`}>
     {label && (
-      <label className="block text-sm font-medium text-slate-600">{label}</label>
+      <label className="block text-sm font-medium text-[#69738c]">
+        {label}
+      </label>
     )}
     <div className="relative">
       {Icon && (
-        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9aa3b8]" />
       )}
       <input
         type={type}
@@ -73,13 +122,13 @@ const NeuromorphicInput: React.FC<{
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={`
-          w-full rounded-xl py-3 bg-slate-50
-          shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
+          w-full rounded-xl py-3 bg-[#dfeaff]
+          shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
           border-2 border-transparent
-          outline-none focus:ring-2 focus:ring-indigo-400/50
-          text-slate-700 placeholder-slate-400
+          outline-none focus:ring-2 focus:ring-[#6888ff]/50
+          text-[#69738c] placeholder-[#9aa3b8]
           transition-all duration-200
-          ${Icon ? 'pl-12 pr-4' : 'px-4'}
+          ${Icon ? "pl-12 pr-4" : "px-4"}
         `}
       />
     </div>
@@ -93,22 +142,25 @@ const NeuromorphicTextarea: React.FC<{
   placeholder?: string;
   rows?: number;
   className?: string;
-}> = ({ label, value, onChange, placeholder, rows = 3, className = '' }) => (
+}> = ({ label, value, onChange, placeholder, rows = 3, className = "" }) => (
   <div className={`space-y-2 ${className}`}>
     {label && (
-      <label className="block text-sm font-medium text-slate-600">{label}</label>
+      <label className="block text-sm font-medium text-[#69738c]">
+        {label}
+      </label>
     )}
     <textarea
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) =>
+        onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
       className="
-        w-full rounded-xl py-3 px-4 bg-slate-50
-        shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
+        w-full rounded-xl py-3 px-4 bg-[#dfeaff]
+        shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
         border-2 border-transparent
-        outline-none focus:ring-2 focus:ring-indigo-400/50
-        text-slate-700 placeholder-slate-400
+        outline-none focus:ring-2 focus:ring-[#6888ff]/50
+        text-[#69738c] placeholder-[#9aa3b8]
         transition-all duration-200 resize-none
       "
     />
@@ -128,12 +180,14 @@ interface PanelEspecificacionesDigitalesProps {
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
-export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigitalesProps> = ({
+export const PanelEspecificacionesDigitales: React.FC<
+  PanelEspecificacionesDigitalesProps
+> = ({
   data,
-  onUpdate
+  onUpdate,
 }) => {
-  const [nuevaRegion, setNuevaRegion] = useState('');
-  const [nuevoLink, setNuevoLink] = useState('');
+  const [nuevaRegion, setNuevaRegion] = useState("");
+  const [nuevoLink, setNuevoLink] = useState("");
 
   const togglePlataforma = (id: string) => {
     const current = data.plataformas || [];
@@ -147,7 +201,7 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     if (!nuevoLink.trim()) return;
     const current = data.trackingLinks || [];
     onUpdate({ trackingLinks: [...current, nuevoLink.trim()] });
-    setNuevoLink('');
+    setNuevoLink("");
   };
 
   const removeTrackingLink = (index: number) => {
@@ -161,10 +215,10 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     onUpdate({
       configuracionTargeting: {
         ...data.configuracionTargeting,
-        regiones: [...current, nuevaRegion.trim()]
-      }
+        regiones: [...current, nuevaRegion.trim()],
+      },
     });
-    setNuevaRegion('');
+    setNuevaRegion("");
   };
 
   const removeRegion = (index: number) => {
@@ -172,8 +226,8 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     onUpdate({
       configuracionTargeting: {
         ...data.configuracionTargeting,
-        regiones: current.filter((_, i) => i !== index)
-      }
+        regiones: current.filter((_, i) => i !== index),
+      },
     });
   };
 
@@ -185,8 +239,8 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     onUpdate({
       configuracionTargeting: {
         ...data.configuracionTargeting,
-        generos: next
-      }
+        generos: next,
+      },
     });
   };
 
@@ -195,8 +249,8 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     onUpdate({
       objetivos: {
         ...data.objetivos,
-        [key]: num
-      }
+        [key]: num,
+      },
     });
   };
 
@@ -208,19 +262,23 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
     >
       {/* Título del panel */}
       <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100">
-          <Globe className="w-7 h-7 text-indigo-600" />
+        <div className="p-3 rounded-2xl bg-[#6888ff15]">
+          <Globe className="w-7 h-7 text-[#6888ff]" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Especificaciones Digitales</h2>
-          <p className="text-slate-500">Configure plataformas, presupuesto y targeting de la campaña digital</p>
+          <h2 className="text-2xl font-bold text-[#69738c]">
+            Especificaciones Digitales
+          </h2>
+          <p className="text-[#9aa3b8]">
+            Configure plataformas, presupuesto y targeting de la campaña digital
+          </p>
         </div>
       </div>
 
       {/* Plataformas */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <Target className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <Target className="w-5 h-5 text-[#6888ff]" />
           Plataformas
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -234,13 +292,18 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
                 whileTap={{ scale: 0.98 }}
                 className={`
                   relative p-4 rounded-2xl text-left transition-all duration-300
-                  ${isSelected
-                    ? `bg-gradient-to-br ${plataforma.color} text-white shadow-lg`
-                    : 'bg-slate-50 hover:bg-slate-100 shadow-[4px_4px_12px_rgba(0,0,0,0.08),-4px_-4px_12px_rgba(255,255,255,0.9)]'
-                  }
+                  ${
+                  isSelected
+                    ? `bg-gradient-to-br ${plataforma.color} text-white shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]`
+                    : "bg-[#dfeaff] hover:bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+                }
                 `}
               >
-                <span className={`block text-sm font-semibold ${isSelected ? 'text-white' : 'text-slate-700'}`}>
+                <span
+                  className={`block text-sm font-semibold ${
+                    isSelected ? "text-white" : "text-[#69738c]"
+                  }`}
+                >
                   {plataforma.nombre}
                 </span>
                 {isSelected && (
@@ -254,31 +317,34 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
 
       {/* Presupuesto */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <DollarSign className="w-5 h-5 text-[#6888ff]" />
           Presupuesto Digital
         </h3>
-        <div className="grid md:grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.04)]">
+        <div className="grid md:grid-cols-3 gap-4 p-5 rounded-2xl bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
           <NeuromorphicInput
             label="Monto"
             type="number"
             min={0}
-            value={data.presupuestoDigital || ''}
-            onChange={(v) => onUpdate({ presupuestoDigital: parseFloat(v) || 0 })}
+            value={data.presupuestoDigital || ""}
+            onChange={(v) =>
+              onUpdate({ presupuestoDigital: parseFloat(v) || 0 })}
             placeholder="Ej: 500000"
             icon={DollarSign}
           />
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-slate-600">Moneda</label>
+            <label className="block text-sm font-medium text-[#69738c]">
+              Moneda
+            </label>
             <select
-              value={data.moneda || 'CLP'}
+              value={data.moneda || "CLP"}
               onChange={(e) => onUpdate({ moneda: e.target.value })}
               className="
-                w-full rounded-xl py-3 px-4 bg-slate-50
-                shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]
+                w-full rounded-xl py-3 px-4 bg-[#dfeaff]
+                shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]
                 border-2 border-transparent
-                outline-none focus:ring-2 focus:ring-indigo-400/50
-                text-slate-700
+                outline-none focus:ring-2 focus:ring-[#6888ff]/50
+                text-[#69738c]
                 transition-all duration-200
               "
             >
@@ -288,28 +354,32 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
             </select>
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-slate-600">Tipo de Presupuesto</label>
-            <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-200/60">
+            <label className="block text-sm font-medium text-[#69738c]">
+              Tipo de Presupuesto
+            </label>
+            <div className="flex items-center gap-2 p-1.5 rounded-xl bg-[#dfeaff]/60">
               <button
-                onClick={() => onUpdate({ tipoPresupuesto: 'total' })}
+                onClick={() => onUpdate({ tipoPresupuesto: "total" })}
                 className={`
                   flex-1 py-2 rounded-lg text-sm font-medium transition-all
-                  ${data.tipoPresupuesto === 'total' || !data.tipoPresupuesto
-                    ? 'bg-white text-indigo-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                  }
+                  ${
+                  data.tipoPresupuesto === "total" || !data.tipoPresupuesto
+                    ? "bg-[#dfeaff] text-[#6888ff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+                    : "text-[#9aa3b8] hover:text-[#69738c]"
+                }
                 `}
               >
                 Total
               </button>
               <button
-                onClick={() => onUpdate({ tipoPresupuesto: 'diario' })}
+                onClick={() => onUpdate({ tipoPresupuesto: "diario" })}
                 className={`
                   flex-1 py-2 rounded-lg text-sm font-medium transition-all
-                  ${data.tipoPresupuesto === 'diario'
-                    ? 'bg-white text-indigo-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                  }
+                  ${
+                  data.tipoPresupuesto === "diario"
+                    ? "bg-[#dfeaff] text-[#6888ff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+                    : "text-[#9aa3b8] hover:text-[#69738c]"
+                }
                 `}
               >
                 Diario
@@ -321,8 +391,8 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
 
       {/* Objetivos */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <Target className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <Target className="w-5 h-5 text-[#6888ff]" />
           Objetivos de Campaña
         </h3>
         <div className="grid md:grid-cols-3 gap-4">
@@ -330,24 +400,24 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
             label="Alcance"
             type="number"
             min={0}
-            value={data.objetivos?.alcance || ''}
-            onChange={(v) => updateObjetivo('alcance', v)}
+            value={data.objetivos?.alcance || ""}
+            onChange={(v) => updateObjetivo("alcance", v)}
             placeholder="Ej: 100000"
           />
           <NeuromorphicInput
             label="Impresiones"
             type="number"
             min={0}
-            value={data.objetivos?.impresiones || ''}
-            onChange={(v) => updateObjetivo('impresiones', v)}
+            value={data.objetivos?.impresiones || ""}
+            onChange={(v) => updateObjetivo("impresiones", v)}
             placeholder="Ej: 500000"
           />
           <NeuromorphicInput
             label="Clics"
             type="number"
             min={0}
-            value={data.objetivos?.clics || ''}
-            onChange={(v) => updateObjetivo('clics', v)}
+            value={data.objetivos?.clics || ""}
+            onChange={(v) => updateObjetivo("clics", v)}
             placeholder="Ej: 5000"
           />
         </div>
@@ -355,11 +425,11 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
 
       {/* Tracking Links */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <Link2 className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <Link2 className="w-5 h-5 text-[#6888ff]" />
           Tracking Links
         </h3>
-        <div className="p-5 rounded-2xl bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.04)] space-y-3">
+        <div className="p-5 rounded-2xl bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] space-y-3">
           <div className="flex gap-3">
             <NeuromorphicInput
               type="url"
@@ -372,7 +442,7 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
               onClick={addTrackingLink}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all"
+              className="px-5 py-3 rounded-xl bg-[#6888ff] text-white font-medium shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] hover:shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] transition-all"
             >
               <Plus className="w-5 h-5" />
             </motion.button>
@@ -381,7 +451,7 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
             {(data.trackingLinks || []).length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 className="flex flex-wrap gap-2"
               >
@@ -391,14 +461,14 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center gap-2 px-3 py-2 bg-white rounded-xl shadow-sm border border-slate-100"
+                    className="flex items-center gap-2 px-3 py-2 bg-[#dfeaff] rounded-xl shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] border border-[#bec8de20]"
                   >
-                    <Link2 className="w-4 h-4 text-slate-400" />
+                    <Link2 className="w-4 h-4 text-[#9aa3b8]" />
                     <a
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:underline max-w-[200px] truncate"
+                      className="text-sm text-[#6888ff] hover:underline max-w-[200px] truncate"
                     >
                       {link}
                     </a>
@@ -419,62 +489,66 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
 
       {/* Targeting */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <Users className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <Users className="w-5 h-5 text-[#6888ff]" />
           Configuración de Targeting
         </h3>
-        <div className="grid md:grid-cols-2 gap-4 p-5 rounded-2xl bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.04)]">
+        <div className="grid md:grid-cols-2 gap-4 p-5 rounded-2xl bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
           <div className="grid grid-cols-2 gap-4">
             <NeuromorphicInput
               label="Edad Mínima"
               type="number"
               min={0}
-              value={data.configuracionTargeting?.edadMinima || ''}
+              value={data.configuracionTargeting?.edadMinima || ""}
               onChange={(v) =>
                 onUpdate({
                   configuracionTargeting: {
                     ...data.configuracionTargeting,
-                    edadMinima: parseInt(v) || 0
-                  }
-                })
-              }
+                    edadMinima: parseInt(v) || 0,
+                  },
+                })}
               placeholder="18"
             />
             <NeuromorphicInput
               label="Edad Máxima"
               type="number"
               min={0}
-              value={data.configuracionTargeting?.edadMaxima || ''}
+              value={data.configuracionTargeting?.edadMaxima || ""}
               onChange={(v) =>
                 onUpdate({
                   configuracionTargeting: {
                     ...data.configuracionTargeting,
-                    edadMaxima: parseInt(v) || 0
-                  }
-                })
-              }
+                    edadMaxima: parseInt(v) || 0,
+                  },
+                })}
               placeholder="65"
             />
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-slate-600">Géneros</label>
+            <label className="block text-sm font-medium text-[#69738c]">
+              Géneros
+            </label>
             <div className="flex items-center gap-3">
-              {['M', 'F'].map((genero) => {
-                const selected = (data.configuracionTargeting?.generos as string[])?.includes(genero);
+              {["M", "F"].map((genero) => {
+                const selected =
+                  (data.configuracionTargeting?.generos as string[])?.includes(
+                    genero,
+                  );
                 return (
                   <button
                     key={genero}
                     onClick={() => toggleGenero(genero)}
                     className={`
                       px-5 py-2.5 rounded-xl text-sm font-medium transition-all
-                      ${selected
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                        : 'bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.8)] text-slate-600'
-                      }
+                      ${
+                      selected
+                        ? "bg-[#6888ff] text-white shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
+                        : "bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] text-[#69738c]"
+                    }
                     `}
                   >
-                    {genero === 'M' ? 'Masculino' : 'Femenino'}
+                    {genero === "M" ? "Masculino" : "Femenino"}
                   </button>
                 );
               })}
@@ -483,8 +557,10 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
         </div>
 
         {/* Regiones */}
-        <div className="p-5 rounded-2xl bg-slate-50 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.04)] space-y-3">
-          <label className="block text-sm font-medium text-slate-600">Regiones</label>
+        <div className="p-5 rounded-2xl bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] space-y-3">
+          <label className="block text-sm font-medium text-[#69738c]">
+            Regiones
+          </label>
           <div className="flex gap-3">
             <NeuromorphicInput
               type="text"
@@ -497,37 +573,39 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
               onClick={addRegion}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all"
+              className="px-5 py-3 rounded-xl bg-[#6888ff] text-white font-medium shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] hover:shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] transition-all"
             >
               <Plus className="w-5 h-5" />
             </motion.button>
           </div>
           <AnimatePresence>
-            {((data.configuracionTargeting?.regiones as string[]) || []).length > 0 && (
+            {((data.configuracionTargeting?.regiones as string[]) || [])
+                  .length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 className="flex flex-wrap gap-2"
               >
-                {((data.configuracionTargeting?.regiones as string[]) || []).map((region, idx) => (
-                  <motion.div
-                    key={`${region}-${idx}`}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg text-indigo-700 font-medium text-sm border border-indigo-200"
-                  >
-                    {region}
-                    <button
-                      onClick={() => removeRegion(idx)}
-                      className="hover:text-red-500 ml-1"
-                      aria-label="Eliminar región"
+                {((data.configuracionTargeting?.regiones as string[]) || [])
+                  .map((region, idx) => (
+                    <motion.div
+                      key={`${region}-${idx}`}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg text-[#6888ff] font-medium text-sm border border-[#6888ff30]"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.div>
-                ))}
+                      {region}
+                      <button
+                        onClick={() => removeRegion(idx)}
+                        className="hover:text-red-500 ml-1"
+                        aria-label="Eliminar región"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.div>
+                  ))}
               </motion.div>
             )}
           </AnimatePresence>
@@ -536,12 +614,12 @@ export const PanelEspecificacionesDigitales: React.FC<PanelEspecificacionesDigit
 
       {/* Notas */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
-          <FileText className="w-5 h-5 text-indigo-500" />
+        <h3 className="text-lg font-semibold text-[#69738c] flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#6888ff]" />
           Notas Adicionales
         </h3>
         <NeuromorphicTextarea
-          value={data.notas || ''}
+          value={data.notas || ""}
           onChange={(v) => onUpdate({ notas: v })}
           placeholder="Agregue notas sobre la estrategia digital, restricciones creativas, fechas especiales..."
           rows={4}

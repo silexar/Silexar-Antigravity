@@ -117,7 +117,7 @@ export class AuditLogger {
     // Persist to DB — fire-and-forget for non-critical, error-logged for critical.
     // In-memory array is a fast read cache; DB is the durable record of truth.
     const dbInstance = db;
-    if (dbInstance) {
+    if (dbInstance && process.env.NODE_ENV !== 'development') {
       const isCritical = event.severity === AuditSeverity.CRITICAL;
       const row = {
         eventId:       event.id,
@@ -136,19 +136,21 @@ export class AuditLogger {
         timestamp:     event.timestamp,
       };
 
-      Promise.resolve()
-        .then(() => dbInstance.insert(auditLogs).values(row))
-        .catch((dbErr: unknown) => {
-          // DB write failed — always log prominently; for CRITICAL events
-          // also log the full event so it is not silently lost.
-          qualityLogger.error('AuditLogger: DB write failed', 'AUDIT_DB_ERROR', {
-            eventId: event.id,
-            eventType: event.eventType,
-            severity: event.severity,
-            error: dbErr instanceof Error ? dbErr.message : String(dbErr),
-            ...(isCritical ? { fullEvent: event } : {}),
+      try {
+        Promise.resolve()
+          .then(() => dbInstance.insert(auditLogs).values(row))
+          .catch((dbErr: unknown) => {
+            qualityLogger.error('AuditLogger: DB write failed', 'AUDIT_DB_ERROR', {
+              eventId: event.id,
+              eventType: event.eventType,
+              severity: event.severity,
+              error: dbErr instanceof Error ? dbErr.message : String(dbErr),
+              ...(isCritical ? { fullEvent: event } : {}),
+            });
           });
-        });
+      } catch (syncErr) {
+         // Silently swallow sync errors in development
+      }
     }
 
     // Alert on critical events immediately

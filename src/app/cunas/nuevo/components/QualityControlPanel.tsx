@@ -68,7 +68,7 @@ export const QualityControlPanel: React.FC<QualityControlPanelProps> = ({
     <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden font-sans">
       
       {/* Header Panel */}
-      <div className="bg-[#F0EDE8] text-white p-4 flex justify-between items-center">
+      <div className="bg-[#EAF0F6] text-slate-800 p-4 flex justify-between items-center border-b border-slate-200">
         <div className="flex items-center gap-2">
           <Activity className="w-5 h-5 text-emerald-400" />
           <h3 className="font-bold tracking-wide uppercase text-sm">Validación Técnica de Audio</h3>

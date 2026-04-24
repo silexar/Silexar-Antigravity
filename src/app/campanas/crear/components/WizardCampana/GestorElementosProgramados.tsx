@@ -72,7 +72,7 @@ import {
   Music,
   Mic,
   MessageSquare,
-  ImageIcon,
+  Image as ImageIcon,
   Volume2,
   Video,
   Sparkles,

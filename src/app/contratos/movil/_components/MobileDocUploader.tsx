@@ -1,8 +1,8 @@
 /**
- * 📎 MOBILE: Cargador de Documentos del Contrato
+ * ?? MOBILE: Cargador de Documentos del Contrato
  * 
  * Permite al ejecutivo adjuntar documentos al contrato:
- * cámara, galería, archivos. Preview interactivo y
+ * c�mara, galer�a, archivos. Preview interactivo y
  * upload simulado con progreso.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -18,9 +18,9 @@ import {
   AlertTriangle, Paperclip,
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface Documento {
   id: string;
@@ -41,9 +41,9 @@ interface MobileDocUploaderProps {
   maxDocs?: number;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function MobileDocUploader({
   documentos, onAgregar, onEliminar, maxDocs = 10,
@@ -82,7 +82,7 @@ export function MobileDocUploader({
   }, [onAgregar]);
 
   const handleCamera = () => {
-    // En producción: abrir cámara real
+    // En producci�n: abrir c�mara real
     simularUpload('Foto_contrato.jpg', 'imagen', 'camara');
   };
 
@@ -99,15 +99,15 @@ export function MobileDocUploader({
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-            <Paperclip className="w-4 h-4 text-indigo-500" /> Documentos
+          <p className="text-sm font-bold text-[#69738c] flex items-center gap-2">
+            <Paperclip className="w-4 h-4 text-[#6888ff]" /> Documentos
           </p>
-          <p className="text-[10px] text-slate-400">{completados}/{maxDocs} adjuntos</p>
+          <p className="text-[10px] text-[#9aa3b8]">{completados}/{maxDocs} adjuntos</p>
         </div>
         {documentos.length < maxDocs && (
           <button
             onClick={() => setShowOpciones(true)}
-            className="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95"
+            className="px-3 py-2 bg-[#6888ff] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95"
           >
             <Upload className="w-3.5 h-3.5" /> Adjuntar
           </button>
@@ -116,13 +116,13 @@ export function MobileDocUploader({
 
       {/* LISTA DE DOCUMENTOS */}
       {documentos.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-          <FileUp className="w-12 h-12 text-slate-300 mx-auto" />
-          <p className="mt-3 text-sm font-bold text-slate-400">Sin documentos</p>
-          <p className="text-xs text-slate-400 mt-1">Adjunta propuestas, contratos firmados o fotos</p>
+        <div className="text-center py-8 bg-[#dfeaff] rounded-2xl border border-dashed border-[#bec8de30]">
+          <FileUp className="w-12 h-12 text-[#9aa3b8] mx-auto" />
+          <p className="mt-3 text-sm font-bold text-[#9aa3b8]">Sin documentos</p>
+          <p className="text-xs text-[#9aa3b8] mt-1">Adjunta propuestas, contratos firmados o fotos</p>
           <button
             onClick={() => setShowOpciones(true)}
-            className="mt-4 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold active:scale-95"
+            className="mt-4 px-5 py-2.5 bg-[#6888ff] text-white rounded-xl text-xs font-bold active:scale-95"
           >
             Adjuntar documento
           </button>
@@ -130,24 +130,24 @@ export function MobileDocUploader({
       ) : (
         <div className="space-y-2">
           {documentos.map(doc => (
-            <div key={doc.id} className="bg-white rounded-xl border border-slate-100 p-3 flex items-center gap-3">
+            <div key={doc.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3">
               {/* ICONO */}
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                doc.tipo === 'imagen' ? 'bg-blue-100' : doc.tipo === 'pdf' ? 'bg-red-100' : 'bg-slate-100'
+                doc.tipo === 'imagen' ? 'bg-blue-100' : doc.tipo === 'pdf' ? 'bg-red-100' : 'bg-[#dfeaff]'
               }`}>
                 {doc.tipo === 'imagen' ? <Image className="w-5 h-5 text-blue-500" /> :
                  doc.tipo === 'pdf' ? <File className="w-5 h-5 text-red-500" /> :
-                 <File className="w-5 h-5 text-slate-500" />}
+                 <File className="w-5 h-5 text-[#9aa3b8]" />}
               </div>
 
               {/* INFO */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-slate-800 truncate">{doc.nombre}</p>
+                <p className="text-sm font-bold text-[#69738c] truncate">{doc.nombre}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] text-slate-400">{doc.tamano}</span>
+                  <span className="text-[10px] text-[#9aa3b8]">{doc.tamano}</span>
                   {doc.estado === 'subiendo' && (
-                    <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${doc.progreso}%` }} />
+                    <div className="flex-1 h-1.5 bg-[#dfeaff] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#6888ff] rounded-full transition-all" style={{ width: `${doc.progreso}%` }} />
                     </div>
                   )}
                   {doc.estado === 'completado' && (
@@ -165,12 +165,12 @@ export function MobileDocUploader({
 
               {/* ACCIONES */}
               {doc.estado === 'subiendo' ? (
-                <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
+                <Loader2 className="w-4 h-4 text-[#6888ff] animate-spin" />
               ) : (
                 <div className="flex items-center gap-1">
                   {doc.tipo === 'imagen' && (
-                    <button aria-label="Ver detalle" onClick={() => setPreviewing(doc.id)} className="p-1.5 rounded-lg bg-slate-100 active:scale-90">
-                      <Eye className="w-3.5 h-3.5 text-slate-400" />
+                    <button aria-label="Ver detalle" onClick={() => setPreviewing(doc.id)} className="p-1.5 rounded-lg bg-[#dfeaff] active:scale-90">
+                      <Eye className="w-3.5 h-3.5 text-[#9aa3b8]" />
                     </button>
                   )}
                   <button aria-label="Eliminar" onClick={() => onEliminar(doc.id)} className="p-1.5 rounded-lg bg-red-50 active:scale-90">
@@ -190,11 +190,11 @@ export function MobileDocUploader({
       {/* SHEET DE OPCIONES */}
       {showOpciones && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => setShowOpciones(false)}>
-          <div className="bg-white w-full rounded-t-3xl p-5 space-y-3" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#dfeaff] w-full rounded-t-3xl p-5 space-y-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-bold text-lg text-slate-800">Adjuntar Documento</h3>
-              <button aria-label="Cerrar" onClick={() => setShowOpciones(false)} className="p-2 rounded-xl bg-slate-100">
-                <X className="w-5 h-5 text-slate-500" />
+              <h3 className="font-bold text-lg text-[#69738c]">Adjuntar Documento</h3>
+              <button aria-label="Cerrar" onClick={() => setShowOpciones(false)} className="p-2 rounded-xl bg-[#dfeaff]">
+                <X className="w-5 h-5 text-[#9aa3b8]" />
               </button>
             </div>
 
@@ -204,8 +204,8 @@ export function MobileDocUploader({
                 <Camera className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm text-slate-800">Tomar Foto</p>
-                <p className="text-[10px] text-slate-500">Fotografía un documento o propuesta</p>
+                <p className="font-bold text-sm text-[#69738c]">Tomar Foto</p>
+                <p className="text-[10px] text-[#9aa3b8]">Fotograf�a un documento o propuesta</p>
               </div>
             </button>
 
@@ -215,19 +215,19 @@ export function MobileDocUploader({
                 <Image className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm text-slate-800">Galería</p>
-                <p className="text-[10px] text-slate-500">Seleccionar imagen existente</p>
+                <p className="font-bold text-sm text-[#69738c]">Galer�a</p>
+                <p className="text-[10px] text-[#9aa3b8]">Seleccionar imagen existente</p>
               </div>
             </button>
 
             <button onClick={handleArchivo}
-              className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-3 active:scale-[0.97]">
-              <div className="w-10 h-10 rounded-xl bg-slate-600 flex items-center justify-center">
+              className="w-full p-4 bg-[#dfeaff] border border-[#bec8de30] rounded-2xl flex items-center gap-3 active:scale-[0.97]">
+              <div className="w-10 h-10 rounded-xl bg-[#69738c] flex items-center justify-center">
                 <FileUp className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm text-slate-800">Archivo PDF/Word</p>
-                <p className="text-[10px] text-slate-500">Seleccionar documento del dispositivo</p>
+                <p className="font-bold text-sm text-[#69738c]">Archivo PDF/Word</p>
+                <p className="text-[10px] text-[#9aa3b8]">Seleccionar documento del dispositivo</p>
               </div>
             </button>
           </div>
@@ -237,13 +237,13 @@ export function MobileDocUploader({
       {/* PREVIEW MODAL */}
       {previewing && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setPreviewing(null)}>
-          <div className="bg-white rounded-2xl p-4 max-w-sm w-full text-center">
-            <div className="w-full h-48 bg-slate-100 rounded-xl flex items-center justify-center mb-3">
-              <Image className="w-16 h-16 text-slate-300" />
-              <p className="text-xs text-slate-400 ml-2">Vista previa</p>
+          <div className="bg-[#dfeaff] rounded-2xl p-4 max-w-sm w-full text-center">
+            <div className="w-full h-48 bg-[#dfeaff] rounded-xl flex items-center justify-center mb-3">
+              <Image className="w-16 h-16 text-[#9aa3b8]" />
+              <p className="text-xs text-[#9aa3b8] ml-2">Vista previa</p>
             </div>
             <button onClick={() => setPreviewing(null)}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold text-sm">
+              className="px-6 py-2 bg-[#6888ff] text-white rounded-xl font-bold text-sm">
               Cerrar
             </button>
           </div>

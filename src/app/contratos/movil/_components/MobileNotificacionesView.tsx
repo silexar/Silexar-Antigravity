@@ -1,5 +1,5 @@
 /**
- * ðŸ”” MOBILE: Vista de Notificaciones Inteligente
+ * ?? MOBILE: Vista de Notificaciones Inteligente
  * 
  * Cards agrupadas por prioridad con acciones directas,
  * swipe para eliminar, pull-to-refresh.
@@ -29,11 +29,11 @@ interface Notificacion {
 }
 
 const NOTIFS: Notificacion[] = [
-  { id: 'n1', tipo: 'aprobacion', titulo: 'Contrato Banco Chile pendiente', descripcion: 'SP-2025-0012 requiere aprobaciÃ³n de gerencia ($85M)', timestamp: 'Hace 5 min', leida: false, prioridad: 'alta', accion: { label: 'Aprobar', tipo: 'aprobar' } },
-  { id: 'n2', tipo: 'urgente', titulo: 'Vencimiento crÃ­tico: LATAM', descripcion: 'SP-2024-0088 vence en 3 dÃ­as. Valor $200M', timestamp: 'Hace 15 min', leida: false, prioridad: 'alta', accion: { label: 'Renovar', tipo: 'renovar' } },
-  { id: 'n3', tipo: 'ia', titulo: 'IA detectÃ³ oportunidad', descripcion: 'Cencosud histÃ³ricamente renueva en marzo', timestamp: 'Hace 30 min', leida: false, prioridad: 'media', accion: { label: 'Llamar', tipo: 'llamar' } },
-  { id: 'n4', tipo: 'pago', titulo: 'Pago recibido: Falabella', descripcion: 'Factura #4521 pagada â€” $12.5M', timestamp: 'Hace 1h', leida: true, prioridad: 'baja' },
-  { id: 'n5', tipo: 'vencimiento', titulo: 'Contrato por vencer', descripcion: 'Cencosud vence en 15 dÃ­as', timestamp: 'Hace 2h', leida: true, prioridad: 'media', accion: { label: 'Ver', tipo: 'ver' } },
+  { id: 'n1', tipo: 'aprobacion', titulo: 'Contrato Banco Chile pendiente', descripcion: 'SP-2025-0012 requiere aprobación de gerencia ($85M)', timestamp: 'Hace 5 min', leida: false, prioridad: 'alta', accion: { label: 'Aprobar', tipo: 'aprobar' } },
+  { id: 'n2', tipo: 'urgente', titulo: 'Vencimiento crítico: LATAM', descripcion: 'SP-2024-0088 vence en 3 días. Valor $200M', timestamp: 'Hace 15 min', leida: false, prioridad: 'alta', accion: { label: 'Renovar', tipo: 'renovar' } },
+  { id: 'n3', tipo: 'ia', titulo: 'IA detectó oportunidad', descripcion: 'Cencosud históricamente renueva en marzo', timestamp: 'Hace 30 min', leida: false, prioridad: 'media', accion: { label: 'Llamar', tipo: 'llamar' } },
+  { id: 'n4', tipo: 'pago', titulo: 'Pago recibido: Falabella', descripcion: 'Factura #4521 pagada — $12.5M', timestamp: 'Hace 1h', leida: true, prioridad: 'baja' },
+  { id: 'n5', tipo: 'vencimiento', titulo: 'Contrato por vencer', descripcion: 'Cencosud vence en 15 días', timestamp: 'Hace 2h', leida: true, prioridad: 'media', accion: { label: 'Ver', tipo: 'ver' } },
 ];
 
 export function MobileNotificacionesView() {
@@ -54,7 +54,7 @@ export function MobileNotificacionesView() {
     vencimiento: { icon: <Clock className="w-4 h-4" />, color: 'bg-orange-100 text-orange-600' },
     renovacion: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600' },
     pago: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-emerald-100 text-emerald-600' },
-    ia: { icon: <Sparkles className="w-4 h-4" />, color: 'bg-violet-100 text-violet-600' },
+    ia: { icon: <Sparkles className="w-4 h-4" />, color: 'bg-violet-100 text-[#6888ff]' },
     urgente: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-red-100 text-red-600' },
   };
 
@@ -63,12 +63,12 @@ export function MobileNotificacionesView() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bell className="w-5 h-5 text-indigo-600" />
-          <h3 className="font-bold text-lg text-slate-800">Notificaciones</h3>
+          <Bell className="w-5 h-5 text-[#6888ff]" />
+          <h3 className="font-bold text-lg text-[#69738c]">Notificaciones</h3>
           {noLeidas > 0 && <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">{noLeidas}</span>}
         </div>
         {noLeidas > 0 && (
-          <button onClick={marcarTodas} className="text-xs text-indigo-600 font-bold">Leer todas</button>
+          <button onClick={marcarTodas} className="text-xs text-[#6888ff] font-bold">Leer todas</button>
         )}
       </div>
 
@@ -77,9 +77,9 @@ export function MobileNotificacionesView() {
         {['todas', 'no_leidas', 'urgente', 'aprobacion', 'ia'].map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap ${
-              filtro === f ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'
+              filtro === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
             }`}>
-            {f === 'todas' ? 'Todas' : f === 'no_leidas' ? 'No leÃ­das' : f.charAt(0).toUpperCase() + f.slice(1)}
+            {f === 'todas' ? 'Todas' : f === 'no_leidas' ? 'No leídas' : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
       </div>
@@ -88,7 +88,7 @@ export function MobileNotificacionesView() {
       {filtered.length === 0 ? (
         <div className="text-center py-10 bg-emerald-50 rounded-2xl">
           <CheckCircle2 className="w-12 h-12 text-emerald-300 mx-auto" />
-          <p className="mt-3 font-bold text-emerald-500">Todo al dÃ­a</p>
+          <p className="mt-3 font-bold text-emerald-500">Todo al día</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -97,29 +97,29 @@ export function MobileNotificacionesView() {
             return (
               <div key={n.id} onClick={() => marcarLeida(n.id)}
                 className={`p-3 rounded-xl border flex items-start gap-3 ${
-                  !n.leida ? 'bg-indigo-50/50 border-indigo-100' : 'bg-white border-slate-100'
+                  !n.leida ? 'bg-[#dfeaff]/50 border-[#6888ff]/20' : 'bg-[#dfeaff] border-[#bec8de30]'
                 }`}>
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${c.color}`}>
                   {c.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className={`text-sm font-bold truncate ${!n.leida ? 'text-slate-800' : 'text-slate-600'}`}>{n.titulo}</p>
-                    {!n.leida && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />}
+                    <p className={`text-sm font-bold truncate ${!n.leida ? 'text-[#69738c]' : 'text-[#69738c]'}`}>{n.titulo}</p>
+                    {!n.leida && <div className="w-1.5 h-1.5 rounded-full bg-[#6888ff] shrink-0" />}
                   </div>
-                  <p className="text-[10px] text-slate-500 mt-0.5 line-clamp-2">{n.descripcion}</p>
+                  <p className="text-[10px] text-[#9aa3b8] mt-0.5 line-clamp-2">{n.descripcion}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-[9px] text-slate-400">{n.timestamp}</span>
+                    <span className="text-[9px] text-[#9aa3b8]">{n.timestamp}</span>
                     <div className="flex items-center gap-1.5">
                       {n.accion && (
-                        <button className="px-2.5 py-1 bg-indigo-600 text-white text-[9px] font-bold rounded-lg active:scale-95"
+                        <button className="px-2.5 py-1 bg-[#6888ff] text-white text-[9px] font-bold rounded-lg active:scale-95"
                           onClick={e => { e.stopPropagation(); ; }}>
                           {n.accion.label}
                         </button>
                       )}
-                      <button className="p-1 rounded-lg bg-slate-100 active:scale-90"
+                      <button className="p-1 rounded-lg bg-[#dfeaff] active:scale-90"
                         onClick={e => { e.stopPropagation(); eliminar(n.id); }}>
-                        <X className="w-3 h-3 text-slate-400" />
+                        <X className="w-3 h-3 text-[#9aa3b8]" />
                       </button>
                     </div>
                   </div>

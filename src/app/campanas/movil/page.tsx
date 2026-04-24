@@ -17,13 +17,14 @@ import React, { useState } from 'react';
 
 import {
   Home, Activity, Bell, Plus, Calendar,
-  Briefcase, Menu
+  Briefcase, Menu, ArrowLeft
 } from 'lucide-react';
 import { useCampanas } from '../_lib/useCampanas';
 import { MobileDashboardView } from './_components/MobileDashboardView';
 import { MobileCampanasList } from './_components/MobileCampanasList';
 import { MobileCampanaDetail } from './_components/MobileCampanaDetail';
 import { MobileNuevaCampana } from './_components/MobileNuevaCampana';
+import { NeoPageHeader, NeoCard, NeoButton, N } from '../_lib/neumorphic';
 
 export default function MobileCampanasApp() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'campanas' | 'alertas' | 'calendario' | 'detalle' | 'crear'>('dashboard');
@@ -47,21 +48,25 @@ export default function MobileCampanasApp() {
           if (id === 'campanas') setSelectedCampanaId(null);
           setActiveTab(id);
         }}
-        className={`flex flex-col items-center justify-center w-full relative ${
-          isActive ? 'text-blue-600' : 'text-gray-400'
-        }`}
+        className="flex flex-col items-center justify-center w-full relative"
+        style={{ color: isActive ? N.accent : N.textSub }}
       >
-        <div className={`p-2 rounded-2xl transition-all ${
-          isActive 
-            ? 'bg-blue-50 shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]' 
-            : ''
-        }`}>
-          <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
+        <div 
+          className="p-2 rounded-2xl transition-all relative"
+          style={isActive 
+            ? { background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark}, inset -2px -2px 4px ${N.light}` }
+            : {}
+          }
+        >
+          <Icon className="w-6 h-6" style={{ strokeWidth: isActive ? 2.5 : 2 }} />
           {alert && (
-            <span className="absolute top-1 right-1/4 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse" />
+            <span 
+              className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 animate-pulse"
+              style={{ background: '#ef4444', borderColor: N.base }}
+            />
           )}
         </div>
-        <span className={`text-[10px] mt-1 font-bold ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
+        <span className="text-[10px] mt-1 font-bold" style={{ color: isActive ? N.accent : N.textSub }}>
           {label}
         </span>
       </button>
@@ -86,25 +91,42 @@ export default function MobileCampanasApp() {
   }
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-[#f3f4f6] font-sans overflow-hidden">
+    <div className="flex flex-col h-[100dvh] font-sans overflow-hidden" style={{ background: N.base }}>
       
       {/* HEADER SUPERIOR */}
-      <header className="px-5 pt-10 pb-4 bg-white shadow-[0_4px_10px_rgba(0,0,0,0.03)] z-20 flex justify-between items-center rounded-b-3xl border-b border-gray-100">
+      <header 
+        className="px-5 pt-10 pb-4 z-20 flex justify-between items-center rounded-b-3xl"
+        style={{ 
+          background: N.base, 
+          boxShadow: `0 8px 16px ${N.dark}, inset 0 -2px 4px ${N.light}`,
+          borderBottom: `1px solid ${N.dark}40`
+        }}
+      >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]">
+          <div 
+            className="w-10 h-10 rounded-2xl flex items-center justify-center"
+            style={{ background: N.accent, boxShadow: `4px 4px 8px ${N.dark}, -2px -2px 6px ${N.light}` }}
+          >
             <Activity className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-gray-900 leading-none">
-              Silexar <span className="text-blue-600">Pulse</span>
+            <h1 className="text-xl font-extrabold tracking-tight leading-none" style={{ color: N.text }}>
+              Silexar <span style={{ color: N.accent }}>Pulse</span>
             </h1>
-            <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">
+            <p className="text-[11px] font-bold tracking-widest uppercase mt-0.5" style={{ color: N.textSub }}>
               Campañas Mobile
             </p>
           </div>
         </div>
         
-        <button className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff] text-gray-500 active:shadow-inner">
+        <button 
+          className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all"
+          style={{ 
+            background: N.base, 
+            boxShadow: `4px 4px 8px ${N.dark}, -4px -4px 8px ${N.light}`,
+            color: N.textSub 
+          }}
+        >
           <Menu className="w-5 h-5" />
         </button>
       </header>
@@ -124,17 +146,17 @@ export default function MobileCampanasApp() {
           />
         )}
         {activeTab === 'alertas' && (
-          <div className="flex flex-col items-center justify-center py-20 opacity-60">
-            <Bell className="w-16 h-16 text-gray-400 mb-4" />
-            <p className="text-gray-500 font-bold">Centro de Alertas Silexar</p>
-            <p className="text-sm text-gray-400 mt-2">Próximamente disponible</p>
+          <div className="flex flex-col items-center justify-center py-20" style={{ opacity: 0.6 }}>
+            <Bell className="w-16 h-16 mb-4" style={{ color: N.textSub }} />
+            <p className="font-bold" style={{ color: N.text }}>Centro de Alertas Silexar</p>
+            <p className="text-sm mt-2" style={{ color: N.textSub }}>Próximamente disponible</p>
           </div>
         )}
         {activeTab === 'calendario' && (
-          <div className="flex flex-col items-center justify-center py-20 opacity-60">
-            <Calendar className="w-16 h-16 text-gray-400 mb-4" />
-            <p className="text-gray-500 font-bold">Grilla de Programación</p>
-            <p className="text-sm text-gray-400 mt-2">Próximamente disponible</p>
+          <div className="flex flex-col items-center justify-center py-20" style={{ opacity: 0.6 }}>
+            <Calendar className="w-16 h-16 mb-4" style={{ color: N.textSub }} />
+            <p className="font-bold" style={{ color: N.text }}>Grilla de Programación</p>
+            <p className="text-sm mt-2" style={{ color: N.textSub }}>Próximamente disponible</p>
           </div>
         )}
       </main>
@@ -143,14 +165,25 @@ export default function MobileCampanasApp() {
       {(activeTab as string) !== 'crear' && activeTab !== 'detalle' && (
         <button 
           onClick={() => setActiveTab('crear')}
-          className="absolute bottom-24 right-5 w-14 h-14 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-full flex items-center justify-center text-white shadow-[0_8px_20px_rgba(37,99,235,0.4)] z-30 transition-transform active:scale-95"
+          className="absolute bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center text-white z-30 transition-transform active:scale-95"
+          style={{ 
+            background: N.accent, 
+            boxShadow: `6px 6px 12px ${N.dark}, -4px -4px 10px ${N.light}` 
+          }}
         >
           <Plus className="w-6 h-6" />
         </button>
       )}
 
       {/* BOTTOM NAVIGATION (Neumorphic TIER 0) */}
-      <nav className="fixed bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 pb-safe pt-2 px-2 z-30 rounded-t-3xl shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+      <nav 
+        className="fixed bottom-0 w-full pb-safe pt-2 px-2 z-30 rounded-t-3xl"
+        style={{ 
+          background: N.base, 
+          boxShadow: `0 -8px 16px ${N.dark}60`,
+          borderTop: `1px solid ${N.light}`
+        }}
+      >
         <div className="flex justify-around items-center h-16 max-w-md mx-auto relative mb-2">
           <NavItem id="dashboard" icon={Home} label="Dashboard" />
           <NavItem id="campanas" icon={Briefcase} label="Campañas" />

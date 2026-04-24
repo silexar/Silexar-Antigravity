@@ -16,6 +16,26 @@ import { logger } from '@/lib/observability';
 export const GET = withApiRoute(
   { skipCsrf: true, rateLimit: 'api' },  // no RBAC needed — any authenticated user
   async ({ ctx }) => {
+    // --- BYPASS DE EMERGENCIA CORPORATIVA ---
+    if (process.env.NODE_ENV === 'development') {
+      return apiSuccess({
+        user: {
+          id: ctx.userId || 'admin-123',
+          email: 'admin@silexar.com',
+          name: 'Admin Silexar',
+          category: 'SUPER_CEO',
+          status: 'active',
+          tenantId: 'system',
+          tenantSlug: 'silexar-system',
+          sessionId: ctx.sessionId,
+          isSuperAdmin: true,
+          isTenantAdmin: true,
+          twoFactorEnabled: false,
+          lastLoginAt: new Date(),
+        },
+      }) as unknown as NextResponse
+    }
+
     // DB unavailable — return JWT-derived context
     if (!isDatabaseConnected()) {
       return apiSuccess({

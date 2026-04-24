@@ -3,6 +3,7 @@
  * 
  * @description Vista principal del módulo de contratos con
  * métricas, accesos rápidos y navegación a sub-módulos.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -33,6 +34,25 @@ import {
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
+
+// ═══════════════════════════════════════════════════════════════
 // TIPOS Y DATOS
 // ═══════════════════════════════════════════════════════════════
 
@@ -54,10 +74,10 @@ interface AccesoRapido {
 }
 
 const metricas: MetricaDashboard[] = [
-  { titulo: 'Contratos Activos', valor: 83, cambio: 12, icono: FileText, color: 'from-indigo-500 to-purple-600' },
-  { titulo: 'Valor Cartera', valor: '$2.85B', cambio: 8, icono: DollarSign, color: 'from-emerald-500 to-teal-600' },
-  { titulo: 'Pendientes Aprobación', valor: 7, cambio: -3, icono: Clock, color: 'from-amber-500 to-orange-600' },
-  { titulo: 'Tasa Conversión', valor: '78%', cambio: 5, icono: TrendingUp, color: 'from-blue-500 to-cyan-600' }
+  { titulo: 'Contratos Activos', valor: 83, cambio: 12, icono: FileText, color: '#6888ff' },
+  { titulo: 'Valor Cartera', valor: '$2.85B', cambio: 8, icono: DollarSign, color: '#22c55e' },
+  { titulo: 'Pendientes Aprobación', valor: 7, cambio: -3, icono: Clock, color: '#f59e0b' },
+  { titulo: 'Tasa Conversión', valor: '78%', cambio: 5, icono: TrendingUp, color: '#6888ff' }
 ];
 
 const accesosRapidos: AccesoRapido[] = [
@@ -66,7 +86,7 @@ const accesosRapidos: AccesoRapido[] = [
     descripcion: 'Crear contrato con wizard IA', 
     icono: Plus, 
     href: '/contratos/nuevo', 
-    color: 'from-indigo-500 to-purple-600',
+    color: '#6888ff',
     badge: 'Recomendado'
   },
   { 
@@ -74,35 +94,35 @@ const accesosRapidos: AccesoRapido[] = [
     descripcion: 'Vista Kanban de contratos', 
     icono: Columns3, 
     href: '/contratos/pipeline', 
-    color: 'from-blue-500 to-cyan-600'
+    color: '#3b82f6'
   },
   { 
     titulo: 'Traffic', 
     descripcion: 'Tracking de ejecución', 
     icono: Radio, 
     href: '/contratos/traffic', 
-    color: 'from-emerald-500 to-teal-600'
+    color: '#22c55e'
   },
   { 
     titulo: 'Analytics', 
     descripcion: 'Métricas y predicciones', 
     icono: BarChart3, 
     href: '/contratos/analytics', 
-    color: 'from-amber-500 to-orange-600'
+    color: '#f59e0b'
   },
   { 
     titulo: 'Biblioteca Cláusulas', 
     descripcion: 'Gestionar cláusulas legales', 
     icono: BookOpen, 
     href: '/contratos/clausulas', 
-    color: 'from-purple-500 to-pink-600'
+    color: '#a855f7'
   },
   { 
     titulo: 'Auditoría', 
     descripcion: 'Trail de seguridad', 
     icono: Shield, 
     href: '/contratos/auditoria', 
-    color: 'from-slate-600 to-slate-800'
+    color: '#69738c'
   }
 ];
 
@@ -113,68 +133,90 @@ const alertasRecientes = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// COMPONENTES
+// COMPONENTES NEUMORPHIC
 // ═══════════════════════════════════════════════════════════════
 
-const MetricaCard: React.FC<MetricaDashboard> = ({ titulo, valor, cambio, icono: Icon, color }) => (
-  <motion.div
-    className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${color} text-white shadow-xl`}
-    whileHover={{ scale: 1.02, y: -4 }}
-    transition={{ type: 'spring', stiffness: 300 }}
-  >
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-white/80 text-sm font-medium">{titulo}</p>
-        <h3 className="text-3xl font-bold mt-1">{valor}</h3>
-        <div className={`flex items-center gap-1 mt-2 text-sm ${cambio >= 0 ? 'text-emerald-200' : 'text-red-200'}`}>
-          <TrendingUp className={`w-4 h-4 ${cambio < 0 ? 'rotate-180' : ''}`} />
-          <span>{cambio >= 0 ? '+' : ''}{cambio}%</span>
-          <span className="text-white/50 ml-1">vs mes anterior</span>
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
+
+function MetricaCard({ metrica }: { metrica: MetricaDashboard }) {
+  const { titulo, valor, cambio, icono: Icon, color } = metrica;
+  return (
+    <NeuCard className="p-6 relative overflow-hidden">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: N.textSub }}>{titulo}</p>
+          <h3 className="text-3xl font-black mt-1" style={{ color: N.text }}>{valor}</h3>
+          <div className="flex items-center gap-1 mt-2 text-sm">
+            <TrendingUp className={`w-4 h-4 ${cambio < 0 ? 'rotate-180' : ''}`} style={{ color: cambio >= 0 ? '#22c55e' : '#ef4444' }} />
+            <span style={{ color: cambio >= 0 ? '#22c55e' : '#ef4444' }}>{cambio >= 0 ? '+' : ''}{cambio}%</span>
+            <span style={{ color: N.textSub }}>vs mes anterior</span>
+          </div>
+        </div>
+        <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
+          <Icon className="w-6 h-6" style={{ color }} />
         </div>
       </div>
-      <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
-        <Icon className="w-6 h-6" />
-      </div>
-    </div>
-    <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-white/10" />
-  </motion.div>
-);
+    </NeuCard>
+  );
+}
 
-const AccesoRapidoCard: React.FC<AccesoRapido & { onClick: () => void }> = ({
-  titulo, descripcion, icono: Icon, color, badge, onClick
-}) => (
-  <motion.button
-    onClick={onClick}
-    className="relative p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-lg transition-all text-left w-full group"
-    whileHover={{ y: -2 }}
-  >
-    <div className="flex items-start gap-4">
-      <div className={`p-3 rounded-xl bg-gradient-to-br ${color} text-white shadow-lg group-hover:scale-110 transition-transform`}>
-        <Icon className="w-6 h-6" />
-      </div>
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-slate-800">{titulo}</h3>
-          {badge && (
-            <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-medium">
-              {badge}
-            </span>
-          )}
+function AccesoRapidoCard({ acceso }: { acceso: AccesoRapido }) {
+  const router = useRouter();
+  const { titulo, descripcion, icono: Icon, color, badge } = acceso;
+  return (
+    <motion.button
+      onClick={() => router.push(acceso.href)}
+      className="group p-5 rounded-2xl text-left w-full transition-all duration-300"
+      style={{ background: N.base, boxShadow: neu }}
+      whileHover={{ scale: 1.01 }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}` }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = neu }}
+    >
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-xl flex-shrink-0" style={{ background: N.base, boxShadow: neuSm }}>
+          <Icon className="w-6 h-6" style={{ color }} />
         </div>
-        <p className="text-sm text-slate-500 mt-0.5">{descripcion}</p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-sm truncate" style={{ color: N.text }}>{titulo}</h3>
+            {badge && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: `${N.accent}18`, color: N.accent }}>
+                {badge}
+              </span>
+            )}
+          </div>
+          <p className="text-sm truncate mt-0.5" style={{ color: N.textSub }}>{descripcion}</p>
+        </div>
+        <ArrowUpRight className="w-5 h-5 flex-shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: N.accent }} />
       </div>
-      <ArrowUpRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-500 transition-colors" />
-    </div>
-  </motion.button>
-);
+    </motion.button>
+  );
+}
 
-const AlertaItem: React.FC<{
-  alerta: typeof alertasRecientes[0];
-}> = ({ alerta }) => {
+function AlertaItem({ alerta }: { alerta: typeof alertasRecientes[0] }) {
   const prioridadConfig = {
-    alta: { bg: 'bg-red-50', border: 'border-red-200', icon: AlertTriangle, color: 'text-red-500' },
-    media: { bg: 'bg-amber-50', border: 'border-amber-200', icon: Clock, color: 'text-amber-500' },
-    normal: { bg: 'bg-blue-50', border: 'border-blue-200', icon: FileText, color: 'text-blue-500' }
+    alta: { color: '#ef4444', bg: 'rgba(239,68,68,0.08)', icon: AlertTriangle },
+    media: { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', icon: Clock },
+    normal: { color: '#6888ff', bg: 'rgba(104,136,255,0.08)', icon: FileText }
   }[alerta.prioridad];
 
   if (!prioridadConfig) return null;
@@ -184,18 +226,19 @@ const AlertaItem: React.FC<{
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`p-4 rounded-xl ${prioridadConfig.bg} border ${prioridadConfig.border}`}
+      className="p-4 rounded-2xl"
+      style={{ background: prioridadConfig.bg }}
     >
       <div className="flex items-center gap-3">
-        <Icon className={`w-5 h-5 ${prioridadConfig.color}`} />
-        <p className="text-sm text-slate-700 flex-1">{alerta.mensaje}</p>
-        <button className="text-sm text-indigo-600 font-medium hover:underline">
-          Ver
-        </button>
+        <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+          <Icon className="w-4 h-4" style={{ color: prioridadConfig.color }} />
+        </div>
+        <p className="text-sm flex-1" style={{ color: N.text }}>{alerta.mensaje}</p>
+        <button className="text-xs font-bold hover:underline" style={{ color: N.accent }}>Ver</button>
       </div>
     </motion.div>
   );
-};
+}
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -206,59 +249,50 @@ export default function ContratosDashboard() {
   const [alertas] = useState(alertasRecientes);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/30">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-                <FileText className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800">Gestión de Contratos</h1>
-                <p className="text-slate-500 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-500" />
-                  Módulo Enterprise con IA integrada
-                </p>
-              </div>
+    <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
+      <div className="max-w-[1600px] mx-auto space-y-8">
+        
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: neu }}>
+              <FileText className="w-8 h-8" style={{ color: N.accent }} />
             </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.push('/contratos/nuevo')}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                Nuevo Contrato
-              </button>
+            <div>
+              <h1 className="text-3xl font-black" style={{ color: N.text }}>Gestión de Contratos</h1>
+              <p className="text-sm mt-1 flex items-center gap-2" style={{ color: N.textSub }}>
+                <Sparkles className="w-4 h-4" style={{ color: N.accent }} />
+                Módulo Enterprise con IA integrada
+              </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 py-8">
+          <div className="flex items-center gap-3">
+            <NeuButton variant="primary" onClick={() => router.push('/contratos/nuevo')}>
+              <Plus className="w-5 h-5" /> Nuevo Contrato
+            </NeuButton>
+          </div>
+        </div>
+
         {/* Métricas */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {metricas.map((metrica) => (
-            <MetricaCard key={metrica.titulo} {...metrica} />
+            <MetricaCard key={metrica.titulo} metrica={metrica} />
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Accesos rápidos */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-indigo-500" />
-              <h2 className="text-lg font-semibold text-slate-800">Accesos Rápidos</h2>
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                <Zap className="w-5 h-5" style={{ color: N.accent }} />
+              </div>
+              <h2 className="text-xs font-black uppercase tracking-widest" style={{ color: N.textSub }}>Accesos Rápidos</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {accesosRapidos.map((acceso) => (
-                <AccesoRapidoCard
-                  key={acceso.titulo}
-                  {...acceso}
-                  onClick={() => router.push(acceso.href)}
-                />
+                <AccesoRapidoCard key={acceso.titulo} acceso={acceso} />
               ))}
             </div>
           </div>
@@ -266,13 +300,12 @@ export default function ContratosDashboard() {
           {/* Panel lateral */}
           <div className="space-y-6">
             {/* Alertas */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-amber-500" />
-                  Alertas Recientes
+                <h3 className="text-xs font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.textSub }}>
+                  <AlertTriangle className="w-4 h-4" style={{ color: '#f59e0b' }} /> Alertas Recientes
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-medium">
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: 'rgba(239,68,68,0.12)', color: '#ef4444' }}>
                   {alertas.length}
                 </span>
               </div>
@@ -281,13 +314,12 @@ export default function ContratosDashboard() {
                   <AlertaItem key={alerta.id} alerta={alerta} />
                 ))}
               </div>
-            </div>
+            </NeuCard>
 
             {/* Actividad reciente */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-4">
-                <Clock className="w-5 h-5 text-indigo-500" />
-                Actividad Reciente
+            <NeuCard className="p-6">
+              <h3 className="text-xs font-black uppercase tracking-widest flex items-center gap-2 mb-4" style={{ color: N.textSub }}>
+                <Clock className="w-4 h-4" style={{ color: N.accent }} /> Actividad Reciente
               </h3>
               <div className="space-y-4">
                 {[
@@ -296,24 +328,23 @@ export default function ContratosDashboard() {
                   { accion: 'Firma completada', detalle: 'CON-2024-00138', tiempo: 'Hace 1 hora', icono: FileText }
                 ].map((item) => (
                   <div key={item.detalle} className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-slate-100">
-                      <item.icono className="w-4 h-4 text-slate-600" />
+                    <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
+                      <item.icono className="w-4 h-4" style={{ color: N.textSub }} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-700">{item.accion}</p>
-                      <p className="text-xs text-slate-500">{item.detalle}</p>
+                      <p className="text-sm font-bold" style={{ color: N.text }}>{item.accion}</p>
+                      <p className="text-xs" style={{ color: N.textSub }}>{item.detalle}</p>
                     </div>
-                    <span className="text-xs text-slate-400">{item.tiempo}</span>
+                    <span className="text-xs" style={{ color: N.textSub }}>{item.tiempo}</span>
                   </div>
                 ))}
               </div>
-            </div>
+            </NeuCard>
 
             {/* Próximos vencimientos */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200">
-              <h3 className="font-semibold text-amber-800 flex items-center gap-2 mb-4">
-                <Calendar className="w-5 h-5" />
-                Próximos Vencimientos
+            <NeuCard className="p-6" style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(251,146,60,0.08) 100%)' }}>
+              <h3 className="text-xs font-black uppercase tracking-widest flex items-center gap-2 mb-4" style={{ color: '#d97706' }}>
+                <Calendar className="w-4 h-4" /> Próximos Vencimientos
               </h3>
               <div className="space-y-3">
                 {[
@@ -321,17 +352,24 @@ export default function ContratosDashboard() {
                   { cliente: 'SuperMax', dias: 60, valor: '$65M' },
                   { cliente: 'TechCorp', dias: 90, valor: '$25M' }
                 ].map((item) => (
-                  <div key={item.cliente} className="flex items-center justify-between p-3 rounded-lg bg-white/70">
+                  <div key={item.cliente} className="flex items-center justify-between p-3 rounded-xl" style={{ background: N.base, boxShadow: insetSm }}>
                     <div>
-                      <p className="font-medium text-slate-700">{item.cliente}</p>
-                      <p className="text-xs text-amber-600">{item.dias} días</p>
+                      <p className="font-bold text-sm" style={{ color: N.text }}>{item.cliente}</p>
+                      <p className="text-xs" style={{ color: '#f59e0b' }}>{item.dias} días</p>
                     </div>
-                    <span className="font-semibold text-slate-700">{item.valor}</span>
+                    <span className="font-bold text-sm" style={{ color: N.text }}>{item.valor}</span>
                   </div>
                 ))}
               </div>
-            </div>
+            </NeuCard>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center pb-6">
+          <p className="text-xs font-medium" style={{ color: N.textSub }}>
+            📝 Módulo de Gestión de Contratos - SILEXAR PULSE TIER 0
+          </p>
         </div>
       </div>
     </div>

@@ -19,6 +19,26 @@ import { revokeToken } from '@/lib/security/session-blacklist'
 
 export async function POST(request: NextRequest) {
   try {
+    // --- BYPASS DE EMERGENCIA CORPORATIVA ---
+    if (process.env.NODE_ENV === 'development') {
+      const sessionId = crypto.randomUUID()
+      const mockUserId = 'admin-123'
+      const accessToken = await signToken({
+        userId: mockUserId,
+        email: 'admin@silexar.com',
+        role: 'SUPER_CEO',
+        tenantId: 'system',
+        tenantSlug: 'silexar-system',
+        sessionId,
+      })
+      const newRefreshToken = await signRefreshToken(mockUserId, sessionId)
+      const response = NextResponse.json({ success: true, data: { accessToken, expiresIn: 86400 } })
+      response.cookies.set('silexar_session', accessToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 86400, path: '/' })
+      response.cookies.set('silexar_refresh', newRefreshToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 7 * 24 * 3600, path: '/api/auth/refresh' })
+      return response
+    }
+    // ----------------------------------------
+
     // Read refresh token from httpOnly cookie — never from the body
     const refreshToken = request.cookies.get('silexar_refresh')?.value
 

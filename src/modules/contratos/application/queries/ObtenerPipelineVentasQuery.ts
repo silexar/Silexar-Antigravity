@@ -153,7 +153,7 @@ export class ObtenerPipelineVentasQueryHandler {
         tendenciaGeneral: 'positiva' | 'negativa' | 'estable';
       };
       alertasUrgentes: Array<{
-        tipo: 'vencimiento_proximo' | 'estancado' | 'riesgo_alto' | 'oportunidad';
+        tipo: 'vencimientos_proximo' | 'estancado' | 'riesgo_alto' | 'oportunidad';
         contratoId: string;
         mensaje: string;
         prioridad: 'alta' | 'media' | 'baja';
@@ -544,14 +544,14 @@ export class ObtenerPipelineVentasQueryHandler {
     const alertas: unknown[] = [];
 
     for (const contrato of contratos) {
-      // Alerta por vencimiento próximo
+      // Alerta por vencimientos próximo
       const diasHastaCierre = Math.floor(
         (contrato.fechaEstimadaCierre.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       );
 
       if (diasHastaCierre <= 3 && diasHastaCierre > 0) {
         alertas.push({
-          tipo: 'vencimiento_proximo',
+          tipo: 'vencimientos_proximo',
           contratoId: contrato.id,
           mensaje: `Contrato ${contrato.nombre} vence en ${diasHastaCierre} días`,
           prioridad: 'alta',

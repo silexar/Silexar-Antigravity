@@ -3,6 +3,7 @@
  * 
  * @description Workspace inteligente con widgets personalizables,
  * operaciones en lote, atajos de productividad y AI insights.
+ * Paleta oficial: base #dfeaff | dark #bec8de | light #ffffff | accent #6888ff
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -43,6 +44,25 @@ import {
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════
+// TOKENS OFICIALES NEUMORPHISM
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+};
+
+const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
+const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
+const neuXs = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`;
+const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
+const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
+
+// ═══════════════════════════════════════════════════════════════
 // TIPOS
 // ═══════════════════════════════════════════════════════════════
 
@@ -72,55 +92,6 @@ interface MetricaRapida {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
-
-const neuro = {
-  widget: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
-    overflow-hidden
-  `,
-  widgetHeader: `
-    px-5 py-4
-    border-b border-slate-200/50
-    flex items-center justify-between
-  `,
-  inset: `
-    bg-gradient-to-br from-slate-100 to-slate-50
-    rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
-  `,
-  btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
-    text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    transition-all duration-200
-  `,
-  badge: `
-    px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
-    text-xs font-medium
-  `,
-  checkbox: `
-    w-5 h-5 rounded-lg
-    shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]
-    border-none cursor-pointer
-    transition-all duration-200
-  `
-};
-
-// ═══════════════════════════════════════════════════════════════
 // MOCK DATA
 // ═══════════════════════════════════════════════════════════════
 
@@ -133,15 +104,40 @@ const mockContratos: ContratoSeleccionado[] = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// COMPONENTES NEUMORPHIC
+// ═══════════════════════════════════════════════════════════════
+
+function NeuCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div className={`rounded-3xl ${className}`} style={{ background: N.base, boxShadow: neu, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function NeuButton({ children, onClick, variant = 'secondary', className = '', disabled = false }: {
+  children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string; disabled?: boolean;
+}) {
+  const s = variant === 'primary'
+    ? { background: N.accent, color: '#fff', boxShadow: neuSm }
+    : { background: N.base, color: N.text, boxShadow: neu };
+  return (
+    <button onClick={onClick} disabled={disabled} className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`} style={s}>
+      {children}
+    </button>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 // WIDGET: MÉTRICAS RÁPIDAS
 // ═══════════════════════════════════════════════════════════════
 
 const MetricasWidget: React.FC = () => {
   const metricas: MetricaRapida[] = [
-    { label: 'Contratos Hoy', valor: 8, cambio: 25, icono: <FileText className="w-5 h-5" />, color: 'text-blue-600' },
-    { label: 'Valor Pipeline', valor: '$2.4B', cambio: 12, icono: <DollarSign className="w-5 h-5" />, color: 'text-green-600' },
-    { label: 'Tasa Cierre', valor: '68%', cambio: -3, icono: <Target className="w-5 h-5" />, color: 'text-purple-600' },
-    { label: 'Pendientes', valor: 12, cambio: 0, icono: <Clock className="w-5 h-5" />, color: 'text-amber-600' },
+    { label: 'Contratos Hoy', valor: 8, cambio: 25, icono: <FileText className="w-5 h-5" style={{ color: N.accent }} />, color: N.accent },
+    { label: 'Valor Pipeline', valor: '$2.4B', cambio: 12, icono: <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />, color: '#22c55e' },
+    { label: 'Tasa Cierre', valor: '68%', cambio: -3, icono: <Target className="w-5 h-5" style={{ color: '#a855f7' }} />, color: '#a855f7' },
+    { label: 'Pendientes', valor: 12, cambio: 0, icono: <Clock className="w-5 h-5" style={{ color: '#f59e0b' }} />, color: '#f59e0b' },
   ];
 
   return (
@@ -152,16 +148,17 @@ const MetricasWidget: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: idx * 0.1 }}
-          className={`${neuro.inset} p-4`}
+          className="p-4 rounded-2xl"
+          style={{ background: N.base, boxShadow: inset }}
         >
           <div className="flex items-center gap-3">
-            <div className={m.color}>{m.icono}</div>
+            <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>{m.icono}</div>
             <div>
-              <p className="text-xs text-slate-500">{m.label}</p>
+              <p className="text-xs" style={{ color: N.textSub }}>{m.label}</p>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-slate-800">{m.valor}</span>
+                <span className="text-xl font-black" style={{ color: N.text }}>{m.valor}</span>
                 {m.cambio !== 0 && (
-                  <span className={`flex items-center text-xs ${m.cambio > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className="flex items-center text-xs" style={{ color: m.cambio > 0 ? '#22c55e' : '#ef4444' }}>
                     {m.cambio > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {Math.abs(m.cambio)}%
                   </span>
@@ -186,21 +183,21 @@ const AIInsightsWidget: React.FC = () => {
       titulo: 'Oportunidad de Upsell',
       descripcion: 'Banco Chile incrementó 40% su inversión en competencia. Momento ideal para propuesta.',
       accion: 'Generar propuesta',
-      icono: <Target className="w-5 h-5 text-green-500" />
+      icono: <Target className="w-5 h-5" style={{ color: '#22c55e' }} />
     },
     {
       tipo: 'alerta',
       titulo: 'Renovación en Riesgo',
       descripcion: 'Contrato Falabella tiene 32% probabilidad de no renovar según engagement.',
       accion: 'Ver análisis',
-      icono: <AlertCircle className="w-5 h-5 text-red-500" />
+      icono: <AlertCircle className="w-5 h-5" style={{ color: '#ef4444' }} />
     },
     {
       tipo: 'prediccion',
       titulo: 'Predicción de Cierre',
       descripcion: 'LATAM tiene 89% probabilidad de firmar esta semana basado en historial.',
       accion: 'Preparar firma',
-      icono: <Brain className="w-5 h-5 text-purple-500" />
+      icono: <Brain className="w-5 h-5" style={{ color: '#a855f7' }} />
     }
   ];
 
@@ -212,17 +209,18 @@ const AIInsightsWidget: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: idx * 0.15 }}
-          className={`${neuro.inset} p-4`}
+          className="p-4 rounded-2xl"
+          style={{ background: N.base, boxShadow: inset }}
         >
           <div className="flex items-start gap-3">
             <div className="mt-1">{insight.icono}</div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-800 text-sm">{insight.titulo}</h4>
-              <p className="text-xs text-slate-500 mt-1">{insight.descripcion}</p>
-              <button className={`${neuro.btnPrimary} px-3 py-1.5 text-xs mt-3 flex items-center gap-1`}>
+              <h4 className="font-bold text-sm" style={{ color: N.text }}>{insight.titulo}</h4>
+              <p className="text-xs mt-1" style={{ color: N.textSub }}>{insight.descripcion}</p>
+              <NeuButton variant="primary" className="px-3 py-1.5 text-xs mt-3">
                 <Zap className="w-3 h-3" />
                 {insight.accion}
-              </button>
+              </NeuButton>
             </div>
           </div>
         </motion.div>
@@ -237,12 +235,12 @@ const AIInsightsWidget: React.FC = () => {
 
 const AccionesRapidasWidget: React.FC = () => {
   const acciones = [
-    { label: 'Nuevo Contrato', icono: <Plus className="w-5 h-5" />, color: 'from-green-400 to-emerald-500' },
-    { label: 'Aprobar Pendientes', icono: <CheckCircle className="w-5 h-5" />, color: 'from-blue-400 to-cyan-500' },
-    { label: 'Enviar Propuesta', icono: <Mail className="w-5 h-5" />, color: 'from-purple-400 to-pink-500' },
-    { label: 'Llamar Cliente', icono: <Phone className="w-5 h-5" />, color: 'from-amber-400 to-orange-500' },
-    { label: 'Ver Analytics', icono: <BarChart3 className="w-5 h-5" />, color: 'from-indigo-400 to-violet-500' },
-    { label: 'Exportar Datos', icono: <Download className="w-5 h-5" />, color: 'from-slate-400 to-zinc-500' },
+    { label: 'Nuevo Contrato', icono: <Plus className="w-5 h-5" />, color: '#22c55e' },
+    { label: 'Aprobar Pendientes', icono: <CheckCircle className="w-5 h-5" />, color: N.accent },
+    { label: 'Enviar Propuesta', icono: <Mail className="w-5 h-5" />, color: '#a855f7' },
+    { label: 'Llamar Cliente', icono: <Phone className="w-5 h-5" />, color: '#f59e0b' },
+    { label: 'Ver Analytics', icono: <BarChart3 className="w-5 h-5" />, color: '#06b6d4' },
+    { label: 'Exportar Datos', icono: <Download className="w-5 h-5" />, color: N.textSub },
   ];
 
   return (
@@ -255,12 +253,13 @@ const AccionesRapidasWidget: React.FC = () => {
           transition={{ delay: idx * 0.05 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`${neuro.inset} p-4 flex flex-col items-center gap-2 cursor-pointer hover:shadow-lg transition-all`}
+          className="p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer"
+          style={{ background: N.base, boxShadow: inset }}
         >
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${accion.color} text-white`}>
+          <div className="p-3 rounded-xl text-white" style={{ background: accion.color, boxShadow: neuXs }}>
             {accion.icono}
           </div>
-          <span className="text-xs font-medium text-slate-600 text-center">{accion.label}</span>
+          <span className="text-xs font-bold text-center" style={{ color: N.text }}>{accion.label}</span>
         </motion.button>
       ))}
     </div>
@@ -283,58 +282,46 @@ const BatchOperationsPanel: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className={`
-        fixed bottom-6 left-1/2 -translate-x-1/2 z-40
-        ${neuro.widget} px-6 py-4
-        flex items-center gap-6
-      `}
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-6 py-4 rounded-3xl"
+      style={{ background: N.base, boxShadow: neu }}
     >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold">
-          {selectedCount}
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white" style={{ background: N.accent, boxShadow: neuSm }}>
+            {selectedCount}
+          </div>
+          <span className="font-bold text-sm" style={{ color: N.text }}>seleccionados</span>
         </div>
-        <span className="font-medium text-slate-700">seleccionados</span>
-      </div>
 
-      <div className="h-8 w-px bg-slate-200" />
+        <div className="h-8 w-px" style={{ background: N.dark }} />
 
-      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          <NeuButton variant="primary" className="px-4 py-2 text-xs" onClick={() => onAction('aprobar')}>
+            <CheckCircle className="w-4 h-4" />
+            Aprobar Todos
+          </NeuButton>
+          <NeuButton variant="secondary" className="px-4 py-2 text-xs" onClick={() => onAction('exportar')}>
+            <Download className="w-4 h-4" />
+            Exportar
+          </NeuButton>
+          <NeuButton variant="secondary" className="px-4 py-2 text-xs" onClick={() => onAction('email')}>
+            <Mail className="w-4 h-4" />
+            Enviar Email
+          </NeuButton>
+          <NeuButton variant="secondary" className="px-4 py-2 text-xs" onClick={() => onAction('duplicar')}>
+            <Copy className="w-4 h-4" />
+            Duplicar
+          </NeuButton>
+        </div>
+
         <button
-          onClick={() => onAction('aprobar')}
-          className={`${neuro.btnPrimary} px-4 py-2 text-sm flex items-center gap-2`}
+          onClick={onClearSelection}
+          className="p-2 rounded-xl transition-all"
+          style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}
         >
-          <CheckCircle className="w-4 h-4" />
-          Aprobar Todos
-        </button>
-        <button
-          onClick={() => onAction('exportar')}
-          className={`${neuro.btnSecondary} px-4 py-2 text-sm flex items-center gap-2`}
-        >
-          <Download className="w-4 h-4" />
-          Exportar
-        </button>
-        <button
-          onClick={() => onAction('email')}
-          className={`${neuro.btnSecondary} px-4 py-2 text-sm flex items-center gap-2`}
-        >
-          <Mail className="w-4 h-4" />
-          Enviar Email
-        </button>
-        <button
-          onClick={() => onAction('duplicar')}
-          className={`${neuro.btnSecondary} px-4 py-2 text-sm flex items-center gap-2`}
-        >
-          <Copy className="w-4 h-4" />
-          Duplicar
+          <X className="w-5 h-5" />
         </button>
       </div>
-
-      <button
-        onClick={onClearSelection}
-        className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all"
-      >
-        <X className="w-5 h-5" />
-      </button>
     </motion.div>
   );
 };
@@ -374,11 +361,11 @@ const ContratosListWidget: React.FC<{
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
-      case 'APROBADO': return 'bg-green-100 text-green-700';
-      case 'PENDIENTE_APROBACION': return 'bg-amber-100 text-amber-700';
-      case 'PENDIENTE_FIRMA': return 'bg-blue-100 text-blue-700';
-      case 'EN_REVISION': return 'bg-purple-100 text-purple-700';
-      default: return 'bg-slate-100 text-slate-700';
+      case 'APROBADO': return { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' };
+      case 'PENDIENTE_APROBACION': return { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' };
+      case 'PENDIENTE_FIRMA': return { bg: 'rgba(104,136,255,0.12)', text: N.accent };
+      case 'EN_REVISION': return { bg: 'rgba(168,85,247,0.12)', text: '#a855f7' };
+      default: return { bg: 'rgba(154,163,184,0.12)', text: N.textSub };
     }
   };
 
@@ -388,20 +375,21 @@ const ContratosListWidget: React.FC<{
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={toggleSelectAll}
-          className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800"
+          className="flex items-center gap-2 text-sm font-bold transition-all"
+          style={{ color: N.text }}
         >
           {selectAll ? (
-            <CheckSquare className="w-5 h-5 text-indigo-600" />
+            <CheckSquare className="w-5 h-5" style={{ color: N.accent }} />
           ) : (
-            <Square className="w-5 h-5" />
+            <Square className="w-5 h-5" style={{ color: N.textSub }} />
           )}
           Seleccionar todo
         </button>
         <div className="flex items-center gap-2">
-          <button className={`${neuro.btnSecondary} p-2`}>
+          <button className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
             <Filter className="w-4 h-4" />
           </button>
-          <button className={`${neuro.btnSecondary} p-2`}>
+          <button className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>
@@ -409,49 +397,54 @@ const ContratosListWidget: React.FC<{
 
       {/* Lista */}
       <div className="space-y-2">
-        {mockContratos.map((contrato, idx) => (
-          <motion.div
-            key={contrato.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            className={`
-              ${neuro.inset} p-4 flex items-center gap-4
-              ${selected.has(contrato.id) ? 'ring-2 ring-indigo-400 ring-offset-2' : ''}
-              cursor-pointer hover:shadow-md transition-all
-            `}
-            onClick={() => toggleSelect(contrato.id)}
-          >
-            <button
-              onClick={(e) => { e.stopPropagation(); toggleSelect(contrato.id); }}
-              className={neuro.checkbox}
+        {mockContratos.map((contrato, idx) => {
+          const estado = getEstadoColor(contrato.estado);
+          return (
+            <motion.div
+              key={contrato.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="p-4 rounded-2xl flex items-center gap-4 cursor-pointer transition-all"
+              style={{ 
+                background: N.base, 
+                boxShadow: selected.has(contrato.id) ? inset : neuSm,
+                border: selected.has(contrato.id) ? `2px solid ${N.accent}` : '2px solid transparent'
+              }}
+              onClick={() => toggleSelect(contrato.id)}
             >
-              {selected.has(contrato.id) ? (
-                <CheckSquare className="w-5 h-5 text-indigo-600" />
-              ) : (
-                <Square className="w-5 h-5 text-slate-400" />
-              )}
-            </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleSelect(contrato.id); }}
+                className="p-1 rounded-lg"
+                style={{ background: N.base, boxShadow: neuXs }}
+              >
+                {selected.has(contrato.id) ? (
+                  <CheckSquare className="w-5 h-5" style={{ color: N.accent }} />
+                ) : (
+                  <Square className="w-5 h-5" style={{ color: N.textSub }} />
+                )}
+              </button>
 
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-800">{contrato.numero}</span>
-                <span className={`${neuro.badge} ${getEstadoColor(contrato.estado)} text-xs`}>
-                  {contrato.estado.replace(/_/g, ' ')}
-                </span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-sm" style={{ color: N.text }}>{contrato.numero}</span>
+                  <span className="px-2 py-0.5 rounded-lg text-xs font-bold" style={{ background: estado.bg, color: estado.text, boxShadow: insetSm }}>
+                    {contrato.estado.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <p className="text-sm" style={{ color: N.textSub }}>{contrato.cliente}</p>
               </div>
-              <p className="text-sm text-slate-500">{contrato.cliente}</p>
-            </div>
 
-            <div className="text-right">
-              <p className="font-bold text-slate-800">{formatCurrency(contrato.valor)}</p>
-            </div>
+              <div className="text-right">
+                <p className="font-bold text-sm" style={{ color: N.text }}>{formatCurrency(contrato.valor)}</p>
+              </div>
 
-            <button className="p-2 rounded-xl hover:bg-slate-200/50 text-slate-400">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
-          </motion.div>
-        ))}
+              <button className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
@@ -471,8 +464,7 @@ export default function SmartWorkspace() {
   ]);
 
   const handleBatchAction = (action: string) => {
-    ;
-    // Aquí iría la lógica real de cada acción
+    void action;
     setSelectedContratos([]);
   };
 
@@ -490,34 +482,34 @@ export default function SmartWorkspace() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
       {/* Header */}
       <div className="max-w-[1600px] mx-auto mb-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className={`p-4 rounded-2xl ${neuro.widget}`}>
-              <Layout className="w-7 h-7 text-indigo-600" />
+            <div className="p-4 rounded-2xl" style={{ background: N.base, boxShadow: neu }}>
+              <Layout className="w-7 h-7" style={{ color: N.accent }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+              <h1 className="text-2xl font-black flex items-center gap-2" style={{ color: N.text }}>
                 🚀 Smart Workspace
-                <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-medium">
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold text-white" style={{ background: N.accent, boxShadow: neuSm }}>
                   AI Powered
                 </span>
               </h1>
-              <p className="text-slate-500 text-sm">Tu espacio de trabajo inteligente y personalizable</p>
+              <p className="text-sm" style={{ color: N.textSub }}>Tu espacio de trabajo inteligente y personalizable</p>
             </div>
           </div>
 
           <div className="flex gap-3">
-            <button className={`${neuro.btnSecondary} px-4 py-2 flex items-center gap-2`}>
+            <NeuButton variant="secondary">
               <Settings className="w-4 h-4" />
               Personalizar
-            </button>
-            <button className={`${neuro.btnPrimary} px-4 py-2 flex items-center gap-2`}>
+            </NeuButton>
+            <NeuButton variant="primary">
               <Plus className="w-4 h-4" />
               Agregar Widget
-            </button>
+            </NeuButton>
           </div>
         </div>
       </div>
@@ -532,20 +524,21 @@ export default function SmartWorkspace() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className={neuro.widget}
             >
-              <div className={neuro.widgetHeader}>
-                <h3 className="font-bold text-slate-800">{widget.titulo}</h3>
-                <div className="flex items-center gap-1">
-                  <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
-                  <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
-                    <Maximize2 className="w-4 h-4" />
-                  </button>
+              <NeuCard>
+                <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: `1px solid ${N.dark}30` }}>
+                  <h3 className="font-bold text-sm" style={{ color: N.text }}>{widget.titulo}</h3>
+                  <div className="flex items-center gap-1">
+                    <button className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                      <RefreshCw className="w-4 h-4" />
+                    </button>
+                    <button className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
+                      <Maximize2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              {renderWidget(widget)}
+                {renderWidget(widget)}
+              </NeuCard>
             </motion.div>
           ))}
         </div>
@@ -555,23 +548,25 @@ export default function SmartWorkspace() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`${neuro.widget} mt-6`}
+          className="mt-6"
         >
-          <div className={neuro.widgetHeader}>
-            <h3 className="font-bold text-slate-800 flex items-center gap-2">
-              📋 Mis Contratos
-              <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
-                {mockContratos.length}
-              </span>
-            </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                Ordenado por IA según prioridad
-              </span>
+          <NeuCard>
+            <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: `1px solid ${N.dark}30` }}>
+              <h3 className="font-bold text-sm flex items-center gap-2" style={{ color: N.text }}>
+                📋 Mis Contratos
+                <span className="px-2 py-0.5 rounded-lg text-xs font-bold" style={{ background: `${N.accent}18`, color: N.accent, boxShadow: insetSm }}>
+                  {mockContratos.length}
+                </span>
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-xs flex items-center gap-1" style={{ color: N.textSub }}>
+                  <Sparkles className="w-3 h-3" style={{ color: N.accent }} />
+                  Ordenado por IA según prioridad
+                </span>
+              </div>
             </div>
-          </div>
-          <ContratosListWidget onSelectionChange={setSelectedContratos} />
+            <ContratosListWidget onSelectionChange={setSelectedContratos} />
+          </NeuCard>
         </motion.div>
       </div>
 

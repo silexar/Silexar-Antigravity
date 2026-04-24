@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 💰 MOBILE: Cobranza View
  * 
  * Gestión de pagos vencidos y recordatorios de cobro.
@@ -81,7 +81,7 @@ export function MobileCobranzaView() {
             <p className="text-xs text-red-200">Total pendiente</p>
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-2 bg-white/10 rounded-xl px-3 py-2">
+        <div className="mt-3 flex items-center gap-2 bg-[#dfeaff]/10 rounded-xl px-3 py-2">
           <TrendingDown className="w-4 h-4 text-red-300" />
           <span className="text-xs font-bold text-red-100">{CUENTAS_MOCK.filter(c => c.estado === 'vencido').length} cuentas vencidas</span>
         </div>
@@ -89,13 +89,13 @@ export function MobileCobranzaView() {
 
       {/* SEARCH */}
       <div className="relative">
-        <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-3 w-4 h-4 text-[#9aa3b8]" />
         <input
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar cliente..."
           aria-label="Buscar cliente"
-          className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-red-400 outline-none"
+          className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#bec8de30] bg-[#dfeaff] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none"
         />
       </div>
 
@@ -104,7 +104,7 @@ export function MobileCobranzaView() {
         {(['todos', 'vencido', 'por_vencer', 'en_gestion', 'comprometido'] as FiltroCobranza[]).map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-              filtro === f ? 'bg-red-600 text-white' : 'bg-white text-slate-500 border border-slate-200'
+              filtro === f ? 'bg-red-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {f === 'todos' ? 'Todos' : estadoConfig[f]?.label}
           </button>
@@ -114,31 +114,31 @@ export function MobileCobranzaView() {
       {/* LIST */}
       <div className="space-y-3">
         {filtered.map(cuenta => (
-          <div key={cuenta.id} className="bg-white rounded-xl border border-slate-100 p-4">
+          <div key={cuenta.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="font-bold text-slate-800 text-sm">{cuenta.cliente}</p>
-                <p className="text-[10px] text-slate-400">{cuenta.contrato}</p>
+                <p className="font-bold text-[#69738c] text-sm">{cuenta.cliente}</p>
+                <p className="text-[10px] text-[#9aa3b8]">{cuenta.contrato}</p>
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estadoConfig[cuenta.estado]?.bg} ${estadoConfig[cuenta.estado]?.color}`}>
                 {estadoConfig[cuenta.estado]?.label}
               </span>
             </div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-lg font-black text-slate-800">{formatCurrency(cuenta.monto)}</p>
-              <div className="flex items-center gap-1 text-xs text-slate-500">
+              <p className="text-lg font-black text-[#69738c]">{formatCurrency(cuenta.monto)}</p>
+              <div className="flex items-center gap-1 text-xs text-[#9aa3b8]">
                 <Calendar className="w-3 h-3" />
                 {cuenta.diasVencido > 0 ? <span className="text-red-600 font-bold">{cuenta.diasVencido}d vencido</span> : <span>Vence {cuenta.fechaVencimiento}</span>}
               </div>
             </div>
             {cuenta.ultimaGestion && (
-              <p className="text-[10px] text-slate-400 mb-2 flex items-center gap-1"><Clock className="w-3 h-3" /> {cuenta.ultimaGestion}</p>
+              <p className="text-[10px] text-[#9aa3b8] mb-2 flex items-center gap-1"><Clock className="w-3 h-3" /> {cuenta.ultimaGestion}</p>
             )}
             <div className="flex gap-2">
               <button className="flex-1 py-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                 <Phone className="w-3.5 h-3.5" /> Llamar
               </button>
-              <button className="flex-1 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
+              <button className="flex-1 py-2 bg-[#dfeaff] text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                 <Mail className="w-3.5 h-3.5" /> Email
               </button>
               <button className="flex-1 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">

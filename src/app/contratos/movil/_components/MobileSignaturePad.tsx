@@ -1,9 +1,9 @@
 /**
- * ✍️ MOBILE: Captura de Firma Táctil
+ * ?? MOBILE: Captura de Firma T�ctil
  * 
  * Pad de firma digital que permite al ejecutivo o cliente
- * firmar directamente en el dispositivo móvil.
- * Soporta: dibujo táctil, limpiar, confirmar.
+ * firmar directamente en el dispositivo m�vil.
+ * Soporta: dibujo t�ctil, limpiar, confirmar.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -17,9 +17,9 @@ import {
   Download, User, Shield,
 } from 'lucide-react';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // TIPOS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 interface MobileSignaturePadProps {
   firmante: string;
@@ -28,9 +28,9 @@ interface MobileSignaturePadProps {
   onCancelar: () => void;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: MobileSignaturePadProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -116,20 +116,20 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
   }, [onFirmar]);
 
   const rolConfig = {
-    ejecutivo: { color: 'from-indigo-500 to-blue-600', icon: <PenTool className="w-5 h-5 text-white" />, label: 'Ejecutivo Comercial' },
+    ejecutivo: { color: 'bg-[#6888ff]', icon: <PenTool className="w-5 h-5 text-white" />, label: 'Ejecutivo Comercial' },
     cliente: { color: 'from-emerald-500 to-green-600', icon: <User className="w-5 h-5 text-white" />, label: 'Cliente' },
     aprobador: { color: 'from-purple-500 to-violet-600', icon: <Shield className="w-5 h-5 text-white" />, label: 'Aprobador' },
   }[rol];
 
-  // Pantalla de confirmación
+  // Pantalla de confirmaci�n
   if (confirmed) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl animate-bounce">
           <Check className="w-8 h-8 text-white" />
         </div>
-        <p className="text-lg font-black text-slate-800">Firma Registrada</p>
-        <p className="text-sm text-slate-500">{firmante} · {rolConfig.label}</p>
+        <p className="text-lg font-black text-[#69738c]">Firma Registrada</p>
+        <p className="text-sm text-[#9aa3b8]">{firmante} � {rolConfig.label}</p>
       </div>
     );
   }
@@ -142,14 +142,14 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
           {rolConfig.icon}
         </div>
         <div>
-          <p className="text-sm font-bold text-slate-800">Firma Digital</p>
-          <p className="text-[10px] text-slate-500">{firmante} · {rolConfig.label}</p>
+          <p className="text-sm font-bold text-[#69738c]">Firma Digital</p>
+          <p className="text-[10px] text-[#9aa3b8]">{firmante} � {rolConfig.label}</p>
         </div>
       </div>
 
       {/* CANVAS */}
       <div className="relative">
-        <div className="bg-white rounded-2xl border-2 border-dashed border-slate-200 overflow-hidden">
+        <div className="bg-[#dfeaff] rounded-2xl border-2 border-dashed border-[#bec8de30] overflow-hidden">
           <canvas
             ref={canvasRef}
             className="w-full touch-none cursor-crosshair"
@@ -161,49 +161,49 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
             onMouseUp={endDraw}
             onMouseLeave={endDraw}
           />
-          {/* Línea guía */}
-          <div className="absolute bottom-12 left-8 right-8 border-b border-slate-200" />
+          {/* L�nea gu�a */}
+          <div className="absolute bottom-12 left-8 right-8 border-b border-[#bec8de30]" />
           <div className="absolute bottom-8 left-8">
-            <p className="text-[9px] text-slate-300 uppercase tracking-widest">Firma aquí</p>
+            <p className="text-[9px] text-[#9aa3b8] uppercase tracking-widest">Firma aqu�</p>
           </div>
         </div>
 
         {!hasSignature && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
-              <PenTool className="w-8 h-8 text-slate-200 mx-auto" />
-              <p className="text-xs text-slate-300 mt-2 font-bold">Dibuja tu firma con el dedo</p>
+              <PenTool className="w-8 h-8 text-[#9aa3b8] mx-auto" />
+              <p className="text-xs text-[#9aa3b8] mt-2 font-bold">Dibuja tu firma con el dedo</p>
             </div>
           </div>
         )}
       </div>
 
       {/* INFO LEGAL */}
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-100">
+      <div className="p-3 rounded-xl bg-amber-50 border border-[#bec8de30]">
         <p className="text-[10px] text-amber-700 font-medium">
-          Al firmar, acepta los términos y condiciones del contrato. Esta firma tiene validez legal equivalente a una firma manuscrita según la Ley 19.799.
+          Al firmar, acepta los t�rminos y condiciones del contrato. Esta firma tiene validez legal equivalente a una firma manuscrita seg�n la Ley 19.799.
         </p>
       </div>
 
       {/* ACCIONES */}
       <div className="flex gap-3">
         <button onClick={onCancelar}
-          className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-2xl font-bold text-sm flex items-center justify-center gap-1 active:scale-[0.97]">
+          className="flex-1 py-3 border border-[#bec8de30] text-[#69738c] rounded-2xl font-bold text-sm flex items-center justify-center gap-1 active:scale-[0.97]">
           <X className="w-4 h-4" /> Cancelar
         </button>
         <button onClick={limpiar} disabled={!hasSignature}
-          className="py-3 px-4 border border-slate-200 text-slate-600 rounded-2xl font-bold text-sm flex items-center justify-center gap-1 active:scale-[0.97] disabled:opacity-40">
+          className="py-3 px-4 border border-[#bec8de30] text-[#69738c] rounded-2xl font-bold text-sm flex items-center justify-center gap-1 active:scale-[0.97] disabled:opacity-40">
           <RotateCcw className="w-4 h-4" /> Limpiar
         </button>
         <button onClick={confirmar} disabled={!hasSignature}
-          className="flex-[2] py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-emerald-200">
+          className="flex-[2] py-3 bg-[#6888ff] text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.97] disabled:opacity-50 shadow-lg shadow-emerald-200">
           <Check className="w-4 h-4" /> Firmar
         </button>
       </div>
 
       {/* DESCARGAR */}
       {hasSignature && (
-        <button className="w-full py-2 text-xs text-slate-400 font-bold flex items-center justify-center gap-1">
+        <button className="w-full py-2 text-xs text-[#9aa3b8] font-bold flex items-center justify-center gap-1">
           <Download className="w-3 h-3" /> Descargar como imagen
         </button>
       )}

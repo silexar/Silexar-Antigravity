@@ -108,7 +108,7 @@ export interface DashboardMobileDTO {
 
 export interface AlertaMobileDTO {
   id: string;
-  tipo: 'urgente' | 'vencimiento' | 'aprobacion' | 'renovacion' | 'pago' | 'info';
+  tipo: 'urgente' | 'vencimientos' | 'aprobacion' | 'renovacion' | 'pago' | 'info';
   prioridad: 'critica' | 'alta' | 'media' | 'baja';
   titulo: string;
   descripcion: string;
@@ -244,7 +244,7 @@ const mockAlertas: AlertaMobileDTO[] = [
   },
   {
     id: 'alr-002',
-    tipo: 'vencimiento',
+    tipo: 'vencimientos',
     prioridad: 'media',
     titulo: 'Contrato próximo a vencer',
     descripcion: 'El contrato con Paris vence en 15 días',

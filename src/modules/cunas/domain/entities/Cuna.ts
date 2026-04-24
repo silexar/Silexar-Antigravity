@@ -5,20 +5,24 @@
  * publicitario (audio, mención, presentación, cierre, promo-IDA).
  *
  * Encapsula todas las reglas de negocio del ciclo de vida de una cuña:
- * aprobación, puesta en aire, pausado, finalización y vencimiento.
+ * aprobación, puesta en aire, pausado, finalización y vencimientos.
  */
 
-import { z } from 'zod';
 import { CunaId } from '../value-objects/CunaId';
 import { EstadoCuna, type EstadoCunaValor } from '../value-objects/EstadoCuna';
 import { Duracion } from '../value-objects/Duracion';
 import { CalidadAudio, type CalidadAudioProps } from '../value-objects/CalidadAudio';
 
-export const TipoCunaSchema = z.enum([
-  'spot', 'mencion', 'auspicio', 'jingle', 'promo',
-  'institucional', 'promo_ida', 'presentacion', 'cierre', 'audio'
-]);
-export type TipoCunaValor = z.infer<typeof TipoCunaSchema>;
+export const TipoCunaSchema = [
+  'spot', 'mencion', 'auspicio', 'jingle', 'promo', 'institucional',
+  'audio', 'presentacion', 'cierre', 'promo_ida',
+  'audio_streaming', 'audio_podcast',
+  'video_preroll', 'video_midroll', 'video_bumper', 'video_outstream', 'video_vertical',
+  'banner_static', 'banner_animated', 'banner_html5', 'banner_responsive',
+  'story_ad', 'reel_ad', 'carousel_ad', 'native_ad',
+  'playable_ad', 'ar_experience', 'lead_form'
+] as const;
+export type TipoCunaValor = typeof TipoCunaSchema[number];
 
 export interface CunaProps {
   id: string;
@@ -229,7 +233,7 @@ export class Cuna {
     return true;
   }
 
-  /** Días restantes hasta el vencimiento. -1 si no tiene fecha fin. */
+  /** Días restantes hasta el vencimientos. -1 si no tiene fecha fin. */
   diasParaVencer(): number {
     if (!this.props.fechaFinVigencia) return -1;
     const ahora = new Date();

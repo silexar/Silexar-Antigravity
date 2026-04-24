@@ -224,7 +224,7 @@ export type TipoActividad =
   | 'creacion' 
   | 'edicion' 
   | 'pago' 
-  | 'vencimiento' 
+  | 'vencimientos' 
   | 'sistema';
 
 export interface AccionProgramada {
@@ -265,7 +265,7 @@ export interface AlertaAccion {
 
 export type TipoAlerta = 
   | 'urgente' 
-  | 'vencimiento' 
+  | 'vencimientos' 
   | 'aprobacion' 
   | 'renovacion' 
   | 'pago' 
@@ -516,7 +516,7 @@ export function obtenerColorEstado(estado: EstadoContrato): string {
 export function obtenerIconoAlerta(tipo: TipoAlerta): string {
   const iconos: Record<TipoAlerta, string> = {
     urgente: 'alert-triangle',
-    vencimiento: 'clock',
+    vencimientos: 'clock',
     aprobacion: 'check-circle',
     renovacion: 'refresh-cw',
     pago: 'dollar-sign',

@@ -1,10 +1,10 @@
-import { logger } from '@/lib/observability';
+import { logger } from "@/lib/observability";
 /**
  * 🤖 SILEXAR PULSE - AI AutoComplete Service TIER 0
- * 
+ *
  * @description Servicio de autocompletado inteligente que predice
  * y sugiere valores basados en historial, patrones y contexto.
- * 
+ *
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
  */
@@ -19,7 +19,7 @@ export interface SugerenciaAutoComplete {
   valor: string | number;
   confianza: number;
   razon: string;
-  fuente: 'historial' | 'patron' | 'similar' | 'prediccion' | 'benchmark';
+  fuente: "historial" | "patron" | "similar" | "prediccion" | "benchmark";
 }
 
 export interface ContextoContrato {
@@ -63,73 +63,93 @@ const historicoClientes: Record<string, {
   tendenciaValor: number; // % cambio YoY
   preferencias: string[];
 }> = {
-  'banco-chile': {
+  "banco-chile": {
     ultimoContrato: {
       valor: 85000000,
       descuento: 15,
       diasPago: 45,
       duracionMeses: 12,
-      medios: ['Radio', 'TV', 'Digital']
+      medios: ["Radio", "TV", "Digital"],
     },
     promedioValor: 75000000,
     tendenciaValor: 12,
-    preferencias: ['horario_prime', 'exclusividad_categoria', 'flexibilidad_pauta']
+    preferencias: [
+      "horario_prime",
+      "exclusividad_categoria",
+      "flexibilidad_pauta",
+    ],
   },
-  'falabella': {
+  "falabella": {
     ultimoContrato: {
       valor: 120000000,
       descuento: 20,
       diasPago: 60,
       duracionMeses: 6,
-      medios: ['Radio', 'Digital']
+      medios: ["Radio", "Digital"],
     },
     promedioValor: 100000000,
     tendenciaValor: 8,
-    preferencias: ['campañas_estacionales', 'descuento_volumen']
+    preferencias: ["campañas_estacionales", "descuento_volumen"],
   },
-  'cencosud': {
+  "cencosud": {
     ultimoContrato: {
       valor: 200000000,
       descuento: 18,
       diasPago: 45,
       duracionMeses: 12,
-      medios: ['TV', 'Radio', 'Prensa']
+      medios: ["TV", "Radio", "Prensa"],
     },
     promedioValor: 180000000,
     tendenciaValor: 15,
-    preferencias: ['multimarca', 'cobertura_nacional']
-  }
+    preferencias: ["multimarca", "cobertura_nacional"],
+  },
 };
 
 const benchmarksIndustria: Record<string, BenchmarkIndustria> = {
-  'banca': {
-    industria: 'Banca y Finanzas',
+  "banca": {
+    industria: "Banca y Finanzas",
     valorPromedioContrato: 95000000,
     descuentoPromedio: 12,
     diasPagoPromedio: 45,
-    clausulasComunes: ['exclusividad_categoria', 'confidencialidad', 'penalizacion_cancelacion']
+    clausulasComunes: [
+      "exclusividad_categoria",
+      "confidencialidad",
+      "penalizacion_cancelacion",
+    ],
   },
-  'retail': {
-    industria: 'Retail',
+  "retail": {
+    industria: "Retail",
     valorPromedioContrato: 75000000,
     descuentoPromedio: 18,
     diasPagoPromedio: 60,
-    clausulasComunes: ['flexibilidad_pauta', 'descuento_volumen', 'prorroga_automatica']
+    clausulasComunes: [
+      "flexibilidad_pauta",
+      "descuento_volumen",
+      "prorroga_automatica",
+    ],
   },
-  'telecomunicaciones': {
-    industria: 'Telecomunicaciones',
+  "telecomunicaciones": {
+    industria: "Telecomunicaciones",
     valorPromedioContrato: 150000000,
     descuentoPromedio: 10,
     diasPagoPromedio: 30,
-    clausulasComunes: ['exclusividad_total', 'penalizacion_incumplimiento', 'renovacion_anticipada']
+    clausulasComunes: [
+      "exclusividad_total",
+      "penalizacion_incumplimiento",
+      "renovacion_anticipada",
+    ],
   },
-  'consumo_masivo': {
-    industria: 'Consumo Masivo',
+  "consumo_masivo": {
+    industria: "Consumo Masivo",
     valorPromedioContrato: 60000000,
     descuentoPromedio: 22,
     diasPagoPromedio: 45,
-    clausulasComunes: ['campañas_estacionales', 'descuento_pronto_pago', 'flexibilidad_materiales']
-  }
+    clausulasComunes: [
+      "campañas_estacionales",
+      "descuento_pronto_pago",
+      "flexibilidad_materiales",
+    ],
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -153,30 +173,30 @@ class AIAutoCompleteEngine {
    */
   async getSugerencias(
     campo: string,
-    contexto: ContextoContrato
+    contexto: ContextoContrato,
   ): Promise<SugerenciaAutoComplete[]> {
     const sugerencias: SugerenciaAutoComplete[] = [];
 
     switch (campo) {
-      case 'valor':
+      case "valor":
         sugerencias.push(...this.sugerirValor(contexto));
         break;
-      case 'descuento':
+      case "descuento":
         sugerencias.push(...this.sugerirDescuento(contexto));
         break;
-      case 'diasPago':
+      case "diasPago":
         sugerencias.push(...this.sugerirDiasPago(contexto));
         break;
-      case 'duracion':
+      case "duracion":
         sugerencias.push(...this.sugerirDuracion(contexto));
         break;
-      case 'fechaInicio':
+      case "fechaInicio":
         sugerencias.push(...this.sugerirFechaInicio(contexto));
         break;
-      case 'medios':
+      case "medios":
         sugerencias.push(...this.sugerirMedios(contexto));
         break;
-      case 'clausulas':
+      case "clausulas":
         sugerencias.push(...this.sugerirClausulas(contexto));
         break;
     }
@@ -190,45 +210,51 @@ class AIAutoCompleteEngine {
    */
   private sugerirValor(contexto: ContextoContrato): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
-    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(/\s+/g, '-');
+    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(
+      /\s+/g,
+      "-",
+    );
 
     // Sugerencia basada en historial del cliente
     if (clienteKey && historicoClientes[clienteKey]) {
       const historial = historicoClientes[clienteKey];
-      const valorSugerido = Math.round(historial.promedioValor * (1 + historial.tendenciaValor / 100));
-      
+      const valorSugerido = Math.round(
+        historial.promedioValor * (1 + historial.tendenciaValor / 100),
+      );
+
       sugerencias.push({
-        id: 'valor-historial',
-        campo: 'valor',
+        id: "valor-historial",
+        campo: "valor",
         valor: valorSugerido,
         confianza: 92,
-        razon: `Basado en historial del cliente (+${historial.tendenciaValor}% tendencia YoY)`,
-        fuente: 'historial'
+        razon:
+          `Basado en historial del cliente (+${historial.tendenciaValor}% tendencia YoY)`,
+        fuente: "historial",
       });
 
       // Sugerencia del último contrato
       sugerencias.push({
-        id: 'valor-ultimo',
-        campo: 'valor',
+        id: "valor-ultimo",
+        campo: "valor",
         valor: historial.ultimoContrato.valor,
         confianza: 85,
-        razon: 'Mismo valor que el último contrato',
-        fuente: 'historial'
+        razon: "Mismo valor que el último contrato",
+        fuente: "historial",
       });
     }
 
     // Sugerencia basada en benchmark de industria
     if (contexto.industria) {
-      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, '_');
+      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, "_");
       const benchmark = benchmarksIndustria[benchKey];
       if (benchmark) {
         sugerencias.push({
-          id: 'valor-benchmark',
-          campo: 'valor',
+          id: "valor-benchmark",
+          campo: "valor",
           valor: benchmark.valorPromedioContrato,
           confianza: 75,
           razon: `Promedio de industria ${benchmark.industria}`,
-          fuente: 'benchmark'
+          fuente: "benchmark",
         });
       }
     }
@@ -236,12 +262,12 @@ class AIAutoCompleteEngine {
     // Sugerencia basada en IA predictiva
     if (contexto.valorEstimado) {
       sugerencias.push({
-        id: 'valor-prediccion',
-        campo: 'valor',
+        id: "valor-prediccion",
+        campo: "valor",
         valor: Math.round(contexto.valorEstimado * 1.1), // 10% sobre estimación
         confianza: 70,
-        razon: 'Predicción IA basada en potencial detectado',
-        fuente: 'prediccion'
+        razon: "Predicción IA basada en potencial detectado",
+        fuente: "prediccion",
       });
     }
 
@@ -251,32 +277,38 @@ class AIAutoCompleteEngine {
   /**
    * Sugiere descuento
    */
-  private sugerirDescuento(contexto: ContextoContrato): SugerenciaAutoComplete[] {
+  private sugerirDescuento(
+    contexto: ContextoContrato,
+  ): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
-    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(/\s+/g, '-');
+    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(
+      /\s+/g,
+      "-",
+    );
 
     // Basado en historial
     if (clienteKey && historicoClientes[clienteKey]) {
-      const descuentoAnterior = historicoClientes[clienteKey].ultimoContrato.descuento;
-      
+      const descuentoAnterior =
+        historicoClientes[clienteKey].ultimoContrato.descuento;
+
       sugerencias.push({
-        id: 'descuento-historial',
-        campo: 'descuento',
+        id: "descuento-historial",
+        campo: "descuento",
         valor: descuentoAnterior,
         confianza: 90,
-        razon: 'Mismo descuento que el contrato anterior',
-        fuente: 'historial'
+        razon: "Mismo descuento que el contrato anterior",
+        fuente: "historial",
       });
 
       // Sugerir reducción si hay crecimiento
       if (historicoClientes[clienteKey].tendenciaValor > 10) {
         sugerencias.push({
-          id: 'descuento-reducido',
-          campo: 'descuento',
+          id: "descuento-reducido",
+          campo: "descuento",
           valor: Math.max(descuentoAnterior - 3, 5),
           confianza: 75,
-          razon: 'Reducir descuento por crecimiento sostenido del cliente',
-          fuente: 'prediccion'
+          razon: "Reducir descuento por crecimiento sostenido del cliente",
+          fuente: "prediccion",
         });
       }
     }
@@ -290,12 +322,14 @@ class AIAutoCompleteEngine {
       if (valorContrato > 500000000) descuentoSugerido = 22;
 
       sugerencias.push({
-        id: 'descuento-volumen',
-        campo: 'descuento',
+        id: "descuento-volumen",
+        campo: "descuento",
         valor: descuentoSugerido,
         confianza: 80,
-        razon: `Descuento por volumen según valor $${(valorContrato / 1000000).toFixed(0)}M`,
-        fuente: 'patron'
+        razon: `Descuento por volumen según valor $${
+          (valorContrato / 1000000).toFixed(0)
+        }M`,
+        fuente: "patron",
       });
     }
 
@@ -305,42 +339,61 @@ class AIAutoCompleteEngine {
   /**
    * Sugiere días de pago
    */
-  private sugerirDiasPago(contexto: ContextoContrato): SugerenciaAutoComplete[] {
+  private sugerirDiasPago(
+    contexto: ContextoContrato,
+  ): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
-    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(/\s+/g, '-');
+    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(
+      /\s+/g,
+      "-",
+    );
 
     // Historial del cliente
     if (clienteKey && historicoClientes[clienteKey]) {
       sugerencias.push({
-        id: 'dias-historial',
-        campo: 'diasPago',
+        id: "dias-historial",
+        campo: "diasPago",
         valor: historicoClientes[clienteKey].ultimoContrato.diasPago,
         confianza: 92,
-        razon: 'Términos de pago habituales del cliente',
-        fuente: 'historial'
+        razon: "Términos de pago habituales del cliente",
+        fuente: "historial",
       });
     }
 
     // Benchmark de industria
     if (contexto.industria) {
-      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, '_');
+      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, "_");
       const benchmark = benchmarksIndustria[benchKey];
       if (benchmark) {
         sugerencias.push({
-          id: 'dias-benchmark',
-          campo: 'diasPago',
+          id: "dias-benchmark",
+          campo: "diasPago",
           valor: benchmark.diasPagoPromedio,
           confianza: 75,
           razon: `Estándar de industria ${benchmark.industria}`,
-          fuente: 'benchmark'
+          fuente: "benchmark",
         });
       }
     }
 
     // Valores estándar
     sugerencias.push(
-      { id: 'dias-30', campo: 'diasPago', valor: 30, confianza: 60, razon: 'Término estándar 30 días', fuente: 'patron' },
-      { id: 'dias-45', campo: 'diasPago', valor: 45, confianza: 55, razon: 'Término estándar 45 días', fuente: 'patron' }
+      {
+        id: "dias-30",
+        campo: "diasPago",
+        valor: 30,
+        confianza: 60,
+        razon: "Término estándar 30 días",
+        fuente: "patron",
+      },
+      {
+        id: "dias-45",
+        campo: "diasPago",
+        valor: 45,
+        confianza: 55,
+        razon: "Término estándar 45 días",
+        fuente: "patron",
+      },
     );
 
     return sugerencias;
@@ -349,39 +402,59 @@ class AIAutoCompleteEngine {
   /**
    * Sugiere duración del contrato
    */
-  private sugerirDuracion(contexto: ContextoContrato): SugerenciaAutoComplete[] {
+  private sugerirDuracion(
+    contexto: ContextoContrato,
+  ): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
-    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(/\s+/g, '-');
+    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(
+      /\s+/g,
+      "-",
+    );
 
     if (clienteKey && historicoClientes[clienteKey]) {
-      const duracionAnterior = historicoClientes[clienteKey].ultimoContrato.duracionMeses;
-      
+      const duracionAnterior =
+        historicoClientes[clienteKey].ultimoContrato.duracionMeses;
+
       sugerencias.push({
-        id: 'duracion-historial',
-        campo: 'duracion',
+        id: "duracion-historial",
+        campo: "duracion",
         valor: duracionAnterior,
         confianza: 88,
         razon: `Duración del contrato anterior: ${duracionAnterior} meses`,
-        fuente: 'historial'
+        fuente: "historial",
       });
 
       // Sugerir extensión si relación exitosa
       if (historicoClientes[clienteKey].tendenciaValor > 5) {
         sugerencias.push({
-          id: 'duracion-extendida',
-          campo: 'duracion',
+          id: "duracion-extendida",
+          campo: "duracion",
           valor: Math.min(duracionAnterior + 6, 24),
           confianza: 72,
-          razon: 'Extensión recomendada por relación exitosa',
-          fuente: 'prediccion'
+          razon: "Extensión recomendada por relación exitosa",
+          fuente: "prediccion",
         });
       }
     }
 
     // Estándar
     sugerencias.push(
-      { id: 'duracion-12', campo: 'duracion', valor: 12, confianza: 65, razon: 'Duración anual estándar', fuente: 'patron' },
-      { id: 'duracion-6', campo: 'duracion', valor: 6, confianza: 55, razon: 'Duración semestral', fuente: 'patron' }
+      {
+        id: "duracion-12",
+        campo: "duracion",
+        valor: 12,
+        confianza: 65,
+        razon: "Duración anual estándar",
+        fuente: "patron",
+      },
+      {
+        id: "duracion-6",
+        campo: "duracion",
+        valor: 6,
+        confianza: 55,
+        razon: "Duración semestral",
+        fuente: "patron",
+      },
     );
 
     return sugerencias;
@@ -391,28 +464,34 @@ class AIAutoCompleteEngine {
    * Sugiere fecha de inicio
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private sugerirFechaInicio(_contexto: ContextoContrato): SugerenciaAutoComplete[] {
+  private sugerirFechaInicio(
+    _contexto: ContextoContrato,
+  ): SugerenciaAutoComplete[] {
     const hoy = new Date();
-    const primeroDeMesSiguiente = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
+    const primeroDeMesSiguiente = new Date(
+      hoy.getFullYear(),
+      hoy.getMonth() + 1,
+      1,
+    );
     const enUNaSemana = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     return [
       {
-        id: 'fecha-mes-siguiente',
-        campo: 'fechaInicio',
-        valor: primeroDeMesSiguiente.toISOString().split('T')[0],
+        id: "fecha-mes-siguiente",
+        campo: "fechaInicio",
+        valor: primeroDeMesSiguiente.toISOString().split("T")[0],
         confianza: 85,
-        razon: 'Inicio el primer día del mes siguiente',
-        fuente: 'patron'
+        razon: "Inicio el primer día del mes siguiente",
+        fuente: "patron",
       },
       {
-        id: 'fecha-semana',
-        campo: 'fechaInicio',
-        valor: enUNaSemana.toISOString().split('T')[0],
+        id: "fecha-semana",
+        campo: "fechaInicio",
+        valor: enUNaSemana.toISOString().split("T")[0],
         confianza: 70,
-        razon: 'Inicio en 7 días',
-        fuente: 'patron'
-      }
+        razon: "Inicio en 7 días",
+        fuente: "patron",
+      },
     ];
   }
 
@@ -421,41 +500,45 @@ class AIAutoCompleteEngine {
    */
   private sugerirMedios(contexto: ContextoContrato): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
-    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(/\s+/g, '-');
+    const clienteKey = contexto.clienteNombre?.toLowerCase().replace(
+      /\s+/g,
+      "-",
+    );
 
     if (clienteKey && historicoClientes[clienteKey]) {
-      const mediosAnteriores = historicoClientes[clienteKey].ultimoContrato.medios;
-      
+      const mediosAnteriores =
+        historicoClientes[clienteKey].ultimoContrato.medios;
+
       sugerencias.push({
-        id: 'medios-historial',
-        campo: 'medios',
-        valor: mediosAnteriores.join(', '),
+        id: "medios-historial",
+        campo: "medios",
+        valor: mediosAnteriores.join(", "),
         confianza: 90,
-        razon: 'Medios del contrato anterior',
-        fuente: 'historial'
+        razon: "Medios del contrato anterior",
+        fuente: "historial",
       });
     }
 
     // Sugerencias basadas en industria
-    if (contexto.industria?.toLowerCase().includes('banca')) {
+    if (contexto.industria?.toLowerCase().includes("banca")) {
       sugerencias.push({
-        id: 'medios-banca',
-        campo: 'medios',
-        valor: 'Radio, TV, Digital',
+        id: "medios-banca",
+        campo: "medios",
+        valor: "Radio, TV, Digital",
         confianza: 75,
-        razon: 'Mix recomendado para sector financiero',
-        fuente: 'benchmark'
+        razon: "Mix recomendado para sector financiero",
+        fuente: "benchmark",
       });
     }
 
-    if (contexto.industria?.toLowerCase().includes('retail')) {
+    if (contexto.industria?.toLowerCase().includes("retail")) {
       sugerencias.push({
-        id: 'medios-retail',
-        campo: 'medios',
-        valor: 'Radio, Digital, Vía Pública',
+        id: "medios-retail",
+        campo: "medios",
+        valor: "Radio, Digital, Vía Pública",
         confianza: 75,
-        razon: 'Mix alto impacto para retail',
-        fuente: 'benchmark'
+        razon: "Mix alto impacto para retail",
+        fuente: "benchmark",
       });
     }
 
@@ -465,21 +548,23 @@ class AIAutoCompleteEngine {
   /**
    * Sugiere cláusulas
    */
-  private sugerirClausulas(contexto: ContextoContrato): SugerenciaAutoComplete[] {
+  private sugerirClausulas(
+    contexto: ContextoContrato,
+  ): SugerenciaAutoComplete[] {
     const sugerencias: SugerenciaAutoComplete[] = [];
 
     // Basado en industria
     if (contexto.industria) {
-      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, '_');
+      const benchKey = contexto.industria.toLowerCase().replace(/\s+/g, "_");
       const benchmark = benchmarksIndustria[benchKey];
       if (benchmark) {
         sugerencias.push({
-          id: 'clausulas-industria',
-          campo: 'clausulas',
-          valor: benchmark.clausulasComunes.join(', '),
+          id: "clausulas-industria",
+          campo: "clausulas",
+          valor: benchmark.clausulasComunes.join(", "),
           confianza: 82,
           razon: `Cláusulas típicas para ${benchmark.industria}`,
-          fuente: 'benchmark'
+          fuente: "benchmark",
         });
       }
     }
@@ -488,12 +573,13 @@ class AIAutoCompleteEngine {
     const valorContrato = contexto.camposCompletados.valor as number;
     if (valorContrato && valorContrato > 100000000) {
       sugerencias.push({
-        id: 'clausulas-alto-valor',
-        campo: 'clausulas',
-        valor: 'garantia_cumplimiento, penalizacion_cancelacion, revision_trimestral',
+        id: "clausulas-alto-valor",
+        campo: "clausulas",
+        valor:
+          "garantia_cumplimiento, penalizacion_cancelacion, revision_trimestral",
         confianza: 78,
-        razon: 'Cláusulas de protección para contratos de alto valor',
-        fuente: 'patron'
+        razon: "Cláusulas de protección para contratos de alto valor",
+        fuente: "patron",
       });
     }
 
@@ -506,16 +592,16 @@ class AIAutoCompleteEngine {
   async getRealtimeSuggestions(
     campo: string,
     valorParcial: string,
-    contexto: ContextoContrato
+    contexto: ContextoContrato,
   ): Promise<SugerenciaAutoComplete[]> {
     // Simular latencia de IA
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const todasSugerencias = await this.getSugerencias(campo, contexto);
-    
+
     // Filtrar por valor parcial si aplica
-    if (valorParcial && typeof todasSugerencias[0]?.valor === 'string') {
-      return todasSugerencias.filter(s => 
+    if (valorParcial && typeof todasSugerencias[0]?.valor === "string") {
+      return todasSugerencias.filter((s) =>
         String(s.valor).toLowerCase().includes(valorParcial.toLowerCase())
       );
     }
@@ -530,13 +616,13 @@ class AIAutoCompleteEngine {
     campo: string,
     valorSeleccionado: string | number,
     sugerenciaUsada: string | null,
-    contexto: ContextoContrato
+    contexto: ContextoContrato,
   ): Promise<void> {
-    logger.info('Registrando selección para aprendizaje:', {
+    logger.info("Registrando selección para aprendizaje:", {
       campo,
       valorSeleccionado,
       sugerenciaUsada,
-      clienteId: contexto.clienteId
+      clienteId: contexto.clienteId,
     });
     // Aquí iría la lógica de feedback al modelo de IA
   }

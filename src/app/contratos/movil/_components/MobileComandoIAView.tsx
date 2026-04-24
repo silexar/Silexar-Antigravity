@@ -1,5 +1,5 @@
 /**
- * ğŸ¤– MOBILE: Comando IA View
+ * ?? MOBILE: Comando IA View
  * 
  * Chat con asistente de contratos inteligente.
  * Paridad con desktop: contratos/comando/page.tsx
@@ -24,23 +24,23 @@ interface MensajeChat {
 }
 
 const SUGERENCIAS = [
-  'Â¿CuÃ¡ntos contratos vencen este mes?',
+  '¿Cuántos contratos vencen este mes?',
   'Resume el estado del pipeline',
-  'Â¿QuÃ© clientes tienen pagos pendientes?',
+  '¿Qué clientes tienen pagos pendientes?',
   'Analiza tendencia de cierre Q1',
   'Top 5 contratos por valor',
 ];
 
 const RESPUESTAS_MOCK: Record<string, string> = {
-  'vencen': 'ğŸ“Š Este mes vencen **12 contratos** por un valor total de **$185M**. Los mÃ¡s urgentes:\n\n1. **Falabella** â€” CTR-0045 â€” $45M (vence en 3 dÃ­as)\n2. **Banco Chile** â€” CTR-0067 â€” $32M (vence en 5 dÃ­as)\n3. **TechCorp** â€” CTR-0089 â€” $28M (vence en 7 dÃ­as)\n\nâš ï¸ Recomiendo contactar a Falabella hoy para renovaciÃ³n.',
-  'pipeline': 'ğŸ“ˆ **Pipeline actual:**\n\nâ€¢ ProspecciÃ³n: 23 contratos ($450M)\nâ€¢ NegociaciÃ³n: 15 contratos ($320M)\nâ€¢ Cierre: 8 contratos ($180M)\nâ€¢ Firmado: 45 contratos ($890M)\n\nâœ… Tasa de conversiÃ³n: 68% (arriba del benchmark 62%)',
-  'pendientes': 'ğŸ’° **3 clientes con pagos pendientes:**\n\n1. Ripley â€” $15.8M (17 dÃ­as vencido)\n2. Falabella â€” $12.5M (12 dÃ­as vencido)\n3. Banco Chile â€” $8.7M (en gestiÃ³n)\n\nTotal pendiente: **$37M**',
-  'default': 'ğŸ¤– Entendido. Analizando los datos del mÃ³dulo de contratos...\n\nBasado en la informaciÃ³n disponible, puedo observar que el mÃ³dulo cuenta con **156 contratos activos** por un valor total de **$2.4B**. La tasa de renovaciÃ³n es del 78%, superior al promedio del mercado.\n\nÂ¿Te gustarÃ­a que profundice en algÃºn aspecto especÃ­fico?',
+  'vencen': '?? Este mes vencen **12 contratos** por un valor total de **$185M**. Los más urgentes:\n\n1. **Falabella** — CTR-0045 — $45M (vence en 3 días)\n2. **Banco Chile** — CTR-0067 — $32M (vence en 5 días)\n3. **TechCorp** — CTR-0089 — $28M (vence en 7 días)\n\n?? Recomiendo contactar a Falabella hoy para renovación.',
+  'pipeline': '?? **Pipeline actual:**\n\n• Prospección: 23 contratos ($450M)\n• Negociación: 15 contratos ($320M)\n• Cierre: 8 contratos ($180M)\n• Firmado: 45 contratos ($890M)\n\n? Tasa de conversión: 68% (arriba del benchmark 62%)',
+  'pendientes': '?? **3 clientes con pagos pendientes:**\n\n1. Ripley — $15.8M (17 días vencido)\n2. Falabella — $12.5M (12 días vencido)\n3. Banco Chile — $8.7M (en gestión)\n\nTotal pendiente: **$37M**',
+  'default': '?? Entendido. Analizando los datos del módulo de contratos...\n\nBasado en la información disponible, puedo observar que el módulo cuenta con **156 contratos activos** por un valor total de **$2.4B**. La tasa de renovación es del 78%, superior al promedio del mercado.\n\n¿Te gustaría que profundice en algún aspecto específico?',
 };
 
 export function MobileComandoIAView() {
   const [mensajes, setMensajes] = useState<MensajeChat[]>([
-    { id: 'welcome', rol: 'assistant', contenido: 'ğŸ‘‹ Â¡Hola! Soy tu asistente de contratos. Puedo analizar datos, generar reportes, y responder preguntas sobre el estado de tus contratos.\n\nÂ¿En quÃ© puedo ayudarte?', timestamp: new Date(), tipo: 'texto' },
+    { id: 'welcome', rol: 'assistant', contenido: '?? ¡Hola! Soy tu asistente de contratos. Puedo analizar datos, generar reportes, y responder preguntas sobre el estado de tus contratos.\n\n¿En qué puedo ayudarte?', timestamp: new Date(), tipo: 'texto' },
   ]);
   const [input, setInput] = useState('');
   const [pensando, setPensando] = useState(false);
@@ -72,16 +72,16 @@ export function MobileComandoIAView() {
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
       {/* HEADER */}
-      <div className="bg-gradient-to-r from-purple-600 to-violet-700 rounded-2xl p-4 text-white shadow-xl mb-4">
+      <div className="bg-[#6888ff] rounded-2xl p-4 text-white shadow-xl mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-[#dfeaff]/20 rounded-xl flex items-center justify-center">
             <Brain className="w-6 h-6" />
           </div>
           <div>
             <p className="font-bold text-sm">Comando IA</p>
             <div className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] text-purple-200">Online Â· Analizando 156 contratos</span>
+              <span className="text-[10px] text-purple-200">Online · Analizando 156 contratos</span>
             </div>
           </div>
         </div>
@@ -93,8 +93,8 @@ export function MobileComandoIAView() {
           <div key={msg.id} className={`flex ${msg.rol === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm whitespace-pre-line ${
               msg.rol === 'user'
-                ? 'bg-indigo-600 text-white rounded-br-md'
-                : 'bg-white border border-slate-100 text-slate-700 rounded-bl-md'
+                ? 'bg-[#6888ff] text-white rounded-br-md'
+                : 'bg-[#dfeaff] border border-[#bec8de30] text-[#69738c] rounded-bl-md'
             }`}>
               {msg.contenido}
             </div>
@@ -102,9 +102,9 @@ export function MobileComandoIAView() {
         ))}
         {pensando && (
           <div className="flex justify-start">
-            <div className="bg-white border border-slate-100 px-4 py-3 rounded-2xl rounded-bl-md flex items-center gap-2">
+            <div className="bg-[#dfeaff] border border-[#bec8de30] px-4 py-3 rounded-2xl rounded-bl-md flex items-center gap-2">
               <Loader2 className="w-4 h-4 text-purple-500 animate-spin" />
-              <span className="text-xs text-slate-400">Analizando...</span>
+              <span className="text-xs text-[#9aa3b8]">Analizando...</span>
             </div>
           </div>
         )}
@@ -115,7 +115,7 @@ export function MobileComandoIAView() {
         <div className="flex flex-wrap gap-2 pb-3">
           {SUGERENCIAS.map((s) => (
             <button key={s} onClick={() => enviar(s)}
-              className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-[11px] font-bold border border-purple-200 active:scale-95">
+              className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-[11px] font-bold border border-[#bec8de30] active:scale-95">
               {s}
             </button>
           ))}
@@ -123,12 +123,12 @@ export function MobileComandoIAView() {
       )}
 
       {/* INPUT */}
-      <div className="flex gap-2 pt-2 border-t border-slate-100">
+      <div className="flex gap-2 pt-2 border-t border-[#bec8de30]">
         <input value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && enviar(input)}
           placeholder="Pregunta algo..."
           aria-label="Pregunta algo"
-          className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-purple-400 outline-none" />
+          className="flex-1 px-4 py-3 rounded-xl border border-[#bec8de30] bg-[#dfeaff] text-sm focus:ring-2 focus:ring-purple-400 outline-none" />
         <button onClick={() => enviar(input)} disabled={!input.trim() || pensando}
           className="px-4 py-3 bg-purple-600 text-white rounded-xl active:scale-90 disabled:opacity-50">
           <Send className="w-5 h-5" />

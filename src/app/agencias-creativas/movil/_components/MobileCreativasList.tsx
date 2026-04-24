@@ -128,8 +128,8 @@ export const MobileCreativasList: React.FC<ListProps> = ({
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className={agencia.scoreRendimiento >= 8 ? "text-emerald-500" : agencia.scoreRendimiento >= 5 ? "text-amber-500" : "text-rose-500"}
-                      strokeDasharray={`${agencia.scoreRendimiento * 10}, 100`}
+                      className={(agencia.scoreRendimiento ?? 0) >= 8 ? "text-emerald-500" : (agencia.scoreRendimiento ?? 0) >= 5 ? "text-amber-500" : "text-rose-500"}
+                      strokeDasharray={`${(agencia.scoreRendimiento ?? 0) * 10}, 100`}
                       strokeWidth="3"
                       strokeLinecap="round"
                       stroke="currentColor"
@@ -137,7 +137,7 @@ export const MobileCreativasList: React.FC<ListProps> = ({
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                   </svg>
-                  <span className="text-[10px] font-bold text-slate-700 z-10">{agencia.scoreRendimiento}</span>
+                  <span className="text-[10px] font-bold text-slate-700 z-10">{agencia.scoreRendimiento ?? 0}</span>
                 </div>
               </div>
 

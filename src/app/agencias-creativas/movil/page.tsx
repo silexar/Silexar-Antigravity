@@ -1,20 +1,32 @@
-/**
- * 📱 SILEXAR PULSE — Agencias Creativas Mobile App TIER 0
- * 
- * @description Interface móvil para gestión de agencias creativas 
- * con paridad 1:1 con desktop.
- * 
- * @version 2026.3.0
- * @tier TIER_0_FORTUNE_10
- * @platform MOBILE
- */
-
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Home, List, FolderOpen, Plus, Menu, Palette } from 'lucide-react';
-import { MobileCreativasDashboard } from './_components/MobileCreativasDashboard';
-import { MobileCreativasList } from './_components/MobileCreativasList';
+/**
+ * 🎨 SILEXAR PULSE - Agencias Creativas Móvil
+ * 
+ * @description Interface móvil para gestión de agencias creativas
+ * 
+ * @version 2025.1.0
+ * @tier TIER_0_FORTUNE_10
+ */
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  ArrowLeft,
+  Plus,
+  Search,
+  RefreshCw,
+  Building2,
+  Phone,
+  Mail,
+  ChevronRight,
+  Sparkles,
+  Briefcase
+} from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════
+// TIPOS
+// ═══════════════════════════════════════════════════════════════
 
 export interface AgenciaCreativa {
   id: string;
@@ -25,153 +37,287 @@ export interface AgenciaCreativa {
   porcentajeComision: number;
   emailGeneral: string | null;
   telefonoGeneral: string | null;
-  paginaWeb: string | null;
   estado: string;
   activa: boolean;
-  scoreRendimiento: number;
+  campañasActivas?: number;
+  facturacionMensual?: number;
+  scoreRendimiento?: number;
 }
 
-export default function MobileAgenciasCreativasApp() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'lista' | 'portafolio'>('dashboard');
+// ═══════════════════════════════════════════════════════════════
+// DISEÑO MÓVIL - NEUROMÓRFICO
+// ═══════════════════════════════════════════════════════════════
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════════════════════
+
+const MOCK_AGENCIAS: AgenciaCreativa[] = [
+  { id: 'agc-001', codigo: 'AGC-001', razonSocial: 'Creativos Asociados Ltda', nombreFantasia: 'BlueWave Creative', tipoAgencia: 'digital', porcentajeComision: 15, emailGeneral: 'contacto@bluewave.cl', telefonoGeneral: '+56 2 2345 6789', estado: 'activa', activa: true, campañasActivas: 12, facturacionMensual: 45000000, scoreRendimiento: 92 },
+  { id: 'agc-002', codigo: 'AGC-002', razonSocial: 'MediaPlan SpA', nombreFantasia: 'MediaPlan', tipoAgencia: 'medios', porcentajeComision: 12, emailGeneral: 'info@mediaplan.cl', telefonoGeneral: '+56 2 3456 7890', estado: 'activa', activa: true, campañasActivas: 8, facturacionMensual: 32000000, scoreRendimiento: 78 },
+  { id: 'agc-003', codigo: 'AGC-003', razonSocial: 'Impacto BTL Ltda', nombreFantasia: 'Impacto', tipoAgencia: 'btl', porcentajeComision: 18, emailGeneral: 'ventas@impacto.cl', telefonoGeneral: '+56 2 4567 8901', estado: 'activa', activa: true, campañasActivas: 5, facturacionMensual: 18500000, scoreRendimiento: 65 },
+]
+
+// ═══════════════════════════════════════════════════════════════
+// PÁGINA MÓVIL
+// ═══════════════════════════════════════════════════════════════
+
+export default function AgenciasCreativasMovilPage() {
+  const router = useRouter();
   const [agencias, setAgencias] = useState<AgenciaCreativa[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterTipo, setFilterTipo] = useState('todos');
-
-  const fetchAgencias = useCallback(async () => {
-    setLoading(true);
-    try {
-      // Mock para frontend real. Asumimos /api/agencias-creativas
-      const response = await fetch('/api/agencias-creativas?limit=100'); 
-      const data = await response.json();
-      if (data.success) {
-        setAgencias(data.data);
-      }
-    } catch {
-      // /* */;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
-    fetchAgencias();
-  }, [fetchAgencias]);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/agencias-creativas?limit=100');
+        const data = await response.json();
+        if (data.success && data.data) {
+          setAgencias(data.data);
+        } else {
+          setAgencias(MOCK_AGENCIAS);
+        }
+      } catch {
+        setAgencias(MOCK_AGENCIAS);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredAgencias = agencias.filter(a =>
+    a.razonSocial.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (a.nombreFantasia?.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const stats = {
     total: agencias.length,
     activas: agencias.filter(a => a.activa).length,
-    scorePromedio: agencias.reduce((acc, a) => acc + (a.scoreRendimiento || 0), 0) / (agencias.length || 1)
+    proyectosActivos: agencias.reduce((sum, a) => sum + (a.campañasActivas || 0), 0),
+    calidadPromedio: agencias.length > 0
+      ? (agencias.reduce((sum, a) => sum + (a.scoreRendimiento || 0), 0) / agencias.length).toFixed(1)
+      : '0'
   };
 
-  const handleRefresh = async () => {
-    await fetchAgencias();
-  };
-
-  const openCrear = () => {
-    alert('Navegar a creación de agencia creativa');
-  };
-
-  // Helper para Bottom Navigation
-  const NavItem = ({ id, icon: Icon, label, alert = false }: { id: 'dashboard' | 'lista' | 'portafolio'; icon: React.ElementType; label: string; alert?: boolean }) => {
-    const isActive = activeTab === id;
-    return (
-      <button 
-        onClick={() => setActiveTab(id)}
-        className={`flex flex-col items-center justify-center w-full relative ${
-          isActive ? 'text-pink-600' : 'text-slate-400'
-        }`}
-      >
-        <div className={`p-2 rounded-2xl transition-all ${
-          isActive 
-            ? 'bg-pink-50 shadow-[inset_2px_2px_4px_#d1d5db,inset_-2px_-2px_4px_#ffffff]' 
-            : ''
-        }`}>
-          <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-          {alert && (
-            <span className="absolute top-1 right-1/4 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse" />
-          )}
-        </div>
-        <span className={`text-[10px] mt-1 font-bold ${isActive ? 'text-pink-600' : 'text-slate-500'}`}>
-          {label}
-        </span>
-      </button>
-    );
+  const getTipoColor = (tipo: string) => {
+    switch (tipo) {
+      case 'digital': return '#06b6d4';
+      case 'medios': return '#10b981';
+      case 'btl': return '#f59e0b';
+      case 'publicidad': return '#8b5cf6';
+      case 'integral': return '#ec4899';
+      default: return '#64748b';
+    }
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-slate-50 font-sans overflow-hidden">
-      
-      {/* HEADER SUPERIOR */}
-      <header className="px-5 pt-10 pb-4 bg-white shadow-[0_4px_10px_rgba(0,0,0,0.03)] z-20 flex justify-between items-center rounded-b-3xl border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]">
-            <Palette className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">
-              Silexar <span className="text-pink-600">Pulse</span>
-            </h1>
-            <p className="text-[11px] font-bold text-slate-400 tracking-widest uppercase mt-0.5">
+    <div className="min-h-screen" style={{ background: `linear-gradient(180deg, ${N.base} 0%, #e8f0ff 100%)` }}>
+      {/* Header */}
+      <div className="p-4 pb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="p-2 rounded-xl"
+            style={{ background: N.base, boxShadow: `3px 3px 6px ${N.dark},-3px_-3px 6px ${N.light}` }}
+          >
+            <ArrowLeft className="w-5 h-5" style={{ color: N.text }} />
+          </button>
+          <div className="flex-1">
+            <h1 className="text-xl font-black" style={{ color: N.text }}>
               Agencias Creativas
+            </h1>
+            <p className="text-xs" style={{ color: N.textSub }}>
+              Gestión móvil
             </p>
           </div>
+          <button
+            onClick={() => router.push('/agencias-creativas/nuevo')}
+            className="p-3 rounded-xl"
+            style={{ background: N.accent, boxShadow: `3px 3px 6px ${N.dark}` }}
+          >
+            <Plus className="w-5 h-5 text-white" />
+          </button>
         </div>
-        
-        <button className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-[4px_4px_12px_rgba(0,0,0,0.05),-4px_-4px_12px_rgba(255,255,255,0.8)] text-slate-500 active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)] transition-all">
-          <Menu className="w-5 h-5" />
-        </button>
-      </header>
 
-      {/* ÁREA DE CONTENIDO (Scrollable) */}
-      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-24">
-        {activeTab === 'dashboard' && (
-          <MobileCreativasDashboard 
-            stats={stats} 
-            recentAgencias={agencias.sort((a,b) => b.scoreRendimiento - a.scoreRendimiento).slice(0, 3)}
-            onRefresh={handleRefresh}
-            onOpenNuevo={openCrear}
-            onOpenList={() => setActiveTab('lista')}
-            loading={loading}
-          />
-        )}
-        {activeTab === 'lista' && (
-          <MobileCreativasList 
-            agencias={agencias} 
-            loading={loading}
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm}
-            filterTipo={filterTipo}
-            setFilterTipo={setFilterTipo}
-            onAgenciaSelect={(id) => alert(`Detalle creativa: ${id}`)}
-          />
-        )}
-        {activeTab === 'portafolio' && (
-          <div className="flex flex-col items-center justify-center py-20 opacity-60">
-            <FolderOpen className="w-16 h-16 text-slate-300 mb-4" />
-            <p className="text-slate-500 font-bold">Portafolio de Campañas</p>
-            <p className="text-sm text-center text-slate-400 mt-2">Visión general de piezas y<br/>producciones en curso</p>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 gap-3">
+          <div
+            className="p-3 rounded-2xl text-center"
+            style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }}
+          >
+            <div className="text-2xl font-black" style={{ color: N.accent }}>{stats.total}</div>
+            <div className="text-xs" style={{ color: N.textSub }}>Agencias</div>
           </div>
-        )}
-      </main>
-
-      {/* FLOATING ACTION BUTTON */}
-      <button 
-        onClick={openCrear}
-        className="absolute bottom-24 right-5 w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white shadow-[0_8px_16px_rgba(244,63,94,0.4)] z-30 transition-transform hover:scale-105 active:scale-95"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
-
-      {/* BOTTOM NAVIGATION */}
-      <nav className="fixed bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-slate-100 pb-safe pt-2 px-2 z-30 rounded-t-3xl shadow-[0_-10px_20px_rgba(0,0,0,0.03)] pb-2">
-        <div className="flex justify-around items-center h-16 max-w-md mx-auto relative mb-2">
-          <NavItem id="dashboard" icon={Home} label="Dashboard" />
-          <NavItem id="lista" icon={List} label="Catálogo" />
-          <NavItem id="portafolio" icon={FolderOpen} label="Portafolio" />
+          <div
+            className="p-3 rounded-2xl text-center"
+            style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }}
+          >
+            <div className="text-2xl font-black" style={{ color: '#10b981' }}>{stats.proyectosActivos}</div>
+            <div className="text-xs" style={{ color: N.textSub }}>Proyectos</div>
+          </div>
         </div>
-      </nav>
-      
+      </div>
+
+      {/* Search */}
+      <div className="px-4 pb-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: N.textSub }} />
+          <input
+            type="text"
+            placeholder="Buscar agencia..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm font-medium outline-none"
+            style={{
+              background: N.light,
+              color: N.text,
+              boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}`,
+              border: 'none'
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="px-4 pb-4 flex gap-2 overflow-x-auto">
+        <button
+          className="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1"
+          style={{ background: N.accent, color: 'white' }}
+        >
+          <Plus className="w-3 h-3" /> Nueva
+        </button>
+        <button
+          className="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+          style={{ background: N.base, color: N.text, boxShadow: `2px 2px 4px ${N.dark},-2px_-2px 4px ${N.light}` }}
+        >
+          <Briefcase className="w-3 h-3 inline mr-1" /> Ver Todos
+        </button>
+        <button
+          className="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+          style={{ background: N.base, color: N.text, boxShadow: `2px 2px 4px ${N.dark},-2px_-2px 4px ${N.light}` }}
+        >
+          <Sparkles className="w-3 h-3 inline mr-1" /> Top Rated
+        </button>
+      </div>
+
+      {/* Lista */}
+      <div className="px-4 pb-6 space-y-3">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <RefreshCw className="w-8 h-8 animate-spin" style={{ color: N.accent }} />
+          </div>
+        ) : filteredAgencias.length === 0 ? (
+          <div className="text-center py-12">
+            <Building2 className="w-12 h-12 mx-auto mb-3" style={{ color: N.textSub }} />
+            <p style={{ color: N.textSub }}>Sin resultados</p>
+          </div>
+        ) : (
+          filteredAgencias.map((agencia) => (
+            <div
+              key={agencia.id}
+              onClick={() => router.push(`/agencias-creativas/${agencia.id}`)}
+              className="p-4 rounded-2xl cursor-pointer"
+              style={{
+                background: N.base,
+                boxShadow: `4px 4px 8px ${N.dark},-4px_-4px 8px ${N.light}`
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-black text-white"
+                  style={{ background: `linear-gradient(135deg, ${N.accent} 0%, #8b5cf6 100%)` }}
+                >
+                  {(agencia.nombreFantasia || agencia.razonSocial).charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-bold text-sm truncate" style={{ color: N.text }}>
+                      {agencia.nombreFantasia || agencia.razonSocial}
+                    </p>
+                    <span
+                      className="px-2 py-0.5 rounded text-xs font-bold text-white"
+                      style={{ background: getTipoColor(agencia.tipoAgencia) }}
+                    >
+                      {agencia.tipoAgencia}
+                    </span>
+                  </div>
+                  <p className="text-xs truncate" style={{ color: N.textSub }}>
+                    {agencia.razonSocial}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" style={{ color: '#10b981' }} />
+                    <span className="text-sm font-bold" style={{ color: '#10b981' }}>
+                      {agencia.scoreRendimiento || 0}
+                    </span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 mt-1" style={{ color: N.textSub }} />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t" style={{ borderColor: N.dark }}>
+                <div className="flex items-center gap-1 text-xs" style={{ color: N.textSub }}>
+                  <Briefcase className="w-3 h-3" />
+                  {agencia.campañasActivas || 0} proyectos
+                </div>
+                <div className="flex items-center gap-1 text-xs" style={{ color: N.textSub }}>
+                  <span>{agencia.porcentajeComision}%</span>
+                </div>
+                {agencia.emailGeneral && (
+                  <a
+                    href={`mailto:${agencia.emailGeneral}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="ml-auto"
+                  >
+                    <Mail className="w-4 h-4" style={{ color: N.accent }} />
+                  </a>
+                )}
+                {agencia.telefonoGeneral && (
+                  <a
+                    href={`tel:${agencia.telefonoGeneral}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Phone className="w-4 h-4" style={{ color: '#10b981' }} />
+                  </a>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Bottom Nav Placeholder */}
+      <div
+        className="fixed bottom-0 left-0 right-0 p-4 flex justify-around"
+        style={{ background: N.base, boxShadow: `0 -4px 8px ${N.dark}` }}
+      >
+        <button className="flex flex-col items-center" onClick={() => router.push('/dashboard')}>
+          <Building2 className="w-5 h-5" style={{ color: N.textSub }} />
+          <span className="text-xs mt-1" style={{ color: N.textSub }}>Inicio</span>
+        </button>
+        <button className="flex flex-col items-center">
+          <Briefcase className="w-5 h-5" style={{ color: N.accent }} />
+          <span className="text-xs mt-1" style={{ color: N.accent }}>Agencias</span>
+        </button>
+        <button className="flex flex-col items-center">
+          <Sparkles className="w-5 h-5" style={{ color: N.textSub }} />
+          <span className="text-xs mt-1" style={{ color: N.textSub }}>IA</span>
+        </button>
+      </div>
     </div>
   );
 }

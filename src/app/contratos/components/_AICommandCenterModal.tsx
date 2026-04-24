@@ -86,7 +86,7 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
                 <Mic className="w-5 h-5 text-red-500" />
               </motion.div>
             ) : (
-              <Command className="w-5 h-5 text-indigo-500" />
+              <Command className="w-5 h-5 text-[#6888ff]" />
             )}
             <input
               ref={inputRef}
@@ -96,12 +96,12 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
               onKeyDown={handleKeyDown}
               aria-label={isListening ? 'Escuchando...' : 'Escribe un comando o pregunta a la IA'}
               placeholder={isListening ? 'Escuchando...' : 'Escribe un comando o pregunta a la IA...'}
-              className="flex-1 bg-transparent text-lg text-slate-800 placeholder:text-slate-400 focus:outline-none"
+              className="flex-1 bg-transparent text-lg text-[#69738c] placeholder:text-[#9aa3b8] focus:outline-none"
             />
             <button
               onClick={toggleVoice}
               aria-label={isListening ? 'Detener reconocimiento de voz' : 'Activar reconocimiento de voz'}
-              className={`p-2 rounded-xl transition-all ${isListening ? 'bg-red-100 text-red-600' : 'hover:bg-slate-100 text-slate-400'}`}
+              className={`p-2 rounded-xl transition-all ${isListening ? 'bg-red-100 text-red-600' : 'hover:bg-[#dfeaff] text-[#9aa3b8]'}`}
             >
               {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
             </button>
@@ -116,8 +116,8 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-xl font-medium text-sm transition-all ${
                 activeTab === tab
-                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg'
-                  : 'text-slate-500 hover:bg-slate-100'
+                  ? 'bg-[#6888ff] text-white shadow-lg'
+                  : 'text-[#9aa3b8] hover:bg-[#dfeaff]'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   onClick={() => { cmd.accion(); onClose(); }}
-                  className={`w-full ${neuro.card} ${neuro.cardHover} p-4 flex items-center gap-4 ${idx === selectedIndex ? 'ring-2 ring-indigo-400 ring-offset-2' : ''}`}
+                  className={`w-full ${neuro.card} ${neuro.cardHover} p-4 flex items-center gap-4 ${idx === selectedIndex ? 'ring-2 ring-[#6888ff] ring-offset-2' : ''}`}
                 >
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${
                     cmd.tipo === 'creacion' ? 'from-green-400 to-emerald-500' :
@@ -150,11 +150,11 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
                     {cmd.icono}
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="font-semibold text-slate-800">{cmd.texto}</p>
-                    <p className="text-sm text-slate-500">{cmd.descripcion}</p>
+                    <p className="font-semibold text-[#69738c]">{cmd.texto}</p>
+                    <p className="text-sm text-[#9aa3b8]">{cmd.descripcion}</p>
                   </div>
-                  {cmd.atajo && <div className={`${neuro.badge} bg-slate-50 text-slate-600`}>{cmd.atajo}</div>}
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                  {cmd.atajo && <div className={`${neuro.badge} bg-[#dfeaff] text-[#69738c]`}>{cmd.atajo}</div>}
+                  <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                 </motion.button>
               ))}
             </div>
@@ -172,10 +172,10 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
                     <div className="mt-1">{getTipoIcon(sug.tipo)}</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-slate-800">{sug.titulo}</h4>
+                        <h4 className="font-semibold text-[#69738c]">{sug.titulo}</h4>
                         <span className={`${neuro.badge} ${getPriorityColor(sug.prioridad)}`}>{sug.prioridad}</span>
                       </div>
-                      <p className="text-sm text-slate-600 mb-3">{sug.descripcion}</p>
+                      <p className="text-sm text-[#69738c] mb-3">{sug.descripcion}</p>
                       {sug.accionSugerida && (
                         <button className={`${neuro.btnPrimary} px-4 py-2 text-sm flex items-center gap-2`}>
                           <Zap className="w-4 h-4" />
@@ -191,14 +191,14 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 bg-slate-50/50 border-t border-slate-200/50 flex items-center justify-between text-xs text-slate-400">
+        <div className="px-5 py-4 bg-[#dfeaff]/50 border-t border-[#bec8de30] flex items-center justify-between text-xs text-[#9aa3b8]">
           <div className="flex items-center gap-4">
-            <span>↑↓ navegar</span>
-            <span>↵ seleccionar</span>
+            <span>?? navegar</span>
+            <span>? seleccionar</span>
             <span>ESC cerrar</span>
           </div>
           <div className="flex items-center gap-2">
-            <Brain className="w-4 h-4 text-indigo-400" />
+            <Brain className="w-4 h-4 text-[#6888ff]" />
             <span>Cortex-Flow AI</span>
           </div>
         </div>

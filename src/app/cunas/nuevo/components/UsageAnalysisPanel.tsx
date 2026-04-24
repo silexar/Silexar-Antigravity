@@ -45,7 +45,7 @@ export const UsageAnalysisPanel = ({ cunaId = 'SPX001847' }: { cunaId?: string }
             <button className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50 shadow-sm">
                Comparar
             </button>
-            <button className="px-4 py-2 bg-[#F0EDE8] text-white rounded-lg text-sm font-bold hover:bg-slate-800 shadow-md">
+            <button className="px-4 py-2 bg-[#EAF0F6] text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-200 shadow-md">
                Exportar PDF
             </button>
          </div>

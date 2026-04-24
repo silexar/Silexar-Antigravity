@@ -57,23 +57,23 @@ interface TrabajoExport {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    rounded-3xl shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    bg-gradient-to-br from-[#dfeaff] to-[#dfeaff]
+    rounded-3xl shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
+    border border-[#bec8de30]/50
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
-    rounded-2xl shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    bg-gradient-to-br from-[#ffffff] to-[#dfeaff]
+    rounded-2xl shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
+    border border-[#bec8de30]/30
   `,
   btn: `
     px-4 py-2 rounded-xl font-medium transition-all
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
   `,
-  btnPrimary: `bg-gradient-to-br from-indigo-500 to-purple-600 text-white`,
+  btnPrimary: `bg-[#6888ff] text-white`,
   btnSuccess: `bg-gradient-to-br from-green-500 to-emerald-600 text-white`,
-  btnSecondary: `bg-gradient-to-br from-slate-50 to-slate-100 text-slate-700`,
+  btnSecondary: `bg-gradient-to-br from-[#dfeaff] to-[#dfeaff] text-[#69738c]`,
   badge: `px-3 py-1 rounded-lg text-xs font-medium`
 };
 
@@ -160,18 +160,18 @@ export default function ExportsPage() {
       case 'EXCEL': return <FileSpreadsheet className="w-5 h-5 text-green-600" />;
       case 'CSV': return <FileSpreadsheet className="w-5 h-5 text-blue-500" />;
       case 'ZIP': return <Archive className="w-5 h-5 text-purple-500" />;
-      default: return <Package className="w-5 h-5 text-slate-500" />;
+      default: return <Package className="w-5 h-5 text-[#69738c]" />;
     }
   };
 
   const getEstadoConfig = (estado: string) => {
     switch (estado) {
-      case 'PENDIENTE': return { color: 'text-slate-600', bg: 'bg-slate-100', icon: Clock };
+      case 'PENDIENTE': return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Clock };
       case 'PROCESANDO': return { color: 'text-blue-600', bg: 'bg-blue-100', icon: Loader2 };
       case 'COMPLETADO': return { color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle };
       case 'ERROR': return { color: 'text-red-600', bg: 'bg-red-100', icon: XCircle };
-      case 'CANCELADO': return { color: 'text-slate-500', bg: 'bg-slate-100', icon: XCircle };
-      default: return { color: 'text-slate-600', bg: 'bg-slate-100', icon: Clock };
+      case 'CANCELADO': return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: XCircle };
+      default: return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Clock };
     }
   };
 
@@ -217,7 +217,7 @@ export default function ExportsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#dfeaff] p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -226,8 +226,8 @@ export default function ExportsPage() {
               <Download className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">Exportaciones</h1>
-              <p className="text-slate-500">Gestiona tus descargas y reportes generados</p>
+              <h1 className="text-2xl font-bold text-[#69738c]">Exportaciones</h1>
+              <p className="text-[#69738c]">Gestiona tus descargas y reportes generados</p>
             </div>
           </div>
           
@@ -241,7 +241,7 @@ export default function ExportsPage() {
         <div className="grid grid-cols-4 gap-6 mb-8">
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">En Proceso</p>
+              <p className="text-sm text-[#69738c] mb-1">En Proceso</p>
               <p className="text-2xl font-bold text-blue-600">
                 {trabajos.filter(t => t.estado === 'PROCESANDO').length}
               </p>
@@ -249,7 +249,7 @@ export default function ExportsPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Listos para Descarga</p>
+              <p className="text-sm text-[#69738c] mb-1">Listos para Descarga</p>
               <p className="text-2xl font-bold text-green-600">
                 {trabajos.filter(t => t.estado === 'COMPLETADO').length}
               </p>
@@ -257,15 +257,15 @@ export default function ExportsPage() {
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Documentos Hoy</p>
-              <p className="text-2xl font-bold text-slate-800">
+              <p className="text-sm text-[#69738c] mb-1">Documentos Hoy</p>
+              <p className="text-2xl font-bold text-[#69738c]">
                 {trabajos.reduce((acc, t) => acc + t.totalDocumentos, 0)}
               </p>
             </div>
           </motion.div>
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="p-5">
-              <p className="text-sm text-slate-500 mb-1">Tamaño Total</p>
+              <p className="text-sm text-[#69738c] mb-1">Tamaño Total</p>
               <p className="text-2xl font-bold text-purple-600">
                 {formatBytes(trabajos.reduce((acc, t) => acc + (t.tamañoBytes || 0), 0))}
               </p>
@@ -311,7 +311,7 @@ export default function ExportsPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-slate-800">
+                            <h3 className="font-semibold text-[#69738c]">
                               {trabajo.tipo === 'MASIVO' 
                                 ? `${trabajo.totalDocumentos} documentos` 
                                 : trabajo.documentos[0]?.titulo}
@@ -321,7 +321,7 @@ export default function ExportsPage() {
                               {trabajo.estado}
                             </span>
                           </div>
-                          <p className="text-sm text-slate-500">
+                          <p className="text-sm text-[#69738c]">
                             {trabajo.formato} • {formatTiempo(trabajo.fechaSolicitud)}
                             {trabajo.tamañoBytes && ` • ${formatBytes(trabajo.tamañoBytes)}`}
                           </p>
@@ -344,8 +344,8 @@ export default function ExportsPage() {
                             Reintentar
                           </button>
                         )}
-                        <button className="p-2 hover:bg-slate-100 rounded-lg">
-                          <MoreVertical className="w-5 h-5 text-slate-400" />
+                        <button className="p-2 hover:bg-[#dfeaff] rounded-lg">
+                          <MoreVertical className="w-5 h-5 text-[#9aa3b8]" />
                         </button>
                       </div>
                     </div>
@@ -354,14 +354,14 @@ export default function ExportsPage() {
                     {(trabajo.estado === 'PROCESANDO' || trabajo.estado === 'PENDIENTE') && (
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-500">
+                          <span className="text-[#69738c]">
                             Procesando documento {trabajo.documentosProcesados} de {trabajo.totalDocumentos}
                           </span>
-                          <span className="font-medium text-indigo-600">{trabajo.progreso}%</span>
+                          <span className="font-medium text-[#6888ff]">{trabajo.progreso}%</span>
                         </div>
-                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                           <motion.div 
-                            className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"
+                            className="h-full bg-[#6888ff] rounded-full"
                             initial={{ width: 0 }}
                             animate={{ width: `${trabajo.progreso}%` }}
                             transition={{ duration: 0.5 }}
@@ -381,12 +381,12 @@ export default function ExportsPage() {
                     {/* Lista de documentos (colapsable) */}
                     {trabajo.tipo === 'MASIVO' && trabajo.estado === 'COMPLETADO' && (
                       <details className="mt-4">
-                        <summary className="text-sm text-indigo-600 cursor-pointer hover:underline">
+                        <summary className="text-sm text-[#6888ff] cursor-pointer hover:underline">
                           Ver {trabajo.totalDocumentos} documentos incluidos
                         </summary>
                         <div className="mt-2 max-h-32 overflow-y-auto grid grid-cols-2 gap-1">
                           {trabajo.documentos.map((doc) => (
-                            <span key={doc.titulo} className="text-xs text-slate-500 truncate">
+                            <span key={doc.titulo} className="text-xs text-[#69738c] truncate">
                               • {doc.titulo}
                             </span>
                           ))}
@@ -400,8 +400,8 @@ export default function ExportsPage() {
 
             {trabajosFiltrados.length === 0 && (
               <div className="text-center py-12">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500">No hay exportaciones {filtroEstado !== 'todos' && `con estado "${filtroEstado}"`}</p>
+                <Package className="w-12 h-12 text-[#9aa3b8] mx-auto mb-4" />
+                <p className="text-[#69738c]">No hay exportaciones {filtroEstado !== 'todos' && `con estado "${filtroEstado}"`}</p>
               </div>
             )}
           </div>

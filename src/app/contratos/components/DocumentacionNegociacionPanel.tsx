@@ -1,11 +1,11 @@
 /**
- * 📎 SILEXAR PULSE - Documentation Panel Component TIER 0
+ * ?? SILEXAR PULSE - Documentation Panel Component TIER 0
  * 
- * @description Panel de documentación de negociación que permite:
+ * @description Panel de documentaci�n de negociaci�n que permite:
  * - Drag & Drop desde Gmail/Outlook
- * - Instrucciones para móvil
+ * - Instrucciones para m�vil
  * - Vista de documentos procesados
- * - Datos extraídos por IA
+ * - Datos extra�dos por IA
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -42,65 +42,63 @@ import {
   type TipoDocumento 
 } from '../nuevo/components/WizardContrato/services/DocumentationIngestionService';
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // ESTILOS NEUROMORPHIC
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-[#dfeaff]
     rounded-3xl
-    shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-[#dfeaff]
     rounded-2xl
-    shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    shadow-[6px_6px_12px_#bec8de,-6px_-6px_12px_#ffffff]
   `,
   dropzone: `
-    border-2 border-dashed border-slate-300
+    border-2 border-dashed border-[#bec8de]
     rounded-2xl
-    bg-gradient-to-br from-slate-50/50 to-white
+    bg-[#dfeaff]
     transition-all duration-300
   `,
   dropzoneActive: `
-    border-indigo-500 border-solid
-    bg-gradient-to-br from-indigo-50 to-purple-50
+    border-[#6888ff] border-solid
+    bg-[#dfeaff]
     shadow-[inset_4px_4px_8px_rgba(99,102,241,0.1)]
   `,
   input: `
-    bg-gradient-to-br from-slate-100 to-slate-50
+    bg-[#dfeaff]
     rounded-xl
-    shadow-[inset_3px_3px_6px_#d1d5db,inset_-3px_-3px_6px_#ffffff]
+    shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
     border-none
-    focus:ring-2 focus:ring-indigo-400/50 focus:outline-none
+    focus:ring-2 focus:ring-[#6888ff]/50 focus:outline-none
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-[#6888ff]
     text-white font-semibold rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
-    shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    bg-[#dfeaff]
+    text-[#69738c] font-medium rounded-xl
+    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
+    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   badge: `
     px-3 py-1 rounded-lg
-    shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     text-xs font-medium
   `
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // HELPERS
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 const getTipoIcon = (tipo: TipoDocumento) => {
   switch (tipo) {
@@ -109,8 +107,8 @@ const getTipoIcon = (tipo: TipoDocumento) => {
     case 'ORDEN_COMPRA': return <File className="w-5 h-5 text-blue-500" />;
     case 'VOUCHER': return <File className="w-5 h-5 text-amber-500" />;
     case 'PROPUESTA': return <FileText className="w-5 h-5 text-purple-500" />;
-    case 'BRIEF': return <FileText className="w-5 h-5 text-indigo-500" />;
-    default: return <Paperclip className="w-5 h-5 text-slate-400" />;
+    case 'BRIEF': return <FileText className="w-5 h-5 text-[#6888ff]" />;
+    default: return <Paperclip className="w-5 h-5 text-[#9aa3b8]" />;
   }
 };
 
@@ -119,13 +117,13 @@ const getTipoLabel = (tipo: TipoDocumento): string => {
   switch (tipo) {
     case 'EMAIL': return 'Email';
     case 'ADJUNTO': return 'Adjunto';
-    case 'COTIZACION': return 'Cotización';
+    case 'COTIZACION': return 'Cotizaci�n';
     case 'ORDEN_COMPRA': return 'Orden de Compra';
     case 'VOUCHER': return 'Voucher';
     case 'BRIEF': return 'Brief';
     case 'PROPUESTA': return 'Propuesta';
     case 'CONTRATO_ANTERIOR': return 'Contrato Anterior';
-    case 'ACTA_REUNION': return 'Acta Reunión';
+    case 'ACTA_REUNION': return 'Acta Reuni�n';
     case 'MENSAJE_CHAT': return 'Mensaje Chat';
     case 'OTRO': return 'Otro';
     default: return tipo;
@@ -147,9 +145,9 @@ const formatTimeAgo = (date: Date) => {
   return date.toLocaleDateString('es-CL');
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 // COMPONENTE PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------
 
 export default function DocumentacionNegociacionPanel({
   contratoId,
@@ -165,13 +163,13 @@ export default function DocumentacionNegociacionPanel({
   const [copiedEmail, setCopiedEmail] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Obtener dirección de ingesta
+  // Obtener direcci�n de ingesta
   const ingestEmail = DocumentationIngestion.getIngestEmailAddress(contratoId);
   const instrucciones = DocumentationIngestion.getInstruccionesMovil(contratoId);
 
-  // ═══════════════════════════════════════════════════════════════
+  // ---------------------------------------------------------------
   // DRAG & DROP HANDLERS
-  // ═══════════════════════════════════════════════════════════════
+  // ---------------------------------------------------------------
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -246,20 +244,20 @@ export default function DocumentacionNegociacionPanel({
     setDocumentos(prev => prev.filter(d => d.id !== docId));
   };
 
-  // ═══════════════════════════════════════════════════════════════
+  // ---------------------------------------------------------------
   // RENDER
-  // ═══════════════════════════════════════════════════════════════
+  // ---------------------------------------------------------------
 
   return (
     <div className={neuro.panel}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200/50">
+      <div className="px-6 py-4 border-b border-[#bec8de30]">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-            <Paperclip className="w-5 h-5 text-indigo-500" />
-            Documentación de Negociación
+          <h3 className="font-bold text-lg text-[#69738c] flex items-center gap-2">
+            <Paperclip className="w-5 h-5 text-[#6888ff]" />
+            Documentaci�n de Negociaci�n
             {documentos.length > 0 && (
-              <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+              <span className={`${neuro.badge} bg-[#dfeaff] text-[#6888ff]`}>
                 {documentos.length}
               </span>
             )}
@@ -271,13 +269,13 @@ export default function DocumentacionNegociacionPanel({
               className={`${neuro.btnSecondary} px-3 py-2 text-sm flex items-center gap-2`}
             >
               <Smartphone className="w-4 h-4" />
-              Enviar desde móvil
+              Enviar desde m�vil
             </button>
           </div>
         </div>
       </div>
 
-      {/* Instrucciones móvil */}
+      {/* Instrucciones m�vil */}
       <AnimatePresence>
         {showMobileInstructions && (
           <motion.div
@@ -286,24 +284,24 @@ export default function DocumentacionNegociacionPanel({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-6 py-4 bg-gradient-to-br from-indigo-50 to-purple-50 border-b border-indigo-100">
+            <div className="px-6 py-4 bg-[#dfeaff] border-b border-[#bec8de30]">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-white shadow-sm">
-                  <QrCode className="w-6 h-6 text-indigo-600" />
+                <div className="p-3 rounded-xl bg-[#dfeaff] shadow-sm">
+                  <QrCode className="w-6 h-6 text-[#6888ff]" />
                 </div>
                 
                 <div className="flex-1">
-                  <h4 className="font-semibold text-slate-800 mb-3">
-                    📱 Envía documentación desde cualquier dispositivo
+                  <h4 className="font-semibold text-[#69738c] mb-3">
+                    ?? Env�a documentaci�n desde cualquier dispositivo
                   </h4>
                   
                   <div className="space-y-3">
                     {/* Email de ingesta */}
                     <div className={`${neuro.input} p-3 flex items-center gap-3`}>
-                      <Mail className="w-5 h-5 text-indigo-500 shrink-0" />
+                      <Mail className="w-5 h-5 text-[#6888ff] shrink-0" />
                       <div className="flex-1">
-                        <p className="text-xs text-slate-500">Reenvía emails a:</p>
-                        <p className="font-mono text-sm text-slate-800">{ingestEmail}</p>
+                        <p className="text-xs text-[#9aa3b8]">Reenv�a emails a:</p>
+                        <p className="font-mono text-sm text-[#69738c]">{ingestEmail}</p>
                       </div>
                       <button
                         onClick={handleCopyEmail}
@@ -321,16 +319,16 @@ export default function DocumentacionNegociacionPanel({
                     <div className={`${neuro.input} p-3 flex items-center gap-3`}>
                       <MessageSquare className="w-5 h-5 text-green-500 shrink-0" />
                       <div className="flex-1">
-                        <p className="text-xs text-slate-500">Envía por WhatsApp a:</p>
-                        <p className="font-mono text-sm text-slate-800">{instrucciones.whatsapp}</p>
+                        <p className="text-xs text-[#9aa3b8]">Env�a por WhatsApp a:</p>
+                        <p className="font-mono text-sm text-[#69738c]">{instrucciones.whatsapp}</p>
                       </div>
                     </div>
 
                     {/* Instrucciones */}
-                    <div className="text-sm text-slate-600 space-y-1">
+                    <div className="text-sm text-[#69738c] space-y-1">
                       {instrucciones.instrucciones.map((inst, idx) => (
                         <p key={`inst-${idx}`} className="flex items-start gap-2">
-                          <span className="text-indigo-500">•</span>
+                          <span className="text-[#6888ff]">�</span>
                           <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(inst.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')) }} />
                         </p>
                       ))}
@@ -368,8 +366,8 @@ export default function DocumentacionNegociacionPanel({
           
           {isUploading ? (
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
-              <p className="text-slate-600">Procesando documentos...</p>
+              <Loader2 className="w-12 h-12 text-[#6888ff] animate-spin" />
+              <p className="text-[#69738c]">Procesando documentos...</p>
             </div>
           ) : isDragging ? (
             <div className="flex flex-col items-center gap-3">
@@ -377,36 +375,36 @@ export default function DocumentacionNegociacionPanel({
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 1 }}
               >
-                <Upload className="w-12 h-12 text-indigo-500" />
+                <Upload className="w-12 h-12 text-[#6888ff]" />
               </motion.div>
-              <p className="text-indigo-600 font-semibold">Suelta aquí los archivos</p>
-              <p className="text-sm text-indigo-400">
-                Emails de Gmail, archivos PDF, imágenes, documentos...
+              <p className="text-[#6888ff] font-semibold">Suelta aqu� los archivos</p>
+              <p className="text-sm text-[#6888ff]">
+                Emails de Gmail, archivos PDF, im�genes, documentos...
               </p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
               <div className="flex items-center gap-4">
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-red-100 to-red-50">
+                <div className="p-4 rounded-2xl bg-[#dfeaff]">
                   <Mail className="w-8 h-8 text-red-500" />
                 </div>
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50">
+                <div className="p-4 rounded-2xl bg-[#dfeaff]">
                   <FileText className="w-8 h-8 text-blue-500" />
                 </div>
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-green-100 to-green-50">
+                <div className="p-4 rounded-2xl bg-[#dfeaff]">
                   <Image className="w-8 h-8 text-green-500" />
                 </div>
               </div>
               
               <div className="mt-4">
-                <p className="text-slate-700 font-semibold">
-                  Arrastra emails desde Gmail o archivos aquí
+                <p className="text-[#69738c] font-semibold">
+                  Arrastra emails desde Gmail o archivos aqu�
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
-                  O <span className="text-indigo-600 underline">haz clic para seleccionar</span>
+                <p className="text-sm text-[#9aa3b8] mt-1">
+                  O <span className="text-[#6888ff] underline">haz clic para seleccionar</span>
                 </p>
-                <p className="text-xs text-slate-400 mt-3">
-                  PDF, DOC, XLS, EML, MSG, imágenes hasta 25MB
+                <p className="text-xs text-[#9aa3b8] mt-3">
+                  PDF, DOC, XLS, EML, MSG, im�genes hasta 25MB
                 </p>
               </div>
             </div>
@@ -418,8 +416,8 @@ export default function DocumentacionNegociacionPanel({
       {documentos.length > 0 && (
         <div className="px-6 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-semibold text-slate-700 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-500" />
+            <h4 className="font-semibold text-[#69738c] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#6888ff]" />
               Documentos procesados
             </h4>
             <button className={`${neuro.btnSecondary} px-3 py-1.5 text-xs flex items-center gap-2`}>
@@ -443,7 +441,7 @@ export default function DocumentacionNegociacionPanel({
                     doc.tipo === 'EMAIL' ? 'bg-red-100' :
                     doc.tipo === 'COTIZACION' ? 'bg-green-100' :
                     doc.tipo === 'ORDEN_COMPRA' ? 'bg-blue-100' :
-                    'bg-slate-100'
+                    'bg-[#dfeaff]'
                   }`}>
                     {getTipoIcon(doc.tipo)}
                   </div>
@@ -451,36 +449,36 @@ export default function DocumentacionNegociacionPanel({
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-slate-800 truncate">
+                      <p className="font-semibold text-[#69738c] truncate">
                         {doc.nombreArchivo}
                       </p>
                       <span className={`${neuro.badge} ${
                         doc.tipo === 'EMAIL' ? 'bg-red-100 text-red-700' :
                         doc.tipo === 'COTIZACION' ? 'bg-green-100 text-green-700' :
                         doc.tipo === 'ORDEN_COMPRA' ? 'bg-blue-100 text-blue-700' :
-                        'bg-slate-100 text-slate-700'
+                        'bg-[#dfeaff] text-[#69738c]'
                       }`}>
                         {getTipoLabel(doc.tipo)}
                       </span>
                     </div>
                     
-                    <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                    <div className="flex items-center gap-3 mt-1 text-xs text-[#9aa3b8]">
                       <span>{formatSize(doc.tamaño)}</span>
-                      <span>•</span>
+                      <span>·</span>
                       <span>{formatTimeAgo(doc.fechaSubida)}</span>
-                      <span>•</span>
+                      <span>·</span>
                       <span className="capitalize">{doc.origen.toLowerCase().replace('_', ' ')}</span>
                     </div>
 
                     {/* Email preview */}
                     {doc.emailData && (
-                      <div className="mt-2 p-2 bg-slate-50 rounded-lg text-xs">
+                      <div className="mt-2 p-2 bg-[#dfeaff] rounded-lg text-xs">
                         <p><strong>De:</strong> {doc.emailData.de}</p>
                         <p><strong>Asunto:</strong> {doc.emailData.asunto}</p>
                       </div>
                     )}
 
-                    {/* Datos extraídos */}
+                    {/* Datos extra�dos */}
                     {doc.datosExtraidos && Object.keys(doc.datosExtraidos).length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-2">
                         {doc.datosExtraidos.valorMencionado && (
@@ -489,7 +487,7 @@ export default function DocumentacionNegociacionPanel({
                           </span>
                         )}
                         {doc.datosExtraidos.mediosMencionados?.map(m => (
-                          <span key={m} className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+                          <span key={m} className={`${neuro.badge} bg-[#dfeaff] text-[#6888ff]`}>
                             {m}
                           </span>
                         ))}
@@ -509,7 +507,7 @@ export default function DocumentacionNegociacionPanel({
                     {/* Estado procesamiento */}
                     <div className="mt-2 flex items-center gap-2">
                       {doc.estadoProcesamiento === 'PROCESANDO' && (
-                        <span className="flex items-center gap-1 text-xs text-indigo-600">
+                        <span className="flex items-center gap-1 text-xs text-[#6888ff]">
                           <Loader2 className="w-3 h-3 animate-spin" />
                           Procesando...
                         </span>
@@ -553,11 +551,11 @@ export default function DocumentacionNegociacionPanel({
 
       {/* Footer con resumen */}
       {documentos.length > 0 && (
-        <div className="px-6 py-4 bg-gradient-to-br from-slate-50 to-slate-100 border-t border-slate-200/50">
+        <div className="px-6 py-4 bg-[#dfeaff] border-t border-[#bec8de30]">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-slate-600">
+            <div className="text-sm text-[#69738c]">
               <span className="font-semibold">{documentos.length}</span> documentos
-              {' • '}
+              {' � '}
               <span className="font-semibold">
                 {documentos.filter(d => d.estadoProcesamiento === 'PROCESADO').length}
               </span> procesados por IA
@@ -565,7 +563,7 @@ export default function DocumentacionNegociacionPanel({
             
             <button className={`${neuro.btnPrimary} px-4 py-2 text-sm flex items-center gap-2`}>
               <Sparkles className="w-4 h-4" />
-              Aplicar datos extraídos
+              Aplicar datos extra�dos
             </button>
           </div>
         </div>
