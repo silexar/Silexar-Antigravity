@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ? SILEXAR PULSE - Batch Operations Panel TIER 0
  * 
  * @description Panel de operaciones masivas para ejecutar
- * acciones en múltiples contratos simultáneamente.
+ * acciones en mï¿½ltiples contratos simultï¿½neamente.
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -95,7 +95,7 @@ const neuro = {
     transition-all duration-200
   `,
   btnDanger: `
-    bg-gradient-to-br from-red-500 to-red-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
@@ -117,28 +117,28 @@ const OPERACIONES = [
     id: 'aprobar' as OperacionBatch, 
     label: 'Aprobar todos', 
     icon: <Check className="w-4 h-4" />,
-    color: 'bg-green-100 text-green-600',
-    confirmacion: '¿Aprobar {count} contratos seleccionados?'
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
+    confirmacion: 'ï¿½Aprobar {count} contratos seleccionados?'
   },
   { 
     id: 'rechazar' as OperacionBatch, 
     label: 'Rechazar todos', 
     icon: <X className="w-4 h-4" />,
-    color: 'bg-red-100 text-red-600',
-    confirmacion: '¿Rechazar {count} contratos? Esta acción requiere motivo.'
+    color: 'bg-[#dfeaff] text-[#9aa3b8]',
+    confirmacion: 'ï¿½Rechazar {count} contratos? Esta acciï¿½n requiere motivo.'
   },
   { 
     id: 'exportar' as OperacionBatch, 
     label: 'Exportar Excel', 
     icon: <Download className="w-4 h-4" />,
-    color: 'bg-blue-100 text-blue-600',
-    confirmacion: null // No requiere confirmación
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
+    confirmacion: null // No requiere confirmaciï¿½n
   },
   { 
     id: 'generarPDF' as OperacionBatch, 
     label: 'Generar PDFs', 
     icon: <FileText className="w-4 h-4" />,
-    color: 'bg-purple-100 text-purple-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     confirmacion: null
   },
   { 
@@ -146,13 +146,13 @@ const OPERACIONES = [
     label: 'Enviar por email', 
     icon: <Mail className="w-4 h-4" />,
     color: 'bg-[#dfeaff] text-[#6888ff]',
-    confirmacion: '¿Enviar {count} contratos a sus respectivos clientes?'
+    confirmacion: 'ï¿½Enviar {count} contratos a sus respectivos clientes?'
   },
   { 
     id: 'cambiarEstado' as OperacionBatch, 
     label: 'Cambiar estado', 
     icon: <RefreshCw className="w-4 h-4" />,
-    color: 'bg-amber-100 text-amber-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     confirmacion: 'Seleccione el nuevo estado para {count} contratos'
   }
 ];
@@ -246,7 +246,7 @@ export default function BatchOperationsPanel({
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 ${neuro.panel} px-6 py-4 z-50`}
       >
         <div className="flex items-center gap-6">
-          {/* Info de selección */}
+          {/* Info de selecciï¿½n */}
           <div className="flex items-center gap-4">
             <div className="p-2 rounded-xl bg-[#dfeaff]">
               <Layers className="w-5 h-5 text-[#6888ff]" />
@@ -280,10 +280,10 @@ export default function BatchOperationsPanel({
               </button>
             ))}
 
-            {/* Más opciones */}
+            {/* Mï¿½s opciones */}
             <div className="relative group">
               <button className={`${neuro.btnSecondary} p-2 flex items-center gap-1`}>
-                <span className="text-sm">Más</span>
+                <span className="text-sm">Mï¿½s</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
               
@@ -306,11 +306,11 @@ export default function BatchOperationsPanel({
 
           <div className="w-px h-10 bg-[#bec8de]" />
 
-          {/* Limpiar selección */}
+          {/* Limpiar selecciï¿½n */}
           <button
             onClick={onLimpiarSeleccion}
             className={`${neuro.btnSecondary} p-2`}
-            title="Limpiar selección"
+            title="Limpiar selecciï¿½n"
           >
             <X className="w-5 h-5" />
           </button>
@@ -326,7 +326,7 @@ export default function BatchOperationsPanel({
         )}
       </motion.div>
 
-      {/* Modal de confirmación */}
+      {/* Modal de confirmaciï¿½n */}
       <AnimatePresence>
         {showConfirmacion && operacionActiva && (
           <motion.div
@@ -344,10 +344,10 @@ export default function BatchOperationsPanel({
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-amber-100">
-                  <AlertTriangle className="w-6 h-6 text-amber-600" />
+                <div className="p-3 rounded-xl bg-[#6888ff]/10">
+                  <AlertTriangle className="w-6 h-6 text-[#6888ff]" />
                 </div>
-                <h3 className="text-lg font-bold text-[#69738c]">Confirmar operación</h3>
+                <h3 className="text-lg font-bold text-[#69738c]">Confirmar operaciï¿½n</h3>
               </div>
 
               <p className="text-[#69738c] mb-4">
@@ -367,7 +367,7 @@ export default function BatchOperationsPanel({
                 ))}
                 {contratosSeleccionados.length > 5 && (
                   <p className="text-sm text-[#9aa3b8] text-center">
-                    y {contratosSeleccionados.length - 5} más...
+                    y {contratosSeleccionados.length - 5} mï¿½s...
                   </p>
                 )}
               </div>
@@ -392,8 +392,8 @@ export default function BatchOperationsPanel({
                 >
                   <option value="">Seleccionar estado...</option>
                   <option value="BORRADOR">Borrador</option>
-                  <option value="EN_REVISION">En Revisión</option>
-                  <option value="PENDIENTE_APROBACION">Pendiente Aprobación</option>
+                  <option value="EN_REVISION">En Revisiï¿½n</option>
+                  <option value="PENDIENTE_APROBACION">Pendiente Aprobaciï¿½n</option>
                   <option value="APROBADO">Aprobado</option>
                   <option value="ACTIVO">Activo</option>
                   <option value="PAUSADO">Pausado</option>
@@ -443,32 +443,32 @@ export default function BatchOperationsPanel({
               <div className="flex items-center gap-3 mb-4">
                 {estadoOperacion.fallidos.length === 0 ? (
                   <>
-                    <div className="p-3 rounded-xl bg-green-100">
-                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    <div className="p-3 rounded-xl bg-[#6888ff]/10">
+                      <CheckCircle className="w-6 h-6 text-[#6888ff]" />
                     </div>
-                    <h3 className="text-lg font-bold text-[#69738c]">Operación completada</h3>
+                    <h3 className="text-lg font-bold text-[#69738c]">Operaciï¿½n completada</h3>
                   </>
                 ) : (
                   <>
-                    <div className="p-3 rounded-xl bg-amber-100">
-                      <AlertTriangle className="w-6 h-6 text-amber-600" />
+                    <div className="p-3 rounded-xl bg-[#6888ff]/10">
+                      <AlertTriangle className="w-6 h-6 text-[#6888ff]" />
                     </div>
-                    <h3 className="text-lg font-bold text-[#69738c]">Operación parcial</h3>
+                    <h3 className="text-lg font-bold text-[#69738c]">Operaciï¿½n parcial</h3>
                   </>
                 )}
               </div>
 
               <div className="space-y-3 mb-4">
                 {estadoOperacion.exitosos.length > 0 && (
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-xl">
-                    <span className="text-green-700">Exitosos</span>
-                    <span className="font-bold text-green-700">{estadoOperacion.exitosos.length}</span>
+                  <div className="flex items-center justify-between p-3 bg-[#6888ff]/5 rounded-xl">
+                    <span className="text-[#6888ff]">Exitosos</span>
+                    <span className="font-bold text-[#6888ff]">{estadoOperacion.exitosos.length}</span>
                   </div>
                 )}
                 {estadoOperacion.fallidos.length > 0 && (
-                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl">
-                    <span className="text-red-700">Fallidos</span>
-                    <span className="font-bold text-red-700">{estadoOperacion.fallidos.length}</span>
+                  <div className="flex items-center justify-between p-3 bg-[#dfeaff] rounded-xl">
+                    <span className="text-[#9aa3b8]">Fallidos</span>
+                    <span className="font-bold text-[#9aa3b8]">{estadoOperacion.fallidos.length}</span>
                   </div>
                 )}
                 {estadoOperacion.tiempoTotal && (
@@ -482,7 +482,7 @@ export default function BatchOperationsPanel({
               {estadoOperacion.fallidos.length > 0 && (
                 <div className="max-h-32 overflow-y-auto mb-4">
                   {estadoOperacion.fallidos.map(f => (
-                    <div key={f.id} className="text-sm text-red-600 p-2">
+                    <div key={f.id} className="text-sm text-[#9aa3b8] p-2">
                       {f.id}: {f.error}
                     </div>
                   ))}
@@ -503,7 +503,7 @@ export default function BatchOperationsPanel({
         )}
       </AnimatePresence>
 
-      {/* Loader de operación */}
+      {/* Loader de operaciï¿½n */}
       <AnimatePresence>
         {estadoOperacion.ejecutando && (
           <motion.div
@@ -514,7 +514,7 @@ export default function BatchOperationsPanel({
           >
             <div className={`${neuro.panel} p-8 text-center`}>
               <Loader2 className="w-12 h-12 text-[#6888ff] animate-spin mx-auto mb-4" />
-              <p className="text-lg font-semibold text-[#69738c]">Procesando operación...</p>
+              <p className="text-lg font-semibold text-[#69738c]">Procesando operaciï¿½n...</p>
               <p className="text-sm text-[#9aa3b8] mt-1">
                 {contratosSeleccionados.length} contratos
               </p>

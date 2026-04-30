@@ -61,9 +61,9 @@ export interface PlanPagosProps {
 export class PlanPagos {
   // Métodos de negocio
   generarCuotas(): CuotaPago[]
-  calcularProximoVencimiento(): Date
+  calcularProximoVencimientos(): Date
   marcarCuotaComoPagada(numeroCuota: number): void
-  generarAlertaVencimiento(): AlertaVencimiento
+  generarAlertaVencimientos(): AlertaVencimientos
   recalcularPlan(nuevaFecha: Date): void
 }
 ```###
@@ -166,7 +166,7 @@ export interface AlertaSeguimientoProps {
   responsables: ResponsableAlerta[]
   acciones: AccionAlerta[]
   fechaCreacion: Date
-  fechaVencimiento: Date
+  fechaVencimientos: Date
   fechaResolucion?: Date
   estado: EstadoAlerta
 }
@@ -303,7 +303,7 @@ CREATE TABLE cuotas_pago (
   plan_pagos_id UUID NOT NULL REFERENCES plan_pagos(id),
   numero_cuota INTEGER NOT NULL,
   monto DECIMAL(15,2) NOT NULL,
-  fecha_vencimiento DATE NOT NULL,
+  fecha_vencimientos DATE NOT NULL,
   fecha_pago DATE,
   estado VARCHAR(20) NOT NULL,
   metodo_pago VARCHAR(50),
@@ -381,7 +381,7 @@ CREATE TABLE alertas_seguimiento (
   responsables JSONB NOT NULL,
   acciones JSONB,
   fecha_creacion TIMESTAMP DEFAULT NOW(),
-  fecha_vencimiento TIMESTAMP,
+  fecha_vencimientos TIMESTAMP,
   fecha_resolucion TIMESTAMP,
   estado VARCHAR(20) NOT NULL
 );
@@ -485,7 +485,7 @@ describe('PlanPagos', () => {
     
     expect(cuotas).toHaveLength(3)
     expect(cuotas[0].monto).toBe(100000)
-    expect(cuotas[0].fechaVencimiento).toEqual(new Date('2025-01-01'))
+    expect(cuotas[0].fechaVencimientos).toEqual(new Date('2025-01-01'))
   })
 })
 ```

@@ -38,7 +38,7 @@ export interface PropuestaComercialProps {
   valorTotalPropuesta: number; // Valor real calculado
   moneda: string;
   fechaCreacion: Date;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   estado: EstadoPropuesta;
   lineas: LineaPropuesta[];
   observaciones?: string;
@@ -83,7 +83,7 @@ export class PropuestaComercial {
   get id(): string { return this.props.id; }
   get estado(): EstadoPropuesta { return this.props.estado; }
   get total(): number { return this.props.valorTotalPropuesta; }
-  get esVencida(): boolean { return new Date() > this.props.fechaVencimiento; }
+  get esVencida(): boolean { return new Date() > this.props.fechaVencimientos; }
 
   // Métodos de Dominio
   public enviarPropuesta(): void {

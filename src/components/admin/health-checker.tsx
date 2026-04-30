@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * ✅ SILEXAR PULSE - Health Checker
+ * œ… SILEXAR PULSE - Health Checker
  * Tests de salud automatizados
  * 
  * @description Health Checks:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   CheckCircle2,
   XCircle,
@@ -39,7 +37,7 @@ interface HealthTest {
   id: string
   name: string
   category: 'api' | 'database' | 'external' | 'security' | 'performance'
-  status: 'passing' | 'failing' | 'warning' | 'running' | 'pending'
+  status: 'passing' | 'failing' | 'warning' | 'running' | 'Pendiente'
   lastRun?: Date
   duration?: number
   message?: string
@@ -70,7 +68,7 @@ export function HealthChecker() {
     setGroups([
       {
         name: 'API Endpoints',
-        icon: <Globe className="w-5 h-5 text-blue-400" />,
+        icon: <Globe className="w-5 h-5 text-[#6888ff]" />,
         overallStatus: 'healthy',
         tests: [
           { id: 'api_001', name: 'GET /api/health', category: 'api', status: 'passing', lastRun: new Date(), duration: 12, critical: true },
@@ -82,7 +80,7 @@ export function HealthChecker() {
       },
       {
         name: 'Database',
-        icon: <Database className="w-5 h-5 text-purple-400" />,
+        icon: <Database className="w-5 h-5 text-[#6888ff]" />,
         overallStatus: 'healthy',
         tests: [
           { id: 'db_001', name: 'PostgreSQL Connection', category: 'database', status: 'passing', lastRun: new Date(), duration: 5, critical: true },
@@ -93,7 +91,7 @@ export function HealthChecker() {
       },
       {
         name: 'External Services',
-        icon: <Server className="w-5 h-5 text-cyan-400" />,
+        icon: <Server className="w-5 h-5 text-[#6888ff]" />,
         overallStatus: 'degraded',
         tests: [
           { id: 'ext_001', name: 'Meta Marketing API', category: 'external', status: 'warning', lastRun: new Date(), duration: 890, message: 'High latency', critical: true },
@@ -105,7 +103,7 @@ export function HealthChecker() {
       },
       {
         name: 'Security',
-        icon: <Lock className="w-5 h-5 text-green-400" />,
+        icon: <Lock className="w-5 h-5 text-[#6888ff]" />,
         overallStatus: 'healthy',
         tests: [
           { id: 'sec_001', name: 'SSL Certificate', category: 'security', status: 'passing', lastRun: new Date(), duration: 15, message: 'Expires in 45 days', critical: true },
@@ -116,7 +114,7 @@ export function HealthChecker() {
       },
       {
         name: 'Performance',
-        icon: <Zap className="w-5 h-5 text-yellow-400" />,
+        icon: <Zap className="w-5 h-5 text-[#6888ff]" />,
         overallStatus: 'healthy',
         tests: [
           { id: 'perf_001', name: 'Response Time P95', category: 'performance', status: 'passing', lastRun: new Date(), duration: 0, message: '< 200ms', critical: false },
@@ -133,7 +131,7 @@ export function HealthChecker() {
 
   const runAllTests = async () => {
     setIsRunning(true)
-    
+
     // Simulate running tests
     for (const group of groups) {
       for (const test of group.tests) {
@@ -141,13 +139,13 @@ export function HealthChecker() {
           ...g,
           tests: g.tests.map(t => t.id === test.id ? { ...t, status: 'running' as const } : t)
         })))
-        
+
         await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200))
-        
+
         setGroups(prev => prev.map(g => ({
           ...g,
-          tests: g.tests.map(t => t.id === test.id ? { 
-            ...t, 
+          tests: g.tests.map(t => t.id === test.id ? {
+            ...t,
             status: Math.random() > 0.1 ? 'passing' as const : 'warning' as const,
             lastRun: new Date(),
             duration: Math.floor(Math.random() * 500)
@@ -155,7 +153,7 @@ export function HealthChecker() {
         })))
       }
     }
-    
+
     setLastFullRun(new Date())
     setIsRunning(false)
   }
@@ -165,13 +163,13 @@ export function HealthChecker() {
       ...g,
       tests: g.tests.map(t => t.id === testId ? { ...t, status: 'running' as const } : t)
     })))
-    
+
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
-    
+
     setGroups(prev => prev.map(g => ({
       ...g,
-      tests: g.tests.map(t => t.id === testId ? { 
-        ...t, 
+      tests: g.tests.map(t => t.id === testId ? {
+        ...t,
         status: 'passing' as const,
         lastRun: new Date(),
         duration: Math.floor(Math.random() * 200)
@@ -181,21 +179,21 @@ export function HealthChecker() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'passing': return <CheckCircle2 className="w-4 h-4 text-green-400" />
-      case 'failing': return <XCircle className="w-4 h-4 text-red-400" />
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-400" />
-      case 'running': return <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
-      case 'pending': return <Clock className="w-4 h-4 text-slate-400" />
-      default: return <Clock className="w-4 h-4 text-slate-400" />
+      case 'passing': return <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />
+      case 'failing': return <XCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'warning': return <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+      case 'running': return <RefreshCw className="w-4 h-4 text-[#6888ff] animate-spin" />
+      case 'Pendiente': return <Clock className="w-4 h-4 text-[#9aa3b8]" />
+      default: return <Clock className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const getOverallStyle = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-500/20 text-green-400'
-      case 'degraded': return 'bg-yellow-500/20 text-yellow-400'
-      case 'unhealthy': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'healthy': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'degraded': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'unhealthy': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -208,8 +206,8 @@ export function HealthChecker() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Health Checker...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Health Checker...</p>
         </div>
       </div>
     )
@@ -219,17 +217,17 @@ export function HealthChecker() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
           Health Checker
         </h3>
         <div className="flex items-center gap-2">
           {lastFullRun && (
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-[#9aa3b8]">
               Last run: {lastFullRun.toLocaleTimeString()}
             </span>
           )}
-          <NeuromorphicButton variant="primary" size="sm" onClick={runAllTests} disabled={isRunning}>
+          <NeuButton variant="primary" onClick={runAllTests} disabled={isRunning}>
             {isRunning ? (
               <>
                 <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
@@ -241,42 +239,42 @@ export function HealthChecker() {
                 Run All Tests
               </>
             )}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Activity className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{totalTests}</p>
-          <p className="text-xs text-slate-400">Total Tests</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <CheckCircle2 className="w-6 h-6 text-green-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-400">{passingTests}</p>
-          <p className="text-xs text-slate-400">Passing</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <AlertTriangle className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-yellow-400">{warningTests}</p>
-          <p className="text-xs text-slate-400">Warnings</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <XCircle className="w-6 h-6 text-red-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-red-400">{failingTests}</p>
-          <p className="text-xs text-slate-400">Failing</p>
-        </NeuromorphicCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Activity className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{totalTests}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Tests</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <CheckCircle2 className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{passingTests}</p>
+          <p className="text-xs text-[#9aa3b8]">Passing</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <AlertTriangle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{warningTests}</p>
+          <p className="text-xs text-[#9aa3b8]">Warnings</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <XCircle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{failingTests}</p>
+          <p className="text-xs text-[#9aa3b8]">Failing</p>
+        </NeuCard>
       </div>
 
       {/* Test Groups */}
       <div className="space-y-4">
         {groups.map(group => (
-          <NeuromorphicCard key={group.name} variant="embossed" className="p-4">
+          <NeuCard key={group.name} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 {group.icon}
-                <span className="text-white font-medium">{group.name}</span>
+                <span className="text-[#69738c] font-medium">{group.name}</span>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded capitalize ${getOverallStyle(group.overallStatus)}`}>
                 {group.overallStatus}
@@ -284,35 +282,35 @@ export function HealthChecker() {
             </div>
             <div className="space-y-2">
               {group.tests.map(test => (
-                <div key={test.id} className="flex items-center justify-between p-2 bg-slate-800/50 rounded">
+                <div key={test.id} className="flex items-center justify-between p-2 bg-[#dfeaff]/50 rounded">
                   <div className="flex items-center gap-3">
                     {getStatusIcon(test.status)}
                     <div>
-                      <span className="text-white text-sm">{test.name}</span>
+                      <span className="text-[#69738c] text-sm">{test.name}</span>
                       {test.critical && (
-                        <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded">CRITICAL</span>
+                        <span className="ml-2 text-xs px-1.5 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">CRITICAL</span>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     {test.message && (
-                      <span className="text-xs text-slate-400">{test.message}</span>
+                      <span className="text-xs text-[#9aa3b8]">{test.message}</span>
                     )}
                     {test.duration !== undefined && test.status !== 'running' && (
-                      <span className="text-xs text-slate-500">{test.duration}ms</span>
+                      <span className="text-xs text-[#9aa3b8]">{test.duration}ms</span>
                     )}
-                    <button 
+                    <button
                       onClick={() => runSingleTest(test.id)}
-                      className="p-1 hover:bg-slate-700 rounded"
+                      className="p-1 hover:bg-[#dfeaff] rounded"
                       disabled={test.status === 'running'}
                     >
-                      <RefreshCw className={`w-3 h-3 text-slate-400 ${test.status === 'running' ? 'animate-spin' : ''}`} />
+                      <RefreshCw className={`w-3 h-3 text-[#9aa3b8] ${test.status === 'running' ? 'animate-spin' : ''}`} />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

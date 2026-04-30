@@ -287,15 +287,15 @@ export class RenovarContratoCommandHandler {
     }
 
     // Validar fechas
-    const diasHastaVencimiento = Math.floor(
+    const diasHastaVencimientos = Math.floor(
       (contrato.fechaFin.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     );
 
-    if (diasHastaVencimiento < -30) {
+    if (diasHastaVencimientos < -30) {
       throw new Error('El contrato ha vencido hace más de 30 días');
     }
 
-    if (diasHastaVencimiento > 180) {
+    if (diasHastaVencimientos > 180) {
       throw new Error('La renovación solo puede iniciarse 180 días antes del vencimientos');
     }
 

@@ -58,7 +58,7 @@ export class ContratoSyncService {
     }
   }
 
-  /** Sincronizar datos de vencimiento hacia contrato */
+  /** Sincronizar datos de vencimientos hacia contrato */
   async sincronizarHaciaContrato(cupoComercialId: string, contratoId: string): Promise<SyncResult> {
     logger.info(`[ContratoSync] Sincronizando cupo ${cupoComercialId} → Contrato ${contratoId}`)
     return {

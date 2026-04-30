@@ -1,9 +1,9 @@
-/**
+ï»¿/**
  * ? MOBILE: Floating Action Button Global
  * 
- * Botón flotante con acciones rápidas: Smart Capture,
+ * Botï¿½n flotante con acciones rï¿½pidas: Smart Capture,
  * Nueva nota, Escanear documento, Llamar cliente.
- * Expandible con animación radial.
+ * Expandible con animaciï¿½n radial.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -39,7 +39,7 @@ export function FloatingActionButton({ onSmartCapture, onNuevoContrato, onEscane
     { id: 'capture', icon: <Sparkles className="w-5 h-5" />, label: 'Smart Capture', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onSmartCapture(); } },
     { id: 'contrato', icon: <FileText className="w-5 h-5" />, label: 'Nuevo Contrato', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onNuevoContrato(); } },
     { id: 'escanear', icon: <Camera className="w-5 h-5" />, label: 'Escanear Doc', color: 'bg-[#6888ff]', onClick: () => { setOpen(false); onEscanear(); } },
-    { id: 'llamar', icon: <Phone className="w-5 h-5" />, label: 'Llamar Cliente', color: 'bg-gradient-to-r from-blue-500 to-cyan-500', onClick: () => { setOpen(false); onLlamar(); } },
+    { id: 'llamar', icon: <Phone className="w-5 h-5" />, label: 'Llamar Cliente', color: 'bg-gradient-to-r from-[#6888ff] to-cyan-500', onClick: () => { setOpen(false); onLlamar(); } },
   ];
 
   return (

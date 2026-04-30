@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔗 SILEXAR PULSE - Webhook Manager
+ * ðŸ”— SILEXAR PULSE - Webhook Manager
  * Gestión de webhooks entrantes y salientes
  * 
  * @description Webhooks:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Link,
   Plus,
@@ -50,7 +48,7 @@ interface WebhookDelivery {
   id: string
   webhookId: string
   event: string
-  status: 'success' | 'failed' | 'pending'
+  status: 'success' | 'Fallido' | 'Pendiente'
   statusCode?: number
   responseTime?: number
   attemptNumber: number
@@ -89,13 +87,13 @@ export function WebhookManager() {
     setDeliveries([
       { id: 'del_001', webhookId, event: 'campaign.created', status: 'success', statusCode: 200, responseTime: 145, attemptNumber: 1, timestamp: new Date() },
       { id: 'del_002', webhookId, event: 'campaign.updated', status: 'success', statusCode: 200, responseTime: 89, attemptNumber: 1, timestamp: new Date(Date.now() - 30 * 60 * 1000) },
-      { id: 'del_003', webhookId, event: 'campaign.created', status: 'failed', statusCode: 500, responseTime: 5000, attemptNumber: 3, timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), response: 'Internal Server Error' },
+      { id: 'del_003', webhookId, event: 'campaign.created', status: 'Fallido', statusCode: 500, responseTime: 5000, attemptNumber: 3, timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), response: 'Internal Server Error' },
       { id: 'del_004', webhookId, event: 'campaign.updated', status: 'success', statusCode: 201, responseTime: 234, attemptNumber: 1, timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000) }
     ])
   }
 
   const toggleWebhook = (id: string) => {
-    setWebhooks(prev => prev.map(w => 
+    setWebhooks(prev => prev.map(w =>
       w.id === id ? { ...w, status: w.status === 'active' ? 'paused' : 'active' } : w
     ))
   }
@@ -103,18 +101,18 @@ export function WebhookManager() {
   const testWebhook = async (id: string) => {
     const webhook = webhooks.find(w => w.id === id)
     if (!webhook) return
-    
+
     alert(`Enviando test a ${webhook.url}...`)
     await new Promise(resolve => setTimeout(resolve, 1000))
     alert('Test enviado exitosamente!')
   }
 
   const retryDelivery = (id: string) => {
-    setDeliveries(prev => prev.map(d => 
-      d.id === id ? { ...d, status: 'pending' } : d
+    setDeliveries(prev => prev.map(d =>
+      d.id === id ? { ...d, status: 'Pendiente' } : d
     ))
     setTimeout(() => {
-      setDeliveries(prev => prev.map(d => 
+      setDeliveries(prev => prev.map(d =>
         d.id === id ? { ...d, status: 'success', statusCode: 200, attemptNumber: d.attemptNumber + 1 } : d
       ))
     }, 1500)
@@ -133,8 +131,8 @@ export function WebhookManager() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Webhook Manager...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Webhook Manager...</p>
         </div>
       </div>
     )
@@ -144,129 +142,125 @@ export function WebhookManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Link className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Link className="w-5 h-5 text-[#6888ff]" />
           Webhook Manager
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadWebhooks}>
+          <NeuButton variant="secondary" onClick={loadWebhooks}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
+          </NeuButton>
+          <NeuButton variant="primary">
             <Plus className="w-4 h-4 mr-1" />
             Add Webhook
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{webhooks.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{webhooks.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{activeCount}</p>
-          <p className="text-xs text-slate-400">Activos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{activeCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Activos</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{failingCount}</p>
-          <p className="text-xs text-slate-400">Fallando</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{failingCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Fallando</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {webhooks.reduce((sum, w) => sum + w.totalDeliveries, 0).toLocaleString()}
           </p>
-          <p className="text-xs text-slate-400">Entregas</p>
+          <p className="text-xs text-[#9aa3b8]">Entregas</p>
         </div>
       </div>
 
       {/* Webhooks List */}
       <div className="space-y-3">
         {webhooks.map(webhook => (
-          <NeuromorphicCard 
+          <NeuCard
             key={webhook.id}
-            variant="embossed" 
-            className={`p-4 ${selectedWebhook === webhook.id ? 'ring-1 ring-purple-500/50' : ''}`}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
-                  webhook.status === 'active' ? 'bg-green-400' :
-                  webhook.status === 'failing' ? 'bg-red-400 animate-pulse' : 'bg-yellow-400'
-                }`} />
+                <div className={`w-3 h-3 rounded-full ${webhook.status === 'active' ? 'bg-[#6888ff]' :
+                  webhook.status === 'failing' ? 'bg-[#6888ff] animate-pulse' : 'bg-[#6888ff]'
+                  }`} />
                 <div>
-                  <span className="text-white font-medium">{webhook.name}</span>
-                  <p className="text-xs text-slate-500 font-mono truncate max-w-md">{webhook.url}</p>
+                  <span className="text-[#69738c] font-medium">{webhook.name}</span>
+                  <p className="text-xs text-[#9aa3b8] font-mono truncate max-w-md">{webhook.url}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  webhook.status === 'active' ? 'bg-green-500/20 text-green-400' :
-                  webhook.status === 'failing' ? 'bg-red-500/20 text-red-400' :
-                  'bg-yellow-500/20 text-yellow-400'
-                }`}>
+                <span className={`text-xs px-2 py-0.5 rounded ${webhook.status === 'active' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                  webhook.status === 'failing' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   {webhook.status}
                 </span>
-                <button onClick={() => toggleWebhook(webhook.id)} className="p-1 hover:bg-slate-700 rounded" aria-label="Activar/Desactivar">
-                  {webhook.status === 'paused' ? <Play className="w-4 h-4 text-green-400" /> : <Pause className="w-4 h-4 text-yellow-400" />}
+                <button onClick={() => toggleWebhook(webhook.id)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Activar/Desactivar">
+                  {webhook.status === 'paused' ? <Play className="w-4 h-4 text-[#6888ff]" /> : <Pause className="w-4 h-4 text-[#6888ff]" />}
                 </button>
-                <button onClick={() => testWebhook(webhook.id)} className="p-1 hover:bg-slate-700 rounded" aria-label="Actualizar">
-                  <RefreshCw className="w-4 h-4 text-cyan-400" />
+                <button onClick={() => testWebhook(webhook.id)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Actualizar">
+                  <RefreshCw className="w-4 h-4 text-[#6888ff]" />
                 </button>
-                <button onClick={() => loadDeliveries(webhook.id)} className="p-1 hover:bg-slate-700 rounded" aria-label="Ver detalle">
-                  <Eye className="w-4 h-4 text-slate-400" />
+                <button onClick={() => loadDeliveries(webhook.id)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Ver detalle">
+                  <Eye className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
-                <button onClick={() => deleteWebhook(webhook.id)} className="p-1 hover:bg-slate-700 rounded" aria-label="Eliminar">
-                  <Trash2 className="w-4 h-4 text-red-400" />
+                <button onClick={() => deleteWebhook(webhook.id)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Eliminar">
+                  <Trash2 className="w-4 h-4 text-[#6888ff]" />
                 </button>
               </div>
             </div>
 
             <div className="flex items-center gap-6 text-sm">
-              <span className="text-slate-400">
-                Eventos: {webhook.events.map(e => <span key={e} className="text-cyan-400 mx-1">{e}</span>)}
+              <span className="text-[#9aa3b8]">
+                Eventos: {webhook.events.map(e => <span key={e} className="text-[#6888ff] mx-1">{e}</span>)}
               </span>
-              <span className={`${webhook.successRate >= 95 ? 'text-green-400' : webhook.successRate >= 80 ? 'text-yellow-400' : 'text-red-400'}`}>
-                Éxito: {webhook.successRate}%
+              <span className={`${webhook.successRate >= 95 ? 'text-[#6888ff]' : webhook.successRate >= 80 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
+                Á‰xito: {webhook.successRate}%
               </span>
-              <span className="text-slate-500">{webhook.totalDeliveries.toLocaleString()} entregas</span>
+              <span className="text-[#9aa3b8]">{webhook.totalDeliveries.toLocaleString()} entregas</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Deliveries Log */}
       {selectedWebhook && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">Historial de Entregas</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">Historial de Entregas</h4>
           <div className="space-y-2">
             {deliveries.map(delivery => (
-              <div key={delivery.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={delivery.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  {delivery.status === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                  {delivery.status === 'failed' && <XCircle className="w-4 h-4 text-red-400" />}
-                  {delivery.status === 'pending' && <Clock className="w-4 h-4 text-yellow-400 animate-spin" />}
+                  {delivery.status === 'success' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {delivery.status === 'Fallido' && <XCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {delivery.status === 'Pendiente' && <Clock className="w-4 h-4 text-[#6888ff] animate-spin" />}
                   <div>
-                    <span className="text-white text-sm">{delivery.event}</span>
-                    <p className="text-xs text-slate-500">{delivery.timestamp.toLocaleString()}</p>
+                    <span className="text-[#69738c] text-sm">{delivery.event}</span>
+                    <p className="text-xs text-[#9aa3b8]">{delivery.timestamp.toLocaleString()}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   {delivery.statusCode && (
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      delivery.statusCode < 300 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                    }`}>
+                    <span className={`text-xs px-2 py-0.5 rounded ${delivery.statusCode < 300 ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#6888ff]/20 text-[#6888ff]'
+                      }`}>
                       {delivery.statusCode}
                     </span>
                   )}
                   {delivery.responseTime && (
-                    <span className="text-xs text-slate-400">{delivery.responseTime}ms</span>
+                    <span className="text-xs text-[#9aa3b8]">{delivery.responseTime}ms</span>
                   )}
-                  <span className="text-xs text-slate-500">Intento #{delivery.attemptNumber}</span>
-                  {delivery.status === 'failed' && (
-                    <button onClick={() => retryDelivery(delivery.id)} className="text-xs text-yellow-400 hover:underline">
+                  <span className="text-xs text-[#9aa3b8]">Intento #{delivery.attemptNumber}</span>
+                  {delivery.status === 'Fallido' && (
+                    <button onClick={() => retryDelivery(delivery.id)} className="text-xs text-[#6888ff] hover:underline">
                       Reintentar
                     </button>
                   )}
@@ -274,7 +268,7 @@ export function WebhookManager() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

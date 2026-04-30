@@ -343,7 +343,7 @@ export default function PaquetesMovilPage() {
                         <span className="text-xl">📦</span>
                         <span className="text-[10px]">Paquetes</span>
                     </Link>
-                    <Link href="/venimientos" className="flex flex-col items-center p-2 text-slate-400">
+                    <Link href="/vencimientos" className="flex flex-col items-center p-2 text-slate-400">
                         <span className="text-xl">📅</span>
                         <span className="text-[10px]">Vencimientos</span>
                     </Link>

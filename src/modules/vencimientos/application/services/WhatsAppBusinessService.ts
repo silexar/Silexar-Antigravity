@@ -9,8 +9,8 @@ export class WhatsAppBusinessService {
     return { success: true, messageId: `wa_${Date.now()}` }
   }
 
-  async enviarAlertaVencimiento(data: { ejecutivoTelefono: string; ejecutivoNombre: string; clienteNombre: string; programaNombre: string; diasRestantes: number }): Promise<{ success: boolean }> {
-    logger.info(`[WhatsApp] 🚨 Alerta vencimiento: ${data.clienteNombre} (${data.diasRestantes} días) → ${data.ejecutivoNombre}`)
+  async enviarAlertaVencimientos(data: { ejecutivoTelefono: string; ejecutivoNombre: string; clienteNombre: string; programaNombre: string; diasRestantes: number }): Promise<{ success: boolean }> {
+    logger.info(`[WhatsApp] 🚨 Alerta vencimientos: ${data.clienteNombre} (${data.diasRestantes} días) → ${data.ejecutivoNombre}`)
     return { success: true }
   }
 

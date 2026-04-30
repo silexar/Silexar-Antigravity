@@ -70,7 +70,7 @@ src/modules/cunas/
 │   │   ├── EnviarGrupoDistribucionCommand.ts
 │   │   ├── GenerarMencionIACommand.ts
 │   │   ├── CopiarCunaCommand.ts
-│   │   ├── ProgramarVencimientoCommand.ts
+│   │   ├── ProgramarVencimientosCommand.ts
 │   │   └── ExportarSistemasEmisionCommand.ts
 │   ├── queries/
 │   │   ├── ObtenerDetalleCunaQuery.ts
@@ -105,7 +105,7 @@ src/modules/cunas/
 │   │   └── DaletExportService.ts
 │   └── messaging/
 │       ├── CunaEventPublisher.ts
-│       └── VencimientoAlertPublisher.ts
+│       └── VencimientosAlertPublisher.ts
 └── presentation/
     ├── controllers/
     │   ├── CunaController.ts
@@ -467,7 +467,7 @@ Configuración de fechas con lógica de negocio:
 │ ⏱️ Duración: 342 días restantes         │
 │                                         │
 │ 🔔 Alertas automáticas:                 │
-│ ☑️ Notificar 7 días antes del vencimiento│
+│ ☑️ Notificar 7 días antes del vencimientos│
 │ ☑️ Notificar 1 día antes (mediodía)     │
 │ ☑️ Alertar al ejecutivo responsable      │
 │                                         │
@@ -938,7 +938,7 @@ Editor especializado con validación cruzada:
 Sistema de validación avanzada contra vencimientos:
 typescriptconst validatePresentationAgainstVencimientos = async (presentationData: PresentationData) => {
   // Validación principal
-  const baseValidation = await vencimientosService.validateSponsorshipPresentation({
+  const baseValidation = await vencimientoservice.validateSponsorshipPresentation({
     advertiserId: presentationData.advertiserId,
     programId: presentationData.programId,
     startDate: presentationData.startDate,
@@ -1255,7 +1255,7 @@ Panel de resultados de validación técnica:
 VALIDACIÓN CRUZADA CON MÓDULO VENCIMIENTOS:
 typescriptconst validateAgainstVencimientos = async (cunaData: CunaValidationData) => {
   // Búsqueda de asociaciones existentes
-  const associatedSponsorship = await vencimientosService.findSponsorship({
+  const associatedSponsorship = await vencimientoservice.findSponsorship({
     advertiserId: cunaData.advertiserId,
     productId: cunaData.productId,
     dateRange: {
@@ -1339,7 +1339,7 @@ Panel de validación contra vencimientos:
 │ 🎯 RECOMENDACIONES AUTOMÁTICAS:                                │
 │ • Crear presentación estándar para entrada                     │
 │ • Generar cierre coordinado con presentación                   │
-│ • Programar recordatorio 7 días antes del vencimiento          │
+│ • Programar recordatorio 7 días antes del vencimientos          │
 │                                                                 │
 │ [✅ Crear Faltantes] [📅 Programar] [⚠️ Ignorar] [💾 Continuar] │
 └─────────────────────────────────────────────────────────────────┘
@@ -1652,7 +1652,7 @@ CONFIGURACIÓN DE FECHAS ESPECÍFICAS POR CLIENTE:
 │ │                                                            │ │
 │ │ ⚠️ FECHAS CRÍTICAS ESPECÍFICAS:                            │ │
 │ │                                                            │ │
-│ │ 🔚 Vencimiento SuperMax:                                   │ │
+│ │ 🔚 Vencimientos SuperMax:                                   │ │
 │ │ [📅 25 Ago 2025] [🕐 12:00] - Mediodía                    │ │
 │ │ 🔔 Alerta programada: 24 Ago 12:00                        │ │
 │ │                                                            │ │
@@ -1662,10 +1662,10 @@ CONFIGURACIÓN DE FECHAS ESPECÍFICAS POR CLIENTE:
 │ └─────────────────────────────────────────────────────────────┘ │
 │                                                                 │
 │ 🔔 SISTEMA DE ALERTAS AUTOMÁTICAS:                             │
-│ ☑️ 7 días antes del vencimiento (18 Ago 12:00)                 │
-│ ☑️ 3 días antes del vencimiento (22 Ago 12:00)                 │
-│ ☑️ 1 día antes del vencimiento (24 Ago 12:00) - CRÍTICO       │
-│ ☑️ Día del vencimiento (25 Ago 08:00) - ÚLTIMO AVISO          │
+│ ☑️ 7 días antes del vencimientos (18 Ago 12:00)                 │
+│ ☑️ 3 días antes del vencimientos (22 Ago 12:00)                 │
+│ ☑️ 1 día antes del vencimientos (24 Ago 12:00) - CRÍTICO       │
+│ ☑️ Día del vencimientos (25 Ago 08:00) - ÚLTIMO AVISO          │
 │                                                                 │
 │ 👥 Destinatarios de alertas:                                   │
 │ • Carlos Mendoza (Ejecutivo responsable)                       │
@@ -1675,7 +1675,7 @@ CONFIGURACIÓN DE FECHAS ESPECÍFICAS POR CLIENTE:
 ├─────────────────────────────────────────────────────────────────┤
 │ [⚙️ Configurar Alertas] [📅 Modificar Fechas] [🔄 Renovar Auto] │
 └─────────────────────────────────────────────────────────────────┘
-SISTEMA INTELIGENTE DE ALERTAS DE VENCIMIENTO:
+SISTEMA INTELIGENTE DE ALERTAS DE VENCIMIENTOS:
 typescriptconst intelligentExpirationSystem = {
   // Configuración de alertas por tipo de cuña
   alertConfigurations: {
@@ -1769,7 +1769,7 @@ typescriptconst intelligentExpirationSystem = {
 };
 INTERFACE DE NOTIFICACIONES EN TIEMPO REAL:
 ┌─────────────────────────────────────────────────────────────────┐
-│ 🔔 NOTIFICACIONES DE VENCIMIENTO - TIEMPO REAL                  │
+│ 🔔 NOTIFICACIONES DE VENCIMIENTOS - TIEMPO REAL                  │
 ├─────────────────────────────────────────────────────────────────┤
 │ 🚨 ALERTAS CRÍTICAS (3):                                       │
 │ ┌─────────────────────────────────────────────────────────────┐ │
@@ -1960,7 +1960,7 @@ WIZARD DE COPIA INTELIGENTE:
 │                                                                 │
 │ 🎯 SUGERENCIAS INTELIGENTES:                                   │
 │ • Mantener misma estructura de validaciones                    │
-│ • Heredar configuración de alertas de vencimiento             │
+│ • Heredar configuración de alertas de vencimientos             │
 │ • Usar mismos grupos de distribución                          │
 │ • Aplicar misma configuración de horarios                     │
 ├─────────────────────────────────────────────────────────────────┤
@@ -2147,14 +2147,14 @@ typescriptconst contractIntegration = {
   }
 };
 SINCRONIZACIÓN CON MÓDULO VENCIMIENTOS:
-typescriptconst vencimientosSync = {
+typescriptconst vencimientosync = {
   // Sincronización bidireccional
   syncWithVencimientos: async (cunaId: string) => {
     const cuna = await getCunaById(cunaId);
     
     if (cuna.type === 'presentacion' || cuna.type === 'cierre') {
       // Actualizar vencimientos con nueva presentación
-      await vencimientosService.updatePresentationStatus({
+      await vencimientoservice.updatePresentationStatus({
         advertiserId: cuna.advertiserId,
         programId: cuna.programId,
         presentationType: cuna.type,
@@ -2164,18 +2164,18 @@ typescriptconst vencimientosSync = {
     }
     
     // Verificar coherencia de fechas
-    const vencimientoData = await vencimientosService.getVencimiento({
+    const vencimientosData = await vencimientoservice.getVencimientos({
       advertiserId: cuna.advertiserId,
       dateRange: { start: cuna.startDate, end: cuna.endDate }
     });
     
-    if (vencimientoData && vencimientoData.endDate !== cuna.endDate) {
+    if (vencimientosData && vencimientosData.endDate !== cuna.endDate) {
       // Alerta de desincronización
       await createSyncAlert({
         type: 'date_mismatch',
         cunaId: cuna.id,
-        vencimientoId: vencimientoData.id,
-        expectedDate: vencimientoData.endDate,
+        vencimientosId: vencimientosData.id,
+        expectedDate: vencimientosData.endDate,
         actualDate: cuna.endDate
       });
     }

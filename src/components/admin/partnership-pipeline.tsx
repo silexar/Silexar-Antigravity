@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🤝 SILEXAR PULSE - Partnership Pipeline
+ * ðŸ¤ SILEXAR PULSE - Partnership Pipeline
  * Gestión de partnerships y deals
  * 
  * @description Pipeline de partnerships:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Handshake,
   Clock,
@@ -121,28 +119,28 @@ export function PartnershipPipeline() {
 
   const getStageStyle = (stage: string) => {
     switch (stage) {
-      case 'prospect': return 'bg-slate-500/20 text-slate-400'
-      case 'negotiation': return 'bg-blue-500/20 text-blue-400'
-      case 'due-diligence': return 'bg-yellow-500/20 text-yellow-400'
-      case 'signed': return 'bg-purple-500/20 text-purple-400'
-      case 'active': return 'bg-green-500/20 text-green-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'prospect': return 'bg-slate-500/20 text-[#9aa3b8]'
+      case 'negotiation': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'due-diligence': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'signed': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'active': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'integration': return '🔌'
-      case 'reseller': return '🏪'
-      case 'strategic': return '🎯'
-      case 'technology': return '⚡'
-      default: return '🤝'
+      case 'integration': return 'ðŸ”Œ'
+      case 'reseller': return 'ðŸª'
+      case 'strategic': return 'ðŸŽ¯'
+      case 'technology': return 'š¡'
+      default: return 'ðŸ¤'
     }
   }
 
   const stages = ['prospect', 'negotiation', 'due-diligence', 'signed', 'active']
-  
-  const filteredPartnerships = partnerships.filter(p => 
+
+  const filteredPartnerships = partnerships.filter(p =>
     stageFilter === 'all' || p.stage === stageFilter
   )
 
@@ -153,8 +151,8 @@ export function PartnershipPipeline() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Partnership Pipeline...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Partnership Pipeline...</p>
         </div>
       </div>
     )
@@ -164,45 +162,44 @@ export function PartnershipPipeline() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Handshake className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Handshake className="w-5 h-5 text-[#6888ff]" />
           Partnership & Deals Pipeline
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary" >
           <Plus className="w-4 h-4 mr-1" />
           Nuevo Partnership
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Pipeline Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <p className="text-2xl font-bold text-white">{partnerships.length}</p>
-          <p className="text-xs text-slate-400">Total Partners</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <p className="text-2xl font-bold text-cyan-400">${(totalPipelineValue / 1000000).toFixed(2)}M</p>
-          <p className="text-xs text-slate-400">Pipeline Value</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <p className="text-2xl font-bold text-green-400">${(activeRevenue / 1000).toFixed(0)}K</p>
-          <p className="text-xs text-slate-400">Active Revenue</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <p className="text-2xl font-bold text-purple-400">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <p className="text-2xl font-bold text-[#69738c]">{partnerships.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Partners</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <p className="text-2xl font-bold text-[#6888ff]">${(totalPipelineValue / 1000000).toFixed(2)}M</p>
+          <p className="text-xs text-[#9aa3b8]">Pipeline Value</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <p className="text-2xl font-bold text-[#6888ff]">${(activeRevenue / 1000).toFixed(0)}K</p>
+          <p className="text-xs text-[#9aa3b8]">Active Revenue</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <p className="text-2xl font-bold text-[#6888ff]">
             {partnerships.filter(p => p.roi).reduce((sum, p) => sum + (p.roi || 0), 0) / partnerships.filter(p => p.roi).length || 0}%
           </p>
-          <p className="text-xs text-slate-400">Avg ROI</p>
-        </NeuromorphicCard>
+          <p className="text-xs text-[#9aa3b8]">Avg ROI</p>
+        </NeuCard>
       </div>
 
       {/* Stage Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2">
         <button
           onClick={() => setStageFilter('all')}
-          className={`px-3 py-1.5 text-sm rounded whitespace-nowrap ${
-            stageFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400'
-          }`}
+          className={`px-3 py-1.5 text-sm rounded whitespace-nowrap ${stageFilter === 'all' ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+            }`}
         >
           Todos ({partnerships.length})
         </button>
@@ -210,9 +207,8 @@ export function PartnershipPipeline() {
           <button
             key={stage}
             onClick={() => setStageFilter(stage)}
-            className={`px-3 py-1.5 text-sm rounded whitespace-nowrap ${
-              stageFilter === stage ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400'
-            }`}
+            className={`px-3 py-1.5 text-sm rounded whitespace-nowrap ${stageFilter === stage ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+              }`}
           >
             {stage} ({partnerships.filter(p => p.stage === stage).length})
           </button>
@@ -220,17 +216,17 @@ export function PartnershipPipeline() {
       </div>
 
       {/* Pipeline Visualization */}
-      <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
+      <div className="flex items-center justify-between p-4 bg-[#dfeaff]/30 rounded-lg">
         {stages.map((stage, i) => (
           <div key={stage} className="flex items-center">
             <div className="text-center">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-1 ${getStageStyle(stage)}`}>
                 {partnerships.filter(p => p.stage === stage).length}
               </div>
-              <p className="text-xs text-slate-400 capitalize">{stage}</p>
+              <p className="text-xs text-[#9aa3b8] capitalize">{stage}</p>
             </div>
             {i < stages.length - 1 && (
-              <ArrowRight className="w-6 h-6 text-slate-600 mx-2" />
+              <ArrowRight className="w-6 h-6 text-[#69738c] mx-2" />
             )}
           </div>
         ))}
@@ -239,20 +235,20 @@ export function PartnershipPipeline() {
       {/* Partnerships List */}
       <div className="space-y-3">
         {filteredPartnerships.map(partner => (
-          <NeuromorphicCard key={partner.id} variant="embossed" className="p-4">
+          <NeuCard key={partner.id} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 bg-[#dfeaff] rounded-lg flex items-center justify-center text-2xl">
                   {getTypeIcon(partner.type)}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{partner.companyName}</span>
+                    <span className="text-[#69738c] font-medium">{partner.companyName}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${getStageStyle(partner.stage)}`}>
                       {partner.stage}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                  <div className="flex items-center gap-3 text-xs text-[#9aa3b8] mt-1">
                     <span className="capitalize">{partner.type}</span>
                     <span>Contacto: {partner.contactName}</span>
                   </div>
@@ -261,17 +257,16 @@ export function PartnershipPipeline() {
 
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <p className="text-lg font-bold text-white">${(partner.dealValue / 1000).toFixed(0)}K</p>
+                  <p className="text-lg font-bold text-[#69738c]">${(partner.dealValue / 1000).toFixed(0)}K</p>
                   {partner.roi && (
-                    <p className="text-xs text-green-400">ROI: {partner.roi}%</p>
+                    <p className="text-xs text-[#6888ff]">ROI: {partner.roi}%</p>
                   )}
                 </div>
 
                 <div className="text-right">
-                  <div className={`flex items-center gap-1 text-xs ${
-                    partner.healthScore >= 80 ? 'text-green-400' :
-                    partner.healthScore >= 60 ? 'text-yellow-400' : 'text-red-400'
-                  }`}>
+                  <div className={`flex items-center gap-1 text-xs ${partner.healthScore >= 80 ? 'text-[#6888ff]' :
+                    partner.healthScore >= 60 ? 'text-[#6888ff]' : 'text-[#6888ff]'
+                    }`}>
                     {partner.healthScore >= 80 ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
                     Health: {partner.healthScore}%
                   </div>
@@ -281,15 +276,15 @@ export function PartnershipPipeline() {
 
             <div className="mt-3 pt-3 border-t border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-400">Próxima acción:</span>
-                <span className="text-white">{partner.nextAction}</span>
+                <Clock className="w-4 h-4 text-[#9aa3b8]" />
+                <span className="text-[#9aa3b8]">Próxima acción:</span>
+                <span className="text-[#69738c]">{partner.nextAction}</span>
               </div>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[#9aa3b8]">
                 {partner.nextActionDate.toLocaleDateString()}
               </span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

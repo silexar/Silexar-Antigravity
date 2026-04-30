@@ -63,7 +63,7 @@ El módulo Cuñas ha sido desarrollado siguiendo los principios de Domain-Driven
 - **WideOrbitExportService**: Exportación a WideOrbit
 - **SaraExportService**: Exportación a Sara
 - **DaletExportService**: Exportación a Dalet
-- **IntelligentExpirationAlertService**: Alertas inteligentes de vencimiento
+- **IntelligentExpirationAlertService**: Alertas inteligentes de vencimientos
 - **VencimientosValidationService**: Validación cruzada con módulo de vencimientos
 
 ### 4. Capa de Presentación (`presentation/`)

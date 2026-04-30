@@ -87,7 +87,7 @@ export interface ObtenerVencimientosProximosQuery {
   }
 }
 
-export interface VencimientoProximoResult {
+export interface VencimientosProximoResult {
   id: string
   clienteNombre: string
   programaNombre: string

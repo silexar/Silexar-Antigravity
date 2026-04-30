@@ -58,7 +58,7 @@ export interface DocumentoContratoProps {
   firmantes: FirmanteProps[];
   estadoFirma: EstadoFirma;
   fechaCreacion: Date;
-  fechaVencimiento?: Date;
+  fechaVencimientos?: Date;
   urlDocumento?: string;
   hashIntegridad: string;
   metadatos?: Record<string, unknown>;
@@ -79,7 +79,7 @@ export class DocumentoContrato {
   private _firmantes: FirmanteProps[];
   private _estadoFirma: EstadoFirma;
   private _fechaCreacion: Date;
-  private _fechaVencimiento?: Date;
+  private _fechaVencimientos?: Date;
   private _urlDocumento?: string;
   private _hashIntegridad: string;
   private _metadatos: Record<string, unknown>;
@@ -87,7 +87,7 @@ export class DocumentoContrato {
   private _idioma: string;
 
   // Configuraciones empresariales Fortune 10
-  private static readonly DIAS_VENCIMIENTO_DEFAULT = 30;
+  private static readonly DIAS_VENCIMIENTOS_DEFAULT = 30;
   private static readonly MAX_VERSIONES = 50;
   private static readonly IDIOMAS_SOPORTADOS = ['es', 'en', 'pt', 'fr'];
   private static readonly TIPOS_REQUIEREN_NOTARIZACION = [
@@ -110,7 +110,7 @@ export class DocumentoContrato {
     this._firmantes = props.firmantes;
     this._estadoFirma = props.estadoFirma;
     this._fechaCreacion = props.fechaCreacion;
-    this._fechaVencimiento = props.fechaVencimiento;
+    this._fechaVencimientos = props.fechaVencimientos;
     this._urlDocumento = props.urlDocumento;
     this._hashIntegridad = props.hashIntegridad;
     this._metadatos = props.metadatos || {};
@@ -137,8 +137,8 @@ export class DocumentoContrato {
       hash: DocumentoContrato.calcularHash(contenido)
     };
 
-    const fechaVencimiento = new Date();
-    fechaVencimiento.setDate(fechaVencimiento.getDate() + DocumentoContrato.DIAS_VENCIMIENTO_DEFAULT);
+    const fechaVencimientos = new Date();
+    fechaVencimientos.setDate(fechaVencimientos.getDate() + DocumentoContrato.DIAS_VENCIMIENTOS_DEFAULT);
 
     return new DocumentoContrato({
       contratoId,
@@ -150,7 +150,7 @@ export class DocumentoContrato {
       versionActual: 1,
       estadoFirma: EstadoFirma.PENDIENTE,
       fechaCreacion,
-      fechaVencimiento,
+      fechaVencimientos,
       hashIntegridad: versionInicial.hash,
       requiereNotarizacion: DocumentoContrato.TIPOS_REQUIEREN_NOTARIZACION.includes(tipo),
       idioma: 'es',
@@ -171,7 +171,7 @@ export class DocumentoContrato {
   get firmantes(): FirmanteProps[] { return [...this._firmantes]; }
   get estadoFirma(): EstadoFirma { return this._estadoFirma; }
   get fechaCreacion(): Date { return this._fechaCreacion; }
-  get fechaVencimiento(): Date | undefined { return this._fechaVencimiento; }
+  get fechaVencimientos(): Date | undefined { return this._fechaVencimientos; }
   get urlDocumento(): string | undefined { return this._urlDocumento; }
   get hashIntegridad(): string { return this._hashIntegridad; }
   get metadatos(): Record<string, unknown> { return { ...this._metadatos }; }
@@ -382,41 +382,41 @@ export class DocumentoContrato {
    * Verifica si el documento está próximo a vencer
    */
   estaProximoAVencer(diasAnticipacion: number = 7): boolean {
-    if (!this._fechaVencimiento) return false;
+    if (!this._fechaVencimientos) return false;
     
     const ahora = new Date();
-    const diasHastaVencimiento = Math.floor(
-      (this._fechaVencimiento.getTime() - ahora.getTime()) / (1000 * 60 * 60 * 24)
+    const diasHastaVencimientos = Math.floor(
+      (this._fechaVencimientos.getTime() - ahora.getTime()) / (1000 * 60 * 60 * 24)
     );
     
-    return diasHastaVencimiento <= diasAnticipacion && diasHastaVencimiento > 0;
+    return diasHastaVencimientos <= diasAnticipacion && diasHastaVencimientos > 0;
   }
 
   /**
    * Extiende la fecha de vencimientos
    */
-  extenderVencimiento(diasExtension: number, motivo: string): void {
-    if (!this._fechaVencimiento) {
+  extenderVencimientos(diasExtension: number, motivo: string): void {
+    if (!this._fechaVencimientos) {
       throw new Error('El documento no tiene fecha de vencimientos configurada');
     }
 
-    const nuevaFecha = new Date(this._fechaVencimiento);
+    const nuevaFecha = new Date(this._fechaVencimientos);
     nuevaFecha.setDate(nuevaFecha.getDate() + diasExtension);
 
-    this._fechaVencimiento = nuevaFecha;
-    const extensiones = (this._metadatos.extensionesVencimiento || []) as Array<{
+    this._fechaVencimientos = nuevaFecha;
+    const extensiones = (this._metadatos.extensionesVencimientos || []) as Array<{
       fecha: string;
       diasExtendidos: number;
       motivo: string;
-      nuevaFechaVencimiento: string;
+      nuevaFechaVencimientos: string;
     }>;
     extensiones.push({
       fecha: new Date().toISOString(),
       diasExtendidos: diasExtension,
       motivo,
-      nuevaFechaVencimiento: nuevaFecha.toISOString()
+      nuevaFechaVencimientos: nuevaFecha.toISOString()
     });
-    this._metadatos.extensionesVencimiento = extensiones;
+    this._metadatos.extensionesVencimientos = extensiones;
   }
 
   /**
@@ -508,7 +508,7 @@ export class DocumentoContrato {
       })),
       estadoFirma: this._estadoFirma,
       fechaCreacion: this._fechaCreacion.toISOString(),
-      fechaVencimiento: this._fechaVencimiento?.toISOString(),
+      fechaVencimientos: this._fechaVencimientos?.toISOString(),
       urlDocumento: this._urlDocumento,
       hashIntegridad: this._hashIntegridad,
       metadatos: this._metadatos,

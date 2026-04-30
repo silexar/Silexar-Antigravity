@@ -30,8 +30,8 @@
  * tener éxito (con un valor de tipo T) o fallar (con un error de tipo E)
  */
 export type Result<T, E = string> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+  | { success: true; data: T; error?: never }
+  | { success: false; error: E; data?: never };
 
 /**
  * Namespace Result con utilidades para crear resultados

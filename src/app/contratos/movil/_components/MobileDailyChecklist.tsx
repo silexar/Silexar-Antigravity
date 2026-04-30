@@ -1,8 +1,8 @@
 /**
  * ?? MOBILE: Checklist Diario
  * 
- * Tareas auto-generadas del día con checkbox táctil,
- * prioridades por color, y acciones rápidas.
+ * Tareas auto-generadas del dï¿½a con checkbox tï¿½ctil,
+ * prioridades por color, y acciones rï¿½pidas.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -28,12 +28,12 @@ interface Tarea {
 }
 
 const TAREAS: Tarea[] = [
-  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar Banco Chile', desc: 'SP-2025-0012 · $85M', prioridad: 'alta', completada: false, accion: 'Aprobar' },
-  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar Falabella', desc: 'Propuesta #4521 · 3 días sin respuesta', prioridad: 'alta', completada: false, accion: 'Llamar' },
-  { id: 't3', tipo: 'vencimiento', titulo: 'LATAM vence viernes', desc: 'SP-2024-0088 · $200M', prioridad: 'alta', completada: false, accion: 'Renovar' },
-  { id: 't4', tipo: 'propuesta', titulo: 'Propuesta Ripley', desc: 'Radio Q2 · $30M', prioridad: 'media', completada: false },
-  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', desc: 'Radio Corazón 25 frases', prioridad: 'media', completada: true },
-  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovación Entel', desc: 'Vence en 30 días', prioridad: 'baja', completada: false },
+  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar Banco Chile', desc: 'SP-2025-0012 ï¿½ $85M', prioridad: 'alta', completada: false, accion: 'Aprobar' },
+  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar Falabella', desc: 'Propuesta #4521 ï¿½ 3 dï¿½as sin respuesta', prioridad: 'alta', completada: false, accion: 'Llamar' },
+  { id: 't3', tipo: 'vencimientos', titulo: 'LATAM vence viernes', desc: 'SP-2024-0088 ï¿½ $200M', prioridad: 'alta', completada: false, accion: 'Renovar' },
+  { id: 't4', tipo: 'propuesta', titulo: 'Propuesta Ripley', desc: 'Radio Q2 ï¿½ $30M', prioridad: 'media', completada: false },
+  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', desc: 'Radio Corazï¿½n 25 frases', prioridad: 'media', completada: true },
+  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovaciï¿½n Entel', desc: 'Vence en 30 dï¿½as', prioridad: 'baja', completada: false },
 ];
 
 export function MobileDailyChecklist() {
@@ -46,11 +46,11 @@ export function MobileDailyChecklist() {
   const pct = Math.round((completadas.length / tareas.length) * 100);
 
   const icons: Record<string, React.ReactNode> = {
-    vencimiento: <Clock className="w-3.5 h-3.5 text-orange-500" />,
-    seguimiento: <Phone className="w-3.5 h-3.5 text-blue-500" />,
+    vencimientos: <Clock className="w-3.5 h-3.5 text-[#6888ff]" />,
+    seguimiento: <Phone className="w-3.5 h-3.5 text-[#6888ff]" />,
     propuesta: <FileText className="w-3.5 h-3.5 text-[#6888ff]" />,
-    aprobacion: <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />,
-    renovacion: <RefreshCw className="w-3.5 h-3.5 text-emerald-500" />,
+    aprobacion: <AlertTriangle className="w-3.5 h-3.5 text-[#6888ff]" />,
+    renovacion: <RefreshCw className="w-3.5 h-3.5 text-[#6888ff]" />,
   };
 
   return (
@@ -58,17 +58,17 @@ export function MobileDailyChecklist() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ClipboardList className="w-5 h-5 text-amber-600" />
+          <ClipboardList className="w-5 h-5 text-[#6888ff]" />
           <div>
-            <p className="text-sm font-bold text-[#69738c]">Checklist del Día</p>
+            <p className="text-sm font-bold text-[#69738c]">Checklist del Dï¿½a</p>
             <p className="text-[10px] text-[#9aa3b8]">{pendientes.length} pendientes</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-14 h-1.5 bg-amber-200 rounded-full overflow-hidden">
-            <div className="h-full bg-amber-500 rounded-full" style={{ width: `${pct}%` }} />
+          <div className="w-14 h-1.5 bg-[#6888ff]/20 rounded-full overflow-hidden">
+            <div className="h-full bg-[#6888ff]/50 rounded-full" style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-[10px] font-bold text-amber-600">{pct}%</span>
+          <span className="text-[10px] font-bold text-[#6888ff]">{pct}%</span>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export function MobileDailyChecklist() {
               <p className="text-[10px] text-[#9aa3b8] truncate">{t.desc}</p>
             </div>
             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-              t.prioridad === 'alta' ? 'bg-red-500' : t.prioridad === 'media' ? 'bg-amber-400' : 'bg-[#bec8de]'
+              t.prioridad === 'alta' ? 'bg-[#dfeaff]0' : t.prioridad === 'media' ? 'bg-[#6888ff]/40' : 'bg-[#bec8de]'
             }`} />
             {t.accion && (
               <button className="px-2 py-1 bg-[#6888ff] text-white text-[9px] font-bold rounded-lg active:scale-95">
@@ -106,7 +106,7 @@ export function MobileDailyChecklist() {
           {showDone && completadas.map(t => (
             <div key={t.id} className="px-3 py-2 flex items-center gap-3 opacity-50">
               <button onClick={() => toggle(t.id)}
-                className="w-5 h-5 rounded-md bg-emerald-500 flex items-center justify-center shrink-0">
+                className="w-5 h-5 rounded-md bg-[#6888ff]/50 flex items-center justify-center shrink-0">
                 <Check className="w-3 h-3 text-white" />
               </button>
               <p className="text-xs text-[#9aa3b8] line-through truncate">{t.titulo}</p>

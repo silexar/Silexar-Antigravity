@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔒 SILEXAR PULSE - Panel de Auditoría TIER 0
  *
  * @description Visualización del trail de auditoría con
@@ -69,21 +69,21 @@ const EVENTO_ICONS: Record<TipoEventoAuditoria, React.ElementType> = {
 
 const RIESGO_CONFIG = {
   bajo: {
-    color: "text-emerald-500",
-    bg: "bg-emerald-50",
-    border: "border-emerald-200",
+    color: "text-[#6888ff]",
+    bg: "bg-[#6888ff]/5",
+    border: "border-[#bec8de]",
   },
   medio: {
-    color: "text-blue-500",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
+    color: "text-[#6888ff]",
+    bg: "bg-[#6888ff]/5",
+    border: "border-[#bec8de]",
   },
   alto: {
-    color: "text-amber-500",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
+    color: "text-[#6888ff]",
+    bg: "bg-[#6888ff]/5",
+    border: "border-[#bec8de]",
   },
-  critico: { color: "text-red-500", bg: "bg-red-50", border: "border-red-200" },
+  critico: { color: "text-[#9aa3b8]", bg: "bg-[#dfeaff]", border: "border-[#bec8de]" },
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -207,7 +207,7 @@ const EventoRow: React.FC<{
         border rounded-xl overflow-hidden transition-all
         ${
         evento.nivelRiesgo === "critico"
-          ? "border-red-300 bg-red-50"
+          ? "border-[#bec8de] bg-[#dfeaff]"
           : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#6888ff30]"
       }
       `}
@@ -235,7 +235,7 @@ const EventoRow: React.FC<{
                 {evento.nivelRiesgo}
               </span>
               {evento.resultado === "denegado" && (
-                <span className="px-2 py-0.5 rounded text-xs bg-red-500 text-white">
+                <span className="px-2 py-0.5 rounded text-xs bg-[#dfeaff]0 text-white">
                   DENEGADO
                 </span>
               )}
@@ -317,7 +317,7 @@ const EventoRow: React.FC<{
                     {evento.camposModificados.map((campo) => (
                       <span
                         key={campo}
-                        className="px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-xs"
+                        className="px-2 py-0.5 rounded bg-[#6888ff]/10 text-[#6888ff] text-xs"
                       >
                         {campo}
                       </span>
@@ -330,11 +330,11 @@ const EventoRow: React.FC<{
                 <div className="col-span-2">
                   <p className="text-xs text-[#9aa3b8] mb-1">Cambios</p>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="px-2 py-1 rounded bg-red-100 text-red-700 font-mono">
+                    <span className="px-2 py-1 rounded bg-[#dfeaff] text-[#9aa3b8] font-mono">
                       {JSON.stringify(evento.datosAnteriores)}
                     </span>
                     <span>→</span>
-                    <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-700 font-mono">
+                    <span className="px-2 py-1 rounded bg-[#6888ff]/10 text-[#6888ff] font-mono">
                       {JSON.stringify(evento.datosNuevos)}
                     </span>
                   </div>
@@ -444,8 +444,8 @@ export const AuditPanel: React.FC<AuditPanelProps> = ({
       <div className="p-6 bg-[#69738c]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-emerald-500/20 ">
-              <Shield className="w-8 h-8 text-emerald-400" />
+            <div className="p-3 rounded-2xl bg-[#6888ff]/50/20 ">
+              <Shield className="w-8 h-8 text-[#6888ff]" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Audit Trail</h2>
@@ -464,8 +464,8 @@ export const AuditPanel: React.FC<AuditPanelProps> = ({
                 px-4 py-2 rounded-xl flex items-center gap-2
                 ${
                   integrityStatus.isValid
-                    ? "bg-emerald-500/20 text-emerald-400"
-                    : "bg-red-500/20 text-red-400"
+                    ? "bg-[#6888ff]/50/20 text-[#6888ff]"
+                    : "bg-[#dfeaff]0/20 text-[#9aa3b8]"
                 }
               `}
               >

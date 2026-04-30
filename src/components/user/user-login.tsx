@@ -20,10 +20,8 @@
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Zap, Mail, Lock, Eye, EyeOff, Smartphone, AlertTriangle,
   ArrowRight, Loader, CheckCircle, RefreshCw
@@ -107,24 +105,24 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
 
   const handleLogin = async () => {
     setError(null)
-    
+
     if (!credentials.email.trim()) {
       setError('El email es requerido')
       return
     }
-    
+
     if (!credentials.password) {
       setError('La contraseña es requerida')
       return
     }
 
     setIsLoading(true)
-    
+
     // Simulate API call
     await new Promise(r => setTimeout(r, 1000))
 
     const userRecord = MOCK_USERS[credentials.email.toLowerCase()]
-    
+
     if (!userRecord) {
       setError('Usuario no encontrado')
       setIsLoading(false)
@@ -226,7 +224,7 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
           <p className="text-[#888780] text-sm mt-1">Accede a tu cuenta</p>
         </div>
 
-        <NeuromorphicCard variant="glow" className="p-6">
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
           {/* Credentials Step */}
           {step === 'credentials' && (
             <div className="space-y-4">
@@ -296,9 +294,8 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                 </div>
               )}
 
-              <NeuromorphicButton 
-                variant="primary" 
-                className="w-full py-3" 
+              <NeuButton
+                variant="primary"
                 onClick={handleLogin}
                 disabled={isLoading}
               >
@@ -310,7 +307,7 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
-              </NeuromorphicButton>
+              </NeuButton>
 
               <div className="text-center pt-4 border-t border-[#D4D1CC]">
                 <p className="text-[#888780] text-xs">
@@ -354,9 +351,8 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                 </div>
               )}
 
-              <NeuromorphicButton 
-                variant="primary" 
-                className="w-full py-3" 
+              <NeuButton
+                variant="primary"
                 onClick={verify2FA}
                 disabled={isLoading}
               >
@@ -368,9 +364,9 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
-              </NeuromorphicButton>
+              </NeuButton>
 
-              <button 
+              <button
                 onClick={() => { setStep('credentials'); setError(null) }}
                 className="w-full text-[#888780] text-sm hover:text-[#2C2C2A]"
               >
@@ -397,7 +393,7 @@ export function UserLogin({ onLogin, tenantId }: UserLoginProps) {
               </div>
             </div>
           )}
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Demo Credentials */}
         <div className="mt-6 p-4 bg-[#E8E5E0]/50 rounded-lg border border-[#D4D1CC]">

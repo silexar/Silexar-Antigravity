@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📱 SILEXAR PULSE - CEO Mobile Command
+ * ðŸ“± SILEXAR PULSE - CEO Mobile Command
  * Métricas críticas para móvil
  * 
  * @description Comando móvil del CEO:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Smartphone,
   DollarSign,
@@ -144,7 +142,7 @@ export function CEOMobileCommand() {
   }
 
   const handleApproval = (id: string, approved: boolean) => {
-    
+
     setApprovals(prev => prev.filter(a => a.id !== id))
   }
 
@@ -154,20 +152,20 @@ export function CEOMobileCommand() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'expense': return <DollarSign className="w-4 h-4 text-green-400" />
-      case 'access': return <Shield className="w-4 h-4 text-blue-400" />
-      case 'deployment': return <Zap className="w-4 h-4 text-purple-400" />
-      case 'contract': return <Users className="w-4 h-4 text-cyan-400" />
-      default: return <Activity className="w-4 h-4 text-slate-400" />
+      case 'expense': return <DollarSign className="w-4 h-4 text-[#6888ff]" />
+      case 'access': return <Shield className="w-4 h-4 text-[#6888ff]" />
+      case 'deployment': return <Zap className="w-4 h-4 text-[#6888ff]" />
+      case 'contract': return <Users className="w-4 h-4 text-[#6888ff]" />
+      default: return <Activity className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const getUrgencyStyle = (urgency: string) => {
     switch (urgency) {
-      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'high': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      case 'medium': return 'bg-[#6888ff]/20 text-[#6888ff] border-yellow-500/30'
+      case 'low': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -175,8 +173,8 @@ export function CEOMobileCommand() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Mobile Command...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Mobile Command...</p>
         </div>
       </div>
     )
@@ -186,13 +184,13 @@ export function CEOMobileCommand() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Smartphone className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Smartphone className="w-5 h-5 text-[#6888ff]" />
           CEO Mobile Command
-          <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">LIVE</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">LIVE</span>
         </h3>
-        <span className="text-xs text-slate-400">
-          Última actualización: {new Date().toLocaleTimeString()}
+        <span className="text-xs text-[#9aa3b8]">
+          Ášltima actualización: {new Date().toLocaleTimeString()}
         </span>
       </div>
 
@@ -200,18 +198,18 @@ export function CEOMobileCommand() {
       {alerts.filter(a => !a.acknowledged).length > 0 && (
         <div className="space-y-2">
           {alerts.filter(a => !a.acknowledged).map(alert => (
-            <div key={alert.id} className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <div key={alert.id} className="p-4 bg-[#6888ff]/10 border border-[#6888ff]/30 rounded-lg">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                  <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
                   <div>
-                    <span className="text-white font-medium">{alert.title}</span>
-                    <p className="text-sm text-slate-400">{alert.description}</p>
+                    <span className="text-[#69738c] font-medium">{alert.title}</span>
+                    <p className="text-sm text-[#9aa3b8]">{alert.description}</p>
                   </div>
                 </div>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => acknowledgeAlert(alert.id)}>
+                <NeuButton variant="secondary" onClick={() => acknowledgeAlert(alert.id)}>
                   <CheckCircle className="w-4 h-4" />
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             </div>
           ))}
@@ -221,40 +219,40 @@ export function CEOMobileCommand() {
       {/* KPIs Grid */}
       <div className="grid grid-cols-3 gap-3">
         {kpis.map((kpi, i) => (
-          <NeuromorphicCard 
+          <NeuCard
             key={kpi.label}
-            variant="embossed"
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
             className={`p-4 ${kpi.priority === 'high' ? 'ring-1 ring-yellow-500/30' : ''}`}
           >
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-slate-400">{kpi.label}</span>
-              {kpi.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400" />}
-              {kpi.trend === 'down' && <TrendingUp className="w-4 h-4 text-red-400 rotate-180" />}
+              <span className="text-xs text-[#9aa3b8]">{kpi.label}</span>
+              {kpi.trend === 'up' && <TrendingUp className="w-4 h-4 text-[#6888ff]" />}
+              {kpi.trend === 'down' && <TrendingUp className="w-4 h-4 text-[#6888ff] rotate-180" />}
             </div>
-            <p className="text-xl font-bold text-white">{kpi.value}</p>
-            <span className={`text-xs ${kpi.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <p className="text-xl font-bold text-[#69738c]">{kpi.value}</p>
+            <span className={`text-xs ${kpi.change >= 0 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
               {kpi.change >= 0 ? '+' : ''}{kpi.change}%
             </span>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Pending Approvals */}
-      <NeuromorphicCard variant="glow" className="p-4">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-yellow-400" />
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-[#6888ff]" />
           Aprobaciones Pendientes ({approvals.length})
         </h4>
 
         <div className="space-y-3">
           {approvals.map(approval => (
-            <div key={approval.id} className="p-4 bg-slate-800/50 rounded-lg">
+            <div key={approval.id} className="p-4 bg-[#dfeaff]/50 rounded-lg">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {getTypeIcon(approval.type)}
                   <div>
-                    <span className="text-white font-medium">{approval.title}</span>
-                    <p className="text-xs text-slate-400">Solicitado por: {approval.requester}</p>
+                    <span className="text-[#69738c] font-medium">{approval.title}</span>
+                    <p className="text-xs text-[#9aa3b8]">Solicitado por: {approval.requester}</p>
                   </div>
                 </div>
                 <span className={`text-xs px-2 py-0.5 rounded border ${getUrgencyStyle(approval.urgency)}`}>
@@ -263,53 +261,51 @@ export function CEOMobileCommand() {
               </div>
 
               {approval.amount && (
-                <p className="text-lg font-bold text-green-400 mb-2">
+                <p className="text-lg font-bold text-[#6888ff] mb-2">
                   ${approval.amount.toLocaleString()}
                 </p>
               )}
 
               <div className="flex items-center gap-2">
-                <NeuromorphicButton 
-                  variant="primary" 
-                  size="sm" 
+                <NeuButton
+                  variant="primary"
                   onClick={() => handleApproval(approval.id, true)}
                   className="flex-1"
                 >
                   <CheckCircle className="w-4 h-4 mr-1" />
                   Aprobar
-                </NeuromorphicButton>
-                <NeuromorphicButton 
-                  variant="secondary" 
-                  size="sm" 
+                </NeuButton>
+                <NeuButton
+                  variant="secondary"
                   onClick={() => handleApproval(approval.id, false)}
                   className="flex-1"
                 >
                   <XCircle className="w-4 h-4 mr-1" />
                   Rechazar
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Quick Status Indicators */}
       <div className="grid grid-cols-4 gap-2">
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <div className="w-3 h-3 bg-green-400 rounded-full mx-auto mb-1 animate-pulse" />
-          <p className="text-xs text-slate-400">Sistemas</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <div className="w-3 h-3 bg-[#6888ff] rounded-full mx-auto mb-1 animate-pulse" />
+          <p className="text-xs text-[#9aa3b8]">Sistemas</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <div className="w-3 h-3 bg-green-400 rounded-full mx-auto mb-1" />
-          <p className="text-xs text-slate-400">Database</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <div className="w-3 h-3 bg-[#6888ff] rounded-full mx-auto mb-1" />
+          <p className="text-xs text-[#9aa3b8]">Database</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <div className="w-3 h-3 bg-green-400 rounded-full mx-auto mb-1" />
-          <p className="text-xs text-slate-400">APIs</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <div className="w-3 h-3 bg-[#6888ff] rounded-full mx-auto mb-1" />
+          <p className="text-xs text-[#9aa3b8]">APIs</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <div className="w-3 h-3 bg-green-400 rounded-full mx-auto mb-1" />
-          <p className="text-xs text-slate-400">Security</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <div className="w-3 h-3 bg-[#6888ff] rounded-full mx-auto mb-1" />
+          <p className="text-xs text-[#9aa3b8]">Security</p>
         </div>
       </div>
     </div>

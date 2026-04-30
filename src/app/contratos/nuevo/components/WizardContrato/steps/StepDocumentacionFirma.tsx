@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📄 SILEXAR PULSE - Step 5: Documentación y Firma Digital TIER 0
  *
  * @description Paso 5 con generación automática de documentos,
@@ -205,19 +205,19 @@ const EstadoDocumentoBadge: React.FC<{ estado: EstadoDocumento }> = (
   const config = {
     BORRADOR: { bg: "bg-[#dfeaff]", text: "text-[#69738c]", label: "Borrador" },
     GENERANDO: {
-      bg: "bg-blue-100",
-      text: "text-blue-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       label: "Generando...",
     },
-    LISTO: { bg: "bg-emerald-100", text: "text-emerald-700", label: "Listo" },
-    ENVIADO: { bg: "bg-amber-100", text: "text-amber-700", label: "Enviado" },
+    LISTO: { bg: "bg-[#6888ff]/10", text: "text-[#6888ff]", label: "Listo" },
+    ENVIADO: { bg: "bg-[#6888ff]/10", text: "text-[#6888ff]", label: "Enviado" },
     FIRMADO_PARCIAL: {
-      bg: "bg-purple-100",
-      text: "text-purple-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       label: "Firmado Parcial",
     },
-    FIRMADO: { bg: "bg-green-100", text: "text-green-700", label: "Firmado ✓" },
-    RECHAZADO: { bg: "bg-red-100", text: "text-red-700", label: "Rechazado" },
+    FIRMADO: { bg: "bg-[#6888ff]/10", text: "text-[#6888ff]", label: "Firmado ✓" },
+    RECHAZADO: { bg: "bg-[#dfeaff]", text: "text-[#9aa3b8]", label: "Rechazado" },
   }[estado];
 
   return (
@@ -238,22 +238,22 @@ const EstadoFirmaBadge: React.FC<{ estado: EstadoFirma }> = ({ estado }) => {
     },
     ENVIADO: {
       icon: <Mail className="w-4 h-4" />,
-      color: "text-blue-500",
+      color: "text-[#6888ff]",
       label: "Enviado",
     },
     VISTO: {
       icon: <Eye className="w-4 h-4" />,
-      color: "text-amber-500",
+      color: "text-[#6888ff]",
       label: "Visto",
     },
     FIRMADO: {
       icon: <CheckCircle2 className="w-4 h-4" />,
-      color: "text-green-500",
+      color: "text-[#6888ff]",
       label: "Firmado",
     },
     RECHAZADO: {
       icon: <AlertTriangle className="w-4 h-4" />,
-      color: "text-red-500",
+      color: "text-[#9aa3b8]",
       label: "Rechazado",
     },
     EXPIRADO: {
@@ -345,7 +345,7 @@ const DocumentoCard: React.FC<{
             {/* Firmantes */}
             <div>
               <h5 className="font-semibold text-[#69738c] mb-3 flex items-center gap-2">
-                <PenTool className="w-4 h-4 text-purple-500" />
+                <PenTool className="w-4 h-4 text-[#6888ff]" />
                 Flujo de Firmas
               </h5>
               <div className="space-y-2">
@@ -354,7 +354,7 @@ const DocumentoCard: React.FC<{
                     key={firmante.id}
                     className="flex items-center gap-3 p-3 rounded-lg bg-[#dfeaff]"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center text-white text-sm font-bold">
                       {firmante.orden}
                     </div>
                     <div className="flex-1">
@@ -379,7 +379,7 @@ const DocumentoCard: React.FC<{
             {/* Historial de versiones */}
             <div>
               <h5 className="font-semibold text-[#69738c] mb-2 flex items-center gap-2">
-                <History className="w-4 h-4 text-blue-500" />
+                <History className="w-4 h-4 text-[#6888ff]" />
                 Historial de Versiones
               </h5>
               <div className="space-y-1">
@@ -434,7 +434,7 @@ const FirmanteInput: React.FC<{
     <div className="cursor-grab">
       <GripVertical className="w-5 h-5 text-[#9aa3b8]" />
     </div>
-    <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+    <div className="w-8 h-8 rounded-full bg-[#6888ff]/50 flex items-center justify-center text-white font-bold">
       {index + 1}
     </div>
     <input
@@ -469,7 +469,7 @@ const FirmanteInput: React.FC<{
       <button
         aria-label="Eliminar"
         onClick={onRemove}
-        className="p-2 rounded-lg hover:bg-red-100 text-red-500"
+        className="p-2 rounded-lg hover:bg-[#dfeaff] text-[#9aa3b8]"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -570,7 +570,7 @@ export default function StepDocumentacionFirma({
                   onClick={() => setIdiomaSeleccionado(idioma)}
                   className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${
                     idiomaSeleccionado === idioma
-                      ? "border-indigo-500 bg-[#6888ff15] text-[#6888ff]"
+                      ? "border-[#bec8de] bg-[#6888ff15] text-[#6888ff]"
                       : "border-[#bec8de40] text-[#69738c] hover:border-[#bec8de50]"
                   }`}
                 >
@@ -591,7 +591,7 @@ export default function StepDocumentacionFirma({
                 onClick={() => setProveedorFirma("docusign")}
                 className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${
                   proveedorFirma === "docusign"
-                    ? "border-indigo-500 bg-[#6888ff15]"
+                    ? "border-[#bec8de] bg-[#6888ff15]"
                     : "border-[#bec8de40] hover:border-[#bec8de50]"
                 }`}
               >
@@ -601,11 +601,11 @@ export default function StepDocumentacionFirma({
                 onClick={() => setProveedorFirma("adobesign")}
                 className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${
                   proveedorFirma === "adobesign"
-                    ? "border-red-500 bg-red-50"
+                    ? "border-[#bec8de] bg-[#dfeaff]"
                     : "border-[#bec8de40] hover:border-[#bec8de50]"
                 }`}
               >
-                <span className="text-red-600 font-bold">Adobe Sign</span>
+                <span className="text-[#9aa3b8] font-bold">Adobe Sign</span>
               </button>
             </div>
           </div>
@@ -636,14 +636,14 @@ export default function StepDocumentacionFirma({
       <div className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <PenTool className="w-5 h-5 text-purple-500" />
+            <PenTool className="w-5 h-5 text-[#6888ff]" />
             <h3 className="text-lg font-semibold text-[#69738c]">
               Configurar Firmantes
             </h3>
           </div>
           <button
             onClick={handleAgregarFirmante}
-            className="px-3 py-1.5 rounded-lg bg-[#6888ff25] text-[#6888ff] text-sm font-medium flex items-center gap-1 hover:bg-indigo-200"
+            className="px-3 py-1.5 rounded-lg bg-[#6888ff25] text-[#6888ff] text-sm font-medium flex items-center gap-1 hover:bg-[#6888ff]/20"
           >
             <Plus className="w-4 h-4" />
             Agregar
@@ -674,14 +674,14 @@ export default function StepDocumentacionFirma({
         </div>
 
         {/* Recordatorios */}
-        <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+        <div className="mt-4 p-3 rounded-lg bg-[#6888ff]/5 border border-[#bec8de]">
           <div className="flex items-center gap-2">
-            <Bell className="w-5 h-5 text-amber-500" />
+            <Bell className="w-5 h-5 text-[#6888ff]" />
             <div>
-              <p className="font-medium text-amber-700">
+              <p className="font-medium text-[#6888ff]">
                 Recordatorios automáticos
               </p>
-              <p className="text-sm text-amber-600">
+              <p className="text-sm text-[#6888ff]">
                 Se enviarán recordatorios cada 24h hasta completar todas las
                 firmas
               </p>
@@ -731,7 +731,7 @@ export default function StepDocumentacionFirma({
                 {proveedorFirma === "docusign" ? "DocuSign" : "Adobe Sign"}
               </p>
             </div>
-            <Shield className="w-8 h-8 text-green-400" />
+            <Shield className="w-8 h-8 text-[#6888ff]" />
           </div>
         </div>
       </div>

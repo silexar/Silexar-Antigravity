@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔧 SILEXAR PULSE - Self Repair System
+ * ðŸ”§ SILEXAR PULSE - Self Repair System
  * Auto-diagnóstico y reparación del sistema
  * 
  * @description Self Repair:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Wrench,
   CheckCircle,
@@ -49,7 +47,7 @@ interface RepairAction {
   id: string
   name: string
   description: string
-  status: 'pending' | 'running' | 'completed' | 'failed'
+  status: 'Pendiente' | 'running' | 'completed' | 'Fallido'
   risk: 'low' | 'medium' | 'high'
   estimatedTime: number
 }
@@ -83,11 +81,11 @@ export function SelfRepair() {
     ])
 
     setRepairActions([
-      { id: 'repair_001', name: 'Clear Cache Memory', description: 'Limpiar caché para liberar memoria', status: 'pending', risk: 'low', estimatedTime: 5 },
-      { id: 'repair_002', name: 'Retry Failed Jobs', description: 'Reintentar todos los jobs fallidos', status: 'pending', risk: 'low', estimatedTime: 30 },
-      { id: 'repair_003', name: 'Renew SSL Certificate', description: 'Renovar certificado próximo a expirar', status: 'pending', risk: 'medium', estimatedTime: 60 },
-      { id: 'repair_004', name: 'Restart Worker Nodes', description: 'Reiniciar nodos de trabajo', status: 'pending', risk: 'medium', estimatedTime: 120 },
-      { id: 'repair_005', name: 'Rebuild Search Index', description: 'Reconstruir índice de búsqueda', status: 'pending', risk: 'low', estimatedTime: 300 }
+      { id: 'repair_001', name: 'Clear Cache Memory', description: 'Limpiar caché para liberar memoria', status: 'Pendiente', risk: 'low', estimatedTime: 5 },
+      { id: 'repair_002', name: 'Retry Failed Jobs', description: 'Reintentar todos los jobs fallidos', status: 'Pendiente', risk: 'low', estimatedTime: 30 },
+      { id: 'repair_003', name: 'Renew SSL Certificate', description: 'Renovar certificado próximo a expirar', status: 'Pendiente', risk: 'medium', estimatedTime: 60 },
+      { id: 'repair_004', name: 'Restart Worker Nodes', description: 'Reiniciar nodos de trabajo', status: 'Pendiente', risk: 'medium', estimatedTime: 120 },
+      { id: 'repair_005', name: 'Rebuild Search Index', description: 'Reconstruir índice de búsqueda', status: 'Pendiente', risk: 'low', estimatedTime: 300 }
     ])
 
     setIsLoading(false)
@@ -95,31 +93,31 @@ export function SelfRepair() {
 
   const runDiagnostic = async () => {
     setIsRunningDiagnostic(true)
-    
+
     // Simular diagnóstico
     for (let i = 0; i < healthChecks.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 200))
-      setHealthChecks(prev => prev.map((hc, idx) => 
+      setHealthChecks(prev => prev.map((hc, idx) =>
         idx === i ? { ...hc, status: 'checking' as const } : hc
       ))
       await new Promise(resolve => setTimeout(resolve, 300))
-      setHealthChecks(prev => prev.map((hc, idx) => 
+      setHealthChecks(prev => prev.map((hc, idx) =>
         idx === i ? { ...hc, status: prev[idx].status === 'checking' ? (Math.random() > 0.2 ? 'healthy' as const : 'warning' as const) : hc.status, lastCheck: new Date() } : hc
       ))
     }
-    
+
     setIsRunningDiagnostic(false)
   }
 
   const executeRepair = async (id: string) => {
-    setRepairActions(prev => prev.map(r => 
+    setRepairActions(prev => prev.map(r =>
       r.id === id ? { ...r, status: 'running' } : r
     ))
 
     const action = repairActions.find(r => r.id === id)
     await new Promise(resolve => setTimeout(resolve, (action?.estimatedTime || 5) * 100))
 
-    setRepairActions(prev => prev.map(r => 
+    setRepairActions(prev => prev.map(r =>
       r.id === id ? { ...r, status: 'completed' } : r
     ))
 
@@ -129,8 +127,8 @@ export function SelfRepair() {
 
   const autoFixAll = async () => {
     if (!confirm('¿Ejecutar todas las reparaciones automáticas disponibles?')) return
-    
-    const fixable = repairActions.filter(r => r.status === 'pending' && r.risk === 'low')
+
+    const fixable = repairActions.filter(r => r.status === 'Pendiente' && r.risk === 'low')
     for (const action of fixable) {
       await executeRepair(action.id)
     }
@@ -157,7 +155,7 @@ export function SelfRepair() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Self Repair...</p>
+          <p className="text-[#9aa3b8]">Cargando Self Repair...</p>
         </div>
       </div>
     )
@@ -167,120 +165,117 @@ export function SelfRepair() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Wrench className="w-5 h-5 text-orange-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Wrench className="w-5 h-5 text-[#6888ff]" />
           Self Repair System
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={runDiagnostic} disabled={isRunningDiagnostic}>
+          <NeuButton variant="secondary" onClick={runDiagnostic} disabled={isRunningDiagnostic}>
             <RefreshCw className={`w-4 h-4 mr-1 ${isRunningDiagnostic ? 'animate-spin' : ''}`} />
             {isRunningDiagnostic ? 'Analizando...' : 'Run Diagnostic'}
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={autoFixAll}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={autoFixAll}>
             <Zap className="w-4 h-4 mr-1" />
             Auto-Fix All
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-400">{healthyCount}</p>
-          <p className="text-xs text-slate-400">Healthy</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <AlertTriangle className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-yellow-400">{warningCount}</p>
-          <p className="text-xs text-slate-400">Warnings</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <XCircle className="w-6 h-6 text-red-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-red-400">{criticalCount}</p>
-          <p className="text-xs text-slate-400">Critical</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Wrench className="w-6 h-6 text-orange-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-orange-400">{repairActions.filter(r => r.status === 'pending').length}</p>
-          <p className="text-xs text-slate-400">Repairs Pending</p>
-        </NeuromorphicCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <CheckCircle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{healthyCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Healthy</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <AlertTriangle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{warningCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Warnings</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <XCircle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{criticalCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Critical</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <Wrench className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{repairActions.filter(r => r.status === 'Pendiente').length}</p>
+          <p className="text-xs text-[#9aa3b8]">Repairs Pending</p>
+        </NeuCard>
       </div>
 
       {/* Health Checks */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Health Checks</h4>
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3">Health Checks</h4>
         <div className="grid grid-cols-2 gap-2">
           {healthChecks.map(check => (
-            <div 
+            <div
               key={check.id}
-              className={`flex items-center justify-between p-3 rounded-lg ${
-                check.status === 'healthy' ? 'bg-green-500/5' :
-                check.status === 'warning' ? 'bg-yellow-500/5' :
-                check.status === 'critical' ? 'bg-red-500/5' :
-                'bg-blue-500/5'
-              }`}
+              className={`flex items-center justify-between p-3 rounded-lg ${check.status === 'healthy' ? 'bg-[#6888ff]/5' :
+                check.status === 'warning' ? 'bg-[#6888ff]/5' :
+                  check.status === 'critical' ? 'bg-[#6888ff]/5' :
+                    'bg-[#6888ff]/5'
+                }`}
             >
               <div className="flex items-center gap-3">
-                <span className={`${
-                  check.status === 'healthy' ? 'text-green-400' :
-                  check.status === 'warning' ? 'text-yellow-400' :
-                  check.status === 'critical' ? 'text-red-400' :
-                  'text-blue-400'
-                }`}>
+                <span className={`${check.status === 'healthy' ? 'text-[#6888ff]' :
+                  check.status === 'warning' ? 'text-[#6888ff]' :
+                    check.status === 'critical' ? 'text-[#6888ff]' :
+                      'text-[#6888ff]'
+                  }`}>
                   {getCategoryIcon(check.category)}
                 </span>
                 <div>
-                  <span className="text-white text-sm">{check.name}</span>
-                  {check.message && <p className="text-xs text-slate-500">{check.message}</p>}
+                  <span className="text-[#69738c] text-sm">{check.name}</span>
+                  {check.message && <p className="text-xs text-[#9aa3b8]">{check.message}</p>}
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {check.status === 'checking' && <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />}
-                {check.status === 'healthy' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                {check.status === 'warning' && <AlertTriangle className="w-4 h-4 text-yellow-400" />}
-                {check.status === 'critical' && <XCircle className="w-4 h-4 text-red-400" />}
+                {check.status === 'checking' && <RefreshCw className="w-4 h-4 text-[#6888ff] animate-spin" />}
+                {check.status === 'healthy' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                {check.status === 'warning' && <AlertTriangle className="w-4 h-4 text-[#6888ff]" />}
+                {check.status === 'critical' && <XCircle className="w-4 h-4 text-[#6888ff]" />}
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Repair Actions */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Acciones de Reparación</h4>
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3">Acciones de Reparación</h4>
         <div className="space-y-2">
           {repairActions.map(action => (
-            <div key={action.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={action.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
               <div className="flex items-center gap-3">
-                {action.status === 'completed' && <CheckCircle className="w-5 h-5 text-green-400" />}
-                {action.status === 'running' && <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" />}
-                {action.status === 'pending' && <Wrench className="w-5 h-5 text-orange-400" />}
-                {action.status === 'failed' && <XCircle className="w-5 h-5 text-red-400" />}
+                {action.status === 'completed' && <CheckCircle className="w-5 h-5 text-[#6888ff]" />}
+                {action.status === 'running' && <RefreshCw className="w-5 h-5 text-[#6888ff] animate-spin" />}
+                {action.status === 'Pendiente' && <Wrench className="w-5 h-5 text-[#6888ff]" />}
+                {action.status === 'Fallido' && <XCircle className="w-5 h-5 text-[#6888ff]" />}
                 <div>
-                  <span className="text-white">{action.name}</span>
-                  <p className="text-xs text-slate-500">{action.description}</p>
+                  <span className="text-[#69738c]">{action.name}</span>
+                  <p className="text-xs text-[#9aa3b8]">{action.description}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  action.risk === 'low' ? 'bg-green-500/20 text-green-400' :
-                  action.risk === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
+                <span className={`text-xs px-2 py-0.5 rounded ${action.risk === 'low' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                  action.risk === 'medium' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   Riesgo: {action.risk}
                 </span>
-                <span className="text-xs text-slate-500">~{action.estimatedTime}s</span>
-                {action.status === 'pending' && (
-                  <NeuromorphicButton variant="secondary" size="sm" onClick={() => executeRepair(action.id)}>
+                <span className="text-xs text-[#9aa3b8]">~{action.estimatedTime}s</span>
+                {action.status === 'Pendiente' && (
+                  <NeuButton variant="secondary" onClick={() => executeRepair(action.id)}>
                     <Play className="w-3 h-3" />
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

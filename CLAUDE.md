@@ -1746,7 +1746,7 @@ release/      → release/v{major.minor.patch}
 
 Examples:
 feature/SIL-142-module-cunas-digital
-fix/SIL-201-vencimiento-countdown-off-by-one
+fix/SIL-201-vencimientos-countdown-off-by-one
 hotfix/SIL-210-security-jwt-expiry
 ```
 

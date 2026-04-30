@@ -23,7 +23,7 @@ interface TareaWorkspace {
   cliente?: string;
   prioridad: 'alta' | 'media' | 'baja';
   tipo: 'tarea' | 'seguimiento' | 'revision' | 'llamada';
-  vencimiento: string;
+  vencimientos: string;
   completada: boolean;
 }
 
@@ -35,23 +35,23 @@ interface NotaReciente {
 }
 
 const TAREAS_MOCK: TareaWorkspace[] = [
-  { id: 't-1', titulo: 'Enviar propuesta renovación', contrato: 'CTR-0045', cliente: 'Falabella', prioridad: 'alta', tipo: 'tarea', vencimiento: '2025-02-28', completada: false },
-  { id: 't-2', titulo: 'Seguimiento firma digital', contrato: 'CTR-0067', cliente: 'Banco Chile', prioridad: 'alta', tipo: 'seguimiento', vencimiento: '2025-02-27', completada: false },
-  { id: 't-3', titulo: 'Revisar condiciones precio', contrato: 'CTR-0089', cliente: 'TechCorp', prioridad: 'media', tipo: 'revision', vencimiento: '2025-03-01', completada: false },
-  { id: 't-4', titulo: 'Llamar para cierre', contrato: 'CTR-0056', cliente: 'Cencosud', prioridad: 'media', tipo: 'llamada', vencimiento: '2025-02-28', completada: true },
-  { id: 't-5', titulo: 'Preparar presentación Q1', prioridad: 'baja', tipo: 'tarea', vencimiento: '2025-03-05', completada: false },
+  { id: 't-1', titulo: 'Enviar propuesta renovaciï¿½n', contrato: 'CTR-0045', cliente: 'Falabella', prioridad: 'alta', tipo: 'tarea', vencimientos: '2025-02-28', completada: false },
+  { id: 't-2', titulo: 'Seguimiento firma digital', contrato: 'CTR-0067', cliente: 'Banco Chile', prioridad: 'alta', tipo: 'seguimiento', vencimientos: '2025-02-27', completada: false },
+  { id: 't-3', titulo: 'Revisar condiciones precio', contrato: 'CTR-0089', cliente: 'TechCorp', prioridad: 'media', tipo: 'revision', vencimientos: '2025-03-01', completada: false },
+  { id: 't-4', titulo: 'Llamar para cierre', contrato: 'CTR-0056', cliente: 'Cencosud', prioridad: 'media', tipo: 'llamada', vencimientos: '2025-02-28', completada: true },
+  { id: 't-5', titulo: 'Preparar presentaciï¿½n Q1', prioridad: 'baja', tipo: 'tarea', vencimientos: '2025-03-05', completada: false },
 ];
 
 const NOTAS_MOCK: NotaReciente[] = [
-  { id: 'n-1', contenido: 'Cliente interesado en extender el contrato 6 meses más con aumento del 10%', contrato: 'CTR-0045', fecha: '2025-02-27' },
-  { id: 'n-2', contenido: 'Pendiente aprobación gerencia para descuento especial', contrato: 'CTR-0034', fecha: '2025-02-26' },
-  { id: 'n-3', contenido: 'Enviada propuesta por email, confirmar recepción mañana', contrato: 'CTR-0067', fecha: '2025-02-25' },
+  { id: 'n-1', contenido: 'Cliente interesado en extender el contrato 6 meses mï¿½s con aumento del 10%', contrato: 'CTR-0045', fecha: '2025-02-27' },
+  { id: 'n-2', contenido: 'Pendiente aprobaciï¿½n gerencia para descuento especial', contrato: 'CTR-0034', fecha: '2025-02-26' },
+  { id: 'n-3', contenido: 'Enviada propuesta por email, confirmar recepciï¿½n maï¿½ana', contrato: 'CTR-0067', fecha: '2025-02-25' },
 ];
 
 const prioridadConfig: Record<string, { color: string; bg: string }> = {
-  alta: { color: 'text-red-700', bg: 'bg-red-100' },
-  media: { color: 'text-amber-700', bg: 'bg-amber-100' },
-  baja: { color: 'text-blue-700', bg: 'bg-blue-100' },
+  alta: { color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]' },
+  media: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
+  baja: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
 };
 
 const tipoIcon: Record<string, React.ReactNode> = {
@@ -127,7 +127,7 @@ export function MobileWorkspaceView() {
                       </span>
                     </div>
                     <p className="text-[10px] text-[#9aa3b8] mt-0.5 flex items-center gap-0.5">
-                      <Calendar className="w-3 h-3" /> {tarea.vencimiento}
+                      <Calendar className="w-3 h-3" /> {tarea.vencimientos}
                     </p>
                   </div>
                   <div className="text-[#9aa3b8]">{tipoIcon[tarea.tipo]}</div>
@@ -143,7 +143,7 @@ export function MobileWorkspaceView() {
               <div className="space-y-2">
                 {completadas.map(tarea => (
                   <div key={tarea.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3 opacity-60">
-                    <button onClick={() => toggleTarea(tarea.id)} className="w-5 h-5 rounded bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                    <button onClick={() => toggleTarea(tarea.id)} className="w-5 h-5 rounded bg-[#6888ff]/50 text-white flex items-center justify-center shrink-0">
                       <CheckSquare className="w-3 h-3" />
                     </button>
                     <p className="font-medium text-[#9aa3b8] text-sm line-through">{tarea.titulo}</p>

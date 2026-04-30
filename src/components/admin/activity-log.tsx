@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📋 SILEXAR PULSE - Activity Log en Tiempo Real
+ * ðŸ“‹ SILEXAR PULSE - Activity Log en Tiempo Real
  * Registro de actividad con análisis IA
  * 
  * @description Log de actividad empresarial con:
@@ -16,10 +16,6 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { 
-  NeuromorphicButton,
-  NeuromorphicStatus
-} from '@/components/ui/neuromorphic'
 import {
   Activity,
   Search,
@@ -36,6 +32,8 @@ import {
   Play,
   ChevronDown
 } from 'lucide-react'
+import { NeuCard, NeuButton, StatusBadge } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 
 interface ActivityEvent {
   id: string
@@ -67,9 +65,84 @@ interface ActivityFilter {
   dateRange: 'today' | 'week' | 'month' | 'all'
 }
 
+const mockEvents: ActivityEvent[] = [
+  {
+    id: 'evt_1',
+    timestamp: new Date(Date.now() - 300000),
+    type: 'auth',
+    action: 'login_success',
+    userName: 'Juan Pérez',
+    tenantName: 'RDF Media',
+    details: 'Juan Pérez ejecutó login success en RDF Media',
+    ipAddress: '192.168.1.100',
+    userAgent: 'Chrome 120',
+    severity: 'info',
+    aiAnalysis: { anomalyScore: 15 }
+  },
+  {
+    id: 'evt_2',
+    timestamp: new Date(Date.now() - 600000),
+    type: 'data',
+    action: 'created',
+    userName: 'María García',
+    tenantName: 'Grupo Prisa',
+    details: 'María García ejecutó created en Grupo Prisa',
+    ipAddress: '192.168.1.101',
+    userAgent: 'Firefox 119',
+    severity: 'info',
+    aiAnalysis: { anomalyScore: 22 }
+  },
+  {
+    id: 'evt_3',
+    timestamp: new Date(Date.now() - 900000),
+    type: 'security',
+    action: 'access_denied',
+    userName: 'Usuario Desconocido',
+    tenantName: 'Mega Media',
+    details: 'Usuario Desconocido ejecutó access denied en Mega Media',
+    ipAddress: '10.0.0.50',
+    userAgent: 'Unknown',
+    severity: 'warning',
+    aiAnalysis: { anomalyScore: 85, pattern: 'Patrón inusual detectado', recommendation: 'Revisar actividad del usuario' }
+  },
+  {
+    id: 'evt_4',
+    timestamp: new Date(Date.now() - 1200000),
+    type: 'config',
+    action: 'setting_changed',
+    userName: 'Carlos López',
+    tenantName: 'TVN Chile',
+    details: 'Carlos López ejecutó setting changed en TVN Chile',
+    ipAddress: '192.168.1.102',
+    userAgent: 'Safari 17',
+    severity: 'info',
+    aiAnalysis: { anomalyScore: 30 }
+  },
+  {
+    id: 'evt_5',
+    timestamp: new Date(Date.now() - 1500000),
+    type: 'billing',
+    action: 'payment_received',
+    userName: 'Sistema',
+    tenantName: 'RDF Media',
+    details: 'Sistema ejecutó payment received en RDF Media',
+    ipAddress: '127.0.0.1',
+    userAgent: 'System',
+    severity: 'info',
+    aiAnalysis: { anomalyScore: 5 }
+  }
+]
+
+const mockAiInsights = {
+  totalEvents: 1247,
+  anomaliesDetected: 3,
+  suspiciousPatterns: 8,
+  riskLevel: 'low' as 'low' | 'medium' | 'high'
+}
+
 export function ActivityLog() {
-  const [events, setEvents] = useState<ActivityEvent[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [events, setEvents] = useState<ActivityEvent[]>(mockEvents)
+  const [isLoading, setIsLoading] = useState(false)
   const [isLive, setIsLive] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showFilters, setShowFilters] = useState(false)
@@ -80,126 +153,35 @@ export function ActivityLog() {
     user: '',
     dateRange: 'today'
   })
-  const [aiInsights, setAiInsights] = useState({
-    totalEvents: 0,
-    anomaliesDetected: 0,
-    suspiciousPatterns: 0,
-    riskLevel: 'low' as 'low' | 'medium' | 'high'
-  })
-
-  // Generate demo events
-  const generateEvent = useCallback((): ActivityEvent => {
-    const types = ['auth', 'data', 'config', 'security', 'system', 'billing'] as const
-    const actions = {
-      auth: ['login_success', 'login_failed', 'logout', 'password_changed', 'mfa_enabled'],
-      data: ['created', 'updated', 'deleted', 'exported', 'imported'],
-      config: ['setting_changed', 'module_toggled', 'ai_mode_changed', 'plan_upgraded'],
-      security: ['access_denied', 'suspicious_activity', 'ip_blocked', 'session_terminated'],
-      system: ['backup_completed', 'maintenance_started', 'cache_cleared', 'api_error'],
-      billing: ['invoice_created', 'payment_received', 'subscription_renewed', 'refund_processed']
-    }
-    const users = ['Juan Pérez', 'María García', 'Carlos López', 'Ana Martínez', 'CEO Silexar']
-    const tenants = ['RDF Media', 'Grupo Prisa', 'Mega Media', 'TVN Chile', 'Sistema']
-    const severities = ['info', 'warning', 'error', 'critical'] as const
-
-    const type = types[Math.floor(Math.random() * types.length)]
-    const action = actions[type][Math.floor(Math.random() * actions[type].length)]
-    const severity = severities[Math.floor(Math.random() * 10) < 7 ? 0 : Math.floor(Math.random() * 4)]
-    const user = users[Math.floor(Math.random() * users.length)]
-    const tenant = tenants[Math.floor(Math.random() * tenants.length)]
-
-    const anomalyScore = Math.random() * 100
-    const hasAnomaly = anomalyScore > 80
-
-    return {
-      id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date(),
-      type,
-      action,
-      userId: `usr_${Math.random().toString(36).substr(2, 6)}`,
-      userName: user,
-      tenantId: `tnt_${Math.random().toString(36).substr(2, 6)}`,
-      tenantName: tenant,
-      resourceType: type === 'data' ? 'campaign' : undefined,
-      resourceId: type === 'data' ? `res_${Math.random().toString(36).substr(2, 8)}` : undefined,
-      details: `${user} ejecutó ${action.replace('_', ' ')} en ${tenant}`,
-      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-      userAgent: ['Chrome 120', 'Firefox 119', 'Safari 17', 'Edge 120'][Math.floor(Math.random() * 4)],
-      severity,
-      aiAnalysis: {
-        anomalyScore,
-        pattern: hasAnomaly ? 'Patrón inusual detectado' : undefined,
-        recommendation: hasAnomaly ? 'Revisar actividad del usuario' : undefined
-      }
-    }
-  }, [])
-
-  // Load initial events
-  useEffect(() => {
-    const loadEvents = async () => {
-      setIsLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      const initialEvents: ActivityEvent[] = Array.from({ length: 20 }, () => {
-        const event = generateEvent()
-        event.timestamp = new Date(Date.now() - Math.random() * 3600000 * 24)
-        return event
-      }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      
-      setEvents(initialEvents)
-      updateAiInsights(initialEvents)
-      setIsLoading(false)
-    }
-    
-    loadEvents()
-  }, [generateEvent])
-
-  // Live streaming
-  useEffect(() => {
-    if (!isLive) return
-    
-    const interval = setInterval(() => {
-      const newEvent = generateEvent()
-      setEvents(prev => {
-        const updated = [newEvent, ...prev].slice(0, 100)
-        updateAiInsights(updated)
-        return updated
-      })
-    }, 5000 + Math.random() * 5000)
-    
-    return () => clearInterval(interval)
-  }, [isLive, generateEvent])
-
-  const updateAiInsights = (eventList: ActivityEvent[]) => {
-    const anomalies = eventList.filter(e => (e.aiAnalysis?.anomalyScore || 0) > 80).length
-    const suspicious = eventList.filter(e => e.severity === 'warning' || e.severity === 'error').length
-    
-    setAiInsights({
-      totalEvents: eventList.length,
-      anomaliesDetected: anomalies,
-      suspiciousPatterns: suspicious,
-      riskLevel: anomalies > 5 ? 'high' : anomalies > 2 ? 'medium' : 'low'
-    })
-  }
+  const [aiInsights] = useState(mockAiInsights)
 
   const getEventIcon = (type: string) => {
     switch (type) {
-      case 'auth': return <LogIn className="w-4 h-4" />
-      case 'data': return <Database className="w-4 h-4" />
-      case 'config': return <Settings className="w-4 h-4" />
-      case 'security': return <Shield className="w-4 h-4" />
-      case 'system': return <Activity className="w-4 h-4" />
-      case 'billing': return <Plus className="w-4 h-4" />
-      default: return <Activity className="w-4 h-4" />
+      case 'auth': return <LogIn style={{ width: '16px', height: '16px' }} />
+      case 'data': return <Database style={{ width: '16px', height: '16px' }} />
+      case 'config': return <Settings style={{ width: '16px', height: '16px' }} />
+      case 'security': return <Shield style={{ width: '16px', height: '16px' }} />
+      case 'system': return <Activity style={{ width: '16px', height: '16px' }} />
+      case 'billing': return <Plus style={{ width: '16px', height: '16px' }} />
+      default: return <Activity style={{ width: '16px', height: '16px' }} />
     }
   }
 
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'error': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-      case 'warning': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30'
+      case 'critical': return { background: `${N.accent}20`, border: `1px solid ${N.accent}50`, color: N.accent }
+      case 'error': return { background: `${N.accent}20`, border: `1px solid ${N.accent}50`, color: N.accent }
+      case 'warning': return { background: `${N.accent}15`, border: `1px solid ${N.accent}40`, color: N.accent }
+      default: return { background: `${N.dark}20`, border: `1px solid ${N.dark}40`, color: N.textSub }
+    }
+  }
+
+  const getSeverityStatus = (severity: string): 'danger' | 'warning' | 'info' | 'neutral' => {
+    switch (severity) {
+      case 'critical': return 'danger'
+      case 'error': return 'warning'
+      case 'warning': return 'warning'
+      default: return 'neutral'
     }
   }
 
@@ -213,7 +195,7 @@ export function ActivityLog() {
 
   const exportLogs = () => {
     const csv = [
-      ['Timestamp', 'Type', 'Action', 'User', 'Tenant', 'Details', 'Severity', 'IP'].join(','),
+      ['Timestamp', 'Tipo', 'Action', 'Usuario', 'Tenant', 'Detalles', 'Severity', 'IP'].join(','),
       ...filteredEvents.map(e => [
         e.timestamp.toISOString(),
         e.type,
@@ -225,7 +207,7 @@ export function ActivityLog() {
         e.ipAddress || ''
       ].join(','))
     ].join('\n')
-    
+
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -236,189 +218,260 @@ export function ActivityLog() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Activity Log...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Activity Log...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-400" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: N.text, display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+            <Activity style={{ width: '20px', height: '20px', color: N.accent }} />
             Activity Log
           </h3>
-          <NeuromorphicStatus 
-            status={isLive ? 'online' : 'offline'} 
-            pulse={isLive}
+          <StatusBadge
+            status={isLive ? 'success' : 'neutral'}
+            label={isLive ? 'En vivo' : 'Pausado'}
           />
-          <span className="text-xs text-slate-400">
-            {isLive ? 'En vivo' : 'Pausado'}
-          </span>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <NeuromorphicButton
-            variant={isLive ? 'danger' : 'success'}
-            size="sm"
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <NeuButton
+            variant={isLive ? 'secondary' : 'primary'}
             onClick={() => setIsLive(!isLive)}
           >
-            {isLive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={exportLogs}>
-            <Download className="w-4 h-4" />
-          </NeuromorphicButton>
+            {isLive ? <Pause style={{ width: '16px', height: '16px' }} /> : <Play style={{ width: '16px', height: '16px' }} />}
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={exportLogs}>
+            <Download style={{ width: '16px', height: '16px' }} />
+          </NeuButton>
         </div>
       </div>
 
       {/* AI Insights */}
-      <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <Brain className="w-4 h-4 text-purple-400" />
-            <span className="text-xs text-slate-400">Eventos</span>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '12px', background: N.base }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Brain style={{ width: '16px', height: '16px', color: N.dark }} />
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Eventos</span>
           </div>
-          <p className="text-xl font-bold text-white">{aiInsights.totalEvents}</p>
-        </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-yellow-400" />
-            <span className="text-xs text-slate-400">Anomalías IA</span>
+          <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: N.text, margin: 0 }}>{aiInsights.totalEvents}</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '12px', background: N.base }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <AlertTriangle style={{ width: '16px', height: '16px', color: N.accent }} />
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Anomalías IA</span>
           </div>
-          <p className="text-xl font-bold text-yellow-400">{aiInsights.anomaliesDetected}</p>
-        </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <Shield className="w-4 h-4 text-orange-400" />
-            <span className="text-xs text-slate-400">Sospechosos</span>
+          <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: N.accent, margin: 0 }}>{aiInsights.anomaliesDetected}</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '12px', background: N.base }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Shield style={{ width: '16px', height: '16px', color: N.accent }} />
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Sospechosos</span>
           </div>
-          <p className="text-xl font-bold text-orange-400">{aiInsights.suspiciousPatterns}</p>
-        </div>
-        <div className={`p-3 rounded-lg ${
-          aiInsights.riskLevel === 'high' ? 'bg-red-500/20' :
-          aiInsights.riskLevel === 'medium' ? 'bg-yellow-500/20' : 'bg-green-500/20'
-        }`}>
-          <div className="flex items-center gap-2 mb-1">
-            <Activity className="w-4 h-4" />
-            <span className="text-xs text-slate-400">Riesgo</span>
+          <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: N.accent, margin: 0 }}>{aiInsights.suspiciousPatterns}</p>
+        </NeuCard>
+        <NeuCard style={{
+          boxShadow: getSmallShadow(),
+          padding: '12px',
+          background: aiInsights.riskLevel === 'high' ? `${N.accent}20` : aiInsights.riskLevel === 'medium' ? `${N.accent}20` : `${N.accent}20`
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Activity style={{ width: '16px', height: '16px', color: N.textSub }} />
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Riesgo</span>
           </div>
-          <p className={`text-xl font-bold ${
-            aiInsights.riskLevel === 'high' ? 'text-red-400' :
-            aiInsights.riskLevel === 'medium' ? 'text-yellow-400' : 'text-green-400'
-          }`}>
+          <p style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            color: aiInsights.riskLevel === 'high' ? N.accent : aiInsights.riskLevel === 'medium' ? N.accent : N.accent,
+            margin: 0
+          }}>
             {aiInsights.riskLevel.toUpperCase()}
           </p>
-        </div>
+        </NeuCard>
       </div>
 
       {/* Search & Filters */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ flex: 1, position: 'relative' }}>
+          <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: N.textSub }} />
           <input
             type="text"
             placeholder="Buscar en actividad..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+            style={{
+              width: '100%',
+              paddingLeft: '36px',
+              paddingRight: '16px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              background: N.base,
+              border: `1px solid ${N.dark}`,
+              borderRadius: '8px',
+              color: N.text,
+              fontSize: '0.875rem',
+              outline: 'none'
+            }}
           />
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-            showFilters ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
-          }`}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '0.875rem',
+            background: showFilters ? N.accent : `${N.dark}30`,
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
         >
-          <Filter className="w-4 h-4" />
+          <Filter style={{ width: '16px', height: '16px' }} />
           Filtros
-          <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+          <ChevronDown style={{ width: '16px', height: '16px', transition: 'transform 0.2s', transform: showFilters ? 'rotate(180deg)' : 'rotate(0)' }} />
         </button>
       </div>
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="p-4 bg-slate-800/50 rounded-lg grid grid-cols-4 gap-4">
-          <div>
-            <label className="text-xs text-slate-400 block mb-2">Tipo</label>
-            <select 
-              className="w-full bg-slate-700 text-white text-sm rounded px-2 py-1"
-              onChange={(e) => setFilters(f => ({ ...f, type: e.target.value ? [e.target.value] : [] }))}
-            >
-              <option value="">Todos</option>
-              <option value="auth">Autenticación</option>
-              <option value="data">Datos</option>
-              <option value="config">Configuración</option>
-              <option value="security">Seguridad</option>
-              <option value="system">Sistema</option>
-            </select>
+        <NeuCard style={{ boxShadow: getShadow(), padding: '16px', background: N.base }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+            <div>
+              <label style={{ fontSize: '0.75rem', color: N.textSub, display: 'block', marginBottom: '8px' }}>Tipo</label>
+              <select
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: `${N.dark}30`,
+                  color: N.text,
+                  fontSize: '0.875rem',
+                  borderRadius: '6px',
+                  border: `1px solid ${N.dark}`,
+                  outline: 'none'
+                }}
+                onChange={(e) => setFilters(f => ({ ...f, type: e.target.value ? [e.target.value] : [] }))}
+              >
+                <option value="">Todos</option>
+                <option value="auth">Autenticación</option>
+                <option value="data">Datos</option>
+                <option value="config">Configuración</option>
+                <option value="security">Seguridad</option>
+                <option value="system">Sistema</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '0.75rem', color: N.textSub, display: 'block', marginBottom: '8px' }}>Severidad</label>
+              <select
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: `${N.dark}30`,
+                  color: N.text,
+                  fontSize: '0.875rem',
+                  borderRadius: '6px',
+                  border: `1px solid ${N.dark}`,
+                  outline: 'none'
+                }}
+                onChange={(e) => setFilters(f => ({ ...f, severity: e.target.value ? [e.target.value] : [] }))}
+              >
+                <option value="">Todas</option>
+                <option value="info">Info</option>
+                <option value="warning">Warning</option>
+                <option value="error">Error</option>
+                <option value="critical">Crítico</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '0.75rem', color: N.textSub, display: 'block', marginBottom: '8px' }}>Tenant</label>
+              <select
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: `${N.dark}30`,
+                  color: N.text,
+                  fontSize: '0.875rem',
+                  borderRadius: '6px',
+                  border: `1px solid ${N.dark}`,
+                  outline: 'none'
+                }}
+                onChange={(e) => setFilters(f => ({ ...f, tenant: e.target.value }))}
+              >
+                <option value="">Todos</option>
+                <option value="RDF Media">RDF Media</option>
+                <option value="Grupo Prisa">Grupo Prisa</option>
+                <option value="Mega Media">Mega Media</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '0.75rem', color: N.textSub, display: 'block', marginBottom: '8px' }}>Período</label>
+              <select
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: `${N.dark}30`,
+                  color: N.text,
+                  fontSize: '0.875rem',
+                  borderRadius: '6px',
+                  border: `1px solid ${N.dark}`,
+                  outline: 'none'
+                }}
+                onChange={(e) => setFilters(f => ({ ...f, dateRange: e.target.value as ActivityFilter['dateRange'] }))}
+              >
+                <option value="today">Hoy</option>
+                <option value="week">Esta semana</option>
+                <option value="month">Este mes</option>
+                <option value="all">Todo</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label className="text-xs text-slate-400 block mb-2">Severidad</label>
-            <select 
-              className="w-full bg-slate-700 text-white text-sm rounded px-2 py-1"
-              onChange={(e) => setFilters(f => ({ ...f, severity: e.target.value ? [e.target.value] : [] }))}
-            >
-              <option value="">Todas</option>
-              <option value="info">Info</option>
-              <option value="warning">Warning</option>
-              <option value="error">Error</option>
-              <option value="critical">Crítico</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-slate-400 block mb-2">Tenant</label>
-            <select 
-              className="w-full bg-slate-700 text-white text-sm rounded px-2 py-1"
-              onChange={(e) => setFilters(f => ({ ...f, tenant: e.target.value }))}
-            >
-              <option value="">Todos</option>
-              <option value="RDF Media">RDF Media</option>
-              <option value="Grupo Prisa">Grupo Prisa</option>
-              <option value="Mega Media">Mega Media</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-slate-400 block mb-2">Período</label>
-            <select 
-              className="w-full bg-slate-700 text-white text-sm rounded px-2 py-1"
-              onChange={(e) => setFilters(f => ({ ...f, dateRange: e.target.value as ActivityFilter['dateRange'] }))}
-            >
-              <option value="today">Hoy</option>
-              <option value="week">Esta semana</option>
-              <option value="month">Este mes</option>
-              <option value="all">Todo</option>
-            </select>
-          </div>
-        </div>
+        </NeuCard>
       )}
 
       {/* Event List */}
-      <div className="space-y-2 max-h-96 overflow-y-auto">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '24rem', overflowY: 'auto' }}>
         {filteredEvents.map(event => (
-          <div 
+          <div
             key={event.id}
-            className={`p-3 rounded-lg border ${getSeverityStyle(event.severity)} ${
-              (event.aiAnalysis?.anomalyScore || 0) > 80 ? 'ring-1 ring-purple-500/50' : ''
-            }`}
+            style={{
+              ...getSeverityStyle(event.severity),
+              padding: '12px',
+              borderRadius: '8px',
+              border: (event.aiAnalysis?.anomalyScore || 0) > 80 ? `1px solid ${N.dark}50` : undefined,
+              boxShadow: (event.aiAnalysis?.anomalyScore || 0) > 80 ? `0 0 10px ${N.dark}30` : undefined
+            }}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <div className={`p-2 rounded ${
-                  event.type === 'security' ? 'bg-red-500/20' :
-                  event.type === 'auth' ? 'bg-blue-500/20' :
-                  event.type === 'data' ? 'bg-green-500/20' : 'bg-slate-500/20'
-                }`}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{
+                  padding: '8px',
+                  borderRadius: '8px',
+                  background: event.type === 'security' ? `${N.accent}20` : event.type === 'auth' ? `${N.accent}20` : `${N.dark}20`
+                }}>
                   {getEventIcon(event.type)}
                 </div>
                 <div>
-                  <p className="text-white text-sm">{event.details}</p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
+                  <p style={{ color: N.text, fontSize: '0.875rem', margin: 0 }}>{event.details}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', fontSize: '0.75rem', color: N.textSub }}>
                     <span>{event.tenantName}</span>
                     <span>•</span>
                     <span>{event.ipAddress}</span>
@@ -426,20 +479,20 @@ export function ActivityLog() {
                     <span>{event.userAgent}</span>
                   </div>
                   {event.aiAnalysis?.pattern && (
-                    <div className="flex items-center gap-1 mt-1 text-xs text-purple-400">
-                      <Brain className="w-3 h-3" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.75rem', color: N.dark }}>
+                      <Brain style={{ width: '12px', height: '12px' }} />
                       <span>{event.aiAnalysis.pattern}</span>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="text-right">
-                <span className="text-xs text-slate-400">
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '0.75rem', color: N.textSub }}>
                   {event.timestamp.toLocaleTimeString()}
                 </span>
                 {(event.aiAnalysis?.anomalyScore || 0) > 80 && (
-                  <div className="text-xs text-purple-400 mt-1">
-                    ⚠️ Anomalía {event.aiAnalysis?.anomalyScore.toFixed(0)}%
+                  <div style={{ fontSize: '0.75rem', color: N.accent, marginTop: '4px' }}>
+                    š ï¸ Anomalía {event.aiAnalysis?.anomalyScore.toFixed(0)}%
                   </div>
                 )}
               </div>

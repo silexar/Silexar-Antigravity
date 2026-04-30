@@ -129,14 +129,14 @@ export class RiesgoCredito {
     return new Date() <= this.props.validoHasta
   }
 
-  diasParaVencimiento(): number {
+  diasParaVencimientos(): number {
     const ahora = new Date()
     const diferencia = this.props.validoHasta.getTime() - ahora.getTime()
     return Math.ceil(diferencia / (1000 * 60 * 60 * 24))
   }
 
   requiereActualizacion(): boolean {
-    return this.diasParaVencimiento() <= 7
+    return this.diasParaVencimientos() <= 7
   }
 
   // Validaciones de términos
@@ -198,7 +198,7 @@ export class RiesgoCredito {
   // Descripción detallada
   get descripcionCompleta(): string {
     const estado = this.estaVigente() ? 'vigente' : 'vencido'
-    const dias = this.diasParaVencimiento()
+    const dias = this.diasParaVencimientos()
     
     return `Score ${this.props.score} - Riesgo ${this.props.nivel.toUpperCase()} (${estado}, ${dias} días restantes)`
   }

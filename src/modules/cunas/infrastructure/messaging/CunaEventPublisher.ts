@@ -52,7 +52,7 @@ const eventBus = new InMemoryEventBus();
 export class CunaEventPublisher {
   /**
    * Publica un evento CunaAprobada.
-   * Notifica a: AlertaVencimiento, WideOrbit, Email al anunciante.
+   * Notifica a: AlertaVencimientos, WideOrbit, Email al anunciante.
    */
   static async publicarCunaAprobada(event: CunaAprobadaEvent): Promise<void> {
     console.info(`[CunaEventPublisher] CunaAprobada: cunaId=${event.cunaId}`);

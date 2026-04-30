@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ✅ SILEXAR PULSE - Step 4: Flujo de Aprobaciones TIER 0
  *
  * @description Paso 4 con sistema de aprobaciones multinivel automático,
@@ -108,8 +108,8 @@ const nivelesAprobacion: NivelAprobacionConfig[] = [
     nivel: "AUTOMATICO",
     orden: 0,
     icono: <Zap className="w-5 h-5" />,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     tiempoLimite: 0,
     aprobadores: [],
     requiereJustificacion: false,
@@ -119,8 +119,8 @@ const nivelesAprobacion: NivelAprobacionConfig[] = [
     nivel: "SUPERVISOR",
     orden: 1,
     icono: <User className="w-5 h-5" />,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     tiempoLimite: 2,
     aprobadores: [
       {
@@ -147,8 +147,8 @@ const nivelesAprobacion: NivelAprobacionConfig[] = [
     nivel: "GERENTE_COMERCIAL",
     orden: 2,
     icono: <Building2 className="w-5 h-5" />,
-    color: "text-purple-600",
-    bgColor: "bg-purple-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     tiempoLimite: 4,
     aprobadores: [
       {
@@ -167,8 +167,8 @@ const nivelesAprobacion: NivelAprobacionConfig[] = [
     nivel: "GERENTE_GENERAL",
     orden: 3,
     icono: <Crown className="w-5 h-5" />,
-    color: "text-amber-600",
-    bgColor: "bg-amber-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     tiempoLimite: 24,
     aprobadores: [
       {
@@ -187,8 +187,8 @@ const nivelesAprobacion: NivelAprobacionConfig[] = [
     nivel: "DIRECTORIO",
     orden: 4,
     icono: <Star className="w-5 h-5" />,
-    color: "text-red-600",
-    bgColor: "bg-red-100",
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
     tiempoLimite: 48,
     aprobadores: [
       {
@@ -228,9 +228,9 @@ const NivelCard: React.FC<{
       layout
       className={`rounded-xl border-2 overflow-hidden transition-all ${
         estado === "completado"
-          ? "border-green-300 bg-green-50"
+          ? "border-[#bec8de] bg-[#6888ff]/5"
           : estado === "actual"
-          ? "border-indigo-400 bg-[#6888ff15] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
+          ? "border-[#bec8de] bg-[#6888ff15] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
           : estado === "omitido"
           ? "border-[#bec8de40] bg-[#dfeaff] opacity-50"
           : "border-[#bec8de40] bg-[#dfeaff]"
@@ -258,7 +258,7 @@ const NivelCard: React.FC<{
                 : "Directorio"}
             </h4>
             {estado === "completado" && (
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
+              <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
             )}
             {estado === "actual" && (
               <Clock className="w-5 h-5 text-[#6888ff] animate-pulse" />
@@ -295,7 +295,7 @@ const NivelCard: React.FC<{
                   className="flex items-center justify-between p-3 rounded-lg bg-[#dfeaff] border border-[#bec8de40]"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center text-white font-bold">
                       {aprobador.nombre.split(" ").map((n) => n[0]).join("")}
                     </div>
                     <div>
@@ -311,8 +311,8 @@ const NivelCard: React.FC<{
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         aprobador.disponible
-                          ? "bg-green-100 text-green-700"
-                          : "bg-amber-100 text-amber-700"
+                          ? "bg-[#6888ff]/10 text-[#6888ff]"
+                          : "bg-[#6888ff]/10 text-[#6888ff]"
                       }`}
                     >
                       {aprobador.disponible ? "Disponible" : "Ocupado"}
@@ -359,14 +359,14 @@ const FactorEscalamientoCard: React.FC<{ factor: FactorEscalamiento }> = (
   <div
     className={`p-3 rounded-lg border ${
       factor.activo
-        ? "bg-amber-50 border-amber-200"
+        ? "bg-[#6888ff]/5 border-[#bec8de]"
         : "bg-[#dfeaff] border-[#bec8de40]"
     }`}
   >
     <div className="flex items-center gap-3">
       <div
         className={`p-2 rounded-lg ${
-          factor.activo ? "bg-amber-100" : "bg-[#dfeaff]"
+          factor.activo ? "bg-[#6888ff]/10" : "bg-[#dfeaff]"
         }`}
       >
         {factor.icono}
@@ -374,7 +374,7 @@ const FactorEscalamientoCard: React.FC<{ factor: FactorEscalamiento }> = (
       <div className="flex-1">
         <p
           className={`font-medium ${
-            factor.activo ? "text-amber-800" : "text-[#69738c]"
+            factor.activo ? "text-[#6888ff]" : "text-[#69738c]"
           }`}
         >
           {factor.nombre}
@@ -382,7 +382,7 @@ const FactorEscalamientoCard: React.FC<{ factor: FactorEscalamiento }> = (
         <p className="text-xs text-[#9aa3b8]">{factor.descripcion}</p>
       </div>
       {factor.activo && (
-        <span className="px-2 py-1 rounded-full bg-amber-200 text-amber-800 text-xs font-medium">
+        <span className="px-2 py-1 rounded-full bg-[#6888ff]/20 text-[#6888ff] text-xs font-medium">
           Activo
         </span>
       )}
@@ -468,7 +468,7 @@ export default function StepFlujoAprobaciones({
           activo: true,
           descripcion: `Descuento del ${descuento}% excede política estándar`,
           impacto: "GERENTE_COMERCIAL",
-          icono: <AlertTriangle className="w-4 h-4 text-amber-500" />,
+          icono: <AlertTriangle className="w-4 h-4 text-[#6888ff]" />,
         });
         if (!niveles.includes("GERENTE_COMERCIAL")) {
           niveles.push("GERENTE_COMERCIAL");
@@ -481,7 +481,7 @@ export default function StepFlujoAprobaciones({
           activo: true,
           descripcion: `Plazo de ${diasPago} días requiere aprobación especial`,
           impacto: "GERENTE_COMERCIAL",
-          icono: <Clock className="w-4 h-4 text-blue-500" />,
+          icono: <Clock className="w-4 h-4 text-[#6888ff]" />,
         });
         if (!niveles.includes("GERENTE_COMERCIAL")) {
           niveles.push("GERENTE_COMERCIAL");
@@ -495,7 +495,7 @@ export default function StepFlujoAprobaciones({
           descripcion:
             `Score de riesgo ${riesgo}/1000 requiere validación adicional`,
           impacto: "GERENTE_GENERAL",
-          icono: <Shield className="w-4 h-4 text-red-500" />,
+          icono: <Shield className="w-4 h-4 text-[#9aa3b8]" />,
         });
         if (!niveles.includes("GERENTE_GENERAL")) {
           niveles.push("GERENTE_GENERAL");
@@ -508,7 +508,7 @@ export default function StepFlujoAprobaciones({
           activo: true,
           descripcion: "Primera operación con el cliente",
           impacto: "SUPERVISOR",
-          icono: <User className="w-4 h-4 text-purple-500" />,
+          icono: <User className="w-4 h-4 text-[#6888ff]" />,
         });
       }
 
@@ -518,7 +518,7 @@ export default function StepFlujoAprobaciones({
           activo: true,
           descripcion: "Contrato incluye cláusulas de exclusividad",
           impacto: "GERENTE_COMERCIAL",
-          icono: <Star className="w-4 h-4 text-amber-500" />,
+          icono: <Star className="w-4 h-4 text-[#6888ff]" />,
         });
         if (!niveles.includes("GERENTE_COMERCIAL")) {
           niveles.push("GERENTE_COMERCIAL");
@@ -590,7 +590,7 @@ export default function StepFlujoAprobaciones({
               <div
                 className={`p-4 rounded-xl ${
                   esAprobacionAutomatica
-                    ? "bg-emerald-100 border border-emerald-200"
+                    ? "bg-[#6888ff]/10 border border-[#bec8de]"
                     : "bg-[#dfeaff] border border-[#bec8de40]"
                 }`}
               >
@@ -598,12 +598,12 @@ export default function StepFlujoAprobaciones({
                   {esAprobacionAutomatica
                     ? (
                       <>
-                        <Zap className="w-8 h-8 text-emerald-500" />
+                        <Zap className="w-8 h-8 text-[#6888ff]" />
                         <div>
-                          <p className="text-lg font-bold text-emerald-700">
+                          <p className="text-lg font-bold text-[#6888ff]">
                             ✅ Aprobación Automática
                           </p>
-                          <p className="text-sm text-emerald-600">
+                          <p className="text-sm text-[#6888ff]">
                             El contrato cumple todos los criterios para
                             aprobación instantánea
                           </p>
@@ -635,7 +635,7 @@ export default function StepFlujoAprobaciones({
               {factoresEscalamiento.filter((f) => f.activo).length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-[#69738c] mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" />
+                    <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
                     Factores que escalan automáticamente:
                   </p>
                   <div className="grid md:grid-cols-2 gap-2">
@@ -676,7 +676,7 @@ export default function StepFlujoAprobaciones({
       {!analizando && !esAprobacionAutomatica && (
         <div className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40]">
           <div className="flex items-center gap-2 mb-4">
-            <Bell className="w-5 h-5 text-purple-500" />
+            <Bell className="w-5 h-5 text-[#6888ff]" />
             <h3 className="text-lg font-semibold text-[#69738c]">
               Notificaciones Push Críticas
             </h3>
@@ -719,7 +719,7 @@ export default function StepFlujoAprobaciones({
                   notificacionesConfig[
                       canal.id as keyof typeof notificacionesConfig
                     ]
-                    ? "border-purple-500 bg-purple-50"
+                    ? "border-[#bec8de] bg-[#6888ff]/5"
                     : "border-[#bec8de40] hover:border-[#bec8de50]"
                 }`}
               >
@@ -728,7 +728,7 @@ export default function StepFlujoAprobaciones({
                     className={notificacionesConfig[
                         canal.id as keyof typeof notificacionesConfig
                       ]
-                      ? "text-purple-600"
+                      ? "text-[#6888ff]"
                       : "text-[#9aa3b8]"}
                   >
                     {canal.icon}
@@ -740,7 +740,7 @@ export default function StepFlujoAprobaciones({
                   {notificacionesConfig[
                     canal.id as keyof typeof notificacionesConfig
                   ] && (
-                    <CheckCircle2 className="w-5 h-5 text-purple-500 ml-auto" />
+                    <CheckCircle2 className="w-5 h-5 text-[#6888ff] ml-auto" />
                   )}
                 </div>
               </button>
@@ -783,13 +783,13 @@ export default function StepFlujoAprobaciones({
             {!esAprobacionAutomatica && (
               <div className="flex items-center gap-2">
                 {notificacionesConfig.email && (
-                  <Mail className="w-5 h-5 text-blue-400" />
+                  <Mail className="w-5 h-5 text-[#6888ff]" />
                 )}
                 {notificacionesConfig.push && (
-                  <Smartphone className="w-5 h-5 text-purple-400" />
+                  <Smartphone className="w-5 h-5 text-[#6888ff]" />
                 )}
                 {notificacionesConfig.sms && (
-                  <MessageSquare className="w-5 h-5 text-green-400" />
+                  <MessageSquare className="w-5 h-5 text-[#6888ff]" />
                 )}
               </div>
             )}

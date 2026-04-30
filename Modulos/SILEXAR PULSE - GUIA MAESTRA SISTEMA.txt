@@ -316,7 +316,7 @@ Gestor de Clientes/Tenants
 
 Tabla completa de clientes con columnas:
 
-ID Tenant, Nombre, Plan de Licencia, Fecha Vencimiento
+ID Tenant, Nombre, Plan de Licencia, Fecha Vencimientos
 Estado (Activo/Suspendido), Último Login, Usuarios Activos
 Acciones: Editar, Suspender/Activar, Tomar Control
 
@@ -475,7 +475,7 @@ Contrato confirmado → No actualiza cupo inmediatamente
 Notificación automática SOLO al programador de esa emisora
 Programador confirma/rechaza inicio de emisión
 Solo tras confirmación se ocupa el cupo y cambia estado
-Alerta de vencimiento 24h antes del término
+Alerta de vencimientos 24h antes del término
 
 SUB-MÓDULO 2.3: TARIFARIOS Y PAQUETES ROTATIVOS
 Rate Cards Dinámicos
@@ -812,7 +812,7 @@ Gris: Finalizado
 
 Anunciante con link directo al CRM
 Valor Total (Bruto/Neto) con indicador de divisa
-Fechas de vigencia con alertas de vencimiento
+Fechas de vigencia con alertas de vencimientos
 Ejecutivo responsable con foto de perfil
 Acciones rápidas: Ver, Editar, Duplicar, Generar Campaña
 
@@ -1409,7 +1409,7 @@ Lista de todas las cuñas/creatividades del anunciante
 Información por Creatividad:
 
 Código (SP000123), nombre, duración/tamaño
-Estado de vigencia con alertas de vencimiento
+Estado de vigencia con alertas de vencimientos
 Preview/Play button para validación rápida
 
 
@@ -1529,7 +1529,7 @@ Nombre descriptivo con highlight de keywords
 Tipo (Audio, Display, Video, Native) con iconos
 Duración/tamaño con validación automática
 Anunciante y producto con links directos
-Vigencia con alertas de vencimiento próximo
+Vigencia con alertas de vencimientos próximo
 Uso actual (en cuántas campañas activas)
 
 
@@ -1592,7 +1592,7 @@ Tags/Etiquetas: Para categorización y búsqueda avanzada
 Sección Vigencia y Control
 
 Fecha/Hora Inicio: Calendario integrado con validación
-Fecha/Hora Fin: Con alertas automáticas de vencimiento
+Fecha/Hora Fin: Con alertas automáticas de vencimientos
 Estado Activo: Toggle con herencia del estado del anunciante
 Restricciones de Uso:
 
@@ -1945,7 +1945,7 @@ Vista Consolidada:
 
 KPIs financieros: Total facturado mes, pendiente de cobro, vencido
 Gráfico de flujo de caja proyectado próximos 90 días
-Alertas de vencimiento y acciones requeridas
+Alertas de vencimientos y acciones requeridas
 Estado de integración con SII (Chile) en tiempo real
 
 

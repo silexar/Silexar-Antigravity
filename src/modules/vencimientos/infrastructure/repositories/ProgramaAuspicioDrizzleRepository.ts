@@ -9,10 +9,10 @@
 import { getDB } from '@/lib/db'
 import { programas } from '@/lib/db/vencimientos-schema'
 import { eq, and, isNull, desc, ilike, or, sql } from 'drizzle-orm'
-import { ProgramaAuspicio, ProgramaAuspicioProps, ConductorPrograma } from '../../domain/entities/ProgramaAuspicio.js'
-import type { IProgramaAuspicioRepository, ProgramaBusquedaCriteria, ProgramaResultadoBusqueda } from '../../domain/repositories/IProgramaAuspicioRepository.js'
-import { HorarioEmision } from '../../domain/value-objects/HorarioEmision.js'
-import { CupoDisponible } from '../../domain/value-objects/CupoDisponible.js'
+import { ProgramaAuspicio, ProgramaAuspicioProps, ConductorPrograma } from '@/modules/vencimientos/domain/entities/ProgramaAuspicio'
+import type { IProgramaAuspicioRepository, ProgramaBusquedaCriteria, ProgramaResultadoBusqueda } from '@/modules/vencimientos/domain/repositories/IProgramaAuspicioRepository'
+import { HorarioEmision } from '@/modules/vencimientos/domain/value-objects/HorarioEmision'
+import { CupoDisponible } from '@/modules/vencimientos/domain/value-objects/CupoDisponible'
 
 // Helper to convert integer days from DB to DiaSemana strings
 const DIAS_MAP: Record<number, HorarioEmision['diasEmision'][number]> = {

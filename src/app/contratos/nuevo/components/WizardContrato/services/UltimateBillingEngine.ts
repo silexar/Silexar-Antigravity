@@ -66,7 +66,7 @@ export interface Factura {
 
   // Fecha
   fechaEmision: Date;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   fechaEnvioSII?: Date;
   fechaAceptacionSII?: Date;
 
@@ -192,7 +192,7 @@ export interface OptimizacionCuotas {
 export interface CuotaOptimizada {
   numero: number;
   monto: number;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   justificacion: string;
   riesgoAsociado: number;
 }
@@ -384,7 +384,7 @@ export class UltimateBillingEngine {
         monto: i === numeroCuotas
           ? params.valorTotal - (montoPorCuota * (numeroCuotas - 1)) // Última cuota con diferencia
           : Math.round(montoPorCuota),
-        fechaVencimiento: fechaOptimizada,
+        fechaVencimientos: fechaOptimizada,
         justificacion: this.generarJustificacionCuota(
           i,
           numeroCuotas,
@@ -430,7 +430,7 @@ export class UltimateBillingEngine {
       ciudad: string;
     };
     lineas: Omit<LineaFactura, "numero" | "montoNeto">[];
-    fechaVencimiento: Date;
+    fechaVencimientos: Date;
     observaciones?: string;
   }): Promise<Factura> {
     // Obtener folio disponible
@@ -461,7 +461,7 @@ export class UltimateBillingEngine {
       clienteComuna: params.cliente.comuna,
       clienteCiudad: params.cliente.ciudad,
       fechaEmision: new Date(),
-      fechaVencimiento: params.fechaVencimiento,
+      fechaVencimientos: params.fechaVencimientos,
       montoNeto,
       montoExento: 0,
       montoIVA,
@@ -629,7 +629,7 @@ export class UltimateBillingEngine {
     if (!factura) throw new Error("Factura no encontrada");
 
     const diasParaVencer = Math.floor(
-      (factura.fechaVencimiento.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+      (factura.fechaVencimientos.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
     );
 
     if (diasParaVencer > diasAntes || diasParaVencer < 0) {
@@ -773,7 +773,7 @@ export class UltimateBillingEngine {
     // Calcular totales
     const carteraTotal = facturas.reduce((acc, f) => acc + f.montoPendiente, 0);
     const facturasVencidas = facturas.filter((f) =>
-      f.fechaVencimiento < ahora && f.montoPendiente > 0
+      f.fechaVencimientos < ahora && f.montoPendiente > 0
     );
     const carteraVencida = facturasVencidas.reduce(
       (acc, f) => acc + f.montoPendiente,
@@ -1032,7 +1032,7 @@ export class UltimateBillingEngine {
     diasParaVencer: number,
   ): string {
     return `Estimado cliente, le recordamos que su factura ${factura.folio} por $${factura.montoTotal.toLocaleString()} ` +
-      `vence en ${diasParaVencer} días (${factura.fechaVencimiento.toLocaleDateString()}). ` +
+      `vence en ${diasParaVencer} días (${factura.fechaVencimientos.toLocaleDateString()}). ` +
       `Por favor, realice el pago oportunamente para evitar recargos.`;
   }
 

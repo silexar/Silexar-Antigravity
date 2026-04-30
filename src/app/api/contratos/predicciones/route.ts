@@ -110,11 +110,11 @@ export const GET = withApiRoute(
 async function generarResumenPredictivo(cortexService: CortexFlowPredictionService) {
     // Simular datos de contratos para análisis
     const contratosEjemplo = [
-        { id: 'con-001', numero: 'CON-2025-00123', anuncianteId: 'ann-001', anuncianteNombre: 'Banco Chile', valor: 125_000_000, fechaVencimiento: '2025-12-15', probabilidadRenovacion: 85 },
-        { id: 'con-002', numero: 'CON-2025-00124', anuncianteId: 'ann-002', anuncianteNombre: 'Supermax', valor: 85_000_000, fechaVencimiento: '2025-12-20', probabilidadRenovacion: 72 },
-        { id: 'con-003', numero: 'CON-2025-00125', anuncianteId: 'ann-003', anuncianteNombre: 'TechCorp', valor: 95_000_000, fechaVencimiento: '2025-12-30', probabilidadRenovacion: 38 },
-        { id: 'con-004', numero: 'CON-2025-00126', anuncianteId: 'ann-004', anuncianteNombre: 'AutoMax', valor: 45_000_000, fechaVencimiento: '2025-12-25', probabilidadRenovacion: 65 },
-        { id: 'con-005', numero: 'CON-2025-00127', anuncianteId: 'ann-005', anuncianteNombre: 'Farmacia XYZ', valor: 55_000_000, fechaVencimiento: '2025-11-30', probabilidadRenovacion: 88 }
+        { id: 'con-001', numero: 'CON-2025-00123', anuncianteId: 'ann-001', anuncianteNombre: 'Banco Chile', valor: 125_000_000, fechaVencimientos: '2025-12-15', probabilidadRenovacion: 85 },
+        { id: 'con-002', numero: 'CON-2025-00124', anuncianteId: 'ann-002', anuncianteNombre: 'Supermax', valor: 85_000_000, fechaVencimientos: '2025-12-20', probabilidadRenovacion: 72 },
+        { id: 'con-003', numero: 'CON-2025-00125', anuncianteId: 'ann-003', anuncianteNombre: 'TechCorp', valor: 95_000_000, fechaVencimientos: '2025-12-30', probabilidadRenovacion: 38 },
+        { id: 'con-004', numero: 'CON-2025-00126', anuncianteId: 'ann-004', anuncianteNombre: 'AutoMax', valor: 45_000_000, fechaVencimientos: '2025-12-25', probabilidadRenovacion: 65 },
+        { id: 'con-005', numero: 'CON-2025-00127', anuncianteId: 'ann-005', anuncianteNombre: 'Farmacia XYZ', valor: 55_000_000, fechaVencimientos: '2025-11-30', probabilidadRenovacion: 88 }
     ];
 
     const resultados = {
@@ -133,7 +133,7 @@ async function generarResumenPredictivo(cortexService: CortexFlowPredictionServi
                 valor: c.valor,
                 probabilidad: c.probabilidadRenovacion,
                 estado: mapProbabilidad(c.probabilidadRenovacion),
-                fechaVencimiento: c.fechaVencimiento,
+                fechaVencimientos: c.fechaVencimientos,
                 acciones: ['Contactar con oferta mejorada', 'Preparar propuesta de renovación']
             })),
             riesgoMedio: contratosEjemplo.filter(c => c.probabilidadRenovacion >= 40 && c.probabilidadRenovacion < 75).map(c => ({
@@ -143,7 +143,7 @@ async function generarResumenPredictivo(cortexService: CortexFlowPredictionServi
                 valor: c.valor,
                 probabilidad: c.probabilidadRenovacion,
                 estado: mapProbabilidad(c.probabilidadRenovacion),
-                fechaVencimiento: c.fechaVencimiento,
+                fechaVencimientos: c.fechaVencimientos,
                 acciones: ['Reunión presencial', 'Análisis de competencia']
             })),
             altoRiesgo: contratosEjemplo.filter(c => c.probabilidadRenovacion < 40).map(c => ({
@@ -153,7 +153,7 @@ async function generarResumenPredictivo(cortexService: CortexFlowPredictionServi
                 valor: c.valor,
                 probabilidad: c.probabilidadRenovacion,
                 estado: mapProbabilidad(c.probabilidadRenovacion),
-                fechaVencimiento: c.fechaVencimiento,
+                fechaVencimientos: c.fechaVencimientos,
                 acciones: ['Intervención gerencial', 'Oferta defensiva']
             }))
         },

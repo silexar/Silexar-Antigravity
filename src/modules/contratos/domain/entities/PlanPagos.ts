@@ -6,7 +6,7 @@
 export interface Cuota {
     readonly numero: number;
     readonly monto: number;
-    readonly fechaVencimiento: Date;
+    readonly fechaVencimientos: Date;
     readonly estado: 'PENDIENTE' | 'PAGADA' | 'VENCIDA';
 }
 
@@ -23,13 +23,13 @@ export const crearPlanPagos = (contratoId: string, montoTotal: number, numeroCuo
     const cuotas: Cuota[] = [];
     
     for (let i = 0; i < numeroCuotas; i++) {
-        const fechaVencimiento = new Date();
-        fechaVencimiento.setMonth(fechaVencimiento.getMonth() + i + 1);
+        const fechaVencimientos = new Date();
+        fechaVencimientos.setMonth(fechaVencimientos.getMonth() + i + 1);
         
         cuotas.push({
             numero: i + 1,
             monto: montoPorCuota,
-            fechaVencimiento,
+            fechaVencimientos,
             estado: 'PENDIENTE',
         });
     }

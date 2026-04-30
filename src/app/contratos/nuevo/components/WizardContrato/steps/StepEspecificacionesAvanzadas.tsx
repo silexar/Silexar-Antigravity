@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📊 SILEXAR PULSE - Step 3: Especificaciones Avanzadas TIER 0
  *
  * @description Paso 3 con validación de inventario en tiempo real,
@@ -198,26 +198,26 @@ const DisponibilidadBadge: React.FC<
 > = ({ estado, porcentaje }) => {
   const config = {
     disponible: {
-      bg: "bg-green-100",
-      text: "text-green-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       icon: <CheckCircle2 className="w-4 h-4" />,
       label: "Disponible",
     },
     saturado: {
-      bg: "bg-amber-100",
-      text: "text-amber-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       icon: <AlertTriangle className="w-4 h-4" />,
       label: "Saturado",
     },
     no_disponible: {
-      bg: "bg-red-100",
-      text: "text-red-700",
+      bg: "bg-[#dfeaff]",
+      text: "text-[#9aa3b8]",
       icon: <XCircle className="w-4 h-4" />,
       label: "No disponible",
     },
     verificando: {
-      bg: "bg-blue-100",
-      text: "text-blue-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       icon: <RefreshCw className="w-4 h-4 animate-spin" />,
       label: "Verificando",
     },
@@ -248,10 +248,10 @@ const MedioCard: React.FC<{
     layout
     className={`rounded-xl border-2 overflow-hidden transition-all ${
       medio.disponibilidad === "disponible"
-        ? "border-green-200 bg-[#dfeaff]"
+        ? "border-[#bec8de] bg-[#dfeaff]"
         : medio.disponibilidad === "saturado"
-        ? "border-amber-200 bg-amber-50/30"
-        : "border-red-200 bg-red-50/30"
+        ? "border-[#bec8de] bg-[#6888ff]/5/30"
+        : "border-[#bec8de] bg-[#dfeaff]/30"
     }`}
   >
     {/* Header */}
@@ -262,12 +262,12 @@ const MedioCard: React.FC<{
       <div
         className={`p-3 rounded-xl ${
           medio.tipo === "RADIO"
-            ? "bg-purple-100 text-purple-600"
+            ? "bg-[#6888ff]/10 text-[#6888ff]"
             : medio.tipo === "TV"
-            ? "bg-blue-100 text-blue-600"
+            ? "bg-[#6888ff]/10 text-[#6888ff]"
             : medio.tipo === "DIGITAL"
-            ? "bg-emerald-100 text-emerald-600"
-            : "bg-amber-100 text-amber-600"
+            ? "bg-[#6888ff]/10 text-[#6888ff]"
+            : "bg-[#6888ff]/10 text-[#6888ff]"
         }`}
       >
         <TipoMedioIcon tipo={medio.tipo} />
@@ -357,10 +357,10 @@ const MedioCard: React.FC<{
                   <div
                     className={`h-full rounded-full ${
                       medio.porcentajeDisponible >= 80
-                        ? "bg-green-500"
+                        ? "bg-[#6888ff]/50"
                         : medio.porcentajeDisponible >= 50
-                        ? "bg-amber-500"
-                        : "bg-red-500"
+                        ? "bg-[#6888ff]/50"
+                        : "bg-[#dfeaff]0"
                     }`}
                     style={{ width: `${medio.porcentajeDisponible}%` }}
                   />
@@ -373,22 +373,22 @@ const MedioCard: React.FC<{
               <div
                 className={`p-3 rounded-lg ${
                   medio.conflicto.tipo === "exclusividad"
-                    ? "bg-red-100"
-                    : "bg-amber-100"
+                    ? "bg-[#dfeaff]"
+                    : "bg-[#6888ff]/10"
                 }`}
               >
                 <div className="flex items-start gap-2">
                   {medio.conflicto.tipo === "exclusividad"
-                    ? <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    ? <XCircle className="w-5 h-5 text-[#9aa3b8] flex-shrink-0" />
                     : (
-                      <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                      <AlertTriangle className="w-5 h-5 text-[#6888ff] flex-shrink-0" />
                     )}
                   <div>
                     <p
                       className={`font-medium ${
                         medio.conflicto.tipo === "exclusividad"
-                          ? "text-red-700"
-                          : "text-amber-700"
+                          ? "text-[#9aa3b8]"
+                          : "text-[#6888ff]"
                       }`}
                     >
                       {medio.conflicto.tipo === "exclusividad"
@@ -426,7 +426,7 @@ const MedioCard: React.FC<{
                   </div>
                   <button
                     onClick={onAceptarAlternativa}
-                    className="px-3 py-1.5 rounded-lg bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-600 transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-[#6888ff]/50 text-white text-sm font-medium hover:bg-[#6888ff] transition-colors"
                   >
                     Aceptar
                   </button>
@@ -443,7 +443,7 @@ const MedioCard: React.FC<{
                 <Edit3 className="w-4 h-4" />
                 Editar
               </button>
-              <button className="px-4 py-2 rounded-lg bg-[#6888ff25] text-[#6888ff] font-medium flex items-center justify-center gap-2 hover:bg-indigo-200 transition-colors">
+              <button className="px-4 py-2 rounded-lg bg-[#6888ff25] text-[#6888ff] font-medium flex items-center justify-center gap-2 hover:bg-[#6888ff]/20 transition-colors">
                 <Sparkles className="w-4 h-4" />
                 Sugerencias IA
               </button>
@@ -571,7 +571,7 @@ export default function StepEspecificacionesAvanzadas({
               </div>
               <div className="w-full h-2 bg-[#dfeaff] rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-indigo-500 rounded-full"
+                  className="h-full bg-[#6888ff]/50 rounded-full"
                   initial={{ width: 0 }}
                   animate={{
                     width: `${
@@ -591,29 +591,29 @@ export default function StepEspecificacionesAvanzadas({
             <div className="grid md:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de40]">
                 <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
                   <span className="text-sm text-[#69738c]">Disponibles</span>
                 </div>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-[#6888ff]">
                   {medios.filter((m) => m.disponibilidad === "disponible")
                     .length}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de40]">
                 <div className="flex items-center gap-2 mb-1">
-                  <AlertTriangle className="w-5 h-5 text-amber-500" />
+                  <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
                   <span className="text-sm text-[#69738c]">Alertas</span>
                 </div>
-                <p className="text-2xl font-bold text-amber-600">
+                <p className="text-2xl font-bold text-[#6888ff]">
                   {validacion.alertas}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de40]">
                 <div className="flex items-center gap-2 mb-1">
-                  <XCircle className="w-5 h-5 text-red-500" />
+                  <XCircle className="w-5 h-5 text-[#9aa3b8]" />
                   <span className="text-sm text-[#69738c]">Conflictos</span>
                 </div>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-2xl font-bold text-[#9aa3b8]">
                   {validacion.conflictos}
                 </p>
               </div>
@@ -644,7 +644,7 @@ export default function StepEspecificacionesAvanzadas({
               <Edit3 className="w-4 h-4" />
               Ajustar
             </button>
-            <button className="px-4 py-2 rounded-lg bg-[#6888ff25] text-[#6888ff] font-medium flex items-center gap-2 hover:bg-indigo-200">
+            <button className="px-4 py-2 rounded-lg bg-[#6888ff25] text-[#6888ff] font-medium flex items-center gap-2 hover:bg-[#6888ff]/20">
               <Sparkles className="w-4 h-4" />
               Sugerencias IA
             </button>
@@ -662,7 +662,7 @@ export default function StepEspecificacionesAvanzadas({
               onClick={() => setFiltroTipo(tipo)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filtroTipo === tipo
-                  ? "bg-indigo-500 text-white"
+                  ? "bg-[#6888ff]/50 text-white"
                   : "bg-[#dfeaff] text-[#69738c] hover:bg-[#dfeaff]"
               }`}
             >
@@ -714,7 +714,7 @@ export default function StepEspecificacionesAvanzadas({
         <div className="p-12 text-center bg-[#dfeaff] rounded-xl border-2 border-dashed border-[#bec8de40]">
           <Package className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
           <p className="text-[#9aa3b8]">No hay medios agregados</p>
-          <button className="mt-3 px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium">
+          <button className="mt-3 px-4 py-2 rounded-lg bg-[#6888ff]/50 text-white font-medium">
             Agregar primer medio
           </button>
         </div>
@@ -733,7 +733,7 @@ export default function StepEspecificacionesAvanzadas({
                 {medios.length} medios • {totalCunas} cuñas
               </p>
               {validacion.conflictos > 0 && (
-                <p className="text-amber-400 text-sm">
+                <p className="text-[#6888ff] text-sm">
                   ⚠️ {validacion.conflictos} conflictos por resolver
                 </p>
               )}

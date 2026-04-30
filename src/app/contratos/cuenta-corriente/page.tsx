@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 💰 SILEXAR PULSE - Cuenta Corriente Page TIER 0
  * 
  * @description Página profesional de cuenta corriente con:
@@ -83,7 +83,7 @@ const neuro = {
     transition-all duration-200
   `,
   btnSuccess: `
-    bg-gradient-to-br from-green-500 to-emerald-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
@@ -138,18 +138,18 @@ const formatFechaHora = (fecha: Date) => {
 
 const getTipoConfig = (tipo: TipoMovimiento): { label: string; color: string; bgColor: string; icon: React.ReactNode } => {
   const configs: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
-    'APERTURA_CUENTA': { label: 'Apertura', color: 'text-[#6888ff]', bgColor: 'bg-indigo-100', icon: <Wallet className="w-4 h-4" /> },
-    'CARGO_FACTURA': { label: 'Factura', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: <FileText className="w-4 h-4" /> },
-    'CARGO_INTERES': { label: 'Interés', color: 'text-amber-600', bgColor: 'bg-amber-100', icon: <TrendingUp className="w-4 h-4" /> },
-    'CARGO_MORA': { label: 'Mora', color: 'text-red-600', bgColor: 'bg-red-100', icon: <Clock className="w-4 h-4" /> },
-    'ABONO_PAGO': { label: 'Pago', color: 'text-green-600', bgColor: 'bg-green-100', icon: <CheckCircle className="w-4 h-4" /> },
-    'ABONO_TRANSFERENCIA': { label: 'Transferencia', color: 'text-green-600', bgColor: 'bg-green-100', icon: <ArrowDownRight className="w-4 h-4" /> },
-    'ABONO_EFECTIVO': { label: 'Efectivo', color: 'text-green-600', bgColor: 'bg-green-100', icon: <Wallet className="w-4 h-4" /> },
-    'ABONO_CHEQUE': { label: 'Cheque', color: 'text-green-600', bgColor: 'bg-green-100', icon: <FileText className="w-4 h-4" /> },
+    'APERTURA_CUENTA': { label: 'Apertura', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <Wallet className="w-4 h-4" /> },
+    'CARGO_FACTURA': { label: 'Factura', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <FileText className="w-4 h-4" /> },
+    'CARGO_INTERES': { label: 'Interés', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <TrendingUp className="w-4 h-4" /> },
+    'CARGO_MORA': { label: 'Mora', color: 'text-[#9aa3b8]', bgColor: 'bg-[#dfeaff]', icon: <Clock className="w-4 h-4" /> },
+    'ABONO_PAGO': { label: 'Pago', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <CheckCircle className="w-4 h-4" /> },
+    'ABONO_TRANSFERENCIA': { label: 'Transferencia', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <ArrowDownRight className="w-4 h-4" /> },
+    'ABONO_EFECTIVO': { label: 'Efectivo', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <Wallet className="w-4 h-4" /> },
+    'ABONO_CHEQUE': { label: 'Cheque', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <FileText className="w-4 h-4" /> },
     'CREDITO_NOTA_CREDITO': { label: 'Nota Crédito', color: 'text-cyan-600', bgColor: 'bg-cyan-100', icon: <ArrowDownRight className="w-4 h-4" /> },
-    'CREDITO_DESCUENTO': { label: 'Descuento', color: 'text-purple-600', bgColor: 'bg-purple-100', icon: <TrendingDown className="w-4 h-4" /> },
-    'DEBITO_NOTA_DEBITO': { label: 'Nota Débito', color: 'text-orange-600', bgColor: 'bg-orange-100', icon: <ArrowUpRight className="w-4 h-4" /> },
-    'AJUSTE_POSITIVO': { label: 'Ajuste +', color: 'text-amber-600', bgColor: 'bg-amber-100', icon: <TrendingUp className="w-4 h-4" /> },
+    'CREDITO_DESCUENTO': { label: 'Descuento', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <TrendingDown className="w-4 h-4" /> },
+    'DEBITO_NOTA_DEBITO': { label: 'Nota Débito', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <ArrowUpRight className="w-4 h-4" /> },
+    'AJUSTE_POSITIVO': { label: 'Ajuste +', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', icon: <TrendingUp className="w-4 h-4" /> },
     'AJUSTE_NEGATIVO': { label: 'Ajuste -', color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]', icon: <TrendingDown className="w-4 h-4" /> }
   };
   return configs[tipo] || { label: tipo, color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]', icon: <FileText className="w-4 h-4" /> };
@@ -244,18 +244,18 @@ export default function CuentaCorrientePage() {
         <div className={`${neuro.panel} p-6 mb-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-teal-600">
                 <Wallet className="w-8 h-8 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-[#69738c]">Estado de Cuenta</h1>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+                  <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                     {cuenta.numeroContrato}
                   </span>
                   <span className={`${neuro.badge} ${
-                    cuenta.estado === 'ACTIVA' ? 'bg-green-100 text-green-700' :
-                    cuenta.estado === 'MORATORIA' ? 'bg-red-100 text-red-700' :
+                    cuenta.estado === 'ACTIVA' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                    cuenta.estado === 'MORATORIA' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
                     'bg-[#dfeaff] text-[#69738c]'
                   }`}>
                     {cuenta.estado}
@@ -321,7 +321,7 @@ export default function CuentaCorrientePage() {
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-[#69738c]">Total Cargos</p>
-                <ArrowUpRight className="w-5 h-5 text-blue-500" />
+                <ArrowUpRight className="w-5 h-5 text-[#6888ff]" />
               </div>
               <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(cuenta.totalCargos)}</p>
             </div>
@@ -331,9 +331,9 @@ export default function CuentaCorrientePage() {
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-[#69738c]">Total Abonos</p>
-                <ArrowDownRight className="w-5 h-5 text-green-500" />
+                <ArrowDownRight className="w-5 h-5 text-[#6888ff]" />
               </div>
-              <p className="text-2xl font-bold text-green-600">{formatCurrency(cuenta.totalAbonos)}</p>
+              <p className="text-2xl font-bold text-[#6888ff]">{formatCurrency(cuenta.totalAbonos)}</p>
             </div>
           </motion.div>
 
@@ -341,9 +341,9 @@ export default function CuentaCorrientePage() {
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-[#69738c]">Saldo Pendiente</p>
-                <Wallet className="w-5 h-5 text-purple-500" />
+                <Wallet className="w-5 h-5 text-[#6888ff]" />
               </div>
-              <p className={`text-2xl font-bold ${cuenta.saldoPendiente > 0 ? 'text-red-600' : 'text-green-600'}`}>
+              <p className={`text-2xl font-bold ${cuenta.saldoPendiente > 0 ? 'text-[#9aa3b8]' : 'text-[#6888ff]'}`}>
                 {formatCurrency(cuenta.saldoPendiente)}
               </p>
             </div>
@@ -353,7 +353,7 @@ export default function CuentaCorrientePage() {
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-[#69738c]">Último Pago</p>
-                <Calendar className="w-5 h-5 text-amber-500" />
+                <Calendar className="w-5 h-5 text-[#6888ff]" />
               </div>
               <p className="text-lg font-bold text-[#69738c]">
                 {cuenta.fechaUltimoPago ? formatFecha(cuenta.fechaUltimoPago) : 'Sin pagos'}
@@ -411,8 +411,8 @@ export default function CuentaCorrientePage() {
             <div className="flex items-center gap-4 text-sm">
               <span className="text-[#69738c]">
                 {resumenPeriodo.movimientos} movimientos | 
-                Cargos: <span className="text-blue-600 font-medium">{formatCurrency(resumenPeriodo.cargos)}</span> | 
-                Abonos: <span className="text-green-600 font-medium">{formatCurrency(resumenPeriodo.abonos)}</span>
+                Cargos: <span className="text-[#6888ff] font-medium">{formatCurrency(resumenPeriodo.cargos)}</span> | 
+                Abonos: <span className="text-[#6888ff] font-medium">{formatCurrency(resumenPeriodo.abonos)}</span>
               </span>
             </div>
           </div>
@@ -464,16 +464,16 @@ export default function CuentaCorrientePage() {
                         </td>
                         <td className={`${neuro.td} text-right`}>
                           {mov.esCargo && (
-                            <span className="font-semibold text-blue-600">{formatCurrency(mov.montoNeto)}</span>
+                            <span className="font-semibold text-[#6888ff]">{formatCurrency(mov.montoNeto)}</span>
                           )}
                         </td>
                         <td className={`${neuro.td} text-right`}>
                           {!mov.esCargo && (
-                            <span className="font-semibold text-green-600">{formatCurrency(mov.montoNeto)}</span>
+                            <span className="font-semibold text-[#6888ff]">{formatCurrency(mov.montoNeto)}</span>
                           )}
                         </td>
                         <td className={`${neuro.td} text-right`}>
-                          <span className={`font-bold ${mov.saldoPosterior > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          <span className={`font-bold ${mov.saldoPosterior > 0 ? 'text-[#9aa3b8]' : 'text-[#6888ff]'}`}>
                             {formatCurrency(mov.saldoPosterior)}
                           </span>
                         </td>
@@ -533,7 +533,7 @@ export default function CuentaCorrientePage() {
                                     )}
                                     <div>
                                       <p className="text-xs text-[#69738c] mb-1">Conciliado</p>
-                                      <p className={`font-medium flex items-center gap-1 ${mov.conciliado ? 'text-green-600' : 'text-amber-600'}`}>
+                                      <p className={`font-medium flex items-center gap-1 ${mov.conciliado ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
                                         {mov.conciliado ? <CheckCircle className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                                         {mov.conciliado ? 'Sí' : 'Pendiente'}
                                       </p>
@@ -600,8 +600,8 @@ export default function CuentaCorrientePage() {
                   onClick={() => handleExport('PDF')}
                   className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
-                  <div className="p-3 rounded-xl bg-red-100">
-                    <FileText className="w-6 h-6 text-red-600" />
+                  <div className="p-3 rounded-xl bg-[#dfeaff]">
+                    <FileText className="w-6 h-6 text-[#9aa3b8]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-[#69738c]">PDF Profesional</p>
@@ -613,8 +613,8 @@ export default function CuentaCorrientePage() {
                   onClick={() => handleExport('EXCEL')}
                   className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
-                  <div className="p-3 rounded-xl bg-green-100">
-                    <FileSpreadsheet className="w-6 h-6 text-green-600" />
+                  <div className="p-3 rounded-xl bg-[#6888ff]/10">
+                    <FileSpreadsheet className="w-6 h-6 text-[#6888ff]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-[#69738c]">Excel (.xlsx)</p>
@@ -626,8 +626,8 @@ export default function CuentaCorrientePage() {
                   onClick={() => handleExport('CSV')}
                   className={`${neuro.card} w-full p-4 flex items-center gap-4 hover:ring-2 hover:ring-[#6888ff] transition-all`}
                 >
-                  <div className="p-3 rounded-xl bg-blue-100">
-                    <File className="w-6 h-6 text-blue-600" />
+                  <div className="p-3 rounded-xl bg-[#6888ff]/10">
+                    <File className="w-6 h-6 text-[#6888ff]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-[#69738c]">CSV</p>
@@ -687,11 +687,11 @@ export default function CuentaCorrientePage() {
                   <label className="block text-sm text-[#69738c] mb-2">Formato adjunto</label>
                   <div className="flex gap-3">
                     <button className={`${neuro.btnSecondary} flex-1 py-2 flex items-center justify-center gap-2`}>
-                      <FileText className="w-4 h-4 text-red-500" />
+                      <FileText className="w-4 h-4 text-[#9aa3b8]" />
                       PDF
                     </button>
                     <button className={`${neuro.btnSecondary} flex-1 py-2 flex items-center justify-center gap-2`}>
-                      <FileSpreadsheet className="w-4 h-4 text-green-500" />
+                      <FileSpreadsheet className="w-4 h-4 text-[#6888ff]" />
                       Excel
                     </button>
                   </div>

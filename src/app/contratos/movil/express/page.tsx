@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ⚡ SILEXAR PULSE - Express Contract Creation (Mobile) TIER 0
  * 
  * @description Wizard optimizado para creación rápida desde móvil
@@ -84,7 +84,7 @@ const TemplateCard: React.FC<{
     onClick={onClick}
     className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all ${
       seleccionado
-        ? 'border-indigo-500 bg-[#6888ff]/10 shadow-lg'
+        ? 'border-[#bec8de] bg-[#6888ff]/10 shadow-lg'
         : 'border-[#bec8de30] bg-[#dfeaff]'
     }`}
   >
@@ -126,7 +126,7 @@ const InputMobile: React.FC<{
         className="flex-1 px-4 py-3 rounded-xl border border-[#bec8de30] bg-[#dfeaff] text-lg"
       />
       {onVoice && (
-        <button onClick={onVoice} aria-label="Entrada por voz" className="p-3 rounded-xl bg-indigo-100 text-[#6888ff]">
+        <button onClick={onVoice} aria-label="Entrada por voz" className="p-3 rounded-xl bg-[#6888ff]/10 text-[#6888ff]">
           <Mic className="w-5 h-5" />
         </button>
       )}
@@ -242,13 +242,13 @@ export default function ExpressContractPage() {
             />
 
             {datos.ubicacion && (
-              <div className="p-4 rounded-xl bg-green-50 border border-green-200 flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-green-600" />
+              <div className="p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de] flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-[#6888ff]" />
                 <div className="flex-1">
-                  <p className="font-medium text-green-700">Ubicación detectada</p>
-                  <p className="text-sm text-green-600">{datos.ubicacion.direccion}</p>
+                  <p className="font-medium text-[#6888ff]">Ubicación detectada</p>
+                  <p className="text-sm text-[#6888ff]">{datos.ubicacion.direccion}</p>
                 </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
               </div>
             )}
 
@@ -311,7 +311,7 @@ export default function ExpressContractPage() {
             />
 
             {/* Botón Cámara */}
-            <button className="w-full p-4 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center gap-3 text-[#69738c] hover:border-indigo-400 hover:text-[#6888ff] transition-colors">
+            <button className="w-full p-4 rounded-xl border-2 border-dashed border-[#bec8de] flex items-center justify-center gap-3 text-[#69738c] hover:border-[#bec8de] hover:text-[#6888ff] transition-colors">
               <Camera className="w-6 h-6" />
               <span className="font-medium">Fotografiar briefing u orden</span>
             </button>
@@ -349,10 +349,10 @@ export default function ExpressContractPage() {
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-[#69738c]">Resumen del Contrato</h2>
 
-            <div className="p-4 rounded-xl bg-[#6888ff]/10 border border-indigo-200">
+            <div className="p-4 rounded-xl bg-[#6888ff]/10 border border-[#bec8de]">
               <div className="flex items-center gap-3 mb-3">
                 <Sparkles className="w-6 h-6 text-[#6888ff]" />
-                <span className="font-bold text-indigo-700">Contrato Express</span>
+                <span className="font-bold text-[#6888ff]">Contrato Express</span>
               </div>
               
               <div className="space-y-2 text-sm">
@@ -370,17 +370,17 @@ export default function ExpressContractPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#69738c]">Valor estimado:</span>
-                  <span className="font-bold text-indigo-700">${datos.valorEstimado?.toLocaleString() || 0}</span>
+                  <span className="font-bold text-[#6888ff]">${datos.valorEstimado?.toLocaleString() || 0}</span>
                 </div>
               </div>
             </div>
 
             {!online && (
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3">
-                <WifiOff className="w-5 h-5 text-amber-600" />
+              <div className="p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de] flex items-center gap-3">
+                <WifiOff className="w-5 h-5 text-[#6888ff]" />
                 <div>
-                  <p className="font-medium text-amber-700">Modo Offline</p>
-                  <p className="text-sm text-amber-600">Se sincronizará al reconectar</p>
+                  <p className="font-medium text-[#6888ff]">Modo Offline</p>
+                  <p className="text-sm text-[#6888ff]">Se sincronizará al reconectar</p>
                 </div>
               </div>
             )}
@@ -397,7 +397,7 @@ export default function ExpressContractPage() {
               <button
                 onClick={() => handleGuardar(true)}
                 disabled={guardando}
-                className="flex-1 py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 py-4 rounded-xl bg-gradient-to-r from-[#6888ff] to-[#5572ee] text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {guardando ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -416,7 +416,7 @@ export default function ExpressContractPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] to-[#5572ee]">
       {/* Header */}
       <div className="bg-[#dfeaff] border-b border-[#bec8de30] px-4 pt-12 pb-4 sticky top-0 z-10">
         <div className="flex items-center gap-4">
@@ -429,9 +429,9 @@ export default function ExpressContractPage() {
           </div>
           <div className="flex items-center gap-2">
             {online ? (
-              <Wifi className="w-5 h-5 text-green-500" />
+              <Wifi className="w-5 h-5 text-[#6888ff]" />
             ) : (
-              <WifiOff className="w-5 h-5 text-amber-500" />
+              <WifiOff className="w-5 h-5 text-[#6888ff]" />
             )}
           </div>
         </div>
@@ -442,7 +442,7 @@ export default function ExpressContractPage() {
             <div
               key={p}
               className={`flex-1 h-1.5 rounded-full ${
-                p <= paso ? 'bg-indigo-500' : 'bg-[#dfeaff]'
+                p <= paso ? 'bg-[#6888ff]/50' : 'bg-[#dfeaff]'
               }`}
             />
           ))}
@@ -456,7 +456,7 @@ export default function ExpressContractPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-32 left-4 right-4 p-4 rounded-xl bg-red-500 text-white flex items-center justify-center gap-3 z-20"
+            className="fixed top-32 left-4 right-4 p-4 rounded-xl bg-[#dfeaff]0 text-white flex items-center justify-center gap-3 z-20"
           >
             <div className="w-4 h-4 rounded-full bg-[#dfeaff] animate-pulse" />
             <span className="font-medium">Escuchando...</span>

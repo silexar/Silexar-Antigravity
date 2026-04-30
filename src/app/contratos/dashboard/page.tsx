@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🏠 SILEXAR PULSE - Dashboard Principal Contratos TIER 0
  * 
  * @description Vista principal del módulo de contratos con
@@ -75,53 +75,53 @@ interface AccesoRapido {
 
 const metricas: MetricaDashboard[] = [
   { titulo: 'Contratos Activos', valor: 83, cambio: 12, icono: FileText, color: '#6888ff' },
-  { titulo: 'Valor Cartera', valor: '$2.85B', cambio: 8, icono: DollarSign, color: '#22c55e' },
-  { titulo: 'Pendientes Aprobación', valor: 7, cambio: -3, icono: Clock, color: '#f59e0b' },
+  { titulo: 'Valor Cartera', valor: '$2.85B', cambio: 8, icono: DollarSign, color: '#6888ff' },
+  { titulo: 'Pendientes Aprobación', valor: 7, cambio: -3, icono: Clock, color: '#6888ff' },
   { titulo: 'Tasa Conversión', valor: '78%', cambio: 5, icono: TrendingUp, color: '#6888ff' }
 ];
 
 const accesosRapidos: AccesoRapido[] = [
-  { 
-    titulo: 'Nuevo Contrato', 
-    descripcion: 'Crear contrato con wizard IA', 
-    icono: Plus, 
-    href: '/contratos/nuevo', 
+  {
+    titulo: 'Nuevo Contrato',
+    descripcion: 'Crear contrato con wizard IA',
+    icono: Plus,
+    href: '/contratos/nuevo',
     color: '#6888ff',
     badge: 'Recomendado'
   },
-  { 
-    titulo: 'Pipeline', 
-    descripcion: 'Vista Kanban de contratos', 
-    icono: Columns3, 
-    href: '/contratos/pipeline', 
+  {
+    titulo: 'Pipeline',
+    descripcion: 'Vista Kanban de contratos',
+    icono: Columns3,
+    href: '/contratos/pipeline',
     color: '#3b82f6'
   },
-  { 
-    titulo: 'Traffic', 
-    descripcion: 'Tracking de ejecución', 
-    icono: Radio, 
-    href: '/contratos/traffic', 
-    color: '#22c55e'
+  {
+    titulo: 'Traffic',
+    descripcion: 'Tracking de ejecución',
+    icono: Radio,
+    href: '/contratos/traffic',
+    color: '#6888ff'
   },
-  { 
-    titulo: 'Analytics', 
-    descripcion: 'Métricas y predicciones', 
-    icono: BarChart3, 
-    href: '/contratos/analytics', 
-    color: '#f59e0b'
+  {
+    titulo: 'Analytics',
+    descripcion: 'Métricas y predicciones',
+    icono: BarChart3,
+    href: '/contratos/analytics',
+    color: '#6888ff'
   },
-  { 
-    titulo: 'Biblioteca Cláusulas', 
-    descripcion: 'Gestionar cláusulas legales', 
-    icono: BookOpen, 
-    href: '/contratos/clausulas', 
+  {
+    titulo: 'Biblioteca Cláusulas',
+    descripcion: 'Gestionar cláusulas legales',
+    icono: BookOpen,
+    href: '/contratos/clausulas',
     color: '#a855f7'
   },
-  { 
-    titulo: 'Auditoría', 
-    descripcion: 'Trail de seguridad', 
-    icono: Shield, 
-    href: '/contratos/auditoria', 
+  {
+    titulo: 'Auditoría',
+    descripcion: 'Trail de seguridad',
+    icono: Shield,
+    href: '/contratos/auditoria',
     color: '#69738c'
   }
 ];
@@ -166,8 +166,8 @@ function MetricaCard({ metrica }: { metrica: MetricaDashboard }) {
           <p className="text-xs font-bold uppercase tracking-wider" style={{ color: N.textSub }}>{titulo}</p>
           <h3 className="text-3xl font-black mt-1" style={{ color: N.text }}>{valor}</h3>
           <div className="flex items-center gap-1 mt-2 text-sm">
-            <TrendingUp className={`w-4 h-4 ${cambio < 0 ? 'rotate-180' : ''}`} style={{ color: cambio >= 0 ? '#22c55e' : '#ef4444' }} />
-            <span style={{ color: cambio >= 0 ? '#22c55e' : '#ef4444' }}>{cambio >= 0 ? '+' : ''}{cambio}%</span>
+            <TrendingUp className={`w-4 h-4 ${cambio < 0 ? 'rotate-180' : ''}`} style={{ color: cambio >= 0 ? '#6888ff' : '#9aa3b8' }} />
+            <span style={{ color: cambio >= 0 ? '#6888ff' : '#9aa3b8' }}>{cambio >= 0 ? '+' : ''}{cambio}%</span>
             <span style={{ color: N.textSub }}>vs mes anterior</span>
           </div>
         </div>
@@ -214,8 +214,8 @@ function AccesoRapidoCard({ acceso }: { acceso: AccesoRapido }) {
 
 function AlertaItem({ alerta }: { alerta: typeof alertasRecientes[0] }) {
   const prioridadConfig = {
-    alta: { color: '#ef4444', bg: 'rgba(239,68,68,0.08)', icon: AlertTriangle },
-    media: { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', icon: Clock },
+    alta: { color: '#9aa3b8', bg: 'rgba(239,68,68,0.08)', icon: AlertTriangle },
+    media: { color: '#6888ff', bg: 'rgba(245,158,11,0.08)', icon: Clock },
     normal: { color: '#6888ff', bg: 'rgba(104,136,255,0.08)', icon: FileText }
   }[alerta.prioridad];
 
@@ -251,7 +251,7 @@ export default function ContratosDashboard() {
   return (
     <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
       <div className="max-w-[1600px] mx-auto space-y-8">
-        
+
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -303,9 +303,9 @@ export default function ContratosDashboard() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xs font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.textSub }}>
-                  <AlertTriangle className="w-4 h-4" style={{ color: '#f59e0b' }} /> Alertas Recientes
+                  <AlertTriangle className="w-4 h-4" style={{ color: '#6888ff' }} /> Alertas Recientes
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: 'rgba(239,68,68,0.12)', color: '#ef4444' }}>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: 'rgba(239,68,68,0.12)', color: '#9aa3b8' }}>
                   {alertas.length}
                 </span>
               </div>
@@ -355,7 +355,7 @@ export default function ContratosDashboard() {
                   <div key={item.cliente} className="flex items-center justify-between p-3 rounded-xl" style={{ background: N.base, boxShadow: insetSm }}>
                     <div>
                       <p className="font-bold text-sm" style={{ color: N.text }}>{item.cliente}</p>
-                      <p className="text-xs" style={{ color: '#f59e0b' }}>{item.dias} días</p>
+                      <p className="text-xs" style={{ color: '#6888ff' }}>{item.dias} días</p>
                     </div>
                     <span className="font-bold text-sm" style={{ color: N.text }}>{item.valor}</span>
                   </div>
@@ -368,7 +368,7 @@ export default function ContratosDashboard() {
         {/* Footer */}
         <div className="text-center pb-6">
           <p className="text-xs font-medium" style={{ color: N.textSub }}>
-            📝 Módulo de Gestión de Contratos - SILEXAR PULSE TIER 0
+            &nbsp;
           </p>
         </div>
       </div>

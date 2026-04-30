@@ -120,12 +120,12 @@ export { ActivoDigitalMapper } from './infrastructure/mappers/ActivoDigitalMappe
 export { CortexVoiceService } from './infrastructure/external/CortexVoiceService';
 export { CortexSenseService } from './infrastructure/external/CortexSenseService';
 export { BroadcastExportService } from './infrastructure/external/BroadcastExportService';
-export { AlertaVencimientoService } from './infrastructure/external/AlertaVencimientoService';
+export { Alertavencimientoservice } from './infrastructure/external/Alertavencimientoservice';
 export { VencimientosValidationService } from './infrastructure/external/VencimientosValidationService';
-export type { VencimientoValidacion, ResultadoValidacionMasiva, CunaParaValidar } from './infrastructure/external/VencimientosValidationService';
+export type { VencimientosValidacion, ResultadoValidacionMasiva, CunaParaValidar } from './infrastructure/external/VencimientosValidationService';
 
 // ─── Infrastructure — Messaging ──────────────────────────────────────────────
 export { CunaEventPublisher } from './infrastructure/messaging/CunaEventPublisher';
 export type { CunaDomainEvent, EventHandler } from './infrastructure/messaging/CunaEventPublisher';
-export { VencimientoAlertPublisher } from './infrastructure/messaging/VencimientoAlertPublisher';
-export type { AlertaVencimientoPayload, NivelAlertaVencimiento, AlertHandler } from './infrastructure/messaging/VencimientoAlertPublisher';
+export { VencimientosAlertPublisher } from './infrastructure/messaging/VencimientosAlertPublisher';
+export type { AlertaVencimientosPayload, NivelAlertaVencimientos, AlertHandler } from './infrastructure/messaging/VencimientosAlertPublisher';

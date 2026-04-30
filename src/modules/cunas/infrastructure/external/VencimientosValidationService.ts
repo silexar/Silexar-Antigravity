@@ -10,23 +10,23 @@
  * - Sincronizar el estado de cuñas cuando vence un contrato
  */
 
-export interface VencimientoValidacion {
+export interface VencimientosValidacion {
   cunaId: string;
   contratoId: string;
-  tieneVencimientoActivo: boolean;
-  fechaVencimiento?: Date | null;
+  tieneVencimientosActivo: boolean;
+  fechaVencimientos?: Date | null;
   diasRestantes?: number | null;
   observaciones?: string | null;
 }
 
 export interface ResultadoValidacionMasiva {
   totalValidadas: number;
-  conVencimientoActivo: number;
-  sinVencimiento: number;
-  vencenEn7Dias: VencimientoValidacion[];
-  vencenEn3Dias: VencimientoValidacion[];
-  vencenHoy: VencimientoValidacion[];
-  yaVencidas: VencimientoValidacion[];
+  conVencimientosActivo: number;
+  sinVencimientos: number;
+  vencenEn7Dias: VencimientosValidacion[];
+  vencenEn3Dias: VencimientosValidacion[];
+  vencenHoy: VencimientosValidacion[];
+  yaVencidas: VencimientosValidacion[];
 }
 
 export interface CunaParaValidar {
@@ -46,7 +46,7 @@ export class VencimientosValidationService {
    * Valida si una cuña tiene un contrato/vencimientos activo.
    * Llama al módulo Vencimientos via API interna.
    */
-  async validarCuna(cunaId: string, contratoId: string, tenantId: string): Promise<VencimientoValidacion> {
+  async validarCuna(cunaId: string, contratoId: string, tenantId: string): Promise<VencimientosValidacion> {
     try {
       const response = await fetch(
         `${this.baseUrl}/validar?cunaId=${cunaId}&contratoId=${contratoId}&tenantId=${tenantId}`,
@@ -65,22 +65,22 @@ export class VencimientosValidationService {
         return {
           cunaId,
           contratoId,
-          tieneVencimientoActivo: true,
-          fechaVencimiento: null,
+          tieneVencimientosActivo: true,
+          fechaVencimientos: null,
           diasRestantes: null,
           observaciones: 'Validación omitida — servicio Vencimientos no disponible',
         };
       }
 
-      return await response.json() as VencimientoValidacion;
+      return await response.json() as VencimientosValidacion;
     } catch (error) {
       console.warn(`[VencimientosValidationService] Error de conectividad:`, error);
       // Modo degradado: no bloquea la operación
       return {
         cunaId,
         contratoId,
-        tieneVencimientoActivo: true,
-        fechaVencimiento: null,
+        tieneVencimientosActivo: true,
+        fechaVencimientos: null,
         diasRestantes: null,
         observaciones: 'Error de conectividad con módulo Vencimientos',
       };
@@ -97,8 +97,8 @@ export class VencimientosValidationService {
     if (cunasConContrato.length === 0) {
       return {
         totalValidadas: 0,
-        conVencimientoActivo: 0,
-        sinVencimiento: cunas.length,
+        conVencimientosActivo: 0,
+        sinVencimientos: cunas.length,
         vencenEn7Dias: [],
         vencenEn3Dias: [],
         vencenHoy: [],
@@ -112,16 +112,16 @@ export class VencimientosValidationService {
       )
     );
 
-    const resultados: VencimientoValidacion[] = validaciones
-      .filter((r): r is PromiseFulfilledResult<VencimientoValidacion> => r.status === 'fulfilled')
+    const resultados: VencimientosValidacion[] = validaciones
+      .filter((r): r is PromiseFulfilledResult<VencimientosValidacion> => r.status === 'fulfilled')
       .map(r => r.value);
 
     const ahora = new Date();
 
     return {
       totalValidadas: resultados.length,
-      conVencimientoActivo: resultados.filter(r => r.tieneVencimientoActivo).length,
-      sinVencimiento: cunas.length - cunasConContrato.length,
+      conVencimientosActivo: resultados.filter(r => r.tieneVencimientosActivo).length,
+      sinVencimientos: cunas.length - cunasConContrato.length,
       vencenEn7Dias: resultados.filter(r => {
         const d = r.diasRestantes ?? Infinity;
         return d > 3 && d <= 7;

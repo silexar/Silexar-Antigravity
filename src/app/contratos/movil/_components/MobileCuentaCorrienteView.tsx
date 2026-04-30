@@ -49,19 +49,19 @@ export function MobileCuentaCorrienteView() {
   return (
     <div className="space-y-5">
       {/* BALANCE */}
-      <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white shadow-xl">
-        <p className="text-xs font-bold text-emerald-200 uppercase tracking-widest">Saldo Cuenta Corriente</p>
+      <div className="bg-gradient-to-br from-[#6888ff] to-teal-700 rounded-2xl p-5 text-white shadow-xl">
+        <p className="text-xs font-bold text-[#6888ff] uppercase tracking-widest">Saldo Cuenta Corriente</p>
         <p className="text-3xl font-black mt-2">{formatCurrency(saldoActual)}</p>
         <div className="grid grid-cols-2 gap-3 mt-4">
           <div className="bg-[#dfeaff]/10 rounded-xl p-3">
-            <div className="flex items-center gap-1 text-emerald-200">
+            <div className="flex items-center gap-1 text-[#6888ff]">
               <ArrowDownLeft className="w-4 h-4" />
               <span className="text-[10px] font-bold">Ingresos</span>
             </div>
             <p className="text-lg font-black mt-1">{formatCurrency(ingresos)}</p>
           </div>
           <div className="bg-[#dfeaff]/10 rounded-xl p-3">
-            <div className="flex items-center gap-1 text-red-300">
+            <div className="flex items-center gap-1 text-[#9aa3b8]">
               <ArrowUpRight className="w-4 h-4" />
               <span className="text-[10px] font-bold">Egresos</span>
             </div>
@@ -75,7 +75,7 @@ export function MobileCuentaCorrienteView() {
         {(['todos', 'ingreso', 'egreso', 'ajuste'] as FiltroMov[]).map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-              filtro === f ? 'bg-emerald-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
+              filtro === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {f === 'todos' ? 'Todos' : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
@@ -88,9 +88,9 @@ export function MobileCuentaCorrienteView() {
         {filtered.map(mov => (
           <div key={mov.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-4 flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-              mov.tipo === 'ingreso' ? 'bg-emerald-100 text-emerald-600' :
-              mov.tipo === 'egreso' ? 'bg-red-100 text-red-600' :
-              'bg-blue-100 text-blue-600'
+              mov.tipo === 'ingreso' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+              mov.tipo === 'egreso' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+              'bg-[#6888ff]/10 text-[#6888ff]'
             }`}>
               {mov.tipo === 'ingreso' ? <ArrowDownLeft className="w-5 h-5" /> :
                mov.tipo === 'egreso' ? <ArrowUpRight className="w-5 h-5" /> :
@@ -104,7 +104,7 @@ export function MobileCuentaCorrienteView() {
               </div>
             </div>
             <div className="text-right shrink-0">
-              <p className={`text-sm font-black ${mov.tipo === 'ingreso' ? 'text-emerald-600' : mov.tipo === 'egreso' ? 'text-red-600' : 'text-blue-600'}`}>
+              <p className={`text-sm font-black ${mov.tipo === 'ingreso' ? 'text-[#6888ff]' : mov.tipo === 'egreso' ? 'text-[#9aa3b8]' : 'text-[#6888ff]'}`}>
                 {mov.tipo === 'egreso' ? '-' : '+'}{formatCurrency(mov.monto)}
               </p>
               <p className="text-[9px] text-[#9aa3b8]">Saldo: {formatCurrency(mov.saldoAcumulado)}</p>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * /dashboard/movil — Silexar Pulse Mobile Dashboard
@@ -56,7 +56,7 @@ interface MetricItem {
 function StatusDot({ status }: { status: string }) {
   if (status === 'healthy') {
     return (
-      <span className="flex items-center gap-1 text-xs text-emerald-400">
+      <span className="flex items-center gap-1 text-xs text-[#6888ff]">
         <CheckCircle className="w-3 h-3" /> OK
       </span>
     )
@@ -69,7 +69,7 @@ function StatusDot({ status }: { status: string }) {
     )
   }
   return (
-    <span className="flex items-center gap-1 text-xs text-red-400">
+    <span className="flex items-center gap-1 text-xs text-[#9aa3b8]">
       <XCircle className="w-3 h-3" /> Error
     </span>
   )
@@ -164,13 +164,13 @@ export default function MobileDashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-[#bec8de] via-slate-800 to-[#9aa3b8]">
       {/* Sticky Header with Blur */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#F0EDE8]/70 border-b border-[#D4D1CC]/50 px-4 py-3 safe-area-inset-top">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-orange-500/10">
-              <Zap className="w-5 h-5 text-orange-400" />
+            <div className="p-1.5 rounded-lg bg-[#6888ff]/50/10">
+              <Zap className="w-5 h-5 text-[#6888ff]" />
             </div>
             <div>
               <h1 className="text-base font-bold text-[#2C2C2A] leading-tight">Dashboard</h1>
@@ -180,7 +180,7 @@ export default function MobileDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1 text-xs text-slate-600">
+            <span className="flex items-center gap-1 text-xs text-[#69738c]">
               <Clock className="w-3 h-3" />
               {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
@@ -219,7 +219,7 @@ export default function MobileDashboardPage() {
                 <span
                   className={`text-xs px-2.5 py-0.5 rounded-full font-medium border ${
                     systemOk
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      ? 'bg-[#6888ff]/50/10 text-[#6888ff] border-[#bec8de]/20'
                       : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                   }`}
                 >
@@ -256,7 +256,7 @@ export default function MobileDashboardPage() {
                         </div>
                         <StatusDot status={check.status} />
                         {check.latencyMs !== undefined && (
-                          <span className="text-xs text-slate-600 mt-0.5 block">
+                          <span className="text-xs text-[#69738c] mt-0.5 block">
                             {check.latencyMs}ms
                           </span>
                         )}
@@ -318,7 +318,7 @@ export default function MobileDashboardPage() {
                           <p className="text-xs text-[#888780] mt-0.5">{item.sub}</p>
                         )}
                       </div>
-                      <ArrowUpRight className="w-4 h-4 text-slate-600 shrink-0" />
+                      <ArrowUpRight className="w-4 h-4 text-[#69738c] shrink-0" />
                     </div>
                   </NeuromorphicCard>
                 )
@@ -349,7 +349,7 @@ export default function MobileDashboardPage() {
                   <p className="text-sm font-medium text-[#2C2C2A]">{label}</p>
                   <p className="text-xs text-[#888780]">{desc}</p>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-slate-600 shrink-0" />
+                <ArrowUpRight className="w-4 h-4 text-[#69738c] shrink-0" />
               </div>
             </NeuromorphicCard>
           ))}
@@ -357,7 +357,7 @@ export default function MobileDashboardPage() {
 
         {/* Footer */}
         <div className="pt-4 pb-6 text-center">
-          <p className="text-slate-600 text-xs">
+          <p className="text-[#69738c] text-xs">
             Silexar Pulse v{health?.version ?? '1.0.0'} · {health?.environment ?? 'dev'} ·
             Uptime: {health ? `${Math.floor(health.uptime / 3600)}h` : '--'}
           </p>

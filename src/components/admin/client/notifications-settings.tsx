@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔔 SILEXAR PULSE - Notifications Settings (Client)
+ * ðŸ”” SILEXAR PULSE - Notifications Settings (Client)
  * Configuración de notificaciones para clientes
  * 
  * @description Notifications:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Bell,
   Mail,
@@ -130,14 +128,14 @@ export function NotificationsSettings() {
   }
 
   const togglePreference = (id: string) => {
-    setPreferences(prev => prev.map(p => 
+    setPreferences(prev => prev.map(p =>
       p.id === id ? { ...p, enabled: !p.enabled } : p
     ))
     setHasChanges(true)
   }
 
   const toggleChannel = (id: string, channel: keyof NotificationPreference['channels']) => {
-    setPreferences(prev => prev.map(p => 
+    setPreferences(prev => prev.map(p =>
       p.id === id ? { ...p, channels: { ...p.channels, [channel]: !p.channels[channel] } } : p
     ))
     setHasChanges(true)
@@ -155,7 +153,7 @@ export function NotificationsSettings() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Notifications Settings...</p>
+          <p className="text-[#9aa3b8]">Cargando Notifications Settings...</p>
         </div>
       </div>
     )
@@ -165,38 +163,38 @@ export function NotificationsSettings() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Bell className="w-5 h-5 text-yellow-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Bell className="w-5 h-5 text-[#6888ff]" />
           Notifications Settings
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadSettings}>
+          <NeuButton variant="secondary" onClick={loadSettings}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Reset
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={saveSettings} disabled={!hasChanges}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={saveSettings} disabled={!hasChanges}>
             <Save className="w-4 h-4 mr-1" />
             Guardar
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Schedule */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-slate-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#9aa3b8]" />
           Horario de Notificaciones
         </h4>
         <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 bg-slate-800/50 rounded-lg">
+          <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-slate-300">Horas Silenciosas</span>
-              <button 
+              <span className="text-[#69738c]">Horas Silenciosas</span>
+              <button
                 onClick={() => {
                   setSchedule({ ...schedule, quietHoursEnabled: !schedule.quietHoursEnabled })
                   setHasChanges(true)
                 }}
-                className={`p-2 rounded ${schedule.quietHoursEnabled ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-700 text-slate-400'}`}
+                className={`p-2 rounded ${schedule.quietHoursEnabled ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
               >
                 {schedule.quietHoursEnabled ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
@@ -204,91 +202,91 @@ export function NotificationsSettings() {
             {schedule.quietHoursEnabled && (
               <div className="flex items-center gap-2 text-sm">
                 <input
-                  type="time"
+                  type="Hora"
                   value={schedule.quietHoursStart}
                   onChange={(e) => {
                     setSchedule({ ...schedule, quietHoursStart: e.target.value })
                     setHasChanges(true)
                   }}
-                  className="px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white"
+                  className="px-2 py-1 bg-[#dfeaff] border border-slate-600 rounded text-[#69738c]"
                 />
-                <span className="text-slate-400">a</span>
+                <span className="text-[#9aa3b8]">a</span>
                 <input
-                  type="time"
+                  type="Hora"
                   value={schedule.quietHoursEnd}
                   onChange={(e) => {
                     setSchedule({ ...schedule, quietHoursEnd: e.target.value })
                     setHasChanges(true)
                   }}
-                  className="px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white"
+                  className="px-2 py-1 bg-[#dfeaff] border border-slate-600 rounded text-[#69738c]"
                 />
               </div>
             )}
           </div>
-          <div className="p-3 bg-slate-800/50 rounded-lg">
+          <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300">Notificaciones fin de semana</span>
-              <button 
+              <span className="text-[#69738c]">Notificaciones fin de semana</span>
+              <button
                 onClick={() => {
                   setSchedule({ ...schedule, weekendNotifications: !schedule.weekendNotifications })
                   setHasChanges(true)
                 }}
-                className={`px-3 py-1 text-xs rounded ${schedule.weekendNotifications ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'}`}
+                className={`px-3 py-1 text-xs rounded ${schedule.weekendNotifications ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
               >
                 {schedule.weekendNotifications ? 'Activado' : 'Desactivado'}
               </button>
             </div>
           </div>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Preferences by Category */}
       {categories.map(category => (
-        <NeuromorphicCard key={category} variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">{category}</h4>
+        <NeuCard key={category} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">{category}</h4>
           <div className="space-y-3">
             {preferences.filter(p => p.category === category).map(pref => (
-              <div key={pref.id} className={`p-3 rounded-lg ${pref.enabled ? 'bg-slate-800/50' : 'bg-slate-800/20'}`}>
+              <div key={pref.id} className={`p-3 rounded-lg ${pref.enabled ? 'bg-[#dfeaff]/50' : 'bg-[#dfeaff]/20'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <button 
+                    <button
                       onClick={() => togglePreference(pref.id)}
-                      className={`w-10 h-5 rounded-full relative transition-colors ${pref.enabled ? 'bg-green-500' : 'bg-slate-600'}`}
+                      className={`w-10 h-5 rounded-full relative transition-colors ${pref.enabled ? 'bg-[#6888ff]' : 'bg-slate-600'}`}
                     >
                       <div className={`absolute w-4 h-4 bg-white rounded-full top-0.5 transition-transform ${pref.enabled ? 'left-5' : 'left-0.5'}`} />
                     </button>
                     <div>
-                      <span className={`text-sm ${pref.enabled ? 'text-white' : 'text-slate-500'}`}>{pref.name}</span>
-                      <p className="text-xs text-slate-500">{pref.description}</p>
+                      <span className={`text-sm ${pref.enabled ? 'text-[#69738c]' : 'text-[#9aa3b8]'}`}>{pref.name}</span>
+                      <p className="text-xs text-[#9aa3b8]">{pref.description}</p>
                     </div>
                   </div>
                 </div>
                 {pref.enabled && (
                   <div className="flex items-center gap-2 ml-12">
-                    <button 
+                    <button
                       onClick={() => toggleChannel(pref.id, 'email')}
-                      className={`p-1.5 rounded ${pref.channels.email ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-700 text-slate-500'}`}
+                      className={`p-1.5 rounded ${pref.channels.email ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
                       title="Email"
                     >
                       <Mail className="w-3 h-3" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => toggleChannel(pref.id, 'push')}
-                      className={`p-1.5 rounded ${pref.channels.push ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-700 text-slate-500'}`}
+                      className={`p-1.5 rounded ${pref.channels.push ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
                       title="Push"
                     >
                       <Smartphone className="w-3 h-3" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => toggleChannel(pref.id, 'sms')}
-                      className={`p-1.5 rounded ${pref.channels.sms ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-500'}`}
+                      className={`p-1.5 rounded ${pref.channels.sms ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
                       title="SMS"
                     >
                       <MessageSquare className="w-3 h-3" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => toggleChannel(pref.id, 'slack')}
-                      className={`p-1.5 rounded ${pref.channels.slack ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-700 text-slate-500'}`}
+                      className={`p-1.5 rounded ${pref.channels.slack ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
                       title="Slack"
                     >
                       <MessageSquare className="w-3 h-3" />
@@ -298,7 +296,7 @@ export function NotificationsSettings() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       ))}
     </div>
   )

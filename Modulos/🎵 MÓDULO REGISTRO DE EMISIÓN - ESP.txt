@@ -165,7 +165,7 @@ Búsqueda ultra-inteligente con predicciones IA:
 │ 🤖 SUGERENCIAS IA:                                             │
 │ • "Verificar spots SuperMax emitidos ayer"                     │
 │ • "Buscar menciones Banco XYZ horario prime"                   │
-│ • "Auditar cumplimiento contratos vencimiento hoy"             │
+│ • "Auditar cumplimiento contratos vencimientos hoy"             │
 │ • "Verificar presentaciones/cierres campaña activa"            │
 └─────────────────────────────────────────────────────────────────┘
 Filtros avanzados de verificación:

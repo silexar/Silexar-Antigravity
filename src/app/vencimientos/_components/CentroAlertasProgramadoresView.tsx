@@ -98,15 +98,15 @@ export default function CentroAlertasProgramadoresView() {
                </div>
             </div>
 
-            {/* ALERTA DE VENCIMIENTO */}
+            {/* ALERTA DE VENCIMIENTOS */}
             <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest flex items-center gap-2 mt-8">
-               🟡 ALERTAS DE VENCIMIENTO (Próximos 7 días)
+               🟡 ALERTAS DE VENCIMIENTOS (Próximos 7 días)
             </h3>
             
             <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 relative overflow-hidden backdrop-blur-md">
                <div className="flex justify-between items-start mb-3">
                   <h4 className="text-sm font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                     📅 VENCIMIENTO PRÓXIMO - PREPARAR CAMBIOS
+                     📅 VENCIMIENTOS PRÓXIMO - PREPARAR CAMBIOS
                   </h4>
                </div>
 

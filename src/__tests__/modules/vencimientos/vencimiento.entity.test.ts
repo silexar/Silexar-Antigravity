@@ -1,7 +1,7 @@
 /**
  * Tests: Vencimientos — TandaComercial, DuracionSegundos, CupoComercial
  *
- * Complementa los tests existentes de VencimientoAuspicio.entity.test.ts y
+ * Complementa los tests existentes de VencimientosAuspicio.entity.test.ts y
  * PeriodoVigencia.test.ts cubriendo las demás entidades y value objects del módulo.
  */
 

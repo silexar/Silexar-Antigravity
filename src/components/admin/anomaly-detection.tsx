@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🤖 SILEXAR PULSE - Anomaly Detection
+ * ðŸ¤– SILEXAR PULSE - Anomaly Detection
  * Detección de anomalías con IA
  * 
  * @description AI Anomaly Detection:
@@ -13,13 +13,12 @@
  * @version 2025.1.0
  * @tier TIER_0_FORTUNE_10
  * @security MILITARY_GRADE
+ * @last_modified 2025-04-28 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Brain,
   AlertTriangle,
@@ -185,27 +184,27 @@ export function AnomalyDetection() {
   }
 
   const updateAnomalyStatus = (id: string, status: Anomaly['status']) => {
-    setAnomalies(prev => prev.map(a => 
+    setAnomalies(prev => prev.map(a =>
       a.id === id ? { ...a, status } : a
     ))
   }
 
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-600/20 text-red-300'
-      case 'high': return 'bg-red-500/20 text-red-400'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400'
-      case 'low': return 'bg-blue-500/20 text-blue-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'critical': return { background: `${N.accent}30`, color: N.accent }
+      case 'high': return { background: `${N.accent}20`, color: N.accent }
+      case 'medium': return { background: `${N.accent}20`, color: N.accent }
+      case 'low': return { background: `${N.accent}20`, color: N.accent }
+      default: return { background: `${N.dark}20`, color: N.textSub }
     }
   }
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'normal': return 'text-green-400'
-      case 'warning': return 'text-yellow-400'
-      case 'anomalous': return 'text-red-400'
-      default: return 'text-slate-400'
+      case 'normal': return N.accent
+      case 'warning': return N.accent
+      case 'anomalous': return N.accent
+      default: return N.textSub
     }
   }
 
@@ -213,160 +212,170 @@ export function AnomalyDetection() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Anomaly Detection...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Anomaly Detection...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Brain className="w-5 h-5 text-purple-400" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <Brain style={{ width: 20, height: 20, color: N.accent }} />
           Anomaly Detection
           {activeAnomalies.length > 0 && (
-            <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded animate-pulse">
+            <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.accent}20`, color: N.accent, borderRadius: '4px', animation: 'pulse 2s infinite' }}>
               {activeAnomalies.length} Active
             </span>
           )}
         </h3>
-        <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
-            <RefreshCw className="w-4 h-4 mr-1" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <NeuButton variant="secondary" onClick={loadData}>
+            <RefreshCw style={{ width: 16, height: 16, marginRight: 4 }} />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={runScan} disabled={isScanning}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={runScan} disabled={isScanning}>
             {isScanning ? (
               <>
-                <Brain className="w-4 h-4 mr-1 animate-pulse" />
+                <Brain style={{ width: 16, height: 16, marginRight: 4, animation: 'pulse 1s infinite' }} />
                 Scanning...
               </>
             ) : (
               <>
-                <Zap className="w-4 h-4 mr-1" />
+                <Zap style={{ width: 16, height: 16, marginRight: 4 }} />
                 Deep Scan
               </>
             )}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Baseline Metrics */}
-      <div className="grid grid-cols-6 gap-3">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.75rem' }}>
         {baselines.map(metric => (
-          <NeuromorphicCard key={metric.name} variant="embossed" className="p-3 text-center">
-            <p className={`text-lg font-bold ${getStatusStyle(metric.status)}`}>
+          <NeuCard key={metric.name} style={{ boxShadow: getSmallShadow(), padding: '12px', background: N.base, textAlign: 'center' }}>
+            <p style={{ color: getStatusStyle(metric.status), fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>
               {metric.current}{metric.unit}
             </p>
-            <p className="text-xs text-slate-500">{metric.name}</p>
-            <div className="flex items-center justify-center gap-1 mt-1">
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{metric.name}</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginTop: '4px' }}>
               {metric.deviation > 0 ? (
-                <TrendingUp className={`w-3 h-3 ${metric.status === 'anomalous' ? 'text-red-400' : 'text-yellow-400'}`} />
+                <TrendingUp style={{ width: 12, height: 12, color: metric.status === 'anomalous' ? N.accent : N.accent }} />
               ) : (
-                <TrendingDown className="w-3 h-3 text-green-400" />
+                <TrendingDown style={{ width: 12, height: 12, color: N.accent }} />
               )}
-              <span className={`text-xs ${metric.status === 'anomalous' ? 'text-red-400' : 'text-slate-400'}`}>
+              <span style={{ fontSize: '0.75rem', color: metric.status === 'anomalous' ? N.accent : N.textSub }}>
                 {Math.abs(metric.deviation).toFixed(1)}%
               </span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Active Anomalies */}
-      <NeuromorphicCard variant="glow" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-yellow-400" />
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1rem', background: N.base }}>
+        <h4 style={{ color: N.text, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <AlertTriangle style={{ width: 16, height: 16, color: N.accent }} />
           Anomalías Detectadas
         </h4>
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {anomalies.map(anomaly => (
-            <div key={anomaly.id} className={`p-4 rounded-lg ${
-              anomaly.status === 'resolved' ? 'bg-slate-800/30' : 'bg-slate-800/50'
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded uppercase ${getSeverityStyle(anomaly.severity)}`}>
+            <div key={anomaly.id} style={{
+              padding: '1rem',
+              borderRadius: '8px',
+              background: anomaly.status === 'resolved' ? `${N.dark}15` : `${N.dark}30`
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '4px', textTransform: 'uppercase', ...getSeverityStyle(anomaly.severity) }}>
                     {anomaly.severity}
                   </span>
-                  <span className="text-white font-medium">{anomaly.metric}</span>
-                  <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+                  <span style={{ color: N.text, fontWeight: 500 }}>{anomaly.metric}</span>
+                  <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.dark}50`, color: N.textSub, borderRadius: '4px' }}>
                     {anomaly.type.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: N.textSub }}>
                     {anomaly.detectedAt.toLocaleString()}
                   </span>
                   {anomaly.status === 'active' && (
                     <>
-                      <button 
+                      <button
                         onClick={() => updateAnomalyStatus(anomaly.id, 'acknowledged')}
-                        className="text-xs text-blue-400 hover:underline"
+                        style={{ fontSize: '0.75rem', color: N.accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                       >
                         Acknowledge
                       </button>
-                      <button 
+                      <button
                         onClick={() => updateAnomalyStatus(anomaly.id, 'false_positive')}
-                        className="text-xs text-slate-400 hover:underline"
+                        style={{ fontSize: '0.75rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                       >
                         False +
                       </button>
                     </>
                   )}
                   {anomaly.status === 'acknowledged' && (
-                    <button 
+                    <button
                       onClick={() => updateAnomalyStatus(anomaly.id, 'resolved')}
-                      className="text-xs text-green-400 hover:underline"
+                      style={{ fontSize: '0.75rem', color: N.accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                     >
                       Resolve
                     </button>
                   )}
                 </div>
               </div>
-              <p className="text-slate-300 text-sm">{anomaly.description}</p>
+              <p style={{ color: N.text, fontSize: '0.875rem' }}>{anomaly.description}</p>
               {anomaly.suggestedAction && (
-                <p className="text-green-400 text-xs mt-2">💡 {anomaly.suggestedAction}</p>
+                <p style={{ color: N.accent, fontSize: '0.75rem', marginTop: '8px' }}>ðŸ’¡ {anomaly.suggestedAction}</p>
               )}
-              <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '8px', fontSize: '0.75rem', color: N.textSub }}>
                 <span>Current: {anomaly.currentValue}</span>
                 <span>Expected: {anomaly.expectedValue}</span>
-                <span className="text-red-400">+{anomaly.deviation}%</span>
+                <span style={{ color: N.accent }}>+{anomaly.deviation}%</span>
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* AI Insights */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Brain className="w-4 h-4 text-purple-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 style={{ color: N.text, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Brain style={{ width: 16, height: 16, color: N.accent }} />
           AI Insights
         </h4>
-        <div className="grid grid-cols-3 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
           {insights.map(insight => (
-            <div key={insight.id} className="p-3 bg-slate-800/50 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                {insight.type === 'prediction' && <Clock className="w-4 h-4 text-blue-400" />}
-                {insight.type === 'pattern' && <Eye className="w-4 h-4 text-purple-400" />}
-                {insight.type === 'recommendation' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                <span className="text-xs text-slate-400 capitalize">{insight.type}</span>
-                <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded ml-auto">
+            <div key={insight.id} style={{ padding: '12px', background: `${N.dark}30`, borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                {insight.type === 'prediction' && <Clock style={{ width: 16, height: 16, color: N.accent }} />}
+                {insight.type === 'pattern' && <Eye style={{ width: 16, height: 16, color: N.accent }} />}
+                {insight.type === 'recommendation' && <CheckCircle style={{ width: 16, height: 16, color: N.accent }} />}
+                <span style={{ fontSize: '0.75rem', color: N.textSub, textTransform: 'capitalize' }}>{insight.type}</span>
+                <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.accent}20`, color: N.accent, borderRadius: '4px', marginLeft: 'auto' }}>
                   {insight.confidence}% conf.
                 </span>
               </div>
-              <p className="text-white text-sm font-medium">{insight.title}</p>
-              <p className="text-slate-400 text-xs mt-1">{insight.description}</p>
+              <p style={{ color: N.text, fontSize: '0.875rem', fontWeight: 500 }}>{insight.title}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem', marginTop: '4px' }}>{insight.description}</p>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

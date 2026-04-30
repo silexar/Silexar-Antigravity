@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 💰 MOBILE: Cobranza View
  * 
  * Gestión de pagos vencidos y recordatorios de cobro.
@@ -27,7 +27,7 @@ interface CuentaPendiente {
   cliente: string;
   contrato: string;
   monto: number;
-  fechaVencimiento: string;
+  fechaVencimientos: string;
   diasVencido: number;
   estado: 'vencido' | 'por_vencer' | 'en_gestion' | 'comprometido';
   ultimaGestion?: string;
@@ -35,11 +35,11 @@ interface CuentaPendiente {
 }
 
 const CUENTAS_MOCK: CuentaPendiente[] = [
-  { id: 'cob-1', cliente: 'Falabella', contrato: 'CTR-2025-0045', monto: 12500000, fechaVencimiento: '2025-02-15', diasVencido: 12, estado: 'vencido', ultimaGestion: 'Llamada 25/02', telefono: '+56912345678' },
-  { id: 'cob-2', cliente: 'Banco Chile', contrato: 'CTR-2025-0067', monto: 8700000, fechaVencimiento: '2025-02-20', diasVencido: 7, estado: 'en_gestion', ultimaGestion: 'Email enviado 26/02', telefono: '+56923456789' },
-  { id: 'cob-3', cliente: 'TechCorp', contrato: 'CTR-2025-0089', monto: 4300000, fechaVencimiento: '2025-03-01', diasVencido: 0, estado: 'por_vencer', telefono: '+56934567890' },
-  { id: 'cob-4', cliente: 'Ripley', contrato: 'CTR-2025-0034', monto: 15800000, fechaVencimiento: '2025-02-10', diasVencido: 17, estado: 'vencido', ultimaGestion: 'Compromiso pago 28/02', telefono: '+56945678901' },
-  { id: 'cob-5', cliente: 'Cencosud', contrato: 'CTR-2025-0056', monto: 6200000, fechaVencimiento: '2025-03-05', diasVencido: 0, estado: 'comprometido', ultimaGestion: 'Pago parcial recibido', telefono: '+56956789012' },
+  { id: 'cob-1', cliente: 'Falabella', contrato: 'CTR-2025-0045', monto: 12500000, fechaVencimientos: '2025-02-15', diasVencido: 12, estado: 'vencido', ultimaGestion: 'Llamada 25/02', telefono: '+56912345678' },
+  { id: 'cob-2', cliente: 'Banco Chile', contrato: 'CTR-2025-0067', monto: 8700000, fechaVencimientos: '2025-02-20', diasVencido: 7, estado: 'en_gestion', ultimaGestion: 'Email enviado 26/02', telefono: '+56923456789' },
+  { id: 'cob-3', cliente: 'TechCorp', contrato: 'CTR-2025-0089', monto: 4300000, fechaVencimientos: '2025-03-01', diasVencido: 0, estado: 'por_vencer', telefono: '+56934567890' },
+  { id: 'cob-4', cliente: 'Ripley', contrato: 'CTR-2025-0034', monto: 15800000, fechaVencimientos: '2025-02-10', diasVencido: 17, estado: 'vencido', ultimaGestion: 'Compromiso pago 28/02', telefono: '+56945678901' },
+  { id: 'cob-5', cliente: 'Cencosud', contrato: 'CTR-2025-0056', monto: 6200000, fechaVencimientos: '2025-03-05', diasVencido: 0, estado: 'comprometido', ultimaGestion: 'Pago parcial recibido', telefono: '+56956789012' },
 ];
 
 type FiltroCobranza = 'todos' | 'vencido' | 'por_vencer' | 'en_gestion' | 'comprometido';
@@ -60,30 +60,30 @@ export function MobileCobranzaView() {
   const totalPendiente = CUENTAS_MOCK.reduce((s, c) => s + c.monto, 0);
 
   const estadoConfig: Record<string, { label: string; color: string; bg: string }> = {
-    vencido: { label: 'Vencido', color: 'text-red-700', bg: 'bg-red-100' },
-    por_vencer: { label: 'Por vencer', color: 'text-amber-700', bg: 'bg-amber-100' },
-    en_gestion: { label: 'En gestión', color: 'text-blue-700', bg: 'bg-blue-100' },
-    comprometido: { label: 'Comprometido', color: 'text-emerald-700', bg: 'bg-emerald-100' },
+    vencido: { label: 'Vencido', color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]' },
+    por_vencer: { label: 'Por vencer', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
+    en_gestion: { label: 'En gestión', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
+    comprometido: { label: 'Comprometido', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
   };
 
   return (
     <div className="space-y-5">
       {/* KPIs */}
-      <div className="bg-gradient-to-br from-red-600 to-rose-700 rounded-2xl p-5 text-white shadow-xl">
-        <p className="text-xs font-bold text-red-200 uppercase tracking-widest">Cobranza</p>
+      <div className="bg-gradient-to-br from-[#6888ff] to-[#5572ee] rounded-2xl p-5 text-white shadow-xl">
+        <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest">Cobranza</p>
         <div className="grid grid-cols-2 gap-4 mt-3">
           <div>
             <p className="text-2xl font-black">{formatCurrency(totalVencido)}</p>
-            <p className="text-xs text-red-200">Vencido</p>
+            <p className="text-xs text-[#9aa3b8]">Vencido</p>
           </div>
           <div>
             <p className="text-2xl font-black">{formatCurrency(totalPendiente)}</p>
-            <p className="text-xs text-red-200">Total pendiente</p>
+            <p className="text-xs text-[#9aa3b8]">Total pendiente</p>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2 bg-[#dfeaff]/10 rounded-xl px-3 py-2">
-          <TrendingDown className="w-4 h-4 text-red-300" />
-          <span className="text-xs font-bold text-red-100">{CUENTAS_MOCK.filter(c => c.estado === 'vencido').length} cuentas vencidas</span>
+          <TrendingDown className="w-4 h-4 text-[#9aa3b8]" />
+          <span className="text-xs font-bold text-[#9aa3b8]">{CUENTAS_MOCK.filter(c => c.estado === 'vencido').length} cuentas vencidas</span>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export function MobileCobranzaView() {
         {(['todos', 'vencido', 'por_vencer', 'en_gestion', 'comprometido'] as FiltroCobranza[]).map(f => (
           <button key={f} onClick={() => setFiltro(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-              filtro === f ? 'bg-red-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
+              filtro === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {f === 'todos' ? 'Todos' : estadoConfig[f]?.label}
           </button>
@@ -128,20 +128,20 @@ export function MobileCobranzaView() {
               <p className="text-lg font-black text-[#69738c]">{formatCurrency(cuenta.monto)}</p>
               <div className="flex items-center gap-1 text-xs text-[#9aa3b8]">
                 <Calendar className="w-3 h-3" />
-                {cuenta.diasVencido > 0 ? <span className="text-red-600 font-bold">{cuenta.diasVencido}d vencido</span> : <span>Vence {cuenta.fechaVencimiento}</span>}
+                {cuenta.diasVencido > 0 ? <span className="text-[#9aa3b8] font-bold">{cuenta.diasVencido}d vencido</span> : <span>Vence {cuenta.fechaVencimientos}</span>}
               </div>
             </div>
             {cuenta.ultimaGestion && (
               <p className="text-[10px] text-[#9aa3b8] mb-2 flex items-center gap-1"><Clock className="w-3 h-3" /> {cuenta.ultimaGestion}</p>
             )}
             <div className="flex gap-2">
-              <button className="flex-1 py-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
+              <button className="flex-1 py-2 bg-[#6888ff]/5 text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                 <Phone className="w-3.5 h-3.5" /> Llamar
               </button>
               <button className="flex-1 py-2 bg-[#dfeaff] text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                 <Mail className="w-3.5 h-3.5" /> Email
               </button>
-              <button className="flex-1 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
+              <button className="flex-1 py-2 bg-[#6888ff]/5 text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Gestionar
               </button>
             </div>

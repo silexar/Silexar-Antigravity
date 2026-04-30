@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔍 SILEXAR PULSE - Audit Trail Forensics
+ * ðŸ” SILEXAR PULSE - Audit Trail Forensics
  * Análisis forense de eventos de seguridad
  * 
  * @description Sistema de auditoría avanzada:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Search,
   Shield,
@@ -228,25 +226,25 @@ export function AuditForensics() {
 
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'high': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'critical': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      case 'high': return 'bg-[#6888ff]/20 text-[#6888ff] border-orange-500/30'
+      case 'medium': return 'bg-[#6888ff]/20 text-[#6888ff] border-yellow-500/30'
+      case 'low': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getThreatStyle = (level: string) => {
     switch (level) {
-      case 'malicious': return 'bg-red-500 text-white'
-      case 'suspicious': return 'bg-yellow-500 text-black'
-      case 'safe': return 'bg-green-500 text-white'
-      default: return 'bg-slate-500 text-white'
+      case 'malicious': return 'bg-[#6888ff] text-white'
+      case 'suspicious': return 'bg-[#6888ff] text-black'
+      case 'safe': return 'bg-[#6888ff] text-white'
+      default: return 'bg-slate-500 text-[#69738c]'
     }
   }
 
   const exportForensicReport = () => {
-    
+
     alert('Reporte forense exportado en formato legal')
   }
 
@@ -254,7 +252,7 @@ export function AuditForensics() {
     if (severityFilter !== 'all' && e.severity !== severityFilter) return false
     if (typeFilter !== 'all' && e.eventType !== typeFilter) return false
     if (searchTerm && !e.action.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !e.userName.toLowerCase().includes(searchTerm.toLowerCase())) return false
+      !e.userName.toLowerCase().includes(searchTerm.toLowerCase())) return false
     return true
   })
 
@@ -262,8 +260,8 @@ export function AuditForensics() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Datos Forenses...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Datos Forenses...</p>
         </div>
       </div>
     )
@@ -273,64 +271,64 @@ export function AuditForensics() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Search className="w-5 h-5 text-red-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Search className="w-5 h-5 text-[#6888ff]" />
           Audit Trail Forensics
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={exportForensicReport}>
+        <NeuButton variant="secondary" onClick={exportForensicReport}>
           <Download className="w-4 h-4 mr-1" />
           Exportar Reporte Legal
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{events.length}</p>
-          <p className="text-xs text-slate-400">Eventos</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{events.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Eventos</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {events.filter(e => e.severity === 'critical').length}
           </p>
-          <p className="text-xs text-slate-400">Críticos</p>
+          <p className="text-xs text-[#9aa3b8]">Críticos</p>
         </div>
-        <div className="p-3 bg-orange-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-orange-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {events.filter(e => e.severity === 'high').length}
           </p>
-          <p className="text-xs text-slate-400">Altos</p>
+          <p className="text-xs text-[#9aa3b8]">Altos</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {sessions.filter(s => s.threatLevel === 'malicious').length}
           </p>
-          <p className="text-xs text-slate-400">Sesiones Maliciosas</p>
+          <p className="text-xs text-[#9aa3b8]">Sesiones Maliciosas</p>
         </div>
-        <div className="p-3 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {Math.round(events.reduce((sum, e) => sum + e.aiThreatScore, 0) / events.length)}%
           </p>
-          <p className="text-xs text-slate-400">Threat Score Prom</p>
+          <p className="text-xs text-[#9aa3b8]">Threat Score Prom</p>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
           <input
             type="text"
             placeholder="Buscar eventos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+            className="w-full pl-9 pr-4 py-2 bg-[#dfeaff] border border-slate-700 rounded-lg text-[#69738c] text-sm"
           />
         </div>
         <select
           value={severityFilter}
           onChange={(e) => setSeverityFilter(e.target.value)}
-          className="bg-slate-800 text-white text-sm rounded-lg px-3 py-2"
+          className="bg-[#dfeaff] text-[#69738c] text-sm rounded-lg px-3 py-2"
         >
           <option value="all">Todas las Severidades</option>
           <option value="critical">Crítico</option>
@@ -341,7 +339,7 @@ export function AuditForensics() {
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="bg-slate-800 text-white text-sm rounded-lg px-3 py-2"
+          className="bg-[#dfeaff] text-[#69738c] text-sm rounded-lg px-3 py-2"
         >
           <option value="all">Todos los Tipos</option>
           <option value="security">Seguridad</option>
@@ -354,10 +352,10 @@ export function AuditForensics() {
 
       {/* Suspicious Sessions Alert */}
       {sessions.some(s => s.threatLevel !== 'safe') && (
-        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+        <div className="p-4 bg-[#6888ff]/10 border border-[#6888ff]/30 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <span className="text-red-400 font-medium">Sesiones Sospechosas Detectadas</span>
+            <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-[#6888ff] font-medium">Sesiones Sospechosas Detectadas</span>
           </div>
           <div className="flex gap-2">
             {sessions.filter(s => s.threatLevel !== 'safe').map(session => (
@@ -370,27 +368,26 @@ export function AuditForensics() {
       )}
 
       {/* Events Timeline */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <Activity className="w-4 h-4 text-red-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+          <Activity className="w-4 h-4 text-[#6888ff]" />
           Timeline de Eventos
         </h4>
 
         <div className="space-y-3">
           {filteredEvents.map(event => (
-            <div 
+            <div
               key={event.id}
               onClick={() => setSelectedEvent(event)}
-              className={`p-4 rounded-lg border cursor-pointer transition-all hover:border-red-500/50 ${
-                getSeverityStyle(event.severity)
-              } ${selectedEvent?.id === event.id ? 'ring-1 ring-red-500' : ''}`}
+              className={`p-4 rounded-lg border cursor-pointer transition-all hover:border-[#6888ff]/50 ${getSeverityStyle(event.severity)
+                } ${selectedEvent?.id === event.id ? 'ring-1 ring-red-500' : ''}`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4" />
                   <span className="font-medium">{event.action}</span>
                   {event.correlatedEvents.length > 0 && (
-                    <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded flex items-center gap-1">
+                    <span className="text-xs px-1.5 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded flex items-center gap-1">
                       <Link className="w-3 h-3" />
                       {event.correlatedEvents.length} correlacionados
                     </span>
@@ -398,11 +395,11 @@ export function AuditForensics() {
                 </div>
                 <div className="flex items-center gap-2">
                   {event.aiThreatScore >= 70 && (
-                    <span className="text-xs px-2 py-0.5 bg-red-500 text-white rounded animate-pulse">
-                      ⚠️ Threat: {event.aiThreatScore}%
+                    <span className="text-xs px-2 py-0.5 bg-[#6888ff] text-white rounded animate-pulse">
+                      š ï¸ Threat: {event.aiThreatScore}%
                     </span>
                   )}
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-[#9aa3b8]">
                     {event.timestamp.toLocaleTimeString()}
                   </span>
                 </div>
@@ -410,27 +407,27 @@ export function AuditForensics() {
 
               <div className="grid grid-cols-4 gap-4 text-xs">
                 <div className="flex items-center gap-1">
-                  <User className="w-3 h-3 text-slate-500" />
+                  <User className="w-3 h-3 text-[#9aa3b8]" />
                   <span>{event.userName}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-slate-500" />
+                  <MapPin className="w-3 h-3 text-[#9aa3b8]" />
                   <span>{event.location}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Monitor className="w-3 h-3 text-slate-500" />
+                  <Monitor className="w-3 h-3 text-[#9aa3b8]" />
                   <span>{event.device}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Target className="w-3 h-3 text-slate-500" />
+                  <Target className="w-3 h-3 text-[#9aa3b8]" />
                   <span className="truncate">{event.resource}</span>
                 </div>
               </div>
 
               {event.aiAnalysis && (
-                <div className="mt-2 p-2 bg-slate-800/50 rounded flex items-center gap-2">
-                  <Brain className="w-4 h-4 text-purple-400" />
-                  <span className="text-xs text-purple-400">
+                <div className="mt-2 p-2 bg-[#dfeaff]/50 rounded flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-[#6888ff]" />
+                  <span className="text-xs text-[#6888ff]">
                     IA: {event.aiAnalysis.classification} ({event.aiAnalysis.confidence}% confianza)
                   </span>
                 </div>
@@ -438,19 +435,19 @@ export function AuditForensics() {
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Event Detail Panel */}
       {selectedEvent && selectedEvent.aiAnalysis && (
-        <NeuromorphicCard variant="glow" className="p-6">
-          <h4 className="text-white font-bold mb-4 flex items-center gap-2">
-            <Eye className="w-5 h-5 text-red-400" />
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-bold mb-4 flex items-center gap-2">
+            <Eye className="w-5 h-5 text-[#6888ff]" />
             Análisis Forense Detallado
           </h4>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h5 className="text-sm text-slate-400 mb-2">Información del Evento</h5>
+              <h5 className="text-sm text-[#9aa3b8] mb-2">Información del Evento</h5>
               <div className="space-y-2 text-sm">
                 <p><strong>ID:</strong> {selectedEvent.id}</p>
                 <p><strong>Acción:</strong> {selectedEvent.action}</p>
@@ -461,21 +458,21 @@ export function AuditForensics() {
             </div>
 
             <div>
-              <h5 className="text-sm text-slate-400 mb-2">Análisis IA</h5>
-              <div className="p-4 bg-purple-500/10 rounded-lg">
-                <p className="text-purple-400 font-medium mb-2">
+              <h5 className="text-sm text-[#9aa3b8] mb-2">Análisis IA</h5>
+              <div className="p-4 bg-[#6888ff]/10 rounded-lg">
+                <p className="text-[#6888ff] font-medium mb-2">
                   {selectedEvent.aiAnalysis.classification}
                 </p>
-                <p className="text-sm text-slate-400 mb-2">
+                <p className="text-sm text-[#9aa3b8] mb-2">
                   Confianza: {selectedEvent.aiAnalysis.confidence}%
                 </p>
-                <p className="text-sm text-slate-300">
-                  💡 {selectedEvent.aiAnalysis.recommendation}
+                <p className="text-sm text-[#69738c]">
+                  ðŸ’¡ {selectedEvent.aiAnalysis.recommendation}
                 </p>
               </div>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

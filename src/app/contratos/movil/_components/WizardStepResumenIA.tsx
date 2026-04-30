@@ -1,8 +1,8 @@
-/**
- * ?? MOBILE WIZARD — Paso 1: Resumen IA
+ï»¿/**
+ * ?? MOBILE WIZARD ï¿½ Paso 1: Resumen IA
  * 
  * Muestra el borrador generado por la IA: datos del cliente,
- * valor, fechas, descuento, líneas de pauta pre-llenadas.
+ * valor, fechas, descuento, lï¿½neas de pauta pre-llenadas.
  * El ejecutivo puede editar antes de continuar.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -53,11 +53,11 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
     }
   };
 
-  const confianzaColor = datosExtraidos.confianzaGlobal >= 85 ? 'text-emerald-600' :
-    datosExtraidos.confianzaGlobal >= 70 ? 'text-amber-600' : 'text-red-600';
+  const confianzaColor = datosExtraidos.confianzaGlobal >= 85 ? 'text-[#6888ff]' :
+    datosExtraidos.confianzaGlobal >= 70 ? 'text-[#6888ff]' : 'text-[#9aa3b8]';
 
-  const confianzaBg = datosExtraidos.confianzaGlobal >= 85 ? 'bg-emerald-50 border-emerald-200' :
-    datosExtraidos.confianzaGlobal >= 70 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200';
+  const confianzaBg = datosExtraidos.confianzaGlobal >= 85 ? 'bg-[#6888ff]/5 border-[#bec8de]' :
+    datosExtraidos.confianzaGlobal >= 70 ? 'bg-[#6888ff]/5 border-[#bec8de]' : 'bg-[#dfeaff] border-[#bec8de]';
 
   return (
     <div className="space-y-4">
@@ -70,11 +70,11 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
           </p>
           <p className="text-[10px] text-[#9aa3b8]">
             {datosExtraidos.camposDetectados.length} campos detectados
-            {datosExtraidos.camposFaltantes.length > 0 && ` · ${datosExtraidos.camposFaltantes.length} pendientes`}
+            {datosExtraidos.camposFaltantes.length > 0 && ` ï¿½ ${datosExtraidos.camposFaltantes.length} pendientes`}
           </p>
         </div>
         {datosExtraidos.lineasClonadas && (
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full flex items-center gap-1">
+          <span className="px-2 py-1 bg-[#6888ff]/10 text-[#6888ff] text-[10px] font-bold rounded-full flex items-center gap-1">
             <History className="w-3 h-3" /> Historial
           </span>
         )}
@@ -87,7 +87,7 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
           label="Cliente"
           value={contrato.cliente.nombre}
           badge={contrato.cliente.esNuevo ? 'Nuevo' : 'Existente'}
-          badgeColor={contrato.cliente.esNuevo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}
+          badgeColor={contrato.cliente.esNuevo ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#6888ff]/10 text-[#6888ff]'}
           confianza={datosExtraidos.camposDetectados.find(c => c.campo === 'cliente')?.confianza}
           editing={editingField === 'cliente'}
           editValue={editValue}
@@ -96,7 +96,7 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
           onEditConfirm={confirmEdit}
         />
         <FieldRow
-          icon={<DollarSign className="w-4 h-4 text-emerald-500" />}
+          icon={<DollarSign className="w-4 h-4 text-[#6888ff]" />}
           label="Valor"
           value={formatearMonto(contrato.valor)}
           confianza={datosExtraidos.camposDetectados.find(c => c.campo === 'valor')?.confianza}
@@ -107,7 +107,7 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
           onEditConfirm={confirmEdit}
         />
         <FieldRow
-          icon={<Percent className="w-4 h-4 text-orange-500" />}
+          icon={<Percent className="w-4 h-4 text-[#6888ff]" />}
           label="Descuento"
           value={`${contrato.descuento}%`}
           confianza={datosExtraidos.camposDetectados.find(c => c.campo === 'descuento')?.confianza}
@@ -118,15 +118,15 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
           onEditConfirm={confirmEdit}
         />
         <FieldRow
-          icon={<Calendar className="w-4 h-4 text-blue-500" />}
-          label="Período"
+          icon={<Calendar className="w-4 h-4 text-[#6888ff]" />}
+          label="Perï¿½odo"
           value={`${formatFecha(contrato.fechaInicio)} ? ${formatFecha(contrato.fechaFin)}`}
           confianza={85}
         />
         <FieldRow
-          icon={<Clock className="w-4 h-4 text-purple-500" />}
+          icon={<Clock className="w-4 h-4 text-[#6888ff]" />}
           label="Pago"
-          value={`${contrato.terminosPago} días · ${datosExtraidos.facturacion.modalidad}`}
+          value={`${contrato.terminosPago} dï¿½as ï¿½ ${datosExtraidos.facturacion.modalidad}`}
           confianza={datosExtraidos.facturacion.confianza}
         />
       </div>
@@ -146,11 +146,11 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
         </div>
       )}
 
-      {/* RESUMEN LÍNEAS DE PAUTA */}
+      {/* RESUMEN Lï¿½NEAS DE PAUTA */}
       {contrato.lineasPauta.length > 0 && (
         <div className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3">
           <p className="text-xs font-bold text-[#6888ff]">
-            {contrato.lineasPauta.length} línea{contrato.lineasPauta.length > 1 ? 's' : ''} de pauta detectada{contrato.lineasPauta.length > 1 ? 's' : ''}
+            {contrato.lineasPauta.length} lï¿½nea{contrato.lineasPauta.length > 1 ? 's' : ''} de pauta detectada{contrato.lineasPauta.length > 1 ? 's' : ''}
           </p>
           <p className="text-[10px] text-[#6888ff] mt-0.5">
             Total: {formatearMonto(contrato.lineasPauta.reduce((s, l) => s + l.totalNeto, 0))}
@@ -160,11 +160,11 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
 
       {/* CAMPOS FALTANTES */}
       {datosExtraidos.camposFaltantes.length > 0 && (
-        <div className="p-3 rounded-xl bg-amber-50 border border-[#bec8de30] flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+        <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30] flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-[#6888ff] mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs font-bold text-amber-700">Campos pendientes</p>
-            <p className="text-[10px] text-amber-600 mt-0.5">
+            <p className="text-xs font-bold text-[#6888ff]">Campos pendientes</p>
+            <p className="text-[10px] text-[#6888ff] mt-0.5">
               {datosExtraidos.camposFaltantes.join(', ')}
             </p>
           </div>
@@ -188,24 +188,24 @@ export function WizardStepResumenIA({ datosExtraidos, contrato, onNext, onEditFi
         </div>
       )}
 
-      {/* APROBACIÓN */}
+      {/* APROBACIï¿½N */}
       {contrato.aprobacionRequerida && (
-        <div className="p-3 rounded-xl bg-purple-50 border border-[#bec8de30]">
-          <p className="text-xs font-bold text-purple-700">
-            Requiere aprobación: {contrato.nivelAprobacion}
+        <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30]">
+          <p className="text-xs font-bold text-[#6888ff]">
+            Requiere aprobaciï¿½n: {contrato.nivelAprobacion}
           </p>
           {contrato.motivoAprobacion && (
-            <p className="text-[10px] text-purple-500 mt-0.5">{contrato.motivoAprobacion}</p>
+            <p className="text-[10px] text-[#6888ff] mt-0.5">{contrato.motivoAprobacion}</p>
           )}
         </div>
       )}
 
-      {/* BOTÓN CONTINUAR */}
+      {/* BOTï¿½N CONTINUAR */}
       <button
         onClick={onNext}
         className="w-full py-4 bg-[#6888ff] text-white rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform shadow-lg shadow-[#6888ff]/20"
       >
-        Revisar Líneas de Pauta
+        Revisar Lï¿½neas de Pauta
         <ChevronDown className="w-5 h-5 rotate-[-90deg]" />
       </button>
     </div>
@@ -256,7 +256,7 @@ function FieldRow({ icon, label, value, badge, badgeColor, confianza, editing, e
         <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${badgeColor}`}>{badge}</span>
       )}
       {confianza !== undefined && (
-        <span className={`text-[10px] font-bold ${confianza >= 85 ? 'text-emerald-500' : confianza >= 70 ? 'text-amber-500' : 'text-red-500'}`}>
+        <span className={`text-[10px] font-bold ${confianza >= 85 ? 'text-[#6888ff]' : confianza >= 70 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
           {confianza}%
         </span>
       )}
@@ -270,12 +270,12 @@ function FieldRow({ icon, label, value, badge, badgeColor, confianza, editing, e
 }
 
 function DetectedField({ campo }: { campo: CampoDetectado }) {
-  const bg = campo.confianza >= 85 ? 'bg-emerald-50' : campo.confianza >= 70 ? 'bg-amber-50' : 'bg-red-50';
+  const bg = campo.confianza >= 85 ? 'bg-[#6888ff]/5' : campo.confianza >= 70 ? 'bg-[#6888ff]/5' : 'bg-[#dfeaff]';
   return (
     <div className={`px-3 py-2 rounded-lg ${bg} flex items-center gap-2`}>
       <span className="text-xs font-medium text-[#69738c] w-24 shrink-0">{campo.campo}</span>
       <span className="text-xs text-[#69738c] font-bold flex-1 truncate">{String(campo.valor)}</span>
-      <span className={`text-[10px] font-bold ${campo.confianza >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
+      <span className={`text-[10px] font-bold ${campo.confianza >= 85 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
         {campo.confianza}%
       </span>
       <span className="text-[10px] text-[#9aa3b8]">{campo.fuente}</span>

@@ -74,6 +74,19 @@ export const GET = withApiRoute(
       return apiSuccess(result.data.toJSON()) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes/:id GET', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'obtener',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -141,6 +154,19 @@ export const PUT = withApiRoute(
       return apiSuccess(result.data.toJSON(), 200, { message: 'Anunciante actualizado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes/:id PUT', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'actualizar',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -200,6 +226,19 @@ export const PATCH = withApiRoute(
       return apiSuccess(result.data.toJSON(), 200, { message: 'Anunciante actualizado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes/:id PATCH', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'patch',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -225,6 +264,19 @@ export const DELETE = withApiRoute(
       return apiSuccess(null, 200, { message: 'Anunciante eliminado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes/:id DELETE', error instanceof Error ? error : undefined, { module: 'anunciantes' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'eliminar',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }

@@ -127,9 +127,9 @@ describe('RiesgoCredito', () => {
       expect(RiesgoCredito.create(800).estaVigente()).toBe(true)
     })
 
-    it('diasParaVencimiento returns ~30 for fresh evaluation', () => {
+    it('diasParaVencimientos returns ~30 for fresh evaluation', () => {
       const r = RiesgoCredito.create(800)
-      expect(r.diasParaVencimiento()).toBeCloseTo(30, 0)
+      expect(r.diasParaVencimientos()).toBeCloseTo(30, 0)
     })
   })
 

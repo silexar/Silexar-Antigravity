@@ -26,7 +26,7 @@ export interface CuotaPagoProps {
   id?: string;
   numero: number;
   monto: number;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   estado: EstadoCuota;
   metodoPago?: MetodoPago;
   fechaPago?: Date;
@@ -42,7 +42,7 @@ export class CuotaPago {
   private _id: string;
   private _numero: number;
   private _monto: number;
-  private _fechaVencimiento: Date;
+  private _fechaVencimientos: Date;
   private _estado: EstadoCuota;
   private _metodoPago?: MetodoPago;
   private _fechaPago?: Date;
@@ -64,7 +64,7 @@ export class CuotaPago {
     this._id = props.id || this.generarId();
     this._numero = props.numero;
     this._monto = props.monto;
-    this._fechaVencimiento = props.fechaVencimiento;
+    this._fechaVencimientos = props.fechaVencimientos;
     this._estado = props.estado;
     this._metodoPago = props.metodoPago;
     this._fechaPago = props.fechaPago;
@@ -89,7 +89,7 @@ export class CuotaPago {
   get id(): string { return this._id; }
   get numero(): number { return this._numero; }
   get monto(): number { return this._monto; }
-  get fechaVencimiento(): Date { return this._fechaVencimiento; }
+  get fechaVencimientos(): Date { return this._fechaVencimientos; }
   get estado(): EstadoCuota { return this._estado; }
   get metodoPago(): MetodoPago | undefined { return this._metodoPago; }
   get fechaPago(): Date | undefined { return this._fechaPago; }
@@ -105,10 +105,10 @@ export class CuotaPago {
    */
   private calcularMoraAutomatica(): void {
     const hoy = new Date();
-    const diasVencimiento = Math.floor((hoy.getTime() - this._fechaVencimiento.getTime()) / (1000 * 60 * 60 * 24));
+    const diasVencimientos = Math.floor((hoy.getTime() - this._fechaVencimientos.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (diasVencimiento > CuotaPago.DIAS_GRACIA && !this.estaPagada()) {
-      this._diasMora = diasVencimiento - CuotaPago.DIAS_GRACIA;
+    if (diasVencimientos > CuotaPago.DIAS_GRACIA && !this.estaPagada()) {
+      this._diasMora = diasVencimientos - CuotaPago.DIAS_GRACIA;
       this._interesesMora = this._monto * CuotaPago.TASA_INTERES_MORA_DIARIA * this._diasMora;
       
       // Actualizar estado a vencido si corresponde
@@ -179,8 +179,8 @@ export class CuotaPago {
    */
   estaProximaAVencer(diasAnticipacion: number = 7): boolean {
     const hoy = new Date();
-    const diasHastaVencimiento = Math.floor((this._fechaVencimiento.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
-    return diasHastaVencimiento <= diasAnticipacion && diasHastaVencimiento > 0;
+    const diasHastaVencimientos = Math.floor((this._fechaVencimientos.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+    return diasHastaVencimientos <= diasAnticipacion && diasHastaVencimientos > 0;
   }
 
   /**
@@ -213,13 +213,13 @@ export class CuotaPago {
     const cuotasRefinanciadas: CuotaPago[] = [];
 
     for (let i = 1; i <= nuevasCuotas; i++) {
-      const fechaVencimiento = new Date();
-      fechaVencimiento.setMonth(fechaVencimiento.getMonth() + i);
+      const fechaVencimientos = new Date();
+      fechaVencimientos.setMonth(fechaVencimientos.getMonth() + i);
 
       cuotasRefinanciadas.push(CuotaPago.create({
         numero: this._numero + (i - 1) * 0.1, // Numeración decimal para refinanciamiento
         monto: montoPorCuota,
-        fechaVencimiento,
+        fechaVencimientos,
         planPagosId: this._planPagosId,
         observaciones: `Refinanciamiento de cuota ${this._numero}`
       }));
@@ -243,7 +243,7 @@ export class CuotaPago {
       throw new Error(`El monto mínimo de cuota es $${CuotaPago.MONTO_MINIMO_CUOTA}`);
     }
 
-    if (props.fechaVencimiento < new Date('2020-01-01')) {
+    if (props.fechaVencimientos < new Date('2020-01-01')) {
       throw new Error('La fecha de vencimientos no puede ser anterior a 2020');
     }
 
@@ -278,7 +278,7 @@ export class CuotaPago {
       id: this._id,
       numero: this._numero,
       monto: this._monto,
-      fechaVencimiento: this._fechaVencimiento.toISOString(),
+      fechaVencimientos: this._fechaVencimientos.toISOString(),
       estado: this._estado,
       metodoPago: this._metodoPago,
       fechaPago: this._fechaPago?.toISOString(),
@@ -296,7 +296,7 @@ export class CuotaPago {
       id: snapshot.id as string,
       numero: snapshot.numero as number,
       monto: snapshot.monto as number,
-      fechaVencimiento: new Date(snapshot.fechaVencimiento as string),
+      fechaVencimientos: new Date(snapshot.fechaVencimientos as string),
       estado: snapshot.estado as EstadoCuota,
       metodoPago: snapshot.metodoPago as MetodoPago | undefined,
       fechaPago: snapshot.fechaPago ? new Date(snapshot.fechaPago as string) : undefined,

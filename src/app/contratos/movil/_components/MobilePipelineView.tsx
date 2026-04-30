@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? MOBILE: Vista Pipeline
  * 
  * Funnel horizontal scrollable con etapas, montos acumulados y contratos
- * por etapa. Adaptación mobile del kanban/page.tsx.
+ * por etapa. Adaptaciï¿½n mobile del kanban/page.tsx.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -22,12 +22,12 @@ import { useContratosDashboard, useContratosLista, formatCurrency } from '../../
 // ---------------------------------------------------------------
 
 const PIPELINE_CONTRATOS = [
-  { id: '1', titulo: 'Navidad 2025', cliente: 'SuperMax', valor: 15000000, etapa: 'Prospección', urgencia: 'normal' as const, dias: 5 },
-  { id: '2', titulo: 'Cuentas Premium', cliente: 'Banco Chile', valor: 85000000, etapa: 'Negociación', urgencia: 'alta' as const, dias: 12 },
-  { id: '3', titulo: 'Digital Q1', cliente: 'Falabella', valor: 120000000, etapa: 'Aprobación', urgencia: 'alta' as const, dias: 3 },
+  { id: '1', titulo: 'Navidad 2025', cliente: 'SuperMax', valor: 15000000, etapa: 'Prospecciï¿½n', urgencia: 'normal' as const, dias: 5 },
+  { id: '2', titulo: 'Cuentas Premium', cliente: 'Banco Chile', valor: 85000000, etapa: 'Negociaciï¿½n', urgencia: 'alta' as const, dias: 12 },
+  { id: '3', titulo: 'Digital Q1', cliente: 'Falabella', valor: 120000000, etapa: 'Aprobaciï¿½n', urgencia: 'alta' as const, dias: 3 },
   { id: '4', titulo: 'Radio Marzo', cliente: 'Cencosud', valor: 45000000, etapa: 'Firma', urgencia: 'media' as const, dias: 1 },
-  { id: '5', titulo: 'Salud 2025', cliente: 'FarmaciaXYZ', valor: 25000000, etapa: 'Prospección', urgencia: 'normal' as const, dias: 8 },
-  { id: '6', titulo: 'Tech Summit', cliente: 'TechCorp', valor: 95000000, etapa: 'Negociación', urgencia: 'media' as const, dias: 15 },
+  { id: '5', titulo: 'Salud 2025', cliente: 'FarmaciaXYZ', valor: 25000000, etapa: 'Prospecciï¿½n', urgencia: 'normal' as const, dias: 8 },
+  { id: '6', titulo: 'Tech Summit', cliente: 'TechCorp', valor: 95000000, etapa: 'Negociaciï¿½n', urgencia: 'media' as const, dias: 15 },
   { id: '7', titulo: 'Verano 2025', cliente: 'AutoMax', valor: 35000000, etapa: 'Activos', urgencia: 'normal' as const, dias: 45 },
   { id: '8', titulo: 'Anual Digital', cliente: 'Ripley', valor: 75000000, etapa: 'Activos', urgencia: 'normal' as const, dias: 120 },
 ];
@@ -73,7 +73,7 @@ export function MobilePipelineView() {
             <p className="text-[10px] font-bold text-[#9aa3b8] uppercase">Valor Total</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-black text-emerald-400">{totalContratos}</p>
+            <p className="text-2xl font-black text-[#6888ff]">{totalContratos}</p>
             <p className="text-[10px] font-bold text-[#9aa3b8] uppercase">Contratos</p>
           </div>
         </div>
@@ -128,7 +128,7 @@ export function MobilePipelineView() {
                     <div key={c.id} className="bg-[#dfeaff] rounded-lg p-3 border border-[#bec8de30] flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${
-                          c.urgencia === 'alta' ? 'bg-red-500' : c.urgencia === 'media' ? 'bg-amber-500' : 'bg-[#bec8de]'
+                          c.urgencia === 'alta' ? 'bg-[#dfeaff]0' : c.urgencia === 'media' ? 'bg-[#6888ff]/50' : 'bg-[#bec8de]'
                         }`} />
                         <div>
                           <p className="text-xs font-bold text-[#69738c]">{c.cliente}</p>
@@ -151,12 +151,12 @@ export function MobilePipelineView() {
       {/* CONVERSION INSIGHTS */}
       <div className="bg-[#dfeaff] rounded-2xl p-4 shadow-sm border border-[#bec8de30]">
         <h3 className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 flex items-center gap-2">
-          <Zap className="w-4 h-4 text-amber-500" /> Métricas Pipeline
+          <Zap className="w-4 h-4 text-[#6888ff]" /> Mï¿½tricas Pipeline
         </h3>
         <div className="grid grid-cols-3 gap-3">
-          <MetricPill icon={<DollarSign className="w-4 h-4 text-emerald-500" />} label="Avg Deal" value={formatCurrency(totalContratos > 0 ? totalValor / totalContratos : 0)} />
-          <MetricPill icon={<TrendingUp className="w-4 h-4 text-blue-500" />} label="Conv. Rate" value="78%" />
-          <MetricPill icon={<FileText className="w-4 h-4 text-purple-500" />} label="Avg Days" value="23d" />
+          <MetricPill icon={<DollarSign className="w-4 h-4 text-[#6888ff]" />} label="Avg Deal" value={formatCurrency(totalContratos > 0 ? totalValor / totalContratos : 0)} />
+          <MetricPill icon={<TrendingUp className="w-4 h-4 text-[#6888ff]" />} label="Conv. Rate" value="78%" />
+          <MetricPill icon={<FileText className="w-4 h-4 text-[#6888ff]" />} label="Avg Days" value="23d" />
         </div>
       </div>
     </div>

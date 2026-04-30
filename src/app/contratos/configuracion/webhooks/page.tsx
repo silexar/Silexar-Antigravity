@@ -36,7 +36,7 @@ import {
 type EventoWebhook = 
   | 'contrato.creado' | 'contrato.actualizado' | 'contrato.aprobado' 
   | 'contrato.rechazado' | 'contrato.firmado' | 'contrato.activado'
-  | 'contrato.completado' | 'contrato.cancelado' | 'contrato.vencimiento_proximo'
+  | 'contrato.completado' | 'contrato.cancelado' | 'contrato.vencimientos_proximo'
   | 'factura.creada' | 'factura.emitida' | 'factura.vencida' | 'factura.pagada'
   | 'pago.recibido' | 'pago.rechazado' | 'cuenta.movimiento' | 'sistema.test';
 
@@ -173,9 +173,9 @@ export default function WebhooksPage() {
   const [_showSecreto, _setShowSecreto] = useState<string | null>(null);
 
   const estadoConfig = {
-    ACTIVO: { color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle },
+    ACTIVO: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: CheckCircle },
     INACTIVO: { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Pause },
-    SUSPENDIDO: { color: 'text-red-600', bg: 'bg-red-100', icon: AlertTriangle }
+    SUSPENDIDO: { color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]', icon: AlertTriangle }
   };
 
   const formatTiempo = (fecha: Date | undefined) => {
@@ -224,7 +224,7 @@ export default function WebhooksPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Entregas Exitosas (7d)</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {webhooks.reduce((acc, w) => acc + w.estadisticas.enviosExitosos, 0)}
               </p>
             </div>
@@ -232,7 +232,7 @@ export default function WebhooksPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Entregas Fallidas</p>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-2xl font-bold text-[#9aa3b8]">
                 {webhooks.reduce((acc, w) => acc + w.estadisticas.enviosFallidos, 0)}
               </p>
             </div>
@@ -292,9 +292,9 @@ export default function WebhooksPage() {
                       <div className="text-right">
                         <p className="text-xs text-[#9aa3b8]">Envíos</p>
                         <p className="font-medium">
-                          <span className="text-green-600">{webhook.estadisticas.enviosExitosos}</span>
+                          <span className="text-[#6888ff]">{webhook.estadisticas.enviosExitosos}</span>
                           <span className="text-[#9aa3b8]"> / </span>
-                          <span className="text-red-600">{webhook.estadisticas.enviosFallidos}</span>
+                          <span className="text-[#9aa3b8]">{webhook.estadisticas.enviosFallidos}</span>
                         </p>
                       </div>
 
@@ -338,9 +338,9 @@ export default function WebhooksPage() {
 
                   {/* Error si existe */}
                   {webhook.estadisticas.ultimoError && (
-                    <div className="mt-4 p-3 bg-red-50 rounded-lg flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 text-red-500" />
-                      <span className="text-sm text-red-600">{webhook.estadisticas.ultimoError}</span>
+                    <div className="mt-4 p-3 bg-[#dfeaff] rounded-lg flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[#9aa3b8]" />
+                      <span className="text-sm text-[#9aa3b8]">{webhook.estadisticas.ultimoError}</span>
                     </div>
                   )}
                 </div>
@@ -457,11 +457,11 @@ export default function WebhooksPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           {entrega.estado === 'EXITOSO' ? (
-                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <CheckCircle className="w-5 h-5 text-[#6888ff]" />
                           ) : entrega.estado === 'FALLIDO' ? (
-                            <XCircle className="w-5 h-5 text-red-500" />
+                            <XCircle className="w-5 h-5 text-[#9aa3b8]" />
                           ) : (
-                            <Clock className="w-5 h-5 text-amber-500" />
+                            <Clock className="w-5 h-5 text-[#6888ff]" />
                           )}
                           <div>
                             <p className="font-medium text-[#69738c]">{entrega.evento}</p>
@@ -477,7 +477,7 @@ export default function WebhooksPage() {
                             </p>
                           )}
                           {entrega.error && (
-                            <p className="text-sm text-red-600">{entrega.error}</p>
+                            <p className="text-sm text-[#9aa3b8]">{entrega.error}</p>
                           )}
                         </div>
                       </div>

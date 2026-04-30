@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📱 SILEXAR PULSE - Mobile Push Manager
+ * ðŸ“± SILEXAR PULSE - Mobile Push Manager
  * Gestión de notificaciones push móviles
  * 
  * @description Sistema de push notifications:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Smartphone,
   Bell,
@@ -39,7 +37,7 @@ interface PushNotification {
   targetAudience: 'all' | 'segment' | 'tenant'
   targetValue?: string
   platform: 'all' | 'ios' | 'android'
-  status: 'draft' | 'scheduled' | 'sent' | 'failed'
+  status: 'draft' | 'scheduled' | 'sent' | 'Fallido'
   scheduledAt?: Date
   sentAt?: Date
   stats?: {
@@ -78,7 +76,7 @@ export function MobilePushManager() {
     setNotifications([
       {
         id: 'push_001',
-        title: '🚀 Nueva Campaña Disponible',
+        title: 'ðŸš€ Nueva Campaña Disponible',
         body: 'Se ha creado una nueva campaña de alto impacto. Revisa los detalles ahora.',
         targetAudience: 'all',
         platform: 'all',
@@ -90,7 +88,7 @@ export function MobilePushManager() {
       },
       {
         id: 'push_002',
-        title: '⚡ Optimización Completada',
+        title: 'š¡ Optimización Completada',
         body: 'Tu campaña ha sido optimizada con IA. CTR mejorado en un 23%.',
         targetAudience: 'segment',
         targetValue: 'premium_users',
@@ -103,7 +101,7 @@ export function MobilePushManager() {
       },
       {
         id: 'push_003',
-        title: '📊 Reporte Semanal Listo',
+        title: 'ðŸ“Š Reporte Semanal Listo',
         body: 'Tu reporte semanal de performance está disponible.',
         targetAudience: 'tenant',
         targetValue: 'RDF Media',
@@ -115,7 +113,7 @@ export function MobilePushManager() {
       },
       {
         id: 'push_004',
-        title: '🔔 Alerta de Presupuesto',
+        title: 'ðŸ”” Alerta de Presupuesto',
         body: 'Tu campaña está cerca del límite de presupuesto diario.',
         targetAudience: 'segment',
         targetValue: 'active_campaigns',
@@ -126,11 +124,11 @@ export function MobilePushManager() {
       },
       {
         id: 'push_005',
-        title: '🎉 ¡Objetivo Alcanzado!',
+        title: 'ðŸŽ‰ ¡Objetivo Alcanzado!',
         body: 'Tu campaña superó el objetivo de conversiones. ¡Felicitaciones!',
         targetAudience: 'all',
         platform: 'android',
-        status: 'failed',
+        status: 'Fallido',
         sentAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
         stats: { sent: 0, delivered: 0, opened: 0, clicked: 0 },
         createdBy: 'CEO',
@@ -150,17 +148,17 @@ export function MobilePushManager() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'sent': return 'bg-green-500/20 text-green-400'
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400'
-      case 'draft': return 'bg-slate-500/20 text-slate-400'
-      case 'failed': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'sent': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'scheduled': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'draft': return 'bg-slate-500/20 text-[#9aa3b8]'
+      case 'Fallido': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getPlatformIcon = (_platform: string) => {
-    return <Smartphone className="w-4 h-4 text-slate-400" />
+    return <Smartphone className="w-4 h-4 text-[#9aa3b8]" />
   }
 
   const calculateRate = (numerator: number, denominator: number) => {
@@ -169,8 +167,8 @@ export function MobilePushManager() {
   }
 
   const sendNow = (notification: PushNotification) => {
-    
-    setNotifications(prev => prev.map(n => 
+
+    setNotifications(prev => prev.map(n =>
       n.id === notification.id ? { ...n, status: 'sent', sentAt: new Date() } : n
     ))
   }
@@ -194,7 +192,7 @@ export function MobilePushManager() {
     }
   }
 
-  const filteredNotifications = notifications.filter(n => 
+  const filteredNotifications = notifications.filter(n =>
     statusFilter === 'all' || n.status === statusFilter
   )
 
@@ -206,7 +204,7 @@ export function MobilePushManager() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Push Manager...</p>
+          <p className="text-[#9aa3b8]">Cargando Push Manager...</p>
         </div>
       </div>
     )
@@ -216,76 +214,75 @@ export function MobilePushManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Smartphone className="w-5 h-5 text-orange-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Smartphone className="w-5 h-5 text-[#6888ff]" />
           Mobile Push Manager
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary" >
           <Plus className="w-4 h-4 mr-1" />
           Nueva Notificación
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{notifications.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{notifications.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {notifications.filter(n => n.status === 'sent').length}
           </p>
-          <p className="text-xs text-slate-400">Enviadas</p>
+          <p className="text-xs text-[#9aa3b8]">Enviadas</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {notifications.filter(n => n.status === 'scheduled').length}
           </p>
-          <p className="text-xs text-slate-400">Programadas</p>
+          <p className="text-xs text-[#9aa3b8]">Programadas</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {(totalSent / 1000).toFixed(1)}K
           </p>
-          <p className="text-xs text-slate-400">Enviados</p>
+          <p className="text-xs text-[#9aa3b8]">Enviados</p>
         </div>
-        <div className="p-3 bg-orange-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-orange-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {totalSent > 0 ? calculateRate(totalOpened, totalSent) : 0}%
           </p>
-          <p className="text-xs text-slate-400">Open Rate</p>
+          <p className="text-xs text-[#9aa3b8]">Open Rate</p>
         </div>
       </div>
 
       {/* Segments */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-sm text-slate-400 mb-3 flex items-center gap-2">
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-sm text-[#9aa3b8] mb-3 flex items-center gap-2">
           <Users className="w-4 h-4" />
           Segmentos de Audiencia
         </h4>
         <div className="grid grid-cols-4 gap-2">
           {segments.map(segment => (
-            <div key={segment.id} className="p-3 bg-slate-800/50 rounded-lg">
-              <p className="text-white text-sm font-medium">{segment.name}</p>
-              <p className="text-xs text-slate-500 mb-1">{segment.description}</p>
-              <p className="text-lg font-bold text-orange-400">{segment.usersCount.toLocaleString()}</p>
+            <div key={segment.id} className="p-3 bg-[#dfeaff]/50 rounded-lg">
+              <p className="text-[#69738c] text-sm font-medium">{segment.name}</p>
+              <p className="text-xs text-[#9aa3b8] mb-1">{segment.description}</p>
+              <p className="text-lg font-bold text-[#6888ff]">{segment.usersCount.toLocaleString()}</p>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Filter */}
       <div className="flex items-center gap-2">
-        {['all', 'sent', 'scheduled', 'draft', 'failed'].map(status => (
+        {['all', 'sent', 'scheduled', 'draft', 'Fallido'].map(status => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${
-              statusFilter === status 
-                ? 'bg-orange-600 text-white' 
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-            }`}
+            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${statusFilter === status
+              ? 'bg-[#6888ff] text-[#69738c]'
+              : 'bg-[#dfeaff] text-[#9aa3b8] hover:bg-[#dfeaff]'
+              }`}
           >
             {status === 'all' ? 'Todas' : status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
@@ -295,25 +292,22 @@ export function MobilePushManager() {
       {/* Notifications List */}
       <div className="space-y-3">
         {filteredNotifications.map(notification => (
-          <NeuromorphicCard 
+          <NeuCard
             key={notification.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer hover:border-orange-500/30 transition-all ${
-              selectedNotification?.id === notification.id ? 'ring-1 ring-orange-500/50' : ''
-            }`}
-            onClick={() => setSelectedNotification(notification)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
+            className={`cursor-pointer hover:border-orange-500/30 transition-all ${selectedNotification?.id === notification.id ? 'ring-1 ring-orange-500/50' : ''}`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <Bell className="w-4 h-4 text-orange-400" />
-                  <span className="text-white font-medium">{notification.title}</span>
+                  <Bell className="w-4 h-4 text-[#6888ff]" />
+                  <span className="text-[#69738c] font-medium">{notification.title}</span>
                   <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(notification.status)}`}>
                     {notification.status}
                   </span>
                 </div>
-                <p className="text-sm text-slate-400 mb-2">{notification.body}</p>
-                <div className="flex items-center gap-4 text-xs text-slate-500">
+                <p className="text-sm text-[#9aa3b8] mb-2">{notification.body}</p>
+                <div className="flex items-center gap-4 text-xs text-[#9aa3b8]">
                   <span className="flex items-center gap-1">
                     <Target className="w-3 h-3" />
                     {notification.targetAudience === 'all' ? 'Todos' : notification.targetValue}
@@ -334,51 +328,51 @@ export function MobilePushManager() {
               {notification.stats && (
                 <div className="grid grid-cols-4 gap-3 text-center ml-4">
                   <div>
-                    <p className="text-sm font-bold text-white">{(notification.stats.sent / 1000).toFixed(1)}K</p>
-                    <p className="text-xs text-slate-500">Sent</p>
+                    <p className="text-sm font-bold text-[#69738c]">{(notification.stats.sent / 1000).toFixed(1)}K</p>
+                    <p className="text-xs text-[#9aa3b8]">Sent</p>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-green-400">{calculateRate(notification.stats.delivered, notification.stats.sent)}%</p>
-                    <p className="text-xs text-slate-500">Delivered</p>
+                    <p className="text-sm font-bold text-[#6888ff]">{calculateRate(notification.stats.delivered, notification.stats.sent)}%</p>
+                    <p className="text-xs text-[#9aa3b8]">Delivered</p>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-blue-400">{calculateRate(notification.stats.opened, notification.stats.delivered)}%</p>
-                    <p className="text-xs text-slate-500">Opened</p>
+                    <p className="text-sm font-bold text-[#6888ff]">{calculateRate(notification.stats.opened, notification.stats.delivered)}%</p>
+                    <p className="text-xs text-[#9aa3b8]">Opened</p>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-orange-400">{calculateRate(notification.stats.clicked, notification.stats.opened)}%</p>
-                    <p className="text-xs text-slate-500">CTR</p>
+                    <p className="text-sm font-bold text-[#6888ff]">{calculateRate(notification.stats.clicked, notification.stats.opened)}%</p>
+                    <p className="text-xs text-[#9aa3b8]">CTR</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-1 ml-4">
                 {notification.status === 'draft' && (
-                  <button 
+                  <button
                     onClick={(e) => { e.stopPropagation(); sendNow(notification); }}
-                    className="p-1.5 text-slate-400 hover:text-green-400"
+                    className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                     title="Enviar ahora"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 )}
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); duplicateNotification(notification); }}
-                  className="p-1.5 text-slate-400 hover:text-blue-400"
+                  className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                   title="Duplicar"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
-                  className="p-1.5 text-slate-400 hover:text-red-400"
+                  className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                   title="Eliminar"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

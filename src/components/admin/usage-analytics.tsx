@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - Usage Analytics
+ * ðŸ“Š SILEXAR PULSE - Usage Analytics
  * Analytics de uso del sistema
  * 
  * @description Usage Analytics:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   BarChart3,
   Users,
@@ -82,7 +80,7 @@ export function UsageAnalytics() {
     setMetrics([
       { name: 'Active Users', value: 1245, change: 12.5, unit: 'users', period },
       { name: 'Sessions', value: 8560, change: 8.2, unit: 'sessions', period },
-      { name: 'Actions', value: 156000, change: 15.8, unit: 'actions', period },
+      { name: 'Acciones', value: 156000, change: 15.8, unit: 'Acciones', period },
       { name: 'Avg. Session', value: 12.5, change: -2.3, unit: 'min', period },
       { name: 'Page Views', value: 425000, change: 22.1, unit: 'views', period },
       { name: 'API Calls', value: 2.5, change: 18.5, unit: 'M calls', period }
@@ -145,8 +143,8 @@ export function UsageAnalytics() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Usage Analytics...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Usage Analytics...</p>
         </div>
       </div>
     )
@@ -156,93 +154,92 @@ export function UsageAnalytics() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-[#6888ff]" />
           Usage Analytics
         </h3>
         <div className="flex items-center gap-2">
-          <div className="flex bg-slate-800 rounded-lg p-1">
+          <div className="flex bg-[#dfeaff] rounded-lg p-1">
             {(['24h', '7d', '30d'] as const).map(p => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className={`px-3 py-1 text-sm rounded ${period === p ? 'bg-cyan-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                className={`px-3 py-1 text-sm rounded ${period === p ? 'bg-[#6888ff] text-white' : 'text-[#9aa3b8] hover:text-white'}`}
               >
                 {p}
               </button>
             ))}
           </div>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4" />
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={exportReport}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={exportReport}>
             <Download className="w-4 h-4" />
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-6 gap-3">
         {metrics.map(metric => (
-          <NeuromorphicCard key={metric.name} variant="embossed" className="p-3 text-center">
-            <p className="text-xl font-bold text-white">{metric.value.toLocaleString()}{metric.unit.includes('M') ? '' : ''}</p>
-            <p className="text-xs text-slate-500">{metric.name}</p>
+          <NeuCard key={metric.name} style={{ boxShadow: getSmallShadow(), padding: '0.75rem', background: N.base }} className="text-center">
+            <p className="text-xl font-bold text-[#69738c]">{metric.value.toLocaleString()}{metric.unit.includes('M') ? '' : ''}</p>
+            <p className="text-xs text-[#9aa3b8]">{metric.name}</p>
             <div className="flex items-center justify-center gap-1 mt-1">
-              <TrendingUp className={`w-3 h-3 ${metric.change >= 0 ? 'text-green-400' : 'text-red-400'}`} />
-              <span className={`text-xs ${metric.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              <TrendingUp className={`w-3 h-3 ${metric.change >= 0 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`} />
+              <span className={`text-xs ${metric.change >= 0 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
                 {metric.change >= 0 ? '+' : ''}{metric.change}%
               </span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Activity Chart */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-slate-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#9aa3b8]" />
           Activity by Hour (Today)
         </h4>
         <div className="h-32 flex items-end gap-1">
           {activity.map(item => (
             <div key={item.hour} className="flex-1 flex flex-col items-center">
-              <div 
-                className="w-full bg-cyan-500/50 hover:bg-cyan-500 transition-colors rounded-t"
+              <div
+                className="w-full bg-[#6888ff]/50 hover:bg-[#6888ff] transition-colors rounded-t"
                 style={{ height: `${(item.sessions / maxSessions) * 100}%` }}
                 title={`${item.hour}:00 - ${item.sessions} sessions`}
               />
               {item.hour % 4 === 0 && (
-                <span className="text-xs text-slate-500 mt-1">{item.hour}h</span>
+                <span className="text-xs text-[#9aa3b8] mt-1">{item.hour}h</span>
               )}
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       <div className="grid grid-cols-2 gap-4">
         {/* Feature Usage */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#9aa3b8]" />
             Feature Usage
           </h4>
           <div className="space-y-3">
             {features.map(feature => (
               <div key={feature.feature}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-white text-sm">{feature.feature}</span>
+                  <span className="text-[#69738c] text-sm">{feature.feature}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400">DAU: {feature.dailyActive}</span>
-                    <span className={`text-xs ${
-                      feature.trend === 'up' ? 'text-green-400' : 
-                      feature.trend === 'down' ? 'text-red-400' : 'text-slate-400'
-                    }`}>
-                      {feature.trend === 'up' ? '↑' : feature.trend === 'down' ? '↓' : '→'}
+                    <span className="text-xs text-[#9aa3b8]">DAU: {feature.dailyActive}</span>
+                    <span className={`text-xs ${feature.trend === 'up' ? 'text-[#6888ff]' :
+                      feature.trend === 'down' ? 'text-[#6888ff]' : 'text-[#9aa3b8]'
+                      }`}>
+                      {feature.trend === 'up' ? '†‘' : feature.trend === 'down' ? '†“' : '†’'}
                     </span>
                   </div>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2">
-                  <div 
+                <div className="w-full bg-[#dfeaff] rounded-full h-2">
+                  <div
                     className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
                     style={{ width: `${feature.engagement}%` }}
                   />
@@ -250,62 +247,61 @@ export function UsageAnalytics() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Top Users */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Users className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Users className="w-4 h-4 text-[#9aa3b8]" />
             Top Users ({period})
           </h4>
           <div className="space-y-2">
             {topUsers.map((user, i) => (
-              <div key={user.name} className="flex items-center justify-between p-2 bg-slate-800/50 rounded">
+              <div key={user.name} className="flex items-center justify-between p-2 bg-[#dfeaff]/50 rounded">
                 <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold text-slate-500">#{i + 1}</span>
+                  <span className="text-lg font-bold text-[#9aa3b8]">#{i + 1}</span>
                   <div>
-                    <span className="text-white text-sm">{user.name}</span>
-                    <p className="text-xs text-slate-500">{user.organization}</p>
+                    <span className="text-[#69738c] text-sm">{user.name}</span>
+                    <p className="text-xs text-[#9aa3b8]">{user.organization}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-cyan-400 text-sm">{user.sessions} sessions</span>
-                  <p className="text-xs text-slate-500">{user.actions.toLocaleString()} actions</p>
+                  <span className="text-[#6888ff] text-sm">{user.sessions} sessions</span>
+                  <p className="text-xs text-[#9aa3b8]">{user.actions.toLocaleString()} actions</p>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
       {/* Calendar Heatmap */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-slate-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-[#9aa3b8]" />
           Activity Heatmap (Last 4 weeks)
         </h4>
         <div className="grid grid-cols-7 gap-1">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-            <span key={day} className="text-center text-xs text-slate-500">{day}</span>
+            <span key={day} className="text-center text-xs text-[#9aa3b8]">{day}</span>
           ))}
           {Array.from({ length: 28 }).map((_, i) => {
             const intensity = Math.random()
             return (
               <div
                 key={`day-${i}`}
-                className={`h-6 rounded ${
-                  intensity > 0.8 ? 'bg-cyan-400' :
-                  intensity > 0.6 ? 'bg-cyan-500/70' :
-                  intensity > 0.4 ? 'bg-cyan-600/50' :
-                  intensity > 0.2 ? 'bg-cyan-700/30' :
-                  'bg-slate-800'
-                }`}
+                className={`h-6 rounded ${intensity > 0.8 ? 'bg-[#6888ff]' :
+                  intensity > 0.6 ? 'bg-[#6888ff]/70' :
+                    intensity > 0.4 ? 'bg-[#6888ff]/50' :
+                      intensity > 0.2 ? 'bg-[#6888ff]/30' :
+                        'bg-[#dfeaff]'
+                  }`}
                 title={`Day ${i + 1}`}
               />
             )
           })}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

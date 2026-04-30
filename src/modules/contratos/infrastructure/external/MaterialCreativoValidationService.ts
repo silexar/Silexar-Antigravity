@@ -10,8 +10,6 @@
  * @module contratos
  */
 
-'use server';
-
 import { logger } from '@/lib/observability';
 
 // ═══════════════════════════════════════════════════════════════

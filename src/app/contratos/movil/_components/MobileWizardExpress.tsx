@@ -1,13 +1,13 @@
-/**
- * ? MOBILE WIZARD EXPRESS — Orquestador 3 Pasos
+ï»¿/**
+ * ? MOBILE WIZARD EXPRESS ï¿½ Orquestador 3 Pasos
  * 
  * Wizard express de 3 pantallas para crear contratos en mobile:
  *   1. Resumen IA (borrador editable)
- *   2. Líneas de Pauta (agregar/editar emisoras)
+ *   2. Lï¿½neas de Pauta (agregar/editar emisoras)
  *   3. Confirmar y Enviar (crear contrato)
  * 
  * Reemplaza el flujo anterior de ContractDraftReview
- * con un flujo completo que incluye líneas de emisora.
+ * con un flujo completo que incluye lï¿½neas de emisora.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -57,7 +57,7 @@ export function MobileWizardExpress({ resultado, onBack, onClose }: MobileWizard
   const stepIndex = step === 'resumen' ? 0 : step === 'lineas' ? 1 : 2;
   const steps: { key: WizardStep; label: string }[] = [
     { key: 'resumen', label: 'Resumen' },
-    { key: 'lineas', label: 'Líneas' },
+    { key: 'lineas', label: 'Lï¿½neas' },
     { key: 'confirmar', label: 'Enviar' },
   ];
 
@@ -89,7 +89,7 @@ export function MobileWizardExpress({ resultado, onBack, onClose }: MobileWizard
           </h2>
           <p className="text-xs text-[#9aa3b8]">
             {step === 'resumen' && 'Revisa el borrador generado por IA'}
-            {step === 'lineas' && 'Configura las líneas de pauta'}
+            {step === 'lineas' && 'Configura las lï¿½neas de pauta'}
             {step === 'confirmar' && 'Confirma y crea el contrato'}
           </p>
         </div>
@@ -104,7 +104,7 @@ export function MobileWizardExpress({ resultado, onBack, onClose }: MobileWizard
                 i <= stepIndex ? 'bg-[#6888ff]' : 'bg-[#dfeaff]'
               }`} />
               <p className={`text-[10px] mt-1 text-center font-bold ${
-                i === stepIndex ? 'text-[#6888ff]' : i < stepIndex ? 'text-emerald-600' : 'text-[#9aa3b8]'
+                i === stepIndex ? 'text-[#6888ff]' : i < stepIndex ? 'text-[#6888ff]' : 'text-[#9aa3b8]'
               }`}>
                 {s.label}
               </p>

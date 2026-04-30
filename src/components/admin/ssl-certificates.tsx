@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔐 SILEXAR PULSE - SSL Certificates Manager
+ * ðŸ” SILEXAR PULSE - SSL Certificates Manager
  * Gestión de certificados SSL
  * 
  * @description SSL Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Shield,
   Lock,
@@ -112,12 +110,12 @@ export function SSLCertificates() {
   const renewCertificate = async (id: string) => {
     const cert = certificates.find(c => c.id === id)
     if (!cert) return
-    
+
     alert(`Renovando certificado para ${cert.domain}...`)
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     const now = new Date()
-    setCertificates(prev => prev.map(c => 
+    setCertificates(prev => prev.map(c =>
       c.id === id ? {
         ...c,
         status: 'valid',
@@ -134,11 +132,11 @@ export function SSLCertificates() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'valid': return 'bg-green-500/20 text-green-400'
-      case 'expiring': return 'bg-yellow-500/20 text-yellow-400'
-      case 'expired': return 'bg-red-500/20 text-red-400'
-      case 'revoked': return 'bg-red-600/30 text-red-300'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'valid': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'expiring': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'expired': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'revoked': return 'bg-[#6888ff]/30 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -150,8 +148,8 @@ export function SSLCertificates() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando SSL Certificates...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando SSL Certificates...</p>
         </div>
       </div>
     )
@@ -161,49 +159,49 @@ export function SSLCertificates() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Shield className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Shield className="w-5 h-5 text-[#6888ff]" />
           SSL Certificates
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadCertificates}>
+          <NeuButton variant="secondary" onClick={loadCertificates}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
+          </NeuButton>
+          <NeuButton variant="primary">
             <Plus className="w-4 h-4 mr-1" />
             Add Certificate
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{certificates.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{certificates.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{validCount}</p>
-          <p className="text-xs text-slate-400">Válidos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{validCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Válidos</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{expiringCount}</p>
-          <p className="text-xs text-slate-400">Por Expirar</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{expiringCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Por Expirar</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{expiredCount}</p>
-          <p className="text-xs text-slate-400">Expirados</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{expiredCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Expirados</p>
         </div>
       </div>
 
       {/* Warning for expiring */}
       {expiringCount > 0 && (
-        <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-yellow-400" />
+        <div className="p-4 bg-[#6888ff]/10 border border-yellow-500/30 rounded-lg flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
           <div>
-            <span className="text-yellow-400 font-medium">{expiringCount} certificado(s) próximos a expirar</span>
-            <p className="text-sm text-slate-400">Renueva pronto para evitar interrupciones del servicio</p>
+            <span className="text-[#6888ff] font-medium">{expiringCount} certificado(s) próximos a expirar</span>
+            <p className="text-sm text-[#9aa3b8]">Renueva pronto para evitar interrupciones del servicio</p>
           </div>
         </div>
       )}
@@ -211,48 +209,48 @@ export function SSLCertificates() {
       {/* Certificates List */}
       <div className="space-y-3">
         {certificates.map(cert => (
-          <NeuromorphicCard key={cert.id} variant="embossed" className="p-4">
+          <NeuCard key={cert.id} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <Lock className={`w-6 h-6 ${cert.status === 'valid' ? 'text-green-400' : cert.status === 'expiring' ? 'text-yellow-400' : 'text-red-400'}`} />
+                <Lock className={`w-6 h-6 ${cert.status === 'valid' ? 'text-[#6888ff]' : cert.status === 'expiring' ? 'text-[#6888ff]' : 'text-[#6888ff]'}`} />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{cert.domain}</span>
-                    <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">{cert.type}</span>
+                    <span className="text-[#69738c] font-medium">{cert.domain}</span>
+                    <span className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded">{cert.type}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(cert.status)}`}>
                       {cert.status.toUpperCase()}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500">Emisor: {cert.issuer}</p>
+                  <p className="text-xs text-[#9aa3b8]">Emisor: {cert.issuer}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 {cert.autoRenew && (
-                  <span className="text-xs px-2 py-0.5 bg-cyan-500/20 text-cyan-400 rounded flex items-center gap-1">
+                  <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded flex items-center gap-1">
                     <RefreshCw className="w-3 h-3" />
                     Auto-renew
                   </span>
                 )}
                 {(cert.status === 'expiring' || cert.status === 'expired') && (
-                  <NeuromorphicButton variant="primary" size="sm" onClick={() => renewCertificate(cert.id)}>
+                  <NeuButton variant="primary" onClick={() => renewCertificate(cert.id)}>
                     <RefreshCw className="w-3 h-3 mr-1" />
                     Renovar
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
-                <button className="p-1 hover:bg-slate-700 rounded">
-                  <Download className="w-4 h-4 text-slate-400" />
+                <button className="p-1 hover:bg-[#dfeaff] rounded">
+                  <Download className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
               </div>
             </div>
 
             <div className="grid grid-cols-4 gap-4 text-sm">
               <div>
-                <span className="text-slate-500">Emitido:</span>
-                <p className="text-white">{cert.issuedAt.toLocaleDateString()}</p>
+                <span className="text-[#9aa3b8]">Emitido:</span>
+                <p className="text-[#69738c]">{cert.issuedAt.toLocaleDateString()}</p>
               </div>
               <div>
-                <span className="text-slate-500">Expira:</span>
-                <p className={`${getDaysRemaining(cert.expiresAt) <= 7 ? 'text-red-400' : getDaysRemaining(cert.expiresAt) <= 30 ? 'text-yellow-400' : 'text-white'}`}>
+                <span className="text-[#9aa3b8]">Expira:</span>
+                <p className={`${getDaysRemaining(cert.expiresAt) <= 7 ? 'text-[#6888ff]' : getDaysRemaining(cert.expiresAt) <= 30 ? 'text-[#6888ff]' : 'text-[#69738c]'}`}>
                   {cert.expiresAt.toLocaleDateString()}
                   <span className="text-xs ml-1">
                     ({getDaysRemaining(cert.expiresAt)} días)
@@ -260,15 +258,15 @@ export function SSLCertificates() {
                 </p>
               </div>
               <div>
-                <span className="text-slate-500">SAN:</span>
-                <p className="text-slate-300 text-xs">{cert.san.join(', ')}</p>
+                <span className="text-[#9aa3b8]">SAN:</span>
+                <p className="text-[#69738c] text-xs">{cert.san.join(', ')}</p>
               </div>
               <div>
-                <span className="text-slate-500">Fingerprint:</span>
-                <p className="text-slate-400 text-xs font-mono truncate">{cert.fingerprint}</p>
+                <span className="text-[#9aa3b8]">Fingerprint:</span>
+                <p className="text-[#9aa3b8] text-xs font-mono truncate">{cert.fingerprint}</p>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

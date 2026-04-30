@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - Queue Monitor
+ * ðŸ“Š SILEXAR PULSE - Queue Monitor
  * Monitor de colas de trabajo
  * 
  * @description Queue Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Layers,
   Play,
@@ -37,7 +35,7 @@ interface QueueJob {
   id: string
   name: string
   data: Record<string, unknown>
-  status: 'waiting' | 'active' | 'completed' | 'failed' | 'delayed'
+  status: 'waiting' | 'active' | 'completed' | 'Fallido' | 'delayed'
   attempts: number
   maxAttempts: number
   createdAt: Date
@@ -93,22 +91,22 @@ export function QueueMonitor() {
     setJobs([
       { id: 'job_001', name: 'send_email', data: { to: 'user@example.com' }, status: 'completed', attempts: 1, maxAttempts: 3, createdAt: new Date(Date.now() - 60000), processedAt: new Date(Date.now() - 55000), finishedAt: new Date(Date.now() - 50000) },
       { id: 'job_002', name: 'send_email', data: { to: 'admin@company.com' }, status: 'active', attempts: 1, maxAttempts: 3, createdAt: new Date(Date.now() - 30000), processedAt: new Date() },
-      { id: 'job_003', name: 'send_email', data: { to: 'test@domain.com' }, status: 'failed', attempts: 3, maxAttempts: 3, createdAt: new Date(Date.now() - 120000), error: 'SMTP connection timeout' },
+      { id: 'job_003', name: 'send_email', data: { to: 'test@domain.com' }, status: 'Fallido', attempts: 3, maxAttempts: 3, createdAt: new Date(Date.now() - 120000), error: 'SMTP connection timeout' },
       { id: 'job_004', name: 'send_email', data: { to: 'user2@example.com' }, status: 'waiting', attempts: 0, maxAttempts: 3, createdAt: new Date() },
       { id: 'job_005', name: 'send_email', data: { to: 'user3@example.com' }, status: 'delayed', attempts: 0, maxAttempts: 3, createdAt: new Date(Date.now() - 5000) }
     ])
   }
 
   const toggleQueue = (queueName: string) => {
-    setQueues(prev => prev.map(q => 
-      q.name === queueName 
+    setQueues(prev => prev.map(q =>
+      q.name === queueName
         ? { ...q, status: q.status === 'running' ? 'paused' : 'running' }
         : q
     ))
   }
 
   const retryJob = (jobId: string) => {
-    setJobs(prev => prev.map(j => 
+    setJobs(prev => prev.map(j =>
       j.id === jobId ? { ...j, status: 'waiting', attempts: 0, error: undefined } : j
     ))
   }
@@ -119,12 +117,12 @@ export function QueueMonitor() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'waiting': return <Clock className="w-4 h-4 text-slate-400" />
-      case 'active': return <Play className="w-4 h-4 text-blue-400" />
-      case 'completed': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'failed': return <XCircle className="w-4 h-4 text-red-400" />
-      case 'delayed': return <AlertTriangle className="w-4 h-4 text-yellow-400" />
-      default: return <Clock className="w-4 h-4 text-slate-400" />
+      case 'waiting': return <Clock className="w-4 h-4 text-[#9aa3b8]" />
+      case 'active': return <Play className="w-4 h-4 text-[#6888ff]" />
+      case 'completed': return <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'Fallido': return <XCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'delayed': return <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+      default: return <Clock className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
@@ -136,8 +134,8 @@ export function QueueMonitor() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Queue Monitor...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Queue Monitor...</p>
         </div>
       </div>
     )
@@ -147,116 +145,114 @@ export function QueueMonitor() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Layers className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Layers className="w-5 h-5 text-[#6888ff]" />
           Queue Monitor
-          <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">LIVE</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">LIVE</span>
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadQueues}>
+        <NeuButton variant="secondary" onClick={loadQueues}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Refresh
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{queues.length}</p>
-          <p className="text-xs text-slate-400">Colas</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{queues.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Colas</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{totalWaiting}</p>
-          <p className="text-xs text-slate-400">En espera</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalWaiting}</p>
+          <p className="text-xs text-[#9aa3b8]">En espera</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">{totalActive}</p>
-          <p className="text-xs text-slate-400">Activos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalActive}</p>
+          <p className="text-xs text-[#9aa3b8]">Activos</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{totalFailed}</p>
-          <p className="text-xs text-slate-400">Fallidos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalFailed}</p>
+          <p className="text-xs text-[#9aa3b8]">Fallidos</p>
         </div>
       </div>
 
       {/* Queues Grid */}
       <div className="grid grid-cols-3 gap-3">
         {queues.map(queue => (
-          <NeuromorphicCard 
+          <NeuCard
             key={queue.name}
-            variant="embossed" 
-            className={`p-4 cursor-pointer ${selectedQueue === queue.name ? 'ring-1 ring-purple-500/50' : ''}`}
-            onClick={() => loadJobs(queue.name)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
+            className={`cursor-pointer ${selectedQueue === queue.name ? 'ring-1 ring-purple-500/50' : ''}`}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-white font-medium capitalize">{queue.name}</span>
+              <span className="text-[#69738c] font-medium capitalize">{queue.name}</span>
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  queue.status === 'running' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                }`}>
+                <span className={`text-xs px-2 py-0.5 rounded ${queue.status === 'running' ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   {queue.status}
                 </span>
                 <button onClick={(e) => { e.stopPropagation(); toggleQueue(queue.name); }}>
-                  {queue.status === 'running' ? <Pause className="w-4 h-4 text-slate-400" /> : <Play className="w-4 h-4 text-green-400" />}
+                  {queue.status === 'running' ? <Pause className="w-4 h-4 text-[#9aa3b8]" /> : <Play className="w-4 h-4 text-[#6888ff]" />}
                 </button>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div>
-                <p className="text-lg font-bold text-yellow-400">{queue.waiting}</p>
-                <p className="text-xs text-slate-500">Waiting</p>
+                <p className="text-lg font-bold text-[#6888ff]">{queue.waiting}</p>
+                <p className="text-xs text-[#9aa3b8]">Waiting</p>
               </div>
               <div>
-                <p className="text-lg font-bold text-blue-400">{queue.active}</p>
-                <p className="text-xs text-slate-500">Active</p>
+                <p className="text-lg font-bold text-[#6888ff]">{queue.active}</p>
+                <p className="text-xs text-[#9aa3b8]">Active</p>
               </div>
               <div>
-                <p className="text-lg font-bold text-red-400">{queue.failed}</p>
-                <p className="text-xs text-slate-500">Failed</p>
+                <p className="text-lg font-bold text-[#6888ff]">{queue.failed}</p>
+                <p className="text-xs text-[#9aa3b8]">Failed</p>
               </div>
             </div>
-            <div className="mt-2 text-xs text-slate-500 text-center">
+            <div className="mt-2 text-xs text-[#9aa3b8] text-center">
               Throughput: {queue.throughput}/min
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Jobs List */}
       {selectedQueue && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">Jobs en cola: {selectedQueue}</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">Jobs en cola: {selectedQueue}</h4>
           <div className="space-y-2">
             {jobs.map(job => (
-              <div key={job.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={job.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   {getStatusIcon(job.status)}
                   <div>
-                    <span className="text-white text-sm">{job.name}</span>
-                    <p className="text-xs text-slate-500">ID: {job.id}</p>
+                    <span className="text-[#69738c] text-sm">{job.name}</span>
+                    <p className="text-xs text-[#9aa3b8]">ID: {job.id}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-[#9aa3b8]">
                     Intentos: {job.attempts}/{job.maxAttempts}
                   </span>
                   {job.error && (
-                    <span className="text-xs text-red-400">{job.error}</span>
+                    <span className="text-xs text-[#6888ff]">{job.error}</span>
                   )}
                   <div className="flex items-center gap-1">
-                    {job.status === 'failed' && (
-                      <button onClick={() => retryJob(job.id)} className="p-1 hover:bg-slate-700 rounded">
-                        <RotateCcw className="w-4 h-4 text-yellow-400" />
+                    {job.status === 'Fallido' && (
+                      <button onClick={() => retryJob(job.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                        <RotateCcw className="w-4 h-4 text-[#6888ff]" />
                       </button>
                     )}
-                    <button onClick={() => deleteJob(job.id)} className="p-1 hover:bg-slate-700 rounded">
-                      <Trash2 className="w-4 h-4 text-red-400" />
+                    <button onClick={() => deleteJob(job.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                      <Trash2 className="w-4 h-4 text-[#6888ff]" />
                     </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

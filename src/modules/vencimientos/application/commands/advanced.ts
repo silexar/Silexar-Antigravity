@@ -30,11 +30,11 @@ export interface CrearTandaComercialCommand {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// GENERAR ALERTA DE VENCIMIENTO
+// GENERAR ALERTA DE VENCIMIENTOS
 // ═══════════════════════════════════════════════════════════════
 
-export interface GenerarAlertaVencimientoCommand {
-  type: 'GenerarAlertaVencimiento'
+export interface GenerarAlertaVencimientosCommand {
+  type: 'GenerarAlertaVencimientos'
   payload: {
     cupoComercialId: string
     tipo: 'inicio_auspicio' | 'fin_auspicio_manana' | 'fin_auspicio_hoy' | 'no_inicio_cliente' | 'extension_aprobada' | 'urgente'
@@ -102,7 +102,7 @@ export interface SincronizarContratoCommand {
   payload: {
     cupoComercialId: string
     contratoId: string
-    direccion: 'contrato_a_vencimiento' | 'vencimiento_a_contrato' | 'bidireccional'
+    direccion: 'contrato_a_vencimientos' | 'vencimientos_a_contrato' | 'bidireccional'
     sincronizadoPor: string
   }
 }
@@ -143,7 +143,7 @@ export interface AsignarOperadorTraficoCommand {
 
 export type VencimientosAdvancedCommand =
   | CrearTandaComercialCommand
-  | GenerarAlertaVencimientoCommand
+  | GenerarAlertaVencimientosCommand
   | ConfirmarInicioAuspicioCommand
   | OptimizarPricingCommand
   | GestionarExclusividadCommand

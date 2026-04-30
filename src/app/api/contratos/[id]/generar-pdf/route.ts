@@ -11,6 +11,8 @@ import { apiSuccess, apiError, apiServerError, apiNotFound } from '@/lib/api/res
 import { DrizzleContratoRepository } from '@/modules/contratos/infrastructure/repositories/DrizzleContratoRepository'
 import { PDFGeneratorAdvancedService } from '@/modules/contratos/infrastructure/external/PDFGeneratorAdvancedService'
 import { logger } from '@/lib/observability'
+import { auditLogger } from '@/lib/security/audit-logger'
+import { AuditEventType } from '@/lib/security/audit-types'
 
 const pdfService = new PDFGeneratorAdvancedService()
 
@@ -176,6 +178,20 @@ export const POST = withApiRoute(
                 contratoId: id,
                 tenantId
             })
+
+            // Log de auditoría para errores
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'generar_pdf',
+                    contratoId: id,
+                    tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            })
+
             return apiServerError() as unknown as NextResponse
         }
     }

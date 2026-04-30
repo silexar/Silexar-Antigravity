@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📋 SILEXAR PULSE - Paso 1: Información Fundamental TIER 0
  *
  * @description Primer paso del wizard - Datos básicos del contrato,
@@ -68,21 +68,21 @@ const NeuromorphicInput: React.FC<{
     inputClassName = "",
   },
 ) => (
-  <div className={`space-y-0.5 ${className}`}>
-    <label className="block text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <div className="relative">
-      {Icon && (
-        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        aria-label={label}
-        className={`
+    <div className={`space-y-0.5 ${className}`}>
+      <label className="block text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
+        {label} {required && <span className="text-[#9aa3b8]">*</span>}
+      </label>
+      <div className="relative">
+        {Icon && (
+          <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
+        )}
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          aria-label={label}
+          className={`
           w-full rounded-lg py-1.5 bg-[#dfeaff]
           shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff]
           border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40
@@ -91,20 +91,20 @@ const NeuromorphicInput: React.FC<{
           ${Icon ? "pl-9 pr-3" : "px-3"}
           ${inputClassName}
         `}
-      />
+        />
+      </div>
+      {error && (
+        <motion.p
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[10px] text-[#9aa3b8] flex items-center gap-1"
+        >
+          <AlertCircle className="w-3 h-3" />
+          {error}
+        </motion.p>
+      )}
     </div>
-    {error && (
-      <motion.p
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-[10px] text-red-500 flex items-center gap-1"
-      >
-        <AlertCircle className="w-3 h-3" />
-        {error}
-      </motion.p>
-    )}
-  </div>
-);
+  );
 
 const NeuromorphicTextarea: React.FC<{
   label: string;
@@ -143,42 +143,42 @@ const tiposContrato: {
   icono: React.ElementType;
   color: string;
 }[] = [
-  {
-    tipo: "nuevo",
-    titulo: "Nuevo Contrato",
-    descripcion: "Cliente nuevo o campaña nueva",
-    icono: Plus,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    tipo: "renovacion",
-    titulo: "Renovación",
-    descripcion: "Basado en contrato existente",
-    icono: TrendingUp,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    tipo: "programatico",
-    titulo: "Programático",
-    descripcion: "Campañas de alto volumen",
-    icono: Sparkles,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    tipo: "marco_anual",
-    titulo: "Marco Anual",
-    descripcion: "Cliente corporativo recurrente",
-    icono: Briefcase,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    tipo: "express",
-    titulo: "Express",
-    descripcion: "Creación rápida móvil",
-    icono: Star,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-];
+    {
+      tipo: "nuevo",
+      titulo: "Nuevo Contrato",
+      descripcion: "Cliente nuevo o campaña nueva",
+      icono: Plus,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      tipo: "renovacion",
+      titulo: "Renovación",
+      descripcion: "Basado en contrato existente",
+      icono: TrendingUp,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      tipo: "programatico",
+      titulo: "Programático",
+      descripcion: "Campañas de alto volumen",
+      icono: Sparkles,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      tipo: "marco_anual",
+      titulo: "Marco Anual",
+      descripcion: "Cliente corporativo recurrente",
+      icono: Briefcase,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      tipo: "express",
+      titulo: "Express",
+      descripcion: "Creación rápida móvil",
+      icono: Star,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+  ];
 
 const TipoContratoSelector: React.FC<{
   selected: TipoContrato;
@@ -191,31 +191,27 @@ const TipoContratoSelector: React.FC<{
         onClick={() => onSelect(tipo)}
         className={`
           relative p-2 rounded-xl text-left transition-all duration-300
-          ${
-          selected === tipo
+          ${selected === tipo
             ? "bg-[#6888ff] text-white shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
             : "bg-[#dfeaff] hover:bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
-        }
+          }
         `}
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
       >
         <Icon
-          className={`w-4 h-4 mb-1 ${
-            selected === tipo ? "text-white" : "text-[#9aa3b8]"
-          }`}
+          className={`w-4 h-4 mb-1 ${selected === tipo ? "text-white" : "text-[#9aa3b8]"
+            }`}
         />
         <h4
-          className={`font-semibold text-sm ${
-            selected === tipo ? "text-white" : "text-[#69738c]"
-          }`}
+          className={`font-semibold text-sm ${selected === tipo ? "text-white" : "text-[#69738c]"
+            }`}
         >
           {titulo}
         </h4>
         <p
-          className={`text-[11px] mt-1 ${
-            selected === tipo ? "text-white/80" : "text-[#9aa3b8]"
-          }`}
+          className={`text-[11px] mt-1 ${selected === tipo ? "text-white/80" : "text-[#9aa3b8]"
+            }`}
         >
           {descripcion}
         </p>
@@ -243,28 +239,28 @@ const mediosContrato: {
   icono: React.ElementType;
   color: string;
 }[] = [
-  {
-    id: "fm",
-    label: "Radio FM",
-    desc: "Contrato tradicional de radio",
-    icono: Radio,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    id: "digital",
-    label: "Digital",
-    desc: "Campañas 100% digitales",
-    icono: Sparkles,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-  {
-    id: "hibrido",
-    label: "Híbrido",
-    desc: "Radio + Digital combinado",
-    icono: Briefcase,
-    color: "from-[#6888ff] to-[#6888ff]",
-  },
-];
+    {
+      id: "fm",
+      label: "Radio FM",
+      desc: "Contrato tradicional de radio",
+      icono: Radio,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      id: "digital",
+      label: "Digital",
+      desc: "Campañas 100% digitales",
+      icono: Sparkles,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+    {
+      id: "hibrido",
+      label: "Híbrido",
+      desc: "Radio + Digital combinado",
+      icono: Briefcase,
+      color: "from-[#6888ff] to-[#6888ff]",
+    },
+  ];
 
 const MedioSelector: React.FC<{
   selected: MedioContrato;
@@ -277,31 +273,27 @@ const MedioSelector: React.FC<{
         onClick={() => onSelect(id)}
         className={`
           relative p-2 rounded-xl text-left transition-all duration-300
-          ${
-          selected === id
+          ${selected === id
             ? "bg-[#6888ff] text-white shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
             : "bg-[#dfeaff] hover:bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
-        }
+          }
         `}
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
       >
         <Icon
-          className={`w-4 h-4 mb-1 ${
-            selected === id ? "text-white" : "text-[#9aa3b8]"
-          }`}
+          className={`w-4 h-4 mb-1 ${selected === id ? "text-white" : "text-[#9aa3b8]"
+            }`}
         />
         <h4
-          className={`font-semibold text-sm ${
-            selected === id ? "text-white" : "text-[#69738c]"
-          }`}
+          className={`font-semibold text-sm ${selected === id ? "text-white" : "text-[#69738c]"
+            }`}
         >
           {label}
         </h4>
         <p
-          className={`text-[11px] mt-1 ${
-            selected === id ? "text-white/80" : "text-[#9aa3b8]"
-          }`}
+          className={`text-[11px] mt-1 ${selected === id ? "text-white/80" : "text-[#9aa3b8]"
+            }`}
         >
           {desc}
         </p>
@@ -438,15 +430,14 @@ const SelectorAnunciante: React.FC<{
       </label>
 
       {/* Botón selector */}
-      <motion.button
+      <motion.div
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          w-full p-2 rounded-xl text-left transition-all duration-300
-          ${
-          selected
+          w-full p-2 rounded-xl text-left transition-all duration-300 cursor-pointer
+          ${selected
             ? "bg-[#6888ff15] border-2 border-[#6888ff30]"
             : "bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border-2 border-transparent"
-        }
+          }
         `}
         whileHover={{ scale: 1.005 }}
       >
@@ -484,7 +475,7 @@ const SelectorAnunciante: React.FC<{
               <span>Buscar anunciante por nombre o RUT...</span>
             </div>
           )}
-      </motion.button>
+      </motion.div>
 
       {/* Dropdown de búsqueda */}
       <AnimatePresence>
@@ -709,13 +700,12 @@ const SelectorProductos: React.FC<{
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-2 h-2 rounded-full ${
-                          producto.disponibilidad === "disponible"
-                            ? "bg-[#6888ff]"
-                            : producto.disponibilidad === "limitado"
+                        className={`w-2 h-2 rounded-full ${producto.disponibilidad === "disponible"
+                          ? "bg-[#6888ff]"
+                          : producto.disponibilidad === "limitado"
                             ? "bg-[#6888ff]"
                             : "bg-[#69738c]"
-                        }`}
+                          }`}
                       />
                       <div>
                         <h4 className="font-medium text-[#69738c]">
@@ -905,11 +895,10 @@ const SelectorPropiedades: React.FC<{
                 <button
                   key={prop.valorCodigoRef}
                   onClick={() => handleToggle(prop)}
-                  className={`px-2 py-1 rounded-md text-left transition-colors flex items-center justify-between border ${
-                    isActive
-                      ? "bg-[#6888ff15] border-[#6888ff30] text-[#6888ff]"
-                      : "bg-[#dfeaff] border-[#bec8de20] text-[#69738c] hover:bg-[#6888ff08]"
-                  }`}
+                  className={`px-2 py-1 rounded-md text-left transition-colors flex items-center justify-between border ${isActive
+                    ? "bg-[#6888ff15] border-[#6888ff30] text-[#6888ff]"
+                    : "bg-[#dfeaff] border-[#bec8de20] text-[#69738c] hover:bg-[#6888ff08]"
+                    }`}
                 >
                   <span className="block font-medium text-[11px] truncate">
                     {prop.nombre}
@@ -1055,18 +1044,41 @@ export const StepInfoFundamental: React.FC<StepInfoFundamentalProps> = ({
               </select>
             </div>
           </div>
-          <NeuromorphicInput
-            label="Valor Bruto"
-            type="number"
-            value={String(state.valorBruto || 0)}
-            onChange={(value) => {
-              const bruto = Number(value) || 0;
-              dispatch({ type: 'SET_VALORES', payload: { bruto, descuento: state.descuentoPorcentaje } });
-            }}
-            placeholder="0"
-            icon={DollarSign}
-            inputClassName="!text-base !font-bold text-[#6888ff]"
-          />
+          <div className="space-y-0.5">
+            <label className="block text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">
+              {state.tieneComisionAgencia ? "Valor Bruto" : "Valor Bruto (bloqueado)"}
+            </label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={state.tieneComisionAgencia && state.valorBruto > 0 ? state.valorBruto.toLocaleString('es-CL') : ''}
+                disabled={!state.tieneComisionAgencia}
+                onChange={(e) => {
+                  if (!state.tieneComisionAgencia) return;
+                  const rawValue = e.target.value.replace(/\./g, '').replace(/ /g, '');
+                  const bruto = Number(rawValue) || 0;
+                  const factor = state.comisionAgencia > 0 ? (1 - state.comisionAgencia / 100) : 1;
+                  const neto = Math.round(bruto * factor);
+                  dispatch({ type: 'SET_VALORES', payload: { bruto, descuento: state.descuentoPorcentaje } });
+                  dispatch({ type: 'SET_VALOR_NETO_MANUAL', payload: neto });
+                }}
+                onFocus={(e) => {
+                  if (state.tieneComisionAgencia && state.valorBruto > 0) {
+                    e.target.value = state.valorBruto.toString();
+                  }
+                }}
+                onBlur={(e) => {
+                  if (state.tieneComisionAgencia && state.valorBruto > 0) {
+                    e.target.value = state.valorBruto.toLocaleString('es-CL');
+                  }
+                }}
+                placeholder={state.tieneComisionAgencia ? "0" : "Activar comisión"}
+                className={`w-full rounded-lg py-1.5 pl-9 pr-3 bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-sm font-bold text-[#6888ff] ${!state.tieneComisionAgencia ? 'opacity-60 cursor-not-allowed' : ''}`}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Fila 2: Agencia Creativa | Comisión Agencia */}
@@ -1101,15 +1113,17 @@ export const StepInfoFundamental: React.FC<StepInfoFundamentalProps> = ({
               </button>
               {state.tieneComisionAgencia && (
                 <div className="relative flex-1">
-                  <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
+                  <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8] z-10" />
                   <input
-                    type="number"
-                    value={state.comisionAgencia || 0}
+                    type="text"
+                    inputMode="numeric"
+                    value={state.comisionAgencia > 0 ? state.comisionAgencia.toString() : ''}
                     onChange={(e) => {
-                      const pct = Number(e.target.value) || 0;
-                      dispatch({ type: 'SET_COMISION_AGENCIA', payload: { comision: pct, facturar: state.facturarComisionAgencia } });
+                      const comision = Number(e.target.value) || 0;
+                      dispatch({ type: 'SET_COMISION_AGENCIA', payload: { comision, facturar: state.facturarComisionAgencia } });
                     }}
-                    className="w-full rounded-lg py-1.5 pl-9 pr-3 bg-[#dfeaff] shadow-[inset_3px_3px_6px_#bec8de,inset_-3px_-3px_6px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-xs text-[#69738c]"
+                    placeholder="0"
+                    className="w-full rounded-lg py-1.5 pl-9 pr-3 bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-sm font-bold text-[#6888ff]"
                   />
                 </div>
               )}
@@ -1138,18 +1152,36 @@ export const StepInfoFundamental: React.FC<StepInfoFundamentalProps> = ({
               </select>
             </div>
           </div>
-          <NeuromorphicInput
-            label="Valor Neto"
-            type="number"
-            value={String(state.valorNeto || 0)}
-            onChange={(value) => {
-              const neto = Number(value) || 0;
-              dispatch({ type: 'SET_VALOR_NETO_MANUAL', payload: neto });
-            }}
-            placeholder="0"
-            icon={DollarSign}
-            inputClassName="!text-base !font-bold text-[#6888ff]"
-          />
+          <div className="space-y-0.5">
+            <label className="block text-[11px] font-semibold text-[#69738c] uppercase tracking-wide">Valor Neto</label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={state.valorNeto > 0 ? state.valorNeto.toLocaleString('es-CL') : ''}
+                onChange={(e) => {
+                  const rawValue = e.target.value.replace(/\./g, '').replace(/ /g, '');
+                  const neto = Number(rawValue) || 0;
+                  dispatch({ type: 'SET_VALOR_NETO_MANUAL', payload: neto });
+                }}
+                onFocus={(e) => {
+                  if (state.valorNeto > 0) {
+                    e.target.value = state.valorNeto.toString();
+                  }
+                }}
+                onBlur={(e) => {
+                  const rawValue = e.target.value.replace(/\./g, '');
+                  const neto = Number(rawValue) || 0;
+                  if (neto > 0) {
+                    e.target.value = neto.toLocaleString('es-CL');
+                  }
+                }}
+                placeholder="0"
+                className="w-full rounded-lg py-1.5 pl-9 pr-3 bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border-none outline-none focus:ring-1 focus:ring-[#6888ff]/40 text-sm font-bold text-[#6888ff]"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1177,13 +1209,13 @@ export const StepInfoFundamental: React.FC<StepInfoFundamentalProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-3 rounded-xl bg-red-500/10 border border-red-500/20"
+          className="p-3 rounded-xl bg-[#dfeaff]0/10 border border-[#bec8de]/20"
         >
-          <p className="text-[11px] font-semibold text-red-500 mb-1 flex items-center gap-1">
+          <p className="text-[11px] font-semibold text-[#9aa3b8] mb-1 flex items-center gap-1">
             <AlertCircle className="w-3.5 h-3.5" />
             Complete los siguientes campos para continuar:
           </p>
-          <ul className="text-[11px] text-red-500 space-y-0.5 list-disc list-inside">
+          <ul className="text-[11px] text-[#9aa3b8] space-y-0.5 list-disc list-inside">
             {Object.values(state.errors).map((err, i) => (
               <li key={i}>{err}</li>
             ))}

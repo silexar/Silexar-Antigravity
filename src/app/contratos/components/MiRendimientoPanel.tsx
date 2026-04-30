@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? DESKTOP: Panel Mi Rendimiento
  * 
  * Dashboard ejecutivo personalizado con: meta mensual vs real,
@@ -33,7 +33,7 @@ const RENDIMIENTO = {
   contratosSemana: [
     { dia: 'Lun', valor: 25000000 },
     { dia: 'Mar', valor: 0 },
-    { dia: 'Mié', valor: 45000000 },
+    { dia: 'Miï¿½', valor: 45000000 },
     { dia: 'Jue', valor: 15000000 },
     { dia: 'Vie', valor: 35000000 },
   ],
@@ -53,7 +53,7 @@ export function MiRendimientoPanel() {
         </div>
         <div>
           <h2 className="text-xl font-black text-[#69738c]">Mi Rendimiento</h2>
-          <p className="text-sm text-[#9aa3b8]">Período: Marzo 2025</p>
+          <p className="text-sm text-[#9aa3b8]">Perï¿½odo: Marzo 2025</p>
         </div>
       </div>
 
@@ -93,12 +93,12 @@ export function MiRendimientoPanel() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard icon={<FileText className="w-5 h-5 text-[#6888ff]" />} label="Contratos" valor={String(RENDIMIENTO.contratosEsteMes)}
           delta={deltaContratos} deltaLabel="vs mes anterior" />
-        <KPICard icon={<DollarSign className="w-5 h-5 text-emerald-500" />} label="Comisión" valor={`$${(RENDIMIENTO.comisionEstimada / 1000000).toFixed(1)}M`}
+        <KPICard icon={<DollarSign className="w-5 h-5 text-[#6888ff]" />} label="Comisiï¿½n" valor={`$${(RENDIMIENTO.comisionEstimada / 1000000).toFixed(1)}M`}
           delta={deltaComision / 1000000} deltaLabel="vs mes anterior" prefix="$" suffix="M" />
-        <KPICard icon={<Award className="w-5 h-5 text-amber-500" />} label="Ranking" valor={`#${RENDIMIENTO.ranking}`}
+        <KPICard icon={<Award className="w-5 h-5 text-[#6888ff]" />} label="Ranking" valor={`#${RENDIMIENTO.ranking}`}
           subtitle={`de ${RENDIMIENTO.totalEjecutivos} ejecutivos`} />
-        <KPICard icon={<Flame className="w-5 h-5 text-red-500" />} label="Racha" valor={`${RENDIMIENTO.rachaDias} días`}
-          subtitle={`Mejor: ${RENDIMIENTO.mejorRacha} días`} />
+        <KPICard icon={<Flame className="w-5 h-5 text-[#9aa3b8]" />} label="Racha" valor={`${RENDIMIENTO.rachaDias} dï¿½as`}
+          subtitle={`Mejor: ${RENDIMIENTO.mejorRacha} dï¿½as`} />
       </div>
 
       {/* ACTIVIDAD SEMANAL */}
@@ -118,13 +118,13 @@ export function MiRendimientoPanel() {
         </div>
       </div>
 
-      {/* MÉTRICAS ADICIONALES */}
+      {/* Mï¿½TRICAS ADICIONALES */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] p-4 shadow-sm">
           <p className="text-xs text-[#9aa3b8]">Tasa de Cierre</p>
           <div className="flex items-end gap-2 mt-1">
             <p className="text-2xl font-black text-[#69738c]">{RENDIMIENTO.tasaCierre}%</p>
-            <span className={`text-xs font-bold flex items-center gap-0.5 ${RENDIMIENTO.tasaCierre > RENDIMIENTO.tasaCierreAnterior ? 'text-emerald-500' : 'text-red-500'}`}>
+            <span className={`text-xs font-bold flex items-center gap-0.5 ${RENDIMIENTO.tasaCierre > RENDIMIENTO.tasaCierreAnterior ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
               {RENDIMIENTO.tasaCierre > RENDIMIENTO.tasaCierreAnterior ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
               {Math.abs(RENDIMIENTO.tasaCierre - RENDIMIENTO.tasaCierreAnterior)}%
             </span>
@@ -149,7 +149,7 @@ function KPICard({ icon, label, valor, delta, deltaLabel, subtitle, prefix, suff
       <div className="flex items-center gap-2 mb-2">{icon}<span className="text-xs text-[#9aa3b8]">{label}</span></div>
       <p className="text-2xl font-black text-[#69738c]">{valor}</p>
       {delta !== undefined && (
-        <span className={`text-[10px] font-bold flex items-center gap-0.5 mt-1 ${delta >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+        <span className={`text-[10px] font-bold flex items-center gap-0.5 mt-1 ${delta >= 0 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
           {delta >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
           {delta >= 0 ? '+' : ''}{prefix || ''}{typeof delta === 'number' ? (Number.isInteger(delta) ? delta : delta.toFixed(1)) : delta}{suffix || ''} {deltaLabel}
         </span>

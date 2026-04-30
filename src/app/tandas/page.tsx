@@ -26,8 +26,10 @@ import {
   Radio,
   Music,
   Eye,
-  Send
+  Send,
+  ArrowLeft
 } from 'lucide-react';
+import { ModuleNavMenu } from '@/components/module-nav-menu';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -149,12 +151,18 @@ export default function TandasPage() {
         
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-rose-600 bg-clip-text text-transparent flex items-center gap-3">
-              <List className="w-10 h-10 text-rose-500" />
-              Revisión de Tandas
-            </h1>
-            <p className="text-slate-500 mt-2">Programación de spots en bloques comerciales</p>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push('/dashboard')} className="p-2.5 rounded-xl transition-all bg-white shadow-md hover:bg-slate-100">
+              <ArrowLeft className="w-4 h-4 text-slate-600" />
+            </button>
+            <ModuleNavMenu />
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-rose-600 bg-clip-text text-transparent flex items-center gap-3">
+                <List className="w-10 h-10 text-rose-500" />
+                Revisión de Tandas
+              </h1>
+              <p className="text-slate-500 mt-2">Programación de spots en bloques comerciales</p>
+            </div>
           </div>
           
           <div className="flex items-center gap-3">

@@ -1,7 +1,7 @@
-/**
- * ?? MOBILE: IA Predictiva de Renovación
+ï»¿/**
+ * ?? MOBILE: IA Predictiva de Renovaciï¿½n
  * 
- * Cards de predicción con probabilidad, tendencia,
+ * Cards de predicciï¿½n con probabilidad, tendencia,
  * acciones sugeridas, y alertas inteligentes.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -32,10 +32,10 @@ interface Pred {
 }
 
 const DATA: Pred[] = [
-  { id: 'p1', cliente: 'Banco Chile', contrato: 'SP-2024-0142', valor: 85e6, dias: 15, prob: 92, tend: 'up', riesgo: 'bajo', factores: ['3 renovaciones', 'Satisfacción alta'], accion: 'Llamar para confirmar' },
-  { id: 'p2', cliente: 'LATAM', contrato: 'SP-2024-0088', valor: 200e6, dias: 7, prob: 65, tend: 'down', riesgo: 'alto', factores: ['Sin respuesta 5 días', 'Competencia activa'], accion: 'Reunión urgente' },
+  { id: 'p1', cliente: 'Banco Chile', contrato: 'SP-2024-0142', valor: 85e6, dias: 15, prob: 92, tend: 'up', riesgo: 'bajo', factores: ['3 renovaciones', 'Satisfacciï¿½n alta'], accion: 'Llamar para confirmar' },
+  { id: 'p2', cliente: 'LATAM', contrato: 'SP-2024-0088', valor: 200e6, dias: 7, prob: 65, tend: 'down', riesgo: 'alto', factores: ['Sin respuesta 5 dï¿½as', 'Competencia activa'], accion: 'Reuniï¿½n urgente' },
   { id: 'p3', cliente: 'Falabella', contrato: 'SP-2024-0189', valor: 120e6, dias: 31, prob: 78, tend: 'stable', riesgo: 'medio', factores: ['Evaluando propuestas', 'Buen historial'], accion: 'Ofrecer 3% extra' },
-  { id: 'p4', cliente: 'Cencosud', contrato: 'SP-2024-0201', valor: 45e6, dias: 20, prob: 88, tend: 'up', riesgo: 'bajo', factores: ['Cliente 4 años', 'Ya pidió propuesta'], accion: 'Enviar propuesta Q2' },
+  { id: 'p4', cliente: 'Cencosud', contrato: 'SP-2024-0201', valor: 45e6, dias: 20, prob: 88, tend: 'up', riesgo: 'bajo', factores: ['Cliente 4 aï¿½os', 'Ya pidiï¿½ propuesta'], accion: 'Enviar propuesta Q2' },
 ];
 
 export function MobilePredictorView() {
@@ -60,20 +60,20 @@ export function MobilePredictorView() {
 
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-emerald-500 rounded-xl p-3 text-white text-center">
-          <Target className="w-4 h-4 mx-auto text-emerald-200" />
+        <div className="bg-[#6888ff]/50 rounded-xl p-3 text-white text-center">
+          <Target className="w-4 h-4 mx-auto text-[#6888ff]" />
           <p className="text-lg font-black mt-0.5">{avgProb}%</p>
-          <p className="text-[9px] text-emerald-200">Promedio</p>
+          <p className="text-[9px] text-[#6888ff]">Promedio</p>
         </div>
         <div className="bg-[#6888ff] rounded-xl p-3 text-white text-center">
           <DollarSign className="w-4 h-4 mx-auto text-white/70" />
           <p className="text-lg font-black mt-0.5">${(total / 1e6).toFixed(0)}M</p>
           <p className="text-[9px] text-white/70">En juego</p>
         </div>
-        <div className="bg-red-500 rounded-xl p-3 text-white text-center">
-          <AlertTriangle className="w-4 h-4 mx-auto text-red-200" />
+        <div className="bg-[#dfeaff]0 rounded-xl p-3 text-white text-center">
+          <AlertTriangle className="w-4 h-4 mx-auto text-[#9aa3b8]" />
           <p className="text-lg font-black mt-0.5">{riesgoAlto}</p>
-          <p className="text-[9px] text-red-200">Riesgo alto</p>
+          <p className="text-[9px] text-[#9aa3b8]">Riesgo alto</p>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export function MobilePredictorView() {
                   <svg className="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
                     <circle cx="20" cy="20" r="16" stroke="#bec8de" strokeWidth="3" fill="none" />
                     <circle cx="20" cy="20" r="16" strokeWidth="3" fill="none" strokeLinecap="round"
-                      stroke={p.prob >= 80 ? '#10b981' : p.prob >= 60 ? '#f59e0b' : '#ef4444'}
+                      stroke={p.prob >= 80 ? '#10b981' : p.prob >= 60 ? '#6888ff' : '#9aa3b8'}
                       strokeDasharray={`${p.prob * 1.005} 100.5`} />
                   </svg>
                   <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black">{p.prob}%</span>
@@ -100,15 +100,15 @@ export function MobilePredictorView() {
                   <div className="flex items-center gap-1.5">
                     <p className="text-xs font-bold text-[#69738c] truncate">{p.cliente}</p>
                     <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${
-                      p.riesgo === 'bajo' ? 'bg-emerald-100 text-emerald-600' :
-                      p.riesgo === 'medio' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'
+                      p.riesgo === 'bajo' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                      p.riesgo === 'medio' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
                     }`}>{p.riesgo}</span>
                   </div>
-                  <p className="text-[10px] text-[#9aa3b8]">${(p.valor / 1e6).toFixed(0)}M · {p.dias}d</p>
+                  <p className="text-[10px] text-[#9aa3b8]">${(p.valor / 1e6).toFixed(0)}M ï¿½ {p.dias}d</p>
                 </div>
 
-                {p.tend === 'up' && <TrendingUp className="w-4 h-4 text-emerald-500" />}
-                {p.tend === 'down' && <TrendingDown className="w-4 h-4 text-red-500" />}
+                {p.tend === 'up' && <TrendingUp className="w-4 h-4 text-[#6888ff]" />}
+                {p.tend === 'down' && <TrendingDown className="w-4 h-4 text-[#9aa3b8]" />}
                 {p.tend === 'stable' && <span className="text-xs text-[#9aa3b8]">?</span>}
                 <ChevronDown className={`w-3 h-3 text-[#9aa3b8] transition ${isExp ? 'rotate-180' : ''}`} />
               </button>
@@ -117,7 +117,7 @@ export function MobilePredictorView() {
                 <div className="px-3 pb-3 space-y-2 border-t border-[#bec8de30] pt-2">
                   {p.factores.map((f) => (
                     <div key={f} className="flex items-center gap-1.5 text-[10px] text-[#69738c]">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {f}
+                      <CheckCircle2 className="w-3 h-3 text-[#6888ff]" /> {f}
                     </div>
                   ))}
                   <div className="p-2 rounded-lg bg-[#dfeaff] border border-[#bec8de30]">
@@ -129,7 +129,7 @@ export function MobilePredictorView() {
                     <button className="flex-1 py-2 bg-[#6888ff] text-white rounded-lg text-[10px] font-bold active:scale-95 flex items-center justify-center gap-1">
                       <Phone className="w-3 h-3" /> Contactar
                     </button>
-                    <button className="flex-1 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-bold active:scale-95 flex items-center justify-center gap-1">
+                    <button className="flex-1 py-2 bg-[#6888ff] text-white rounded-lg text-[10px] font-bold active:scale-95 flex items-center justify-center gap-1">
                       <RefreshCw className="w-3 h-3" /> Renovar
                     </button>
                   </div>

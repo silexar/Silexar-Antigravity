@@ -6,14 +6,62 @@
  * 
  * @version 2050.1.0
  * @tier TIER_0_FORTUNE_10
+ * 
+ * MEJORAS APLICADAS (Módulo 13):
+ * - Zod validation para todos los inputs
+ * - Audit logging en todas las operaciones CRUD
+ * - withTenantContext para multi-tenancy
+ * - Resource type 'activos-digitales' en RBAC
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
+import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { withApiRoute } from '@/lib/api/with-api-route';
+import { db } from '@/lib/db';
+
+// ═══════════════════════════════════════════════════════════════
+// ZOD SCHEMAS - Validación de inputs
+// ═══════════════════════════════════════════════════════════════
+
+const CreateActivoDigitalSchema = z.object({
+  nombre: z.string().min(1, 'Nombre requerido').max(255),
+  tipo: z.string().min(1, 'Tipo requerido'),
+  tipoCategoria: z.string().min(1, 'Categoría requerida'),
+  anuncianteId: z.string().uuid().optional(),
+  anuncianteNombre: z.string().optional(),
+  campanaId: z.string().uuid().optional(),
+  campanaNombre: z.string().optional(),
+  formatoPrincipal: z.string().optional(),
+  segDemografica: z.object({
+    edadRangos: z.array(z.string()).optional(),
+  }).optional(),
+  segGeografica: z.object({
+    regiones: z.array(z.string()).optional(),
+  }).optional(),
+  segDispositivo: z.object({
+    tipos: z.array(z.string()).optional(),
+  }).optional(),
+  segConductual: z.object({
+    intereses: z.array(z.string()).optional(),
+  }).optional(),
+  alcanceEstimado: z.string().optional(),
+  presupuesto: z.object({
+    tipo: z.enum(['diario', 'total', 'mensual']).optional(),
+    monto: z.number().positive().optional(),
+  }).optional(),
+  fechaInicio: z.string().optional(),
+  fechaFin: z.string().optional(),
+  plataformas: z.array(z.string()).optional(),
+});
+
+const UpdateMasivoSchema = z.object({
+  activoIds: z.array(z.string()).min(1, 'Al menos un ID requerido'),
+  accion: z.enum(['activar', 'pausar', 'archivar']),
+});
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -26,15 +74,16 @@ interface ActivoDigitalData {
   tipo: string;
   tipoCategoria: string;
   estado: string;
+  tenantId: string;
   anuncianteId: string;
   anuncianteNombre: string;
   campanaId?: string;
   campanaNombre?: string;
-  
+
   // Creatividad
   formatoPrincipal: string;
   urlPreview?: string;
-  
+
   // Segmentación resumen
   segmentacionResumen: {
     demografica: string[];
@@ -43,7 +92,7 @@ interface ActivoDigitalData {
     intereses: string[];
   };
   alcanceEstimado: string;
-  
+
   // Métricas
   impresiones: number;
   clics: number;
@@ -51,24 +100,24 @@ interface ActivoDigitalData {
   conversiones: number;
   costoTotal: number;
   roas: number;
-  
+
   // Presupuesto
   presupuestoTipo: string;
   presupuestoMonto: number;
   presupuestoGastado: number;
-  
+
   // Programación
   fechaInicio: string;
   fechaFin: string;
   plataformas: string[];
-  
+
   // Auditoría
   fechaCreacion: string;
   creadoPor: string;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MOCK DATA
+// MOCK DATA (en memoria - refactorizar a BD en Fase 2)
 // ═══════════════════════════════════════════════════════════════
 
 // eslint-disable-next-line prefer-const
@@ -80,6 +129,7 @@ let mockActivos: ActivoDigitalData[] = [
     tipo: 'banner_display',
     tipoCategoria: 'banner',
     estado: 'activo',
+    tenantId: 'tenant-001',
     anuncianteId: 'anc-001',
     anuncianteNombre: 'Banco de Chile',
     campanaId: 'camp-001',
@@ -115,6 +165,7 @@ let mockActivos: ActivoDigitalData[] = [
     tipo: 'video_preroll',
     tipoCategoria: 'video',
     estado: 'activo',
+    tenantId: 'tenant-001',
     anuncianteId: 'anc-002',
     anuncianteNombre: 'Coca-Cola Chile',
     formatoPrincipal: '1920x1080',
@@ -147,6 +198,7 @@ let mockActivos: ActivoDigitalData[] = [
     tipo: 'story_ad',
     tipoCategoria: 'native',
     estado: 'programado',
+    tenantId: 'tenant-001',
     anuncianteId: 'anc-003',
     anuncianteNombre: 'LATAM Airlines',
     formatoPrincipal: '1080x1920',
@@ -179,6 +231,7 @@ let mockActivos: ActivoDigitalData[] = [
     tipo: 'audio_spot',
     tipoCategoria: 'audio',
     estado: 'pausado',
+    tenantId: 'tenant-002',
     anuncianteId: 'anc-005',
     anuncianteNombre: 'Entel',
     formatoPrincipal: 'Audio 30s',
@@ -211,6 +264,7 @@ let mockActivos: ActivoDigitalData[] = [
     tipo: 'carousel',
     tipoCategoria: 'native',
     estado: 'completado',
+    tenantId: 'tenant-002',
     anuncianteId: 'anc-004',
     anuncianteNombre: 'Falabella',
     formatoPrincipal: '1080x1080',
@@ -241,56 +295,63 @@ let mockActivos: ActivoDigitalData[] = [
 let secuencia = 5;
 
 // ═══════════════════════════════════════════════════════════════
-// GET - Listar activos con filtros
+// GET - Listar activos con filtros (multi-tenant)
 // ═══════════════════════════════════════════════════════════════
 
 export const GET = withApiRoute(
-  { resource: 'campanas', action: 'read', skipCsrf: true },
+  { resource: 'activos-digitales', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
     try {
       const { searchParams } = new URL(req.url);
-      
+
       const search = searchParams.get('search') || '';
       const tipo = searchParams.get('tipo') || '';
       const estado = searchParams.get('estado') || '';
       const plataforma = searchParams.get('plataforma') || '';
       const page = parseInt(searchParams.get('page') || '1', 10);
-      const limit = parseInt(searchParams.get('limit') || '20', 10);
+      const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
 
-      let filtered = [...mockActivos];
+      // Filter by tenant using withTenantContext
+      let filtered = await withTenantContext(ctx.tenantId, async () => {
+        return mockActivos.filter(a => a.tenantId === ctx.tenantId);
+      });
 
+      // Apply search filter
       if (search) {
         const s = search.toLowerCase();
-        filtered = filtered.filter(a => 
+        filtered = filtered.filter(a =>
           a.nombre.toLowerCase().includes(s) ||
           a.codigo.toLowerCase().includes(s) ||
           a.anuncianteNombre.toLowerCase().includes(s)
         );
       }
 
+      // Apply type filter
       if (tipo) {
         filtered = filtered.filter(a => a.tipoCategoria === tipo);
       }
 
+      // Apply status filter
       if (estado) {
         filtered = filtered.filter(a => a.estado === estado);
       }
 
+      // Apply platform filter
       if (plataforma) {
         filtered = filtered.filter(a => a.plataformas.includes(plataforma));
       }
 
-      // Métricas agregadas
+      // Calculate metrics for the tenant's assets
       const metricas = {
-        total: mockActivos.length,
-        activos: mockActivos.filter(a => a.estado === 'activo').length,
-        programados: mockActivos.filter(a => a.estado === 'programado').length,
-        pausados: mockActivos.filter(a => a.estado === 'pausado').length,
-        impresionesTotales: mockActivos.reduce((sum, a) => sum + a.impresiones, 0),
-        clicsTotales: mockActivos.reduce((sum, a) => sum + a.clics, 0),
-        inversionTotal: mockActivos.reduce((sum, a) => sum + a.costoTotal, 0),
-        roasPromedio: mockActivos.filter(a => a.roas > 0).reduce((sum, a) => sum + a.roas, 0) / 
-                      mockActivos.filter(a => a.roas > 0).length || 0
+        total: filtered.length,
+        activos: filtered.filter(a => a.estado === 'activo').length,
+        programados: filtered.filter(a => a.estado === 'programado').length,
+        pausados: filtered.filter(a => a.estado === 'pausado').length,
+        impresionesTotales: filtered.reduce((sum, a) => sum + a.impresiones, 0),
+        clicsTotales: filtered.reduce((sum, a) => sum + a.clics, 0),
+        inversionTotal: filtered.reduce((sum, a) => sum + a.costoTotal, 0),
+        roasPromedio: filtered.filter(a => a.roas > 0).reduce((sum, a) => sum + a.roas, 0) /
+          Math.max(filtered.filter(a => a.roas > 0).length, 1)
       };
 
       const total = filtered.length;
@@ -298,32 +359,78 @@ export const GET = withApiRoute(
       const offset = (page - 1) * limit;
       const data = filtered.slice(offset, offset + limit);
 
-      return NextResponse.json({
+      // Audit log for data access
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_ACCESS,
+        severity: AuditSeverity.LOW,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'read',
         success: true,
+        details: {
+          filters: { search, tipo, estado, plataforma },
+          resultCount: data.length,
+          totalFiltered: total,
+          tenantId: ctx.tenantId
+        }
+      });
+
+      return apiSuccess({
         data,
         metricas,
         pagination: { total, page, limit, totalPages }
-      });
-      
+      }, 200);
+
     } catch (error) {
-      logger.error('[API/ActivosDigitales] Error GET:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-      return NextResponse.json({ success: false, error: 'Error al obtener activos' }, { status: 500 });
+      logger.error('[API/ActivosDigitales] Error GET:', error instanceof Error ? error : undefined, {
+        module: 'activos-digitales',
+        action: 'GET',
+        tenantId: ctx.tenantId
+      });
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_ACCESS,
+        severity: AuditSeverity.MEDIUM,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'read',
+        success: false,
+        details: { error: error instanceof Error ? error.message : 'Unknown error', tenantId: ctx.tenantId }
+      });
+
+      return apiServerError() as unknown as NextResponse;
     }
   }
 );
 
 // ═══════════════════════════════════════════════════════════════
-// POST - Crear activo digital
+// POST - Crear activo digital (con validación Zod)
 // ═══════════════════════════════════════════════════════════════
 
 export const POST = withApiRoute(
-  { resource: 'campanas', action: 'create' },
+  { resource: 'activos-digitales', action: 'create' },
   async ({ ctx, req }) => {
     try {
-      const body = await req.json();
-      
-      if (!body.nombre?.trim()) {
-        return NextResponse.json({ success: false, error: 'Nombre requerido' }, { status: 400 });
+      let body: unknown;
+      try {
+        body = await req.json();
+      } catch {
+        return apiError('INVALID_JSON', 'Request body must be valid JSON', 400) as unknown as NextResponse;
+      }
+
+      // Validate input with Zod
+      const parsed = CreateActivoDigitalSchema.safeParse(body);
+      if (!parsed.success) {
+        auditLogger.logEvent({
+          eventType: AuditEventType.API_ERROR,
+          severity: AuditSeverity.MEDIUM,
+          userId: ctx.userId,
+          resource: 'activos-digitales',
+          action: 'create',
+          success: false,
+          details: { errors: parsed.error.flatten().fieldErrors, tenantId: ctx.tenantId }
+        });
+        return apiError('VALIDATION_ERROR', 'Datos de activo digital inválidos', 422, parsed.error.flatten().fieldErrors) as unknown as NextResponse;
       }
 
       secuencia += 1;
@@ -332,70 +439,126 @@ export const POST = withApiRoute(
       const newActivo: ActivoDigitalData = {
         id: `adx-${Date.now()}`,
         codigo,
-        nombre: body.nombre,
-        tipo: body.tipoEspecifico || 'banner_display',
-        tipoCategoria: body.tipoCategoria || 'banner',
+        nombre: parsed.data.nombre,
+        tipo: parsed.data.tipo,
+        tipoCategoria: parsed.data.tipoCategoria,
         estado: 'borrador',
-        anuncianteId: body.anuncianteId || '',
-        anuncianteNombre: body.anuncianteNombre || 'Nuevo Anunciante',
-        formatoPrincipal: body.formatoPrincipal || '300x250',
+        tenantId: ctx.tenantId,
+        anuncianteId: parsed.data.anuncianteId || '',
+        anuncianteNombre: parsed.data.anuncianteNombre || 'Nuevo Anunciante',
+        formatoPrincipal: parsed.data.formatoPrincipal || '300x250',
         segmentacionResumen: {
-          demografica: body.segDemografica?.edadRangos || [],
-          geografica: body.segGeografica?.regiones || [],
-          dispositivos: body.segDispositivo?.tipos || [],
-          intereses: body.segConductual?.intereses || []
+          demografica: parsed.data.segDemografica?.edadRangos || [],
+          geografica: parsed.data.segGeografica?.regiones || [],
+          dispositivos: parsed.data.segDispositivo?.tipos || [],
+          intereses: parsed.data.segConductual?.intereses || []
         },
-        alcanceEstimado: body.alcanceEstimado || '0',
+        alcanceEstimado: parsed.data.alcanceEstimado || '0',
         impresiones: 0,
         clics: 0,
         ctr: 0,
         conversiones: 0,
         costoTotal: 0,
         roas: 0,
-        presupuestoTipo: body.presupuesto?.tipo || 'diario',
-        presupuestoMonto: body.presupuesto?.monto || 0,
+        presupuestoTipo: parsed.data.presupuesto?.tipo || 'diario',
+        presupuestoMonto: parsed.data.presupuesto?.monto || 0,
         presupuestoGastado: 0,
-        fechaInicio: body.fechaInicio || new Date().toISOString().split('T')[0],
-        fechaFin: body.fechaFin || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
-        plataformas: body.plataformas || [],
+        fechaInicio: parsed.data.fechaInicio || new Date().toISOString().split('T')[0],
+        fechaFin: parsed.data.fechaFin || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        plataformas: parsed.data.plataformas || [],
         fechaCreacion: new Date().toISOString(),
-        creadoPor: ctx.userId || 'Usuario Actual'
+        creadoPor: ctx.userId || 'Usuario'
       };
 
       mockActivos.push(newActivo);
 
-      return NextResponse.json({
+      // Audit log for creation
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_CREATE,
+        severity: AuditSeverity.MEDIUM,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'create',
         success: true,
-        data: newActivo,
-        message: 'Activo digital creado exitosamente'
-      }, { status: 201 });
-      
+        details: {
+          activoId: newActivo.id,
+          codigo: newActivo.codigo,
+          nombre: newActivo.nombre,
+          tipo: newActivo.tipo,
+          tenantId: ctx.tenantId
+        }
+      });
+
+      logger.info('[API/ActivosDigitales] Activo creado', {
+        module: 'activos-digitales',
+        action: 'POST',
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        activoId: newActivo.id
+      });
+
+      return apiSuccess(newActivo, 201);
+
     } catch (error) {
-      logger.error('[API/ActivosDigitales] Error POST:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-      return NextResponse.json({ success: false, error: 'Error al crear activo' }, { status: 500 });
+      logger.error('[API/ActivosDigitales] Error POST:', error instanceof Error ? error : undefined, {
+        module: 'activos-digitales',
+        action: 'POST',
+        tenantId: ctx.tenantId
+      });
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_CREATE,
+        severity: AuditSeverity.HIGH,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'create',
+        success: false,
+        details: { error: error instanceof Error ? error.message : 'Unknown error', tenantId: ctx.tenantId }
+      });
+
+      return apiServerError() as unknown as NextResponse;
     }
   }
 );
 
 // ═══════════════════════════════════════════════════════════════
-// PUT - Actualización masiva
+// PUT - Actualización masiva (con validación Zod)
 // ═══════════════════════════════════════════════════════════════
 
 export const PUT = withApiRoute(
-  { resource: 'campanas', action: 'update' },
+  { resource: 'activos-digitales', action: 'update' },
   async ({ ctx, req }) => {
     try {
-      const body = await req.json();
-      
-      if (!body.activoIds || !Array.isArray(body.activoIds)) {
-        return NextResponse.json({ success: false, error: 'IDs requeridos' }, { status: 400 });
+      let body: unknown;
+      try {
+        body = await req.json();
+      } catch {
+        return apiError('INVALID_JSON', 'Request body must be valid JSON', 400) as unknown as NextResponse;
       }
 
+      // Validate input with Zod
+      const parsed = UpdateMasivoSchema.safeParse(body);
+      if (!parsed.success) {
+        auditLogger.logEvent({
+          eventType: AuditEventType.API_ERROR,
+          severity: AuditSeverity.MEDIUM,
+          userId: ctx.userId,
+          resource: 'activos-digitales',
+          action: 'update',
+          success: false,
+          details: { errors: parsed.error.flatten().fieldErrors, tenantId: ctx.tenantId }
+        });
+        return apiError('VALIDATION_ERROR', 'Datos de actualización inválidos', 422, parsed.error.flatten().fieldErrors) as unknown as NextResponse;
+      }
+
+      // Filter by tenant before updating
       let actualizados = 0;
-      for (const id of body.activoIds) {
-        const idx = mockActivos.findIndex(a => a.id === id);
+      const activosParaAudit: string[] = [];
+
+      for (const id of parsed.data.activoIds) {
+        const idx = mockActivos.findIndex(a => a.id === id && a.tenantId === ctx.tenantId);
         if (idx !== -1) {
-          switch (body.accion) {
+          switch (parsed.data.accion) {
             case 'activar':
               mockActivos[idx].estado = 'activo';
               break;
@@ -407,18 +570,58 @@ export const PUT = withApiRoute(
               break;
           }
           actualizados++;
+          activosParaAudit.push(id);
         }
       }
 
-      return NextResponse.json({
+      // Audit log for bulk update
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_UPDATE,
+        severity: AuditSeverity.MEDIUM,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'update',
         success: true,
+        details: {
+          accion: parsed.data.accion,
+          cantidadActualizados: actualizados,
+          activosIds: activosParaAudit,
+          tenantId: ctx.tenantId
+        }
+      });
+
+      logger.info('[API/ActivosDigitales] Activos actualizados', {
+        module: 'activos-digitales',
+        action: 'PUT',
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        accion: parsed.data.accion,
+        cantidad: actualizados
+      });
+
+      return apiSuccess({
         message: `${actualizados} activos actualizados`,
         actualizados
       });
-      
+
     } catch (error) {
-      logger.error('[API/ActivosDigitales] Error PUT:', error instanceof Error ? error : undefined, { module: 'activos-digitales' });
-      return NextResponse.json({ success: false, error: 'Error al actualizar' }, { status: 500 });
+      logger.error('[API/ActivosDigitales] Error PUT:', error instanceof Error ? error : undefined, {
+        module: 'activos-digitales',
+        action: 'PUT',
+        tenantId: ctx.tenantId
+      });
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_UPDATE,
+        severity: AuditSeverity.HIGH,
+        userId: ctx.userId,
+        resource: 'activos-digitales',
+        action: 'update',
+        success: false,
+        details: { error: error instanceof Error ? error.message : 'Unknown error', tenantId: ctx.tenantId }
+      });
+
+      return apiServerError() as unknown as NextResponse;
     }
   }
 );

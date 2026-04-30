@@ -35,8 +35,8 @@ export class TraficoAlertService {
     logger.info(`  Hora: ${new Date().toLocaleTimeString('es-CL')}`)
 
     // En producción, este servicio:
-    // 1. Consulta IVencimientoRepository.findVencimientosTerminanManana()
-    // 2. Consulta IVencimientoRepository.findVencimientosTerminanHoy()
+    // 1. Consulta IVencimientosRepository.findVencimientosTerminanManana()
+    // 2. Consulta IVencimientosRepository.findVencimientosTerminanHoy()
     // 3. Para cada uno, obtiene el operador de tráfico de la emisora
     // 4. Crea AlertaProgramador con factory methods
     // 5. Envía notificaciones por los canales configurados

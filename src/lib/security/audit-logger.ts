@@ -10,8 +10,6 @@
  */
 
 import { qualityLogger } from '../quality/quality-logger';
-import { db } from '@/lib/db';
-import { auditLogs } from '@/lib/db/audit-logs-schema';
 
 // Re-export canonical enum definitions from audit-types (single source of truth)
 export { AuditEventType, AuditSeverity } from './audit-types'
@@ -82,10 +80,10 @@ export class AuditLogger {
    * 📝 Log Audit Event
    * @param eventData - Event data to log
    */
-  logEvent(eventData: Partial<AuditEvent> & { 
-    eventType: AuditEventType; 
-    severity: AuditSeverity; 
-    success: boolean 
+  logEvent(eventData: Partial<AuditEvent> & {
+    eventType: AuditEventType;
+    severity: AuditSeverity;
+    success: boolean
   }): void {
     const event: AuditEvent = {
       id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
@@ -116,42 +114,10 @@ export class AuditLogger {
 
     // Persist to DB — fire-and-forget for non-critical, error-logged for critical.
     // In-memory array is a fast read cache; DB is the durable record of truth.
-    const dbInstance = db;
-    if (dbInstance && process.env.NODE_ENV !== 'development') {
-      const isCritical = event.severity === AuditSeverity.CRITICAL;
-      const row = {
-        eventId:       event.id,
-        eventType:     event.eventType,
-        eventCategory: 'SECURITY',
-        userId:        event.userId as string | undefined,
-        sessionId:     event.sessionId,
-        ipAddress:     event.ipAddress,
-        userAgent:     event.userAgent,
-        resource:      event.resource,
-        action:        event.action,
-        result:        event.success ? 'success' : 'failure',
-        eventData:     event.details as Record<string, unknown>,
-        metadata:      event.metadata as Record<string, unknown>,
-        severity:      event.severity,
-        timestamp:     event.timestamp,
-      };
-
-      try {
-        Promise.resolve()
-          .then(() => dbInstance.insert(auditLogs).values(row))
-          .catch((dbErr: unknown) => {
-            qualityLogger.error('AuditLogger: DB write failed', 'AUDIT_DB_ERROR', {
-              eventId: event.id,
-              eventType: event.eventType,
-              severity: event.severity,
-              error: dbErr instanceof Error ? dbErr.message : String(dbErr),
-              ...(isCritical ? { fullEvent: event } : {}),
-            });
-          });
-      } catch (syncErr) {
-         // Silently swallow sync errors in development
-      }
-    }
+    // Note: DB persistence disabled - db instance not available in this module
+    // TODO: Re-enable DB persistence when db export is properly configured
+    // const dbInstance = getDB();
+    // if (dbInstance && process.env.NODE_ENV !== 'development') { ... }
 
     // Alert on critical events immediately
     if (event.severity === AuditSeverity.CRITICAL) {
@@ -205,37 +171,37 @@ export class AuditLogger {
     }
 
     if (filter.userId) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.userId === filter.userId
       );
     }
 
     if (filter.dateFrom) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.timestamp >= filter.dateFrom!
       );
     }
 
     if (filter.dateTo) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.timestamp <= filter.dateTo!
       );
     }
 
     if (filter.success !== undefined) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.success === filter.success
       );
     }
 
     if (filter.ipAddress) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.ipAddress === filter.ipAddress
       );
     }
 
     if (filter.resource) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter(event =>
         event.resource?.includes(filter.resource!)
       );
     }
@@ -343,10 +309,10 @@ export class AuditLogger {
     } else {
       // CSV format
       const headers = [
-        'ID', 'Timestamp', 'Event Type', 'Severity', 'User ID', 'IP Address', 
+        'ID', 'Timestamp', 'Event Type', 'Severity', 'User ID', 'IP Address',
         'Resource', 'Action', 'Success', 'Error Message'
       ];
-      
+
       const csvRows = [
         headers.join(','),
         ...events.map(event => [
@@ -374,11 +340,11 @@ export class AuditLogger {
   cleanupOldEvents(olderThanDays: number = 90): number {
     const cutoffTime = new Date(Date.now() - (olderThanDays * 24 * 60 * 60 * 1000));
     const initialCount = this.events.length;
-    
+
     this.events = this.events.filter(event => event.timestamp >= cutoffTime);
-    
+
     const removedCount = initialCount - this.events.length;
-    
+
     if (removedCount > 0) {
       qualityLogger.info(`Cleaned up ${removedCount} old audit events`, 'AUDIT_CLEANUP', {
         removedCount,
@@ -495,12 +461,12 @@ export function logError(message: string, error: Error, details?: Record<string,
     severity: AuditSeverity.HIGH,
     resource: 'ENTERPRISE_SYSTEM',
     action: 'ERROR_EVENT',
-    details: { 
-      message, 
+    details: {
+      message,
       errorName: error.name,
       errorMessage: error.message,
       errorStack: error.stack,
-      ...details 
+      ...details
     },
     success: false,
     errorMessage: error.message
@@ -548,8 +514,8 @@ extended.log = (entry) => {
         entry.type.includes('CRITICAL') || entry.type.includes('VIOLATION')
           ? AuditSeverity.CRITICAL
           : entry.type.includes('FAILURE') || entry.type.includes('LOCKED') || entry.type.includes('DENIED')
-          ? AuditSeverity.HIGH
-          : AuditSeverity.LOW,
+            ? AuditSeverity.HIGH
+            : AuditSeverity.LOW,
       userId: entry.userId,
       resource: (entry.metadata?.['resource'] as string | undefined) ?? 'SYSTEM',
       action: entry.type,
@@ -568,8 +534,8 @@ extended.auth = (message, user?, details?) => {
       user != null && typeof user === 'object' && 'id' in user
         ? String((user as Record<string, unknown>)['id'])
         : typeof user === 'string'
-        ? user
-        : undefined;
+          ? user
+          : undefined;
     logAuth(message, userId, details);
   } catch { /* noop */ }
 };

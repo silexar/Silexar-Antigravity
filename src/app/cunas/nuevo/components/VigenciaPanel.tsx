@@ -304,7 +304,7 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
           <div>
             <h4 className="font-semibold text-slate-800">Alertas Automáticas</h4>
             <p className="text-sm text-slate-500">
-              Configure notificaciones antes del vencimiento
+              Configure notificaciones antes del vencimientos
             </p>
           </div>
         </div>
@@ -326,7 +326,7 @@ export const VigenciaPanel: React.FC<VigenciaPanelProps> = ({
             />
             <div className="flex-1">
               <span className="font-medium text-slate-700">
-                📅 Notificar 7 días antes del vencimiento
+                📅 Notificar 7 días antes del vencimientos
               </span>
               <span className="text-xs text-slate-500 block mt-0.5">
                 Enviará alerta a las 09:00 hrs

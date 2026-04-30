@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 🔔 SILEXAR PULSE - Alerts Panel Component TIER 0
  * 
  * @description Panel de alertas inteligentes con notificaciones
@@ -73,9 +73,9 @@ const neuro = {
 
 const getPrioridadColor = (prioridad: string) => {
   switch (prioridad) {
-    case 'urgente': return 'bg-red-100 text-red-700 ring-2 ring-red-300';
-    case 'alta': return 'bg-orange-100 text-orange-700';
-    case 'media': return 'bg-amber-100 text-amber-700';
+    case 'urgente': return 'bg-[#dfeaff] text-[#9aa3b8] ring-2 ring-red-300';
+    case 'alta': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'media': return 'bg-[#6888ff]/10 text-[#6888ff]';
     default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
@@ -127,7 +127,7 @@ export default function AlertasPanel({
         <button className={`${neuro.btnSecondary} p-2 relative`}>
           <Bell className="w-5 h-5" />
           {resumen.urgentes > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#dfeaff]0 text-white text-xs rounded-full flex items-center justify-center">
               {resumen.urgentes}
             </span>
           )}
@@ -162,7 +162,7 @@ export default function AlertasPanel({
             >
               <option value="TODOS">Todas</option>
               <option value="APROBACION_REQUERIDA">Aprobaciones</option>
-              <option value="VENCIMIENTO_PROXIMO">Vencimientos</option>
+              <option value="VENCIMIENTOS_PROXIMO">Vencimientos</option>
               <option value="PAGO_VENCIDO">Pagos</option>
               <option value="OPORTUNIDAD">Oportunidades</option>
             </select>
@@ -259,7 +259,7 @@ export default function AlertasPanel({
                         <div className={`absolute right-0 top-full mt-2 ${neuro.panel} p-2 z-10 min-w-40`}>
                           <button
                             onClick={() => handleResolver(alerta.id)}
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-green-50 text-green-600 rounded-lg flex items-center gap-2"
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-[#6888ff]/5 text-[#6888ff] rounded-lg flex items-center gap-2"
                           >
                             <Check className="w-4 h-4" />
                             Resolver

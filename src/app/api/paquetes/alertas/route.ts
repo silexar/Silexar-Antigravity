@@ -83,22 +83,22 @@ export async function GET(request: NextRequest) {
             }
 
             // Alerta de vigencia próxima
-            const diasHastaVencimiento = Math.ceil(
+            const diasHastaVencimientos = Math.ceil(
                 (new Date(paquete.vigenciaHasta).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
             )
 
-            if (diasHastaVencimiento > 0 && diasHastaVencimiento <= 30) {
+            if (diasHastaVencimientos > 0 && diasHastaVencimientos <= 30) {
                 alertas.push({
                     id: `alert_vig_${paquete.id}`,
                     tipo: 'VIGENCIA',
-                    prioridad: diasHastaVencimiento <= 7 ? 'ALTA' : 'MEDIA',
+                    prioridad: diasHastaVencimientos <= 7 ? 'ALTA' : 'MEDIA',
                     paqueteId: paquete.id,
                     paqueteNombre: paquete.nombre,
                     paqueteCodigo: paquete.codigo,
                     metric: {
-                        diasRestantes: diasHastaVencimiento
+                        diasRestantes: diasHastaVencimientos
                     },
-                    mensaje: `Vencimiento en ${diasHastaVencimiento} días`,
+                    mensaje: `Vencimientos en ${diasHastaVencimientos} días`,
                     accionSugerida: 'Revisar renovación o crear nuevo paquete',
                     fecha: new Date().toISOString()
                 })

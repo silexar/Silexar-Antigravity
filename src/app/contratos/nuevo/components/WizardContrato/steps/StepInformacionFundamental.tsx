@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📋 SILEXAR PULSE - Step 1: Información Fundamental TIER 0
  *
  * @description Paso 1 del wizard con auto-inteligencia,
@@ -203,20 +203,20 @@ const RiesgoBadge: React.FC<
   { nivel: Anunciante["nivelRiesgo"]; score: number }
 > = ({ nivel, score }) => {
   const config = {
-    bajo: { bg: "bg-green-100", text: "text-green-700", label: "Bajo Riesgo" },
+    bajo: { bg: "bg-[#6888ff]/10", text: "text-[#6888ff]", label: "Bajo Riesgo" },
     medio: {
-      bg: "bg-amber-100",
-      text: "text-amber-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       label: "Riesgo Medio",
     },
     alto: {
-      bg: "bg-orange-100",
-      text: "text-orange-700",
+      bg: "bg-[#6888ff]/10",
+      text: "text-[#6888ff]",
       label: "Riesgo Alto",
     },
     critico: {
-      bg: "bg-red-100",
-      text: "text-red-700",
+      bg: "bg-[#dfeaff]",
+      text: "text-[#9aa3b8]",
       label: "Riesgo Crítico",
     },
   }[nivel];
@@ -243,7 +243,7 @@ const AnuncianteCard: React.FC<{
     whileHover={{ scale: 1.01 }}
     className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
       seleccionado
-        ? "border-indigo-500 bg-[#6888ff15]/50 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
+        ? "border-[#bec8de] bg-[#6888ff15]/50 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
         : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#bec8de50] hover:shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
     }`}
   >
@@ -272,8 +272,8 @@ const AnuncianteCard: React.FC<{
         </div>
 
         {anunciante.terminosPreferenciales && (
-          <div className="mt-2 p-2 rounded-lg bg-green-50 border border-green-100">
-            <p className="text-xs text-green-700 flex items-center gap-1">
+          <div className="mt-2 p-2 rounded-lg bg-[#6888ff]/5 border border-[#bec8de]">
+            <p className="text-xs text-[#6888ff] flex items-center gap-1">
               <Star className="w-3 h-3" />
               Términos preferenciales:{" "}
               {anunciante.terminosPreferenciales.diasPago} días,{" "}
@@ -287,7 +287,7 @@ const AnuncianteCard: React.FC<{
             {anunciante.alertas.map((alerta, idx) => (
               <p
                 key={idx}
-                className="text-xs text-amber-600 flex items-center gap-1"
+                className="text-xs text-[#6888ff] flex items-center gap-1"
               >
                 <AlertTriangle className="w-3 h-3" />
                 {alerta}
@@ -299,7 +299,7 @@ const AnuncianteCard: React.FC<{
 
       <div className="text-right">
         <p className="text-xs text-[#9aa3b8]">Crédito disponible</p>
-        <p className="font-bold text-emerald-600">
+        <p className="font-bold text-[#6888ff]">
           {formatCurrency(anunciante.creditoDisponible)}
         </p>
         <p className="text-xs text-[#9aa3b8] mt-1">
@@ -320,7 +320,7 @@ const ProductoCard: React.FC<{
     whileHover={{ scale: 1.02 }}
     className={`p-4 rounded-xl border-2 text-left transition-all ${
       seleccionado
-        ? "border-indigo-500 bg-[#6888ff15]/50 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
+        ? "border-[#bec8de] bg-[#6888ff15]/50 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]"
         : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#bec8de50]"
     }`}
   >
@@ -329,7 +329,7 @@ const ProductoCard: React.FC<{
         <div className="flex items-center gap-2">
           <h4 className="font-semibold text-[#69738c]">{producto.nombre}</h4>
           {producto.recomendado && (
-            <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 text-xs font-medium flex items-center gap-1">
+            <span className="px-1.5 py-0.5 rounded bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium flex items-center gap-1">
               <Sparkles className="w-3 h-3" />
               Recomendado
             </span>
@@ -471,7 +471,7 @@ export default function StepInformacionFundamental({
               <Clock className="w-3 h-3" />
               <span>Bloqueado para evitar duplicados</span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+            <div className="flex items-center gap-1 text-xs text-[#6888ff] mt-1">
               <CheckCircle2 className="w-3 h-3" />
               <span>Auditoría registrada</span>
             </div>
@@ -486,7 +486,7 @@ export default function StepInformacionFundamental({
             <Building2 className="w-5 h-5 text-[#6888ff]" />
             <h3 className="text-lg font-semibold text-[#69738c]">Anunciante</h3>
             {anuncianteSeleccionado && (
-              <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+              <span className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium">
                 ✓ Seleccionado
               </span>
             )}
@@ -549,7 +549,7 @@ export default function StepInformacionFundamental({
                 </p>
                 <p className="text-xs text-[#9aa3b8] mt-1">
                   Disponible:{" "}
-                  <span className="text-emerald-600 font-medium">
+                  <span className="text-[#6888ff] font-medium">
                     {formatCurrency(anuncianteSeleccionado.creditoDisponible)}
                   </span>
                 </p>
@@ -643,17 +643,17 @@ export default function StepInformacionFundamental({
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-purple-500" />
+              <Target className="w-5 h-5 text-[#6888ff]" />
               <h3 className="text-lg font-semibold text-[#69738c]">
                 Producto / Campaña
               </h3>
               {productoSeleccionado && (
-                <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+                <span className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium">
                   ✓ Seleccionado
                 </span>
               )}
             </div>
-            <button className="px-3 py-1.5 rounded-lg bg-[#6888ff25] text-[#6888ff] text-sm font-medium flex items-center gap-1 hover:bg-indigo-200 transition-colors">
+            <button className="px-3 py-1.5 rounded-lg bg-[#6888ff25] text-[#6888ff] text-sm font-medium flex items-center gap-1 hover:bg-[#6888ff]/20 transition-colors">
               <Plus className="w-4 h-4" />
               Crear Producto
             </button>
@@ -671,14 +671,14 @@ export default function StepInformacionFundamental({
           </div>
 
           {/* Sugerencias IA */}
-          <div className="mt-4 p-4 rounded-xl bg-[#f59e0b15] border border-amber-200">
+          <div className="mt-4 p-4 rounded-xl bg-[#6888ff15] border border-[#bec8de]">
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-amber-600" />
-              <span className="font-medium text-amber-800">
+              <Sparkles className="w-5 h-5 text-[#6888ff]" />
+              <span className="font-medium text-[#6888ff]">
                 Sugerencias de Cortex IA
               </span>
             </div>
-            <p className="text-sm text-amber-700">
+            <p className="text-sm text-[#6888ff]">
               Basado en la industria{" "}
               <strong>{anuncianteSeleccionado.industria}</strong>{" "}
               y estacionalidad actual, recomendamos campañas de Radio y Digital

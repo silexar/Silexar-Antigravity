@@ -79,7 +79,7 @@ interface TareaPendiente {
   contratoId?: string;
   numeroContrato?: string;
   prioridad: 'baja' | 'media' | 'alta' | 'urgente';
-  vencimiento?: Date;
+  vencimientos?: Date;
 }
 
 const mockTareas: TareaPendiente[] = [
@@ -90,7 +90,7 @@ const mockTareas: TareaPendiente[] = [
     contratoId: 'ctr-003',
     numeroContrato: 'CTR-2025-003',
     prioridad: 'urgente',
-    vencimiento: new Date(Date.now() + 2 * 60 * 60 * 1000)
+    vencimientos: new Date(Date.now() + 2 * 60 * 60 * 1000)
   },
   {
     id: 't-002',
@@ -99,7 +99,7 @@ const mockTareas: TareaPendiente[] = [
     contratoId: 'ctr-002',
     numeroContrato: 'CTR-2025-002',
     prioridad: 'alta',
-    vencimiento: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    vencimientos: new Date(Date.now() + 24 * 60 * 60 * 1000)
   },
   {
     id: 't-003',
@@ -129,8 +129,8 @@ const formatCurrency = (value: number) => {
 
 const getPrioridadColor = (prioridad: string) => {
   switch (prioridad) {
-    case 'urgente': return { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' };
-    case 'alta': return { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' };
+    case 'urgente': return { bg: 'rgba(239,68,68,0.12)', text: '#9aa3b8' };
+    case 'alta': return { bg: 'rgba(245,158,11,0.12)', text: '#6888ff' };
     case 'media': return { bg: 'rgba(104,136,255,0.12)', text: '#6888ff' };
     default: return { bg: 'rgba(154,163,184,0.12)', text: N.textSub };
   }
@@ -138,7 +138,7 @@ const getPrioridadColor = (prioridad: string) => {
 
 const getTipoTareaIcon = (tipo: string) => {
   switch (tipo) {
-    case 'aprobar': return <CheckCircle className="w-4 h-4" style={{ color: '#22c55e' }} />;
+    case 'aprobar': return <CheckCircle className="w-4 h-4" style={{ color: '#6888ff' }} />;
     case 'revisar': return <Search className="w-4 h-4" style={{ color: N.accent }} />;
     case 'firmar': return <FileText className="w-4 h-4" style={{ color: '#a855f7' }} />;
     case 'subir': return <ExternalLink className="w-4 h-4" style={{ color: N.accent }} />;
@@ -244,7 +244,7 @@ export default function MiDashboardPage() {
               <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
                 <FileText className="w-6 h-6" style={{ color: N.accent }} />
               </div>
-              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: metricas.variacionVsSemanaAnterior > 0 ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)', color: metricas.variacionVsSemanaAnterior > 0 ? '#22c55e' : '#ef4444', boxShadow: insetSm }}>
+              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: metricas.variacionVsSemanaAnterior > 0 ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)', color: metricas.variacionVsSemanaAnterior > 0 ? '#6888ff' : '#9aa3b8', boxShadow: insetSm }}>
                 {metricas.variacionVsSemanaAnterior > 0 ? '+' : ''}{metricas.variacionVsSemanaAnterior}%
               </span>
             </div>
@@ -261,9 +261,9 @@ export default function MiDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
-                <DollarSign className="w-6 h-6" style={{ color: '#22c55e' }} />
+                <DollarSign className="w-6 h-6" style={{ color: '#6888ff' }} />
               </div>
-              <ArrowUpRight className="w-5 h-5" style={{ color: '#22c55e' }} />
+              <ArrowUpRight className="w-5 h-5" style={{ color: '#6888ff' }} />
             </div>
             <p className="text-3xl font-black mt-4" style={{ color: N.text }}>{formatCurrency(metricas.valorTotalGestionado)}</p>
             <p className="text-sm" style={{ color: N.textSub }}>Valor gestionado</p>
@@ -297,9 +297,9 @@ export default function MiDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="p-3 rounded-2xl" style={{ background: N.base, boxShadow: neuSm }}>
-                <Award className="w-6 h-6" style={{ color: '#f59e0b' }} />
+                <Award className="w-6 h-6" style={{ color: '#6888ff' }} />
               </div>
-              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', boxShadow: insetSm }}>
+              <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#6888ff', boxShadow: insetSm }}>
                 Top {ranking.posicion}
               </span>
             </div>
@@ -315,9 +315,9 @@ export default function MiDashboardPage() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
-                  <Hourglass className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Hourglass className="w-5 h-5" style={{ color: '#6888ff' }} />
                   Tareas pendientes
-                  <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', boxShadow: insetSm }}>
+                  <span className="px-3 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(245,158,11,0.12)', color: '#6888ff', boxShadow: insetSm }}>
                     {mockTareas.length}
                   </span>
                 </h3>
@@ -360,7 +360,7 @@ export default function MiDashboardPage() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
-                  <Zap className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Zap className="w-5 h-5" style={{ color: '#6888ff' }} />
                   Acciones rápidas
                 </h3>
                 <button className="text-xs font-bold" style={{ color: N.accent }}>Personalizar</button>
@@ -399,7 +399,7 @@ export default function MiDashboardPage() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
-                  <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
+                  <TrendingUp className="w-5 h-5" style={{ color: '#6888ff' }} />
                   Mi productividad
                 </h3>
               </div>
@@ -433,7 +433,7 @@ export default function MiDashboardPage() {
                           className="h-full rounded-full transition-all"
                           style={{ 
                             width: `${Math.min((minutos / 480) * 100, 100)}%`, 
-                            background: idx === 0 ? N.accent : idx === 1 ? '#a855f7' : idx === 2 ? '#f59e0b' : '#22c55e' 
+                            background: idx === 0 ? N.accent : idx === 1 ? '#a855f7' : idx === 2 ? '#6888ff' : '#6888ff' 
                           }}
                         />
                       </div>
@@ -455,7 +455,7 @@ export default function MiDashboardPage() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
-                  <Star className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Star className="w-5 h-5" style={{ color: '#6888ff' }} />
                   Favoritos
                 </h3>
                 <button className="text-xs font-bold" style={{ color: N.accent }}>+Agregar</button>
@@ -476,7 +476,7 @@ export default function MiDashboardPage() {
                       <p className="font-bold text-sm" style={{ color: N.text }}>{fav.numeroContrato}</p>
                       <span className="px-2 py-0.5 rounded-lg text-xs font-bold" style={{ 
                         background: fav.estado === 'ACTIVO' ? 'rgba(34,197,94,0.12)' : fav.estado === 'EN_APROBACION' ? 'rgba(245,158,11,0.12)' : 'rgba(154,163,184,0.12)', 
-                        color: fav.estado === 'ACTIVO' ? '#22c55e' : fav.estado === 'EN_APROBACION' ? '#f59e0b' : N.textSub,
+                        color: fav.estado === 'ACTIVO' ? '#6888ff' : fav.estado === 'EN_APROBACION' ? '#6888ff' : N.textSub,
                         boxShadow: insetSm
                       }}>
                         {fav.estado}
@@ -512,7 +512,7 @@ export default function MiDashboardPage() {
             <NeuCard className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2" style={{ color: N.text }}>
-                  <Award className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Award className="w-5 h-5" style={{ color: '#6888ff' }} />
                   Top del equipo
                 </h3>
               </div>
@@ -523,7 +523,7 @@ export default function MiDashboardPage() {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
                       idx === 0 ? '' : idx === 1 ? '' : ''
                     }`} style={{ 
-                      background: idx === 0 ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : idx === 1 ? 'linear-gradient(135deg, #94a3b8, #64748b)' : 'linear-gradient(135deg, #d97706, #b45309)' 
+                      background: idx === 0 ? 'linear-gradient(135deg, #fbbf24, #6888ff)' : idx === 1 ? 'linear-gradient(135deg, #94a3b8, #64748b)' : 'linear-gradient(135deg, #d97706, #b45309)' 
                     }}>
                       {idx + 1}
                     </div>

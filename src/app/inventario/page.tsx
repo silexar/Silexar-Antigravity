@@ -41,7 +41,7 @@ interface Cupo {
   vendidos: number;
 }
 
-interface Vencimiento {
+interface Vencimientos {
   id: string;
   cupoId: string;
   fecha: string;
@@ -93,7 +93,7 @@ const formatCurrency = (value: number) => `$${(value / 1000).toFixed(0)}K`;
 
 export default function InventarioPage() {
   const [cupos, setCupos] = useState<Cupo[]>([]);
-  const [vencimientos, setVencimientos] = useState<Vencimiento[]>([]);
+  const [vencimientos, setVencimientos] = useState<Vencimientos[]>([]);
   const [stats, setStats] = useState<Stats>({ totalCupos: 0, totalDisponibles: 0, totalVendidos: 0, ocupacion: 0, ingresosPotenciales: 0 });
   const [loading, setLoading] = useState(true);
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);

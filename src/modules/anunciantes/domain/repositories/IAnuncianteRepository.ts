@@ -20,4 +20,27 @@ export interface IAnuncianteRepository {
   count(tenantId: string, filters: BuscarAnunciantesFilters): Promise<number>;
   existsByRut(rut: string, tenantId: string, excludeId?: string): Promise<boolean>;
   generateCode(tenantId: string): Promise<string>;
+  /**
+   * Búsqueda enriquecida con datos agregados de contratos y cuñas
+   * Para el endpoint de búsqueda inteligente
+   */
+  findEnriched(tenantId: string, search?: string, limit?: number): Promise<AnuncianteEnriquecido[]>;
+}
+
+/**
+ * Datos enriquecidos para búsqueda inteligente
+ */
+export interface AnuncianteEnriquecido {
+  id: string;
+  nombre: string;
+  razonSocial: string;
+  rut: string;
+  industria: string;
+  estado: 'activo' | 'inactivo' | 'suspendido';
+  contratosActivos: number;
+  cunasActivas: number;
+  ultimaActividad: string;
+  riskLevel: 'bajo' | 'medio' | 'alto';
+  riskScore: number;
+  creditScore: number;
 }

@@ -67,7 +67,7 @@ export interface FinalizarAuspicioCommand {
   payload: {
     cupoComercialId: string
     finalizadoPor: string
-    motivo: 'vencimiento' | 'cancelacion' | 'no_inicio'
+    motivo: 'vencimientos' | 'cancelacion' | 'no_inicio'
     comentario?: string
   }
 }

@@ -6,7 +6,7 @@
  * - Estado válido para operación
  * - Audio presente y válido
  * - Duración dentro de rangos permitidos
- * - Vencimiento de contrato activo
+ * - Vencimientos de contrato activo
  * - Cumplimiento técnico (LUFS, peak, etc.)
  */
 
@@ -62,7 +62,7 @@ export const POST = withApiRoute(
             // Obtener parámetros de validación (opcionales)
             const body = await req.json().catch(() => ({}));
             const validarTechnical = body.validarTechnical ?? true;
-            const skipVencimiento = body.skipVencimiento ?? false;
+            const skipVencimientos = body.skipVencimientos ?? false;
 
             const errores: string[] = [];
             const advertencias: string[] = [];
@@ -134,33 +134,33 @@ export const POST = withApiRoute(
             }
 
             // 4. Validar vencimientos de contrato (si tiene contrato)
-            if (!skipVencimiento && cuna.contratoId) {
-                const vencimientosService = new VencimientosValidationService();
-                const validacionVencimiento = await vencimientosService.validarCuna(
+            if (!skipVencimientos && cuna.contratoId) {
+                const vencimientoservice = new VencimientosValidationService();
+                const validacionVencimientos = await vencimientoservice.validarCuna(
                     cunaId,
                     cuna.contratoId,
                     tenantId
                 );
 
-                if (validacionVencimiento.tieneVencimientoActivo) {
+                if (validacionVencimientos.tieneVencimientosActivo) {
                     validaciones.vencimientos = {
                         passed: true,
-                        mensaje: validacionVencimiento.observaciones || 'Vencimiento activo',
+                        mensaje: validacionVencimientos.observaciones || 'Vencimientos activo',
                     };
                 } else {
                     validaciones.vencimientos = {
                         passed: false,
-                        mensaje: validacionVencimiento.observaciones || 'Contrato sin vencimientos activo',
+                        mensaje: validacionVencimientos.observaciones || 'Contrato sin vencimientos activo',
                     };
-                    errores.push('Vencimiento de contrato inactivo');
+                    errores.push('Vencimientos de contrato inactivo');
                 }
 
                 // Verificar si está por vencer
-                if (validacionVencimiento.diasRestantes != null) {
-                    if (validacionVencimiento.diasRestantes <= 7) {
-                        advertencias.push(`Contrato vence en ${validacionVencimiento.diasRestantes} días`);
+                if (validacionVencimientos.diasRestantes != null) {
+                    if (validacionVencimientos.diasRestantes <= 7) {
+                        advertencias.push(`Contrato vence en ${validacionVencimientos.diasRestantes} días`);
                     }
-                    if (validacionVencimiento.diasRestantes <= 0) {
+                    if (validacionVencimientos.diasRestantes <= 0) {
                         errores.push('Contrato ya vencido');
                     }
                 }

@@ -21,6 +21,7 @@ import {
   ArrowLeft, LayoutDashboard,
   CalendarDays, MessageSquare, Zap, FileCheck2, Map, Receipt
 } from 'lucide-react'
+import { ModuleNavMenu } from '@/components/module-nav-menu'
 import { useTheme } from '@/hooks/useTheme'
 import { ContextMenuCampana, useContextMenu } from '@/components/campanas/ContextMenuCampana'
 import { ExportManager } from '@/components/campanas/ExportManager'
@@ -269,6 +270,7 @@ export default function CampanasPage() {
               <NeoButton variant="secondary" size="icon" onClick={() => router.push('/dashboard')} title="Volver al Dashboard">
                 <ArrowLeft className="w-4 h-4" style={{ color: neo.textSub }} />
               </NeoButton>
+              <ModuleNavMenu />
               <div className="p-3 rounded-xl" style={{ background: neo.accent, boxShadow: `4px 4px 8px ${neo.dark},-2px -2px 6px ${neo.light}` }}>
                 <Target className="h-6 w-6 text-white" />
               </div>

@@ -52,7 +52,7 @@ interface FacturaResumen {
   clienteRut: string;
   montoTotal: number;
   montoPendiente: number;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   diasMora: number;
   estado: string;
   probabilidadPago: number;
@@ -104,7 +104,7 @@ const neuro = {
     text-xs font-medium
   `,
   btnSuccess: `
-    bg-gradient-to-br from-green-500 to-emerald-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
@@ -124,7 +124,7 @@ const generarFacturasMock = (): FacturaResumen[] => [
     clienteRut: '97.004.000-5',
     montoTotal: 82450000,
     montoPendiente: 82450000,
-    fechaVencimiento: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     diasMora: -5,
     estado: 'EMITIDA',
     probabilidadPago: 92,
@@ -137,7 +137,7 @@ const generarFacturasMock = (): FacturaResumen[] => [
     clienteRut: '90.749.000-9',
     montoTotal: 45800000,
     montoPendiente: 45800000,
-    fechaVencimiento: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
     diasMora: 8,
     estado: 'VENCIDA',
     probabilidadPago: 78,
@@ -150,7 +150,7 @@ const generarFacturasMock = (): FacturaResumen[] => [
     clienteRut: '93.834.000-5',
     montoTotal: 120000000,
     montoPendiente: 60000000,
-    fechaVencimiento: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
     diasMora: 25,
     estado: 'PAGADA_PARCIAL',
     probabilidadPago: 65,
@@ -163,7 +163,7 @@ const generarFacturasMock = (): FacturaResumen[] => [
     clienteRut: '96.632.000-K',
     montoTotal: 38500000,
     montoPendiente: 38500000,
-    fechaVencimiento: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
     diasMora: 45,
     estado: 'EN_COBRANZA',
     probabilidadPago: 42,
@@ -176,7 +176,7 @@ const generarFacturasMock = (): FacturaResumen[] => [
     clienteRut: '93.458.000-1',
     montoTotal: 55200000,
     montoPendiente: 0,
-    fechaVencimiento: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
     diasMora: 0,
     estado: 'PAGADA_TOTAL',
     probabilidadPago: 100,
@@ -200,22 +200,22 @@ const formatFecha = (fecha: Date) => {
 
 const getEstadoConfig = (estado: string) => {
   const configs: Record<string, { label: string; color: string; bgColor: string }> = {
-    'EMITIDA': { label: 'Emitida', color: 'text-blue-600', bgColor: 'bg-blue-100' },
-    'ENVIADA_CLIENTE': { label: 'Enviada', color: 'text-[#6888ff]', bgColor: 'bg-indigo-100' },
-    'PAGADA_PARCIAL': { label: 'Pago Parcial', color: 'text-amber-600', bgColor: 'bg-amber-100' },
-    'PAGADA_TOTAL': { label: 'Pagada', color: 'text-green-600', bgColor: 'bg-green-100' },
-    'VENCIDA': { label: 'Vencida', color: 'text-orange-600', bgColor: 'bg-orange-100' },
-    'EN_COBRANZA': { label: 'En Cobranza', color: 'text-red-600', bgColor: 'bg-red-100' }
+    'EMITIDA': { label: 'Emitida', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    'ENVIADA_CLIENTE': { label: 'Enviada', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    'PAGADA_PARCIAL': { label: 'Pago Parcial', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    'PAGADA_TOTAL': { label: 'Pagada', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    'VENCIDA': { label: 'Vencida', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    'EN_COBRANZA': { label: 'En Cobranza', color: 'text-[#9aa3b8]', bgColor: 'bg-[#dfeaff]' }
   };
   return configs[estado] || { label: estado, color: 'text-[#69738c]', bgColor: 'bg-[#dfeaff]' };
 };
 
 const getRiesgoConfig = (riesgo: FacturaResumen['riesgo']) => {
   const configs = {
-    bajo: { color: 'text-green-600', bgColor: 'bg-green-100', ring: 'ring-green-500' },
-    medio: { color: 'text-amber-600', bgColor: 'bg-amber-100', ring: 'ring-amber-500' },
-    alto: { color: 'text-orange-600', bgColor: 'bg-orange-100', ring: 'ring-orange-500' },
-    critico: { color: 'text-red-600', bgColor: 'bg-red-100', ring: 'ring-red-500' }
+    bajo: { color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', ring: 'ring-green-500' },
+    medio: { color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', ring: 'ring-amber-500' },
+    alto: { color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10', ring: 'ring-orange-500' },
+    critico: { color: 'text-[#9aa3b8]', bgColor: 'bg-[#dfeaff]', ring: 'ring-red-500' }
   };
   return configs[riesgo];
 };
@@ -242,27 +242,27 @@ export default function FacturacionDashboardPage() {
         valor: formatCurrency(totalPendiente),
         cambio: 12.5,
         icono: <DollarSign className="w-6 h-6" />,
-        color: 'from-blue-500 to-indigo-600'
+        color: 'from-[#6888ff] to-[#5572ee]'
       },
       {
         label: 'Por Vencer (7 días)',
         valor: formatCurrency(pendientes.filter(f => f.diasMora > -7 && f.diasMora <= 0).reduce((acc, f) => acc + f.montoPendiente, 0)),
         icono: <Clock className="w-6 h-6" />,
-        color: 'from-amber-500 to-orange-600'
+        color: 'from-[#6888ff] to-[#5572ee]'
       },
       {
         label: 'Cartera Vencida',
         valor: formatCurrency(totalVencido),
         cambio: -8.2,
         icono: <AlertTriangle className="w-6 h-6" />,
-        color: 'from-red-500 to-pink-600'
+        color: 'from-[#6888ff] to-pink-600'
       },
       {
         label: 'Cobrado este Mes',
         valor: formatCurrency(55200000),
         cambio: 23.1,
         icono: <CheckCircle className="w-6 h-6" />,
-        color: 'from-green-500 to-emerald-600'
+        color: 'from-[#6888ff] to-[#5572ee]'
       }
     ];
   }, [facturas]);
@@ -280,10 +280,10 @@ export default function FacturacionDashboardPage() {
   const distribucion = useMemo(() => {
     const total = facturas.reduce((acc, f) => acc + f.montoPendiente, 0);
     const ranges = [
-      { label: 'Vigente', color: 'bg-green-500', monto: facturas.filter(f => f.diasMora <= 0).reduce((acc, f) => acc + f.montoPendiente, 0) },
-      { label: '1-30 días', color: 'bg-amber-500', monto: facturas.filter(f => f.diasMora > 0 && f.diasMora <= 30).reduce((acc, f) => acc + f.montoPendiente, 0) },
-      { label: '31-60 días', color: 'bg-orange-500', monto: facturas.filter(f => f.diasMora > 30 && f.diasMora <= 60).reduce((acc, f) => acc + f.montoPendiente, 0) },
-      { label: '60+ días', color: 'bg-red-500', monto: facturas.filter(f => f.diasMora > 60).reduce((acc, f) => acc + f.montoPendiente, 0) }
+      { label: 'Vigente', color: 'bg-[#6888ff]/50', monto: facturas.filter(f => f.diasMora <= 0).reduce((acc, f) => acc + f.montoPendiente, 0) },
+      { label: '1-30 días', color: 'bg-[#6888ff]/50', monto: facturas.filter(f => f.diasMora > 0 && f.diasMora <= 30).reduce((acc, f) => acc + f.montoPendiente, 0) },
+      { label: '31-60 días', color: 'bg-[#6888ff]/50', monto: facturas.filter(f => f.diasMora > 30 && f.diasMora <= 60).reduce((acc, f) => acc + f.montoPendiente, 0) },
+      { label: '60+ días', color: 'bg-[#dfeaff]0', monto: facturas.filter(f => f.diasMora > 60).reduce((acc, f) => acc + f.montoPendiente, 0) }
     ];
     return ranges.map(r => ({ ...r, porcentaje: total > 0 ? (r.monto / total) * 100 : 0 }));
   }, [facturas]);
@@ -295,7 +295,7 @@ export default function FacturacionDashboardPage() {
         <div className={`${neuro.panel} p-6 mb-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee]">
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -336,7 +336,7 @@ export default function FacturacionDashboardPage() {
                     {kpi.icono}
                   </div>
                   {kpi.cambio && (
-                    <div className={`flex items-center gap-1 text-sm ${kpi.cambio > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`flex items-center gap-1 text-sm ${kpi.cambio > 0 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
                       {kpi.cambio > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                       {Math.abs(kpi.cambio)}%
                     </div>
@@ -384,10 +384,10 @@ export default function FacturacionDashboardPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`w-2 h-12 rounded-full ${
-                          factura.diasMora > 30 ? 'bg-red-500' :
-                          factura.diasMora > 0 ? 'bg-amber-500' :
-                          factura.estado === 'PAGADA_TOTAL' ? 'bg-green-500' :
-                          'bg-blue-500'
+                          factura.diasMora > 30 ? 'bg-[#dfeaff]0' :
+                          factura.diasMora > 0 ? 'bg-[#6888ff]/50' :
+                          factura.estado === 'PAGADA_TOTAL' ? 'bg-[#6888ff]/50' :
+                          'bg-[#6888ff]/50'
                         }`} />
                         <div>
                           <div className="flex items-center gap-2">
@@ -417,10 +417,10 @@ export default function FacturacionDashboardPage() {
                         {/* Días mora */}
                         <div className="text-center">
                           <p className={`font-bold ${
-                            factura.diasMora > 30 ? 'text-red-600' :
-                            factura.diasMora > 0 ? 'text-amber-600' :
-                            factura.diasMora < 0 ? 'text-blue-600' :
-                            'text-green-600'
+                            factura.diasMora > 30 ? 'text-[#9aa3b8]' :
+                            factura.diasMora > 0 ? 'text-[#6888ff]' :
+                            factura.diasMora < 0 ? 'text-[#6888ff]' :
+                            'text-[#6888ff]'
                           }`}>
                             {factura.diasMora > 0 ? `+${factura.diasMora}` : factura.diasMora}
                           </p>
@@ -476,14 +476,14 @@ export default function FacturacionDashboardPage() {
             {/* Acciones Rápidas */}
             <div className={`${neuro.panel} p-6`}>
               <h3 className="font-bold text-[#69738c] mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-500" />
+                <Zap className="w-5 h-5 text-[#6888ff]" />
                 Acciones Rápidas
               </h3>
 
               <div className="space-y-2">
                 <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
-                  <div className="p-2 rounded-lg bg-blue-100">
-                    <Send className="w-4 h-4 text-blue-600" />
+                  <div className="p-2 rounded-lg bg-[#6888ff]/10">
+                    <Send className="w-4 h-4 text-[#6888ff]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-medium text-sm text-[#69738c]">Enviar recordatorios</p>
@@ -493,8 +493,8 @@ export default function FacturacionDashboardPage() {
                 </button>
 
                 <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
-                  <div className="p-2 rounded-lg bg-amber-100">
-                    <Phone className="w-4 h-4 text-amber-600" />
+                  <div className="p-2 rounded-lg bg-[#6888ff]/10">
+                    <Phone className="w-4 h-4 text-[#6888ff]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-medium text-sm text-[#69738c]">Ejecutar cobranza</p>
@@ -504,8 +504,8 @@ export default function FacturacionDashboardPage() {
                 </button>
 
                 <button className={`${neuro.card} w-full p-3 flex items-center gap-3 hover:ring-2 hover:ring-[#6888ff] transition-all`}>
-                  <div className="p-2 rounded-lg bg-green-100">
-                    <DollarSign className="w-4 h-4 text-green-600" />
+                  <div className="p-2 rounded-lg bg-[#6888ff]/10">
+                    <DollarSign className="w-4 h-4 text-[#6888ff]" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-medium text-sm text-[#69738c]">Conciliar pagos</p>
@@ -517,7 +517,7 @@ export default function FacturacionDashboardPage() {
             </div>
 
             {/* Predicción IA */}
-            <div className={`${neuro.panel} p-6 bg-gradient-to-br from-indigo-50 to-purple-50`}>
+            <div className={`${neuro.panel} p-6 bg-gradient-to-br from-[#6888ff] to-[#5572ee]`}>
               <h3 className="font-bold text-[#69738c] mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-[#6888ff]" />
                 Predicción Cortex-Flow
@@ -528,10 +528,10 @@ export default function FacturacionDashboardPage() {
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-[#69738c]">Recuperación 30 días</span>
-                      <span className="font-bold text-green-600">{formatCurrency(98500000)}</span>
+                      <span className="font-bold text-[#6888ff]">{formatCurrency(98500000)}</span>
                     </div>
                     <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full" style={{ width: '72%' }} />
+                      <div className="h-full bg-gradient-to-r from-[#6888ff] to-[#5572ee] rounded-full" style={{ width: '72%' }} />
                     </div>
                     <p className="text-xs text-[#69738c] mt-1">72% de la cartera pendiente</p>
                   </div>
@@ -539,15 +539,15 @@ export default function FacturacionDashboardPage() {
 
                 <div className="text-sm text-[#69738c]">
                   <p className="flex items-center gap-2 mb-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <CheckCircle className="w-4 h-4 text-[#6888ff]" />
                     85% de clientes pagará a tiempo
                   </p>
                   <p className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" />
+                    <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
                     2 clientes en riesgo alto
                   </p>
                   <p className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="w-4 h-4 text-[#9aa3b8]" />
                     $38.5M requiere acción urgente
                   </p>
                 </div>

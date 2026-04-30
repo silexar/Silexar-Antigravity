@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - Activity Dashboard (Client)
+ * ðŸ“Š SILEXAR PULSE - Activity Dashboard (Client)
  * Dashboard de actividad del tenant
  * 
  * @description Activity:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Activity,
   Users,
@@ -35,7 +33,7 @@ interface ActivityEvent {
   action: string
   resource: string
   timestamp: Date
-  type: 'create' | 'update' | 'delete' | 'view' | 'login'
+  type: 'create' | 'Actualizar' | 'Eliminar' | 'view' | 'login'
 }
 
 interface DailyStats {
@@ -61,11 +59,11 @@ export function ClientActivityDashboard() {
 
     setActivities([
       { id: 'act_001', user: 'María González', action: 'Creó campaña', resource: 'Black Friday 2025', timestamp: new Date(Date.now() - 5 * 60 * 1000), type: 'create' },
-      { id: 'act_002', user: 'Carlos López', action: 'Editó configuración', resource: 'Notificaciones', timestamp: new Date(Date.now() - 15 * 60 * 1000), type: 'update' },
+      { id: 'act_002', user: 'Carlos López', action: 'Editó configuración', resource: 'Notificaciones', timestamp: new Date(Date.now() - 15 * 60 * 1000), type: 'Actualizar' },
       { id: 'act_003', user: 'Ana Silva', action: 'Descargó reporte', resource: 'Analytics Enero', timestamp: new Date(Date.now() - 30 * 60 * 1000), type: 'view' },
       { id: 'act_004', user: 'Pedro Martínez', action: 'Inició sesión', resource: 'Sistema', timestamp: new Date(Date.now() - 45 * 60 * 1000), type: 'login' },
-      { id: 'act_005', user: 'María González', action: 'Pausó campaña', resource: 'Navidad 2024', timestamp: new Date(Date.now() - 60 * 60 * 1000), type: 'update' },
-      { id: 'act_006', user: 'Carlos López', action: 'Eliminó lead', resource: 'Lead duplicado', timestamp: new Date(Date.now() - 90 * 60 * 1000), type: 'delete' },
+      { id: 'act_005', user: 'María González', action: 'Pausó campaña', resource: 'Navidad 2024', timestamp: new Date(Date.now() - 60 * 60 * 1000), type: 'Actualizar' },
+      { id: 'act_006', user: 'Carlos López', action: 'Eliminó lead', resource: 'Lead duplicado', timestamp: new Date(Date.now() - 90 * 60 * 1000), type: 'Eliminar' },
       { id: 'act_007', user: 'Ana Silva', action: 'Creó equipo', resource: 'Ventas Norte', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), type: 'create' }
     ])
 
@@ -84,12 +82,12 @@ export function ClientActivityDashboard() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'create': return 'bg-green-500/20 text-green-400'
-      case 'update': return 'bg-blue-500/20 text-blue-400'
-      case 'delete': return 'bg-red-500/20 text-red-400'
-      case 'view': return 'bg-purple-500/20 text-purple-400'
-      case 'login': return 'bg-cyan-500/20 text-cyan-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'create': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'Actualizar': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'Eliminar': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'view': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'login': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -100,8 +98,8 @@ export function ClientActivityDashboard() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Activity Dashboard...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Activity Dashboard...</p>
         </div>
       </div>
     )
@@ -111,100 +109,100 @@ export function ClientActivityDashboard() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Activity className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Activity className="w-5 h-5 text-[#6888ff]" />
           Activity Dashboard
         </h3>
         <div className="flex items-center gap-2">
-          <div className="flex bg-slate-800 rounded-lg p-1">
+          <div className="flex bg-[#dfeaff] rounded-lg p-1">
             {(['today', 'week', 'month'] as const).map(tf => (
               <button
                 key={tf}
                 onClick={() => setTimeframe(tf)}
-                className={`px-3 py-1 text-sm rounded capitalize ${timeframe === tf ? 'bg-purple-500 text-white' : 'text-slate-400'}`}
+                className={`px-3 py-1 text-sm rounded capitalize ${timeframe === tf ? 'bg-[#6888ff] text-white' : 'text-[#9aa3b8]'}`}
               >
                 {tf === 'today' ? 'Hoy' : tf === 'week' ? 'Semana' : 'Mes'}
               </button>
             ))}
           </div>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4" />
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Users className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{todayStats.logins}</p>
-          <p className="text-xs text-slate-400">Logins Hoy</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Activity className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{todayStats.actions}</p>
-          <p className="text-xs text-slate-400">Acciones Hoy</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <BarChart3 className="w-6 h-6 text-green-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{todayStats.campaigns}</p>
-          <p className="text-xs text-slate-400">Campañas Creadas</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <TrendingUp className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-400">+12%</p>
-          <p className="text-xs text-slate-400">vs Ayer</p>
-        </NeuromorphicCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Users className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{todayStats.logins}</p>
+          <p className="text-xs text-[#9aa3b8]">Logins Hoy</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Activity className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{todayStats.actions}</p>
+          <p className="text-xs text-[#9aa3b8]">Acciones Hoy</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <BarChart3 className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{todayStats.campaigns}</p>
+          <p className="text-xs text-[#9aa3b8]">Campañas Creadas</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <TrendingUp className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">+12%</p>
+          <p className="text-xs text-[#9aa3b8]">vs Ayer</p>
+        </NeuCard>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         {/* Activity Chart */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-slate-400" />
-            Actividad Últimos 7 Días
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[#9aa3b8]" />
+            Actividad Ášltimos 7 Días
           </h4>
           <div className="h-40 flex items-end gap-2">
             {stats.map((day) => (
               <div key={day.date} className="flex-1 flex flex-col items-center">
-                <div 
-                  className="w-full bg-purple-500/50 hover:bg-purple-500 transition-colors rounded-t"
+                <div
+                  className="w-full bg-[#6888ff]/50 hover:bg-[#6888ff] transition-colors rounded-t"
                   style={{ height: `${(day.actions / maxActions) * 100}%` }}
                   title={`${day.actions} acciones`}
                 />
-                <span className="text-xs text-slate-500 mt-1">
+                <span className="text-xs text-[#9aa3b8] mt-1">
                   {new Date(day.date).toLocaleDateString('es', { weekday: 'short' })}
                 </span>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Recent Activity */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#9aa3b8]" />
             Actividad Reciente
           </h4>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {activities.map(act => (
-              <div key={act.id} className="flex items-center justify-between p-2 bg-slate-800/50 rounded">
+              <div key={act.id} className="flex items-center justify-between p-2 bg-[#dfeaff]/50 rounded">
                 <div className="flex items-center gap-2">
                   <span className={`text-xs px-2 py-0.5 rounded capitalize ${getTypeColor(act.type)}`}>
                     {act.type}
                   </span>
                   <div>
-                    <span className="text-white text-sm">{act.user}</span>
-                    <p className="text-xs text-slate-500">{act.action}: {act.resource}</p>
+                    <span className="text-[#69738c] text-sm">{act.user}</span>
+                    <p className="text-xs text-[#9aa3b8]">{act.action}: {act.resource}</p>
                   </div>
                 </div>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-[#9aa3b8]">
                   {Math.round((Date.now() - act.timestamp.getTime()) / 60000)}m
                 </span>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
     </div>
   )

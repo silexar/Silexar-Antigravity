@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * 💰 SILEXAR PULSE - Billing & Invoicing
+ * ðŸ’° SILEXAR PULSE - Billing & Invoicing
  * Sistema de facturación y cobros
  * 
  * @description Gestión financiera:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   DollarSign,
   CreditCard,
@@ -43,7 +41,7 @@ interface Invoice {
   tenantName: string
   amount: number
   currency: string
-  status: 'paid' | 'pending' | 'overdue' | 'draft'
+  status: 'paid' | 'Pendiente' | 'overdue' | 'draft'
   issuedDate: Date
   dueDate: Date
   paidDate?: Date
@@ -132,7 +130,7 @@ export function BillingInvoicing() {
         tenantName: 'RDF Media',
         amount: 4500,
         currency: 'USD',
-        status: 'pending',
+        status: 'Pendiente',
         issuedDate: new Date(),
         dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
         items: [
@@ -162,49 +160,49 @@ export function BillingInvoicing() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'paid': return 'bg-green-500/20 text-green-400'
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400'
-      case 'overdue': return 'bg-red-500/20 text-red-400'
-      case 'draft': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'paid': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'Pendiente': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'overdue': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'draft': return 'bg-slate-500/20 text-[#9aa3b8]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'paid': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'pending': return <Clock className="w-4 h-4 text-yellow-400" />
-      case 'overdue': return <AlertTriangle className="w-4 h-4 text-red-400" />
-      case 'draft': return <FileText className="w-4 h-4 text-slate-400" />
-      default: return <FileText className="w-4 h-4 text-slate-400" />
+      case 'paid': return <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'Pendiente': return <Clock className="w-4 h-4 text-[#6888ff]" />
+      case 'overdue': return <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+      case 'draft': return <FileText className="w-4 h-4 text-[#9aa3b8]" />
+      default: return <FileText className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const sendInvoice = (invoice: Invoice) => {
-    
+
     alert(`Factura ${invoice.number} enviada a ${invoice.tenantName}`)
   }
 
   const markAsPaid = (invoiceId: string) => {
-    setInvoices(prev => prev.map(inv => 
+    setInvoices(prev => prev.map(inv =>
       inv.id === invoiceId ? { ...inv, status: 'paid', paidDate: new Date() } : inv
     ))
   }
 
-  const filteredInvoices = invoices.filter(inv => 
+  const filteredInvoices = invoices.filter(inv =>
     statusFilter === 'all' || inv.status === statusFilter
   )
 
   const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0)
-  const pendingAmount = invoices.filter(i => i.status === 'pending').reduce((sum, i) => sum + i.amount, 0)
+  const pendingAmount = invoices.filter(i => i.status === 'Pendiente').reduce((sum, i) => sum + i.amount, 0)
   const overdueAmount = invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.amount, 0)
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Billing...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Billing...</p>
         </div>
       </div>
     )
@@ -214,62 +212,61 @@ export function BillingInvoicing() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <DollarSign className="w-5 h-5 text-[#6888ff]" />
           Billing & Invoicing
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary">
           <Plus className="w-4 h-4 mr-1" />
           Nueva Factura
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-4 bg-green-500/10 rounded-lg">
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-green-400">Este Mes</span>
+            <TrendingUp className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-xs text-[#6888ff]">Este Mes</span>
           </div>
-          <p className="text-2xl font-bold text-white">${totalRevenue.toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Recaudado</p>
+          <p className="text-2xl font-bold text-[#69738c]">${totalRevenue.toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Recaudado</p>
         </div>
-        <div className="p-4 bg-yellow-500/10 rounded-lg">
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="text-xs text-yellow-400">{invoices.filter(i => i.status === 'pending').length}</span>
+            <Clock className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-xs text-[#6888ff]">{invoices.filter(i => i.status === 'Pendiente').length}</span>
           </div>
-          <p className="text-2xl font-bold text-white">${pendingAmount.toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Pendiente</p>
+          <p className="text-2xl font-bold text-[#69738c]">${pendingAmount.toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Pendiente</p>
         </div>
-        <div className="p-4 bg-red-500/10 rounded-lg">
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <span className="text-xs text-red-400">{invoices.filter(i => i.status === 'overdue').length}</span>
+            <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-xs text-[#6888ff]">{invoices.filter(i => i.status === 'overdue').length}</span>
           </div>
-          <p className="text-2xl font-bold text-white">${overdueAmount.toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Vencido</p>
+          <p className="text-2xl font-bold text-[#69738c]">${overdueAmount.toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Vencido</p>
         </div>
-        <div className="p-4 bg-slate-800/50 rounded-lg">
+        <div className="p-4 bg-[#dfeaff]/50 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <FileText className="w-5 h-5 text-slate-400" />
+            <FileText className="w-5 h-5 text-[#9aa3b8]" />
           </div>
-          <p className="text-2xl font-bold text-white">{invoices.length}</p>
-          <p className="text-xs text-slate-400">Total Facturas</p>
+          <p className="text-2xl font-bold text-[#69738c]">{invoices.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Facturas</p>
         </div>
       </div>
 
       {/* Filter */}
       <div className="flex items-center gap-2">
-        {['all', 'paid', 'pending', 'overdue', 'draft'].map(status => (
+        {['all', 'paid', 'Pendiente', 'overdue', 'draft'].map(status => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${
-              statusFilter === status 
-                ? 'bg-green-600 text-white' 
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-            }`}
+            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${statusFilter === status
+              ? 'bg-[#6888ff] text-white'
+              : 'bg-[#dfeaff] text-[#9aa3b8] hover:bg-[#dfeaff]'
+              }`}
           >
             {status === 'all' ? 'Todas' : status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
@@ -279,25 +276,22 @@ export function BillingInvoicing() {
       {/* Invoices List */}
       <div className="space-y-3">
         {filteredInvoices.map(invoice => (
-          <NeuromorphicCard 
+          <NeuCard
             key={invoice.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer hover:border-green-500/30 transition-all ${
-              selectedInvoice?.id === invoice.id ? 'ring-1 ring-green-500/50' : ''
-            }`}
-            onClick={() => setSelectedInvoice(invoice)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 {getStatusIcon(invoice.status)}
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{invoice.number}</span>
+                    <span className="text-[#69738c] font-medium">{invoice.number}</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(invoice.status)}`}>
                       {invoice.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
+                  <div className="flex items-center gap-2 text-xs text-[#9aa3b8] mt-1">
                     <Building2 className="w-3 h-3" />
                     <span>{invoice.tenantName}</span>
                     <span>•</span>
@@ -309,29 +303,29 @@ export function BillingInvoicing() {
 
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-[#69738c]">
                     ${invoice.amount.toLocaleString()}
                   </p>
-                  <p className="text-xs text-slate-500">{invoice.currency}</p>
+                  <p className="text-xs text-[#9aa3b8]">{invoice.currency}</p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button 
+                  <button
                     onClick={(e) => { e.stopPropagation(); sendInvoice(invoice); }}
-                    className="p-1.5 text-slate-400 hover:text-blue-400"
+                    className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                     title="Enviar"
                   >
                     <Send className="w-4 h-4" />
                   </button>
-                  <button 
-                    className="p-1.5 text-slate-400 hover:text-green-400"
+                  <button
+                    className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                     title="Descargar"
                   >
                     <Download className="w-4 h-4" />
                   </button>
-                  {invoice.status === 'pending' && (
-                    <button 
+                  {invoice.status === 'Pendiente' && (
+                    <button
                       onClick={(e) => { e.stopPropagation(); markAsPaid(invoice.id); }}
-                      className="p-1.5 text-slate-400 hover:text-green-400"
+                      className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                       title="Marcar como pagada"
                     >
                       <CheckCircle className="w-4 h-4" />
@@ -340,45 +334,45 @@ export function BillingInvoicing() {
                 </div>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Invoice Detail */}
       {selectedInvoice && (
-        <NeuromorphicCard variant="glow" className="p-6">
-          <h4 className="text-white font-bold mb-4 flex items-center gap-2">
-            <Eye className="w-4 h-4 text-green-400" />
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-bold mb-4 flex items-center gap-2">
+            <Eye className="w-4 h-4 text-[#6888ff]" />
             Detalle: {selectedInvoice.number}
           </h4>
 
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <p className="text-xs text-slate-400">Cliente</p>
-                <p className="text-white">{selectedInvoice.tenantName}</p>
+                <p className="text-xs text-[#9aa3b8]">Cliente</p>
+                <p className="text-[#69738c]">{selectedInvoice.tenantName}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Emitida</p>
-                <p className="text-white">{selectedInvoice.issuedDate.toLocaleDateString()}</p>
+                <p className="text-xs text-[#9aa3b8]">Emitida</p>
+                <p className="text-[#69738c]">{selectedInvoice.issuedDate.toLocaleDateString()}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Vencimiento</p>
-                <p className="text-white">{selectedInvoice.dueDate.toLocaleDateString()}</p>
+                <p className="text-xs text-[#9aa3b8]">Vencimientos</p>
+                <p className="text-[#69738c]">{selectedInvoice.dueDate.toLocaleDateString()}</p>
               </div>
             </div>
 
             <div className="border-t border-slate-700 pt-4">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-slate-400">
+                  <tr className="text-[#9aa3b8]">
                     <th className="text-left pb-2">Descripción</th>
                     <th className="text-center pb-2">Cantidad</th>
                     <th className="text-right pb-2">Precio Unit.</th>
                     <th className="text-right pb-2">Total</th>
                   </tr>
                 </thead>
-                <tbody className="text-white">
+                <tbody className="text-[#69738c]">
                   {selectedInvoice.items.map((item, i) => (
                     <tr key={item.description}>
                       <td className="py-2">{item.description}</td>
@@ -391,13 +385,13 @@ export function BillingInvoicing() {
                 <tfoot>
                   <tr className="border-t border-slate-700">
                     <td colSpan={3} className="text-right pt-3 font-bold">Total:</td>
-                    <td className="text-right pt-3 font-bold text-green-400">${selectedInvoice.amount}</td>
+                    <td className="text-right pt-3 font-bold text-[#6888ff]">${selectedInvoice.amount}</td>
                   </tr>
                 </tfoot>
               </table>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

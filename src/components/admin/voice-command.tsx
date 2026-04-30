@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🎙️ SILEXAR PULSE - Voice Command Center
+ * ðŸŽ™ï¸ SILEXAR PULSE - Voice Command Center
  * Control por voz del sistema
  * 
  * @description Comandos de voz:
@@ -16,9 +16,8 @@
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Mic,
   MicOff,
@@ -36,7 +35,7 @@ interface VoiceCommand {
   transcript: string
   response: string
   timestamp: Date
-  status: 'success' | 'error' | 'processing'
+  status: 'success' | 'error' | 'Procesando'
   action?: string
 }
 
@@ -107,20 +106,20 @@ export function VoiceCommandCenter() {
       transcript,
       response: 'Procesando...',
       timestamp: new Date(),
-      status: 'processing'
+      status: 'Procesando'
     }
     setCommandHistory(prev => [newCommand, ...prev])
     setCurrentTranscript('')
 
     // Simular respuesta de IA
     setTimeout(() => {
-      setCommandHistory(prev => prev.map(cmd => 
-        cmd.id === newCommand.id 
+      setCommandHistory(prev => prev.map(cmd =>
+        cmd.id === newCommand.id
           ? {
-              ...cmd,
-              response: generateAIResponse(transcript),
-              status: 'success'
-            }
+            ...cmd,
+            response: generateAIResponse(transcript),
+            status: 'success'
+          }
           : cmd
       ))
     }, 1500)
@@ -152,10 +151,10 @@ export function VoiceCommandCenter() {
 
   const getCategoryStyle = (category: string) => {
     switch (category) {
-      case 'query': return 'bg-blue-500/20 text-blue-400'
-      case 'action': return 'bg-orange-500/20 text-orange-400'
-      case 'report': return 'bg-purple-500/20 text-purple-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'query': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'action': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'report': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -163,50 +162,49 @@ export function VoiceCommandCenter() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Mic className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Mic className="w-5 h-5 text-[#6888ff]" />
           Voice Command Center
-          <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded">AI-Powered</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">AI-Powered</span>
         </h3>
       </div>
 
       {/* Main Voice Control */}
-      <NeuromorphicCard variant="glow" className="p-8 text-center">
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '2rem', background: N.base }}>
         <button
           onClick={toggleListening}
-          className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 transition-all ${
-            isListening 
-              ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' 
-              : 'bg-purple-600 hover:bg-purple-500'
-          }`}
+          className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 transition-all ${isListening
+            ? 'bg-[#6888ff] animate-pulse shadow-lg shadow-red-500/50'
+            : 'bg-[#6888ff] hover:bg-[#6888ff]'
+            }`}
         >
           {isListening ? (
-            <MicOff className="w-10 h-10 text-white" />
+            <MicOff className="w-10 h-10 text-[#69738c]" />
           ) : (
-            <Mic className="w-10 h-10 text-white" />
+            <Mic className="w-10 h-10 text-[#69738c]" />
           )}
         </button>
 
-        <p className="text-white text-lg mb-2">
-          {isListening ? '🎙️ Escuchando...' : 'Presiona para hablar'}
+        <p className="text-[#69738c] text-lg mb-2">
+          {isListening ? 'ðŸŽ™ï¸ Escuchando...' : 'Presiona para hablar'}
         </p>
 
         {currentTranscript && (
-          <div className="p-4 bg-slate-800/50 rounded-lg mb-4">
-            <p className="text-slate-400 text-sm mb-1">Escuchando:</p>
-            <p className="text-white text-lg">&quot;{currentTranscript}&quot;</p>
+          <div className="p-4 bg-[#dfeaff]/50 rounded-lg mb-4">
+            <p className="text-[#9aa3b8] text-sm mb-1">Escuchando:</p>
+            <p className="text-[#69738c] text-lg">&quot;{currentTranscript}&quot;</p>
           </div>
         )}
 
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-[#9aa3b8]">
           Di &quot;Hey Silexar&quot; seguido de tu comando
         </p>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Quick Voice Actions */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Zap className="w-4 h-4 text-yellow-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Zap className="w-4 h-4 text-[#6888ff]" />
           Comandos Rápidos
         </h4>
         <div className="grid grid-cols-2 gap-2">
@@ -214,47 +212,47 @@ export function VoiceCommandCenter() {
             <button
               key={action.phrase}
               onClick={() => executeQuickAction(action.phrase)}
-              className="p-3 bg-slate-800/50 rounded-lg text-left hover:bg-slate-700/50 transition-all group"
+              className="p-3 bg-[#dfeaff]/50 rounded-lg text-left hover:bg-[#dfeaff]/50 transition-all group"
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className={`text-xs px-1.5 py-0.5 rounded ${getCategoryStyle(action.category)}`}>
                   {action.category}
                 </span>
               </div>
-              <p className="text-white text-sm group-hover:text-purple-400 transition-colors">
+              <p className="text-[#69738c] text-sm group-hover:text-[#6888ff] transition-colors">
                 &quot;{action.phrase}&quot;
               </p>
-              <p className="text-xs text-slate-500">{action.description}</p>
+              <p className="text-xs text-[#9aa3b8]">{action.description}</p>
             </button>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Command History */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-cyan-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#6888ff]" />
           Historial de Comandos
         </h4>
         <div className="space-y-3 max-h-64 overflow-y-auto">
           {commandHistory.map(cmd => (
-            <div key={cmd.id} className="p-3 bg-slate-800/30 rounded-lg">
+            <div key={cmd.id} className="p-3 bg-[#dfeaff]/30 rounded-lg">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-1">
-                  {cmd.status === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                  {cmd.status === 'error' && <AlertTriangle className="w-4 h-4 text-red-400" />}
-                  {cmd.status === 'processing' && <Activity className="w-4 h-4 text-blue-400 animate-spin" />}
+                  {cmd.status === 'success' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {cmd.status === 'error' && <AlertTriangle className="w-4 h-4 text-[#6888ff]" />}
+                  {cmd.status === 'Procesando' && <Activity className="w-4 h-4 text-[#6888ff] animate-spin" />}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <MessageSquare className="w-3 h-3 text-slate-400" />
-                    <span className="text-white text-sm">&quot;{cmd.transcript}&quot;</span>
+                    <MessageSquare className="w-3 h-3 text-[#9aa3b8]" />
+                    <span className="text-[#69738c] text-sm">&quot;{cmd.transcript}&quot;</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Brain className="w-3 h-3 text-purple-400 mt-0.5" />
-                    <p className="text-sm text-slate-300">{cmd.response}</p>
+                    <Brain className="w-3 h-3 text-[#6888ff] mt-0.5" />
+                    <p className="text-sm text-[#69738c]">{cmd.response}</p>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-[#9aa3b8] mt-1">
                     {cmd.timestamp.toLocaleTimeString()}
                   </p>
                 </div>
@@ -262,7 +260,7 @@ export function VoiceCommandCenter() {
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

@@ -19,7 +19,7 @@ y documentar EXACTAMENTE qué falta.
 | 4    | **VER cuñas del anunciante**       | ⚠️ Solo lista | 📋 Vista previa completa    |
 | 5    | **ESCUCHAR cuña antes de asignar** | ⚠️ Basic      | 🔊 Player real con waveform |
 | 6    | **Ver duración exacta**            | ✅            | -                           |
-| 7    | **Ver vencimiento de cuña**        | ❌            | ⚠️ Alerta si vence pronto   |
+| 7    | **Ver vencimientos de cuña**        | ❌            | ⚠️ Alerta si vence pronto   |
 | 8    | **Ver Copy Instructions**          | ❌            | 📋 Texto de mención visible |
 | 9    | Asignar cuña a línea               | ✅            | -                           |
 | 10   | **Asignar CUÑA GEMELA**            | ❌            | 👯 Sistema de cuñas gemelas |
@@ -253,13 +253,13 @@ y documentar EXACTAMENTE qué falta.
 - "Enviar al inicio" / "Enviar al final"
 - Respeto de reglas anti-competencia
 
-### 11. ⏰ ALERTA DE VENCIMIENTO DE CUÑA - **MEDIO**
+### 11. ⏰ ALERTA DE VENCIMIENTOS DE CUÑA - **MEDIO**
 
 **Lo que falta:**
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ ⚠️ ALERTAS DE VENCIMIENTO                                       │
+│ ⚠️ ALERTAS DE VENCIMIENTOS                                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │ 🔴 VENCE HOY:                                                   │
@@ -303,7 +303,7 @@ y documentar EXACTAMENTE qué falta.
 | 8   | Mover Cuña entre Líneas       | 🟠 ALTO    | 2h          |
 | 9   | Vista Ocupación Bloque        | 🟠 ALTO    | 3h          |
 | 10  | Reordenar Cuñas en Bloque     | 🟡 MEDIO   | 2h          |
-| 11  | Alertas Vencimiento           | 🟡 MEDIO   | 2h          |
+| 11  | Alertas Vencimientos           | 🟡 MEDIO   | 2h          |
 | 12  | Notas por Spot                | 🟡 MEDIO   | 1h          |
 
 ---
@@ -318,7 +318,7 @@ y documentar EXACTAMENTE qué falta.
 | 2   | Reproductor Audio      | `ReproductorAudioCuna.tsx`   | ✅ COMPLETO |
 | 3   | Operaciones Cuñas      | `GestorOperacionesCunas.tsx` | ✅ COMPLETO |
 | 4   | Vista Ocupación        | `VistaOcupacionBloque.tsx`   | ✅ COMPLETO |
-| 5   | Alertas Vencimiento    | `AlertasVencimiento.tsx`     | ✅ COMPLETO |
+| 5   | Alertas Vencimientos    | `AlertasVencimientos.tsx`     | ✅ COMPLETO |
 | 6   | Hook Atajos Teclado    | `hooks/useAtajosTeclado.ts`  | ✅ COMPLETO |
 | 7   | Notas por Spot         | `NotasSpotManager.tsx`       | ✅ COMPLETO |
 | 8   | Panel Bulk Operaciones | `PanelBulkOperaciones.tsx`   | ✅ COMPLETO |

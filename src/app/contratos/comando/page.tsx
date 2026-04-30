@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📋 SILEXAR PULSE - Centro de Comando Comercial TIER 0
  * 
  * @description Pantalla principal para gestión comercial diaria
@@ -303,10 +303,10 @@ const formatCurrency = (value: number) => {
 const _EstadoBadge: React.FC<{ estado: ContratoComercial['estado'] }> = ({ estado }) => {
   const config = {
     borrador: { bg: 'rgba(104,136,255,0.12)', text: N.accent, label: 'Borrador' },
-    negociacion: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', label: 'Negociación' },
+    negociacion: { bg: 'rgba(245,158,11,0.12)', text: '#6888ff', label: 'Negociación' },
     aprobacion: { bg: 'rgba(249,115,22,0.12)', text: '#f97316', label: 'Aprobación' },
-    aprobado: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e', label: 'Aprobado' },
-    rechazado: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444', label: 'Rechazado' },
+    aprobado: { bg: 'rgba(34,197,94,0.12)', text: '#6888ff', label: 'Aprobado' },
+    rechazado: { bg: 'rgba(239,68,68,0.12)', text: '#9aa3b8', label: 'Rechazado' },
     renovacion: { bg: 'rgba(168,85,247,0.12)', text: '#a855f7', label: 'Renovación' }
   }[estado];
 
@@ -319,7 +319,7 @@ const _EstadoBadge: React.FC<{ estado: ContratoComercial['estado'] }> = ({ estad
 
 const UrgenciaBadge: React.FC<{ urgencia: ContratoComercial['urgencia']; horas?: number }> = ({ urgencia, horas }) => {
   const config = {
-    critico: { bg: '#ef4444', text: '#fff', label: horas ? `${horas}h` : 'Crítico' },
+    critico: { bg: '#9aa3b8', text: '#fff', label: horas ? `${horas}h` : 'Crítico' },
     urgente: { bg: '#f97316', text: '#fff', label: horas ? `${horas}h` : 'Urgente' },
     semana: { bg: N.accent, text: '#fff', label: 'Esta Semana' },
     normal: { bg: N.dark, text: N.text, label: 'Sin Prisa' }
@@ -342,7 +342,7 @@ const ValidacionIcon: React.FC<{ ok: boolean; procesando?: boolean; label: strin
     );
   }
   return (
-    <div className="flex items-center gap-1" style={{ color: ok ? '#22c55e' : '#f59e0b' }}>
+    <div className="flex items-center gap-1" style={{ color: ok ? '#6888ff' : '#6888ff' }}>
       {ok ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
       <span className="text-xs">{label}</span>
     </div>
@@ -405,14 +405,14 @@ const ContratoRow: React.FC<{
           <p className="text-sm pl-6" style={{ color: N.textSub }}>{contrato.campana}</p>
           <div className="flex items-center gap-3 text-xs pl-6">
             <span style={{ color: N.textSub }}>
-              📊 Score: <strong style={{ color: contrato.scoreRiesgo >= 700 ? '#22c55e' : '#f59e0b' }}>
+              📊 Score: <strong style={{ color: contrato.scoreRiesgo >= 700 ? '#6888ff' : '#6888ff' }}>
                 {contrato.scoreRiesgo}/1000
               </strong> • {contrato.scoreRiesgo >= 700 ? 'Bajo Riesgo' : 'Revisar'}
             </span>
           </div>
           <div className="text-xs pl-6">
             <span style={{ color: N.textSub }}>
-              🎯 Renovación: <strong style={{ color: contrato.probabilidadRenovacion >= 80 ? '#22c55e' : '#f59e0b' }}>
+              🎯 Renovación: <strong style={{ color: contrato.probabilidadRenovacion >= 80 ? '#6888ff' : '#6888ff' }}>
                 {contrato.probabilidadRenovacion}%
               </strong> probable
             </span>
@@ -431,7 +431,7 @@ const ContratoRow: React.FC<{
               className="h-full rounded-full transition-all"
               style={{ 
                 width: `${contrato.porcentajeTiempo}%`,
-                background: contrato.porcentajeTiempo > 80 ? '#ef4444' : contrato.porcentajeTiempo > 50 ? '#f59e0b' : '#22c55e'
+                background: contrato.porcentajeTiempo > 80 ? '#9aa3b8' : contrato.porcentajeTiempo > 50 ? '#6888ff' : '#6888ff'
               }}
             />
           </div>
@@ -446,9 +446,9 @@ const ContratoRow: React.FC<{
       <td className="px-4 py-3">
         <div className="space-y-1 text-sm">
           <p style={{ color: N.textSub }}>💰 Bruto: <strong style={{ color: N.text }}>{formatCurrency(contrato.valorBruto)}</strong></p>
-          <p style={{ color: N.textSub }}>💵 Neto: <strong style={{ color: '#22c55e' }}>{formatCurrency(contrato.valorNeto)}</strong></p>
+          <p style={{ color: N.textSub }}>💵 Neto: <strong style={{ color: '#6888ff' }}>{formatCurrency(contrato.valorNeto)}</strong></p>
           <p style={{ color: N.textSub }}>
-            📊 Margen: <strong style={{ color: contrato.margen >= 35 ? '#22c55e' : '#f59e0b' }}>
+            📊 Margen: <strong style={{ color: contrato.margen >= 35 ? '#6888ff' : '#6888ff' }}>
               {contrato.margen}%
             </strong>
           </p>
@@ -474,10 +474,10 @@ const ContratoRow: React.FC<{
           <button onClick={onView} aria-label="Ver" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.accent }} title="Ver">
             <Eye className="w-4 h-4" />
           </button>
-          <button onClick={onEdit} aria-label="Editar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#f59e0b' }} title="Editar">
+          <button onClick={onEdit} aria-label="Editar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#6888ff' }} title="Editar">
             <Edit3 className="w-4 h-4" />
           </button>
-          <button onClick={onApprove} aria-label="Aprobar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#22c55e' }} title="Aprobar">
+          <button onClick={onApprove} aria-label="Aprobar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: '#6888ff' }} title="Aprobar">
             <CheckCircle2 className="w-4 h-4" />
           </button>
           <button aria-label="Llamar" className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }} title="Llamar">
@@ -568,7 +568,7 @@ export default function CentroComandoPage() {
             <div className="flex items-center gap-2">
               <button aria-label="Notificaciones" className="p-2.5 rounded-xl relative transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: '#9aa3b8' }} />
               </button>
             </div>
           </div>
@@ -583,7 +583,7 @@ export default function CentroComandoPage() {
             <div className="relative">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                  <Sparkles className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Sparkles className="w-5 h-5" style={{ color: '#6888ff' }} />
                 </div>
                 <h2 className="font-black" style={{ color: N.text }}>📊 ESTADO COMERCIAL TIEMPO REAL</h2>
               </div>
@@ -597,17 +597,17 @@ export default function CentroComandoPage() {
                 <MetricaCard 
                   valor={formatCurrency(metricas.valorPipeline)} 
                   label="Pipeline" 
-                  color="#22c55e"
+                  color="#6888ff"
                 />
                 <MetricaCard 
                   valor={metricas.esperandoAprobacion} 
                   label="Esperando Aprobación" 
-                  color="#f59e0b"
+                  color="#6888ff"
                 />
                 <MetricaCard 
                   valor={metricas.firmadosHoy} 
                   label="Firmados Hoy" 
-                  color="#22c55e"
+                  color="#6888ff"
                 />
                 <MetricaCard 
                   valor={`${metricas.tasaCierre}%`} 
@@ -626,15 +626,15 @@ export default function CentroComandoPage() {
                   <Target className="w-5 h-5" style={{ color: N.accent }} />
                   <span style={{ color: N.text }}>
                     💰 Meta Mensual: <strong>{formatCurrency(metricas.metaMensual)}</strong>
-                    <span className="ml-2 font-bold" style={{ color: '#22c55e' }}>({metricas.metaCompletada}% completado)</span>
+                    <span className="ml-2 font-bold" style={{ color: '#6888ff' }}>({metricas.metaCompletada}% completado)</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" style={{ color: '#f59e0b' }} />
-                  <span style={{ color: N.text }}>🎯 Faltan: <strong style={{ color: '#f59e0b' }}>{formatCurrency(faltaParaMeta)}</strong></span>
+                  <TrendingUp className="w-5 h-5" style={{ color: '#6888ff' }} />
+                  <span style={{ color: N.text }}>🎯 Faltan: <strong style={{ color: '#6888ff' }}>{formatCurrency(faltaParaMeta)}</strong></span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid #ef444440' }}>
-                  <AlertTriangle className="w-4 h-4" style={{ color: '#ef4444' }} />
+                <div className="flex items-center gap-2 px-3 py-1 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid #9aa3b840' }}>
+                  <AlertTriangle className="w-4 h-4" style={{ color: '#9aa3b8' }} />
                   <span className="text-sm" style={{ color: N.text }}>
                     🚨 Próxima Acción: <strong>{metricas.proximaAccion.cliente}</strong> - Decisión en {metricas.proximaAccion.tiempo}
                   </span>

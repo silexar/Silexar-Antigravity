@@ -1,11 +1,11 @@
 /**
- * ?? SILEXAR PULSE - Gestión de Cuotas TIER 0
+ * ?? SILEXAR PULSE - Gestiï¿½n de Cuotas TIER 0
  * 
- * @description Componente para gestión inteligente de cuotas con:
+ * @description Componente para gestiï¿½n inteligente de cuotas con:
  * - Generador de cuotas con IA
- * - Visualización de plan de pagos
- * - Modificación de fechas y montos
- * - Predicción de cumplimiento
+ * - Visualizaciï¿½n de plan de pagos
+ * - Modificaciï¿½n de fechas y montos
+ * - Predicciï¿½n de cumplimiento
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -33,7 +33,7 @@ import {
 interface Cuota {
   numero: number;
   monto: number;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   estado: 'pendiente' | 'programada' | 'emitida' | 'pagada' | 'vencida';
   prediccionPago: number; // 0-100
   riesgo: 'bajo' | 'medio' | 'alto';
@@ -120,30 +120,30 @@ const generarCuotasIA = (valorTotal: number, numeroCuotas: number, fechaInicio: 
     
     switch (distribucion) {
       case 'progresiva':
-        // Las cuotas van creciendo (más fácil al inicio)
+        // Las cuotas van creciendo (mï¿½s fï¿½cil al inicio)
         monto = (valorTotal / numeroCuotas) * (0.7 + (i / numeroCuotas) * 0.6);
         break;
       case 'decreciente':
-        // Las cuotas van decreciendo (más peso al inicio)
+        // Las cuotas van decreciendo (mï¿½s peso al inicio)
         monto = (valorTotal / numeroCuotas) * (1.3 - (i / numeroCuotas) * 0.6);
         break;
       default:
         monto = valorTotal / numeroCuotas;
     }
     
-    // Ajustar última cuota para completar el total exacto
+    // Ajustar ï¿½ltima cuota para completar el total exacto
     if (i === numeroCuotas) {
       const sumaPrevias = cuotas.reduce((acc, c) => acc + c.monto, 0);
       monto = valorTotal - sumaPrevias;
     }
     
-    // Calcular predicción basada en número de cuota y monto
+    // Calcular predicciï¿½n basada en nï¿½mero de cuota y monto
     const prediccion = Math.max(50, Math.min(98, 95 - (i * 3) - (monto / valorTotal) * 10));
     
     cuotas.push({
       numero: i,
       monto: Math.round(monto),
-      fechaVencimiento: new Date(fechaCuota),
+      fechaVencimientos: new Date(fechaCuota),
       estado: 'programada',
       prediccionPago: Math.round(prediccion),
       riesgo: prediccion > 80 ? 'bajo' : prediccion > 60 ? 'medio' : 'alto'
@@ -186,7 +186,7 @@ export default function GestorCuotasContrato({
     setCuotas(generarCuotasIA(valorContrato, numeroCuotas, fechaInicio, distribucion));
   };
 
-  // Estadísticas
+  // Estadï¿½sticas
   const stats = useMemo(() => {
     const total = cuotas.reduce((acc, c) => acc + c.monto, 0);
     const promPrediccion = cuotas.reduce((acc, c) => acc + c.prediccionPago, 0) / cuotas.length;
@@ -200,21 +200,21 @@ export default function GestorCuotasContrato({
     if (scoreCliente > 800) {
       return {
         texto: 'Cliente excelente. Puedes ofrecer hasta 6 cuotas sin riesgo adicional.',
-        color: 'text-green-600',
-        bgColor: 'bg-green-50'
+        color: 'text-[#6888ff]',
+        bgColor: 'bg-[#6888ff]/5'
       };
     }
     if (scoreCliente > 600) {
       return {
-        texto: 'Cliente bueno. Recomendamos máximo 4 cuotas con distribución uniforme.',
-        color: 'text-blue-600',
-        bgColor: 'bg-blue-50'
+        texto: 'Cliente bueno. Recomendamos mï¿½ximo 4 cuotas con distribuciï¿½n uniforme.',
+        color: 'text-[#6888ff]',
+        bgColor: 'bg-[#6888ff]/5'
       };
     }
     return {
-      texto: 'Cliente de riesgo. Minimizar cuotas o exigir garantía adicional.',
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50'
+      texto: 'Cliente de riesgo. Minimizar cuotas o exigir garantï¿½a adicional.',
+      color: 'text-[#6888ff]',
+      bgColor: 'bg-[#6888ff]/5'
     };
   }, [scoreCliente]);
 
@@ -223,7 +223,7 @@ export default function GestorCuotasContrato({
     if (campo === 'monto') {
       nuevas[index].monto = valor as number;
     } else {
-      nuevas[index].fechaVencimiento = valor as Date;
+      nuevas[index].fechaVencimientos = valor as Date;
     }
     setCuotas(nuevas);
     setEditandoCuota(null);
@@ -283,9 +283,9 @@ export default function GestorCuotasContrato({
               className="mt-4 pt-4 border-t border-[#bec8de30] overflow-hidden"
             >
               <div className="grid grid-cols-3 gap-4">
-                {/* Número de cuotas */}
+                {/* Nï¿½mero de cuotas */}
                 <div>
-                  <label className="block text-sm text-[#69738c] mb-2">Número de cuotas</label>
+                  <label className="block text-sm text-[#69738c] mb-2">Nï¿½mero de cuotas</label>
                   <select
                     value={numeroCuotas}
                     onChange={e => {
@@ -299,9 +299,9 @@ export default function GestorCuotasContrato({
                   </select>
                 </div>
 
-                {/* Distribución */}
+                {/* Distribuciï¿½n */}
                 <div>
-                  <label className="block text-sm text-[#69738c] mb-2">Distribución</label>
+                  <label className="block text-sm text-[#69738c] mb-2">Distribuciï¿½n</label>
                   <select
                     value={distribucion}
                     onChange={e => setDistribucion(e.target.value as PlanCuotas['distribucion'])}
@@ -319,15 +319,15 @@ export default function GestorCuotasContrato({
                   <label className="block text-sm text-[#69738c] mb-2">Score Cliente</label>
                   <div className={`${neuro.card} px-4 py-3 flex items-center gap-2`}>
                     <TrendingUp className={`w-5 h-5 ${
-                      scoreCliente > 800 ? 'text-green-500' :
-                      scoreCliente > 600 ? 'text-blue-500' :
-                      'text-amber-500'
+                      scoreCliente > 800 ? 'text-[#6888ff]' :
+                      scoreCliente > 600 ? 'text-[#6888ff]' :
+                      'text-[#6888ff]'
                     }`} />
                     <span className="font-bold text-[#69738c]">{scoreCliente}/1000</span>
                     <span className={`${neuro.badge} ${
-                      scoreCliente > 800 ? 'bg-green-100 text-green-700' :
-                      scoreCliente > 600 ? 'bg-blue-100 text-blue-700' :
-                      'bg-amber-100 text-amber-700'
+                      scoreCliente > 800 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                      scoreCliente > 600 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                      'bg-[#6888ff]/10 text-[#6888ff]'
                     }`}>
                       {scoreCliente > 800 ? 'Excelente' : scoreCliente > 600 ? 'Bueno' : 'Riesgo'}
                     </span>
@@ -348,7 +348,7 @@ export default function GestorCuotasContrato({
       {/* Timeline de cuotas */}
       <div className="p-6">
         <div className="relative">
-          {/* Línea de tiempo */}
+          {/* Lï¿½nea de tiempo */}
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#dfeaff]" />
 
           <div className="space-y-4">
@@ -362,9 +362,9 @@ export default function GestorCuotasContrato({
               >
                 {/* Indicador */}
                 <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold text-white ${
-                  cuota.estado === 'pagada' ? 'bg-green-500' :
-                  cuota.riesgo === 'alto' ? 'bg-red-500' :
-                  cuota.riesgo === 'medio' ? 'bg-amber-500' :
+                  cuota.estado === 'pagada' ? 'bg-[#6888ff]/50' :
+                  cuota.riesgo === 'alto' ? 'bg-[#dfeaff]0' :
+                  cuota.riesgo === 'medio' ? 'bg-[#6888ff]/50' :
                   'bg-[#6888ff]'
                 }`}>
                   {cuota.estado === 'pagada' ? (
@@ -383,17 +383,17 @@ export default function GestorCuotasContrato({
                       </p>
                       <p className="text-sm text-[#9aa3b8] flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        Vence: {formatFecha(cuota.fechaVencimiento)}
+                        Vence: {formatFecha(cuota.fechaVencimientos)}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-4">
-                      {/* Predicción */}
+                      {/* Predicciï¿½n */}
                       <div className="text-center">
                         <div className={`flex items-center gap-1 ${
-                          cuota.prediccionPago > 80 ? 'text-green-600' :
-                          cuota.prediccionPago > 60 ? 'text-amber-600' :
-                          'text-red-600'
+                          cuota.prediccionPago > 80 ? 'text-[#6888ff]' :
+                          cuota.prediccionPago > 60 ? 'text-[#6888ff]' :
+                          'text-[#9aa3b8]'
                         }`}>
                           <Sparkles className="w-4 h-4" />
                           <span className="font-bold">{cuota.prediccionPago}%</span>
@@ -431,11 +431,11 @@ export default function GestorCuotasContrato({
                           />
                         </div>
                         <div>
-                          <label className="block text-xs text-[#9aa3b8] mb-1">Fecha vencimiento</label>
+                          <label className="block text-xs text-[#9aa3b8] mb-1">Fecha vencimientos</label>
                           <input
                             type="date"
-                            aria-label="Fecha de vencimiento"
-                            defaultValue={cuota.fechaVencimiento.toISOString().split('T')[0]}
+                            aria-label="Fecha de vencimientos"
+                            defaultValue={cuota.fechaVencimientos.toISOString().split('T')[0]}
                             onBlur={e => handleModificarCuota(idx, 'fecha', new Date(e.target.value))}
                             className={`${neuro.input} w-full`}
                           />
@@ -461,15 +461,15 @@ export default function GestorCuotasContrato({
             <div>
               <p className="text-sm text-[#9aa3b8]">Prob. cumplimiento</p>
               <p className={`font-bold text-lg ${
-                stats.promPrediccion > 80 ? 'text-green-600' :
-                stats.promPrediccion > 60 ? 'text-amber-600' :
-                'text-red-600'
+                stats.promPrediccion > 80 ? 'text-[#6888ff]' :
+                stats.promPrediccion > 60 ? 'text-[#6888ff]' :
+                'text-[#9aa3b8]'
               }`}>
                 {Math.round(stats.promPrediccion)}%
               </p>
             </div>
             {stats.cuotasRiesgo > 0 && (
-              <div className={`${neuro.badge} bg-red-100 text-red-700 flex items-center gap-1`}>
+              <div className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8] flex items-center gap-1`}>
                 <AlertTriangle className="w-3 h-3" />
                 {stats.cuotasRiesgo} cuota(s) en riesgo
               </div>

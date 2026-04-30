@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -92,18 +92,18 @@ export default function DetalleAnunciantePage() {
 
   if (isLoading || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#bec8de] via-slate-50 to-[#5572ee]">
+        <Loader2 className="w-10 h-10 text-[#6888ff] animate-spin" />
       </div>
     );
   }
 
   const StatusBadge = () => {
     const configs = {
-      activo: { bg: 'from-emerald-400 to-emerald-500', icon: CheckCircle2 },
-      inactivo: { bg: 'from-slate-400 to-slate-500', icon: XCircle },
-      suspendido: { bg: 'from-amber-400 to-amber-500', icon: AlertCircle },
-      pendiente: { bg: 'from-blue-400 to-blue-500', icon: AlertCircle },
+      activo: { bg: 'from-[#6888ff] to-[#5572ee]', icon: CheckCircle2 },
+      inactivo: { bg: 'from-[#bec8de] to-[#9aa3b8]', icon: XCircle },
+      suspendido: { bg: 'from-[#6888ff] to-[#5572ee]', icon: AlertCircle },
+      pendiente: { bg: 'from-[#6888ff] to-[#5572ee]', icon: AlertCircle },
     };
     const cfg = configs[data.estado] || configs.pendiente;
     const Icon = cfg.icon;
@@ -116,42 +116,42 @@ export default function DetalleAnunciantePage() {
   };
 
   const cardClass = 'rounded-2xl p-6 bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-200/50';
-  const labelClass = 'text-sm text-slate-500';
-  const valueClass = 'text-slate-800 font-medium';
+  const labelClass = 'text-sm text-[#9aa3b8]';
+  const valueClass = 'text-[#9aa3b8] font-medium';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#bec8de] via-slate-50 to-[#5572ee] p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
-                <Building2 className="w-9 h-9 text-blue-500" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#bec8de] to-[#5572ee] bg-clip-text text-transparent flex items-center gap-3">
+                <Building2 className="w-9 h-9 text-[#6888ff]" />
                 {data.nombreRazonSocial}
               </h1>
               <StatusBadge />
             </div>
-            <p className="text-slate-500">Código: <span className="font-mono text-sm text-blue-600">{data.codigo}</span></p>
+            <p className="text-[#9aa3b8]">Código: <span className="font-mono text-sm text-[#6888ff]">{data.codigo}</span></p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/anunciantes')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 border border-white/60 text-slate-700 shadow-sm hover:bg-white transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 border border-white/60 text-[#9aa3b8] shadow-sm hover:bg-white transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
               Volver
             </button>
             <button
               onClick={() => router.push(`/anunciantes/${id}/editar`)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-md hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white shadow-md hover:-translate-y-0.5 transition-all"
             >
               <Edit3 className="w-4 h-4" />
               Editar
             </button>
             <button
               onClick={handleDelete}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white shadow-md hover:-translate-y-0.5 transition-all"
             >
               <Trash2 className="w-4 h-4" />
               Eliminar
@@ -161,8 +161,8 @@ export default function DetalleAnunciantePage() {
 
         {/* Info Legal */}
         <div className={cardClass}>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-blue-500" />
+          <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#6888ff]" />
             Información Legal
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -183,8 +183,8 @@ export default function DetalleAnunciantePage() {
 
         {/* Dirección */}
         <div className={cardClass}>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-emerald-500" />
+          <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-[#6888ff]" />
             Dirección
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -209,31 +209,31 @@ export default function DetalleAnunciantePage() {
 
         {/* Contacto */}
         <div className={cardClass}>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-indigo-500" />
+          <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <Mail className="w-5 h-5 text-[#6888ff]" />
             Información de Contacto
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <p className={labelClass}>Email</p>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-slate-400" />
+                <Mail className="w-4 h-4 text-[#9aa3b8]" />
                 <p className={valueClass}>{data.emailContacto || '—'}</p>
               </div>
             </div>
             <div>
               <p className={labelClass}>Teléfono</p>
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-slate-400" />
+                <Phone className="w-4 h-4 text-[#9aa3b8]" />
                 <p className={valueClass}>{data.telefonoContacto || '—'}</p>
               </div>
             </div>
             <div>
               <p className={labelClass}>Página Web</p>
               <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-slate-400" />
+                <Globe className="w-4 h-4 text-[#9aa3b8]" />
                 {data.paginaWeb ? (
-                  <a href={data.paginaWeb} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                  <a href={data.paginaWeb} target="_blank" rel="noreferrer" className="text-[#6888ff] hover:underline">
                     {data.paginaWeb}
                   </a>
                 ) : (
@@ -246,22 +246,22 @@ export default function DetalleAnunciantePage() {
 
         {/* Contacto Principal */}
         <div className={cardClass}>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <User className="w-5 h-5 text-purple-500" />
+          <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <User className="w-5 h-5 text-[#6888ff]" />
             Contacto Principal
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <p className={labelClass}>Nombre</p>
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-slate-400" />
+                <User className="w-4 h-4 text-[#9aa3b8]" />
                 <p className={valueClass}>{data.nombreContactoPrincipal || '—'}</p>
               </div>
             </div>
             <div>
               <p className={labelClass}>Cargo</p>
               <div className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-slate-400" />
+                <Briefcase className="w-4 h-4 text-[#9aa3b8]" />
                 <p className={valueClass}>{data.cargoContactoPrincipal || '—'}</p>
               </div>
             </div>
@@ -270,8 +270,8 @@ export default function DetalleAnunciantePage() {
 
         {/* Facturación */}
         <div className={cardClass}>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-amber-500" />
+          <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <CreditCard className="w-5 h-5 text-[#6888ff]" />
             Facturación
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -293,16 +293,16 @@ export default function DetalleAnunciantePage() {
         {/* Notas */}
         {data.notas && (
           <div className={cardClass}>
-            <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-slate-500" />
+            <h2 className="text-lg font-semibold text-[#9aa3b8] mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[#9aa3b8]" />
               Notas
             </h2>
-            <p className="text-slate-700 whitespace-pre-line">{data.notas}</p>
+            <p className="text-[#9aa3b8] whitespace-pre-line">{data.notas}</p>
           </div>
         )}
 
         {/* Auditoría */}
-        <div className="text-center text-slate-400 text-sm">
+        <div className="text-center text-[#9aa3b8] text-sm">
           <p>Creado: {new Date(data.fechaCreacion).toLocaleString('es-CL')}</p>
           {data.fechaModificacion && (
             <p className="mt-1">Última modificación: {new Date(data.fechaModificacion).toLocaleString('es-CL')}</p>

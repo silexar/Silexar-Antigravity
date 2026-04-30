@@ -15,7 +15,7 @@ export class CunaVencidaEvent {
     public readonly codigo: string,
     public readonly nombre: string,
     public readonly anuncianteId: string,
-    public readonly fechaVencimiento: Date
+    public readonly fechaVencimientos: Date
   ) {
     this.occurredAt = new Date();
   }
@@ -28,7 +28,7 @@ export class CunaVencidaEvent {
       codigo: this.codigo,
       nombre: this.nombre,
       anuncianteId: this.anuncianteId,
-      fechaVencimiento: this.fechaVencimiento.toISOString(),
+      fechaVencimientos: this.fechaVencimientos.toISOString(),
       occurredAt: this.occurredAt.toISOString(),
     };
   }

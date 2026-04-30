@@ -21,7 +21,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   LayoutDashboard,
   Building2,
   Users,
@@ -427,7 +427,7 @@ export function MainNavigation() {
             </p>
           </div>
         </div>
-        
+
         {/* Badge de Estado */}
         <div className="mt-4 flex items-center justify-between">
           <Badge variant="outline" className="text-green-400 border-green-400 text-xs">
@@ -479,8 +479,8 @@ export function MainNavigation() {
                         href={item.href}
                         className={`
                           flex items-center justify-between p-3 rounded-lg transition-colors group
-                          ${active 
-                            ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300' 
+                          ${active
+                            ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300'
                             : 'hover:bg-[#E8E5E0]/50 text-[#5F5E5A] hover:text-[#2C2C2A]'
                           }
                         `}
@@ -508,7 +508,7 @@ export function MainNavigation() {
 
                         {/* Badge del Item */}
                         {item.badge && (
-                          <Badge 
+                          <Badge
                             className={`${item.badgeColor || 'bg-slate-600'} text-[#2C2C2A] text-xs ml-2 flex-shrink-0`}
                           >
                             {item.badge}
@@ -534,7 +534,7 @@ export function MainNavigation() {
             <HelpCircle className="h-4 w-4" />
             <span className="text-sm">Ayuda y Soporte</span>
           </Link>
-          
+
           <div className="pt-2 border-t border-[#D4D1CC]">
             <div className="text-xs text-[#888780] space-y-1">
               <p>🚀 SILEXAR PULSE QUANTUM</p>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * ⏰ SILEXAR PULSE - Scheduled Jobs Monitor
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Clock,
   Play,
@@ -100,19 +98,19 @@ export function ScheduledJobs() {
   }
 
   const toggleJob = (jobId: string) => {
-    setJobs(prev => prev.map(j => 
-      j.id === jobId 
+    setJobs(prev => prev.map(j =>
+      j.id === jobId
         ? { ...j, status: j.status === 'active' ? 'paused' : 'active' }
         : j
     ))
   }
 
   const runNow = (jobId: string) => {
-    setJobs(prev => prev.map(j => 
+    setJobs(prev => prev.map(j =>
       j.id === jobId ? { ...j, status: 'running' } : j
     ))
     setTimeout(() => {
-      setJobs(prev => prev.map(j => 
+      setJobs(prev => prev.map(j =>
         j.id === jobId ? { ...j, status: 'active', lastRun: new Date(), lastStatus: 'success' } : j
       ))
     }, 3000)
@@ -132,7 +130,7 @@ export function ScheduledJobs() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Scheduled Jobs...</p>
+          <p className="text-[#9aa3b8]">Cargando Scheduled Jobs...</p>
         </div>
       </div>
     )
@@ -142,123 +140,122 @@ export function ScheduledJobs() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Clock className="w-5 h-5 text-orange-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Clock className="w-5 h-5 text-[#6888ff]" />
           Scheduled Jobs
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadJobs}>
+        <NeuButton variant="secondary" onClick={loadJobs}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Refresh
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{jobs.length}</p>
-          <p className="text-xs text-slate-400">Total Jobs</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{jobs.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Jobs</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{activeJobs}</p>
-          <p className="text-xs text-slate-400">Activos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{activeJobs}</p>
+          <p className="text-xs text-[#9aa3b8]">Activos</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">{runningJobs}</p>
-          <p className="text-xs text-slate-400">Ejecutando</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{runningJobs}</p>
+          <p className="text-xs text-[#9aa3b8]">Ejecutando</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{jobs.filter(j => j.status === 'paused').length}</p>
-          <p className="text-xs text-slate-400">Pausados</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{jobs.filter(j => j.status === 'paused').length}</p>
+          <p className="text-xs text-[#9aa3b8]">Pausados</p>
         </div>
       </div>
 
       {/* Jobs List */}
       <div className="space-y-3">
         {jobs.map(job => (
-          <NeuromorphicCard 
+          <NeuCard
             key={job.id}
-            variant="embossed" 
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
             className={`p-4 ${selectedJob === job.id ? 'ring-1 ring-orange-500/50' : ''}`}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
-                  job.status === 'running' ? 'bg-blue-400 animate-pulse' :
-                  job.status === 'active' ? 'bg-green-400' : 'bg-yellow-400'
-                }`} />
+                <div className={`w-3 h-3 rounded-full ${job.status === 'running' ? 'bg-[#6888ff] animate-pulse' :
+                  job.status === 'active' ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                  }`} />
                 <div>
-                  <span className="text-white font-medium">{job.name}</span>
-                  <p className="text-xs text-slate-500">{job.description}</p>
+                  <span className="text-[#69738c] font-medium">{job.name}</span>
+                  <p className="text-xs text-[#9aa3b8]">{job.description}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded font-mono">
+                <span className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded font-mono">
                   {job.schedule}
                 </span>
-                <button onClick={() => toggleJob(job.id)} className="p-1 hover:bg-slate-700 rounded">
-                  {job.status === 'paused' ? <Play className="w-4 h-4 text-green-400" /> : <Pause className="w-4 h-4 text-yellow-400" />}
+                <button onClick={() => toggleJob(job.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                  {job.status === 'paused' ? <Play className="w-4 h-4 text-[#6888ff]" /> : <Pause className="w-4 h-4 text-[#6888ff]" />}
                 </button>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => runNow(job.id)} disabled={job.status === 'running'}>
+                <NeuButton variant="secondary" onClick={() => runNow(job.id)} disabled={job.status === 'running'}>
                   <Play className="w-3 h-3 mr-1" />
                   Run Now
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             </div>
 
             <div className="flex items-center gap-6 text-sm">
               <div className="flex items-center gap-2">
-                {job.lastStatus === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                {job.lastStatus === 'failed' && <XCircle className="w-4 h-4 text-red-400" />}
-                {job.lastStatus === 'skipped' && <AlertTriangle className="w-4 h-4 text-yellow-400" />}
-                <span className="text-slate-400">
-                  Última: {job.lastRun?.toLocaleString() || 'Nunca'}
+                {job.lastStatus === 'success' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                {job.lastStatus === 'failed' && <XCircle className="w-4 h-4 text-[#6888ff]" />}
+                {job.lastStatus === 'skipped' && <AlertTriangle className="w-4 h-4 text-[#6888ff]" />}
+                <span className="text-[#9aa3b8]">
+                  Ášltima: {job.lastRun?.toLocaleString() || 'Nunca'}
                 </span>
               </div>
               {job.lastDuration && (
-                <span className="text-slate-500">Duración: {formatDuration(job.lastDuration)}</span>
+                <span className="text-[#9aa3b8]">Duración: {formatDuration(job.lastDuration)}</span>
               )}
-              <span className={`${job.successRate >= 95 ? 'text-green-400' : job.successRate >= 80 ? 'text-yellow-400' : 'text-red-400'}`}>
-                Éxito: {job.successRate}%
+              <span className={`${job.successRate >= 95 ? 'text-[#6888ff]' : job.successRate >= 80 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
+                Á‰xito: {job.successRate}%
               </span>
               {job.nextRun && (
-                <span className="text-slate-500 flex items-center gap-1">
+                <span className="text-[#9aa3b8] flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   Próxima: {job.nextRun.toLocaleString()}
                 </span>
               )}
-              <button onClick={() => loadExecutions(job.id)} className="text-cyan-400 flex items-center gap-1 hover:underline">
+              <button onClick={() => loadExecutions(job.id)} className="text-[#6888ff] flex items-center gap-1 hover:underline">
                 <History className="w-3 h-3" />
                 Historial
               </button>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Execution History */}
       {selectedJob && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <History className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="p-4">
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <History className="w-4 h-4 text-[#9aa3b8]" />
             Historial de Ejecuciones
           </h4>
           <div className="space-y-2">
             {executions.map(exec => (
-              <div key={exec.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={exec.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  {exec.status === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                  {exec.status === 'failed' && <XCircle className="w-4 h-4 text-red-400" />}
-                  {exec.status === 'running' && <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />}
-                  <span className="text-white text-sm">{exec.startedAt.toLocaleString()}</span>
+                  {exec.status === 'success' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {exec.status === 'failed' && <XCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {exec.status === 'running' && <RefreshCw className="w-4 h-4 text-[#6888ff] animate-spin" />}
+                  <span className="text-[#69738c] text-sm">{exec.startedAt.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  {exec.duration && <span className="text-slate-400 text-sm">{formatDuration(exec.duration)}</span>}
-                  {exec.error && <span className="text-red-400 text-xs">{exec.error}</span>}
+                  {exec.duration && <span className="text-[#9aa3b8] text-sm">{formatDuration(exec.duration)}</span>}
+                  {exec.error && <span className="text-[#6888ff] text-xs">{exec.error}</span>}
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

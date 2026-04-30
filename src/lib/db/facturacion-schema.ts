@@ -79,7 +79,7 @@ export const facturas = pgTable('facturas', {
   
   // Fechas
   fechaEmision: date('fecha_emision').notNull(),
-  fechaVencimiento: date('fecha_vencimientos'),
+  fechaVencimientos: date('fecha_vencimientos'),
   
   // Montos
   montoNeto: decimal('monto_neto', { precision: 14, scale: 2 }).notNull(),
@@ -137,7 +137,7 @@ export const facturas = pgTable('facturas', {
   agenciaIdx: index('facturas_agencia_idx').on(table.agenciaId),
   estadoIdx: index('facturas_estado_idx').on(table.estado),
   fechaEmisionIdx: index('facturas_fecha_emision_idx').on(table.fechaEmision),
-  vencimientosIdx: index('facturas_vencimientos_idx').on(table.fechaVencimiento)
+  vencimientosIdx: index('facturas_vencimientos_idx').on(table.fechaVencimientos)
 }));
 
 // ═══════════════════════════════════════════════════════════════
@@ -231,7 +231,7 @@ export const foliosDte = pgTable('folios_dte', {
   // CAF (Código de Autorización de Folios)
   xmlCaf: text('xml_caf'),
   fechaAutorizacion: timestamp('fecha_autorizacion'),
-  fechaVencimiento: timestamp('fecha_vencimientos'),
+  fechaVencimientos: timestamp('fecha_vencimientos'),
   
   // Auditoría
   fechaCreacion: timestamp('fecha_creacion').defaultNow().notNull()
@@ -287,7 +287,7 @@ export interface FacturaDTO {
   clienteNombre: string;
   clienteRut: string;
   fechaEmision: Date;
-  fechaVencimiento: Date | null;
+  fechaVencimientos: Date | null;
   montoNeto: number;
   montoIva: number;
   montoTotal: number;

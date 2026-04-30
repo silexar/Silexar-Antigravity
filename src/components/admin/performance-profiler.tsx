@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📈 SILEXAR PULSE - Performance Profiler
+ * ðŸ“ˆ SILEXAR PULSE - Performance Profiler
  * Profiling de rendimiento en tiempo real
  * 
  * @description Profiling:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Activity,
   Clock,
@@ -45,7 +43,7 @@ interface PerformanceMetric {
 
 interface Endpoint {
   path: string
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method: 'GET' | 'POST' | 'PUT' | 'Eliminar'
   avgLatency: number
   p50: number
   p95: number
@@ -146,34 +144,34 @@ export function PerformanceProfiler() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good': return 'text-green-400'
-      case 'warning': return 'text-yellow-400'
-      case 'critical': return 'text-red-400'
-      default: return 'text-slate-400'
+      case 'good': return 'text-[#6888ff]'
+      case 'warning': return 'text-[#6888ff]'
+      case 'critical': return 'text-[#6888ff]'
+      default: return 'text-[#9aa3b8]'
     }
   }
 
   const getImpactStyle = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-red-500/20 text-red-400'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400'
-      case 'low': return 'bg-blue-500/20 text-blue-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'high': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'medium': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'low': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getLatencyColor = (ms: number) => {
-    if (ms < 100) return 'text-green-400'
-    if (ms < 500) return 'text-yellow-400'
-    return 'text-red-400'
+    if (ms < 100) return 'text-[#6888ff]'
+    if (ms < 500) return 'text-[#6888ff]'
+    return 'text-[#6888ff]'
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Performance Profiler...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Performance Profiler...</p>
         </div>
       </div>
     )
@@ -183,21 +181,21 @@ export function PerformanceProfiler() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Activity className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Activity className="w-5 h-5 text-[#6888ff]" />
           Performance Profiler
           {isProfiling && (
-            <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded animate-pulse">
+            <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded animate-pulse">
               PROFILING
             </span>
           )}
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={startProfiling} disabled={isProfiling}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={startProfiling} disabled={isProfiling}>
             {isProfiling ? (
               <>
                 <Pause className="w-4 h-4 mr-1" />
@@ -209,45 +207,45 @@ export function PerformanceProfiler() {
                 Start Profiling
               </>
             )}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-6 gap-3">
         {metrics.map(metric => (
-          <NeuromorphicCard key={metric.name} variant="embossed" className="p-3 text-center">
+          <NeuCard key={metric.name} className="p-3 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <span className={metric.trend === 'up' ? 'text-green-400' : metric.trend === 'down' ? 'text-red-400' : 'text-slate-400'}>
+              <span className={metric.trend === 'up' ? 'text-[#6888ff]' : metric.trend === 'down' ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}>
                 {getTrendIcon(metric.trend)}
               </span>
             </div>
             <p className={`text-xl font-bold ${getStatusColor(metric.status)}`}>
               {metric.value}{metric.unit}
             </p>
-            <p className="text-xs text-slate-500">{metric.name}</p>
-          </NeuromorphicCard>
+            <p className="text-xs text-[#9aa3b8]">{metric.name}</p>
+          </NeuCard>
         ))}
       </div>
 
       {/* Bottlenecks */}
       {bottlenecks.length > 0 && (
-        <NeuromorphicCard variant="glow" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-yellow-400" />
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
             Bottlenecks Detectados ({bottlenecks.length})
           </h4>
           <div className="space-y-2">
             {bottlenecks.map(bn => (
-              <div key={bn.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={bn.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  {bn.type === 'database' && <HardDrive className="w-5 h-5 text-purple-400" />}
-                  {bn.type === 'api' && <Zap className="w-5 h-5 text-cyan-400" />}
-                  {bn.type === 'memory' && <Cpu className="w-5 h-5 text-red-400" />}
-                  {bn.type === 'cpu' && <Cpu className="w-5 h-5 text-orange-400" />}
+                  {bn.type === 'database' && <HardDrive className="w-5 h-5 text-[#6888ff]" />}
+                  {bn.type === 'api' && <Zap className="w-5 h-5 text-[#6888ff]" />}
+                  {bn.type === 'memory' && <Cpu className="w-5 h-5 text-[#6888ff]" />}
+                  {bn.type === 'cpu' && <Cpu className="w-5 h-5 text-[#6888ff]" />}
                   <div>
-                    <span className="text-white text-sm">{bn.description}</span>
-                    <p className="text-xs text-green-400 mt-1">💡 {bn.suggestion}</p>
+                    <span className="text-[#69738c] text-sm">{bn.description}</span>
+                    <p className="text-xs text-[#6888ff] mt-1">ðŸ’¡ {bn.suggestion}</p>
                   </div>
                 </div>
                 <span className={`text-xs px-2 py-0.5 rounded ${getImpactStyle(bn.impact)}`}>
@@ -256,18 +254,18 @@ export function PerformanceProfiler() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Endpoints Performance */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-slate-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#9aa3b8]" />
           Endpoint Latencies
         </h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-slate-400 text-left">
+            <tr className="text-[#9aa3b8] text-left">
               <th className="pb-2">Endpoint</th>
               <th className="pb-2">Avg</th>
               <th className="pb-2">P50</th>
@@ -281,27 +279,26 @@ export function PerformanceProfiler() {
             {endpoints.map((ep, i) => (
               <tr key={ep.path} className="border-t border-slate-800">
                 <td className="py-2">
-                  <span className={`text-xs px-1.5 py-0.5 rounded mr-2 ${
-                    ep.method === 'GET' ? 'bg-green-500/20 text-green-400' :
-                    ep.method === 'POST' ? 'bg-blue-500/20 text-blue-400' :
-                    ep.method === 'PUT' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-red-500/20 text-red-400'
-                  }`}>
+                  <span className={`text-xs px-1.5 py-0.5 rounded mr-2 ${ep.method === 'GET' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    ep.method === 'POST' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                      ep.method === 'PUT' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                        'bg-[#6888ff]/20 text-[#6888ff]'
+                    }`}>
                     {ep.method}
                   </span>
-                  <span className="text-white font-mono text-xs">{ep.path}</span>
+                  <span className="text-[#69738c] font-mono text-xs">{ep.path}</span>
                 </td>
                 <td className={`py-2 ${getLatencyColor(ep.avgLatency)}`}>{ep.avgLatency}ms</td>
-                <td className="py-2 text-slate-300">{ep.p50}ms</td>
+                <td className="py-2 text-[#69738c]">{ep.p50}ms</td>
                 <td className={`py-2 ${getLatencyColor(ep.p95)}`}>{ep.p95}ms</td>
                 <td className={`py-2 ${getLatencyColor(ep.p99)}`}>{ep.p99}ms</td>
-                <td className="py-2 text-slate-400">{(ep.requests / 1000).toFixed(1)}K</td>
-                <td className={`py-2 ${ep.errorRate > 1 ? 'text-red-400' : 'text-green-400'}`}>{ep.errorRate}%</td>
+                <td className="py-2 text-[#9aa3b8]">{(ep.requests / 1000).toFixed(1)}K</td>
+                <td className={`py-2 ${ep.errorRate > 1 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>{ep.errorRate}%</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

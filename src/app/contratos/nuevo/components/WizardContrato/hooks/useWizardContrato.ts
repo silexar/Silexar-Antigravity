@@ -209,11 +209,14 @@ function wizardReducer(
       };
 
     case "SET_VALORES": {
-      const valorNeto = calcularValorNeto(
-        action.payload.bruto,
-        action.payload.descuento,
-        state.comisionAgencia,
-      );
+      // Commission is percentage-based: valorNeto = valorBruto * (1 - comision/100)
+      // Special case: if bruto=0 (user clearing), preserve current valorNeto
+      const comision = state.tieneComisionAgencia ? (state.comisionAgencia || 0) : 0;
+      const factor = comision > 0 ? (1 - comision / 100) : 1;
+      // Only recalculate valorNeto if bruto > 0, otherwise keep current valorNeto
+      const valorNeto = action.payload.bruto > 0
+        ? Math.round(action.payload.bruto * factor)
+        : state.valorNeto;
       return {
         ...state,
         valorBruto: action.payload.bruto,
@@ -235,34 +238,45 @@ function wizardReducer(
       };
 
     case "SET_COMISION_AGENCIA": {
-      const valorNeto = calcularValorNeto(
-        state.valorBruto,
-        state.descuentoPorcentaje,
-        action.payload.comision,
-      );
+      // Commission is percentage-based
+      // If comision > 0: recalculate valorNeto from current valorBruto
+      // If comision = 0 (clearing): preserve valorNeto, clear valorBruto
+      const factor = action.payload.comision > 0 ? (1 - action.payload.comision / 100) : 1;
+      const valorNeto = action.payload.comision > 0
+        ? Math.round(state.valorBruto * factor)
+        : state.valorNeto;
+      const valorBruto = action.payload.comision > 0 ? state.valorBruto : 0;
       return {
         ...state,
         comisionAgencia: action.payload.comision,
         facturarComisionAgencia: action.payload.facturar,
         valorNeto,
+        valorBruto,
         ultimaModificacion: now,
       };
     }
 
     case "SET_TIENE_COMISION": {
-      const nuevaComision = action.payload ? state.comisionAgencia : 0;
-      const valorNeto = calcularValorNeto(
-        state.valorBruto,
-        state.descuentoPorcentaje,
-        nuevaComision,
-      );
-      return {
-        ...state,
-        tieneComisionAgencia: action.payload,
-        comisionAgencia: nuevaComision,
-        valorNeto,
-        ultimaModificacion: now,
-      };
+      // When toggling ON: preserve both valorNeto and valorBruto as-is
+      // When toggling OFF: preserve valorNeto, clear valorBruto and commission
+      if (action.payload) {
+        // Turning ON - keep valorNeto and valorBruto, just enable commission
+        return {
+          ...state,
+          tieneComisionAgencia: true,
+          ultimaModificacion: now,
+        };
+      } else {
+        // Turning OFF - keep valorNeto, clear valorBruto and commission
+        return {
+          ...state,
+          tieneComisionAgencia: false,
+          comisionAgencia: 0,
+          valorBruto: 0,
+          valorNeto: state.valorNeto,
+          ultimaModificacion: now,
+        };
+      }
     }
 
     case "SET_AGENCIA_MEDIOS":
@@ -280,16 +294,28 @@ function wizardReducer(
       };
 
     case "SET_VALOR_NETO_MANUAL": {
+      // When commission is active (percentage): valorBruto = valorNeto / (1 - comision/100)
+      // When commission is NOT active: clear valorBruto, preserve valorNeto
       const comision = state.tieneComisionAgencia ? (state.comisionAgencia || 0) : 0;
-      const descuento = state.descuentoPorcentaje || 0;
-      const factor = (1 - descuento / 100) * (1 - comision / 100);
-      const bruto = factor > 0 ? Math.round(action.payload / factor) : 0;
-      return {
-        ...state,
-        valorNeto: action.payload,
-        valorBruto: bruto,
-        ultimaModificacion: now,
-      };
+
+      if (comision > 0) {
+        const factor = 1 - comision / 100;
+        const bruto = Math.round(action.payload / factor);
+        return {
+          ...state,
+          valorNeto: action.payload,
+          valorBruto: bruto,
+          ultimaModificacion: now,
+        };
+      } else {
+        // Commission not active - preserve valorNeto, clear valorBruto
+        return {
+          ...state,
+          valorNeto: action.payload,
+          valorBruto: 0,
+          ultimaModificacion: now,
+        };
+      }
     }
 
     case "SET_CUOTA_FACTURADA": {
@@ -766,7 +792,7 @@ export function useWizardContrato(options: UseWizardContratoOptions = {}) {
       state.descuentoPorcentaje,
       state.terminosPago.diasPago,
       !state.anunciante?.historialContratos ||
-        state.anunciante.historialContratos.total === 0,
+      state.anunciante.historialContratos.total === 0,
     );
 
     // Simular aprobadores según nivel

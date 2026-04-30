@@ -1,7 +1,7 @@
 /**
- * ?? MOBILE: Facturación View
+ * ?? MOBILE: Facturaciï¿½n View
  * 
- * Emisión y consulta de facturas. Paridad con desktop: contratos/facturacion/page.tsx
+ * Emisiï¿½n y consulta de facturas. Paridad con desktop: contratos/facturacion/page.tsx
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -23,16 +23,16 @@ interface Factura {
   contrato: string;
   monto: number;
   fechaEmision: string;
-  fechaVencimiento: string;
+  fechaVencimientos: string;
   estado: 'emitida' | 'enviada' | 'pagada' | 'vencida' | 'anulada';
 }
 
 const FACTURAS_MOCK: Factura[] = [
-  { id: 'f-1', numero: 'F-2025-0234', cliente: 'Falabella', contrato: 'CTR-0045', monto: 12500000, fechaEmision: '2025-02-01', fechaVencimiento: '2025-03-01', estado: 'enviada' },
-  { id: 'f-2', numero: 'F-2025-0228', cliente: 'Banco Chile', contrato: 'CTR-0067', monto: 8900000, fechaEmision: '2025-01-28', fechaVencimiento: '2025-02-28', estado: 'pagada' },
-  { id: 'f-3', numero: 'F-2025-0210', cliente: 'TechCorp', contrato: 'CTR-0089', monto: 6700000, fechaEmision: '2025-01-20', fechaVencimiento: '2025-02-20', estado: 'vencida' },
-  { id: 'f-4', numero: 'F-2025-0195', cliente: 'Ripley', contrato: 'CTR-0034', monto: 15800000, fechaEmision: '2025-01-15', fechaVencimiento: '2025-02-15', estado: 'pagada' },
-  { id: 'f-5', numero: 'F-2025-0240', cliente: 'LATAM', contrato: 'CTR-0078', monto: 22000000, fechaEmision: '2025-02-05', fechaVencimiento: '2025-03-05', estado: 'emitida' },
+  { id: 'f-1', numero: 'F-2025-0234', cliente: 'Falabella', contrato: 'CTR-0045', monto: 12500000, fechaEmision: '2025-02-01', fechaVencimientos: '2025-03-01', estado: 'enviada' },
+  { id: 'f-2', numero: 'F-2025-0228', cliente: 'Banco Chile', contrato: 'CTR-0067', monto: 8900000, fechaEmision: '2025-01-28', fechaVencimientos: '2025-02-28', estado: 'pagada' },
+  { id: 'f-3', numero: 'F-2025-0210', cliente: 'TechCorp', contrato: 'CTR-0089', monto: 6700000, fechaEmision: '2025-01-20', fechaVencimientos: '2025-02-20', estado: 'vencida' },
+  { id: 'f-4', numero: 'F-2025-0195', cliente: 'Ripley', contrato: 'CTR-0034', monto: 15800000, fechaEmision: '2025-01-15', fechaVencimientos: '2025-02-15', estado: 'pagada' },
+  { id: 'f-5', numero: 'F-2025-0240', cliente: 'LATAM', contrato: 'CTR-0078', monto: 22000000, fechaEmision: '2025-02-05', fechaVencimientos: '2025-03-05', estado: 'emitida' },
 ];
 
 type FiltroFactura = 'todas' | 'emitida' | 'enviada' | 'pagada' | 'vencida';
@@ -46,10 +46,10 @@ export function MobileFacturacionView() {
     .filter(f => !busqueda || f.cliente.toLowerCase().includes(busqueda.toLowerCase()) || f.numero.includes(busqueda));
 
   const estadoConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-    emitida: { label: 'Emitida', color: 'text-blue-700', bg: 'bg-blue-100', icon: <FileText className="w-4 h-4" /> },
+    emitida: { label: 'Emitida', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: <FileText className="w-4 h-4" /> },
     enviada: { label: 'Enviada', color: 'text-[#6888ff]', bg: 'bg-[#dfeaff]', icon: <Send className="w-4 h-4" /> },
-    pagada: { label: 'Pagada', color: 'text-emerald-700', bg: 'bg-emerald-100', icon: <CheckCircle2 className="w-4 h-4" /> },
-    vencida: { label: 'Vencida', color: 'text-red-700', bg: 'bg-red-100', icon: <AlertTriangle className="w-4 h-4" /> },
+    pagada: { label: 'Pagada', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: <CheckCircle2 className="w-4 h-4" /> },
+    vencida: { label: 'Vencida', color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]', icon: <AlertTriangle className="w-4 h-4" /> },
     anulada: { label: 'Anulada', color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: <Clock className="w-4 h-4" /> },
   };
 
@@ -60,7 +60,7 @@ export function MobileFacturacionView() {
     <div className="space-y-5">
       {/* KPIs */}
       <div className="bg-[#6888ff] rounded-2xl p-5 text-white shadow-xl">
-        <p className="text-xs font-bold text-white/70 uppercase tracking-widest">Facturación</p>
+        <p className="text-xs font-bold text-white/70 uppercase tracking-widest">Facturaciï¿½n</p>
         <div className="grid grid-cols-2 gap-4 mt-3">
           <div>
             <p className="text-2xl font-black">{formatCurrency(totalEmitido)}</p>
@@ -110,7 +110,7 @@ export function MobileFacturacionView() {
                 </div>
                 <div>
                   <p className="font-bold text-[#69738c] text-sm">{factura.numero}</p>
-                  <p className="text-[10px] text-[#9aa3b8]">{factura.cliente} · {factura.contrato}</p>
+                  <p className="text-[10px] text-[#9aa3b8]">{factura.cliente} ï¿½ {factura.contrato}</p>
                 </div>
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estadoConfig[factura.estado]?.bg} ${estadoConfig[factura.estado]?.color}`}>

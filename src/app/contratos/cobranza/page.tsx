@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📞 SILEXAR PULSE - Panel de Cobranza Automatizada TIER 0
  * 
  * @description Sistema de cobranza multi-canal con:
@@ -108,7 +108,7 @@ const neuro = {
     transition-all duration-200
   `,
   btnDanger: `
-    bg-gradient-to-br from-red-500 to-rose-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
@@ -261,11 +261,11 @@ const formatFechaHora = (fecha: Date) => {
 
 const getNivelConfig = (nivel: NivelCobranza) => {
   const configs = {
-    preventiva: { label: 'Preventiva', color: 'text-blue-600', bgColor: 'bg-blue-100' },
-    leve: { label: 'Leve', color: 'text-green-600', bgColor: 'bg-green-100' },
-    moderada: { label: 'Moderada', color: 'text-amber-600', bgColor: 'bg-amber-100' },
-    agresiva: { label: 'Agresiva', color: 'text-orange-600', bgColor: 'bg-orange-100' },
-    legal: { label: 'Legal', color: 'text-red-600', bgColor: 'bg-red-100' }
+    preventiva: { label: 'Preventiva', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    leve: { label: 'Leve', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    moderada: { label: 'Moderada', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    agresiva: { label: 'Agresiva', color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    legal: { label: 'Legal', color: 'text-[#9aa3b8]', bgColor: 'bg-[#dfeaff]' }
   };
   return configs[nivel];
 };
@@ -282,12 +282,12 @@ const getCanalIcon = (canal: CanalContacto) => {
 
 const getResultadoConfig = (resultado: ResultadoContacto) => {
   const configs = {
-    exitoso: { label: 'Exitoso', color: 'text-green-600', icon: <CheckCircle className="w-4 h-4" /> },
+    exitoso: { label: 'Exitoso', color: 'text-[#6888ff]', icon: <CheckCircle className="w-4 h-4" /> },
     sin_respuesta: { label: 'Sin respuesta', color: 'text-[#69738c]', icon: <XCircle className="w-4 h-4" /> },
-    promesa_pago: { label: 'Promesa de pago', color: 'text-blue-600', icon: <Calendar className="w-4 h-4" /> },
-    rechazo: { label: 'Rechazo', color: 'text-red-600', icon: <XCircle className="w-4 h-4" /> },
-    numero_erroneo: { label: 'Número erróneo', color: 'text-amber-600', icon: <AlertTriangle className="w-4 h-4" /> },
-    escalado: { label: 'Escalado', color: 'text-purple-600', icon: <TrendingUp className="w-4 h-4" /> }
+    promesa_pago: { label: 'Promesa de pago', color: 'text-[#6888ff]', icon: <Calendar className="w-4 h-4" /> },
+    rechazo: { label: 'Rechazo', color: 'text-[#9aa3b8]', icon: <XCircle className="w-4 h-4" /> },
+    numero_erroneo: { label: 'Número erróneo', color: 'text-[#6888ff]', icon: <AlertTriangle className="w-4 h-4" /> },
+    escalado: { label: 'Escalado', color: 'text-[#6888ff]', icon: <TrendingUp className="w-4 h-4" /> }
   };
   return configs[resultado];
 };
@@ -329,7 +329,7 @@ export default function CobranzaAutomatizadaPanel() {
         <div className={`${neuro.panel} p-6 mb-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee]">
                 <Phone className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -347,12 +347,12 @@ export default function CobranzaAutomatizadaPanel() {
                 </div>
                 <div className="h-8 w-px bg-[#dfeaff]" />
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-red-600">{formatCurrency(stats.montoTotal)}</p>
+                  <p className="text-2xl font-bold text-[#9aa3b8]">{formatCurrency(stats.montoTotal)}</p>
                   <p className="text-xs text-[#69738c]">Total vencido</p>
                 </div>
                 <div className="h-8 w-px bg-[#dfeaff]" />
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">{formatCurrency(stats.recuperacionEstimada)}</p>
+                  <p className="text-2xl font-bold text-[#6888ff]">{formatCurrency(stats.recuperacionEstimada)}</p>
                   <p className="text-xs text-[#69738c]">Recup. estimada</p>
                 </div>
               </div>
@@ -386,10 +386,10 @@ export default function CobranzaAutomatizadaPanel() {
                       <div className="flex items-center gap-4">
                         {/* Indicador de urgencia */}
                         <div className={`w-2 h-16 rounded-full ${
-                          caso.diasMora > 45 ? 'bg-red-500' :
-                          caso.diasMora > 30 ? 'bg-orange-500' :
-                          caso.diasMora > 15 ? 'bg-amber-500' :
-                          'bg-green-500'
+                          caso.diasMora > 45 ? 'bg-[#dfeaff]0' :
+                          caso.diasMora > 30 ? 'bg-[#6888ff]/50' :
+                          caso.diasMora > 15 ? 'bg-[#6888ff]/50' :
+                          'bg-[#6888ff]/50'
                         }`} />
 
                         <div>
@@ -419,9 +419,9 @@ export default function CobranzaAutomatizadaPanel() {
                         {/* Días mora */}
                         <div className="text-center">
                           <p className={`font-bold text-lg ${
-                            caso.diasMora > 45 ? 'text-red-600' :
-                            caso.diasMora > 30 ? 'text-orange-600' :
-                            'text-amber-600'
+                            caso.diasMora > 45 ? 'text-[#9aa3b8]' :
+                            caso.diasMora > 30 ? 'text-[#6888ff]' :
+                            'text-[#6888ff]'
                           }`}>
                             {caso.diasMora}
                           </p>
@@ -433,9 +433,9 @@ export default function CobranzaAutomatizadaPanel() {
                           <p className="font-bold text-lg text-[#69738c]">{formatCurrency(caso.montoVencido)}</p>
                           <div className="flex items-center gap-1">
                             <Sparkles className={`w-3 h-3 ${
-                              caso.probabilidadRecuperacion > 70 ? 'text-green-500' :
-                              caso.probabilidadRecuperacion > 50 ? 'text-amber-500' :
-                              'text-red-500'
+                              caso.probabilidadRecuperacion > 70 ? 'text-[#6888ff]' :
+                              caso.probabilidadRecuperacion > 50 ? 'text-[#6888ff]' :
+                              'text-[#9aa3b8]'
                             }`} />
                             <span className="text-xs text-[#69738c]">{caso.probabilidadRecuperacion}% prob.</span>
                           </div>
@@ -478,7 +478,7 @@ export default function CobranzaAutomatizadaPanel() {
                     </div>
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-[#9aa3b8]" />
-                      <span className="font-bold text-red-600">{formatCurrency(casoSeleccionado.montoVencido)} vencido</span>
+                      <span className="font-bold text-[#9aa3b8]">{formatCurrency(casoSeleccionado.montoVencido)} vencido</span>
                     </div>
                   </div>
                 </div>
@@ -486,15 +486,15 @@ export default function CobranzaAutomatizadaPanel() {
                 {/* Acciones rápidas */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   <button className={`${neuro.btnSecondary} p-3 flex flex-col items-center`}>
-                    <Phone className="w-5 h-5 text-green-600 mb-1" />
+                    <Phone className="w-5 h-5 text-[#6888ff] mb-1" />
                     <span className="text-xs">Llamar</span>
                   </button>
                   <button className={`${neuro.btnSecondary} p-3 flex flex-col items-center`}>
-                    <Mail className="w-5 h-5 text-blue-600 mb-1" />
+                    <Mail className="w-5 h-5 text-[#6888ff] mb-1" />
                     <span className="text-xs">Email</span>
                   </button>
                   <button className={`${neuro.btnSecondary} p-3 flex flex-col items-center`}>
-                    <MessageSquare className="w-5 h-5 text-green-500 mb-1" />
+                    <MessageSquare className="w-5 h-5 text-[#6888ff] mb-1" />
                     <span className="text-xs">WhatsApp</span>
                   </button>
                 </div>
@@ -527,9 +527,9 @@ export default function CobranzaAutomatizadaPanel() {
                             )}
                             {contacto.promesaPago && (
                               <div className={`text-xs mt-1 p-2 rounded ${
-                                contacto.promesaPago.cumplida ? 'bg-green-50 text-green-700' :
-                                contacto.promesaPago.fecha < new Date() ? 'bg-red-50 text-red-700' :
-                                'bg-blue-50 text-blue-700'
+                                contacto.promesaPago.cumplida ? 'bg-[#6888ff]/5 text-[#6888ff]' :
+                                contacto.promesaPago.fecha < new Date() ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+                                'bg-[#6888ff]/5 text-[#6888ff]'
                               }`}>
                                 💰 Promesa: {formatCurrency(contacto.promesaPago.monto)} para el{' '}
                                 {contacto.promesaPago.fecha.toLocaleDateString()}

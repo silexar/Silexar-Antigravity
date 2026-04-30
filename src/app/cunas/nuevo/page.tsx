@@ -474,26 +474,26 @@ function CrearCunaPageContent() {
           </div>
         </div>
 
-        {/* Context Banner - Shows when coming from contract, vencimiento, inbox, etc. */}
+        {/* Context Banner - Shows when coming from contract, vencimientos, inbox, etc. */}
         {contexto.origen !== 'scratch' && (
           <div className="space-y-2">
             {/* Main context message */}
             <div className={`
               p-4 rounded-xl border flex items-center gap-3
               ${contexto.origen === 'contrato' ? 'bg-blue-50 border-blue-200' : ''}
-              ${contexto.origen === 'vencimiento' ? 'bg-amber-50 border-amber-200' : ''}
+              ${contexto.origen === 'vencimientos' ? 'bg-amber-50 border-amber-200' : ''}
               ${contexto.origen === 'inbox' ? 'bg-purple-50 border-purple-200' : ''}
               ${contexto.origen === 'campana' ? 'bg-cyan-50 border-cyan-200' : ''}
             `}>
               <div className={`
                 p-2 rounded-lg
                 ${contexto.origen === 'contrato' ? 'bg-blue-100' : ''}
-                ${contexto.origen === 'vencimiento' ? 'bg-amber-100' : ''}
+                ${contexto.origen === 'vencimientos' ? 'bg-amber-100' : ''}
                 ${contexto.origen === 'inbox' ? 'bg-purple-100' : ''}
                 ${contexto.origen === 'campana' ? 'bg-cyan-100' : ''}
               `}>
                 {contexto.origen === 'contrato' && <FileAudio className="w-5 h-5 text-blue-600" />}
-                {contexto.origen === 'vencimiento' && <AlertCircle className="w-5 h-5 text-amber-600" />}
+                {contexto.origen === 'vencimientos' && <AlertCircle className="w-5 h-5 text-amber-600" />}
                 {contexto.origen === 'inbox' && <Music className="w-5 h-5 text-purple-600" />}
                 {contexto.origen === 'campana' && <Target className="w-5 h-5 text-cyan-600" />}
               </div>
@@ -501,7 +501,7 @@ function CrearCunaPageContent() {
                 <p className={`
                   font-medium
                   ${contexto.origen === 'contrato' ? 'text-blue-800' : ''}
-                  ${contexto.origen === 'vencimiento' ? 'text-amber-800' : ''}
+                  ${contexto.origen === 'vencimientos' ? 'text-amber-800' : ''}
                   ${contexto.origen === 'inbox' ? 'text-purple-800' : ''}
                   ${contexto.origen === 'campana' ? 'text-cyan-800' : ''}
                 `}>
@@ -516,7 +516,7 @@ function CrearCunaPageContent() {
               <span className={`
                 px-2 py-1 rounded-full text-xs font-medium
                 ${contexto.origen === 'contrato' ? 'bg-blue-200 text-blue-700' : ''}
-                ${contexto.origen === 'vencimiento' ? 'bg-amber-200 text-amber-700' : ''}
+                ${contexto.origen === 'vencimientos' ? 'bg-amber-200 text-amber-700' : ''}
                 ${contexto.origen === 'inbox' ? 'bg-purple-200 text-purple-700' : ''}
                 ${contexto.origen === 'campana' ? 'bg-cyan-200 text-cyan-700' : ''}
               `}>
@@ -524,7 +524,7 @@ function CrearCunaPageContent() {
               </span>
             </div>
             
-            {/* Alert context (e.g., vencimiento warning) */}
+            {/* Alert context (e.g., vencimientos warning) */}
             {contexto.alertaContexto && (
               <div className="p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
@@ -580,7 +580,7 @@ function CrearCunaPageContent() {
                 context={
                   contexto.origen === 'scratch' ? 'manual' : 
                   contexto.origen === 'contrato' ? 'contract' : 
-                  contexto.origen === 'vencimiento' ? 'vencimientos' :
+                  contexto.origen === 'vencimientos' ? 'vencimientos' :
                   contexto.origen
                 }
                 tipoCuna={formData.tipo}

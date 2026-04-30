@@ -211,6 +211,20 @@ export const POST = withApiRoute(
                 contratoId: id,
                 tenantId
             })
+
+            // Log de auditoría para errores
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'aprobar',
+                    contratoId: id,
+                    tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            })
+
             return apiServerError() as unknown as NextResponse
         }
     }

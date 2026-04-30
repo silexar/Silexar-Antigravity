@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? MOBILE: Mi Rendimiento
  * 
  * Dashboard personal del ejecutivo: meta, comisiones,
@@ -74,11 +74,11 @@ export function MobileMiRendimientoView() {
       <div className="grid grid-cols-2 gap-3">
         <MiniKPI icon={<FileText className="w-4 h-4 text-[#6888ff]" />} label="Contratos" valor={String(R.contratosEsteMes)}
           delta={R.contratosEsteMes - R.contratosAnterior} />
-        <MiniKPI icon={<DollarSign className="w-4 h-4 text-emerald-500" />} label="Comisión" valor={`$${(R.comisionEstimada / 1e6).toFixed(1)}M`}
+        <MiniKPI icon={<DollarSign className="w-4 h-4 text-[#6888ff]" />} label="Comisiï¿½n" valor={`$${(R.comisionEstimada / 1e6).toFixed(1)}M`}
           delta={Number(((R.comisionEstimada - R.comisionAnterior) / 1e6).toFixed(1))} suffix="M" />
-        <MiniKPI icon={<Award className="w-4 h-4 text-amber-500" />} label="Ranking" valor={`#${R.ranking}`}
+        <MiniKPI icon={<Award className="w-4 h-4 text-[#6888ff]" />} label="Ranking" valor={`#${R.ranking}`}
           subtitle={`de ${R.totalEjecutivos}`} />
-        <MiniKPI icon={<Flame className="w-4 h-4 text-red-500" />} label="Racha" valor={`${R.rachaDias}d`}
+        <MiniKPI icon={<Flame className="w-4 h-4 text-[#9aa3b8]" />} label="Racha" valor={`${R.rachaDias}d`}
           subtitle={`Mejor: ${R.mejorRacha}d`} />
       </div>
 
@@ -98,13 +98,13 @@ export function MobileMiRendimientoView() {
         </div>
       </div>
 
-      {/* MÉTRICAS */}
+      {/* Mï¿½TRICAS */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3">
           <p className="text-[10px] text-[#9aa3b8]">Tasa Cierre</p>
           <div className="flex items-end gap-1 mt-0.5">
             <p className="text-xl font-black text-[#69738c]">{R.tasaCierre}%</p>
-            <span className={`text-[9px] font-bold ${R.tasaCierre > R.tasaCierreAnt ? 'text-emerald-500' : 'text-red-500'}`}>
+            <span className={`text-[9px] font-bold ${R.tasaCierre > R.tasaCierreAnt ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
               {R.tasaCierre > R.tasaCierreAnt ? <ArrowUpRight className="w-3 h-3 inline" /> : <ArrowDownRight className="w-3 h-3 inline" />}
               {Math.abs(R.tasaCierre - R.tasaCierreAnt)}%
             </span>
@@ -128,7 +128,7 @@ function MiniKPI({ icon, label, valor, delta, subtitle, suffix }: {
       <div className="flex items-center gap-1.5 mb-1">{icon}<span className="text-[10px] text-[#9aa3b8]">{label}</span></div>
       <p className="text-xl font-black text-[#69738c]">{valor}</p>
       {delta !== undefined && (
-        <span className={`text-[9px] font-bold ${delta >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+        <span className={`text-[9px] font-bold ${delta >= 0 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
           {delta >= 0 ? '+' : ''}{delta}{suffix || ''}
         </span>
       )}

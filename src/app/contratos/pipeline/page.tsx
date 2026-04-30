@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📊 SILEXAR PULSE - Pipeline Kanban de Contratos TIER 0
  * 
  * @description Vista Kanban para gerentes comerciales con
@@ -114,9 +114,9 @@ const mockPipeline: EstadoPipeline[] = [
   {
     id: 'aprobacion_interna',
     nombre: 'Aprobación',
-    color: '#f59e0b',
+    color: '#6888ff',
     bgColor: 'rgba(245,158,11,0.08)',
-    borderColor: '#f59e0b40',
+    borderColor: '#6888ff40',
     iconBg: '#fde68a',
     valorTotal: 320000000,
     contratos: [
@@ -140,9 +140,9 @@ const mockPipeline: EstadoPipeline[] = [
   {
     id: 'activo',
     nombre: 'Activo',
-    color: '#22c55e',
+    color: '#6888ff',
     bgColor: 'rgba(34,197,94,0.08)',
-    borderColor: '#22c55e40',
+    borderColor: '#6888ff40',
     iconBg: '#86efac',
     valorTotal: 890000000,
     contratos: [
@@ -159,10 +159,10 @@ const mockPipeline: EstadoPipeline[] = [
 
 const RiesgoBadge: React.FC<{ nivel: string; score?: number }> = ({ nivel, score }) => {
   const config = {
-    bajo: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e', label: 'Bajo' },
+    bajo: { bg: 'rgba(34,197,94,0.12)', text: '#6888ff', label: 'Bajo' },
     medio: { bg: 'rgba(104,136,255,0.12)', text: '#6888ff', label: 'Medio' },
-    alto: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', label: 'Alto' },
-    critico: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444', label: 'Crítico' }
+    alto: { bg: 'rgba(245,158,11,0.12)', text: '#6888ff', label: 'Alto' },
+    critico: { bg: 'rgba(239,68,68,0.12)', text: '#9aa3b8', label: 'Crítico' }
   }[nivel] || { bg: 'rgba(154,163,184,0.12)', text: N.textSub, label: nivel };
 
   return (
@@ -223,7 +223,7 @@ const ContratoCard: React.FC<{
     </div>
     
     {contrato.tienePendientes && (
-      <div className="mt-3 flex items-center gap-1 text-xs font-bold" style={{ color: '#f59e0b' }}>
+      <div className="mt-3 flex items-center gap-1 text-xs font-bold" style={{ color: '#6888ff' }}>
         <AlertTriangle className="w-3 h-3" />
         <span>Tiene pendientes</span>
       </div>
@@ -327,12 +327,12 @@ export default function PipelinePage() {
                 <p className="text-xs" style={{ color: N.textSub }}>Contratos en pipeline</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-black" style={{ color: '#22c55e' }}>{formatCurrency(totales.valor)}</p>
+                <p className="text-2xl font-black" style={{ color: '#6888ff' }}>{formatCurrency(totales.valor)}</p>
                 <p className="text-xs" style={{ color: N.textSub }}>Valor total</p>
               </div>
               {totales.pendientes > 0 && (
                 <div className="text-right">
-                  <p className="text-2xl font-black" style={{ color: '#f59e0b' }}>{totales.pendientes}</p>
+                  <p className="text-2xl font-black" style={{ color: '#6888ff' }}>{totales.pendientes}</p>
                   <p className="text-xs" style={{ color: N.textSub }}>Con pendientes</p>
                 </div>
               )}
@@ -401,13 +401,13 @@ export default function PipelinePage() {
         <div className="max-w-[1800px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5" style={{ color: '#f59e0b' }} />
+              <Zap className="w-5 h-5" style={{ color: '#6888ff' }} />
               <span className="text-sm" style={{ color: N.text }}>
                 <strong>Predicción:</strong> 3 contratos listos para firma esta semana
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
+              <TrendingUp className="w-5 h-5" style={{ color: '#6888ff' }} />
               <span className="text-sm" style={{ color: N.text }}>
                 <strong>Conversión:</strong> 78% promedio del mes
               </span>

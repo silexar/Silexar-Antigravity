@@ -42,7 +42,7 @@ export default function NuevaFacturaPage() {
   const [receptorCiudad, setReceptorCiudad] = useState('');
   const [receptorComuna, setReceptorComuna] = useState('');
   const [fechaEmision, setFechaEmision] = useState(() => new Date().toISOString().split('T')[0]);
-  const [fechaVencimiento, setFechaVencimiento] = useState(() => {
+  const [fechaVencimientos, setFechaVencimientos] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 30);
     return d.toISOString().split('T')[0];
@@ -110,7 +110,7 @@ export default function NuevaFacturaPage() {
           receptorCiudad,
           receptorComuna,
           fechaEmision,
-          fechaVencimiento,
+          fechaVencimientos,
           montoNeto: montoNetoNum,
           tasaIva,
           formaPago,
@@ -273,13 +273,13 @@ export default function NuevaFacturaPage() {
                 </div>
               </div>
               <div>
-                <label className={labelClass}>Fecha Vencimiento</label>
+                <label className={labelClass}>Fecha Vencimientos</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type="date"
-                    value={fechaVencimiento}
-                    onChange={e => setFechaVencimiento(e.target.value)}
+                    value={fechaVencimientos}
+                    onChange={e => setFechaVencimientos(e.target.value)}
                     className={`${inputClass} pl-10`}
                   />
                 </div>

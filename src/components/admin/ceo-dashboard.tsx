@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - CEO Executive Dashboard
+ * ðŸ“Š SILEXAR PULSE - CEO Executive Dashboard
  * Dashboard ejecutivo consolidado para CEO/Super Admin
  * 
  * @description Dashboard Features:
@@ -17,10 +17,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Users, Building, BarChart3, Globe, Zap,
   CheckCircle, Download, RefreshCw, ChevronUp, ChevronDown, Target
@@ -110,10 +108,10 @@ export function CEODashboard() {
 
   const getHealthColor = (health: TenantAdoption['health']) => {
     switch (health) {
-      case 'excellent': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      case 'good': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      case 'at_risk': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'churning': return 'bg-red-500/20 text-red-400 border-red-500/30'
+      case 'excellent': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      case 'good': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      case 'at_risk': return 'bg-[#6888ff]/20 text-[#6888ff] border-yellow-500/30'
+      case 'churning': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
     }
   }
 
@@ -130,122 +128,120 @@ export function CEODashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <BarChart3 className="w-7 h-7 text-orange-400" />
+          <h2 className="text-2xl font-bold text-[#69738c] flex items-center gap-2">
+            <BarChart3 className="w-7 h-7 text-[#6888ff]" />
             Dashboard Ejecutivo
           </h2>
-          <p className="text-slate-400">Vista consolidada del negocio Silexar Pulse</p>
+          <p className="text-[#9aa3b8]">Vista consolidada del negocio Silexar Pulse</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-slate-800 rounded-lg p-1">
+          <div className="flex bg-[#dfeaff] rounded-lg p-1">
             {(['7d', '30d', '90d', 'ytd'] as const).map(range => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1.5 rounded text-sm transition-colors ${
-                  timeRange === range 
-                    ? 'bg-orange-500 text-white' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                className={`px-3 py-1.5 rounded text-sm transition-colors ${timeRange === range
+                  ? 'bg-[#6888ff] text-white'
+                  : 'text-[#9aa3b8] hover:text-[#69738c]'
+                  }`}
               >
                 {range.toUpperCase()}
               </button>
             ))}
           </div>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Actualizar
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm">
+          </NeuButton>
+          <NeuButton variant="secondary">
             <Download className="w-4 h-4 mr-1" />
             Exportar
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Revenue Metrics */}
       <div className="grid grid-cols-6 gap-4">
         {revenueMetrics.map((metric, i) => (
-          <NeuromorphicCard key={metric.label} variant="embossed" className="p-4">
-            <p className="text-xs text-slate-500 mb-1">{metric.label}</p>
-            <p className="text-2xl font-bold text-white">{formatValue(metric.current, metric.format)}</p>
-            <div className={`flex items-center gap-1 text-xs mt-1 ${
-              metric.change > 0 
-                ? (metric.label === 'CAC' || metric.label === 'Churn Rate' ? 'text-red-400' : 'text-green-400')
-                : (metric.label === 'CAC' || metric.label === 'Churn Rate' ? 'text-green-400' : 'text-red-400')
-            }`}>
+          <NeuCard key={metric.label} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+            <p className="text-xs text-[#9aa3b8] mb-1">{metric.label}</p>
+            <p className="text-2xl font-bold text-[#69738c]">{formatValue(metric.current, metric.format)}</p>
+            <div className={`flex items-center gap-1 text-xs mt-1 ${metric.change > 0
+              ? (metric.label === 'CAC' || metric.label === 'Churn Rate' ? 'text-[#6888ff]' : 'text-[#6888ff]')
+              : (metric.label === 'CAC' || metric.label === 'Churn Rate' ? 'text-[#6888ff]' : 'text-[#6888ff]')
+              }`}>
               {metric.change > 0 ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               {Math.abs(metric.change)}%
-              <span className="text-slate-500">vs anterior</span>
+              <span className="text-[#9aa3b8]">vs anterior</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       <div className="grid grid-cols-12 gap-6">
         {/* Tenant Adoption */}
         <div className="col-span-8">
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-medium flex items-center gap-2">
-                <Building className="w-5 h-5 text-blue-400" />
+              <h3 className="text-[#69738c] font-medium flex items-center gap-2">
+                <Building className="w-5 h-5 text-[#6888ff]" />
                 Adopción por Cliente
               </h3>
-              <span className="text-xs text-slate-500">{tenantAdoption.length} clientes activos</span>
+              <span className="text-xs text-[#9aa3b8]">{tenantAdoption.length} clientes activos</span>
             </div>
             <div className="space-y-3">
               {tenantAdoption.map(tenant => (
-                <div key={tenant.tenantId} className="p-4 bg-slate-800/50 rounded-lg">
+                <div key={tenant.tenantId} className="p-4 bg-[#dfeaff]/50 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                         {tenant.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-white font-medium">{tenant.name}</p>
-                        <p className="text-xs text-slate-500">{tenant.plan}</p>
+                        <p className="text-[#69738c] font-medium">{tenant.name}</p>
+                        <p className="text-xs text-[#9aa3b8]">{tenant.plan}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="text-white font-medium">${tenant.mrr.toLocaleString()}</p>
-                        <p className="text-xs text-slate-500">MRR</p>
+                        <p className="text-[#69738c] font-medium">${tenant.mrr.toLocaleString()}</p>
+                        <p className="text-xs text-[#9aa3b8]">MRR</p>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded border ${getHealthColor(tenant.health)}`}>
-                        {tenant.health === 'excellent' ? '🌟 Excelente' :
-                         tenant.health === 'good' ? '✅ Bueno' :
-                         tenant.health === 'at_risk' ? '⚠️ En Riesgo' : '🚨 Churning'}
+                        {tenant.health === 'excellent' ? 'ðŸŒŸ Excelente' :
+                          tenant.health === 'good' ? 'œ… Bueno' :
+                            tenant.health === 'at_risk' ? 'š ï¸ En Riesgo' : 'ðŸš¨ Churning'}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex-1">
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-slate-400">Usuarios activos</span>
-                        <span className="text-white">{tenant.usersActive}/{tenant.usersTotal}</span>
+                        <span className="text-[#9aa3b8]">Usuarios activos</span>
+                        <span className="text-[#69738c]">{tenant.usersActive}/{tenant.usersTotal}</span>
                       </div>
-                      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                        <div 
+                      <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
+                        <div
                           className="h-full bg-gradient-to-r from-green-500 to-emerald-400"
                           style={{ width: `${(tenant.usersActive / tenant.usersTotal) * 100}%` }}
                         />
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500">
-                      Última actividad: {tenant.lastActivity.toLocaleTimeString()}
+                    <p className="text-xs text-[#9aa3b8]">
+                      Ášltima actividad: {tenant.lastActivity.toLocaleTimeString()}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
 
         {/* KPIs */}
         <div className="col-span-4 space-y-4">
-          <NeuromorphicCard variant="embossed" className="p-6">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-green-400" />
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
+            <h3 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-[#6888ff]" />
               KPIs de Negocio
             </h3>
             <div className="space-y-4">
@@ -255,15 +251,15 @@ export function CEODashboard() {
                 return (
                   <div key={kpi.id}>
                     <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-slate-400">{kpi.name}</span>
-                      <span className={onTarget ? 'text-green-400' : 'text-yellow-400'}>
+                      <span className="text-[#9aa3b8]">{kpi.name}</span>
+                      <span className={onTarget ? 'text-[#6888ff]' : 'text-[#6888ff]'}>
                         {kpi.value}{kpi.unit}
-                        <span className="text-slate-500 text-xs ml-1">/ {kpi.target}{kpi.unit}</span>
+                        <span className="text-[#9aa3b8] text-xs ml-1">/ {kpi.target}{kpi.unit}</span>
                       </span>
                     </div>
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full ${onTarget ? 'bg-green-500' : 'bg-yellow-500'}`}
+                    <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${onTarget ? 'bg-[#6888ff]' : 'bg-[#6888ff]'}`}
                         style={{ width: `${Math.min(100, progress)}%` }}
                       />
                     </div>
@@ -271,38 +267,38 @@ export function CEODashboard() {
                 )
               })}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
 
           {/* Quick Stats */}
-          <NeuromorphicCard variant="glow" className="p-6">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-yellow-400" />
+          <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+            <h3 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+              <Zap className="w-5 h-5 text-[#6888ff]" />
               Resumen Rápido
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-green-500/10 rounded-lg border border-green-500/30">
+              <div className="flex items-center justify-between p-3 bg-[#6888ff]/10 rounded-lg border border-[#6888ff]/30">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-400" />
-                  <span className="text-green-400">Sistema Operativo</span>
+                  <CheckCircle className="w-5 h-5 text-[#6888ff]" />
+                  <span className="text-[#6888ff]">Sistema Operativo</span>
                 </div>
-                <span className="text-white font-bold">99.99%</span>
+                <span className="text-[#69738c] font-bold">99.99%</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+              <div className="flex items-center justify-between p-3 bg-[#6888ff]/10 rounded-lg border border-[#6888ff]/30">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-blue-400" />
-                  <span className="text-blue-400">Usuarios Online</span>
+                  <Users className="w-5 h-5 text-[#6888ff]" />
+                  <span className="text-[#6888ff]">Usuarios Online</span>
                 </div>
-                <span className="text-white font-bold">1,247</span>
+                <span className="text-[#69738c] font-bold">1,247</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
+              <div className="flex items-center justify-between p-3 bg-[#6888ff]/10 rounded-lg border border-[#6888ff]/30">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-purple-400" />
-                  <span className="text-purple-400">Regiones Activas</span>
+                  <Globe className="w-5 h-5 text-[#6888ff]" />
+                  <span className="text-[#6888ff]">Regiones Activas</span>
                 </div>
-                <span className="text-white font-bold">7</span>
+                <span className="text-[#69738c] font-bold">7</span>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ export interface CostosProduccionProps {
     moneda: string
     tipoPresupuesto: 'FIJO' | 'VARIABLE' | 'MIXTO' | 'POR_HORAS'
     fechaCreacion: Date
-    fechaVencimiento: Date
+    fechaVencimientos: Date
     version: number
     estado: 'BORRADOR' | 'ENVIADO' | 'APROBADO' | 'RECHAZADO' | 'MODIFICADO'
   }
@@ -122,7 +122,7 @@ export interface CostosProduccionProps {
       hito: string
       porcentaje: number
       monto: number
-      fechaVencimiento: Date
+      fechaVencimientos: Date
       pagado: boolean
       fechaPago?: Date
     }>

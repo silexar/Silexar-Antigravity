@@ -4,7 +4,7 @@
  * Panel de validación integral que verifica todos los aspectos
  * de una cuña antes de su aprobación o exportación:
  * - Validación técnica de audio
- * - Validación de contrato y vencimiento
+ * - Validación de contrato y vencimientos
  * - Validación de distribución
  * - Validación de compliance
  * - Validación de calidad
@@ -98,7 +98,7 @@ export const PanelValidacionesCompletas: React.FC<PanelValidacionesCompletasProp
                 validations: [
                     { id: 'contrato_existe', name: 'Contrato existente', status: 'pending', message: '' },
                     { id: 'contrato_activo', name: 'Contrato activo', status: 'pending', message: '' },
-                    { id: 'vencimiento', name: 'Vigencia vigente', status: 'pending', message: '' },
+                    { id: 'vencimientos', name: 'Vigencia vigente', status: 'pending', message: '' },
                     { id: 'slot_disponible', name: 'Slot disponible', status: 'pending', message: '' },
                 ],
             },
@@ -442,8 +442,8 @@ function simulateValidation(
                 ? { status: 'passed', message: 'Contrato en vigor' }
                 : { status: 'pending', message: 'Sin información de contrato' };
 
-        case 'vencimiento':
-            return { status: 'warning', message: 'Vencimiento en 5 días', details: 'Renovar antes del 30/04/2026' };
+        case 'vencimientos':
+            return { status: 'warning', message: 'Vencimientos en 5 días', details: 'Renovar antes del 30/04/2026' };
 
         case 'slot_disponible':
             return { status: 'passed', message: 'Slot disponible en programación' };

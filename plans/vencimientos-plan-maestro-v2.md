@@ -11,7 +11,7 @@
 
 > *"Como Ejecutivo de Ventas, necesito SABER en tiempo real qué cupos tengo disponibles, cuáles están por vencer, y qué puedo vender AHORA para cerrar la venta antes que la competencia."*
 
-El módulo debe funcionar como un **centro de comando de ventas** donde cada segundo cuenta, cada cupo es una oportunidad, y cada vencimiento es una conversación pendiente.
+El módulo debe funcionar como un **centro de comando de ventas** donde cada segundo cuenta, cada cupo es una oportunidad, y cada vencimientos es una conversación pendiente.
 
 ---
 
@@ -29,7 +29,7 @@ El módulo debe funcionar como un **centro de comando de ventas** donde cada seg
 ```typescript
 // Sistema de actualización en tiempo real
 interface LiveInventoryUpdate {
-  type: 'CUPO_OCUPADO' | 'CUPO_LIBERADO' | 'VENCIMIENTO_UPDATE'
+  type: 'CUPO_OCUPADO' | 'CUPO_LIBERADO' | 'VENCIMIENTOS_UPDATE'
   programaId: string
  cupoId: string
   timestamp: Date
@@ -204,7 +204,7 @@ Tienes 2 cupos disponibles en Mesa Central Prime AM.
 │
 ├── vencimientos/
 │   ├── GET    → Lista vencimientos (filtros: dias, estado)
-│   ├── POST   → Crear vencimiento manual
+│   ├── POST   → Crear vencimientos manual
 │   └── [id]/
 │       ├── PATCH → Actualizar estado/alerta
 │       └── POST  → Confirmar inicio/fin
@@ -277,7 +277,7 @@ model CupoComercial {
   cliente         Cliente          @relation(...)
 }
 
-model VencimientoAuspicio {
+model VencimientosAuspicio {
   id              String   @id @default(cuid())
   cupoId          String   @unique
   nivelAlerta     String   // "verde"|"amarillo"|"rojo"|"critico"|"no_iniciado"
@@ -292,7 +292,7 @@ model VencimientoAuspicio {
 
 model AlertaProgramador {
   id          String   @id @default(cuid())
-  tipo        String   // "INICIO"|"VENCIMIENTO"|"COUNTDOWN"
+  tipo        String   // "INICIO"|"VENCIMIENTOS"|"COUNTDOWN"
   mensaje     String
   prioridad   String   // "alta"|"media"|"baja"
   leida       Boolean  @default(false)
@@ -305,7 +305,7 @@ model AlertaProgramador {
 ### Repository implementations:
 - `PrismaProgramaRepository` → implements `IProgramaAuspicioRepository`
 - `PrismaCupoRepository` → implements `ICupoComercialRepository`
-- `PrismaVencimientoRepository` → implements `IVencimientoRepository`
+- `PrismaVencimientosRepository` → implements `IVencimientosRepository`
 - `PrismaDisponibilidadRepository` → implements `IDisponibilidadRepository`
 - `PrismaTarifaRepository` → implements `ITarifarioRepository`
 

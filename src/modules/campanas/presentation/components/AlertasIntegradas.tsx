@@ -27,7 +27,7 @@ interface Alerta {
   campanaId?: string;
   nombreCampana?: string;
   fechaCreacion: Date;
-  fechaVencimiento?: Date;
+  fechaVencimientos?: Date;
   leida: boolean;
   accionRequerida: boolean;
   metadata: {
@@ -285,10 +285,10 @@ export const AlertasIntegradas: React.FC<AlertasIntegradasProps> = ({
                         <Clock className="w-3 h-3 mr-1" />
                         {formatearTiempoRelativo(alerta.fechaCreacion)}
                       </span>
-                      {alerta.fechaVencimiento && (
+                      {alerta.fechaVencimientos && (
                         <span className="flex items-center">
                           <Calendar className="w-3 h-3 mr-1" />
-                          Vence: {alerta.fechaVencimiento.toLocaleDateString()}
+                          Vence: {alerta.fechaVencimientos.toLocaleDateString()}
                         </span>
                       )}
                     </div>

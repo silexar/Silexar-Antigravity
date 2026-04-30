@@ -21,7 +21,7 @@ interface MobileContractCardProps {
   montoNeto: number
   moneda?: string
   estado: EstadoContrato
-  fechaVencimiento: Date
+  fechaVencimientos: Date
   diasRestantes?: number
   onPress?: (id: string) => void
   className?: string
@@ -61,7 +61,7 @@ function MobileContractCardBase({
   montoNeto,
   moneda = 'CLP',
   estado,
-  fechaVencimiento,
+  fechaVencimientos,
   diasRestantes,
   onPress,
   className = '',
@@ -122,7 +122,7 @@ function MobileContractCardBase({
                       : diasRestantes === 1
                         ? 'Vence mañana'
                         : `${diasRestantes}d`
-                  : formatDate(fechaVencimiento)}
+                  : formatDate(fechaVencimientos)}
               </span>
             </div>
           </div>

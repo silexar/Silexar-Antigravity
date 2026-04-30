@@ -52,24 +52,24 @@ export function AutoFollowUpEngine() {
   const urgentes = pendientes.filter(s => s.prioridad === 'urgente').length;
 
   const tipoIcon: Record<string, React.ReactNode> = {
-    llamar: <Phone className="w-4 h-4 text-blue-500" />,
-    email: <Mail className="w-4 h-4 text-purple-500" />,
-    reunion: <Calendar className="w-4 h-4 text-emerald-500" />,
-    propuesta: <Sparkles className="w-4 h-4 text-amber-500" />,
+    llamar: <Phone className="w-4 h-4 text-[#6888ff]" />,
+    email: <Mail className="w-4 h-4 text-[#6888ff]" />,
+    reunion: <Calendar className="w-4 h-4 text-[#6888ff]" />,
+    propuesta: <Sparkles className="w-4 h-4 text-[#6888ff]" />,
   };
 
   return (
     <div className="neo-card rounded-2xl overflow-hidden">
       <div className="px-6 py-4 bg-[#dfeaff] border-b border-[#bec8de30] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-5 h-5 text-blue-600" />
+          <RefreshCw className="w-5 h-5 text-[#6888ff]" />
           <div>
             <h3 className="font-black text-lg text-[#69738c]">Auto-Seguimiento IA</h3>
             <p className="text-xs text-[#9aa3b8]">{pendientes.length} pendientes · {urgentes} urgentes</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full flex items-center gap-1">
+          <span className="px-3 py-1 bg-[#dfeaff] text-[#9aa3b8] text-xs font-bold rounded-full flex items-center gap-1">
             <AlertTriangle className="w-3 h-3" /> {urgentes} urgentes
           </span>
         </div>
@@ -86,8 +86,8 @@ export function AutoFollowUpEngine() {
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-sm text-[#69738c]">{s.titulo}</p>
                     <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${
-                      s.prioridad === 'urgente' ? 'bg-red-100 text-red-600' :
-                      s.prioridad === 'hoy' ? 'bg-amber-100 text-amber-600' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                      s.prioridad === 'urgente' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+                      s.prioridad === 'hoy' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
                     }`}>{s.prioridad === 'urgente' ? '⚡ URGENTE' : s.fechaSugerida}</span>
                   </div>
                   <p className="text-xs text-[#9aa3b8] mt-0.5">{s.cliente} · {s.diasSinContacto}d sin contacto</p>
@@ -112,7 +112,7 @@ export function AutoFollowUpEngine() {
 
                   <div className="flex gap-2">
                     <button onClick={() => completar(s.id)}
-                      className="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 flex items-center gap-1">
+                      className="px-4 py-2 bg-[#6888ff] text-white text-xs font-bold rounded-xl hover:bg-[#6888ff] flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Completado
                     </button>
                     <button onClick={() => posponer(s.id)}
@@ -120,7 +120,7 @@ export function AutoFollowUpEngine() {
                       <Clock className="w-3 h-3" /> Posponer
                     </button>
                     {s.tipo === 'llamar' && (
-                      <a href="tel:+56223456789" className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 flex items-center gap-1">
+                      <a href="tel:+56223456789" className="px-4 py-2 bg-[#6888ff] text-white text-xs font-bold rounded-xl hover:bg-[#6888ff]/10 flex items-center gap-1">
                         <Phone className="w-3 h-3" /> Llamar ahora
                       </a>
                     )}

@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔌 SILEXAR PULSE - Integrations Status
+ * ðŸ”Œ SILEXAR PULSE - Integrations Status
  * Estado de integraciones externas
  * 
  * @description Integration Monitoring:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Plug,
   RefreshCw
@@ -70,11 +68,11 @@ export function IntegrationsStatus() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'connected': return 'bg-green-500/20 text-green-400'
-      case 'degraded': return 'bg-yellow-500/20 text-yellow-400'
-      case 'error': return 'bg-red-500/20 text-red-400'
-      case 'disconnected': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'connected': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'degraded': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'error': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'disconnected': return 'bg-[#bec8de]/20 text-[#9aa3b8]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -98,8 +96,8 @@ export function IntegrationsStatus() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Verificando Integraciones...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Verificando Integraciones...</p>
         </div>
       </div>
     )
@@ -109,50 +107,50 @@ export function IntegrationsStatus() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Plug className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Plug className="w-5 h-5 text-[#6888ff]" />
           Third-Party Integrations
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadIntegrations}>
+        <NeuButton variant="secondary" onClick={loadIntegrations}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Check All
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{integrations.length}</p>
-          <p className="text-xs text-slate-400">Integraciones</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{integrations.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Integraciones</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{healthyCount}</p>
-          <p className="text-xs text-slate-400">Healthy</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{healthyCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Healthy</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">{(totalRequests / 1000000).toFixed(2)}M</p>
-          <p className="text-xs text-slate-400">Requests 24h</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{(totalRequests / 1000000).toFixed(2)}M</p>
+          <p className="text-xs text-[#9aa3b8]">Requests 24h</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{totalErrors}</p>
-          <p className="text-xs text-slate-400">Errors 24h</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalErrors}</p>
+          <p className="text-xs text-[#9aa3b8]">Errors 24h</p>
         </div>
       </div>
 
       {/* Integrations Grid */}
       <div className="grid grid-cols-2 gap-3">
         {integrations.map(integration => (
-          <NeuromorphicCard 
+          <NeuCard
             key={integration.id}
-            variant="embossed" 
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
             className="p-4"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{getTypeIcon(integration.type)}</span>
                 <div>
-                  <span className="text-white font-medium">{integration.name}</span>
-                  <p className="text-xs text-slate-500 capitalize">{integration.type}</p>
+                  <span className="text-[#69738c] font-medium">{integration.name}</span>
+                  <p className="text-xs text-[#9aa3b8] capitalize">{integration.type}</p>
                 </div>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(integration.status)}`}>
@@ -162,54 +160,51 @@ export function IntegrationsStatus() {
 
             <div className="grid grid-cols-3 gap-2 mb-3">
               <div className="text-center">
-                <p className={`text-sm font-bold ${
-                  integration.latency < 200 ? 'text-green-400' :
-                  integration.latency < 500 ? 'text-yellow-400' : 'text-red-400'
-                }`}>
+                <p className={`text-sm font-bold ${integration.latency < 200 ? 'text-[#6888ff]' :
+                  integration.latency < 500 ? 'text-[#6888ff]' : 'text-[#6888ff]'
+                  }`}>
                   {integration.latency}ms
                 </p>
-                <p className="text-xs text-slate-500">Latency</p>
+                <p className="text-xs text-[#9aa3b8]">Latency</p>
               </div>
               <div className="text-center">
-                <p className="text-sm font-bold text-white">
+                <p className="text-sm font-bold text-[#69738c]">
                   {(integration.requests24h / 1000).toFixed(0)}K
                 </p>
-                <p className="text-xs text-slate-500">Requests</p>
+                <p className="text-xs text-[#9aa3b8]">Requests</p>
               </div>
               <div className="text-center">
-                <p className={`text-sm font-bold ${
-                  integration.errors24h < 10 ? 'text-green-400' : 'text-red-400'
-                }`}>
+                <p className={`text-sm font-bold ${integration.errors24h < 10 ? 'text-[#6888ff]' : 'text-[#6888ff]'
+                  }`}>
                   {integration.errors24h}
                 </p>
-                <p className="text-xs text-slate-500">Errors</p>
+                <p className="text-xs text-[#9aa3b8]">Errors</p>
               </div>
             </div>
 
             {integration.rateLimit.limit > 0 && (
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">Rate Limit</span>
-                  <span className="text-white">
+                  <span className="text-[#9aa3b8]">Rate Limit</span>
+                  <span className="text-[#69738c]">
                     {(integration.rateLimit.used / 1000).toFixed(0)}K / {(integration.rateLimit.limit / 1000).toFixed(0)}K
                   </span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
-                  <div 
-                    className={`h-1.5 rounded-full ${
-                      (integration.rateLimit.used / integration.rateLimit.limit) > 0.8 ? 'bg-red-500' :
-                      (integration.rateLimit.used / integration.rateLimit.limit) > 0.6 ? 'bg-yellow-500' : 'bg-green-500'
-                    }`}
+                <div className="w-full bg-[#dfeaff] rounded-full h-1.5">
+                  <div
+                    className={`h-1.5 rounded-full ${(integration.rateLimit.used / integration.rateLimit.limit) > 0.8 ? 'bg-[#6888ff]' :
+                      (integration.rateLimit.used / integration.rateLimit.limit) > 0.6 ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                      }`}
                     style={{ width: `${(integration.rateLimit.used / integration.rateLimit.limit) * 100}%` }}
                   />
                 </div>
               </div>
             )}
 
-            <div className="mt-2 text-xs text-slate-500">
+            <div className="mt-2 text-xs text-[#9aa3b8]">
               Last sync: {integration.lastSync.toLocaleTimeString()}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

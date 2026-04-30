@@ -14,8 +14,10 @@ import { useRouter } from 'next/navigation';
 import { 
   Receipt, Plus, Search, RefreshCw, AlertTriangle,
   DollarSign, Clock, XCircle, ChevronDown,
-  FileText, Sparkles, Brain, Download
+  FileText, Sparkles, Brain, Download,
+  ArrowLeft
 } from 'lucide-react';
+import { ModuleNavMenu } from '@/components/module-nav-menu';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -29,7 +31,7 @@ interface Factura {
   razonSocialReceptor: string;
   rutReceptor: string;
   fechaEmision: string;
-  fechaVencimiento: string;
+  fechaVencimientos: string;
   montoTotal: number;
   montoPagado: number;
   estado: string;
@@ -143,10 +145,10 @@ export default function FacturacionPage() {
 
   // Mock data con métricas IA
   const mockFacturas: Factura[] = [
-    { id: '1', numero: 1234, folio: 45678, tipoDocumento: 'factura', razonSocialReceptor: 'Empresa ABC Ltda', rutReceptor: '76.123.456-7', fechaEmision: '2025-12-01', fechaVencimiento: '2025-12-31', montoTotal: 5800000, montoPagado: 0, estado: 'aceptada_sii', diasMora: 0, scoreCliente: 850, probabilidadCobro: 92 },
-    { id: '2', numero: 1235, folio: 45679, tipoDocumento: 'factura', razonSocialReceptor: 'Servicios XYZ SpA', rutReceptor: '76.234.567-8', fechaEmision: '2025-11-15', fechaVencimiento: '2025-12-15', montoTotal: 3200000, montoPagado: 0, estado: 'vencida', diasMora: 3, scoreCliente: 520, probabilidadCobro: 65 },
-    { id: '3', numero: 1236, folio: 45680, tipoDocumento: 'factura', razonSocialReceptor: 'Comercial DEF Ltda', rutReceptor: '76.345.678-9', fechaEmision: '2025-11-01', fechaVencimiento: '2025-12-01', montoTotal: 12500000, montoPagado: 6000000, estado: 'vencida', diasMora: 17, scoreCliente: 380, probabilidadCobro: 35 },
-    { id: '4', numero: 1237, folio: 45681, tipoDocumento: 'factura', razonSocialReceptor: 'Industrias GHI SpA', rutReceptor: '76.456.789-0', fechaEmision: '2025-12-10', fechaVencimiento: '2026-01-10', montoTotal: 8900000, montoPagado: 8900000, estado: 'pagada', diasMora: 0, scoreCliente: 920, probabilidadCobro: 100 }
+    { id: '1', numero: 1234, folio: 45678, tipoDocumento: 'factura', razonSocialReceptor: 'Empresa ABC Ltda', rutReceptor: '76.123.456-7', fechaEmision: '2025-12-01', fechaVencimientos: '2025-12-31', montoTotal: 5800000, montoPagado: 0, estado: 'aceptada_sii', diasMora: 0, scoreCliente: 850, probabilidadCobro: 92 },
+    { id: '2', numero: 1235, folio: 45679, tipoDocumento: 'factura', razonSocialReceptor: 'Servicios XYZ SpA', rutReceptor: '76.234.567-8', fechaEmision: '2025-11-15', fechaVencimientos: '2025-12-15', montoTotal: 3200000, montoPagado: 0, estado: 'vencida', diasMora: 3, scoreCliente: 520, probabilidadCobro: 65 },
+    { id: '3', numero: 1236, folio: 45680, tipoDocumento: 'factura', razonSocialReceptor: 'Comercial DEF Ltda', rutReceptor: '76.345.678-9', fechaEmision: '2025-11-01', fechaVencimientos: '2025-12-01', montoTotal: 12500000, montoPagado: 6000000, estado: 'vencida', diasMora: 17, scoreCliente: 380, probabilidadCobro: 35 },
+    { id: '4', numero: 1237, folio: 45681, tipoDocumento: 'factura', razonSocialReceptor: 'Industrias GHI SpA', rutReceptor: '76.456.789-0', fechaEmision: '2025-12-10', fechaVencimientos: '2026-01-10', montoTotal: 8900000, montoPagado: 8900000, estado: 'pagada', diasMora: 0, scoreCliente: 920, probabilidadCobro: 100 }
   ];
 
   const mockAlertas: AlertaCobranza[] = [
@@ -201,12 +203,18 @@ export default function FacturacionPage() {
         
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-emerald-600 bg-clip-text text-transparent flex items-center gap-3">
-              <Receipt className="w-10 h-10 text-emerald-500" />
-              Facturación
-            </h1>
-            <p className="text-slate-500 mt-2">Gestión de documentos tributarios con IA predictiva</p>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push('/dashboard')} className="p-2.5 rounded-xl transition-all bg-white shadow-md hover:bg-slate-100">
+              <ArrowLeft className="w-4 h-4 text-slate-600" />
+            </button>
+            <ModuleNavMenu />
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-emerald-600 bg-clip-text text-transparent flex items-center gap-3">
+                <Receipt className="w-10 h-10 text-emerald-500" />
+                Facturación
+              </h1>
+              <p className="text-slate-500 mt-2">Gestión de documentos tributarios con IA predictiva</p>
+            </div>
           </div>
           
           <div className="flex items-center gap-3">
@@ -323,7 +331,7 @@ export default function FacturacionPage() {
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-sm text-slate-600">{f.fechaEmision}</p>
-                        <p className="text-xs text-slate-400">Vence: {f.fechaVencimiento}</p>
+                        <p className="text-xs text-slate-400">Vence: {f.fechaVencimientos}</p>
                       </td>
                       <td className="py-3 px-4">
                         <p className="font-bold text-slate-800">${(Number(f.montoTotal) / 1000000).toFixed(2)}M</p>

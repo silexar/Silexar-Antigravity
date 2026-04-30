@@ -31,13 +31,13 @@ export interface ContextoContrato {
   fechaFinVigencia?: string;
 }
 
-export interface ContextoVencimiento {
+export interface ContextoVencimientos {
   vencimientosId: string;
   anuncianteId: string;
   anuncianteNombre: string;
   programaId?: string;
   programaNombre?: string;
-  fechaVencimiento: string;
+  fechaVencimientos: string;
   tipoMaterialFaltante: 'presentacion' | 'cierre' | 'audio';
 }
 
@@ -75,7 +75,7 @@ export interface CreacionContextData {
   mensajeContexto?: string;
   alertaContexto?: string;
   contextoContrato?: ContextoContrato;
-  contextoVencimiento?: ContextoVencimiento;
+  contextoVencimientos?: ContextoVencimientos;
   contextoInbox?: ContextoInbox;
   contextoCampana?: ContextoCampana;
 }
@@ -86,7 +86,7 @@ export interface CreacionContextData {
 
 const STORAGE_KEYS = {
   CONTRATO: 'silexar_cuna_contexto_contrato',
-  VENCIMIENTO: 'silexar_cuna_contexto_vencimientos',
+  VENCIMIENTOS: 'silexar_cuna_contexto_vencimientos',
   INBOX: 'silexar_cuna_contexto_inbox',
   CAMPANA: 'silexar_cuna_contexto_campana'
 };
@@ -157,26 +157,26 @@ export function useCreationContext(): CreacionContextData {
     
     // 3. Contexto desde VENCIMIENTOS
     if (fromParam === 'vencimientos' || vencimientosId) {
-      const storedVencimiento = getStoredContext<ContextoVencimiento>(STORAGE_KEYS.VENCIMIENTO);
+      const storedVencimientos = getStoredContext<ContextoVencimientos>(STORAGE_KEYS.VENCIMIENTOS);
       
-      const tipoFaltante = storedVencimiento?.tipoMaterialFaltante || 'presentacion';
+      const tipoFaltante = storedVencimientos?.tipoMaterialFaltante || 'presentacion';
       
       return {
         origen: 'vencimientos',
         tipoSugerido: tipoParam || tipoFaltante,
         datosPreLlenados: {
-          anuncianteId: anuncianteId || storedVencimiento?.anuncianteId,
-          anuncianteNombre: anuncianteNombre || storedVencimiento?.anuncianteNombre,
-          programaId: programaId || storedVencimiento?.programaId,
-          programaNombre: programaNombre || storedVencimiento?.programaNombre
+          anuncianteId: anuncianteId || storedVencimientos?.anuncianteId,
+          anuncianteNombre: anuncianteNombre || storedVencimientos?.anuncianteNombre,
+          programaId: programaId || storedVencimientos?.programaId,
+          programaNombre: programaNombre || storedVencimientos?.programaNombre
         },
-        mensajeContexto: storedVencimiento 
-          ? `⏰ Creando ${tipoFaltante} para "${storedVencimiento.programaNombre}"`
+        mensajeContexto: storedVencimientos 
+          ? `⏰ Creando ${tipoFaltante} para "${storedVencimientos.programaNombre}"`
           : '⏰ Creando desde alertas de vencimientos',
-        alertaContexto: storedVencimiento 
-          ? `⚠️ Este programa vence el ${new Date(storedVencimiento.fechaVencimiento).toLocaleDateString('es-CL')}`
+        alertaContexto: storedVencimientos 
+          ? `⚠️ Este programa vence el ${new Date(storedVencimientos.fechaVencimientos).toLocaleDateString('es-CL')}`
           : undefined,
-        contextoVencimiento: storedVencimiento || undefined
+        contextoVencimientos: storedVencimientos || undefined
       };
     }
     
@@ -244,9 +244,9 @@ export function setContratoContext(data: ContextoContrato): void {
   }
 }
 
-export function setVencimientoContext(data: ContextoVencimiento): void {
+export function setVencimientosContext(data: ContextoVencimientos): void {
   if (typeof window !== 'undefined') {
-    sessionStorage.setItem(STORAGE_KEYS.VENCIMIENTO, JSON.stringify(data));
+    sessionStorage.setItem(STORAGE_KEYS.VENCIMIENTOS, JSON.stringify(data));
   }
 }
 

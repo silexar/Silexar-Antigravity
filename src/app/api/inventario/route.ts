@@ -8,91 +8,145 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { apiSuccess, apiError, apiServerError, getUserContext } from '@/lib/api/response';
+import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { withApiRoute } from '@/lib/api/with-api-route';
+import { DrizzleInventarioRepository } from '@/modules/inventario/infrastructure/repositories/DrizzleInventarioRepository';
 
-// Mock de datos
-const mockCupos = [
-  { id: 'cup-001', codigo: 'CUP-001', nombre: 'Tanda Matinal 08:00', emisoraNombre: 'Radio Cooperativa', horaInicio: '08:00', duracionSegundos: 30, tipoInventario: 'tanda_comercial', tarifaBase: 150000, disponibles: 5, vendidos: 3 },
-  { id: 'cup-002', codigo: 'CUP-002', nombre: 'Auspicio El Conquistador', emisoraNombre: 'Radio ADN', horaInicio: '09:00', duracionSegundos: 20, tipoInventario: 'auspicio_programa', tarifaBase: 500000, disponibles: 1, vendidos: 1 },
-  { id: 'cup-003', codigo: 'CUP-003', nombre: 'Tanda Mediodía 13:00', emisoraNombre: 'Radio Biobío', horaInicio: '13:00', duracionSegundos: 30, tipoInventario: 'tanda_comercial', tarifaBase: 200000, disponibles: 6, vendidos: 2 },
-  { id: 'cup-004', codigo: 'CUP-004', nombre: 'Mención Deportes', emisoraNombre: 'Radio Cooperativa', horaInicio: '19:30', duracionSegundos: 15, tipoInventario: 'mencion_programa', tarifaBase: 80000, disponibles: 3, vendidos: 0 },
-  { id: 'cup-005', codigo: 'CUP-005', nombre: 'Tanda Prime Time 21:00', emisoraNombre: 'Radio ADN', horaInicio: '21:00', duracionSegundos: 30, tipoInventario: 'tanda_comercial', tarifaBase: 350000, disponibles: 4, vendidos: 4 }
-];
+// Repository instance
+const repository = new DrizzleInventarioRepository();
 
-const mockVencimientos = [
-  { id: 'ven-001', cupoId: 'cup-001', fecha: '2025-02-17', estado: 'disponible', anuncianteNombre: null, precio: 150000 },
-  { id: 'ven-002', cupoId: 'cup-001', fecha: '2025-02-17', estado: 'vendido', anuncianteNombre: 'Banco de Chile', precio: 160000 },
-  { id: 'ven-003', cupoId: 'cup-002', fecha: '2025-02-17', estado: 'vendido', anuncianteNombre: 'Falabella', precio: 500000 },
-  { id: 'ven-004', cupoId: 'cup-003', fecha: '2025-02-17', estado: 'reservado', anuncianteNombre: 'Coca-Cola', precio: 200000 },
-  { id: 'ven-005', cupoId: 'cup-005', fecha: '2025-02-17', estado: 'bloqueado', anuncianteNombre: null, precio: 350000 }
-];
+// ─── Zod Schemas ─────────────────────────────────────────────────────────────
+
+const createvencimientoschema = z.object({
+  inventarioId: z.string().uuid('El ID del inventario debe ser un UUID válido'),
+  fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha debe estar en formato YYYY-MM-DD'),
+  estado: z.enum(['disponible', 'vendido', 'reservado', 'bloqueado', 'cortesia']).optional().default('reservado'),
+  anuncianteId: z.string().uuid().optional().nullable(),
+  precioVenta: z.number().optional().nullable(),
+  notas: z.string().optional(),
+});
+
+// ─── GET /api/inventario ──────────────────────────────────────────────────────
 
 export const GET = withApiRoute(
   { resource: 'inventario', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
     try {
+      const tenantId = ctx.tenantId;
       const { searchParams } = new URL(req.url);
       const fecha = searchParams.get('fecha') || new Date().toISOString().split('T')[0];
-      const emisora = searchParams.get('emisora') || '';
+      const emiId = searchParams.get('emisora') || '';
+      const page = parseInt(searchParams.get('page') || '1', 10);
+      const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-      let filtered = [...mockCupos];
+      // Get cupos and vencimientos in parallel
+      const filters = { fecha, emiId: emiId || undefined };
+      const pagination = { page, limit };
 
-      if (emisora) {
-        filtered = filtered.filter(c => c.emisoraNombre.toLowerCase().includes(emisora.toLowerCase()));
-      }
-
-      // Stats
-      const stats = {
-        totalCupos: mockCupos.length,
-        totalDisponibles: mockCupos.reduce((sum, c) => sum + c.disponibles, 0),
-        totalVendidos: mockCupos.reduce((sum, c) => sum + c.vendidos, 0),
-        ocupacion: Math.round((mockCupos.reduce((sum, c) => sum + c.vendidos, 0) / mockCupos.reduce((sum, c) => sum + c.disponibles + c.vendidos, 0)) * 100),
-        ingresosPotenciales: mockCupos.reduce((sum, c) => sum + (c.tarifaBase * c.disponibles), 0)
-      };
+      const [cupos, stats, vencimientos] = await Promise.all([
+        repository.findCupos(tenantId, filters, pagination),
+        repository.getStats(tenantId, fecha),
+        repository.findVencimientosByFecha(tenantId, fecha, emiId || undefined)
+      ]);
 
       return NextResponse.json({
         success: true,
-        data: filtered,
-        vencimientos: mockVencimientos.filter(v => v.fecha === fecha),
+        data: cupos,
+        vencimientos,
         stats,
         fecha
       });
     } catch (error) {
       logger.error('[API/Inventario] Error GET:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'GET' });
-      return apiServerError()
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.ACCESS_DENIED,
+        severity: AuditSeverity.MEDIUM,
+        userId: ctx.userId,
+        resource: 'inventario',
+        action: 'read',
+        success: false,
+        details: { error: error instanceof Error ? error.message : 'Unknown error', module: 'inventario' }
+      });
+
+      return apiServerError();
     }
   }
 );
+
+// ─── POST /api/inventario ─────────────────────────────────────────────────────
 
 export const POST = withApiRoute(
   { resource: 'inventario', action: 'create' },
   async ({ ctx, req }) => {
     try {
-      const body = await req.json();
-      
-      if (!body.cupoId || !body.fecha) {
-        return NextResponse.json({ success: false, error: 'Cupo y fecha requeridos' }, { status: 400 });
+      const tenantId = ctx.tenantId;
+      const userId = ctx.userId;
+
+      let body: unknown;
+      try {
+        body = await req.json();
+      } catch {
+        return NextResponse.json({ success: false, error: 'Request body must be valid JSON' }, { status: 400 });
       }
 
-      const newVencimiento = {
-        id: `ven-${Date.now()}`,
-        cupoId: body.cupoId,
-        fecha: body.fecha,
-        estado: body.estado || 'reservado',
-        anuncianteNombre: body.anuncianteNombre || null,
-        precio: body.precio || 0
-      };
+      const parseResult = createvencimientoschema.safeParse(body);
+      if (!parseResult.success) {
+        return NextResponse.json({
+          success: false,
+          error: 'Datos inválidos',
+          details: parseResult.error.flatten().fieldErrors
+        }, { status: 400 });
+      }
 
-      mockVencimientos.push(newVencimiento);
+      const data = parseResult.data;
 
-      return NextResponse.json({ success: true, data: newVencimiento, message: 'Cupo reservado' }, { status: 201 });
+      const newVencimientos = await repository.createVencimientos(
+        {
+          inventarioId: data.inventarioId,
+          fecha: data.fecha,
+          estado: data.estado,
+          anuncianteId: data.anuncianteId ?? undefined,
+          precioVenta: data.precioVenta ?? undefined,
+          notas: data.notas,
+        },
+        tenantId,
+        userId
+      );
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.DATA_CREATE,
+        severity: AuditSeverity.LOW,
+        userId: ctx.userId,
+        resource: 'inventario',
+        action: 'create',
+        success: true,
+        details: { vencimientosId: newVencimientos.id, inventarioId: data.inventarioId, module: 'inventario' }
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: newVencimientos,
+        message: 'Cupo reservado exitosamente'
+      }, { status: 201 });
     } catch (error) {
       logger.error('[API/Inventario] Error POST:', error instanceof Error ? error : undefined, { module: 'inventario', action: 'POST' });
-      return apiServerError()
+
+      auditLogger.logEvent({
+        eventType: AuditEventType.ACCESS_DENIED,
+        severity: AuditSeverity.MEDIUM,
+        userId: ctx.userId,
+        resource: 'inventario',
+        action: 'create',
+        success: false,
+        details: { error: error instanceof Error ? error.message : 'Unknown error', module: 'inventario' }
+      });
+
+      return apiServerError();
     }
   }
 );

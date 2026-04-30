@@ -1,5 +1,5 @@
-/**
- * 🔒 Sistema RBAC - Control de Acceso Basado en Roles Enterprise 2050
+﻿/**
+ * ðŸ”’ Sistema RBAC - Control de Acceso Basado en Roles Enterprise 2050
  *
  * Sistema de permisos granular con:
  * - Definición de roles (Traffic Manager, Ejecutivo, Programador, Cliente)
@@ -31,7 +31,7 @@ export type RolUsuario =
   | 'ejecutivo_comercial'
   | 'programador'
   | 'cliente_portal'
-  | 'admin'
+  | 'Administrador'
   | 'viewer'
 
 export type ModuloCampana =
@@ -53,7 +53,7 @@ export type AccionPermiso =
   | 'exportar'
   | 'enviar'
 
-// ==================== DEFINICIÓN DE PERMISOS ====================
+// ==================== DEFINICIÁ“N DE PERMISOS ====================
 
 interface PermisoModulo {
   modulo: ModuloCampana
@@ -75,7 +75,7 @@ const ROLES_DEFINIDOS: DefinicionRol[] = [
     nombre: 'Traffic Manager Senior',
     descripcion: 'Gestión completa de campañas y programación',
     icono: <ShieldCheck className="h-5 w-5" />,
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     permisos: [
       { modulo: 'campanas', acciones: ['ver', 'crear', 'editar', 'eliminar', 'aprobar'] },
       { modulo: 'programacion', acciones: ['ver', 'crear', 'editar', 'eliminar', 'aprobar'] },
@@ -92,7 +92,7 @@ const ROLES_DEFINIDOS: DefinicionRol[] = [
     nombre: 'Ejecutivo Comercial',
     descripcion: 'Gestión comercial y confirmaciones',
     icono: <User className="h-5 w-5" />,
-    color: 'bg-blue-100 text-blue-700',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     permisos: [
       { modulo: 'campanas', acciones: ['ver', 'crear', 'editar'] },
       { modulo: 'programacion', acciones: ['ver'] }, // Solo ver, no modificar técnica
@@ -108,7 +108,7 @@ const ROLES_DEFINIDOS: DefinicionRol[] = [
     nombre: 'Programador',
     descripcion: 'Programación técnica y materiales',
     icono: <Settings className="h-5 w-5" />,
-    color: 'bg-green-100 text-green-700',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     permisos: [
       { modulo: 'campanas', acciones: ['ver'] },
       { modulo: 'programacion', acciones: ['ver', 'crear', 'editar', 'eliminar'] },
@@ -122,7 +122,7 @@ const ROLES_DEFINIDOS: DefinicionRol[] = [
     nombre: 'Cliente Portal',
     descripcion: 'Vista de campañas propias',
     icono: <Eye className="h-5 w-5" />,
-    color: 'bg-orange-100 text-orange-700',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     permisos: [
       { modulo: 'campanas', acciones: ['ver'] }, // Solo sus campañas
       { modulo: 'confirmaciones', acciones: ['ver'] },
@@ -130,11 +130,11 @@ const ROLES_DEFINIDOS: DefinicionRol[] = [
     ]
   },
   {
-    id: 'admin',
+    id: 'Administrador',
     nombre: 'Administrador',
     descripcion: 'Acceso total al sistema',
     icono: <Shield className="h-5 w-5" />,
-    color: 'bg-red-100 text-red-700',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     permisos: [
       { modulo: 'campanas', acciones: ['ver', 'crear', 'editar', 'eliminar', 'aprobar'] },
       { modulo: 'programacion', acciones: ['ver', 'crear', 'editar', 'eliminar', 'aprobar'] },
@@ -204,7 +204,7 @@ export function PermisosProvider({ children, usuarioInicial }: PermisosProviderP
     return usuario?.rol === rol
   }, [usuario])
 
-  const esAdmin = useMemo(() => usuario?.rol === 'admin', [usuario])
+  const esAdmin = useMemo(() => usuario?.rol === 'Administrador', [usuario])
 
   const value: PermisosContextType = {
     usuario,
@@ -246,11 +246,11 @@ export function ProtectedRoute({ children, modulo, accion, fallback }: Protected
 
   if (!usuario) {
     return (
-      <Card className="border-yellow-200 bg-yellow-50">
+      <Card className="border-[#bec8de] bg-[#dfeaff]">
         <CardContent className="p-8 text-center">
-          <Lock className="h-12 w-12 mx-auto mb-4 text-yellow-600" />
-          <h3 className="font-semibold text-yellow-800">Sesión Requerida</h3>
-          <p className="text-yellow-600 text-sm mt-2">Inicie sesión para acceder</p>
+          <Lock className="h-12 w-12 mx-auto mb-4 text-[#6888ff]" />
+          <h3 className="font-semibold text-[#69738c]">Sesión Requerida</h3>
+          <p className="text-[#6888ff] text-sm mt-2">Inicie sesión para acceder</p>
         </CardContent>
       </Card>
     )
@@ -259,14 +259,14 @@ export function ProtectedRoute({ children, modulo, accion, fallback }: Protected
   if (!tienePermiso(modulo, accion)) {
     if (fallback) return <>{fallback}</>
     return (
-      <Card className="border-red-200 bg-red-50">
+      <Card className="border-[#bec8de] bg-[#dfeaff]">
         <CardContent className="p-8 text-center">
-          <ShieldX className="h-12 w-12 mx-auto mb-4 text-red-600" />
-          <h3 className="font-semibold text-red-800">Acceso Denegado</h3>
-          <p className="text-red-600 text-sm mt-2">
+          <ShieldX className="h-12 w-12 mx-auto mb-4 text-[#6888ff]" />
+          <h3 className="font-semibold text-[#6888ff]">Acceso Denegado</h3>
+          <p className="text-[#6888ff] text-sm mt-2">
             No tiene permisos para {accion} en {modulo}
           </p>
-          <Badge className="mt-4 bg-red-100 text-red-700">{usuario.rol}</Badge>
+          <Badge className="mt-4 bg-[#6888ff]/10 text-[#6888ff]">{usuario.rol}</Badge>
         </CardContent>
       </Card>
     )
@@ -302,14 +302,14 @@ export function VisualizadorRoles() {
     <Card className="border-2 border-purple-100">
       <CardHeader className="pb-3 bg-gradient-to-r from-purple-50 to-indigo-50">
         <CardTitle className="text-lg flex items-center gap-2">
-          <Shield className="h-5 w-5 text-purple-600" />
-          🔒 SISTEMA RBAC - CONTROL DE ACCESO
+          <Shield className="h-5 w-5 text-[#6888ff]" />
+          ðŸ”’ SISTEMA RBAC - CONTROL DE ACCESO
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-4">
         {/* Usuario actual */}
         <div className="bg-[#F0EDE8] rounded-lg p-4">
-          <h4 className="font-semibold text-sm mb-2">👤 Usuario Actual</h4>
+          <h4 className="font-semibold text-sm mb-2">ðŸ‘¤ Usuario Actual</h4>
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium">{usuario?.nombre}</div>
@@ -321,7 +321,7 @@ export function VisualizadorRoles() {
 
         {/* Selector de rol (demo) */}
         <div>
-          <h4 className="font-semibold text-sm mb-2">🎭 Simular Rol (Demo)</h4>
+          <h4 className="font-semibold text-sm mb-2">ðŸŽ­ Simular Rol (Demo)</h4>
           <div className="grid grid-cols-2 gap-2">
             {ROLES_DEFINIDOS.map(rol => (
               <Button
@@ -344,7 +344,7 @@ export function VisualizadorRoles() {
           className="w-full"
           onClick={() => setMostrarDetalle(!mostrarDetalle)}
         >
-          {mostrarDetalle ? '▲ Ocultar Permisos' : '▼ Ver Permisos del Rol'}
+          {mostrarDetalle ? '–² Ocultar Permisos' : '–¼ Ver Permisos del Rol'}
         </Button>
 
         {mostrarDetalle && rolActual && (
@@ -368,9 +368,9 @@ export function VisualizadorRoles() {
                       {(['ver', 'crear', 'editar', 'eliminar'] as AccionPermiso[]).map(accion => (
                         <td key={accion} className="px-2 py-1 text-center">
                           {permiso?.acciones.includes(accion) ? (
-                            <Unlock className="h-3 w-3 text-green-600 mx-auto" />
+                            <Unlock className="h-3 w-3 text-[#6888ff] mx-auto" />
                           ) : (
-                            <Lock className="h-3 w-3 text-red-400 mx-auto" />
+                            <Lock className="h-3 w-3 text-[#6888ff] mx-auto" />
                           )}
                         </td>
                       ))}

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MÓDULO CONTRATOS - TIER 0 ENTERPRISE SYSTEM
  * 
  * @description Centro de control contractual completo con workflows automatizados,
@@ -224,27 +224,27 @@ export default function ContratosPage() {
   const getEstadoColor = (estado: string) => {
     const colors = {
       'borrador': 'bg-[#69738c]',
-      'revision': 'bg-blue-500',
+      'revision': 'bg-[#6888ff]/50',
       'aprobacion': 'bg-yellow-500',
-      'firmado': 'bg-purple-500',
-      'activo': 'bg-green-500',
-      'pausado': 'bg-orange-500',
+      'firmado': 'bg-[#6888ff]/50',
+      'activo': 'bg-[#6888ff]/50',
+      'pausado': 'bg-[#6888ff]/50',
       'finalizado': 'bg-gray-500',
-      'cancelado': 'bg-red-500'
+      'cancelado': 'bg-[#dfeaff]0'
     }
     return colors[estado as keyof typeof colors] || 'bg-gray-500'
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#bec8de] via-emerald-900 to-[#9aa3b8] p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header Fortune 10 */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-              <div className="p-2 bg-emerald-600/20 rounded-lg">
-                <FileText className="h-8 w-8 text-emerald-400" />
+              <div className="p-2 bg-[#6888ff]/20 rounded-lg">
+                <FileText className="h-8 w-8 text-[#6888ff]" />
               </div>
               Gestión de Contratos TIER 0
               <Sparkles className="h-6 w-6 text-yellow-400" />
@@ -253,22 +253,22 @@ export default function ContratosPage() {
               Centro de control contractual con workflows automatizados Cortex-Flow
             </p>
             <div className="flex items-center gap-4 mt-2">
-              <Badge variant="outline" className="text-emerald-400 border-emerald-400">
+              <Badge variant="outline" className="text-[#6888ff] border-[#bec8de]">
                 <Shield className="h-3 w-3 mr-1" />
                 ENTERPRISE SECURITY
               </Badge>
-              <Badge variant="outline" className="text-blue-400 border-blue-400">
+              <Badge variant="outline" className="text-[#6888ff] border-[#bec8de]">
                 <Brain className="h-3 w-3 mr-1" />
                 AI-POWERED
               </Badge>
-              <Badge variant="outline" className="text-purple-400 border-purple-400">
+              <Badge variant="outline" className="text-[#6888ff] border-[#bec8de]">
                 <Workflow className="h-3 w-3 mr-1" />
                 AUTOMATED WORKFLOWS
               </Badge>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-emerald-400">
+            <div className="text-3xl font-bold text-[#6888ff]">
               {formatCurrency(estadisticas.valorTotal)}
             </div>
             <div className="text-[#9aa3b8]">Valor Total en Contratos</div>
@@ -277,7 +277,7 @@ export default function ContratosPage() {
             </div>
             <Button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="mt-4 bg-emerald-600 hover:bg-emerald-700"
+              className="mt-4 bg-[#6888ff] hover:bg-[#6888ff]"
             >
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Contrato
@@ -287,31 +287,31 @@ export default function ContratosPage() {
 
         {/* KPIs Principales Fortune 10 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-emerald-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Total Contratos</CardTitle>
-              <FileText className="h-4 w-4 text-emerald-400" />
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Total Contratos</CardTitle>
+              <FileText className="h-4 w-4 text-[#6888ff]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {estadisticas.totalContratos}
               </div>
-              <p className="text-xs text-emerald-400">
+              <p className="text-xs text-[#6888ff]">
                 +{Math.round(estadisticas.workflowEfficiency)}% eficiencia
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-green-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Valor Facturado</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-400" />
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Valor Facturado</CardTitle>
+              <DollarSign className="h-4 w-4 text-[#6888ff]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {(estadisticas.valorFacturado / 1000000).toFixed(1)}M
               </div>
-              <p className="text-xs text-green-400">
+              <p className="text-xs text-[#6888ff]">
                 {((estadisticas.valorFacturado / estadisticas.valorTotal) * 100).toFixed(1)}% del total
               </p>
             </CardContent>
@@ -319,7 +319,7 @@ export default function ContratosPage() {
 
           <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-yellow-500/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Pendiente Cobro</CardTitle>
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Pendiente Cobro</CardTitle>
               <Clock className="h-4 w-4 text-yellow-400" />
             </CardHeader>
             <CardContent>
@@ -332,46 +332,46 @@ export default function ContratosPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-blue-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Cumplimiento</CardTitle>
-              <Target className="h-4 w-4 text-blue-400" />
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Cumplimiento</CardTitle>
+              <Target className="h-4 w-4 text-[#6888ff]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {estadisticas.promedioCumplimiento.toFixed(0)}%
               </div>
-              <p className="text-xs text-blue-400">
+              <p className="text-xs text-[#6888ff]">
                 Promedio general
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-purple-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Satisfacción</CardTitle>
-              <Users className="h-4 w-4 text-purple-400" />
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Satisfacción</CardTitle>
+              <Users className="h-4 w-4 text-[#6888ff]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {estadisticas.promedioSatisfaccion.toFixed(0)}%
               </div>
-              <p className="text-xs text-purple-400">
+              <p className="text-xs text-[#6888ff]">
                 Cliente promedio
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-orange-500/50 transition-colors">
+          <Card className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Alertas Activas</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-orange-400" />
+              <CardTitle className="text-sm font-medium text-[#9aa3b8]">Alertas Activas</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-[#6888ff]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {estadisticas.alertasActivas}
               </div>
-              <p className="text-xs text-orange-400">
+              <p className="text-xs text-[#6888ff]">
                 Requieren atención
               </p>
             </CardContent>
@@ -381,16 +381,16 @@ export default function ContratosPage() {
         {/* Tabs Principal */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-[#dfeaff]/50">
-            <TabsTrigger value="dashboard" className="data-[state=active]:bg-emerald-600">
+            <TabsTrigger value="dashboard" className="data-[state=active]:bg-[#6888ff]">
               📊 Dashboard
             </TabsTrigger>
-            <TabsTrigger value="contratos" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="contratos" className="data-[state=active]:bg-[#6888ff]">
               📄 Contratos
             </TabsTrigger>
-            <TabsTrigger value="workflows" className="data-[state=active]:bg-purple-600">
+            <TabsTrigger value="workflows" className="data-[state=active]:bg-[#6888ff]">
               🔄 Workflows
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-orange-600">
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#6888ff]">
               📈 Analytics
             </TabsTrigger>
           </TabsList>
@@ -402,7 +402,7 @@ export default function ContratosPage() {
               <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <PieChart className="h-5 w-5 text-emerald-400" />
+                    <PieChart className="h-5 w-5 text-[#6888ff]" />
                     Distribución por Estado
                   </CardTitle>
                 </CardHeader>
@@ -430,7 +430,7 @@ export default function ContratosPage() {
               <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-blue-400" />
+                    <TrendingUp className="h-5 w-5 text-[#6888ff]" />
                     Performance Overview
                   </CardTitle>
                 </CardHeader>
@@ -499,7 +499,7 @@ export default function ContratosPage() {
                     <option value="finalizado">Finalizado</option>
                     <option value="cancelado">Cancelado</option>
                   </select>
-                  <Button className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button className="bg-[#6888ff] hover:bg-[#6888ff]">
                     <Plus className="h-4 w-4 mr-2" />
                     Nuevo Contrato
                   </Button>
@@ -508,7 +508,7 @@ export default function ContratosPage() {
                 {/* Tabla de Contratos */}
                 <div className="space-y-4">
                   {contratos.map((contrato) => (
-                    <Card key={contrato.id} className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-emerald-500/50 transition-colors">
+                    <Card key={contrato.id} className="bg-[#dfeaff]/50 border-[#bec8de30] hover:border-[#bec8de]/50 transition-colors">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -547,13 +547,13 @@ export default function ContratosPage() {
             <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <Workflow className="h-5 w-5 text-purple-400" />
+                  <Workflow className="h-5 w-5 text-[#6888ff]" />
                   Análisis de Workflows
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Brain className="h-12 w-12 text-purple-400 mx-auto mb-4" />
+                  <Brain className="h-12 w-12 text-[#6888ff] mx-auto mb-4" />
                   <h3 className="text-white text-lg font-medium mb-2">
                     Análisis Cortex-Flow en Progreso
                   </h3>
@@ -570,13 +570,13 @@ export default function ContratosPage() {
             <Card className="bg-[#dfeaff]/50 border-[#bec8de30]">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-orange-400" />
+                  <BarChart3 className="h-5 w-5 text-[#6888ff]" />
                   Analytics Avanzado
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <LineChart className="h-12 w-12 text-orange-400 mx-auto mb-4" />
+                  <LineChart className="h-12 w-12 text-[#6888ff] mx-auto mb-4" />
                   <h3 className="text-white text-lg font-medium mb-2">
                     Dashboard Analytics
                   </h3>

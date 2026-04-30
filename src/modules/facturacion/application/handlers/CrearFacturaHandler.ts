@@ -27,7 +27,7 @@ export class CrearFacturaHandler {
         receptorCiudad: input.receptorCiudad ?? null,
         receptorComuna: input.receptorComuna ?? null,
         fechaEmision: input.fechaEmision,
-        fechaVencimiento: input.fechaVencimiento ?? null,
+        fechaVencimientos: input.fechaVencimientos ?? null,
         montoNeto: input.montoNeto,
         montoExento: input.montoExento ?? 0,
         tasaIva: input.tasaIva ?? 19,

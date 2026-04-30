@@ -109,10 +109,10 @@ export class TerminosPago {
     return this.props.dias <= limitesRiesgo[nivelRiesgo]
   }
 
-  calcularFechaVencimiento(fechaFactura: Date): Date {
-    const fechaVencimiento = new Date(fechaFactura)
-    fechaVencimiento.setDate(fechaVencimiento.getDate() + this.props.dias)
-    return fechaVencimiento
+  calcularFechaVencimientos(fechaFactura: Date): Date {
+    const fechaVencimientos = new Date(fechaFactura)
+    fechaVencimientos.setDate(fechaVencimientos.getDate() + this.props.dias)
+    return fechaVencimientos
   }
 
   calcularDescuentoProntosPago(porcentajeDescuento: number, diasDescuento: number): TerminosPago | null {

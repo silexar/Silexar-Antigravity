@@ -975,7 +975,7 @@ Data Loss Prevention avanzado:
 Row-level security: Acceso granular por rol y contexto
 Watermarking dinámico: Tracking de cada export/view
 Access pattern analysis: Detección de comportamientos anómalos
-Expiration automática: Reportes con vencimiento programado
+Expiration automática: Reportes con vencimientos programado
 
 Compliance multinacional:
 

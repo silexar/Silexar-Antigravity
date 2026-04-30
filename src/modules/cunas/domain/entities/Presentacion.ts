@@ -166,14 +166,14 @@ export class Presentacion {
   }
 
   /** Asocia la presentación con un vencimientos específico */
-  asociarConVencimiento(vencimientosId: string): void {
+  asociarConVencimientos(vencimientosId: string): void {
     this.props.vencimientosAsociadoId = vencimientosId;
     this.props.necesitaValidacionVencimientos = false; // Ya asociada
     this.props.updatedAt = new Date();
   }
 
   /** Desasocia la presentación de un vencimientos */
-  desasociarDeVencimiento(): void {
+  desasociarDeVencimientos(): void {
     this.props.vencimientosAsociadoId = undefined;
     this.props.necesitaValidacionVencimientos = true; // Ahora necesita asociación
     this.props.updatedAt = new Date();

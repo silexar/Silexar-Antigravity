@@ -17,7 +17,7 @@ import { logger } from "@/lib/observability";
 // ═══════════════════════════════════════════════════════════════
 
 export type TipoAlerta =
-  | "VENCIMIENTO_PROXIMO"
+  | "VENCIMIENTOS_PROXIMO"
   | "RENOVACION_PENDIENTE"
   | "APROBACION_REQUERIDA"
   | "DESCUENTO_EXCESIVO"
@@ -93,7 +93,7 @@ export interface ResumenAlertas {
 
 const CONFIGURACIONES_DEFAULT: ConfiguracionAlerta[] = [
   {
-    tipo: "VENCIMIENTO_PROXIMO",
+    tipo: "VENCIMIENTOS_PROXIMO",
     habilitado: true,
     diasAnticipacion: 30,
     destinatarios: ["ejecutivo", "supervisor"],
@@ -181,7 +181,7 @@ class SmartAlertsEngine {
     this.alertas = [
       {
         id: "alerta-001",
-        tipo: "VENCIMIENTO_PROXIMO",
+        tipo: "VENCIMIENTOS_PROXIMO",
         prioridad: "alta",
         estado: "activa",
         contratoId: "ctr-001",
@@ -468,9 +468,9 @@ export function getAlertaInfo(
     TipoAlerta,
     { emoji: string; label: string; color: string }
   > = {
-    VENCIMIENTO_PROXIMO: {
+    VENCIMIENTOS_PROXIMO: {
       emoji: "📅",
-      label: "Vencimiento próximo",
+      label: "Vencimientos próximo",
       color: "bg-amber-100 text-amber-700",
     },
     RENOVACION_PENDIENTE: {

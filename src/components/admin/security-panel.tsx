@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔒 SILEXAR PULSE - Panel de Seguridad Avanzada
+ * ðŸ”’ SILEXAR PULSE - Panel de Seguridad Avanzada
  * Control de seguridad militar con detección de anomalías
  * 
  * @description Panel de seguridad CEO con:
@@ -11,16 +11,15 @@
  * - Control de sesiones
  * - Registro de actividad
  * 
- * @version 2025.1.0
+ * @version 2025.3.0
  * @tier TIER_0_FORTUNE_10
  * @security MILITARY_GRADE
+ * 
+ * @last_modified 2025-04-27 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton
-} from '@/components/ui/neuromorphic'
+import { N, NeuCard, NeuCardSmall, NeuButton, StatusBadge, NeuProgress, getShadow, getSmallShadow } from './_sdk/AdminDesignSystem'
 import {
   Shield,
   Globe,
@@ -206,12 +205,12 @@ export function SecurityPanel() {
 
     // Geo rules
     setGeoRules([
-      { country: 'Chile', code: 'CL', status: 'allowed', flag: '🇨🇱' },
-      { country: 'Argentina', code: 'AR', status: 'allowed', flag: '🇦🇷' },
-      { country: 'España', code: 'ES', status: 'monitoring', flag: '🇪🇸' },
-      { country: 'Estados Unidos', code: 'US', status: 'monitoring', flag: '🇺🇸' },
-      { country: 'Rusia', code: 'RU', status: 'blocked', flag: '🇷🇺' },
-      { country: 'China', code: 'CN', status: 'blocked', flag: '🇨🇳' },
+      { country: 'Chile', code: 'CL', status: 'allowed', flag: 'ðŸ‡¨ðŸ‡±' },
+      { country: 'Argentina', code: 'AR', status: 'allowed', flag: 'ðŸ‡¦ðŸ‡·' },
+      { country: 'España', code: 'ES', status: 'monitoring', flag: 'ðŸ‡ªðŸ‡¸' },
+      { country: 'Estados Unidos', code: 'US', status: 'monitoring', flag: 'ðŸ‡ºðŸ‡¸' },
+      { country: 'Rusia', code: 'RU', status: 'blocked', flag: 'ðŸ‡·ðŸ‡º' },
+      { country: 'China', code: 'CN', status: 'blocked', flag: 'ðŸ‡¨ðŸ‡³' },
     ])
 
     setSecurityScore(94)
@@ -227,204 +226,250 @@ export function SecurityPanel() {
   }
 
   const changeGeoRule = (code: string, status: GeoRule['status']) => {
-    setGeoRules(prev => prev.map(r => 
+    setGeoRules(prev => prev.map(r =>
       r.code === code ? { ...r, status } : r
     ))
   }
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-400 bg-red-500/20'
-      case 'high': return 'text-orange-400 bg-orange-500/20'
-      case 'medium': return 'text-yellow-400 bg-yellow-500/20'
-      case 'low': return 'text-green-400 bg-green-500/20'
-      default: return 'text-slate-400 bg-slate-500/20'
+      case 'critical': return '#6888ff'
+      case 'high': return '#6888ff'
+      case 'medium': return '#6888ff'
+      case 'low': return '#6888ff'
+      default: return N.textSub
+    }
+  }
+
+  const getSeverityBg = (severity: string) => {
+    switch (severity) {
+      case 'critical': return '#6888ff20'
+      case 'high': return '#6888ff20'
+      case 'medium': return '#6888ff20'
+      case 'low': return '#6888ff20'
+      default: return `${N.dark}20`
     }
   }
 
   const getEventIcon = (type: SecurityEvent['type']) => {
+    const color = type === 'brute_force' || type === 'login_failed' ? '#6888ff' :
+      type === 'login_success' ? '#6888ff' :
+        type === 'device_new' ? '#6888ff' :
+          type === 'location_new' ? '#6888ff' :
+            type === 'suspicious_activity' ? '#6888ff' : N.textSub
     switch (type) {
-      case 'brute_force': return <Ban className="w-4 h-4 text-red-400" />
-      case 'login_failed': return <XCircle className="w-4 h-4 text-red-400" />
-      case 'login_success': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'device_new': return <Smartphone className="w-4 h-4 text-blue-400" />
-      case 'location_new': return <MapPin className="w-4 h-4 text-yellow-400" />
-      case 'suspicious_activity': return <AlertTriangle className="w-4 h-4 text-orange-400" />
-      default: return <Activity className="w-4 h-4 text-slate-400" />
+      case 'brute_force': return <Ban style={{ width: 16, height: 16, color }} />
+      case 'login_failed': return <XCircle style={{ width: 16, height: 16, color }} />
+      case 'login_success': return <CheckCircle style={{ width: 16, height: 16, color }} />
+      case 'device_new': return <Smartphone style={{ width: 16, height: 16, color }} />
+      case 'location_new': return <MapPin style={{ width: 16, height: 16, color }} />
+      case 'suspicious_activity': return <AlertTriangle style={{ width: 16, height: 16, color }} />
+      default: return <Activity style={{ width: 16, height: 16, color }} />
+    }
+  }
+
+  const getGeoStatusBadge = (status: GeoRule['status']) => {
+    switch (status) {
+      case 'allowed': return <StatusBadge status="success" label="Permitido" />
+      case 'blocked': return <StatusBadge status="danger" label="Bloqueado" />
+      case 'monitoring': return <StatusBadge status="warning" label="Monitoreado" />
     }
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Panel de Seguridad...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: '4px solid #6888ff30',
+            borderTopColor: '#6888ff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Panel de Seguridad...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Shield className="w-6 h-6 text-red-400" />
+          <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Shield style={{ color: '#6888ff', width: 24, height: 24 }} />
             Seguridad Avanzada
           </h2>
-          <p className="text-slate-400">Control Pentagon++ - Grado Militar</p>
+          <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Control Pentagon++ - Grado Militar</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {/* Security Score */}
-          <div className="flex items-center gap-3 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-400">{securityScore}</p>
-              <p className="text-xs text-slate-400">Security Score</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem', background: '#6888ff15', borderRadius: 8, border: '1px solid #6888ff50' }}>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ color: '#6888ff', fontSize: '1.5rem', fontWeight: 700 }}>{securityScore}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Security Score</p>
             </div>
           </div>
-          <NeuromorphicButton variant="secondary" size="sm">
-            <Download className="w-4 h-4 mr-1" />
+          <NeuButton variant="secondary">
+            <Download style={{ width: 16, height: 16, marginRight: 4 }} />
             Exportar Logs
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-400" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: '#6888ff20', borderRadius: 8 }}>
+              <CheckCircle style={{ color: '#6888ff', width: 24, height: 24 }} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{sessions.length}</p>
-              <p className="text-xs text-slate-400">Sesiones Activas</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{sessions.length}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Sesiones Activas</p>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-500/20 rounded-lg">
-              <Ban className="w-6 h-6 text-red-400" />
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: '#6888ff20', borderRadius: 8 }}>
+              <Ban style={{ color: '#6888ff', width: 24, height: 24 }} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{blocked.length}</p>
-              <p className="text-xs text-slate-400">Bloqueados</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{blocked.length}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Bloqueados</p>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-500/20 rounded-lg">
-              <AlertTriangle className="w-6 h-6 text-yellow-400" />
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: '#6888ff20', borderRadius: 8 }}>
+              <AlertTriangle style={{ color: '#6888ff', width: 24, height: 24 }} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>
                 {events.filter(e => e.severity === 'critical' || e.severity === 'high').length}
               </p>
-              <p className="text-xs text-slate-400">Alertas Hoy</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Alertas Hoy</p>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-500/20 rounded-lg">
-              <Globe className="w-6 h-6 text-blue-400" />
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', background: '#6888ff20', borderRadius: 8 }}>
+              <Globe style={{ color: '#6888ff', width: 24, height: 24 }} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>
                 {geoRules.filter(r => r.status === 'blocked').length}
               </p>
-              <p className="text-xs text-slate-400">Países Bloqueados</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Países Bloqueados</p>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
         {/* Security Events */}
-        <div className="lg:col-span-2 space-y-4">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-400" />
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Activity style={{ color: '#6888ff', width: 20, height: 20 }} />
             Eventos de Seguridad
           </h3>
 
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {events.map(event => (
-              <NeuromorphicCard key={event.id} variant="embossed" className="p-4">
-                <div className="flex items-start gap-3">
+              <NeuCard key={event.id} style={{ boxShadow: getShadow() }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                   {getEventIcon(event.type)}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-white font-medium">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ color: N.text, fontWeight: 500 }}>
                             {event.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                           </span>
-                          <span className={`text-xs px-2 py-0.5 rounded ${getSeverityColor(event.severity)}`}>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            padding: '0.125rem 0.5rem',
+                            borderRadius: 4,
+                            color: getSeverityColor(event.severity),
+                            background: getSeverityBg(event.severity)
+                          }}>
                             {event.severity}
                           </span>
                           {event.blocked && (
-                            <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded">
+                            <span style={{
+                              fontSize: '0.75rem',
+                              padding: '0.125rem 0.5rem',
+                              borderRadius: 4,
+                              background: '#6888ff20',
+                              color: '#6888ff'
+                            }}>
                               Bloqueado
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-slate-400 mt-1">{event.details}</p>
+                        <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.25rem' }}>{event.details}</p>
                       </div>
-                      <span className="text-xs text-slate-500">
+                      <span style={{ color: N.textSub, fontSize: '0.75rem' }}>
                         {new Date(event.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
-                      {event.user && <span>👤 {event.user}</span>}
-                      <span>🌐 {event.ip}</span>
-                      <span>📍 {event.location}</span>
-                      <span>💻 {event.device}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem', fontSize: '0.75rem', color: N.textSub }}>
+                      {event.user && <span>ðŸ‘¤ {event.user}</span>}
+                      <span>ðŸŒ {event.ip}</span>
+                      <span>ðŸ“ {event.location}</span>
+                      <span>ðŸ’» {event.device}</span>
                     </div>
                   </div>
                 </div>
-              </NeuromorphicCard>
+              </NeuCard>
             ))}
           </div>
         </div>
 
         {/* Side Panels */}
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Active Sessions */}
-          <NeuromorphicCard variant="embossed" className="p-4">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              <Monitor className="w-4 h-4 text-green-400" />
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <h3 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Monitor style={{ color: '#6888ff', width: 16, height: 16 }} />
               Sesiones Activas
             </h3>
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {sessions.map(session => (
-                <div key={session.id} className={`p-3 rounded-lg ${
-                  session.suspicious ? 'bg-yellow-500/10 border border-yellow-500/30' : 'bg-slate-800/50'
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-white text-sm font-medium">{session.userName}</span>
+                <div key={session.id} style={{
+                  padding: '0.75rem',
+                  borderRadius: 8,
+                  background: session.suspicious ? '#6888ff15' : `${N.dark}50`,
+                  border: session.suspicious ? '1px solid #6888ff50' : 'none'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ color: N.text, fontSize: '0.875rem', fontWeight: 500 }}>{session.userName}</span>
                     {session.suspicious && (
-                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                      <AlertTriangle style={{ color: '#6888ff', width: 16, height: 16 }} />
                     )}
                   </div>
-                  <div className="text-xs text-slate-400 space-y-1">
-                    <p>📍 {session.location}</p>
-                    <p>💻 {session.device} • {session.browser}</p>
+                  <div style={{ fontSize: '0.75rem', color: N.textSub, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <p>ðŸ“ {session.location}</p>
+                    <p>ðŸ’» {session.device} • {session.browser}</p>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-slate-500">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                    <span style={{ color: N.textSub, fontSize: '0.75rem' }}>
                       Activo hace {Math.floor((Date.now() - session.lastActivity.getTime()) / 60000)}m
                     </span>
                     <button
                       onClick={() => terminateSession(session.id)}
-                      className="text-xs text-red-400 hover:text-red-300"
+                      style={{ color: '#6888ff', fontSize: '0.75rem', background: 'none', border: 'none', cursor: 'pointer' }}
                     >
                       Terminar
                     </button>
@@ -432,62 +477,50 @@ export function SecurityPanel() {
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
 
           {/* Geo Blocking */}
-          <NeuromorphicCard variant="embossed" className="p-4">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-blue-400" />
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <h3 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Globe style={{ color: '#6888ff', width: 16, height: 16 }} />
               Geobloqueo
             </h3>
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {geoRules.map(rule => (
-                <div key={rule.code} className="flex items-center justify-between p-2 bg-slate-800/30 rounded">
-                  <div className="flex items-center gap-2">
+                <div key={rule.code} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem', background: `${N.dark}30`, borderRadius: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span>{rule.flag}</span>
-                    <span className="text-white text-sm">{rule.country}</span>
+                    <span style={{ color: N.text, fontSize: '0.875rem' }}>{rule.country}</span>
                   </div>
-                  <select
-                    value={rule.status}
-                    onChange={(e) => changeGeoRule(rule.code, e.target.value as GeoRule['status'])}
-                    className={`text-xs px-2 py-1 rounded ${
-                      rule.status === 'allowed' ? 'bg-green-500/20 text-green-400' :
-                      rule.status === 'blocked' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
-                    }`}
-                  >
-                    <option value="allowed">Permitido</option>
-                    <option value="monitoring">Monitoreado</option>
-                    <option value="blocked">Bloqueado</option>
-                  </select>
+                  {getGeoStatusBadge(rule.status)}
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
 
           {/* Blocked List */}
-          <NeuromorphicCard variant="embossed" className="p-4">
-            <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-              <Ban className="w-4 h-4 text-red-400" />
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <h3 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Ban style={{ color: '#6888ff', width: 16, height: 16 }} />
               Lista Negra
             </h3>
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {blocked.map(item => (
-                <div key={item.id} className="flex items-center justify-between p-2 bg-red-500/10 rounded border border-red-500/20">
+                <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem', background: '#6888ff15', borderRadius: 8, border: '1px solid #6888ff50' }}>
                   <div>
-                    <p className="text-white text-sm">{item.value}</p>
-                    <p className="text-xs text-slate-400">{item.reason}</p>
+                    <p style={{ color: N.text, fontSize: '0.875rem' }}>{item.value}</p>
+                    <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{item.reason}</p>
                   </div>
                   <button
                     onClick={() => unblockEntity(item.id)}
-                    className="text-xs text-green-400 hover:text-green-300"
+                    style={{ color: '#6888ff', fontSize: '0.75rem', background: 'none', border: 'none', cursor: 'pointer' }}
                   >
                     Desbloquear
                   </button>
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       </div>
     </div>

@@ -1,11 +1,11 @@
-'use client';
+ï»¿'use client';
 
 /**
- * AI Command Center TIER 0 — Keyboard-driven command palette for Contratos.
+ * AI Command Center TIER 0 ï¿½ Keyboard-driven command palette for Contratos.
  *
  * Exports:
- *   AICommandCenter  — Full inline version (overlay + content, bound to ?K)
- *   AICommandTrigger — Floating FAB button that opens AICommandCenterModal
+ *   AICommandCenter  ï¿½ Full inline version (overlay + content, bound to ?K)
+ *   AICommandTrigger ï¿½ Floating FAB button that opens AICommandCenterModal
  *
  * Engine logic and types ? ./_engine.ts
  * Modal component        ? ./_AICommandCenterModal.tsx
@@ -113,7 +113,7 @@ export function AICommandCenter() {
             <div className={`${neuro.input} flex items-center gap-3 px-5 py-4`}>
               {isListening ? (
                 <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-                  <Mic className="w-5 h-5 text-red-500" />
+                  <Mic className="w-5 h-5 text-[#9aa3b8]" />
                 </motion.div>
               ) : (
                 <Command className="w-5 h-5 text-[#6888ff]" />
@@ -131,7 +131,7 @@ export function AICommandCenter() {
               <button
                 onClick={toggleVoice}
                 aria-label={isListening ? 'Detener reconocimiento de voz' : 'Activar voz'}
-                className={`p-2 rounded-xl transition-all ${isListening ? 'bg-red-100 text-red-600' : 'hover:bg-[#dfeaff] text-[#9aa3b8] hover:text-[#69738c]'}`}
+                className={`p-2 rounded-xl transition-all ${isListening ? 'bg-[#dfeaff] text-[#9aa3b8]' : 'hover:bg-[#dfeaff] text-[#9aa3b8] hover:text-[#69738c]'}`}
               >
                 {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
@@ -158,7 +158,7 @@ export function AICommandCenter() {
                   {tab === 'comandos' ? <Zap className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                   {tab === 'comandos' ? 'Comandos' : 'Sugerencias IA'}
                   {tab === 'sugerencias' && sugerencias.filter(s => s.prioridad === 'alta').length > 0 && (
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-[#dfeaff]0 animate-pulse" />
                   )}
                 </div>
               </button>
@@ -172,7 +172,7 @@ export function AICommandCenter() {
                 {query === '' && (
                   <p className="text-xs text-[#9aa3b8] mb-3 flex items-center gap-2">
                     <Sparkles className="w-3 h-3" />
-                    Acciones rápidas
+                    Acciones rï¿½pidas
                   </p>
                 )}
                 {comandos.map((cmd, idx) => (
@@ -185,10 +185,10 @@ export function AICommandCenter() {
                     className={`w-full ${neuro.card} ${neuro.cardHover} p-4 flex items-center gap-4 ${idx === selectedIndex ? 'ring-2 ring-[#6888ff] ring-offset-2' : ''}`}
                   >
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${
-                      cmd.tipo === 'creacion' ? 'from-green-400 to-emerald-500' :
-                      cmd.tipo === 'navegacion' ? 'from-blue-400 to-cyan-500' :
-                      cmd.tipo === 'accion' ? 'from-amber-400 to-orange-500' :
-                      cmd.tipo === 'analisis' ? 'from-purple-400 to-pink-500' :
+                      cmd.tipo === 'creacion' ? 'from-[#6888ff] to-[#5572ee]' :
+                      cmd.tipo === 'navegacion' ? 'from-[#6888ff] to-cyan-500' :
+                      cmd.tipo === 'accion' ? 'from-[#6888ff] to-[#5572ee]' :
+                      cmd.tipo === 'analisis' ? 'from-[#6888ff] to-pink-500' :
                       'bg-[#6888ff]'
                     } text-white`}>
                       {cmd.icono}

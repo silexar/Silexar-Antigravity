@@ -1,5 +1,5 @@
 /**
- * SILEXAR PULSE - useVencimientosSSE Hook
+ * SILEXAR PULSE - useVencimientosE Hook
  * 
  * @description Custom hook for Server-Sent Events real-time updates.
  * 
@@ -17,7 +17,7 @@ export interface SSEMessage {
     timestamp: number;
 }
 
-interface UseVencimientosSSEOptions {
+interface UseVencimientosEOptions {
     onVencimientosUpdate?: (data: Record<string, unknown>) => void;
     onAlertasUpdate?: (data: Record<string, unknown>) => void;
     onProgramasUpdate?: (data: Record<string, unknown>) => void;
@@ -27,7 +27,7 @@ interface UseVencimientosSSEOptions {
     enabled?: boolean;
 }
 
-export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
+export function useVencimientosE(options: UseVencimientosEOptions = {}) {
     const {
         onVencimientosUpdate,
         onAlertasUpdate,
@@ -52,7 +52,7 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
 
             eventSource.onopen = () => {
                 setIsConnected(true);
-                console.log('[useVencimientosSSE] Connected to SSE stream');
+                console.log('[useVencimientosE] Connected to SSE stream');
             };
 
             eventSource.onmessage = (event) => {
@@ -64,7 +64,7 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
                         timestamp: Date.now(),
                     });
                 } catch {
-                    console.error('[useVencimientosSSE] Failed to parse message');
+                    console.error('[useVencimientosE] Failed to parse message');
                 }
             };
 
@@ -77,7 +77,7 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
                     const data = JSON.parse(event.data);
                     onVencimientosUpdate?.(data);
                 } catch {
-                    console.error('[useVencimientosSSE] Failed to parse vencimientos update');
+                    console.error('[useVencimientosE] Failed to parse vencimientos update');
                 }
             });
 
@@ -86,7 +86,7 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
                     const data = JSON.parse(event.data);
                     onAlertasUpdate?.(data);
                 } catch {
-                    console.error('[useVencimientosSSE] Failed to parse alertas update');
+                    console.error('[useVencimientosE] Failed to parse alertas update');
                 }
             });
 
@@ -95,12 +95,12 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
                     const data = JSON.parse(event.data);
                     onProgramasUpdate?.(data);
                 } catch {
-                    console.error('[useVencimientosSSE] Failed to parse programas update');
+                    console.error('[useVencimientosE] Failed to parse programas update');
                 }
             });
 
             eventSource.onerror = (error) => {
-                console.error('[useVencimientosSSE] SSE error:', error);
+                console.error('[useVencimientosE] SSE error:', error);
                 setIsConnected(false);
                 onError?.(error);
 
@@ -108,13 +108,13 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
                 eventSource.close();
                 reconnectTimeoutRef.current = setTimeout(() => {
                     if (enabled) {
-                        console.log('[useVencimientosSSE] Attempting reconnection...');
+                        console.log('[useVencimientosE] Attempting reconnection...');
                         connect();
                     }
                 }, reconnectInterval);
             };
         } catch (error) {
-            console.error('[useVencimientosSSE] Failed to connect:', error);
+            console.error('[useVencimientosE] Failed to connect:', error);
         }
     }, [onVencimientosUpdate, onAlertasUpdate, onProgramasUpdate, onHeartbeat, onError, reconnectInterval, enabled]);
 
@@ -150,4 +150,4 @@ export function useVencimientosSSE(options: UseVencimientosSSEOptions = {}) {
     };
 }
 
-export default useVencimientosSSE;
+export default useVencimientosE;

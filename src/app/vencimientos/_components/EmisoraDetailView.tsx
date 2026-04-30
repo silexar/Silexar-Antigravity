@@ -127,7 +127,7 @@ export default function EmisoraDetailView() {
                 
                 <div className="bg-[#ECEFF8]/50 p-3 rounded-lg border border-red-500/10 mb-3 relative z-10">
                    <p className="text-xs text-gray-600 mb-1"><span className="text-amber-600 font-bold">Ocupación:</span> 89% (8/9 cupos)</p>
-                   <p className="text-xs text-gray-600 mb-1"><span className="text-red-600 font-bold">Vencimiento:</span> TeleTracker (Mañana)</p>
+                   <p className="text-xs text-gray-600 mb-1"><span className="text-red-600 font-bold">Vencimientos:</span> TeleTracker (Mañana)</p>
                    <p className="text-xs text-emerald-600 font-bold mt-2">💡 Acción: Preparar renovación o liberar cupo.</p>
                 </div>
 

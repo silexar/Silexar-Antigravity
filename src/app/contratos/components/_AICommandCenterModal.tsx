@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -83,7 +83,7 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
           <div className={`${neuro.input} flex items-center gap-3 px-5 py-4`}>
             {isListening ? (
               <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-                <Mic className="w-5 h-5 text-red-500" />
+                <Mic className="w-5 h-5 text-[#9aa3b8]" />
               </motion.div>
             ) : (
               <Command className="w-5 h-5 text-[#6888ff]" />
@@ -101,7 +101,7 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
             <button
               onClick={toggleVoice}
               aria-label={isListening ? 'Detener reconocimiento de voz' : 'Activar reconocimiento de voz'}
-              className={`p-2 rounded-xl transition-all ${isListening ? 'bg-red-100 text-red-600' : 'hover:bg-[#dfeaff] text-[#9aa3b8]'}`}
+              className={`p-2 rounded-xl transition-all ${isListening ? 'bg-[#dfeaff] text-[#9aa3b8]' : 'hover:bg-[#dfeaff] text-[#9aa3b8]'}`}
             >
               {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
             </button>
@@ -142,10 +142,10 @@ export function AICommandCenterModal({ onClose }: AICommandCenterModalProps) {
                   className={`w-full ${neuro.card} ${neuro.cardHover} p-4 flex items-center gap-4 ${idx === selectedIndex ? 'ring-2 ring-[#6888ff] ring-offset-2' : ''}`}
                 >
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${
-                    cmd.tipo === 'creacion' ? 'from-green-400 to-emerald-500' :
-                    cmd.tipo === 'navegacion' ? 'from-blue-400 to-cyan-500' :
-                    cmd.tipo === 'accion' ? 'from-amber-400 to-orange-500' :
-                    'from-purple-400 to-pink-500'
+                    cmd.tipo === 'creacion' ? 'from-[#6888ff] to-[#5572ee]' :
+                    cmd.tipo === 'navegacion' ? 'from-[#6888ff] to-cyan-500' :
+                    cmd.tipo === 'accion' ? 'from-[#6888ff] to-[#5572ee]' :
+                    'from-[#6888ff] to-pink-500'
                   } text-white`}>
                     {cmd.icono}
                   </div>

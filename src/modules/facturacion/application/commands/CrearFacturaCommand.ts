@@ -12,7 +12,7 @@ export const CrearFacturaSchema = z.object({
   receptorCiudad: z.string().max(100).optional(),
   receptorComuna: z.string().max(100).optional(),
   fechaEmision: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  fechaVencimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  fechaVencimientos: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   montoNeto: z.number().positive(),
   montoExento: z.number().min(0).default(0),
   tasaIva: z.number().min(0).max(100).default(19),

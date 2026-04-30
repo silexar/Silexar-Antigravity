@@ -1,5 +1,5 @@
-/**
- * MÓDULO 1.2: ADMINISTRACIÓN CLIENTE - TIER 0 Fortune 10
+﻿/**
+ * MÁ“DULO 1.2: ADMINISTRACIÁ“N CLIENTE - TIER 0 Fortune 10
  * 
  * @description Gestión de usuarios y roles con RBAC granular,
  * configuración de políticas de negocio y modo operativo
@@ -17,19 +17,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
-  Users, 
-  Shield, 
-  Settings, 
+import { NeuCard, NeuButton, NeuTabs, StatusBadge } from './_sdk/AdminDesignSystem'
+import { getShadow } from './_sdk/AdminDesignSystem'
+import { N } from './_sdk/AdminDesignSystem'
+import {
+  Users,
+  Shield,
+  Settings,
   UserPlus,
   Edit,
   Trash2,
@@ -62,7 +56,7 @@ interface ClientUser {
   avatar?: string
   role: UserRole
   permissions: Permission[]
-  status: 'active' | 'inactive' | 'suspended' | 'pending'
+  status: 'active' | 'inactive' | 'suspended' | 'Pendiente'
   lastLogin?: string
   createdAt: string
   updatedAt: string
@@ -247,7 +241,7 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
           color: 'green'
         },
         permissions: [],
-        status: 'pending',
+        status: 'Pendiente',
         createdAt: '2025-02-05T00:00:00Z',
         updatedAt: new Date().toISOString(),
         department: 'Ventas',
@@ -342,7 +336,7 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
         description: 'Crear, editar y gestionar campañas publicitarias',
         category: 'Campañas',
         resource: 'campaigns',
-        actions: ['read', 'write', 'delete']
+        actions: ['read', 'write', 'Eliminar']
       },
       {
         id: 'perm_reports_view',
@@ -358,7 +352,7 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
         description: 'Gestión completa de usuarios y roles',
         category: 'Administración',
         resource: 'users',
-        actions: ['read', 'write', 'delete']
+        actions: ['read', 'write', 'Eliminar']
       }
     ]
     setPermissions(mockPermissions)
@@ -471,11 +465,11 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
    */
   const getUserStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'border-green-500 text-green-400'
-      case 'inactive': return 'border-gray-500 text-gray-400'
-      case 'suspended': return 'border-red-500 text-red-400'
-      case 'pending': return 'border-yellow-500 text-yellow-400'
-      default: return 'border-gray-500 text-gray-400'
+      case 'active': return { border: '#6888ff', text: '#4ade80' }
+      case 'inactive': return { border: '#6b7280', text: '#9ca3af' }
+      case 'suspended': return { border: '#6888ff', text: '#f87171' }
+      case 'Pendiente': return { border: '#6888ff', text: '#facc15' }
+      default: return { border: '#6b7280', text: '#9ca3af' }
     }
   }
 
@@ -483,11 +477,24 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
    * Obtener color por nivel de rol
    */
   const getRoleColor = (level: number) => {
-    if (level >= 9) return 'text-red-400 border-red-400'
-    if (level >= 7) return 'text-blue-400 border-blue-400'
-    if (level >= 5) return 'text-purple-400 border-purple-400'
-    if (level >= 3) return 'text-green-400 border-green-400'
-    return 'text-gray-400 border-gray-400'
+    if (level >= 9) return { border: '#6888ff', text: '#f87171' }
+    if (level >= 7) return { border: '#6888ff', text: '#60a5fa' }
+    if (level >= 5) return { border: '#6888ff', text: '#c084fc' }
+    if (level >= 3) return { border: '#6888ff', text: '#4ade80' }
+    return { border: '#6b7280', text: '#9ca3af' }
+  }
+
+  /**
+   * Obtener badge status
+   */
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<string, 'success' | 'warning' | 'danger' | 'neutral' | 'info'> = {
+      active: 'success',
+      inactive: 'neutral',
+      suspended: 'danger',
+      pending: 'warning'
+    }
+    return statusMap[status] || 'neutral'
   }
 
   /**
@@ -498,7 +505,7 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
       const newMode: OperationalMode = {
         ...operationalMode,
         mode: operationalMode.mode === 'copilot' ? 'autonomous' : 'copilot',
-        description: operationalMode.mode === 'copilot' 
+        description: operationalMode.mode === 'copilot'
           ? 'IA toma decisiones automáticamente dentro de parámetros definidos'
           : 'IA asiste en decisiones pero requiere aprobación humana'
       }
@@ -506,679 +513,798 @@ export function ClientAdminPanel({ tenantId, currentUser }: ClientAdminPanelProp
     }
   }
 
+  const tabs = [
+    { id: 'users', label: 'Usuarios', icon: <Users style={{ width: 16, height: 16 }} /> },
+    { id: 'roles', label: 'Roles', icon: <Shield style={{ width: 16, height: 16 }} /> },
+    { id: 'policies', label: 'Políticas', icon: <FileText style={{ width: 16, height: 16 }} /> },
+    { id: 'mode', label: 'Modo IA', icon: <Bot style={{ width: 16, height: 16 }} /> },
+    { id: 'audit', label: 'Auditoría', icon: <BarChart3 style={{ width: 16, height: 16 }} /> }
+  ]
+
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
-            ⚙️ Administración Cliente
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text, marginBottom: '0.5rem' }}>
+            🏢 Administración Cliente
           </h2>
-          <p className="text-slate-300">
+          <p style={{ color: N.textSub }}>
             Gestión de usuarios, roles y políticas de negocio
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          <Badge variant="outline" className="text-blue-400 border-blue-400">
-            Tenant: {tenantId}
-          </Badge>
-          <Badge 
-            variant="outline" 
-            className={operationalMode?.mode === 'autonomous' ? 'text-orange-400 border-orange-400' : 'text-green-400 border-green-400'}
-          >
-            Modo: {operationalMode?.mode.toUpperCase()}
-          </Badge>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <StatusBadge status="info" label={`Tenant: ${tenantId}`} />
+          <StatusBadge
+            status={operationalMode?.mode === 'autonomous' ? 'warning' : 'success'}
+            label={`Modo: ${operationalMode?.mode.toUpperCase()}`}
+          />
         </div>
       </div>
 
       {/* KPIs de Administración */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Usuarios Activos</CardTitle>
-            <Users className="h-4 w-4 text-green-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {users.filter(u => u.status === 'active').length}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Usuarios Activos</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>
+                {users.filter(u => u.status === 'active').length}
+              </p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>{users.length} total</p>
             </div>
-            <p className="text-xs text-slate-400">
-              {users.length} total
-            </p>
-          </CardContent>
-        </Card>
+            <Users style={{ width: '1.5rem', height: '1.5rem', color: '#4ade80' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Roles Configurados</CardTitle>
-            <Shield className="h-4 w-4 text-blue-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {roles.length}
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Roles Configurados</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{roles.length}</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>{permissions.length} permisos</p>
             </div>
-            <p className="text-xs text-slate-400">
-              {permissions.length} permisos
-            </p>
-          </CardContent>
-        </Card>
+            <Shield style={{ width: '1.5rem', height: '1.5rem', color: '#60a5fa' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Políticas Activas</CardTitle>
-            <FileText className="h-4 w-4 text-purple-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {policies.filter(p => p.enabled).length}
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Políticas Activas</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>
+                {policies.filter(p => p.enabled).length}
+              </p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>{policies.length} total</p>
             </div>
-            <p className="text-xs text-slate-400">
-              {policies.length} total
-            </p>
-          </CardContent>
-        </Card>
+            <FileText style={{ width: '1.5rem', height: '1.5rem', color: '#c084fc' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Sesiones Activas</CardTitle>
-            <Activity className="h-4 w-4 text-orange-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {users.reduce((sum, u) => sum + u.sessionCount, 0)}
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Sesiones Activas</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>
+                {users.reduce((sum, u) => sum + u.sessionCount, 0)}
+              </p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Conexiones actuales</p>
             </div>
-            <p className="text-xs text-slate-400">
-              Conexiones actuales
-            </p>
-          </CardContent>
-        </Card>
+            <Activity style={{ width: '1.5rem', height: '1.5rem', color: '#fb923c' }} />
+          </div>
+        </NeuCard>
       </div>
 
       {/* Tabs Principal */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
-          <TabsTrigger value="users" className="data-[state=active]:bg-green-600">
-            <Users className="h-4 w-4 mr-2" />
-            Usuarios
-          </TabsTrigger>
-          <TabsTrigger value="roles" className="data-[state=active]:bg-blue-600">
-            <Shield className="h-4 w-4 mr-2" />
-            Roles
-          </TabsTrigger>
-          <TabsTrigger value="policies" className="data-[state=active]:bg-purple-600">
-            <FileText className="h-4 w-4 mr-2" />
-            Políticas
-          </TabsTrigger>
-          <TabsTrigger value="mode" className="data-[state=active]:bg-orange-600">
-            <Bot className="h-4 w-4 mr-2" />
-            Modo IA
-          </TabsTrigger>
-          <TabsTrigger value="audit" className="data-[state=active]:bg-red-600">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Auditoría
-          </TabsTrigger>
-        </TabsList>
+      <NeuTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-        {/* Tab Usuarios */}
-        <TabsContent value="users" className="space-y-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Users className="h-5 w-5 text-green-400" />
-                    Gestión de Usuarios
-                  </CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Control de acceso con RBAC granular
-                  </CardDescription>
-                </div>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Nuevo Usuario
-                </Button>
+      {/* Tab Usuarios */}
+      {activeTab === 'users' && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Users style={{ color: '#4ade80', width: 20, height: 20 }} />
+                  Gestión de Usuarios
+                </h3>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>Control de acceso con RBAC granular</p>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {users.map((user) => (
-                  <div 
+              <NeuButton variant="primary" onClick={() => { }}>
+                <UserPlus style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                Nuevo Usuario
+              </NeuButton>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {users.map((user) => {
+                const statusColor = getUserStatusColor(user.status)
+                const roleColor = getRoleColor(user.role.level)
+                return (
+                  <div
                     key={user.id}
-                    className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg border border-slate-600 hover:border-slate-500 transition-colors"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '1rem',
+                      background: 'rgba(30,41,59,0.3)',
+                      borderRadius: '0.5rem',
+                      border: `1px solid ${N.dark}`
+                    }}
                   >
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={user.avatar} />
-                        <AvatarFallback className="bg-green-600 text-white">
-                          {user.name.split(' ').map(n => n.charAt(0)).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      {/* Avatar */}
+                      <div style={{
+                        width: '3rem',
+                        height: '3rem',
+                        borderRadius: '50%',
+                        background: '#6888ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        fontWeight: 600
+                      }}>
+                        {user.name.split(' ').map(n => n.charAt(0)).join('')}
+                      </div>
+
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-white font-medium text-lg">
-                            {user.name}
-                          </h3>
-                          <Badge 
-                            variant="outline"
-                            className={getUserStatusColor(user.status)}
-                          >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                          <h3 style={{ color: N.text, fontWeight: 500, fontSize: '1.125rem' }}>{user.name}</h3>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            padding: '0.125rem 0.5rem',
+                            borderRadius: '0.25rem',
+                            border: `1px solid ${statusColor.border}`,
+                            color: statusColor.text
+                          }}>
                             {user.status}
-                          </Badge>
-                          <Badge 
-                            variant="outline"
-                            className={getRoleColor(user.role.level)}
-                          >
+                          </span>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            padding: '0.125rem 0.5rem',
+                            borderRadius: '0.25rem',
+                            border: `1px solid ${roleColor.border}`,
+                            color: roleColor.text
+                          }}>
                             {user.role.name}
-                          </Badge>
+                          </span>
                           {user.twoFactorEnabled && (
-                            <Badge variant="outline" className="border-blue-500 text-blue-400">
+                            <span style={{
+                              fontSize: '0.75rem',
+                              padding: '0.125rem 0.5rem',
+                              borderRadius: '0.25rem',
+                              border: '1px solid #6888ff',
+                              color: '#60a5fa'
+                            }}>
                               2FA
-                            </Badge>
+                            </span>
                           )}
                         </div>
-                        <p className="text-slate-400 text-sm">
+                        <p style={{ color: N.textSub, fontSize: '0.875rem' }}>
                           {user.email} • {user.department} • {user.position}
                         </p>
-                        <div className="flex items-center space-x-4 mt-1 text-xs text-slate-500">
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', fontSize: '0.75rem', color: N.textSub }}>
                           {user.lastLogin && (
-                            <span>
-                              Último acceso: {new Date(user.lastLogin).toLocaleString()}
-                            </span>
+                            <span>Ášltimo acceso: {new Date(user.lastLogin).toLocaleString()}</span>
                           )}
                           <span>Sesiones: {user.sessionCount}</span>
                           {user.loginAttempts > 0 && (
-                            <span className="text-yellow-400">
-                              Intentos fallidos: {user.loginAttempts}
-                            </span>
+                            <span style={{ color: '#facc15' }}>Intentos fallidos: {user.loginAttempts}</span>
                           )}
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-blue-500 text-blue-400 hover:bg-blue-500/10"
-                        onClick={() => setSelectedUser(user)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
+
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <NeuButton variant="secondary" onClick={() => setSelectedUser(user)}>
+                        <Eye style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} />
                         Ver
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-green-500 text-green-400 hover:bg-green-500/10"
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
+                      </NeuButton>
+                      <NeuButton variant="secondary">
+                        <Edit style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} />
                         Editar
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className={`${user.status === 'active' ? 'border-yellow-500 text-yellow-400' : 'border-green-500 text-green-400'} hover:bg-opacity-10`}
-                      >
-                        {user.status === 'active' ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-                      </Button>
+                      </NeuButton>
+                      <NeuButton variant="secondary">
+                        {user.status === 'active' ? <Lock style={{ width: '1rem', height: '1rem' }} /> : <Unlock style={{ width: '1rem', height: '1rem' }} />}
+                      </NeuButton>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </NeuCard>
+      )}
+
+      {/* Tab Roles */}
+      {activeTab === 'roles' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <div style={{ padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <Shield style={{ color: '#60a5fa', width: 20, height: 20 }} />
+                Roles del Sistema
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {roles.map((role) => {
+                  const roleColor = getRoleColor(role.level)
+                  return (
+                    <div
+                      key={role.id}
+                      style={{
+                        padding: '0.75rem',
+                        background: 'rgba(30,41,59,0.3)',
+                        borderRadius: '0.5rem',
+                        border: `1px solid ${N.dark}`
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <h4 style={{ color: N.text, fontWeight: 500 }}>{role.name}</h4>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            padding: '0.125rem 0.5rem',
+                            borderRadius: '0.25rem',
+                            border: `1px solid ${roleColor.border}`,
+                            color: roleColor.text
+                          }}>
+                            Nivel {role.level}
+                          </span>
+                          {role.isSystem && (
+                            <span style={{
+                              fontSize: '0.75rem',
+                              padding: '0.125rem 0.5rem',
+                              borderRadius: '0.25rem',
+                              border: '1px solid #6888ff',
+                              color: '#f87171'
+                            }}>
+                              Sistema
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.25rem' }}>
+                          <NeuButton variant="secondary">
+                            <Edit style={{ width: '1rem', height: '1rem' }} />
+                          </NeuButton>
+                          {!role.isSystem && (
+                            <NeuButton variant="secondary">
+                              <Trash2 style={{ width: '1rem', height: '1rem' }} />
+                            </NeuButton>
+                          )}
+                        </div>
+                      </div>
+                      <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '0.5rem' }}>{role.description}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ color: N.textSub, fontSize: '0.75rem' }}>
+                          {users.filter(u => u.role.id === role.id).length} usuarios asignados
+                        </span>
+                        <NeuButton variant="secondary">Ver Permisos</NeuButton>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </NeuCard>
+
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <div style={{ padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <UserCheck style={{ color: '#4ade80', width: 20, height: 20 }} />
+                Permisos Disponibles
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {permissions.map((permission) => (
+                  <div
+                    key={permission.id}
+                    style={{
+                      padding: '0.75rem',
+                      background: 'rgba(30,41,59,0.3)',
+                      borderRadius: '0.5rem',
+                      border: `1px solid ${N.dark}`
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <h4 style={{ color: N.text, fontWeight: 500, fontSize: '0.875rem' }}>{permission.name}</h4>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        padding: '0.125rem 0.5rem',
+                        borderRadius: '0.25rem',
+                        background: `${N.dark}50`,
+                        color: N.textSub
+                      }}>
+                        {permission.category}
+                      </span>
+                    </div>
+                    <p style={{ color: N.textSub, fontSize: '0.75rem', marginBottom: '0.5rem' }}>{permission.description}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                      {permission.actions.map((action) => (
+                        <span key={action} style={{
+                          fontSize: '0.75rem',
+                          padding: '0.125rem 0.5rem',
+                          borderRadius: '0.25rem',
+                          background: `${N.dark}50`,
+                          color: N.textSub
+                        }}>
+                          {action}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
+          </NeuCard>
+        </div>
+      )}
 
-        {/* Tab Roles */}
-        <TabsContent value="roles" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-400" />
-                  Roles del Sistema
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {roles.map((role) => (
-                    <div 
-                      key={role.id}
-                      className="p-3 bg-slate-700/30 rounded-lg border border-slate-600"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-white font-medium">{role.name}</h4>
-                          <Badge 
-                            variant="outline"
-                            className={getRoleColor(role.level)}
-                          >
-                            Nivel {role.level}
-                          </Badge>
-                          {role.isSystem && (
-                            <Badge variant="outline" className="border-red-400 text-red-400">
-                              Sistema
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex space-x-1">
-                          <Button size="sm" variant="outline">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          {!role.isSystem && (
-                            <Button size="sm" variant="outline" className="border-red-500 text-red-400">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-slate-400 text-sm mb-2">
-                        {role.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-slate-500 text-xs">
-                          {users.filter(u => u.role.id === role.id).length} usuarios asignados
-                        </span>
-                        <Button size="sm" variant="outline">
-                          Ver Permisos
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <UserCheck className="h-5 w-5 text-green-400" />
-                  Permisos Disponibles
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {permissions.map((permission) => (
-                    <div 
-                      key={permission.id}
-                      className="p-3 bg-slate-700/30 rounded-lg border border-slate-600"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-white font-medium text-sm">
-                          {permission.name}
-                        </h4>
-                        <Badge variant="outline" className="text-xs">
-                          {permission.category}
-                        </Badge>
-                      </div>
-                      <p className="text-slate-400 text-xs mb-2">
-                        {permission.description}
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {permission.actions.map((action) => (
-                          <Badge key={action} variant="outline" className="text-xs">
-                            {action}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Tab Políticas */}
-        <TabsContent value="policies" className="space-y-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-purple-400" />
-                    Políticas de Negocio
-                  </CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Automatización de procesos y reglas de negocio
-                  </CardDescription>
-                </div>
-                <Button className="bg-purple-600 hover:bg-purple-700">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Nueva Política
-                </Button>
+      {/* Tab Políticas */}
+      {activeTab === 'policies' && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FileText style={{ color: '#c084fc', width: 20, height: 20 }} />
+                  Políticas de Negocio
+                </h3>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>Automatización de procesos y reglas de negocio</p>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {policies.map((policy) => (
-                  <div 
+              <NeuButton variant="primary" onClick={() => { }}>
+                <Settings style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                Nueva Política
+              </NeuButton>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {policies.map((policy) => {
+                const categoryColors = {
+                  security: { border: '#6888ff', text: '#f87171' },
+                  workflow: { border: '#6888ff', text: '#60a5fa' },
+                  data: { border: '#6888ff', text: '#4ade80' },
+                  compliance: { border: '#6888ff', text: '#facc15' }
+                }
+                const catColor = categoryColors[policy.category]
+                return (
+                  <div
                     key={policy.id}
-                    className="p-4 bg-slate-700/30 rounded-lg border border-slate-600"
+                    style={{
+                      padding: '1rem',
+                      background: 'rgba(30,41,59,0.3)',
+                      borderRadius: '0.5rem',
+                      border: `1px solid ${N.dark}`
+                    }}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-white font-medium">{policy.name}</h4>
-                        <Badge 
-                          variant="outline"
-                          className={
-                            policy.category === 'security' ? 'border-red-400 text-red-400' :
-                            policy.category === 'workflow' ? 'border-blue-400 text-blue-400' :
-                            policy.category === 'data' ? 'border-green-400 text-green-400' :
-                            'border-yellow-400 text-yellow-400'
-                          }
-                        >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <h4 style={{ color: N.text, fontWeight: 500 }}>{policy.name}</h4>
+                        <span style={{
+                          fontSize: '0.75rem',
+                          padding: '0.125rem 0.5rem',
+                          borderRadius: '0.25rem',
+                          border: `1px solid ${catColor.border}`,
+                          color: catColor.text
+                        }}>
                           {policy.category}
-                        </Badge>
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Switch 
-                          checked={policy.enabled}
-                          onCheckedChange={() => {
-                            const updatedPolicies = policies.map(p => 
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => {
+                            const updatedPolicies = policies.map(p =>
                               p.id === policy.id ? { ...p, enabled: !p.enabled } : p
                             )
                             setPolicies(updatedPolicies)
                           }}
-                        />
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                          style={{
+                            width: '2.5rem',
+                            height: '1.5rem',
+                            borderRadius: '0.75rem',
+                            background: policy.enabled ? '#6888ff' : N.dark,
+                            border: 'none',
+                            cursor: 'pointer',
+                            position: 'relative',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          <div style={{
+                            width: '1.25rem',
+                            height: '1.25rem',
+                            borderRadius: '50%',
+                            background: '#fff',
+                            position: 'absolute',
+                            top: '0.125rem',
+                            left: policy.enabled ? '1.25rem' : '0.125rem',
+                            transition: 'left 0.2s'
+                          }} />
+                        </button>
+                        <NeuButton variant="secondary">
+                          <Edit style={{ width: '1rem', height: '1rem' }} />
+                        </NeuButton>
                       </div>
                     </div>
-                    <p className="text-slate-400 text-sm mb-3">
-                      {policy.description}
-                    </p>
-                    <div className="space-y-2">
+                    <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '0.75rem' }}>{policy.description}</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       {policy.rules.map((rule) => (
-                        <div key={rule.id} className="p-2 bg-slate-800/50 rounded text-xs">
-                          <div className="flex items-center justify-between">
-                            <span className="text-slate-300">
-                              Si: <code className="text-blue-400">{rule.condition}</code>
+                        <div key={rule.id} style={{
+                          padding: '0.5rem',
+                          background: 'rgba(30,41,59,0.5)',
+                          borderRadius: '0.25rem',
+                          fontSize: '0.75rem'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                            <span style={{ color: N.text }}>
+                              Si: <code style={{ color: '#60a5fa' }}>{rule.condition}</code>
                             </span>
-                            <Badge variant="outline" className="text-xs">
+                            <span style={{
+                              fontSize: '0.75rem',
+                              padding: '0.125rem 0.5rem',
+                              borderRadius: '0.25rem',
+                              background: `${N.dark}50`,
+                              color: N.textSub
+                            }}>
                               Prioridad: {rule.priority}
-                            </Badge>
+                            </span>
                           </div>
-                          <span className="text-slate-300">
-                            Entonces: <code className="text-green-400">{rule.action}</code>
+                          <span style={{ color: N.text }}>
+                            Entonces: <code style={{ color: '#4ade80' }}>{rule.action}</code>
                           </span>
                         </div>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between mt-3 text-xs text-slate-500">
-                      <span>
-                        Creado: {new Date(policy.createdAt).toLocaleDateString()}
-                      </span>
-                      <span>
-                        Actualizado: {new Date(policy.updatedAt).toLocaleDateString()}
-                      </span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem', fontSize: '0.75rem', color: N.textSub }}>
+                      <span>Creado: {new Date(policy.createdAt).toLocaleDateString()}</span>
+                      <span>Actualizado: {new Date(policy.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                )
+              })}
+            </div>
+          </div>
+        </NeuCard>
+      )}
 
-        {/* Tab Modo IA */}
-        <TabsContent value="mode" className="space-y-6">
-          {operationalMode && (
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Bot className="h-5 w-5 text-orange-400" />
-                  Modo Operativo IA
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Configuración del nivel de autonomía del sistema
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Selector de Modo */}
-                <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h4 className="text-white font-medium mb-1">
-                        Modo Actual: {operationalMode.mode === 'copilot' ? 'Copiloto' : 'Autónomo'}
-                      </h4>
-                      <p className="text-slate-400 text-sm">
-                        {operationalMode.description}
-                      </p>
-                    </div>
-                    <Switch 
-                      checked={operationalMode.mode === 'autonomous'}
-                      onCheckedChange={toggleOperationalMode}
+      {/* Tab Modo IA */}
+      {activeTab === 'mode' && operationalMode && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <Bot style={{ color: '#fb923c', width: 20, height: 20 }} />
+              Modo Operativo IA
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: N.textSub, marginBottom: '1.5rem' }}>
+              Configuración del nivel de autonomía del sistema
+            </p>
+
+            {/* Selector de Modo */}
+            <div style={{
+              padding: '1rem',
+              background: 'rgba(30,41,59,0.3)',
+              borderRadius: '0.5rem',
+              border: `1px solid ${N.dark}`,
+              marginBottom: '1.5rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <div>
+                  <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '0.25rem' }}>
+                    Modo Actual: {operationalMode.mode === 'copilot' ? 'Copiloto' : 'Autónomo'}
+                  </h4>
+                  <p style={{ color: N.textSub, fontSize: '0.875rem' }}>{operationalMode.description}</p>
+                </div>
+                <button
+                  onClick={toggleOperationalMode}
+                  style={{
+                    width: '3rem',
+                    height: '1.5rem',
+                    borderRadius: '0.75rem',
+                    background: operationalMode.mode === 'autonomous' ? '#fb923c' : '#6888ff',
+                    border: 'none',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                    borderRadius: '50%',
+                    background: '#fff',
+                    position: 'absolute',
+                    top: '0.125rem',
+                    left: operationalMode.mode === 'autonomous' ? '1.625rem' : '0.125rem',
+                    transition: 'left 0.2s'
+                  }} />
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                <div style={{
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  border: `2px solid ${operationalMode.mode === 'copilot' ? '#6888ff' : N.dark}`,
+                  background: operationalMode.mode === 'copilot' ? 'rgba(34,197,94,0.1)' : 'transparent'
+                }}>
+                  <h5 style={{ color: N.text, fontWeight: 500, marginBottom: '0.5rem' }}>ðŸ¤ Modo Copiloto</h5>
+                  <ul style={{ color: N.textSub, fontSize: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <li>• IA asiste en decisiones</li>
+                    <li>• Requiere aprobación humana</li>
+                    <li>• Control total del usuario</li>
+                    <li>• Auditoría detallada</li>
+                  </ul>
+                </div>
+
+                <div style={{
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  border: `2px solid ${operationalMode.mode === 'autonomous' ? '#fb923c' : N.dark}`,
+                  background: operationalMode.mode === 'autonomous' ? 'rgba(251,146,60,0.1)' : 'transparent'
+                }}>
+                  <h5 style={{ color: N.text, fontWeight: 500, marginBottom: '0.5rem' }}>ðŸ¤– Modo Autónomo</h5>
+                  <ul style={{ color: N.textSub, fontSize: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <li>• IA toma decisiones automáticas</li>
+                    <li>• Dentro de parámetros definidos</li>
+                    <li>• Override humano disponible</li>
+                    <li>• Auditoría completa</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Configuración de Características */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+              <div style={{
+                padding: '1rem',
+                background: 'rgba(30,41,59,0.3)',
+                borderRadius: '0.5rem',
+                border: `1px solid ${N.dark}`
+              }}>
+                <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem' }}>Características</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ color: N.textSub }}>Aprobación Automática</span>
+                    <button
+                      onClick={() => setOperationalMode({ ...operationalMode, features: { ...operationalMode.features, autoApproval: !operationalMode.features.autoApproval } })}
+                      style={{
+                        width: '2.5rem',
+                        height: '1.5rem',
+                        borderRadius: '0.75rem',
+                        background: operationalMode.features.autoApproval ? '#6888ff' : N.dark,
+                        border: 'none',
+                        cursor: 'pointer',
+                        position: 'relative'
+                      }}
+                    >
+                      <div style={{
+                        width: '1.25rem',
+                        height: '1.25rem',
+                        borderRadius: '50%',
+                        background: '#fff',
+                        position: 'absolute',
+                        top: '0.125rem',
+                        left: operationalMode.features.autoApproval ? '1.25rem' : '0.125rem',
+                        transition: 'left 0.2s'
+                      }} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ color: N.textSub }}>Decisiones IA</span>
+                    <button
+                      onClick={() => setOperationalMode({ ...operationalMode, features: { ...operationalMode.features, aiDecisions: !operationalMode.features.aiDecisions } })}
+                      style={{
+                        width: '2.5rem',
+                        height: '1.5rem',
+                        borderRadius: '0.75rem',
+                        background: operationalMode.features.aiDecisions ? '#6888ff' : N.dark,
+                        border: 'none',
+                        cursor: 'pointer',
+                        position: 'relative'
+                      }}
+                    >
+                      <div style={{
+                        width: '1.25rem',
+                        height: '1.25rem',
+                        borderRadius: '50%',
+                        background: '#fff',
+                        position: 'absolute',
+                        top: '0.125rem',
+                        left: operationalMode.features.aiDecisions ? '1.25rem' : '0.125rem',
+                        transition: 'left 0.2s'
+                      }} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ color: N.textSub }}>Override Humano</span>
+                    <button
+                      onClick={() => setOperationalMode({ ...operationalMode, features: { ...operationalMode.features, humanOverride: !operationalMode.features.humanOverride } })}
+                      style={{
+                        width: '2.5rem',
+                        height: '1.5rem',
+                        borderRadius: '0.75rem',
+                        background: operationalMode.features.humanOverride ? '#6888ff' : N.dark,
+                        border: 'none',
+                        cursor: 'pointer',
+                        position: 'relative'
+                      }}
+                    >
+                      <div style={{
+                        width: '1.25rem',
+                        height: '1.25rem',
+                        borderRadius: '50%',
+                        background: '#fff',
+                        position: 'absolute',
+                        top: '0.125rem',
+                        left: operationalMode.features.humanOverride ? '1.25rem' : '0.125rem',
+                        transition: 'left 0.2s'
+                      }} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <span style={{ color: N.textSub }}>Nivel de Auditoría</span>
+                    <select
+                      value={operationalMode.features.auditLevel}
+                      onChange={(e) => setOperationalMode({ ...operationalMode, features: { ...operationalMode.features, auditLevel: e.target.value as 'basic' | 'detailed' | 'comprehensive' } })}
+                      style={{
+                        padding: '0.5rem',
+                        background: N.base,
+                        border: `1px solid ${N.dark}`,
+                        borderRadius: '0.5rem',
+                        color: N.text
+                      }}
+                    >
+                      <option value="basic">Básico</option>
+                      <option value="detailed">Detallado</option>
+                      <option value="comprehensive">Completo</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                padding: '1rem',
+                background: 'rgba(30,41,59,0.3)',
+                borderRadius: '0.5rem',
+                border: `1px solid ${N.dark}`
+              }}>
+                <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem' }}>Umbrales</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <span style={{ color: N.textSub }}>Monto Máximo Auto ($)</span>
+                    <input
+                      type="number"
+                      value={operationalMode.thresholds.maxAutoAmount}
+                      onChange={(e) => setOperationalMode({ ...operationalMode, thresholds: { ...operationalMode.thresholds, maxAutoAmount: parseInt(e.target.value) || 0 } })}
+                      style={{
+                        padding: '0.5rem',
+                        background: N.base,
+                        border: `1px solid ${N.dark}`,
+                        borderRadius: '0.5rem',
+                        color: N.text
+                      }}
                     />
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className={`p-3 rounded-lg border ${
-                      operationalMode.mode === 'copilot' ? 'border-green-500 bg-green-500/10' : 'border-slate-600'
-                    }`}>
-                      <h5 className="text-white font-medium mb-2">🤝 Modo Copiloto</h5>
-                      <ul className="text-slate-400 text-sm space-y-1">
-                        <li>• IA asiste en decisiones</li>
-                        <li>• Requiere aprobación humana</li>
-                        <li>• Control total del usuario</li>
-                        <li>• Auditoría detallada</li>
-                      </ul>
-                    </div>
-                    
-                    <div className={`p-3 rounded-lg border ${
-                      operationalMode.mode === 'autonomous' ? 'border-orange-500 bg-orange-500/10' : 'border-slate-600'
-                    }`}>
-                      <h5 className="text-white font-medium mb-2">🤖 Modo Autónomo</h5>
-                      <ul className="text-slate-400 text-sm space-y-1">
-                        <li>• IA toma decisiones automáticas</li>
-                        <li>• Dentro de parámetros definidos</li>
-                        <li>• Override humano disponible</li>
-                        <li>• Auditoría completa</li>
-                      </ul>
-                    </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <span style={{ color: N.textSub }}>Tolerancia al Riesgo</span>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="1"
+                      value={operationalMode.thresholds.riskTolerance}
+                      onChange={(e) => setOperationalMode({ ...operationalMode, thresholds: { ...operationalMode.thresholds, riskTolerance: parseFloat(e.target.value) || 0 } })}
+                      style={{
+                        padding: '0.5rem',
+                        background: N.base,
+                        border: `1px solid ${N.dark}`,
+                        borderRadius: '0.5rem',
+                        color: N.text
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <span style={{ color: N.textSub }}>Nivel de Confianza</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      value={operationalMode.thresholds.confidenceLevel}
+                      onChange={(e) => setOperationalMode({ ...operationalMode, thresholds: { ...operationalMode.thresholds, confidenceLevel: parseFloat(e.target.value) || 0 } })}
+                      style={{
+                        padding: '0.5rem',
+                        background: N.base,
+                        border: `1px solid ${N.dark}`,
+                        borderRadius: '0.5rem',
+                        color: N.text
+                      }}
+                    />
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </NeuCard>
+      )}
 
-                {/* Configuración de Características */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card className="bg-slate-700/30 border-slate-600">
-                    <CardHeader>
-                      <CardTitle className="text-white text-lg">Características</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-slate-300">Aprobación Automática</Label>
-                        <Switch 
-                          checked={operationalMode.features.autoApproval}
-                          onCheckedChange={(checked) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              features: { ...operationalMode.features, autoApproval: checked }
-                            })
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label className="text-slate-300">Decisiones IA</Label>
-                        <Switch 
-                          checked={operationalMode.features.aiDecisions}
-                          onCheckedChange={(checked) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              features: { ...operationalMode.features, aiDecisions: checked }
-                            })
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label className="text-slate-300">Override Humano</Label>
-                        <Switch 
-                          checked={operationalMode.features.humanOverride}
-                          onCheckedChange={(checked) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              features: { ...operationalMode.features, humanOverride: checked }
-                            })
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-300">Nivel de Auditoría</Label>
-                        <Select 
-                          value={operationalMode.features.auditLevel}
-                          onValueChange={(value: 'basic' | 'detailed' | 'comprehensive') => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              features: { ...operationalMode.features, auditLevel: value }
-                            })
-                          }}
-                        >
-                          <SelectTrigger className="bg-slate-800 border-slate-700">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="basic">Básico</SelectItem>
-                            <SelectItem value="detailed">Detallado</SelectItem>
-                            <SelectItem value="comprehensive">Completo</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </CardContent>
-                  </Card>
+      {/* Tab Auditoría */}
+      {activeTab === 'audit' && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <BarChart3 style={{ color: '#f87171', width: 20, height: 20 }} />
+              Logs de Auditoría
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: N.textSub, marginBottom: '1.5rem' }}>
+              Registro completo de acciones y decisiones automáticas
+            </p>
 
-                  <Card className="bg-slate-700/30 border-slate-600">
-                    <CardHeader>
-                      <CardTitle className="text-white text-lg">Umbrales</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label className="text-slate-300">Monto Máximo Auto ($)</Label>
-                        <Input 
-                          type="number"
-                          value={operationalMode.thresholds.maxAutoAmount}
-                          onChange={(e) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              thresholds: { 
-                                ...operationalMode.thresholds, 
-                                maxAutoAmount: parseInt(e.target.value) || 0 
-                              }
-                            })
-                          }}
-                          className="bg-slate-800 border-slate-700"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-300">Tolerancia al Riesgo</Label>
-                        <Input 
-                          type="number"
-                          step="0.1"
-                          min="0"
-                          max="1"
-                          value={operationalMode.thresholds.riskTolerance}
-                          onChange={(e) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              thresholds: { 
-                                ...operationalMode.thresholds, 
-                                riskTolerance: parseFloat(e.target.value) || 0 
-                              }
-                            })
-                          }}
-                          className="bg-slate-800 border-slate-700"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-slate-300">Nivel de Confianza</Label>
-                        <Input 
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          max="1"
-                          value={operationalMode.thresholds.confidenceLevel}
-                          onChange={(e) => {
-                            setOperationalMode({
-                              ...operationalMode,
-                              thresholds: { 
-                                ...operationalMode.thresholds, 
-                                confidenceLevel: parseFloat(e.target.value) || 0 
-                              }
-                            })
-                          }}
-                          className="bg-slate-800 border-slate-700"
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Tab Auditoría */}
-        <TabsContent value="audit" className="space-y-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-red-400" />
-                Logs de Auditoría
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Registro completo de acciones y decisiones automáticas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {auditLogs.map((log) => (
-                  <div 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {auditLogs.map((log) => {
+                const resultColors = {
+                  success: { border: '#6888ff', text: '#4ade80' },
+                  warning: { border: '#6888ff', text: '#facc15' },
+                  failure: { border: '#6888ff', text: '#f87171' }
+                }
+                const resColor = resultColors[log.result]
+                return (
+                  <div
                     key={log.id}
-                    className="p-3 bg-slate-700/30 rounded-lg border border-slate-600"
+                    style={{
+                      padding: '0.75rem',
+                      background: 'rgba(30,41,59,0.3)',
+                      borderRadius: '0.5rem',
+                      border: `1px solid ${N.dark}`
+                    }}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          variant="outline"
-                          className={
-                            log.result === 'success' ? 'border-green-400 text-green-400' :
-                            log.result === 'warning' ? 'border-yellow-400 text-yellow-400' :
-                            'border-red-400 text-red-400'
-                          }
-                        >
-                          {log.result === 'success' ? <CheckCircle className="h-3 w-3 mr-1" /> :
-                           log.result === 'warning' ? <AlertTriangle className="h-3 w-3 mr-1" /> :
-                           <XCircle className="h-3 w-3 mr-1" />}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{
+                          fontSize: '0.75rem',
+                          padding: '0.125rem 0.5rem',
+                          borderRadius: '0.25rem',
+                          border: `1px solid ${resColor.border}`,
+                          color: resColor.text,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
+                        }}>
+                          {log.result === 'success' ? <CheckCircle style={{ width: '0.75rem', height: '0.75rem' }} /> :
+                            log.result === 'warning' ? <AlertTriangle style={{ width: '0.75rem', height: '0.75rem' }} /> :
+                              <XCircle style={{ width: '0.75rem', height: '0.75rem' }} />}
                           {log.result}
-                        </Badge>
-                        <span className="text-slate-400 text-sm">
+                        </span>
+                        <span style={{ color: N.textSub, fontSize: '0.875rem' }}>
                           {new Date(log.timestamp).toLocaleString()}
                         </span>
                       </div>
-                      <Badge variant="outline" className="text-xs">
+                      <span style={{
+                        fontSize: '0.75rem',
+                        padding: '0.125rem 0.5rem',
+                        borderRadius: '0.25rem',
+                        background: `${N.dark}50`,
+                        color: N.textSub
+                      }}>
                         {log.action}
-                      </Badge>
+                      </span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div>
-                        <p className="text-white text-sm font-medium">
-                          {log.userName}
-                        </p>
-                        <p className="text-slate-400 text-xs">
-                          {log.ipAddress} • Recurso: {log.resource}
-                        </p>
+                        <p style={{ color: N.text, fontWeight: 500, fontSize: '0.875rem' }}>{log.userName}</p>
+                        <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{log.ipAddress} • Recurso: {log.resource}</p>
                       </div>
-                      <Button size="sm" variant="outline">
-                        <Eye className="h-4 w-4 mr-1" />
+                      <NeuButton variant="secondary">
+                        <Eye style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} />
                         Detalles
-                      </Button>
+                      </NeuButton>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                )
+              })}
+            </div>
+          </div>
+        </NeuCard>
+      )}
     </div>
   )
 }

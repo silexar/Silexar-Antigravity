@@ -1,24 +1,23 @@
-'use client'
+﻿'use client'
 
 /**
- * 🌐 SILEXAR PULSE - Multi-Region Control
+ * ðŸŒ SILEXAR PULSE - Multi-Region Control
  * Control de despliegue multi-región
- * 
+ *
  * @description Gestión de infraestructura:
  * - Regiones activas
  * - Latencia y health
  * - Failover automático
  * - Distribución de carga
- * 
- * @version 2025.1.0
+ *
+ * @version 2025.4.2
  * @tier TIER_0_FORTUNE_10
+ * @design NEUMORPHISM_TIER_0
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Globe,
   Zap,
@@ -66,7 +65,6 @@ export function MultiRegionControl() {
 
   const loadRegionData = async () => {
     if (!isLoading) {
-      // Solo simular cambios en latencia
       setRegions(prev => prev.map(r => ({
         ...r,
         latency: Math.max(10, r.latency + (Math.random() - 0.5) * 5),
@@ -83,7 +81,7 @@ export function MultiRegionControl() {
         id: 'reg_001',
         name: 'South America East',
         code: 'sa-east-1',
-        location: 'São Paulo, Brasil',
+        location: 'SÁ£o Paulo, Brasil',
         status: 'healthy',
         latency: 25,
         cpu: 45,
@@ -173,28 +171,27 @@ export function MultiRegionControl() {
     setIsLoading(false)
   }
 
-  const getStatusStyle = (status: string) => {
+  const getStatusOpacity = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-500/20 text-green-400'
-      case 'degraded': return 'bg-yellow-500/20 text-yellow-400'
-      case 'down': return 'bg-red-500/20 text-red-400'
-      case 'maintenance': return 'bg-blue-500/20 text-blue-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'healthy': return 1
+      case 'degraded': return 0.7
+      case 'down': return 0.5
+      case 'maintenance': return 0.6
+      default: return 0.7
     }
   }
 
-  const getLatencyColor = (latency: number) => {
-    if (latency < 50) return 'text-green-400'
-    if (latency < 100) return 'text-yellow-400'
-    if (latency < 200) return 'text-orange-400'
-    return 'text-red-400'
+  const getLatencyOpacity = (latency: number) => {
+    if (latency < 50) return 1
+    if (latency < 100) return 0.85
+    if (latency < 200) return 0.7
+    return 0.5
   }
 
   const triggerFailover = (ruleId: string) => {
     const rule = failoverRules.find(r => r.id === ruleId)
     if (rule) {
-      
-      alert(`Failover ejecutado: ${rule.sourceRegion} → ${rule.targetRegion}`)
+      alert(`Failover ejecutado: ${rule.sourceRegion} †’ ${rule.targetRegion}`)
     }
   }
 
@@ -205,8 +202,8 @@ export function MultiRegionControl() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Multi-Region...</p>
+          <div className="w-12 h-12 border-4 border-[#bec8de] border-t-[#6888ff] rounded-full animate-spin mx-auto mb-4" />
+          <p style={{ color: N.textSub }}>Cargando Multi-Region...</p>
         </div>
       </div>
     )
@@ -216,45 +213,45 @@ export function MultiRegionControl() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Globe className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-lg font-bold flex items-center gap-2" style={{ color: N.text }}>
+          <Globe className="w-5 h-5" style={{ color: N.accent }} />
           Multi-Region Control
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary">
           <RefreshCw className="w-4 h-4 mr-1" />
           Sync All
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Global Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{regions.length}</p>
-          <p className="text-xs text-slate-400">Regiones</p>
+        <div className="p-3 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow() }}>
+          <p className="text-2xl font-bold" style={{ color: N.text }}>{regions.length}</p>
+          <p className="text-xs" style={{ color: N.textSub }}>Regiones</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow() }}>
+          <p className="text-2xl font-bold" style={{ color: N.accent }}>
             {regions.filter(r => r.status === 'healthy').length}
           </p>
-          <p className="text-xs text-slate-400">Healthy</p>
+          <p className="text-xs" style={{ color: N.textSub }}>Healthy</p>
         </div>
-        <div className="p-3 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">{Math.round(avgLatency)}ms</p>
-          <p className="text-xs text-slate-400">Latencia Prom</p>
+        <div className="p-3 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow() }}>
+          <p className="text-2xl font-bold" style={{ color: N.accent }}>{Math.round(avgLatency)}ms</p>
+          <p className="text-xs" style={{ color: N.textSub }}>Latencia Prom</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">
+        <div className="p-3 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow() }}>
+          <p className="text-2xl font-bold" style={{ color: N.accent }}>
             {(totalRequests / 1000).toFixed(0)}K
           </p>
-          <p className="text-xs text-slate-400">Requests/min</p>
+          <p className="text-xs" style={{ color: N.textSub }}>Requests/min</p>
         </div>
       </div>
 
       {/* Alert for Degraded Regions */}
       {regions.some(r => r.status === 'degraded' || r.status === 'down') && (
-        <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-yellow-400" />
-          <span className="text-yellow-400 text-sm">
+        <div className="p-3 rounded-xl flex items-center gap-2" style={{ background: `${N.accent}10`, border: `1px solid ${N.dark}40` }}>
+          <AlertTriangle className="w-5 h-5" style={{ color: N.accent }} />
+          <span className="text-sm font-bold" style={{ color: N.accent }}>
             {regions.filter(r => r.status !== 'healthy').length} región(es) con problemas detectados
           </span>
         </div>
@@ -263,116 +260,129 @@ export function MultiRegionControl() {
       {/* Regions Grid */}
       <div className="grid grid-cols-3 gap-4">
         {regions.map(region => (
-          <NeuromorphicCard 
+          <NeuCard
             key={region.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer hover:border-cyan-500/30 transition-all ${
-              selectedRegion?.id === region.id ? 'ring-1 ring-cyan-500/50' : ''
-            }`}
-            onClick={() => setSelectedRegion(region)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-cyan-400" />
+                <MapPin className="w-4 h-4" style={{ color: N.accent }} />
                 <div>
-                  <span className="text-white font-medium block">{region.name}</span>
-                  <span className="text-xs text-slate-500">{region.code}</span>
+                  <span className="font-medium block" style={{ color: N.text }}>{region.name}</span>
+                  <span className="text-xs" style={{ color: N.textSub }}>{region.code}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
                 {region.isPrimary && (
-                  <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded">
+                  <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${N.accent}15`, color: N.accent }}>
                     Primary
                   </span>
                 )}
-                <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(region.status)}`}>
+                <span
+                  className="text-xs px-2 py-0.5 rounded font-bold"
+                  style={{
+                    background: `${N.accent}15`,
+                    color: N.accent,
+                    opacity: getStatusOpacity(region.status)
+                  }}
+                >
                   {region.status}
                 </span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-400 mb-3">{region.location}</p>
+            <p className="text-xs mb-3" style={{ color: N.textSub }}>{region.location}</p>
 
             <div className="grid grid-cols-2 gap-2 mb-3">
-              <div className="p-2 bg-slate-800/30 rounded text-center">
-                <p className={`text-lg font-bold ${getLatencyColor(region.latency)}`}>
+              <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow(true) }}>
+                <p className="text-lg font-bold" style={{ color: N.accent, opacity: getLatencyOpacity(region.latency) }}>
                   {Math.round(region.latency)}ms
                 </p>
-                <p className="text-xs text-slate-500">Latencia</p>
+                <p className="text-xs" style={{ color: N.textSub }}>Latencia</p>
               </div>
-              <div className="p-2 bg-slate-800/30 rounded text-center">
-                <p className="text-lg font-bold text-white">{region.nodes}</p>
-                <p className="text-xs text-slate-500">Nodos</p>
+              <div className="p-2 rounded-xl text-center" style={{ background: N.base, boxShadow: getSmallShadow(true) }}>
+                <p className="text-lg font-bold" style={{ color: N.text }}>{region.nodes}</p>
+                <p className="text-xs" style={{ color: N.textSub }}>Nodos</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">CPU</span>
-                  <span className="text-white">{Math.round(region.cpu)}%</span>
+                  <span style={{ color: N.textSub }}>CPU</span>
+                  <span style={{ color: N.text }}>{Math.round(region.cpu)}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
-                  <div 
-                    className={`h-1.5 rounded-full ${region.cpu > 80 ? 'bg-red-500' : region.cpu > 60 ? 'bg-yellow-500' : 'bg-green-500'}`}
-                    style={{ width: `${region.cpu}%` }}
+                <div className="w-full rounded-full h-1.5" style={{ background: N.base, boxShadow: getSmallShadow(true) }}>
+                  <div
+                    className="h-1.5 rounded-full"
+                    style={{
+                      width: `${region.cpu}%`,
+                      background: N.accent,
+                      opacity: region.cpu > 80 ? 0.5 : region.cpu > 60 ? 0.7 : 1
+                    }}
                   />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">Memory</span>
-                  <span className="text-white">{Math.round(region.memory)}%</span>
+                  <span style={{ color: N.textSub }}>Memory</span>
+                  <span style={{ color: N.text }}>{Math.round(region.memory)}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
-                  <div 
-                    className={`h-1.5 rounded-full ${region.memory > 80 ? 'bg-red-500' : region.memory > 60 ? 'bg-yellow-500' : 'bg-cyan-500'}`}
-                    style={{ width: `${region.memory}%` }}
+                <div className="w-full rounded-full h-1.5" style={{ background: N.base, boxShadow: getSmallShadow(true) }}>
+                  <div
+                    className="h-1.5 rounded-full"
+                    style={{
+                      width: `${region.memory}%`,
+                      background: N.accent,
+                      opacity: region.memory > 80 ? 0.5 : region.memory > 60 ? 0.7 : 1
+                    }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+            <div className="mt-3 flex items-center justify-between text-xs" style={{ color: N.textSub }}>
               <span>{(region.requests / 1000).toFixed(1)}K req/min</span>
               <span>Sync: {region.lastSync.toLocaleTimeString()}</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Failover Rules */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Zap className="w-4 h-4 text-yellow-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="p-4">
+        <h4 className="font-medium mb-3 flex items-center gap-2" style={{ color: N.text }}>
+          <Zap className="w-4 h-4" style={{ color: N.accent }} />
           Reglas de Failover
         </h4>
         <div className="space-y-2">
           {failoverRules.map(rule => (
-            <div key={rule.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={rule.id} className="flex items-center justify-between p-3 rounded-xl" style={{ background: N.base, boxShadow: getSmallShadow(true) }}>
               <div className="flex items-center gap-3">
-                <span className="text-white font-medium">{rule.sourceRegion}</span>
-                <ArrowRight className="w-4 h-4 text-slate-500" />
-                <span className="text-white font-medium">{rule.targetRegion}</span>
-                <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
-                  {rule.trigger === 'latency' ? `Latencia > ${rule.threshold}ms` : 
-                   rule.trigger === 'health' ? `Health < ${rule.threshold}%` : rule.trigger}
+                <span className="font-medium" style={{ color: N.text }}>{rule.sourceRegion}</span>
+                <ArrowRight className="w-4 h-4" style={{ color: N.textSub }} />
+                <span className="font-medium" style={{ color: N.text }}>{rule.targetRegion}</span>
+                <span className="text-xs px-2 py-0.5 rounded" style={{ background: `${N.accent}10`, color: N.accent }}>
+                  {rule.trigger === 'latency' ? `Latencia > ${rule.threshold}ms` :
+                    rule.trigger === 'health' ? `Health < ${rule.threshold}%` : rule.trigger}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${rule.active ? 'bg-green-400' : 'bg-slate-500'}`} />
-                <NeuromorphicButton 
-                  variant="secondary" 
-                  size="sm"
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: rule.active ? N.accent : N.textSub }}
+                />
+                <NeuButton
+                  variant="secondary"
                   onClick={() => triggerFailover(rule.id)}
                 >
                   Ejecutar
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

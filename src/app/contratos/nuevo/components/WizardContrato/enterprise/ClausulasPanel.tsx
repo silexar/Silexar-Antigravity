@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📚 SILEXAR PULSE - Biblioteca de Cláusulas TIER 0
  *
  * @description Panel de gestión de cláusulas legales
@@ -50,11 +50,11 @@ const CATEGORIA_CONFIG: Record<CategoriaClausula, {
     bgColor: "bg-[#dfeaff]",
     label: "General",
   },
-  pago: { color: "text-emerald-600", bgColor: "bg-emerald-100", label: "Pago" },
-  entrega: { color: "text-blue-600", bgColor: "bg-blue-100", label: "Entrega" },
+  pago: { color: "text-[#6888ff]", bgColor: "bg-[#6888ff]/10", label: "Pago" },
+  entrega: { color: "text-[#6888ff]", bgColor: "bg-[#6888ff]/10", label: "Entrega" },
   exclusividad: {
-    color: "text-purple-600",
-    bgColor: "bg-purple-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     label: "Exclusividad",
   },
   confidencialidad: {
@@ -63,18 +63,18 @@ const CATEGORIA_CONFIG: Record<CategoriaClausula, {
     label: "Confidencialidad",
   },
   terminacion: {
-    color: "text-red-600",
-    bgColor: "bg-red-100",
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
     label: "Terminación",
   },
   penalizaciones: {
-    color: "text-orange-600",
-    bgColor: "bg-orange-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     label: "Penalizaciones",
   },
   garantias: {
-    color: "text-amber-600",
-    bgColor: "bg-amber-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     label: "Garantías",
   },
   propiedad_intelectual: {
@@ -88,8 +88,8 @@ const CATEGORIA_CONFIG: Record<CategoriaClausula, {
     label: "Jurisdicción",
   },
   fuerza_mayor: {
-    color: "text-rose-600",
-    bgColor: "bg-rose-100",
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
     label: "Fuerza Mayor",
   },
   modificaciones: {
@@ -129,7 +129,7 @@ const ClausulaCard: React.FC<{
         p-4 rounded-xl border-2 transition-all cursor-pointer
         ${
         isSelected
-          ? "border-indigo-500 bg-[#6888ff15]"
+          ? "border-[#bec8de] bg-[#6888ff15]"
           : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#6888ff30] hover:bg-[#6888ff15]/30"
       }
       `}
@@ -143,7 +143,7 @@ const ClausulaCard: React.FC<{
           w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5
           ${
             isSelected
-              ? "border-indigo-500 bg-indigo-500"
+              ? "border-[#bec8de] bg-[#6888ff]/50"
               : "border-[#bec8de50]"
           }
         `}
@@ -161,13 +161,13 @@ const ClausulaCard: React.FC<{
               {clausula.nombre}
             </h4>
             {clausula.esObligatoria && (
-              <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-medium flex items-center gap-0.5">
+              <span className="px-1.5 py-0.5 rounded bg-[#dfeaff] text-[#9aa3b8] text-[10px] font-medium flex items-center gap-0.5">
                 <Lock className="w-2.5 h-2.5" />
                 Obligatoria
               </span>
             )}
             {clausula.sugerenciaIA && (
-              <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-600 text-[10px] font-medium flex items-center gap-0.5">
+              <span className="px-1.5 py-0.5 rounded bg-[#6888ff]/10 text-[#6888ff] text-[10px] font-medium flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" />
                 IA
               </span>
@@ -225,7 +225,7 @@ const VariableInput: React.FC<{
   <div className="space-y-1">
     <label className="text-sm font-medium text-[#69738c] flex items-center gap-2">
       {variable.nombre}
-      {variable.requerida && <span className="text-red-500">*</span>}
+      {variable.requerida && <span className="text-[#9aa3b8]">*</span>}
     </label>
     {variable.tipo === "select" && variable.opciones
       ? (
@@ -331,8 +331,8 @@ const PreviewModal: React.FC<{
         <div className="p-6 overflow-y-auto max-h-[50vh]">
           {/* Variables */}
           {clausula.variables.length > 0 && (
-            <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200">
-              <h4 className="font-medium text-amber-800 mb-3 flex items-center gap-2">
+            <div className="mb-6 p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de]">
+              <h4 className="font-medium text-[#6888ff] mb-3 flex items-center gap-2">
                 <Tag className="w-4 h-4" />
                 Variables a completar
               </h4>
@@ -365,9 +365,9 @@ const PreviewModal: React.FC<{
 
           {/* Advertencias */}
           {variablesPendientes.length > 0 && (
-            <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">
+            <div className="mt-4 p-3 rounded-lg bg-[#dfeaff] border border-[#bec8de] flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-[#9aa3b8] flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-[#9aa3b8]">
                 Hay {variablesPendientes.length}{" "}
                 variable(s) requerida(s) sin completar
               </p>
@@ -398,7 +398,7 @@ const PreviewModal: React.FC<{
             <button
               onClick={onAgregar}
               disabled={variablesPendientes.length > 0}
-              className="px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-[#6888ff]/50 text-white hover:bg-[#6888ff] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Agregar al Contrato
@@ -555,10 +555,10 @@ export const ClausulasPanel: React.FC<ClausulasPanelProps> = ({
             mb-6 p-4 rounded-xl border
             ${
               analisisRiesgo.nivelRiesgo === "bajo"
-                ? "bg-emerald-50 border-emerald-200"
+                ? "bg-[#6888ff]/5 border-[#bec8de]"
                 : analisisRiesgo.nivelRiesgo === "medio"
-                ? "bg-blue-50 border-blue-200"
-                : "bg-amber-50 border-amber-200"
+                ? "bg-[#6888ff]/5 border-[#bec8de]"
+                : "bg-[#6888ff]/5 border-[#bec8de]"
             }
           `}
           >
@@ -569,20 +569,20 @@ export const ClausulasPanel: React.FC<ClausulasPanelProps> = ({
                   p-2 rounded-lg
                   ${
                     analisisRiesgo.nivelRiesgo === "bajo"
-                      ? "bg-emerald-100"
+                      ? "bg-[#6888ff]/10"
                       : analisisRiesgo.nivelRiesgo === "medio"
-                      ? "bg-blue-100"
-                      : "bg-amber-100"
+                      ? "bg-[#6888ff]/10"
+                      : "bg-[#6888ff]/10"
                   }
                 `}
                 >
                   <Unlock
                     className={`w-5 h-5 ${
                       analisisRiesgo.nivelRiesgo === "bajo"
-                        ? "text-emerald-600"
+                        ? "text-[#6888ff]"
                         : analisisRiesgo.nivelRiesgo === "medio"
-                        ? "text-blue-600"
-                        : "text-amber-600"
+                        ? "text-[#6888ff]"
+                        : "text-[#6888ff]"
                     }`}
                   />
                 </div>

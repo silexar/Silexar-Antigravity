@@ -11,8 +11,7 @@ import { eq, and, desc, count, sql } from 'drizzle-orm'
 import { withApiRoute } from '@/lib/api/with-api-route'
 import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
 import { logger } from '@/lib/observability'
-import { auditLogger } from '@/lib/security/audit-logger'
-import { AuditEventType } from '@/lib/security/audit-types'
+import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/security/audit-logger'
 import { withTenantContext } from '@/lib/db/tenant-context'
 import { getDB } from '@/lib/db'
 import { facturas } from '@/lib/db/schema'
@@ -37,7 +36,7 @@ const createFacturaSchema = z.object({
   receptorCiudad: z.string().max(100).optional(),
   receptorComuna: z.string().max(100).optional(),
   fechaEmision: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  fechaVencimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  fechaVencimientos: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   montoNeto: z.number().positive(),
   montoExento: z.number().min(0).default(0),
   tasaIva: z.number().min(0).max(100).default(19),
@@ -99,6 +98,20 @@ export const GET = withApiRoute(
       }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in facturacion GET', error instanceof Error ? error : undefined, { module: 'facturacion' })
+
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al obtener facturas',
+        userId: ctx.userId,
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          module: 'facturacion',
+          resource: 'facturacion',
+          action: 'read',
+          success: false
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -133,13 +146,34 @@ export const POST = withApiRoute(
 
       auditLogger.log({
         type: AuditEventType.DATA_CREATE,
+        message: 'Factura creada exitosamente',
         userId: ctx.userId,
-        metadata: { module: 'facturacion', resourceId: result.data.id },
+        metadata: {
+          facturaId: result.data.id,
+          module: 'facturacion',
+          resource: 'facturacion',
+          action: 'create',
+          success: true
+        }
       })
 
       return apiSuccess(result.data.toJSON(), 201, { message: 'Factura creada exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in facturacion POST', error instanceof Error ? error : undefined, { module: 'facturacion' })
+
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al crear factura',
+        userId: ctx.userId,
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          module: 'facturacion',
+          resource: 'facturacion',
+          action: 'create',
+          success: false
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }

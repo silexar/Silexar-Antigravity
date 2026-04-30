@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📄 SILEXAR PULSE - Paso 5: Documentación TIER 0
  *
  * @description Quinto paso del wizard - Generación de documentos
@@ -50,11 +50,11 @@ const DocumentoCard: React.FC<{
       case "borrador":
         return { color: "bg-[#dfeaff] text-[#69738c]", icon: FileText };
       case "pendiente_firma":
-        return { color: "bg-amber-100 text-amber-700", icon: Clock };
+        return { color: "bg-[#6888ff]/10 text-[#6888ff]", icon: Clock };
       case "firmado":
-        return { color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 };
+        return { color: "bg-[#6888ff]/10 text-[#6888ff]", icon: CheckCircle2 };
       case "rechazado":
-        return { color: "bg-red-100 text-red-700", icon: FileText };
+        return { color: "bg-[#dfeaff] text-[#9aa3b8]", icon: FileText };
       default:
         return { color: "bg-[#dfeaff] text-[#69738c]", icon: FileText };
     }
@@ -101,10 +101,10 @@ const DocumentoCard: React.FC<{
                   flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
                   ${
                   firmante.estado === "firmado"
-                    ? "bg-emerald-50 text-emerald-700"
+                    ? "bg-[#6888ff]/5 text-[#6888ff]"
                     : firmante.estado === "pendiente"
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-red-50 text-red-700"
+                    ? "bg-[#6888ff]/5 text-[#6888ff]"
+                    : "bg-[#dfeaff] text-[#9aa3b8]"
                 }
                 `}
               >
@@ -130,7 +130,7 @@ const DocumentoCard: React.FC<{
         </button>
         <button
           onClick={onDownload}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#6888ff25] hover:bg-indigo-200 text-[#6888ff] text-sm font-medium transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#6888ff25] hover:bg-[#6888ff]/20 text-[#6888ff] text-sm font-medium transition-colors"
         >
           <Download className="w-4 h-4" />
           Descargar
@@ -349,8 +349,8 @@ export const StepDocumentacion: React.FC<StepDocumentacionProps> = ({
     <div className="space-y-8">
       {/* Título del paso */}
       <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100">
-          <FileSignature className="w-7 h-7 text-emerald-600" />
+        <div className="p-3 rounded-2xl bg-gradient-to-br from-[#6888ff] to-teal-100">
+          <FileSignature className="w-7 h-7 text-[#6888ff]" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#69738c]">
@@ -382,13 +382,13 @@ export const StepDocumentacion: React.FC<StepDocumentacionProps> = ({
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100"
+            className="mt-4 p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de]"
           >
-            <div className="flex items-center gap-2 text-emerald-700">
+            <div className="flex items-center gap-2 text-[#6888ff]">
               <CheckCircle2 className="w-5 h-5" />
               <span className="font-medium">Firma digital habilitada</span>
             </div>
-            <p className="text-sm text-emerald-600 mt-2">
+            <p className="text-sm text-[#6888ff] mt-2">
               Los documentos serán enviados para firma electrónica con validez
               legal
             </p>
@@ -406,7 +406,7 @@ export const StepDocumentacion: React.FC<StepDocumentacionProps> = ({
           {/* Generar documentos */}
           <div className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]">
             <h3 className="text-lg font-semibold text-[#69738c] mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
+              <Sparkles className="w-5 h-5 text-[#6888ff]" />
               Generación de Documentos
             </h3>
 
@@ -464,7 +464,7 @@ export const StepDocumentacion: React.FC<StepDocumentacionProps> = ({
               className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
             >
               <h3 className="text-lg font-semibold text-[#69738c] mb-4 flex items-center gap-2">
-                <Send className="w-5 h-5 text-emerald-500" />
+                <Send className="w-5 h-5 text-[#6888ff]" />
                 Enviar a Firma Digital
               </h3>
 
@@ -511,7 +511,7 @@ export const StepDocumentacion: React.FC<StepDocumentacionProps> = ({
       >
         <Shield className="w-6 h-6 text-[#6888ff] flex-shrink-0" />
         <div>
-          <p className="font-medium text-indigo-800">
+          <p className="font-medium text-[#6888ff]">
             Seguridad TIER 0 Certificada
           </p>
           <p className="text-sm text-[#6888ff]">

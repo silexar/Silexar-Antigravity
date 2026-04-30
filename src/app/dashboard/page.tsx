@@ -18,7 +18,9 @@ import {
   AlertTriangle, Calculator, Contact, GitMerge, Palette,
   Package, Globe, Home, CalendarClock, Timer, Sparkles,
   Cpu, Monitor, BarChart2, PlayCircle, UserCog,
-  Target, Wrench, BrainCircuit,
+  Target, Wrench, BrainCircuit, Link2, DatabaseZap,
+  Receipt, UsersRound, Building, Megaphone, Workflow,
+  LineChart, TrendingDown, AlertCircle, Settings2,
 } from 'lucide-react'
 import { useAuth } from '@/components/security-initializer'
 import apiClient from '@/lib/api/client'
@@ -76,18 +78,96 @@ interface NavItem {
   label: string
   icon: React.ElementType
   href: string
+  badge?: string
 }
 interface NavGroup {
   label: string
   items: NavItem[]
 }
 
+// Módulos Fijos (siempre visibles en toolbar) - SOLO DASHBOARD
 const FIXED_MODULES: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-  { label: 'Contratos', icon: FileText, href: '/contratos' },
-  { label: 'Campañas', icon: BarChart3, href: '/campanas' },
-  { label: 'Anunciantes', icon: Building2, href: '/anunciantes' },
-  { label: 'Menciones', icon: Mic2, href: '/menciones' },
+]
+
+// API Routes por módulo - organizadas horizontalmente
+const API_ROUTES_GROUP: NavGroup[] = [
+  {
+    label: 'API Auth',
+    items: [
+      { label: 'auth', icon: Shield, href: '/api/auth', badge: 'POST/GET' },
+      { label: 'security', icon: Shield, href: '/api/security', badge: 'POST' },
+      { label: 'permisos', icon: Shield, href: '/api/permisos', badge: 'GET' },
+      { label: 'roles', icon: Shield, href: '/api/roles', badge: 'GET' },
+      { label: 'sso', icon: Shield, href: '/api/sso', badge: 'POST' },
+      { label: 'encryption', icon: Shield, href: '/api/encryption', badge: 'POST' },
+    ],
+  },
+  {
+    label: 'API Gestión Comercial',
+    items: [
+      { label: 'anunciantes', icon: Building, href: '/api/anunciantes', badge: 'CRUD' },
+      { label: 'agencias-creativas', icon: Briefcase, href: '/api/agencias-creativas', badge: 'CRUD' },
+      { label: 'agencias-medios', icon: Target, href: '/api/agencias-medios', badge: 'CRUD' },
+      { label: 'campanas', icon: Megaphone, href: '/api/campanas', badge: 'CRUD' },
+      { label: 'contratos', icon: FileText, href: '/api/contratos', badge: 'CRUD' },
+      { label: 'crm', icon: UsersRound, href: '/api/crm', badge: 'CRUD' },
+      { label: 'equipos-ventas', icon: Users, href: '/api/equipos-ventas', badge: 'CRUD' },
+      { label: 'vendedores', icon: UserCheck, href: '/api/vendedores', badge: 'CRUD' },
+      { label: 'prospeccion', icon: Search, href: '/api/prospeccion-inteligencia', badge: 'AI' },
+    ],
+  },
+  {
+    label: 'API Operaciones',
+    items: [
+      { label: 'tandas', icon: Timer, href: '/api/tandas', badge: 'CRUD' },
+      { label: 'emisoras', icon: Radio, href: '/api/emisoras', badge: 'CRUD' },
+      { label: 'creatividades', icon: Palette, href: '/api/creatividades', badge: 'CRUD' },
+      { label: 'menciones', icon: Mic2, href: '/api/menciones', badge: 'CRUD' },
+      { label: 'cunas', icon: Film, href: '/api/cunas', badge: 'CRUD' },
+      { label: 'paquetes', icon: Package, href: '/api/paquetes', badge: 'CRUD' },
+      { label: 'conciliacion', icon: GitMerge, href: '/api/conciliacion', badge: 'POST' },
+      { label: 'registro-emision', icon: Tv2, href: '/api/registro-emision', badge: 'CRUD' },
+      { label: 'exportar-pauta', icon: Link2, href: '/api/exportar-pauta', badge: 'POST' },
+      { label: 'inventario', icon: Package, href: '/api/inventario', badge: 'CRUD' },
+      { label: 'sistemas-playout', icon: PlayCircle, href: '/api/sistemas-playout', badge: 'CRUD' },
+    ],
+  },
+  {
+    label: 'API Finanzas',
+    items: [
+      { label: 'facturacion', icon: CreditCard, href: '/api/facturacion', badge: 'CRUD' },
+      { label: 'cierre-mensual', icon: Calculator, href: '/api/cierre-mensual', badge: 'POST' },
+      { label: 'vendedores', icon: TrendingUp, href: '/api/vendedores', badge: 'GET' },
+      { label: 'informes', icon: LineChart, href: '/api/informes', badge: 'CRUD' },
+    ],
+  },
+  {
+    label: 'API Digital & IA',
+    items: [
+      { label: 'digital', icon: Globe, href: '/api/digital', badge: 'CRUD' },
+      { label: 'rrss', icon: Globe, href: '/api/rrss', badge: 'CRUD' },
+      { label: 'ai', icon: Cpu, href: '/api/ai', badge: 'AI' },
+      { label: 'asistente-ia', icon: Sparkles, href: '/api/asistente-ia', badge: 'AI' },
+      { label: 'cortex', icon: BrainCircuit, href: '/api/cortex', badge: 'AI' },
+      { label: 'prediccion-demanda', icon: TrendingDown, href: '/api/prediccion-demanda', badge: 'AI' },
+      { label: 'automatizaciones', icon: Workflow, href: '/api/automatizaciones', badge: 'CRUD' },
+      { label: 'automatizacion-movil', icon: Timer, href: '/api/automatizacion-movil', badge: 'POST' },
+    ],
+  },
+  {
+    label: 'API Infraestructura',
+    items: [
+      { label: 'dashboard', icon: BarChart2, href: '/api/dashboard', badge: 'GET' },
+      { label: 'monitoring', icon: Activity, href: '/api/monitoring', badge: 'GET' },
+      { label: 'health', icon: CheckCircle, href: '/api/health', badge: 'GET' },
+      { label: 'backup', icon: DatabaseZap, href: '/api/backup', badge: 'POST' },
+      { label: 'feature-flags', icon: Settings2, href: '/api/feature-flags', badge: 'CRUD' },
+      { label: 'providers', icon: Database, href: '/api/providers', badge: 'CRUD' },
+      { label: 'tenants', icon: Building, href: '/api/tenants', badge: 'CRUD' },
+      { label: 'mobile', icon: Monitor, href: '/api/mobile', badge: 'POST' },
+    ],
+  },
 ]
 
 const NAV_GROUPS: NavGroup[] = [
@@ -96,11 +176,14 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Equipo de Ventas', icon: Users, href: '/equipos-ventas' },
       { label: 'Vendedores', icon: UserCheck, href: '/vendedores' },
+      { label: 'Dashboard Ejecutivo', icon: BarChart2, href: '/dashboard-ejecutivo' },
+      { label: 'Command Center', icon: Activity, href: '/command-center' },
     ],
   },
   {
     label: 'Operaciones',
     items: [
+      { label: 'Configuración', icon: Settings, href: '/configuracion' },
       { label: 'Emisoras', icon: Radio, href: '/emisoras' },
       { label: 'Cuñas', icon: Mic2, href: '/cunas' },
       { label: 'Registro Emisión', icon: Tv2, href: '/registro-emision' },
@@ -115,6 +198,9 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Sistemas Playout', icon: PlayCircle, href: '/sistemas-playout' },
       { label: 'Propiedades', icon: Home, href: '/propiedades' },
       { label: 'Vencimientos', icon: CalendarClock, href: '/vencimientos' },
+      { label: 'Campañas', icon: Target, href: '/campanas' },
+      { label: 'Contratos', icon: FileText, href: '/contratos' },
+      { label: 'Anunciantes', icon: Building2, href: '/anunciantes' },
     ],
   },
   {
@@ -122,6 +208,8 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Facturación', icon: CreditCard, href: '/facturacion' },
       { label: 'Conciliación', icon: GitMerge, href: '/conciliacion' },
+      { label: 'Cierre Mensual', icon: Calculator, href: '/cierre-mensual' },
+      { label: 'Informes', icon: LineChart, href: '/informes' },
     ],
   },
   {
@@ -131,6 +219,10 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Ecosistema Digital', icon: Monitor, href: '/ecosistema-digital' },
       { label: 'Centro Mando Digital', icon: Monitor, href: '/centro-mando-digital' },
       { label: 'Automatización Móvil', icon: Timer, href: '/automatizacion-movil' },
+      { label: 'Plataformas Digitales', icon: Globe, href: '/plataformas-digitales' },
+      { label: 'Portal Cliente', icon: Building, href: '/portal-cliente' },
+      { label: 'Pauta Broadcast', icon: Radio, href: '/pauta-broadcast' },
+      { label: 'Automatizaciones', icon: Workflow, href: '/automatizaciones' },
     ],
   },
   {
@@ -140,14 +232,38 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Inteligencia de Negocios', icon: TrendingUp, href: '/inteligencia-negocios' },
       { label: 'Predicción Demanda', icon: BarChart2, href: '/prediccion-demanda' },
       { label: 'Prospección', icon: Search, href: '/prospeccion-inteligencia' },
-      { label: 'Asistente IA', icon: Sparkles, href: '/ai-assistant' },
+      { label: 'Asistente IA (WIL)', icon: Sparkles, href: '/ai-assistant' },
+      { label: 'AI Dashboard', icon: BrainCircuit, href: '/ai-dashboard' },
+      { label: 'AI UX', icon: Sparkles, href: '/ai-ux' },
     ],
   },
   {
     label: 'Admin',
     items: [
-      { label: 'Usuarios', icon: UserCog, href: '/usuarios' },
-      { label: 'Configuración', icon: Settings, href: '/configuracion' },
+      { label: 'Admin', icon: UserCog, href: '/admin' },
+      { label: 'Super Admin', icon: Shield, href: '/super-admin' },
+      { label: 'Admin Cliente', icon: UserCog, href: '/admin-cliente' },
+      { label: 'Usuarios', icon: UsersRound, href: '/usuarios' },
+      { label: 'Security', icon: Shield, href: '/security' },
+      { label: 'Monitoring', icon: Activity, href: '/monitoring' },
+    ],
+  },
+  {
+    label: 'CRM & Ventas',
+    items: [
+      { label: 'CRM', icon: UsersRound, href: '/crm' },
+      { label: 'Cotizador', icon: Calculator, href: '/cotizador' },
+      { label: 'Propuestas', icon: Layers, href: '/propuestas' },
+      { label: 'ERP Integration', icon: Link2, href: '/erp-integration' },
+      { label: 'Evidencia', icon: FileText, href: '/evidencia' },
+    ],
+  },
+  {
+    label: 'Analytics',
+    items: [
+      { label: 'Analytics', icon: LineChart, href: '/analytics' },
+      { label: 'Dashboard', icon: BarChart3, href: '/dashboard' },
+      { label: 'Dashboard Ejecutivo', icon: BarChart2, href: '/dashboard-ejecutivo' },
     ],
   },
 ]
@@ -216,21 +332,111 @@ function QuickLink({ label, icon: Icon, href, desc, color }: {
 function StatusDot({ status }: { status: string }) {
   const ok = status === 'healthy'
   const warn = status === 'degraded' || status === 'not_configured'
-  const color = ok ? '#22c55e' : warn ? '#f59e0b' : '#ef4444'
+  const color = ok ? N.accent : warn ? N.textSub : N.textSub
   const label = ok ? 'OK' : warn ? 'Degradado' : 'Error'
+  const dotOpacity = ok ? '1' : warn ? '0.7' : '0.5'
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold" style={{ color }}>
-      <span className="w-2 h-2 rounded-full" style={{ background: color, boxShadow: `0 0 6px ${color}88` }} />
+      <span className="w-2 h-2 rounded-full" style={{ background: color, opacity: dotOpacity, boxShadow: `0 0 6px ${color}88` }} />
       {label}
     </span>
   )
 }
 
+// ─── Dropdown API Routes (con subcategorías) ──────────────────
+function ApiDropdown({ isOpen, onToggle }: {
+  isOpen: boolean
+  onToggle: () => void
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handle = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onToggle()
+    }
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
+  }, [isOpen, onToggle])
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200"
+        style={{
+          background: N.base,
+          boxShadow: isOpen
+            ? `inset 3px 3px 6px ${N.dark},inset -3px -3px 6px ${N.light}`
+            : `3px 3px 6px ${N.dark},-3px -3px 6px ${N.light}`,
+          color: isOpen ? N.accent : N.text,
+        }}
+      >
+        <Link2 className="w-3.5 h-3.5" />
+        API Routes
+        <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div
+          className="absolute top-full left-0 mt-2 z-50 rounded-2xl overflow-hidden"
+          style={{ background: N.base, boxShadow: `8px 8px 20px ${N.dark},-4px -4px 12px ${N.light}` }}
+        >
+          <div className="p-3 space-y-3 max-h-[450px] overflow-y-auto w-[600px]">
+            {API_ROUTES_GROUP.map(group => (
+              <div key={group.label}>
+                <div className="text-[10px] font-black uppercase tracking-wider mb-2 px-2" style={{ color: N.accent }}>
+                  {group.label}
+                </div>
+                <div className="grid grid-cols-3 gap-1">
+                  {group.items.map(item => {
+                    const Icon = item.icon
+                    return (
+                      <button
+                        key={item.href}
+                        onClick={() => { window.open(item.href, '_blank'); onToggle() }}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200"
+                        style={{
+                          background: N.base,
+                          boxShadow: `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`,
+                          color: N.textSub,
+                        }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `3px 3px 6px ${N.dark},-3px -3px 6px ${N.light}`
+                            ; (e.currentTarget as HTMLElement).style.color = N.text
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 4px ${N.dark},-2px -2px 4px ${N.light}`
+                            ; (e.currentTarget as HTMLElement).style.color = N.textSub
+                        }}
+                      >
+                        <Icon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                        {item.badge && (
+                          <span className="text-[9px] px-1 py-0.5 rounded font-bold ml-auto"
+                            style={{ background: `${N.accent}20`, color: N.accent }}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Dropdown Grupo ───────────────────────────────────────────
-function GroupDropdown({ group, isOpen, onToggle }: {
+function GroupDropdown({ group, isOpen, onToggle, showBadge }: {
   group: NavGroup
   isOpen: boolean
   onToggle: () => void
+  showBadge?: boolean
 }) {
   const router = useRouter()
   const ref = useRef<HTMLDivElement>(null)
@@ -263,10 +469,10 @@ function GroupDropdown({ group, isOpen, onToggle }: {
 
       {isOpen && (
         <div
-          className="absolute top-full left-0 mt-2 z-50 rounded-2xl overflow-hidden min-w-[220px]"
+          className="absolute top-full left-0 mt-2 z-50 rounded-2xl overflow-hidden min-w-[240px]"
           style={{ background: N.base, boxShadow: `8px 8px 20px ${N.dark},-4px -4px 12px ${N.light}` }}
         >
-          <div className="p-2 space-y-1">
+          <div className="p-2 space-y-1 max-h-[400px] overflow-y-auto">
             {group.items.map(item => {
               const Icon = item.icon
               return (
@@ -289,7 +495,13 @@ function GroupDropdown({ group, isOpen, onToggle }: {
                   }}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
-                  <span className="truncate">{item.label}</span>
+                  <span className="flex-1 truncate">{item.label}</span>
+                  {showBadge && item.badge && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-md font-bold"
+                      style={{ background: `${N.accent}20`, color: N.accent }}>
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               )
             })}
@@ -435,6 +647,17 @@ export default function DashboardPage() {
           </button>
         )}
 
+        {/* Separator */}
+        <div className="h-6 w-px" style={{ background: N.dark }} />
+
+        {/* API Routes Button with submenu */}
+        <div className="hidden xl:flex items-center gap-2">
+          <ApiDropdown
+            isOpen={openGroup === 'API Routes'}
+            onToggle={() => setOpenGroup(openGroup === 'API Routes' ? null : 'API Routes')}
+          />
+        </div>
+
         {/* Grupos desplegables */}
         <div className="hidden xl:flex items-center gap-2">
           {NAV_GROUPS.map(group => (
@@ -546,7 +769,7 @@ export default function DashboardPage() {
                 </button>
                 <button onClick={() => { logout(); setShowUserMenu(false) }}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-                  style={{ background: N.base, boxShadow: `2px 2px 5px ${N.dark},-2px -2px 5px ${N.light}`, color: '#ef4444' }}
+                  style={{ background: N.base, boxShadow: `2px 2px 5px ${N.dark},-2px -2px 5px ${N.light}`, color: N.textSub }}
                 >
                   <LogOut className="w-3.5 h-3.5" /> Cerrar sesión
                 </button>
@@ -574,7 +797,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3">
                 <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)' }}>
                   <div className="flex items-center gap-2 mb-1">
-                    {systemOk ? <CheckCircle className="w-4 h-4 text-white" /> : <AlertTriangle className="w-4 h-4 text-amber-200" />}
+                    {systemOk ? <CheckCircle className="w-4 h-4 text-white" /> : <AlertTriangle className="w-4 h-4 text-white/70" />}
                     <span className="text-white text-xs font-bold">{systemOk ? 'Sistema Operativo' : 'Sistema Degradado'}</span>
                   </div>
                   <p className="text-white/70 text-xs">v{health?.version ?? '2040.5.0'} · {health?.environment ?? 'development'}</p>
@@ -589,12 +812,12 @@ export default function DashboardPage() {
               Métricas del Sistema
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
-              <MetricCard icon={BarChart3} label="Campañas" color="#6888ff" value={metrics?.campanas?.total ?? '—'} sub={metrics?.campanas?.activas ? `${metrics.campanas.activas} activas` : undefined} href="/campanas" loading={mLoad} />
-              <MetricCard icon={FileText} label="Contratos" color="#22c55e" value={metrics?.contratos?.total ?? '—'} sub={metrics?.contratos?.activos ? `${metrics.contratos.activos} activos` : undefined} href="/contratos" loading={mLoad} />
-              <MetricCard icon={Building2} label="Anunciantes" color="#f59e0b" value={metrics?.anunciantes?.total ?? '—'} sub={metrics?.anunciantes?.activos ? `${metrics.anunciantes.activos} activos` : undefined} href="/anunciantes" loading={mLoad} />
-              <MetricCard icon={Radio} label="Emisoras" color="#ec4899" value={metrics?.emisoras?.total ?? '—'} href="/emisoras" loading={mLoad} />
-              <MetricCard icon={TrendingUp} label="Facturación" color="#14b8a6" value={metrics?.facturas?.total ?? '—'} sub={metrics?.facturas?.pendiente ? `${metrics.facturas.pendiente} pend.` : undefined} href="/facturacion" loading={mLoad} />
-              <MetricCard icon={Users} label="Vendedores" color="#a855f7" value={metrics?.vendedores?.total ?? '—'} href="/vendedores" loading={mLoad} />
+              <MetricCard icon={BarChart3} label="Campañas" color={N.accent} value={metrics?.campanas?.total ?? '—'} sub={metrics?.campanas?.activas ? `${metrics.campanas.activas} activas` : undefined} href="/campanas" loading={mLoad} />
+              <MetricCard icon={FileText} label="Contratos" color={N.accent} value={metrics?.contratos?.total ?? '—'} sub={metrics?.contratos?.activos ? `${metrics.contratos.activos} activos` : undefined} href="/contratos" loading={mLoad} />
+              <MetricCard icon={Building2} label="Anunciantes" color={N.accent} value={metrics?.anunciantes?.total ?? '—'} sub={metrics?.anunciantes?.activos ? `${metrics.anunciantes.activos} activos` : undefined} href="/anunciantes" loading={mLoad} />
+              <MetricCard icon={Radio} label="Emisoras" color={N.accent} value={metrics?.emisoras?.total ?? '—'} href="/emisoras" loading={mLoad} />
+              <MetricCard icon={TrendingUp} label="Facturación" color={N.accent} value={metrics?.facturas?.total ?? '—'} sub={metrics?.facturas?.pendiente ? `${metrics.facturas.pendiente} pend.` : undefined} href="/facturacion" loading={mLoad} />
+              <MetricCard icon={Users} label="Vendedores" color={N.accent} value={metrics?.vendedores?.total ?? '—'} href="/vendedores" loading={mLoad} />
             </div>
           </div>
 
@@ -608,7 +831,7 @@ export default function DashboardPage() {
                   <Activity className="w-4 h-4" />Estado del Sistema
                 </h3>
                 {health && (
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: systemOk ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)', color: systemOk ? '#22c55e' : '#f59e0b' }}>
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: `${N.accent}15`, color: N.accent }}>
                     {systemOk ? '● Operativo' : '● Degradado'}
                   </span>
                 )}
@@ -649,12 +872,12 @@ export default function DashboardPage() {
             <div className="lg:col-span-3 space-y-3">
               <h3 className="text-xs font-black uppercase tracking-widest" style={{ color: N.textSub }}>Acceso Rápido a Módulos</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <QuickLink label="Cuñas" icon={Mic2} href="/cunas" desc="Producción y gestión de cuñas" color="#6888ff" />
-                <QuickLink label="Agencias Creativas" icon={Briefcase} href="/agencias-creativas" desc="Agencias y comisiones" color="#f59e0b" />
-                <QuickLink label="Reg. de Emisión" icon={Tv2} href="/registro-emision" desc="Verificación de pauta en aire" color="#22c55e" />
-                <QuickLink label="Propuestas" icon={Layers} href="/propuestas" desc="Propuestas comerciales" color="#ec4899" />
-                <QuickLink label="Materiales" icon={Film} href="/materiales" desc="Biblioteca de materiales" color="#14b8a6" />
-                <QuickLink label="Vendedores" icon={UserCheck} href="/vendedores" desc="Performance y objetivos de ventas" color="#a855f7" />
+                <QuickLink label="Cuñas" icon={Mic2} href="/cunas" desc="Producción y gestión de cuñas" color={N.accent} />
+                <QuickLink label="Agencias Creativas" icon={Briefcase} href="/agencias-creativas" desc="Agencias y comisiones" color={N.accent} />
+                <QuickLink label="Reg. de Emisión" icon={Tv2} href="/registro-emision" desc="Verificación de pauta en aire" color={N.accent} />
+                <QuickLink label="Propuestas" icon={Layers} href="/propuestas" desc="Propuestas comerciales" color={N.accent} />
+                <QuickLink label="Materiales" icon={Film} href="/materiales" desc="Biblioteca de materiales" color={N.accent} />
+                <QuickLink label="Vendedores" icon={UserCheck} href="/vendedores" desc="Performance y objetivos de ventas" color={N.accent} />
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ?? SILEXAR PULSE - Documentation Panel Component TIER 0
  * 
  * @description Panel de documentaci�n de negociaci�n que permite:
@@ -102,11 +102,11 @@ const neuro = {
 
 const getTipoIcon = (tipo: TipoDocumento) => {
   switch (tipo) {
-    case 'EMAIL': return <Mail className="w-5 h-5 text-red-500" />;
-    case 'COTIZACION': return <FileText className="w-5 h-5 text-green-500" />;
-    case 'ORDEN_COMPRA': return <File className="w-5 h-5 text-blue-500" />;
-    case 'VOUCHER': return <File className="w-5 h-5 text-amber-500" />;
-    case 'PROPUESTA': return <FileText className="w-5 h-5 text-purple-500" />;
+    case 'EMAIL': return <Mail className="w-5 h-5 text-[#9aa3b8]" />;
+    case 'COTIZACION': return <FileText className="w-5 h-5 text-[#6888ff]" />;
+    case 'ORDEN_COMPRA': return <File className="w-5 h-5 text-[#6888ff]" />;
+    case 'VOUCHER': return <File className="w-5 h-5 text-[#6888ff]" />;
+    case 'PROPUESTA': return <FileText className="w-5 h-5 text-[#6888ff]" />;
     case 'BRIEF': return <FileText className="w-5 h-5 text-[#6888ff]" />;
     default: return <Paperclip className="w-5 h-5 text-[#9aa3b8]" />;
   }
@@ -308,7 +308,7 @@ export default function DocumentacionNegociacionPanel({
                         className={`${neuro.btnSecondary} p-2`}
                       >
                         {copiedEmail ? (
-                          <Check className="w-4 h-4 text-green-600" />
+                          <Check className="w-4 h-4 text-[#6888ff]" />
                         ) : (
                           <Copy className="w-4 h-4" />
                         )}
@@ -317,7 +317,7 @@ export default function DocumentacionNegociacionPanel({
 
                     {/* WhatsApp */}
                     <div className={`${neuro.input} p-3 flex items-center gap-3`}>
-                      <MessageSquare className="w-5 h-5 text-green-500 shrink-0" />
+                      <MessageSquare className="w-5 h-5 text-[#6888ff] shrink-0" />
                       <div className="flex-1">
                         <p className="text-xs text-[#9aa3b8]">Env�a por WhatsApp a:</p>
                         <p className="font-mono text-sm text-[#69738c]">{instrucciones.whatsapp}</p>
@@ -386,13 +386,13 @@ export default function DocumentacionNegociacionPanel({
             <div className="flex flex-col items-center gap-3">
               <div className="flex items-center gap-4">
                 <div className="p-4 rounded-2xl bg-[#dfeaff]">
-                  <Mail className="w-8 h-8 text-red-500" />
+                  <Mail className="w-8 h-8 text-[#9aa3b8]" />
                 </div>
                 <div className="p-4 rounded-2xl bg-[#dfeaff]">
-                  <FileText className="w-8 h-8 text-blue-500" />
+                  <FileText className="w-8 h-8 text-[#6888ff]" />
                 </div>
                 <div className="p-4 rounded-2xl bg-[#dfeaff]">
-                  <Image className="w-8 h-8 text-green-500" />
+                  <Image className="w-8 h-8 text-[#6888ff]" />
                 </div>
               </div>
               
@@ -438,9 +438,9 @@ export default function DocumentacionNegociacionPanel({
                 <div className="flex items-start gap-4">
                   {/* Icono tipo */}
                   <div className={`p-3 rounded-xl ${
-                    doc.tipo === 'EMAIL' ? 'bg-red-100' :
-                    doc.tipo === 'COTIZACION' ? 'bg-green-100' :
-                    doc.tipo === 'ORDEN_COMPRA' ? 'bg-blue-100' :
+                    doc.tipo === 'EMAIL' ? 'bg-[#dfeaff]' :
+                    doc.tipo === 'COTIZACION' ? 'bg-[#6888ff]/10' :
+                    doc.tipo === 'ORDEN_COMPRA' ? 'bg-[#6888ff]/10' :
                     'bg-[#dfeaff]'
                   }`}>
                     {getTipoIcon(doc.tipo)}
@@ -453,9 +453,9 @@ export default function DocumentacionNegociacionPanel({
                         {doc.nombreArchivo}
                       </p>
                       <span className={`${neuro.badge} ${
-                        doc.tipo === 'EMAIL' ? 'bg-red-100 text-red-700' :
-                        doc.tipo === 'COTIZACION' ? 'bg-green-100 text-green-700' :
-                        doc.tipo === 'ORDEN_COMPRA' ? 'bg-blue-100 text-blue-700' :
+                        doc.tipo === 'EMAIL' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+                        doc.tipo === 'COTIZACION' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                        doc.tipo === 'ORDEN_COMPRA' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
                         'bg-[#dfeaff] text-[#69738c]'
                       }`}>
                         {getTipoLabel(doc.tipo)}
@@ -482,7 +482,7 @@ export default function DocumentacionNegociacionPanel({
                     {doc.datosExtraidos && Object.keys(doc.datosExtraidos).length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-2">
                         {doc.datosExtraidos.valorMencionado && (
-                          <span className={`${neuro.badge} bg-green-100 text-green-700`}>
+                          <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                             ${(doc.datosExtraidos.valorMencionado / 1000000).toFixed(0)}M
                           </span>
                         )}
@@ -493,9 +493,9 @@ export default function DocumentacionNegociacionPanel({
                         ))}
                         {doc.confianzaExtraccion && (
                           <span className={`${neuro.badge} ${
-                            doc.confianzaExtraccion >= 80 ? 'bg-green-100 text-green-700' :
-                            doc.confianzaExtraccion >= 60 ? 'bg-amber-100 text-amber-700' :
-                            'bg-red-100 text-red-700'
+                            doc.confianzaExtraccion >= 80 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                            doc.confianzaExtraccion >= 60 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                            'bg-[#dfeaff] text-[#9aa3b8]'
                           }`}>
                             <Sparkles className="w-3 h-3 inline mr-1" />
                             {doc.confianzaExtraccion}% IA
@@ -513,13 +513,13 @@ export default function DocumentacionNegociacionPanel({
                         </span>
                       )}
                       {doc.estadoProcesamiento === 'PROCESADO' && (
-                        <span className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="flex items-center gap-1 text-xs text-[#6888ff]">
                           <Check className="w-3 h-3" />
                           Procesado
                         </span>
                       )}
                       {doc.estadoProcesamiento === 'ERROR' && (
-                        <span className="flex items-center gap-1 text-xs text-red-600">
+                        <span className="flex items-center gap-1 text-xs text-[#9aa3b8]">
                           <AlertCircle className="w-3 h-3" />
                           Error
                         </span>
@@ -537,9 +537,9 @@ export default function DocumentacionNegociacionPanel({
                     </button>
                     <button
                       onClick={() => handleDeleteDocument(doc.id)}
-                      className={`${neuro.btnSecondary} p-2 hover:bg-red-50`}
+                      className={`${neuro.btnSecondary} p-2 hover:bg-[#dfeaff]`}
                     >
-                      <Trash2 className="w-4 h-4 text-red-500" />
+                      <Trash2 className="w-4 h-4 text-[#9aa3b8]" />
                     </button>
                   </div>
                 </div>

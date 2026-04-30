@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? SILEXAR PULSE - Audit Timeline Component TIER 0
  * 
- * @description Línea de tiempo completa de auditoría que muestra
- * cada acción realizada en el contrato. Esencial para auditorías externas.
+ * @description Lï¿½nea de tiempo completa de auditorï¿½a que muestra
+ * cada acciï¿½n realizada en el contrato. Esencial para auditorï¿½as externas.
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -171,7 +171,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'EDICION',
     fecha: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
     usuario: { id: 'u-001', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior', email: 'carlos@silexar.cl' },
-    descripcion: 'Modificación de valor total',
+    descripcion: 'Modificaciï¿½n de valor total',
     campoAfectado: 'valorTotal',
     valorAnterior: '$75.000.000',
     valorNuevo: '$80.000.000',
@@ -194,9 +194,9 @@ const mockEventos: EventoAuditoria[] = [
     id: 'ev-004',
     tipo: 'APROBACION',
     fecha: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-    usuario: { id: 'u-002', nombre: 'Ana García', rol: 'Supervisora', email: 'ana@silexar.cl' },
-    descripcion: 'Aprobación nivel 1 - Supervisora',
-    detalleJson: { nivel: 1, comentario: 'Cliente estratégico, descuento autorizado' },
+    usuario: { id: 'u-002', nombre: 'Ana Garcï¿½a', rol: 'Supervisora', email: 'ana@silexar.cl' },
+    descripcion: 'Aprobaciï¿½n nivel 1 - Supervisora',
+    detalleJson: { nivel: 1, comentario: 'Cliente estratï¿½gico, descuento autorizado' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
   },
@@ -205,7 +205,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'APROBACION',
     fecha: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     usuario: { id: 'u-003', nombre: 'Roberto Silva', rol: 'Gerente Comercial', email: 'roberto@silexar.cl' },
-    descripcion: 'Aprobación nivel 2 - Gerente Comercial',
+    descripcion: 'Aprobaciï¿½n nivel 2 - Gerente Comercial',
     detalleJson: { nivel: 2, tiempoRespuesta: '4 horas' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
@@ -224,7 +224,7 @@ const mockEventos: EventoAuditoria[] = [
     id: 'ev-007',
     tipo: 'FIRMA',
     fecha: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    usuario: { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General', email: 'patricia@silexar.cl' },
+    usuario: { id: 'u-005', nombre: 'Patricia Muï¿½oz', rol: 'Gerente General', email: 'patricia@silexar.cl' },
     descripcion: 'Firma digital de representante legal',
     detalleJson: { proveedor: 'DocuSign', envelopeId: 'env-abc123' },
     nivelRiesgo: 'bajo',
@@ -235,7 +235,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'ENVIO_EMAIL',
     fecha: new Date(Date.now() - 12 * 60 * 60 * 1000),
     usuario: { id: 'u-001', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior', email: 'carlos@silexar.cl' },
-    descripcion: 'Envío de contrato firmado al cliente',
+    descripcion: 'Envï¿½o de contrato firmado al cliente',
     detalleJson: { destinatario: 'contacto@bancochile.cl', estado: 'entregado' },
     nivelRiesgo: 'bajo',
     requiereAtencion: false
@@ -245,7 +245,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'VISUALIZACION',
     fecha: new Date(Date.now() - 2 * 60 * 60 * 1000),
     usuario: { id: 'ext-001', nombre: 'Auditor Externo - Deloitte', rol: 'Auditor', email: 'auditor@deloitte.com', ip: '200.73.45.123' },
-    descripcion: 'Acceso de auditoría externa',
+    descripcion: 'Acceso de auditorï¿½a externa',
     nivelRiesgo: 'medio',
     requiereAtencion: false,
     dispositivo: 'Desktop Firefox',
@@ -256,7 +256,7 @@ const mockEventos: EventoAuditoria[] = [
     tipo: 'DESCARGA',
     fecha: new Date(Date.now() - 1 * 60 * 60 * 1000),
     usuario: { id: 'ext-001', nombre: 'Auditor Externo - Deloitte', rol: 'Auditor', email: 'auditor@deloitte.com' },
-    descripcion: 'Descarga de documentación para auditoría',
+    descripcion: 'Descarga de documentaciï¿½n para auditorï¿½a',
     documentoId: 'doc-005',
     nivelRiesgo: 'medio',
     requiereAtencion: false
@@ -269,37 +269,37 @@ const mockEventos: EventoAuditoria[] = [
 
 const getAccionInfo = (tipo: TipoAccion) => {
   const info: Record<TipoAccion, { icon: React.ReactNode; color: string; label: string }> = {
-    CREACION: { icon: <FileText className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Creación' },
-    EDICION: { icon: <Edit className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600', label: 'Edición' },
-    APROBACION: { icon: <Check className="w-4 h-4" />, color: 'bg-emerald-100 text-emerald-600', label: 'Aprobación' },
-    RECHAZO: { icon: <X className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Rechazo' },
-    FIRMA: { icon: <PenTool className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Firma' },
+    CREACION: { icon: <FileText className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Creaciï¿½n' },
+    EDICION: { icon: <Edit className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Ediciï¿½n' },
+    APROBACION: { icon: <Check className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Aprobaciï¿½n' },
+    RECHAZO: { icon: <X className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#9aa3b8]', label: 'Rechazo' },
+    FIRMA: { icon: <PenTool className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Firma' },
     ENVIO_EMAIL: { icon: <Mail className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#6888ff]', label: 'Email' },
-    ENVIO_WHATSAPP: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'WhatsApp' },
+    ENVIO_WHATSAPP: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'WhatsApp' },
     SUBIDA_DOCUMENTO: { icon: <Upload className="w-4 h-4" />, color: 'bg-cyan-100 text-cyan-600', label: 'Subida' },
-    DESCARGA: { icon: <Download className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Descarga' },
-    VISUALIZACION: { icon: <Eye className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Visualización' },
-    IMPRESION: { icon: <Printer className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Impresión' },
-    CAMBIO_ESTADO: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600', label: 'Cambio Estado' },
-    CAMBIO_DESCUENTO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Descuento' },
-    CAMBIO_PRECIO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Precio' },
+    DESCARGA: { icon: <Download className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Descarga' },
+    VISUALIZACION: { icon: <Eye className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Visualizaciï¿½n' },
+    IMPRESION: { icon: <Printer className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Impresiï¿½n' },
+    CAMBIO_ESTADO: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Cambio Estado' },
+    CAMBIO_DESCUENTO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Descuento' },
+    CAMBIO_PRECIO: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Precio' },
     COMENTARIO: { icon: <MessageSquare className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#69738c]', label: 'Comentario' },
-    ALERTA: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Alerta' },
-    VERSIONADO: { icon: <GitBranch className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Versión' },
-    ELIMINACION: { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-100 text-red-600', label: 'Eliminación' },
-    RESTAURACION: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-green-100 text-green-600', label: 'Restauración' },
-    CAMBIO_PERMISO: { icon: <Shield className="w-4 h-4" />, color: 'bg-purple-100 text-purple-600', label: 'Permiso' },
-    ACCESO_AUDITORIA: { icon: <Shield className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600', label: 'Auditoría' }
+    ALERTA: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#9aa3b8]', label: 'Alerta' },
+    VERSIONADO: { icon: <GitBranch className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Versiï¿½n' },
+    ELIMINACION: { icon: <Trash2 className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#9aa3b8]', label: 'Eliminaciï¿½n' },
+    RESTAURACION: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Restauraciï¿½n' },
+    CAMBIO_PERMISO: { icon: <Shield className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Permiso' },
+    ACCESO_AUDITORIA: { icon: <Shield className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]', label: 'Auditorï¿½a' }
   };
   return info[tipo] || info.VISUALIZACION;
 };
 
 const getRiesgoColor = (nivel: NivelRiesgo) => {
   switch (nivel) {
-    case 'bajo': return 'bg-green-100 text-green-700';
-    case 'medio': return 'bg-amber-100 text-amber-700';
-    case 'alto': return 'bg-orange-100 text-orange-700';
-    case 'critico': return 'bg-red-100 text-red-700';
+    case 'bajo': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'medio': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'alto': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'critico': return 'bg-[#dfeaff] text-[#9aa3b8]';
   }
 };
 
@@ -356,10 +356,10 @@ export default function AuditTimeline({
             </div>
             <div>
               <h3 className="font-bold text-lg text-[#69738c]">
-                Línea de Tiempo de Auditoría
+                Lï¿½nea de Tiempo de Auditorï¿½a
               </h3>
               <p className="text-sm text-[#9aa3b8]">
-                {eventos.length} eventos registrados • {numeroContrato}
+                {eventos.length} eventos registrados ï¿½ {numeroContrato}
               </p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function AuditTimeline({
             </button>
             <button className={`${neuro.btnPrimary} px-4 py-2 text-sm flex items-center gap-2`}>
               <ExternalLink className="w-4 h-4" />
-              Reporte Auditoría
+              Reporte Auditorï¿½a
             </button>
           </div>
         </div>
@@ -384,9 +384,9 @@ export default function AuditTimeline({
             className={`${neuro.input} px-4 py-2 text-sm`}
           >
             <option value="TODOS">Todos los tipos</option>
-            <option value="CREACION">Creación</option>
-            <option value="EDICION">Edición</option>
-            <option value="APROBACION">Aprobación</option>
+            <option value="CREACION">Creaciï¿½n</option>
+            <option value="EDICION">Ediciï¿½n</option>
+            <option value="APROBACION">Aprobaciï¿½n</option>
             <option value="FIRMA">Firma</option>
             <option value="CAMBIO_DESCUENTO">Cambios de descuento</option>
             <option value="VISUALIZACION">Visualizaciones</option>
@@ -402,13 +402,13 @@ export default function AuditTimeline({
             <option value="bajo">?? Bajo riesgo</option>
             <option value="medio">?? Riesgo medio</option>
             <option value="alto">?? Alto riesgo</option>
-            <option value="critico">?? Crítico</option>
+            <option value="critico">?? Crï¿½tico</option>
           </select>
 
           {eventos.filter(e => e.requiereAtencion).length > 0 && (
-            <span className={`${neuro.badge} bg-red-100 text-red-700`}>
+            <span className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8]`}>
               <AlertTriangle className="w-3 h-3 inline mr-1" />
-              {eventos.filter(e => e.requiereAtencion).length} requieren atención
+              {eventos.filter(e => e.requiereAtencion).length} requieren atenciï¿½n
             </span>
           )}
         </div>
@@ -425,9 +425,9 @@ export default function AuditTimeline({
               <div className="flex-1 h-px bg-[#dfeaff]" />
             </div>
 
-            {/* Eventos del día */}
+            {/* Eventos del dï¿½a */}
             <div className="relative pl-8">
-              {/* Línea vertical */}
+              {/* Lï¿½nea vertical */}
               <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-[#dfeaff]" />
 
               {eventosDelDia.map((evento, idx) => {
@@ -442,7 +442,7 @@ export default function AuditTimeline({
                     transition={{ delay: idx * 0.05 }}
                     className="relative mb-4"
                   >
-                    {/* Punto en la línea */}
+                    {/* Punto en la lï¿½nea */}
                     <div className={`absolute left-[-20px] w-6 h-6 rounded-full ${accionInfo.color} flex items-center justify-center`}>
                       {accionInfo.icon}
                     </div>
@@ -464,8 +464,8 @@ export default function AuditTimeline({
                               {evento.nivelRiesgo}
                             </span>
                             {evento.requiereAtencion && (
-                              <span className={`${neuro.badge} bg-red-100 text-red-700`}>
-                                ?? Requiere atención
+                              <span className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8]`}>
+                                ?? Requiere atenciï¿½n
                               </span>
                             )}
                           </div>
@@ -490,9 +490,9 @@ export default function AuditTimeline({
                       {/* Cambios de valor */}
                       {evento.valorAnterior && evento.valorNuevo && (
                         <div className="mt-3 p-3 bg-[#dfeaff] rounded-xl flex items-center gap-3">
-                          <span className="text-red-500 line-through">{evento.valorAnterior}</span>
+                          <span className="text-[#9aa3b8] line-through">{evento.valorAnterior}</span>
                           <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
-                          <span className="text-green-600 font-semibold">{evento.valorNuevo}</span>
+                          <span className="text-[#6888ff] font-semibold">{evento.valorNuevo}</span>
                         </div>
                       )}
 
@@ -524,13 +524,13 @@ export default function AuditTimeline({
                               )}
                               {evento.ubicacion && (
                                 <div>
-                                  <p className="text-[#9aa3b8]">Ubicación</p>
+                                  <p className="text-[#9aa3b8]">Ubicaciï¿½n</p>
                                   <p className="font-medium">{evento.ubicacion}</p>
                                 </div>
                               )}
                               {evento.seccion && (
                                 <div>
-                                  <p className="text-[#9aa3b8]">Sección</p>
+                                  <p className="text-[#9aa3b8]">Secciï¿½n</p>
                                   <p className="font-medium">{evento.seccion}</p>
                                 </div>
                               )}
@@ -545,7 +545,7 @@ export default function AuditTimeline({
                             {evento.detalleJson && (
                               <div className="mt-4">
                                 <p className="text-[#9aa3b8] text-sm mb-2">Datos adicionales</p>
-                                <pre className="bg-[#69738c] text-green-400 p-3 rounded-lg text-xs overflow-x-auto">
+                                <pre className="bg-[#69738c] text-[#6888ff] p-3 rounded-lg text-xs overflow-x-auto">
                                   {JSON.stringify(evento.detalleJson, null, 2)}
                                 </pre>
                               </div>
@@ -578,7 +578,7 @@ export default function AuditTimeline({
             <span><strong>{eventos.filter(e => e.nivelRiesgo === 'alto' || e.nivelRiesgo === 'critico').length}</strong> alto riesgo</span>
           </div>
           <p className="text-xs text-[#9aa3b8]">
-            Última actualización: {new Date().toLocaleString('es-CL')}
+            ï¿½ltima actualizaciï¿½n: {new Date().toLocaleString('es-CL')}
           </p>
         </div>
       </div>

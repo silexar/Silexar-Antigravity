@@ -1,5 +1,5 @@
 import { logger } from '@/lib/observability';
-export class VencimientosSyncService {
+export class vencimientosyncService {
   
   /**
    * Obtiene la fecha de fin de auspicio desde el módulo de Vencimientos.

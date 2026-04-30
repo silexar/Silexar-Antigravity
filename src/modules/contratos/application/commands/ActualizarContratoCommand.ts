@@ -60,7 +60,7 @@ export interface ValidacionCambio {
 
 export class ActualizarContratoCommandHandler {
   private static readonly CAMBIOS_CRITICOS = [
-    'montoTotal', 'fechaVencimiento', 'terminosPago', 'clausulasEspeciales'
+    'montoTotal', 'fechaVencimientos', 'terminosPago', 'clausulasEspeciales'
   ];
   
   private static readonly LIMITES_APROBACION = {

@@ -38,7 +38,7 @@ export const FacturaSchema = z.object({
   receptorCiudad: z.string().max(100).nullable(),
   receptorComuna: z.string().max(100).nullable(),
   fechaEmision: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  fechaVencimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  fechaVencimientos: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
   montoNeto: z.number().positive(),
   montoExento: z.number().min(0).default(0),
   tasaIva: z.number().min(0).max(100).default(19),
@@ -120,7 +120,7 @@ export class Factura {
   get receptorCiudad(): string | null { return this.props.receptorCiudad; }
   get receptorComuna(): string | null { return this.props.receptorComuna; }
   get fechaEmision(): string { return this.props.fechaEmision; }
-  get fechaVencimiento(): string | null { return this.props.fechaVencimiento; }
+  get fechaVencimientos(): string | null { return this.props.fechaVencimientos; }
   get montoNeto(): number { return this.props.montoNeto; }
   get montoExento(): number { return this.props.montoExento; }
   get tasaIva(): number { return this.props.tasaIva; }

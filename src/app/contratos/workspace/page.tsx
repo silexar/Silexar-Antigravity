@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🚀 SILEXAR PULSE - Smart Workspace TIER 0
  * 
  * @description Workspace inteligente con widgets personalizables,
@@ -135,9 +135,9 @@ function NeuButton({ children, onClick, variant = 'secondary', className = '', d
 const MetricasWidget: React.FC = () => {
   const metricas: MetricaRapida[] = [
     { label: 'Contratos Hoy', valor: 8, cambio: 25, icono: <FileText className="w-5 h-5" style={{ color: N.accent }} />, color: N.accent },
-    { label: 'Valor Pipeline', valor: '$2.4B', cambio: 12, icono: <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />, color: '#22c55e' },
+    { label: 'Valor Pipeline', valor: '$2.4B', cambio: 12, icono: <DollarSign className="w-5 h-5" style={{ color: '#6888ff' }} />, color: '#6888ff' },
     { label: 'Tasa Cierre', valor: '68%', cambio: -3, icono: <Target className="w-5 h-5" style={{ color: '#a855f7' }} />, color: '#a855f7' },
-    { label: 'Pendientes', valor: 12, cambio: 0, icono: <Clock className="w-5 h-5" style={{ color: '#f59e0b' }} />, color: '#f59e0b' },
+    { label: 'Pendientes', valor: 12, cambio: 0, icono: <Clock className="w-5 h-5" style={{ color: '#6888ff' }} />, color: '#6888ff' },
   ];
 
   return (
@@ -158,7 +158,7 @@ const MetricasWidget: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span className="text-xl font-black" style={{ color: N.text }}>{m.valor}</span>
                 {m.cambio !== 0 && (
-                  <span className="flex items-center text-xs" style={{ color: m.cambio > 0 ? '#22c55e' : '#ef4444' }}>
+                  <span className="flex items-center text-xs" style={{ color: m.cambio > 0 ? '#6888ff' : '#9aa3b8' }}>
                     {m.cambio > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {Math.abs(m.cambio)}%
                   </span>
@@ -183,14 +183,14 @@ const AIInsightsWidget: React.FC = () => {
       titulo: 'Oportunidad de Upsell',
       descripcion: 'Banco Chile incrementó 40% su inversión en competencia. Momento ideal para propuesta.',
       accion: 'Generar propuesta',
-      icono: <Target className="w-5 h-5" style={{ color: '#22c55e' }} />
+      icono: <Target className="w-5 h-5" style={{ color: '#6888ff' }} />
     },
     {
       tipo: 'alerta',
       titulo: 'Renovación en Riesgo',
       descripcion: 'Contrato Falabella tiene 32% probabilidad de no renovar según engagement.',
       accion: 'Ver análisis',
-      icono: <AlertCircle className="w-5 h-5" style={{ color: '#ef4444' }} />
+      icono: <AlertCircle className="w-5 h-5" style={{ color: '#9aa3b8' }} />
     },
     {
       tipo: 'prediccion',
@@ -235,10 +235,10 @@ const AIInsightsWidget: React.FC = () => {
 
 const AccionesRapidasWidget: React.FC = () => {
   const acciones = [
-    { label: 'Nuevo Contrato', icono: <Plus className="w-5 h-5" />, color: '#22c55e' },
+    { label: 'Nuevo Contrato', icono: <Plus className="w-5 h-5" />, color: '#6888ff' },
     { label: 'Aprobar Pendientes', icono: <CheckCircle className="w-5 h-5" />, color: N.accent },
     { label: 'Enviar Propuesta', icono: <Mail className="w-5 h-5" />, color: '#a855f7' },
-    { label: 'Llamar Cliente', icono: <Phone className="w-5 h-5" />, color: '#f59e0b' },
+    { label: 'Llamar Cliente', icono: <Phone className="w-5 h-5" />, color: '#6888ff' },
     { label: 'Ver Analytics', icono: <BarChart3 className="w-5 h-5" />, color: '#06b6d4' },
     { label: 'Exportar Datos', icono: <Download className="w-5 h-5" />, color: N.textSub },
   ];
@@ -361,8 +361,8 @@ const ContratosListWidget: React.FC<{
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
-      case 'APROBADO': return { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' };
-      case 'PENDIENTE_APROBACION': return { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' };
+      case 'APROBADO': return { bg: 'rgba(34,197,94,0.12)', text: '#6888ff' };
+      case 'PENDIENTE_APROBACION': return { bg: 'rgba(245,158,11,0.12)', text: '#6888ff' };
       case 'PENDIENTE_FIRMA': return { bg: 'rgba(104,136,255,0.12)', text: N.accent };
       case 'EN_REVISION': return { bg: 'rgba(168,85,247,0.12)', text: '#a855f7' };
       default: return { bg: 'rgba(154,163,184,0.12)', text: N.textSub };

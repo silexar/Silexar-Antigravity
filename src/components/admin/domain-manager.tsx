@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🌐 SILEXAR PULSE - Domain Manager
+ * ðŸŒ SILEXAR PULSE - Domain Manager
  * Gestión de dominios y DNS
  * 
  * @description Domain Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Globe,
   Plus,
@@ -36,7 +34,7 @@ interface Domain {
   id: string
   domain: string
   type: 'primary' | 'alias' | 'custom'
-  status: 'active' | 'pending' | 'failed' | 'verifying'
+  status: 'active' | 'Pendiente' | 'Fallido' | 'verifying'
   tenantId?: string
   tenantName?: string
   ssl: boolean
@@ -50,7 +48,7 @@ interface DNSRecord {
   name: string
   value: string
   ttl: number
-  status: 'active' | 'pending'
+  status: 'active' | 'Pendiente'
 }
 
 export function DomainManager() {
@@ -112,14 +110,14 @@ export function DomainManager() {
         id: 'dom_004',
         domain: 'ads.prisa.com',
         type: 'custom',
-        status: 'pending',
+        status: 'Pendiente',
         tenantId: 'tenant_002',
         tenantName: 'Grupo Prisa',
         ssl: false,
         verified: false,
         createdAt: new Date('2024-12-01'),
         dnsRecords: [
-          { type: 'CNAME', name: 'ads', value: 'app.silexarpulse.com', ttl: 3600, status: 'pending' }
+          { type: 'CNAME', name: 'ads', value: 'app.silexarpulse.com', ttl: 3600, status: 'Pendiente' }
         ]
       }
     ])
@@ -129,7 +127,7 @@ export function DomainManager() {
 
   const verifyDomain = async (id: string) => {
     await new Promise(resolve => setTimeout(resolve, 2000))
-    setDomains(prev => prev.map(d => 
+    setDomains(prev => prev.map(d =>
       d.id === id ? { ...d, verified: true, status: 'active' } : d
     ))
   }
@@ -142,24 +140,24 @@ export function DomainManager() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'pending': return <Clock className="w-4 h-4 text-yellow-400" />
-      case 'verifying': return <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
-      case 'failed': return <XCircle className="w-4 h-4 text-red-400" />
-      default: return <Clock className="w-4 h-4 text-slate-400" />
+      case 'active': return <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'Pendiente': return <Clock className="w-4 h-4 text-[#6888ff]" />
+      case 'verifying': return <RefreshCw className="w-4 h-4 text-[#6888ff] animate-spin" />
+      case 'Fallido': return <XCircle className="w-4 h-4 text-[#6888ff]" />
+      default: return <Clock className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const activeCount = domains.filter(d => d.status === 'active').length
-  const pendingCount = domains.filter(d => d.status === 'pending' || d.status === 'verifying').length
+  const pendingCount = domains.filter(d => d.status === 'Pendiente' || d.status === 'verifying').length
   const customCount = domains.filter(d => d.type === 'custom').length
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Domain Manager...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Domain Manager...</p>
         </div>
       </div>
     )
@@ -169,108 +167,105 @@ export function DomainManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Globe className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Globe className="w-5 h-5 text-[#6888ff]" />
           Domain Manager
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadDomains}>
+          <NeuButton variant="secondary" onClick={loadDomains}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
+          </NeuButton>
+          <NeuButton variant="primary">
             <Plus className="w-4 h-4 mr-1" />
             Add Domain
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{domains.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{domains.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{activeCount}</p>
-          <p className="text-xs text-slate-400">Activos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{activeCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Activos</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{pendingCount}</p>
-          <p className="text-xs text-slate-400">Pendientes</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{pendingCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Pendientes</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{customCount}</p>
-          <p className="text-xs text-slate-400">Custom</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{customCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Custom</p>
         </div>
       </div>
 
       {/* Domains List */}
       <div className="grid grid-cols-2 gap-3">
         {domains.map(domain => (
-          <NeuromorphicCard 
+          <NeuCard
             key={domain.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer ${selectedDomain?.id === domain.id ? 'ring-1 ring-blue-500/50' : ''}`}
-            onClick={() => setSelectedDomain(domain)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 {getStatusIcon(domain.status)}
-                <span className="text-white font-medium">{domain.domain}</span>
+                <span className="text-[#69738c] font-medium">{domain.domain}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  domain.type === 'primary' ? 'bg-purple-500/20 text-purple-400' :
-                  domain.type === 'alias' ? 'bg-blue-500/20 text-blue-400' :
-                  'bg-cyan-500/20 text-cyan-400'
-                }`}>
+                <span className={`text-xs px-2 py-0.5 rounded ${domain.type === 'primary' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                  domain.type === 'alias' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   {domain.type}
                 </span>
                 {domain.ssl && (
-                  <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">SSL</span>
+                  <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">SSL</span>
                 )}
               </div>
             </div>
 
             {domain.tenantName && (
-              <p className="text-xs text-slate-400 mb-2">Tenant: {domain.tenantName}</p>
+              <p className="text-xs text-[#9aa3b8] mb-2">Tenant: {domain.tenantName}</p>
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[#9aa3b8]">
                 Creado: {domain.createdAt.toLocaleDateString()}
               </span>
               <div className="flex items-center gap-1">
                 {!domain.verified && (
-                  <button onClick={(e) => { e.stopPropagation(); verifyDomain(domain.id); }} className="text-xs text-yellow-400 hover:underline">
+                  <button onClick={(e) => { e.stopPropagation(); verifyDomain(domain.id); }} className="text-xs text-[#6888ff] hover:underline">
                     Verificar
                   </button>
                 )}
-                <button onClick={(e) => { e.stopPropagation(); window.open(`https://${domain.domain}`, '_blank'); }} className="p-1 hover:bg-slate-700 rounded">
-                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                <button onClick={(e) => { e.stopPropagation(); window.open(`https://${domain.domain}`, '_blank'); }} className="p-1 hover:bg-[#dfeaff] rounded">
+                  <ExternalLink className="w-3 h-3 text-[#9aa3b8]" />
                 </button>
                 {domain.type === 'custom' && (
-                  <button onClick={(e) => { e.stopPropagation(); deleteDomain(domain.id); }} className="p-1 hover:bg-slate-700 rounded">
-                    <Trash2 className="w-3 h-3 text-red-400" />
+                  <button onClick={(e) => { e.stopPropagation(); deleteDomain(domain.id); }} className="p-1 hover:bg-[#dfeaff] rounded">
+                    <Trash2 className="w-3 h-3 text-[#6888ff]" />
                   </button>
                 )}
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* DNS Records */}
       {selectedDomain && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Settings className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Settings className="w-4 h-4 text-[#9aa3b8]" />
             DNS Records: {selectedDomain.domain}
           </h4>
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-400 text-left">
+              <tr className="text-[#9aa3b8] text-left">
                 <th className="pb-2">Tipo</th>
                 <th className="pb-2">Nombre</th>
                 <th className="pb-2">Valor</th>
@@ -281,14 +276,13 @@ export function DomainManager() {
             <tbody>
               {selectedDomain.dnsRecords.map((record, i) => (
                 <tr key={record.name} className="border-t border-slate-800">
-                  <td className="py-2 font-mono text-cyan-400">{record.type}</td>
-                  <td className="py-2 text-white">{record.name}</td>
-                  <td className="py-2 text-slate-300 font-mono text-xs">{record.value}</td>
-                  <td className="py-2 text-slate-400">{record.ttl}s</td>
+                  <td className="py-2 font-mono text-[#6888ff]">{record.type}</td>
+                  <td className="py-2 text-[#69738c]">{record.name}</td>
+                  <td className="py-2 text-[#69738c] font-mono text-xs">{record.value}</td>
+                  <td className="py-2 text-[#9aa3b8]">{record.ttl}s</td>
                   <td className="py-2">
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      record.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                    <span className={`text-xs px-2 py-0.5 rounded ${record.status === 'active' ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#6888ff]/20 text-[#6888ff]'
+                      }`}>
                       {record.status}
                     </span>
                   </td>
@@ -296,7 +290,7 @@ export function DomainManager() {
               ))}
             </tbody>
           </table>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

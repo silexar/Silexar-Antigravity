@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { withApiRoute } from '@/lib/api/with-api-route';
 
@@ -33,7 +33,12 @@ export const GET = withApiRoute(
         message: "Certificado generado exitosamente. La descarga iniciará en breve."
       });
     } catch (error) {
-      logger.error('[API/RegistroEmision/Exportar] Error GET:', error instanceof Error ? error : undefined, { module: 'registro-emision/exportar', action: 'GET' })
+      logger.error('[API/RegistroEmision/Exportar] Error GET:', error instanceof Error ? error : undefined, { module: 'registro-emision/exportar', action: 'GET', userId: ctx.userId });
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al exportar certificado de emisión',
+        metadata: { module: 'registro-emision/exportar', action: 'GET' }
+      });
       return apiServerError()
     }
   }

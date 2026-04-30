@@ -13,28 +13,24 @@
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { 
-  Settings, 
-  Zap, 
-  Shield, 
-  Activity, 
-  Database, 
-  Users, 
-  BarChart3, 
+import React, { useState } from 'react'
+import {
+  Settings,
+  Zap,
+  Shield,
+  Activity,
+  Database,
+  Users,
+  BarChart3,
   Bell,
   Rocket,
   Brain,
   Sparkles,
   CheckCircle,
-  AlertTriangle,
-  Clock
+  AlertTriangle
 } from 'lucide-react'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import { ContinuousImprovementModule } from './continuous-improvement-module'
 
 interface SystemModule {
@@ -57,119 +53,121 @@ interface SystemAlert {
   module: string
 }
 
+const mockAlerts: SystemAlert[] = [
+  {
+    id: '1',
+    type: 'success',
+    title: 'Mejora Continua Disponible',
+    message: 'Se ha generado una nueva mejora de rendimiento lista para testing',
+    timestamp: new Date(),
+    module: 'continuous-improvement'
+  },
+  {
+    id: '2',
+    type: 'info',
+    title: 'Sistema Operativo',
+    message: 'Todos los módulos funcionando con consciousness level óptimo',
+    timestamp: new Date(Date.now() - 300000),
+    module: 'system'
+  }
+]
+
+const systemModules: SystemModule[] = [
+  {
+    id: 'continuous-improvement',
+    name: 'Mejora Continua',
+    description: 'Sistema de mejora continua automatizada con staging',
+    status: 'active',
+    icon: <Brain style={{ width: '20px', height: '20px', color: N.accent }} />,
+    lastUpdate: '2025-01-08 14:30:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.8
+  },
+  {
+    id: 'performance',
+    name: 'Optimización de Rendimiento',
+    description: 'Quantum-enhanced performance optimization',
+    status: 'active',
+    icon: <Zap style={{ width: '20px', height: '20px', color: N.warning }} />,
+    lastUpdate: '2025-01-08 12:15:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.5
+  },
+  {
+    id: 'security',
+    name: 'Seguridad Pentagon++',
+    description: 'Sistema de seguridad quantum-grade',
+    status: 'active',
+    icon: <Shield style={{ width: '20px', height: '20px', color: N.success }} />,
+    lastUpdate: '2025-01-08 11:45:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.9
+  },
+  {
+    id: 'monitoring',
+    name: 'Monitoreo en Tiempo Real',
+    description: 'Consciousness-level system monitoring',
+    status: 'active',
+    icon: <Activity style={{ width: '20px', height: '20px', color: N.accent }} />,
+    lastUpdate: '2025-01-08 13:20:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.7
+  },
+  {
+    id: 'database',
+    name: 'Base de Datos Quantum',
+    description: 'Quantum-enhanced database operations',
+    status: 'active',
+    icon: <Database style={{ width: '20px', height: '20px', color: N.dark }} />,
+    lastUpdate: '2025-01-08 10:30:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.6
+  },
+  {
+    id: 'users',
+    name: 'Gestión de Usuarios',
+    description: 'Advanced user management system',
+    status: 'active',
+    icon: <Users style={{ width: '20px', height: '20px', color: N.text }} />,
+    lastUpdate: '2025-01-08 09:15:00',
+    version: '2040.5.0',
+    consciousnessLevel: 99.4
+  }
+]
+
+const mockAnalytics = [
+  { label: 'Uptime', value: '99.9%', color: N.dark },
+  { label: 'Response Time', value: '47ms', color: N.accent },
+  { label: 'Mejoras Aplicadas', value: '12', color: N.success }
+]
+
 export function MainCommandCenter() {
   const [activeModule, setActiveModule] = useState<string>('overview')
-  const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([])
+  const [systemAlerts] = useState<SystemAlert[]>(mockAlerts)
   const [showContinuousImprovement, setShowContinuousImprovement] = useState(false)
-
-  const systemModules: SystemModule[] = [
-    {
-      id: 'continuous-improvement',
-      name: 'Mejora Continua',
-      description: 'Sistema de mejora continua automatizada con staging',
-      status: 'active',
-      icon: <Brain className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 14:30:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.8
-    },
-    {
-      id: 'performance',
-      name: 'Optimización de Rendimiento',
-      description: 'Quantum-enhanced performance optimization',
-      status: 'active',
-      icon: <Zap className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 12:15:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.5
-    },
-    {
-      id: 'security',
-      name: 'Seguridad Pentagon++',
-      description: 'Sistema de seguridad quantum-grade',
-      status: 'active',
-      icon: <Shield className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 11:45:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.9
-    },
-    {
-      id: 'monitoring',
-      name: 'Monitoreo en Tiempo Real',
-      description: 'Consciousness-level system monitoring',
-      status: 'active',
-      icon: <Activity className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 13:20:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.7
-    },
-    {
-      id: 'database',
-      name: 'Base de Datos Quantum',
-      description: 'Quantum-enhanced database operations',
-      status: 'active',
-      icon: <Database className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 10:30:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.6
-    },
-    {
-      id: 'users',
-      name: 'Gestión de Usuarios',
-      description: 'Advanced user management system',
-      status: 'active',
-      icon: <Users className="h-5 w-5" />,
-      lastUpdate: '2025-01-08 09:15:00',
-      version: '2040.5.0',
-      consciousnessLevel: 99.4
-    }
-  ]
-
-  useEffect(() => {
-    // Simular alertas del sistema
-    const mockAlerts: SystemAlert[] = [
-      {
-        id: '1',
-        type: 'success',
-        title: 'Mejora Continua Disponible',
-        message: 'Se ha generado una nueva mejora de rendimiento lista para testing',
-        timestamp: new Date(),
-        module: 'continuous-improvement'
-      },
-      {
-        id: '2',
-        type: 'info',
-        title: 'Sistema Operativo',
-        message: 'Todos los módulos funcionando con consciousness level óptimo',
-        timestamp: new Date(Date.now() - 300000),
-        module: 'system'
-      }
-    ]
-    setSystemAlerts(mockAlerts)
-  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500'
-      case 'inactive': return 'bg-gray-500'
-      case 'maintenance': return 'bg-yellow-500'
-      case 'updating': return 'bg-blue-500'
-      default: return 'bg-gray-500'
+      case 'active': return N.success
+      case 'inactive': return N.textSub
+      case 'maintenance': return N.warning
+      case 'updating': return N.accent
+      default: return N.textSub
     }
   }
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />
-      case 'error': return <AlertTriangle className="h-4 w-4 text-red-500" />
-      default: return <Bell className="h-4 w-4 text-blue-500" />
+      case 'success': return <CheckCircle style={{ width: '16px', height: '16px', color: N.success }} />
+      case 'warning': return <AlertTriangle style={{ width: '16px', height: '16px', color: N.warning }} />
+      case 'error': return <AlertTriangle style={{ width: '16px', height: '16px', color: N.danger }} />
+      default: return <Bell style={{ width: '16px', height: '16px', color: N.accent }} />
     }
   }
 
   if (showContinuousImprovement) {
     return (
-      <ContinuousImprovementModule 
+      <ContinuousImprovementModule
         onBack={() => setShowContinuousImprovement(false)}
       />
     )
@@ -178,7 +176,7 @@ export function MainCommandCenter() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)',
+      background: `linear-gradient(135deg, ${N.dark} 0%, ${N.dark}50 50%, ${N.dark} 100%)`,
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -186,10 +184,9 @@ export function MainCommandCenter() {
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%)',
-        animation: 'pulse 4s ease-in-out 3'
+        background: `radial-gradient(circle at 20% 20%, ${N.accent}20 0%, transparent 50%), radial-gradient(circle at 80% 80%, ${N.dark}50 0%, transparent 50%)`
       }} />
-      
+
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -206,7 +203,7 @@ export function MainCommandCenter() {
             <h1 style={{
               fontSize: '4rem',
               fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
+              background: `linear-gradient(45deg, ${N.accent}, ${N.dark}50, ${N.warning})`,
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
@@ -214,19 +211,18 @@ export function MainCommandCenter() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '16px',
-              letterSpacing: '0.1em',
-              textShadow: '0 0 30px rgba(59, 130, 246, 0.5)'
+              letterSpacing: '0.1em'
             }}>
-              <Sparkles style={{ width: '48px', height: '48px', color: '#3b82f6' }} />
+              <Sparkles style={{ width: '48px', height: '48px', color: N.accent }} />
               SILEXAR PULSE QUANTUM
-              <Sparkles style={{ width: '48px', height: '48px', color: '#8b5cf6' }} />
+              <Sparkles style={{ width: '48px', height: '48px', color: N.dark }} />
             </h1>
           </div>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <p style={{
               fontSize: '1.5rem',
-              color: 'rgba(255, 255, 255, 0.9)',
+              color: N.textSub,
               fontWeight: '500',
               letterSpacing: '0.05em'
             }}>
@@ -234,49 +230,46 @@ export function MainCommandCenter() {
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px' }}>
               <div style={{
-                background: 'rgba(59, 130, 246, 0.2)',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
+                background: `${N.accent}30`,
+                border: `1px solid ${N.accent}50`,
                 borderRadius: '20px',
                 padding: '8px 16px',
-                color: 'white',
+                color: N.text,
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(10px)'
+                gap: '8px'
               }}>
                 <Brain style={{ width: '16px', height: '16px' }} />
                 Consciousness Level: 99.9%
               </div>
               <div style={{
-                background: 'rgba(139, 92, 246, 0.2)',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: `${N.dark}50`,
+                border: `1px solid ${N.dark}70`,
                 borderRadius: '20px',
                 padding: '8px 16px',
-                color: 'white',
+                color: N.text,
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(10px)'
+                gap: '8px'
               }}>
                 <Zap style={{ width: '16px', height: '16px' }} />
                 Quantum Enhanced
               </div>
               <div style={{
-                background: 'rgba(34, 197, 94, 0.2)',
-                border: '1px solid rgba(34, 197, 94, 0.3)',
+                background: `${N.success}30`,
+                border: `1px solid ${N.success}50`,
                 borderRadius: '20px',
                 padding: '8px 16px',
-                color: 'white',
+                color: N.text,
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(10px)'
+                gap: '8px'
               }}>
                 <Shield style={{ width: '16px', height: '16px' }} />
                 Pentagon++ Security
@@ -289,141 +282,86 @@ export function MainCommandCenter() {
         {systemAlerts.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {systemAlerts.map((alert) => (
-              <div key={alert.id} style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
-                borderRadius: '12px',
+              <NeuCard key={alert.id} style={{
+                boxShadow: getShadow(),
                 padding: '20px',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                background: N.base
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <div style={{
                     padding: '12px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))'
+                    background: `${N.accent}30`
                   }}>
                     {getAlertIcon(alert.type)}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <h3 style={{ color: 'white', fontWeight: '600', fontSize: '1.125rem', margin: 0 }}>
+                    <h3 style={{ color: N.text, fontWeight: '600', fontSize: '1.125rem', margin: 0 }}>
                       {alert.title}
                     </h3>
-                    <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginTop: '4px', fontSize: '1rem', margin: '4px 0 0 0' }}>
+                    <p style={{ color: N.textSub, marginTop: '4px', fontSize: '1rem', margin: '4px 0 0 0' }}>
                       {alert.message}
                     </p>
                   </div>
                   <div style={{
                     fontSize: '0.75rem',
-                    color: 'rgba(255, 255, 255, 0.6)',
-                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: N.textSub,
+                    background: `${N.dark}30`,
                     padding: '4px 12px',
                     borderRadius: '20px'
                   }}>
                     {alert.timestamp.toLocaleTimeString()}
                   </div>
                 </div>
-              </div>
+              </NeuCard>
             ))}
           </div>
         )}
 
         <div style={{ width: '100%' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
+          <NeuCard style={{
+            boxShadow: getShadow(),
             padding: '8px',
-            gap: '4px'
+            background: N.base
           }}>
-            <button 
-              onClick={() => setActiveModule('overview')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                color: 'white',
-                fontWeight: '600',
-                background: activeModule === 'overview' ? 'linear-gradient(135deg, #3b82f6, #8b5cf6)' : 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontSize: '0.875rem'
-              }}
-            >
-              <BarChart3 style={{ width: '16px', height: '16px' }} />
-              Vista General
-            </button>
-            <button 
-              onClick={() => setActiveModule('modules')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                color: 'white',
-                fontWeight: '600',
-                background: activeModule === 'modules' ? 'linear-gradient(135deg, #8b5cf6, #22c55e)' : 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontSize: '0.875rem'
-              }}
-            >
-              <Settings style={{ width: '16px', height: '16px' }} />
-              Módulos
-            </button>
-            <button 
-              onClick={() => setActiveModule('analytics')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                color: 'white',
-                fontWeight: '600',
-                background: activeModule === 'analytics' ? 'linear-gradient(135deg, #22c55e, #3b82f6)' : 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontSize: '0.875rem'
-              }}
-            >
-              <Activity style={{ width: '16px', height: '16px' }} />
-              Analíticas
-            </button>
-            <button 
-              onClick={() => setActiveModule('settings')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                color: 'white',
-                fontWeight: '600',
-                background: activeModule === 'settings' ? 'linear-gradient(135deg, #3b82f6, #22c55e)' : 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontSize: '0.875rem'
-              }}
-            >
-              <Settings style={{ width: '16px', height: '16px' }} />
-              Configuración
-            </button>
-          </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '4px'
+            }}>
+              {[
+                { id: 'overview', label: 'Vista General', icon: <BarChart3 style={{ width: '16px', height: '16px' }} /> },
+                { id: 'modules', label: 'Módulos', icon: <Settings style={{ width: '16px', height: '16px' }} /> },
+                { id: 'analytics', label: 'Analíticas', icon: <Activity style={{ width: '16px', height: '16px' }} /> },
+                { id: 'settings', label: 'Configuración', icon: <Settings style={{ width: '16px', height: '16px' }} /> }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveModule(tab.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    color: activeModule === tab.id ? '#fff' : N.text,
+                    fontWeight: '600',
+                    background: activeModule === tab.id
+                      ? `linear-gradient(135deg, ${N.accent}, ${N.dark}50)`
+                      : 'transparent',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </NeuCard>
 
           {activeModule === 'overview' && (
             <div style={{
@@ -432,40 +370,27 @@ export function MainCommandCenter() {
               gap: '32px',
               marginTop: '32px'
             }}>
-              {systemModules.map((module, index) => (
-                <div key={module.id} style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '16px',
+              {systemModules.map((module) => (
+                <NeuCard key={module.id} style={{
+                  boxShadow: getShadow(),
                   padding: '24px',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                  background: N.base,
                   transition: 'all 0.3s ease',
                   cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(59, 130, 246, 0.2)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)'
-                }}
-                >
+                }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {/* Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'between', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{
                           padding: '12px',
                           borderRadius: '12px',
-                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))',
-                          backdropFilter: 'blur(10px)'
+                          background: `${N.accent}30`
                         }}>
                           {module.icon}
                         </div>
                         <div>
-                          <h3 style={{ color: 'white', fontSize: '1.125rem', fontWeight: 'bold', margin: 0 }}>
+                          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 'bold', margin: 0 }}>
                             {module.name}
                           </h3>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
@@ -473,53 +398,52 @@ export function MainCommandCenter() {
                               width: '8px',
                               height: '8px',
                               borderRadius: '50%',
-                              backgroundColor: module.status === 'active' ? '#22c55e' : '#6b7280',
-                              animation: 'pulse 2s 3'
+                              backgroundColor: module.status === 'active' ? N.success : N.textSub
                             }} />
-                            <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            <span style={{ fontSize: '0.75rem', color: N.textSub, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                               {module.status}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Description */}
-                    <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.875rem', lineHeight: '1.5', margin: 0 }}>
+                    <p style={{ color: N.textSub, fontSize: '0.875rem', lineHeight: '1.5', margin: 0 }}>
                       {module.description}
                     </p>
-                    
+
                     {/* Consciousness Level */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Consciousness Level</span>
-                        <span style={{ color: 'white', fontWeight: '600' }}>{module.consciousnessLevel}%</span>
+                        <span style={{ color: N.textSub }}>Consciousness Level</span>
+                        <span style={{ color: N.text, fontWeight: '600' }}>{module.consciousnessLevel}%</span>
                       </div>
                       <div style={{
                         width: '100%',
                         height: '8px',
-                        background: 'rgba(255, 255, 255, 0.1)',
+                        background: `${N.dark}30`,
                         borderRadius: '4px',
                         overflow: 'hidden'
                       }}>
                         <div style={{
                           height: '100%',
-                          background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+                          background: `linear-gradient(90deg, ${N.accent}, ${N.dark}50)`,
                           borderRadius: '4px',
                           width: `${module.consciousnessLevel}%`,
                           transition: 'width 1s ease-out'
                         }} />
                       </div>
                     </div>
-                    
+
                     {/* Module Info */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '0.875rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Versión</span>
+                        <span style={{ color: N.textSub }}>Versión</span>
                         <div style={{
-                          color: 'white',
+                          color: N.text,
                           fontFamily: 'monospace',
-                          background: 'rgba(255, 255, 255, 0.1)',
+                          background: `${N.dark}30`,
                           padding: '4px 8px',
                           borderRadius: '4px',
                           fontSize: '0.75rem'
@@ -528,69 +452,44 @@ export function MainCommandCenter() {
                         </div>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Actualizado</span>
-                        <div style={{ color: 'white', fontSize: '0.75rem' }}>
+                        <span style={{ color: N.textSub }}>Actualizado</span>
+                        <div style={{ color: N.text, fontSize: '0.75rem' }}>
                           {new Date(module.lastUpdate).toLocaleTimeString()}
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Action Button */}
                     {module.id === 'continuous-improvement' && (
-                      <button 
-                        onClick={() => setShowContinuousImprovement(true)}
-                        style={{
-                          width: '100%',
-                          height: '48px',
-                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: 'white',
-                          fontSize: '1rem',
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '12px',
-                          transition: 'all 0.3s ease',
-                          marginTop: '16px',
-                          letterSpacing: '0.05em'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)'
-                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.4)'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)'
-                          e.currentTarget.style.boxShadow = 'none'
-                        }}
-                      >
-                        <Rocket style={{ width: '20px', height: '20px' }} />
-                        Acceder al Sistema
-                        <Sparkles style={{ width: '16px', height: '16px' }} />
-                      </button>
+                      <div style={{ width: '100%', marginTop: '16px' }}>
+                        <NeuButton
+                          variant="primary"
+                          onClick={() => setShowContinuousImprovement(true)}
+                        >
+                          <Rocket style={{ width: '20px', height: '20px' }} />
+                          Acceder al Sistema
+                          <Sparkles style={{ width: '16px', height: '16px' }} />
+                        </NeuButton>
+                      </div>
                     )}
                   </div>
-                </div>
+                </NeuCard>
               ))}
             </div>
           )}
 
           {activeModule === 'modules' && (
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '16px',
+            <NeuCard style={{
+              boxShadow: getShadow(),
               padding: '24px',
-              backdropFilter: 'blur(10px)',
+              background: N.base,
               marginTop: '32px'
             }}>
               <div style={{ marginBottom: '24px' }}>
-                <h2 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0' }}>
+                <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0' }}>
                   Módulos del Sistema
                 </h2>
-                <p style={{ color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                <p style={{ color: N.textSub, margin: 0 }}>
                   Gestión y control de todos los módulos TIER 0
                 </p>
               </div>
@@ -602,22 +501,22 @@ export function MainCommandCenter() {
                     justifyContent: 'space-between',
                     padding: '16px',
                     borderRadius: '8px',
-                    background: 'rgba(139, 92, 246, 0.1)',
-                    border: '1px solid rgba(139, 92, 246, 0.2)'
+                    background: `${N.dark}20`,
+                    border: `1px solid ${N.dark}30`
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {module.icon}
                       <div>
-                        <h3 style={{ color: 'white', fontWeight: '500', margin: 0 }}>{module.name}</h3>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem', margin: '4px 0 0 0' }}>
+                        <h3 style={{ color: N.text, fontWeight: '500', margin: 0 }}>{module.name}</h3>
+                        <p style={{ color: N.textSub, fontSize: '0.875rem', margin: '4px 0 0 0' }}>
                           {module.description}
                         </p>
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: N.text,
+                        border: `1px solid ${N.dark}50`,
                         borderRadius: '20px',
                         padding: '4px 12px',
                         fontSize: '0.75rem'
@@ -625,106 +524,77 @@ export function MainCommandCenter() {
                         {module.status}
                       </div>
                       {module.id === 'continuous-improvement' && (
-                        <button 
-                          onClick={() => setShowContinuousImprovement(true)}
-                          style={{
-                            background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
-                            border: 'none',
-                            borderRadius: '6px',
-                            color: 'white',
-                            padding: '8px 16px',
-                            fontSize: '0.875rem',
-                            fontWeight: '500',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Abrir
-                        </button>
+                        <div>
+                          <NeuButton
+                            variant="secondary"
+                            onClick={() => setShowContinuousImprovement(true)}
+                          >
+                            Abrir
+                          </NeuButton>
+                        </div>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </NeuCard>
           )}
 
           {activeModule === 'analytics' && (
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '16px',
+            <NeuCard style={{
+              boxShadow: getShadow(),
               padding: '24px',
-              backdropFilter: 'blur(10px)',
+              background: N.base,
               marginTop: '32px'
             }}>
               <div style={{ marginBottom: '24px' }}>
-                <h2 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <BarChart3 style={{ width: '20px', height: '20px' }} />
                   Analíticas del Sistema
                 </h2>
-                <p style={{ color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                <p style={{ color: N.textSub, margin: 0 }}>
                   Métricas y estadísticas en tiempo real
                 </p>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                <div style={{
-                  textAlign: 'center',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  background: 'rgba(139, 92, 246, 0.1)',
-                  border: '1px solid rgba(139, 92, 246, 0.2)'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>99.9%</div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Uptime</div>
-                </div>
-                <div style={{
-                  textAlign: 'center',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  border: '1px solid rgba(59, 130, 246, 0.2)'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>47ms</div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Response Time</div>
-                </div>
-                <div style={{
-                  textAlign: 'center',
-                  padding: '24px',
-                  borderRadius: '8px',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.2)'
-                }}>
-                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>12</div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.875rem' }}>Mejoras Aplicadas</div>
-                </div>
+                {mockAnalytics.map((item, idx) => (
+                  <div key={idx} style={{
+                    textAlign: 'center',
+                    padding: '24px',
+                    borderRadius: '12px',
+                    background: `${item.color}15`,
+                    border: `1px solid ${item.color}30`
+                  }}>
+                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: N.text }}>{item.value}</div>
+                    <div style={{ color: N.textSub, fontSize: '0.875rem' }}>{item.label}</div>
+                  </div>
+                ))}
               </div>
-            </div>
+            </NeuCard>
           )}
 
           {activeModule === 'settings' && (
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '16px',
+            <NeuCard style={{
+              boxShadow: getShadow(),
               padding: '24px',
-              backdropFilter: 'blur(10px)',
+              background: N.base,
               marginTop: '32px'
             }}>
               <div style={{ marginBottom: '24px' }}>
-                <h2 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Settings style={{ width: '20px', height: '20px' }} />
                   Configuración del Sistema
                 </h2>
-                <p style={{ color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                <p style={{ color: N.textSub, margin: 0 }}>
                   Configuración avanzada TIER 0
                 </p>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'white' }}>Quantum Enhancement</span>
+                  <span style={{ color: N.text }}>Quantum Enhancement</span>
                   <div style={{
-                    background: '#22c55e',
-                    color: 'white',
+                    background: N.success,
+                    color: '#fff',
                     padding: '4px 12px',
                     borderRadius: '20px',
                     fontSize: '0.75rem',
@@ -734,10 +604,10 @@ export function MainCommandCenter() {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'white' }}>Consciousness Level</span>
+                  <span style={{ color: N.text }}>Consciousness Level</span>
                   <div style={{
-                    background: '#8b5cf6',
-                    color: 'white',
+                    background: N.dark,
+                    color: '#fff',
                     padding: '4px 12px',
                     borderRadius: '20px',
                     fontSize: '0.75rem',
@@ -747,10 +617,10 @@ export function MainCommandCenter() {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'white' }}>Pentagon++ Security</span>
+                  <span style={{ color: N.text }}>Pentagon++ Security</span>
                   <div style={{
-                    background: '#22c55e',
-                    color: 'white',
+                    background: N.success,
+                    color: '#fff',
                     padding: '4px 12px',
                     borderRadius: '20px',
                     fontSize: '0.75rem',
@@ -760,7 +630,7 @@ export function MainCommandCenter() {
                   </div>
                 </div>
               </div>
-            </div>
+            </NeuCard>
           )}
         </div>
       </div>

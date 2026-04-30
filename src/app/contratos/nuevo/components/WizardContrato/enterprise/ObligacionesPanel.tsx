@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📋 SILEXAR PULSE - Panel de Obligaciones TIER 0
  *
  * @description Gestión visual de obligaciones contractuales
@@ -57,38 +57,38 @@ const ESTADO_CONFIG: Record<EstadoObligacion, {
     label: "Pendiente",
   },
   en_progreso: {
-    color: "text-blue-500",
-    bgColor: "bg-blue-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     icon: RefreshCw,
     label: "En Progreso",
   },
   completada: {
-    color: "text-emerald-500",
-    bgColor: "bg-emerald-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     icon: CheckCircle2,
     label: "Completada",
   },
   vencida: {
-    color: "text-red-500",
-    bgColor: "bg-red-100",
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
     icon: AlertTriangle,
     label: "Vencida",
   },
   incumplida: {
-    color: "text-red-700",
-    bgColor: "bg-red-200",
+    color: "text-[#9aa3b8]",
+    bgColor: "bg-[#dfeaff]",
     icon: X,
     label: "Incumplida",
   },
   dispensada: {
-    color: "text-purple-500",
-    bgColor: "bg-purple-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     icon: CheckCircle2,
     label: "Dispensada",
   },
   en_disputa: {
-    color: "text-amber-500",
-    bgColor: "bg-amber-100",
+    color: "text-[#6888ff]",
+    bgColor: "bg-[#6888ff]/10",
     icon: AlertTriangle,
     label: "En Disputa",
   },
@@ -130,7 +130,7 @@ const ResumenCard: React.FC<{
       {trend && (
         <span
           className={`text-xs font-medium ${
-            trend.tipo === "up" ? "text-emerald-600" : "text-red-600"
+            trend.tipo === "up" ? "text-[#6888ff]" : "text-[#9aa3b8]"
           }`}
         >
           {trend.tipo === "up" ? "+" : ""}
@@ -177,9 +177,9 @@ const ObligacionCard: React.FC<{
         p-4 rounded-xl border-2 transition-all cursor-pointer
         ${
         obligacion.estado === "vencida" || obligacion.estado === "incumplida"
-          ? "border-red-200 bg-red-50"
+          ? "border-[#bec8de] bg-[#dfeaff]"
           : urgencia === "alta"
-          ? "border-amber-200 bg-amber-50"
+          ? "border-[#bec8de] bg-[#6888ff]/5"
           : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#6888ff30] hover:bg-[#6888ff15]/30"
       }
       `}
@@ -199,7 +199,7 @@ const ObligacionCard: React.FC<{
               {obligacion.titulo}
             </h4>
             {obligacion.extraidaPorIA && (
-              <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-600 text-[10px] font-medium flex items-center gap-0.5">
+              <span className="px-1.5 py-0.5 rounded bg-[#6888ff]/10 text-[#6888ff] text-[10px] font-medium flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" />
                 IA
               </span>
@@ -222,7 +222,7 @@ const ObligacionCard: React.FC<{
                 : "Cliente"}
             </span>
             {obligacion.penalizacion && (
-              <span className="flex items-center gap-1 text-red-500">
+              <span className="flex items-center gap-1 text-[#9aa3b8]">
                 <AlertTriangle className="w-3 h-3" />
                 Penalización
               </span>
@@ -248,9 +248,9 @@ const ObligacionCard: React.FC<{
               text-xs font-medium
               ${
                 diasRestantes <= 0
-                  ? "text-red-600"
+                  ? "text-[#9aa3b8]"
                   : diasRestantes <= 3
-                  ? "text-amber-600"
+                  ? "text-[#6888ff]"
                   : "text-[#9aa3b8]"
               }
             `}
@@ -268,7 +268,7 @@ const ObligacionCard: React.FC<{
                 e.stopPropagation();
                 onCompletarClick();
               }}
-              className="px-3 py-1 rounded-lg bg-emerald-500 text-white text-xs font-medium hover:bg-emerald-600 transition-colors flex items-center gap-1"
+              className="px-3 py-1 rounded-lg bg-[#6888ff]/50 text-white text-xs font-medium hover:bg-[#6888ff] transition-colors flex items-center gap-1"
             >
               <CheckCircle2 className="w-3 h-3" />
               Completar
@@ -287,7 +287,7 @@ const ObligacionCard: React.FC<{
           </div>
           <div className="h-1.5 bg-[#dfeaff] rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-indigo-500 rounded-full"
+              className="h-full bg-[#6888ff]/50 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${obligacion.porcentajeCompletado}%` }}
             />
@@ -309,7 +309,7 @@ const FiltroChip: React.FC<{
       px-3 py-1.5 rounded-lg text-sm font-medium transition-all
       ${
       activo
-        ? "bg-indigo-500 text-white"
+        ? "bg-[#6888ff]/50 text-white"
         : "bg-[#dfeaff] text-[#69738c] hover:bg-[#dfeaff]"
     }
     `}
@@ -513,40 +513,40 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
             titulo="Pendientes"
             valor={resumenData.porEstado.pendiente}
             icono={Clock}
-            color="bg-blue-50 text-blue-700"
+            color="bg-[#6888ff]/5 text-[#6888ff]"
           />
           <ResumenCard
             titulo="Completadas"
             valor={resumenData.porEstado.completada}
             icono={CheckCircle2}
-            color="bg-emerald-50 text-emerald-700"
+            color="bg-[#6888ff]/5 text-[#6888ff]"
           />
           <ResumenCard
             titulo="Vencidas"
             valor={resumenData.porEstado.vencida}
             icono={AlertTriangle}
-            color="bg-red-50 text-red-700"
+            color="bg-[#dfeaff] text-[#9aa3b8]"
           />
           <ResumenCard
             titulo="Cumplimiento"
             valor={Math.round(resumenData.cumplimientoPorcentaje)}
             icono={TrendingUp}
-            color="bg-purple-50 text-purple-700"
+            color="bg-[#6888ff]/5 text-[#6888ff]"
             trend={{ valor: 5, tipo: "up" }}
           />
         </div>
 
         {/* Alertas críticas */}
         {resumenData.obligacionesCriticas.length > 0 && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
+          <div className="mb-6 p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de]">
             <div className="flex items-center gap-2 mb-2">
-              <Bell className="w-5 h-5 text-red-500" />
-              <span className="font-semibold text-red-700">
+              <Bell className="w-5 h-5 text-[#9aa3b8]" />
+              <span className="font-semibold text-[#9aa3b8]">
                 {resumenData.obligacionesCriticas.length}{" "}
                 obligaciones requieren atención urgente
               </span>
             </div>
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-[#9aa3b8]">
               Hay obligaciones vencidas o próximas a vencer que necesitan acción
               inmediata.
             </p>
@@ -610,7 +610,7 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
                   animate={{ opacity: 1 }}
                   className="p-12 text-center"
                 >
-                  <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                  <CheckCircle2 className="w-12 h-12 text-[#6888ff] mx-auto mb-3" />
                   <p className="text-[#69738c]">
                     No hay obligaciones que mostrar
                   </p>
@@ -653,7 +653,7 @@ export const ObligacionesPanel: React.FC<ObligacionesPanelProps> = ({
                   onClick={() => {
                     setMostrarCrear(false);
                   }}
-                  className="flex-1 px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 rounded-lg bg-[#6888ff]/50 text-white hover:bg-[#6888ff] flex items-center justify-center gap-2"
                 >
                   <Sparkles className="w-4 h-4" />
                   Extraer con IA

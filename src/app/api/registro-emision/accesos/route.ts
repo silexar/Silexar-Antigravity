@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { withApiRoute } from '@/lib/api/with-api-route';
 import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
 import { logger } from '@/lib/observability';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
 
 import {
   DrizzleLinkTemporalRepository,
@@ -64,7 +65,12 @@ export const POST = withApiRoute(
 
       return apiSuccess(result, 201, { message: 'Acceso seguro creado' }) as unknown as NextResponse;
     } catch (error) {
-      logger.error('Error creando acceso seguro', error instanceof Error ? error : undefined, { module: 'registro-emision', action: 'POST_ACCESO' });
+      logger.error('Error creando acceso seguro', error instanceof Error ? error : undefined, { module: 'registro-emision', action: 'POST_ACCESO', userId: ctx.userId });
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al crear acceso seguro',
+        metadata: { module: 'registro-emision', action: 'POST_ACCESO' }
+      });
       return apiServerError() as unknown as NextResponse;
     }
   }

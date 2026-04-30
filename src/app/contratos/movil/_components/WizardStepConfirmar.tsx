@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ? MOBILE WIZARD � Paso 3: Confirmar y Enviar
  * 
  * Pantalla final del wizard express. Muestra un resumen
@@ -62,7 +62,7 @@ export function WizardStepConfirmar({
   if (confirmacion) {
     return (
       <div className="flex flex-col items-center justify-center py-8 space-y-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-2xl shadow-emerald-200">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center shadow-2xl shadow-emerald-200">
           <PartyPopper className="w-10 h-10 text-white" />
         </div>
 
@@ -77,24 +77,24 @@ export function WizardStepConfirmar({
           <div className="flex items-center justify-center gap-2 mt-1">
             <p className="text-2xl font-mono font-black text-[#6888ff]">{confirmacion.numero}</p>
             <button onClick={copyNumero} className="p-1.5 rounded-lg bg-[#dfeaff] active:scale-90">
-              {copiedNum ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-[#6888ff]" />}
+              {copiedNum ? <Check className="w-4 h-4 text-[#6888ff]" /> : <Copy className="w-4 h-4 text-[#6888ff]" />}
             </button>
           </div>
         </div>
 
         {/* ESTADO */}
         <div className={`w-full p-3 rounded-xl flex items-center gap-3 ${
-          confirmacion.estado === 'activo' ? 'bg-emerald-50 border border-[#bec8de30]' :
-          'bg-amber-50 border border-[#bec8de30]'
+          confirmacion.estado === 'activo' ? 'bg-[#6888ff]/5 border border-[#bec8de30]' :
+          'bg-[#6888ff]/5 border border-[#bec8de30]'
         }`}>
           {confirmacion.estado === 'activo' ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
           ) : (
-            <Shield className="w-5 h-5 text-amber-600" />
+            <Shield className="w-5 h-5 text-[#6888ff]" />
           )}
           <div>
             <p className={`text-sm font-bold ${
-              confirmacion.estado === 'activo' ? 'text-emerald-700' : 'text-amber-700'
+              confirmacion.estado === 'activo' ? 'text-[#6888ff]' : 'text-[#6888ff]'
             }`}>
               {confirmacion.estado === 'activo' ? 'Contrato activo' : 'Pendiente de aprobaci�n'}
             </p>
@@ -139,9 +139,9 @@ export function WizardStepConfirmar({
       {/* RESUMEN COMPACTO */}
       <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] overflow-hidden shadow-sm divide-y divide-[#bec8de30]">
         <SummaryRow icon={<Building2 className="w-4 h-4 text-[#6888ff]" />} label="Cliente" value={contrato.cliente.nombre} />
-        <SummaryRow icon={<DollarSign className="w-4 h-4 text-emerald-500" />} label="Valor total" value={formatMonto(totalLineas || contrato.valor)} bold />
-        <SummaryRow icon={<Calendar className="w-4 h-4 text-blue-500" />} label="Per�odo" value={`${formatFecha(contrato.fechaInicio)} ? ${formatFecha(contrato.fechaFin)}`} />
-        <SummaryRow icon={<FileText className="w-4 h-4 text-purple-500" />} label="Facturaci�n" value={`${contrato.facturacion.modalidad} � ${contrato.terminosPago} d�as`} />
+        <SummaryRow icon={<DollarSign className="w-4 h-4 text-[#6888ff]" />} label="Valor total" value={formatMonto(totalLineas || contrato.valor)} bold />
+        <SummaryRow icon={<Calendar className="w-4 h-4 text-[#6888ff]" />} label="Per�odo" value={`${formatFecha(contrato.fechaInicio)} ? ${formatFecha(contrato.fechaFin)}`} />
+        <SummaryRow icon={<FileText className="w-4 h-4 text-[#6888ff]" />} label="Facturaci�n" value={`${contrato.facturacion.modalidad} � ${contrato.terminosPago} d�as`} />
       </div>
 
       {/* L�NEAS DE PAUTA */}
@@ -156,23 +156,23 @@ export function WizardStepConfirmar({
 
       {/* ALERTAS */}
       {hayConflictos && (
-        <div className="p-3 rounded-xl bg-amber-50 border border-[#bec8de30] flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+        <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30] flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-[#6888ff] mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs font-bold text-amber-700">Conflictos de inventario</p>
-            <p className="text-[10px] text-amber-600">Algunas l�neas tienen disponibilidad limitada. El contrato se crear� pero puede requerir ajustes.</p>
+            <p className="text-xs font-bold text-[#6888ff]">Conflictos de inventario</p>
+            <p className="text-[10px] text-[#6888ff]">Algunas l�neas tienen disponibilidad limitada. El contrato se crear� pero puede requerir ajustes.</p>
           </div>
         </div>
       )}
 
       {/* APROBACI�N */}
       {contrato.aprobacionRequerida && (
-        <div className="p-3 rounded-xl bg-purple-50 border border-[#bec8de30] flex items-start gap-2">
-          <Shield className="w-4 h-4 text-purple-500 mt-0.5 shrink-0" />
+        <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30] flex items-start gap-2">
+          <Shield className="w-4 h-4 text-[#6888ff] mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs font-bold text-purple-700">Requiere aprobaci�n: {contrato.nivelAprobacion}</p>
+            <p className="text-xs font-bold text-[#6888ff]">Requiere aprobaci�n: {contrato.nivelAprobacion}</p>
             {contrato.motivoAprobacion && (
-              <p className="text-[10px] text-purple-500 mt-0.5">{contrato.motivoAprobacion}</p>
+              <p className="text-[10px] text-[#6888ff] mt-0.5">{contrato.motivoAprobacion}</p>
             )}
           </div>
         </div>
@@ -180,9 +180,9 @@ export function WizardStepConfirmar({
 
       {/* ERROR */}
       {error && (
-        <div className="p-3 rounded-xl bg-red-50 border border-[#bec8de30] flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-red-500" />
-          <p className="text-xs text-red-600 font-medium">{error}</p>
+        <div className="p-3 rounded-xl bg-[#dfeaff] border border-[#bec8de30] flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-[#9aa3b8]" />
+          <p className="text-xs text-[#9aa3b8] font-medium">{error}</p>
         </div>
       )}
 
@@ -226,7 +226,7 @@ function SummaryRow({ icon, label, value, bold }: {
     <div className="px-4 py-3 flex items-center gap-3">
       {icon}
       <span className="text-xs text-[#9aa3b8] w-20">{label}</span>
-      <span className={`text-sm flex-1 text-right ${bold ? 'font-black text-emerald-600' : 'font-bold text-[#69738c]'}`}>
+      <span className={`text-sm flex-1 text-right ${bold ? 'font-black text-[#6888ff]' : 'font-bold text-[#69738c]'}`}>
         {value}
       </span>
     </div>
@@ -248,7 +248,7 @@ function LineaResumen({ linea }: { linea: LineaPautaSugerida }) {
       <div className="text-right">
         <p className="text-xs font-bold text-[#69738c]">{formatMonto(linea.totalNeto)}</p>
         {!disponibilidadOk && (
-          <span className="text-[9px] text-amber-600 font-bold">Revisar</span>
+          <span className="text-[9px] text-[#6888ff] font-bold">Revisar</span>
         )}
       </div>
     </div>
@@ -282,9 +282,9 @@ function getCategoriaIcon(cat: LineaPautaSugerida['categoria']) {
 
 function getCategoriaColor(cat: LineaPautaSugerida['categoria']) {
   switch (cat) {
-    case 'Radio': return 'bg-gradient-to-br from-red-500 to-pink-500';
+    case 'Radio': return 'bg-gradient-to-br from-[#6888ff] to-pink-500';
     case 'Televisión': return 'bg-[#6888ff]';
-    case 'Digital': return 'bg-gradient-to-br from-emerald-500 to-teal-500';
-    case 'Prensa': return 'bg-gradient-to-br from-amber-500 to-orange-500';
+    case 'Digital': return 'bg-gradient-to-br from-[#6888ff] to-teal-500';
+    case 'Prensa': return 'bg-gradient-to-br from-[#6888ff] to-[#5572ee]';
   }
 }

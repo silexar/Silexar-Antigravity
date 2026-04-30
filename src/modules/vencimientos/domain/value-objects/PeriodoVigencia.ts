@@ -2,7 +2,7 @@
  * VALUE OBJECT: PERÍODO DE VIGENCIA - TIER 0 ENTERPRISE
  *
  * @description Fecha inicio/fin con validaciones, cálculo de días restantes,
- * detección de solapamiento y lógica de vencimiento.
+ * detección de solapamiento y lógica de vencimientos.
  *
  * @version 2025.3.0
  * @tier TIER_0_FORTUNE_10

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🤖 SILEXAR PULSE - Predictive Analytics Dashboard TIER 0
  * 
  * @description Dashboard de análisis predictivo con Cortex-Flow,
@@ -224,9 +224,9 @@ const MetricaCircular: React.FC<{
 
 const InsightCard: React.FC<{ insight: InsightAutomatico }> = ({ insight }) => {
   const config = {
-    positivo: { bg: 'rgba(34,197,94,0.08)', border: '#22c55e40', icon: <TrendingUp className="w-4 h-4" style={{ color: '#22c55e' }} />, color: '#22c55e' },
+    positivo: { bg: 'rgba(34,197,94,0.08)', border: '#6888ff40', icon: <TrendingUp className="w-4 h-4" style={{ color: '#6888ff' }} />, color: '#6888ff' },
     neutro: { bg: 'rgba(104,136,255,0.08)', border: `${N.accent}40`, icon: <Clock className="w-4 h-4" style={{ color: N.accent }} />, color: N.accent },
-    advertencia: { bg: 'rgba(245,158,11,0.08)', border: '#f59e0b40', icon: <AlertTriangle className="w-4 h-4" style={{ color: '#f59e0b' }} />, color: '#f59e0b' }
+    advertencia: { bg: 'rgba(245,158,11,0.08)', border: '#6888ff40', icon: <AlertTriangle className="w-4 h-4" style={{ color: '#6888ff' }} />, color: '#6888ff' }
   }[insight.tipo];
 
   return (
@@ -250,8 +250,8 @@ const InsightCard: React.FC<{ insight: InsightAutomatico }> = ({ insight }) => {
 
 const RecomendacionCard: React.FC<{ recomendacion: RecomendacionIA }> = ({ recomendacion }) => {
   const prioridadColor = {
-    alta: { bg: 'rgba(239,68,68,0.08)', text: '#ef4444' },
-    media: { bg: 'rgba(245,158,11,0.08)', text: '#f59e0b' },
+    alta: { bg: 'rgba(239,68,68,0.08)', text: '#9aa3b8' },
+    media: { bg: 'rgba(245,158,11,0.08)', text: '#6888ff' },
     baja: { bg: 'rgba(104,136,255,0.08)', text: N.accent }
   }[recomendacion.prioridad];
 
@@ -260,7 +260,7 @@ const RecomendacionCard: React.FC<{ recomendacion: RecomendacionIA }> = ({ recom
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-            <Lightbulb className="w-5 h-5" style={{ color: '#f59e0b' }} />
+            <Lightbulb className="w-5 h-5" style={{ color: '#6888ff' }} />
           </div>
           <span className="font-bold text-sm" style={{ color: N.text }}>{recomendacion.cliente}</span>
         </div>
@@ -271,7 +271,7 @@ const RecomendacionCard: React.FC<{ recomendacion: RecomendacionIA }> = ({ recom
       <p className="text-sm mb-2" style={{ color: N.text }}>{recomendacion.accion}</p>
       <div className="flex items-center justify-between text-sm">
         <span style={{ color: N.textSub }}>{recomendacion.razon}</span>
-        <span className="font-black" style={{ color: '#22c55e' }}>{recomendacion.impactoEstimado}</span>
+        <span className="font-black" style={{ color: '#6888ff' }}>{recomendacion.impactoEstimado}</span>
       </div>
     </div>
   );
@@ -279,8 +279,8 @@ const RecomendacionCard: React.FC<{ recomendacion: RecomendacionIA }> = ({ recom
 
 const AlertaCard: React.FC<{ alerta: AlertaCritica }> = ({ alerta }) => {
   const config = {
-    critica: { bg: 'rgba(239,68,68,0.08)', border: '#ef444440', icon: <AlertCircle className="w-5 h-5" style={{ color: '#ef4444' }} />, dot: '#ef4444' },
-    importante: { bg: 'rgba(245,158,11,0.08)', border: '#f59e0b40', icon: <AlertTriangle className="w-5 h-5" style={{ color: '#f59e0b' }} />, dot: '#f59e0b' },
+    critica: { bg: 'rgba(239,68,68,0.08)', border: '#9aa3b840', icon: <AlertCircle className="w-5 h-5" style={{ color: '#9aa3b8' }} />, dot: '#9aa3b8' },
+    importante: { bg: 'rgba(245,158,11,0.08)', border: '#6888ff40', icon: <AlertTriangle className="w-5 h-5" style={{ color: '#6888ff' }} />, dot: '#6888ff' },
     informativa: { bg: 'rgba(104,136,255,0.08)', border: `${N.accent}40`, icon: <Bell className="w-5 h-5" style={{ color: N.accent }} />, dot: N.accent }
   }[alerta.tipo];
 
@@ -292,7 +292,7 @@ const AlertaCard: React.FC<{ alerta: AlertaCritica }> = ({ alerta }) => {
           <div className="flex items-center gap-2">
             <p className="font-bold text-sm" style={{ color: N.text }}>{alerta.titulo}</p>
             {alerta.tiempoRestante && (
-              <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background: 'rgba(239,68,68,0.12)', color: '#ef4444' }}>
+              <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background: 'rgba(239,68,68,0.12)', color: '#9aa3b8' }}>
                 ⏰ {alerta.tiempoRestante}
               </span>
             )}
@@ -382,7 +382,7 @@ export default function PredictiveAnalyticsDashboard() {
           <div className="relative">
             <div className="flex items-center gap-2 mb-6">
               <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuSm }}>
-                <Sparkles className="w-6 h-6" style={{ color: '#f59e0b' }} />
+                <Sparkles className="w-6 h-6" style={{ color: '#6888ff' }} />
               </div>
               <h2 className="text-xl font-black" style={{ color: N.text }}>📈 PREDICCIONES MES ACTUAL</h2>
             </div>
@@ -393,7 +393,7 @@ export default function PredictiveAnalyticsDashboard() {
                 <MetricaCircular
                   valor={predicciones.probabilidadMeta}
                   label="Probabilidad Meta"
-                  color={predicciones.probabilidadMeta >= 80 ? '#22c55e' : predicciones.probabilidadMeta >= 60 ? '#f59e0b' : '#ef4444'}
+                  color={predicciones.probabilidadMeta >= 80 ? '#6888ff' : predicciones.probabilidadMeta >= 60 ? '#6888ff' : '#9aa3b8'}
                   sublabel={predicciones.probabilidadMeta >= 80 ? '✅ Alta' : '⚠️ Media'}
                 />
               </div>
@@ -406,16 +406,16 @@ export default function PredictiveAnalyticsDashboard() {
                 <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
                   <div 
                     className="h-full rounded-full transition-all"
-                    style={{ width: `${Math.min(porcentajeMeta, 100)}%`, background: '#22c55e' }}
+                    style={{ width: `${Math.min(porcentajeMeta, 100)}%`, background: '#6888ff' }}
                   />
                 </div>
               </div>
 
               {/* Contratos en riesgo */}
               <div className="flex flex-col justify-center text-center">
-                <p className="text-5xl font-black" style={{ color: '#f59e0b' }}>{predicciones.contratosEnRiesgo}</p>
+                <p className="text-5xl font-black" style={{ color: '#6888ff' }}>{predicciones.contratosEnRiesgo}</p>
                 <p className="text-sm" style={{ color: N.textSub }}>Contratos en Riesgo</p>
-                <p className="text-xs mt-1" style={{ color: '#f59e0b' }}>⚠️ Requieren atención</p>
+                <p className="text-xs mt-1" style={{ color: '#6888ff' }}>⚠️ Requieren atención</p>
               </div>
 
               {/* Renovaciones */}
@@ -427,7 +427,7 @@ export default function PredictiveAnalyticsDashboard() {
 
               {/* Acción rápida */}
               <div className="flex flex-col justify-center gap-2">
-                <button className="px-4 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2" style={{ background: '#f59e0b', boxShadow: neuSm }}>
+                <button className="px-4 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2" style={{ background: '#6888ff', boxShadow: neuSm }}>
                   <Target className="w-5 h-5" />
                   Plan de Acción
                 </button>
@@ -472,7 +472,7 @@ export default function PredictiveAnalyticsDashboard() {
             <NeuCard className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                  <Lightbulb className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                  <Lightbulb className="w-5 h-5" style={{ color: '#6888ff' }} />
                 </div>
                 <h3 className="text-lg font-black" style={{ color: N.text }}>💡 RECOMENDACIONES IA</h3>
               </div>
@@ -495,7 +495,7 @@ export default function PredictiveAnalyticsDashboard() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                  <Bell className="w-5 h-5" style={{ color: '#ef4444' }} />
+                  <Bell className="w-5 h-5" style={{ color: '#9aa3b8' }} />
                 </div>
                 <h3 className="text-lg font-black" style={{ color: N.text }}>🚨 CENTRO DE ALERTAS - REQUIEREN ACCIÓN INMEDIATA</h3>
               </div>
@@ -516,10 +516,10 @@ export default function PredictiveAnalyticsDashboard() {
               <button
                 onClick={() => setExpandirAlertas(prev => ({ ...prev, criticas: !prev.criticas }))}
                 className="w-full flex items-center justify-between p-3 rounded-2xl mb-3"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid #ef444440' }}
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid #9aa3b840' }}
               >
-                <span className="font-bold text-sm" style={{ color: '#ef4444' }}>⚠️ CRÍTICAS ({alertasCriticas.length})</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${expandirAlertas.criticas ? 'rotate-180' : ''}`} style={{ color: '#ef4444' }} />
+                <span className="font-bold text-sm" style={{ color: '#9aa3b8' }}>⚠️ CRÍTICAS ({alertasCriticas.length})</span>
+                <ChevronDown className={`w-5 h-5 transition-transform ${expandirAlertas.criticas ? 'rotate-180' : ''}`} style={{ color: '#9aa3b8' }} />
               </button>
               <AnimatePresence>
                 {expandirAlertas.criticas && (
@@ -542,10 +542,10 @@ export default function PredictiveAnalyticsDashboard() {
               <button
                 onClick={() => setExpandirAlertas(prev => ({ ...prev, importantes: !prev.importantes }))}
                 className="w-full flex items-center justify-between p-3 rounded-2xl mb-3"
-                style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid #f59e0b40' }}
+                style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid #6888ff40' }}
               >
-                <span className="font-bold text-sm" style={{ color: '#f59e0b' }}>🟡 IMPORTANTES ({alertasImportantes.length})</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${expandirAlertas.importantes ? 'rotate-180' : ''}`} style={{ color: '#f59e0b' }} />
+                <span className="font-bold text-sm" style={{ color: '#6888ff' }}>🟡 IMPORTANTES ({alertasImportantes.length})</span>
+                <ChevronDown className={`w-5 h-5 transition-transform ${expandirAlertas.importantes ? 'rotate-180' : ''}`} style={{ color: '#6888ff' }} />
               </button>
               <AnimatePresence>
                 {expandirAlertas.importantes && (
@@ -556,8 +556,8 @@ export default function PredictiveAnalyticsDashboard() {
                     className="space-y-2"
                   >
                     {alertasImportantes.map(alerta => (
-                      <div key={alerta.id} className="p-3 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid #f59e0b30' }}>
-                        <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#f59e0b' }} />
+                      <div key={alerta.id} className="p-3 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid #6888ff30' }}>
+                        <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#6888ff' }} />
                         <div>
                           <p className="font-bold text-sm" style={{ color: N.text }}>{alerta.titulo}</p>
                           {alerta.descripcion && <p className="text-xs" style={{ color: N.textSub }}>{alerta.descripcion}</p>}

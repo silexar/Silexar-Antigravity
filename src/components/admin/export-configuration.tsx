@@ -1,5 +1,5 @@
-/**
- * MÓDULO 1.3: CONFIGURACIÓN DE EXPORTACIÓN - TIER 0 Fortune 10
+﻿/**
+ * MÁ“DULO 1.3: CONFIGURACIÁ“N DE EXPORTACIÁ“N - TIER 0 Fortune 10
  * 
  * @description Constructor visual de formatos de playout con plantillas
  * predefinidas, validador automático y exportación de configuraciones
@@ -11,25 +11,17 @@
  * 
  * @author Silexar Development Team - Export Configuration Division
  * @created 2025-02-08
- * @last_modified 2025-02-08
+ * @last_modified 2025-04-27 - Migrated to AdminDesignSystem pattern
  */
 
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { 
-  Download, 
-  Upload, 
-  Settings, 
+import { N, NeuCard, NeuCardSmall, NeuButton, StatusBadge, NeuTabs, NeuProgress, NeuDivider, getShadow, getSmallShadow } from './_sdk/AdminDesignSystem'
+import {
+  Download,
+  Upload,
+  Settings,
   FileText,
   CheckCircle,
   XCircle,
@@ -82,7 +74,7 @@ interface ExportField {
   id: string
   name: string
   label: string
-  type: 'string' | 'number' | 'date' | 'time' | 'datetime' | 'boolean' | 'enum'
+  type: 'string' | 'number' | 'Fecha' | 'Hora' | 'datetime' | 'boolean' | 'enum'
   required: boolean
   maxLength?: number
   format?: string
@@ -163,14 +155,10 @@ export function ExportConfiguration({ tenantId }: ExportConfigurationProps) {
   const [testResult, setTestResult] = useState<TestResult | null>(null)
   const [isTestingTemplate, setIsTestingTemplate] = useState(false)
 
-  // Cargar plantillas
   useEffect(() => {
     loadTemplates()
   }, [tenantId])
 
-  /**
-   * Cargar plantillas de exportación
-   */
   const loadTemplates = async () => {
     const mockTemplates: ExportTemplate[] = [
       {
@@ -181,89 +169,18 @@ export function ExportConfiguration({ tenantId }: ExportConfigurationProps) {
         version: '10.2',
         format: 'xml',
         fields: [
-          {
-            id: 'field_001',
-            name: 'spot_id',
-            label: 'ID del Spot',
-            type: 'string',
-            required: true,
-            maxLength: 20,
-            mapping: 'campaign.spots[].id',
-            position: 1
-          },
-          {
-            id: 'field_002',
-            name: 'title',
-            label: 'Título',
-            type: 'string',
-            required: true,
-            maxLength: 100,
-            mapping: 'campaign.spots[].title',
-            position: 2
-          },
-          {
-            id: 'field_003',
-            name: 'duration',
-            label: 'Duración',
-            type: 'number',
-            required: true,
-            format: '00:00:00',
-            mapping: 'campaign.spots[].duration',
-            position: 3
-          },
-          {
-            id: 'field_004',
-            name: 'start_date',
-            label: 'Fecha Inicio',
-            type: 'date',
-            required: true,
-            format: 'YYYY-MM-DD',
-            mapping: 'campaign.startDate',
-            position: 4
-          },
-          {
-            id: 'field_005',
-            name: 'end_date',
-            label: 'Fecha Fin',
-            type: 'date',
-            required: true,
-            format: 'YYYY-MM-DD',
-            mapping: 'campaign.endDate',
-            position: 5
-          }
+          { id: 'field_001', name: 'spot_id', label: 'ID del Spot', type: 'string', required: true, maxLength: 20, mapping: 'campaign.spots[].id', position: 1 },
+          { id: 'field_002', name: 'title', label: 'Título', type: 'string', required: true, maxLength: 100, mapping: 'campaign.spots[].title', position: 2 },
+          { id: 'field_003', name: 'duration', label: 'Duración', type: 'number', required: true, format: '00:00:00', mapping: 'campaign.spots[].duration', position: 3 },
+          { id: 'field_004', name: 'start_date', label: 'Fecha Inicio', type: 'Fecha', required: true, format: 'YYYY-MM-DD', mapping: 'campaign.startDate', position: 4 },
+          { id: 'field_005', name: 'end_date', label: 'Fecha Fin', type: 'Fecha', required: true, format: 'YYYY-MM-DD', mapping: 'campaign.endDate', position: 5 }
         ],
-        settings: {
-          encoding: 'utf-8',
-          dateFormat: 'YYYY-MM-DD',
-          timeFormat: 'HH:mm:ss',
-          numberFormat: '0.00',
-          booleanFormat: { true: '1', false: '0' },
-          headerRow: true,
-          compression: 'none',
-          encryption: false
-        },
+        settings: { encoding: 'utf-8', dateFormat: 'YYYY-MM-DD', timeFormat: 'HH:mm:ss', numberFormat: '0.00', booleanFormat: { true: '1', false: '0' }, headerRow: true, compression: 'none', encryption: false },
         validation: [
-          {
-            id: 'val_001',
-            field: 'duration',
-            rule: 'duration > 0 && duration <= 300',
-            message: 'La duración debe estar entre 1 y 300 segundos',
-            severity: 'error'
-          },
-          {
-            id: 'val_002',
-            field: 'start_date',
-            rule: 'start_date <= end_date',
-            message: 'La fecha de inicio debe ser anterior a la fecha de fin',
-            severity: 'error'
-          }
+          { id: 'val_001', field: 'duration', rule: 'duration > 0 && duration <= 300', message: 'La duración debe estar entre 1 y 300 segundos', severity: 'error' },
+          { id: 'val_002', field: 'start_date', rule: 'start_date <= end_date', message: 'La fecha de inicio debe ser anterior a la fecha de fin', severity: 'error' }
         ],
-        isActive: true,
-        isSystem: true,
-        createdAt: '2024-01-15T00:00:00Z',
-        updatedAt: new Date().toISOString(),
-        createdBy: 'system',
-        usageCount: 1247
+        isActive: true, isSystem: true, createdAt: '2024-01-15T00:00:00Z', updatedAt: new Date().toISOString(), createdBy: 'system', usageCount: 1247
       },
       {
         id: 'template_002',
@@ -273,63 +190,13 @@ export function ExportConfiguration({ tenantId }: ExportConfigurationProps) {
         version: '6.5',
         format: 'csv',
         fields: [
-          {
-            id: 'field_006',
-            name: 'cart_number',
-            label: 'Número de Cart',
-            type: 'string',
-            required: true,
-            maxLength: 10,
-            mapping: 'campaign.spots[].cartNumber',
-            position: 1
-          },
-          {
-            id: 'field_007',
-            name: 'advertiser',
-            label: 'Anunciante',
-            type: 'string',
-            required: true,
-            maxLength: 50,
-            mapping: 'campaign.advertiser.name',
-            position: 2
-          },
-          {
-            id: 'field_008',
-            name: 'length',
-            label: 'Duración',
-            type: 'string',
-            required: true,
-            format: 'MM:SS',
-            mapping: 'campaign.spots[].duration',
-            position: 3
-          }
+          { id: 'field_006', name: 'cart_number', label: 'Número de Cart', type: 'string', required: true, maxLength: 10, mapping: 'campaign.spots[].cartNumber', position: 1 },
+          { id: 'field_007', name: 'advertiser', label: 'Anunciante', type: 'string', required: true, maxLength: 50, mapping: 'campaign.advertiser.name', position: 2 },
+          { id: 'field_008', name: 'length', label: 'Duración', type: 'string', required: true, format: 'MM:SS', mapping: 'campaign.spots[].duration', position: 3 }
         ],
-        settings: {
-          delimiter: ',',
-          encoding: 'utf-8',
-          dateFormat: 'MM/DD/YYYY',
-          timeFormat: 'HH:mm:ss',
-          numberFormat: '0.00',
-          booleanFormat: { true: 'Y', false: 'N' },
-          headerRow: true,
-          compression: 'zip',
-          encryption: false
-        },
-        validation: [
-          {
-            id: 'val_003',
-            field: 'cart_number',
-            rule: 'cart_number.match(/^[A-Z0-9]{1,10}$/)',
-            message: 'El número de cart debe contener solo letras y números',
-            severity: 'error'
-          }
-        ],
-        isActive: true,
-        isSystem: true,
-        createdAt: '2024-01-20T00:00:00Z',
-        updatedAt: new Date().toISOString(),
-        createdBy: 'system',
-        usageCount: 856
+        settings: { delimiter: ',', encoding: 'utf-8', dateFormat: 'MM/DD/YYYY', timeFormat: 'HH:mm:ss', numberFormat: '0.00', booleanFormat: { true: 'Y', false: 'N' }, headerRow: true, compression: 'zip', encryption: false },
+        validation: [{ id: 'val_003', field: 'cart_number', rule: 'cart_number.match(/^[A-Z0-9]{1,10}$/)', message: 'El número de cart debe contener solo letras y números', severity: 'error' }],
+        isActive: true, isSystem: true, createdAt: '2024-01-20T00:00:00Z', updatedAt: new Date().toISOString(), createdBy: 'system', usageCount: 856
       },
       {
         id: 'template_003',
@@ -339,139 +206,76 @@ export function ExportConfiguration({ tenantId }: ExportConfigurationProps) {
         version: '1.0',
         format: 'json',
         fields: [
-          {
-            id: 'field_009',
-            name: 'id',
-            label: 'ID',
-            type: 'string',
-            required: true,
-            mapping: 'campaign.id',
-            position: 1
-          },
-          {
-            id: 'field_010',
-            name: 'name',
-            label: 'Nombre',
-            type: 'string',
-            required: true,
-            mapping: 'campaign.name',
-            position: 2
-          }
+          { id: 'field_009', name: 'ID', label: 'ID', type: 'string', required: true, mapping: 'campaign.id', position: 1 },
+          { id: 'field_010', name: 'Nombre', label: 'Nombre', type: 'string', required: true, mapping: 'campaign.name', position: 2 }
         ],
-        settings: {
-          encoding: 'utf-8',
-          dateFormat: 'YYYY-MM-DD',
-          timeFormat: 'HH:mm:ss',
-          numberFormat: '0.00',
-          booleanFormat: { true: 'true', false: 'false' },
-          headerRow: false,
-          compression: 'none',
-          encryption: true
-        },
+        settings: { encoding: 'utf-8', dateFormat: 'YYYY-MM-DD', timeFormat: 'HH:mm:ss', numberFormat: '0.00', booleanFormat: { true: 'true', false: 'false' }, headerRow: false, compression: 'none', encryption: true },
         validation: [],
-        isActive: false,
-        isSystem: false,
-        createdAt: '2025-01-10T00:00:00Z',
-        updatedAt: new Date().toISOString(),
-        createdBy: 'user_001',
-        usageCount: 23
+        isActive: false, isSystem: false, createdAt: '2025-01-10T00:00:00Z', updatedAt: new Date().toISOString(), createdBy: 'user_001', usageCount: 23
       }
     ]
     setTemplates(mockTemplates)
   }
 
-  /**
-   * Obtener icono por sistema
-   */
   const getSystemIcon = (system: string) => {
+    const iconProps = { width: 16, height: 16 }
     switch (system) {
-      case 'dalet': return <Database className="h-4 w-4" />
-      case 'wideorbit': return <Radio className="h-4 w-4" />
-      case 'sara': return <Tv className="h-4 w-4" />
-      case 'rcs': return <Music className="h-4 w-4" />
-      case 'marketron': return <BarChart3 className="h-4 w-4" />
-      case 'nexgen': return <Headphones className="h-4 w-4" />
-      case 'radiotraffic': return <Wifi className="h-4 w-4" />
-      default: return <Server className="h-4 w-4" />
+      case 'dalet': return <Database {...iconProps} />
+      case 'wideorbit': return <Radio {...iconProps} />
+      case 'sara': return <Tv {...iconProps} />
+      case 'rcs': return <Music {...iconProps} />
+      case 'marketron': return <BarChart3 {...iconProps} />
+      case 'nexgen': return <Headphones {...iconProps} />
+      case 'radiotraffic': return <Wifi {...iconProps} />
+      default: return <Server {...iconProps} />
     }
   }
 
-  /**
-   * Obtener color por formato
-   */
   const getFormatColor = (format: string) => {
     switch (format) {
-      case 'xml': return 'border-blue-400 text-blue-400'
-      case 'csv': return 'border-green-400 text-green-400'
-      case 'json': return 'border-purple-400 text-purple-400'
-      case 'txt': return 'border-yellow-400 text-yellow-400'
-      case 'binary': return 'border-red-400 text-red-400'
-      default: return 'border-gray-400 text-gray-400'
+      case 'xml': return '#6888ff'
+      case 'csv': return '#6888ff'
+      case 'json': return '#6888ff'
+      case 'txt': return '#6888ff'
+      case 'binary': return '#6888ff'
+      default: return N.textSub
     }
   }
 
-  /**
-   * Obtener icono por tipo de campo
-   */
   const getFieldTypeIcon = (type: string) => {
+    const iconProps = { width: 16, height: 16 }
     switch (type) {
-      case 'string': return <Type className="h-4 w-4" />
-      case 'number': return <Hash className="h-4 w-4" />
-      case 'date': return <Calendar className="h-4 w-4" />
-      case 'time': return <Clock className="h-4 w-4" />
-      case 'datetime': return <Clock className="h-4 w-4" />
-      case 'boolean': return <CheckCircle className="h-4 w-4" />
-      default: return <FileText className="h-4 w-4" />
+      case 'string': return <Type {...iconProps} />
+      case 'number': return <Hash {...iconProps} />
+      case 'Fecha': return <Calendar {...iconProps} />
+      case 'Hora': return <Clock {...iconProps} />
+      case 'datetime': return <Clock {...iconProps} />
+      case 'boolean': return <CheckCircle {...iconProps} />
+      default: return <FileText {...iconProps} />
     }
   }
 
-  /**
-   * Probar plantilla
-   */
   const testTemplate = async (template: ExportTemplate) => {
     setIsTestingTemplate(true)
     setTestResult(null)
-
-    // Simulación de prueba
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     const mockResult: TestResult = {
       success: true,
       errors: [],
-      warnings: [
-        {
-          field: 'duration',
-          message: 'Algunos registros tienen duración mayor a 180 segundos',
-          line: 15
-        }
-      ],
-      sampleOutput: template.format === 'xml' 
-        ? `<?xml version="1.0" encoding="UTF-8"?>
-<playlist>
-  <spot id="SP001" title="Campaña Verano 2025" duration="30" start_date="2025-02-10" end_date="2025-02-28"/>
-  <spot id="SP002" title="Promoción Especial" duration="20" start_date="2025-02-10" end_date="2025-02-28"/>
-</playlist>`
+      warnings: [{ field: 'duration', message: 'Algunos registros tienen duración mayor a 180 segundos', line: 15 }],
+      sampleOutput: template.format === 'xml'
+        ? `<?xml version="1.0" encoding="UTF-8"?>\n<playlist>\n  <spot id="SP001" title="Campaña Verano 2025" duration="30" start_date="2025-02-10" end_date="2025-02-28"/>\n</playlist>`
         : template.format === 'csv'
-        ? `cart_number,advertiser,length
-SP001,"Acme Corp","00:30"
-SP002,"Tech Solutions","00:20"`
-        : `{
-  "spots": [
-    {"id": "SP001", "name": "Campaña Verano 2025"},
-    {"id": "SP002", "name": "Promoción Especial"}
-  ]
-}`,
+          ? `cart_number,advertiser,length\nSP001,"Acme Corp","00:30"\nSP002,"Tech Solutions","00:20"`
+          : `{\n  "spots": [\n    {"id": "SP001", "Nombre": "Campaña Verano 2025"},\n    {"id": "SP002", "Nombre": "Promoción Especial"}\n  ]\n}`,
       executionTime: 1.2,
       recordsProcessed: 150
     }
-
     setTestResult(mockResult)
     setIsTestingTemplate(false)
   }
 
-  /**
-   * Crear nueva plantilla
-   */
   const createNewTemplate = () => {
     const newTemplate: ExportTemplate = {
       id: `template_${Date.now()}`,
@@ -481,16 +285,7 @@ SP002,"Tech Solutions","00:20"`
       version: '1.0',
       format: 'csv',
       fields: [],
-      settings: {
-        encoding: 'utf-8',
-        dateFormat: 'YYYY-MM-DD',
-        timeFormat: 'HH:mm:ss',
-        numberFormat: '0.00',
-        booleanFormat: { true: '1', false: '0' },
-        headerRow: true,
-        compression: 'none',
-        encryption: false
-      },
+      settings: { encoding: 'utf-8', dateFormat: 'YYYY-MM-DD', timeFormat: 'HH:mm:ss', numberFormat: '0.00', booleanFormat: { true: '1', false: '0' }, headerRow: true, compression: 'none', encryption: false },
       validation: [],
       isActive: false,
       isSystem: false,
@@ -504,18 +299,12 @@ SP002,"Tech Solutions","00:20"`
     setActiveTab('editor')
   }
 
-  /**
-   * Guardar plantilla
-   */
   const saveTemplate = () => {
     if (selectedTemplate) {
       const existingIndex = templates.findIndex(t => t.id === selectedTemplate.id)
       if (existingIndex >= 0) {
         const updatedTemplates = [...templates]
-        updatedTemplates[existingIndex] = {
-          ...selectedTemplate,
-          updatedAt: new Date().toISOString()
-        }
+        updatedTemplates[existingIndex] = { ...selectedTemplate, updatedAt: new Date().toISOString() }
         setTemplates(updatedTemplates)
       } else {
         setTemplates([...templates, selectedTemplate])
@@ -524,626 +313,443 @@ SP002,"Tech Solutions","00:20"`
     }
   }
 
-  /**
-   * Exportar plantilla
-   */
   const exportTemplate = (template: ExportTemplate) => {
     const dataStr = JSON.stringify(template, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-    
-    const exportFileDefaultName = `${template.name.replace(/\s+/g, '_')}_template.json`
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)
-    linkElement.setAttribute('download', exportFileDefaultName)
+    linkElement.setAttribute('download', `${template.name.replace(/\s+/g, '_')}_template.json`)
     linkElement.click()
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
-            📤 Configuración de Exportación
+          <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+            ðŸ“¤ Configuración de Exportación
           </h2>
-          <p className="text-slate-300">
+          <p style={{ color: N.textSub, fontSize: '0.875rem' }}>
             Constructor visual de formatos de playout y validación automática
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          <Badge variant="outline" className="text-green-400 border-green-400">
-            {templates.filter(t => t.isActive).length} Activas
-          </Badge>
-          <Button className="bg-green-600 hover:bg-green-700" onClick={createNewTemplate}>
-            <Plus className="h-4 w-4 mr-2" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <StatusBadge status="success" label={`${templates.filter(t => t.isActive).length} Activas`} />
+          <NeuButton variant="primary" onClick={createNewTemplate}>
+            <Plus style={{ width: 16, height: 16, marginRight: 4 }} />
             Nueva Plantilla
-          </Button>
+          </NeuButton>
         </div>
       </div>
 
       {/* KPIs de Exportación */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Plantillas Totales</CardTitle>
-            <FileText className="h-4 w-4 text-blue-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {templates.length}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Plantillas Totales</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{templates.length}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{templates.filter(t => t.isSystem).length} del sistema</p>
             </div>
-            <p className="text-xs text-slate-400">
-              {templates.filter(t => t.isSystem).length} del sistema
-            </p>
-          </CardContent>
-        </Card>
+            <FileText style={{ width: 24, height: 24, color: '#6888ff' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Sistemas Soportados</CardTitle>
-            <Server className="h-4 w-4 text-green-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {new Set(templates.map(t => t.system)).size}
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Sistemas Soportados</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{new Set(templates.map(t => t.system)).size}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Plataformas integradas</p>
             </div>
-            <p className="text-xs text-slate-400">
-              Plataformas integradas
-            </p>
-          </CardContent>
-        </Card>
+            <Server style={{ width: 24, height: 24, color: '#6888ff' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Exportaciones</CardTitle>
-            <Download className="h-4 w-4 text-purple-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {templates.reduce((sum, t) => sum + t.usageCount, 0).toLocaleString()}
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Exportaciones</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{templates.reduce((sum, t) => sum + t.usageCount, 0).toLocaleString()}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Total histórico</p>
             </div>
-            <p className="text-xs text-slate-400">
-              Total histórico
-            </p>
-          </CardContent>
-        </Card>
+            <Download style={{ width: 24, height: 24, color: '#6888ff' }} />
+          </div>
+        </NeuCard>
 
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-200">Formatos</CardTitle>
-            <Code className="h-4 w-4 text-orange-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {new Set(templates.map(t => t.format)).size}
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Formatos</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{new Set(templates.map(t => t.format)).size}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Tipos soportados</p>
             </div>
-            <p className="text-xs text-slate-400">
-              Tipos soportados
-            </p>
-          </CardContent>
-        </Card>
+            <Code style={{ width: 24, height: 24, color: '#6888ff' }} />
+          </div>
+        </NeuCard>
       </div>
 
       {/* Tabs Principal */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
-          <TabsTrigger value="templates" className="data-[state=active]:bg-blue-600">
-            <FileText className="h-4 w-4 mr-2" />
-            Plantillas
-          </TabsTrigger>
-          <TabsTrigger value="editor" className="data-[state=active]:bg-green-600">
-            <Edit className="h-4 w-4 mr-2" />
-            Editor
-          </TabsTrigger>
-          <TabsTrigger value="testing" className="data-[state=active]:bg-purple-600">
-            <Play className="h-4 w-4 mr-2" />
-            Testing
-          </TabsTrigger>
-          <TabsTrigger value="systems" className="data-[state=active]:bg-orange-600">
-            <Server className="h-4 w-4 mr-2" />
-            Sistemas
-          </TabsTrigger>
-        </TabsList>
+      <NeuTabs
+        tabs={[
+          { id: 'templates', label: 'Plantillas', icon: <FileText style={{ width: 16, height: 16 }} /> },
+          { id: 'editor', label: 'Editor', icon: <Edit style={{ width: 16, height: 16 }} /> },
+          { id: 'testing', label: 'Testing', icon: <Play style={{ width: 16, height: 16 }} /> },
+          { id: 'systems', label: 'Sistemas', icon: <Server style={{ width: 16, height: 16 }} /> },
+        ]}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+      />
 
-        {/* Tab Plantillas */}
-        <TabsContent value="templates" className="space-y-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <FileText className="h-5 w-5 text-blue-400" />
-                Plantillas de Exportación
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Gestión de formatos de playout para diferentes sistemas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {templates.map((template) => (
-                  <div 
-                    key={template.id}
-                    className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg border border-slate-600 hover:border-slate-500 transition-colors"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="p-2 bg-slate-600 rounded-lg">
-                        {getSystemIcon(template.system)}
-                      </div>
-                      
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-white font-medium text-lg">
-                            {template.name}
-                          </h3>
-                          <Badge 
-                            variant="outline"
-                            className={getFormatColor(template.format)}
-                          >
-                            {template.format.toUpperCase()}
-                          </Badge>
-                          <Badge 
-                            variant="outline"
-                            className={template.isActive ? 'border-green-500 text-green-400' : 'border-gray-500 text-gray-400'}
-                          >
-                            {template.isActive ? 'Activa' : 'Inactiva'}
-                          </Badge>
-                          {template.isSystem && (
-                            <Badge variant="outline" className="border-blue-500 text-blue-400">
-                              Sistema
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-slate-400 text-sm">
-                          {template.description} • v{template.version}
-                        </p>
-                        <div className="flex items-center space-x-4 mt-1 text-xs text-slate-500">
-                          <span>{template.fields.length} campos</span>
-                          <span>{template.validation.length} validaciones</span>
-                          <span>{template.usageCount} usos</span>
-                          <span>Actualizado: {new Date(template.updatedAt).toLocaleDateString()}</span>
-                        </div>
-                      </div>
+      {/* Tab Plantillas */}
+      {activeTab === 'templates' && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText style={{ color: '#6888ff', width: 20, height: 20 }} />
+              Plantillas de Exportación
+            </h3>
+            <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Gestión de formatos de playout para diferentes sistemas</p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {templates.map((template) => (
+              <div
+                key={template.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '1rem',
+                  background: `${N.dark}30`,
+                  borderRadius: 8,
+                  border: `1px solid ${N.dark}60`
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ padding: '0.5rem', background: `${N.dark}50`, borderRadius: 8 }}>
+                    {getSystemIcon(template.system)}
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                      <h3 style={{ color: N.text, fontWeight: 500, fontSize: '1rem' }}>{template.name}</h3>
+                      <StatusBadge status="info" label={template.format.toUpperCase()} />
+                      <StatusBadge status={template.isActive ? "success" : "warning"} label={template.isActive ? 'Activa' : 'Inactiva'} />
+                      {template.isSystem && <StatusBadge status="info" label="Sistema" />}
                     </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-purple-500 text-purple-400 hover:bg-purple-500/10"
-                        onClick={() => testTemplate(template)}
-                      >
-                        <Play className="h-4 w-4 mr-1" />
-                        Probar
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-green-500 text-green-400 hover:bg-green-500/10"
-                        onClick={() => {
-                          setSelectedTemplate(template)
-                          setIsEditing(false)
-                          setActiveTab('editor')
+                    <p style={{ color: N.textSub, fontSize: '0.875rem' }}>{template.description} • v{template.version}</p>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', fontSize: '0.75rem', color: N.textSub }}>
+                      <span>{template.fields.length} campos</span>
+                      <span>{template.validation.length} validaciones</span>
+                      <span>{template.usageCount} usos</span>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <NeuButton variant="secondary" onClick={() => testTemplate(template)}>
+                    <Play style={{ width: 14, height: 14, marginRight: 4 }} />
+                    Probar
+                  </NeuButton>
+                  <NeuButton variant="secondary" onClick={() => { setSelectedTemplate(template); setIsEditing(false); setActiveTab('editor'); }}>
+                    <Edit style={{ width: 14, height: 14, marginRight: 4 }} />
+                    Editar
+                  </NeuButton>
+                  <NeuButton variant="secondary" onClick={() => exportTemplate(template)}>
+                    <Download style={{ width: 14, height: 14, marginRight: 4 }} />
+                    Exportar
+                  </NeuButton>
+                  {!template.isSystem && (
+                    <NeuButton variant="secondary">
+                      <Trash2 style={{ width: 14, height: 14 }} />
+                    </NeuButton>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </NeuCard>
+      )}
+
+      {/* Tab Editor */}
+      {activeTab === 'editor' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {selectedTemplate ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+              <NeuCard style={{ boxShadow: getShadow() }}>
+                <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Settings style={{ color: '#6888ff', width: 20, height: 20 }} />
+                  Configuración General
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label style={{ color: N.textSub, fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Nombre</label>
+                    <input
+                      type="text"
+                      value={selectedTemplate.name}
+                      onChange={(e) => setSelectedTemplate({ ...selectedTemplate, name: e.target.value })}
+                      disabled={!isEditing}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        background: `${N.dark}50`,
+                        border: `1px solid ${N.dark}70`,
+                        borderRadius: 6,
+                        color: N.text,
+                        fontSize: '0.875rem'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ color: N.textSub, fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Descripción</label>
+                    <textarea
+                      value={selectedTemplate.description}
+                      onChange={(e) => setSelectedTemplate({ ...selectedTemplate, description: e.target.value })}
+                      disabled={!isEditing}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        background: `${N.dark}50`,
+                        border: `1px solid ${N.dark}70`,
+                        borderRadius: 6,
+                        color: N.text,
+                        fontSize: '0.875rem',
+                        minHeight: 80
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                    <div>
+                      <label style={{ color: N.textSub, fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Sistema</label>
+                      <select
+                        value={selectedTemplate.system}
+                        onChange={(e) => setSelectedTemplate({ ...selectedTemplate, system: e.target.value as ExportTemplate['system'] })}
+                        disabled={!isEditing}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem',
+                          background: `${N.dark}50`,
+                          border: `1px solid ${N.dark}70`,
+                          borderRadius: 6,
+                          color: N.text,
+                          fontSize: '0.875rem'
                         }}
                       >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Editar
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-blue-500 text-blue-400 hover:bg-blue-500/10"
-                        onClick={() => exportTemplate(template)}
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        Exportar
-                      </Button>
-                      {!template.isSystem && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="border-red-500 text-red-400 hover:bg-red-500/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
+                        <option value="dalet">Dalet Galaxy</option>
+                        <option value="wideorbit">WideOrbit</option>
+                        <option value="sara">Sara Automation</option>
+                        <option value="rcs">RCS Zetta</option>
+                        <option value="marketron">Marketron</option>
+                        <option value="nexgen">NexGen Digital</option>
+                        <option value="radiotraffic">RadioTraffic</option>
+                        <option value="custom">Personalizado</option>
+                      </select>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tab Editor */}
-        <TabsContent value="editor" className="space-y-6">
-          {selectedTemplate ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Configuración General */}
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-green-400" />
-                    Configuración General
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-slate-300">Nombre</Label>
-                    <Input 
-                      value={selectedTemplate.name}
-                      onChange={(e) => setSelectedTemplate({
-                        ...selectedTemplate,
-                        name: e.target.value
-                      })}
-                      className="bg-slate-700 border-slate-600"
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-slate-300">Descripción</Label>
-                    <Textarea 
-                      value={selectedTemplate.description}
-                      onChange={(e) => setSelectedTemplate({
-                        ...selectedTemplate,
-                        description: e.target.value
-                      })}
-                      className="bg-slate-700 border-slate-600"
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-slate-300">Sistema</Label>
-                      <Select 
-                        value={selectedTemplate.system}
-                        onValueChange={(value: ExportTemplate['system']) => setSelectedTemplate({
-                          ...selectedTemplate,
-                          system: value
-                        })}
-                        disabled={!isEditing}
-                      >
-                        <SelectTrigger className="bg-slate-700 border-slate-600">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="dalet">Dalet Galaxy</SelectItem>
-                          <SelectItem value="wideorbit">WideOrbit</SelectItem>
-                          <SelectItem value="sara">Sara Automation</SelectItem>
-                          <SelectItem value="rcs">RCS Zetta</SelectItem>
-                          <SelectItem value="marketron">Marketron</SelectItem>
-                          <SelectItem value="nexgen">NexGen Digital</SelectItem>
-                          <SelectItem value="radiotraffic">RadioTraffic</SelectItem>
-                          <SelectItem value="custom">Personalizado</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-slate-300">Formato</Label>
-                      <Select 
+                    <div>
+                      <label style={{ color: N.textSub, fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Formato</label>
+                      <select
                         value={selectedTemplate.format}
-                        onValueChange={(value: ExportTemplate['format']) => setSelectedTemplate({
-                          ...selectedTemplate,
-                          format: value
-                        })}
+                        onChange={(e) => setSelectedTemplate({ ...selectedTemplate, format: e.target.value as ExportTemplate['format'] })}
                         disabled={!isEditing}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem',
+                          background: `${N.dark}50`,
+                          border: `1px solid ${N.dark}70`,
+                          borderRadius: 6,
+                          color: N.text,
+                          fontSize: '0.875rem'
+                        }}
                       >
-                        <SelectTrigger className="bg-slate-700 border-slate-600">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="xml">XML</SelectItem>
-                          <SelectItem value="csv">CSV</SelectItem>
-                          <SelectItem value="json">JSON</SelectItem>
-                          <SelectItem value="txt">TXT</SelectItem>
-                          <SelectItem value="binary">Binary</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        <option value="xml">XML</option>
+                        <option value="csv">CSV</option>
+                        <option value="json">JSON</option>
+                        <option value="txt">TXT</option>
+                        <option value="binary">Binary</option>
+                      </select>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <Label className="text-slate-300">Plantilla Activa</Label>
-                    <Switch 
-                      checked={selectedTemplate.isActive}
-                      onCheckedChange={(checked) => setSelectedTemplate({
-                        ...selectedTemplate,
-                        isActive: checked
-                      })}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NeuCard>
 
-              {/* Campos de Exportación */}
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-white flex items-center gap-2">
-                      <Database className="h-5 w-5 text-blue-400" />
-                      Campos de Exportación
-                    </CardTitle>
-                    {isEditing && (
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                        <Plus className="h-4 w-4 mr-1" />
-                        Agregar Campo
-                      </Button>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {selectedTemplate.fields.map((field, index) => (
-                      <div 
-                        key={field.id}
-                        className="p-3 bg-slate-700/30 rounded-lg border border-slate-600"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            {getFieldTypeIcon(field.type)}
-                            <h4 className="text-white font-medium text-sm">
-                              {field.label}
-                            </h4>
-                            <Badge variant="outline" className="text-xs">
-                              {field.type}
-                            </Badge>
-                            {field.required && (
-                              <Badge variant="outline" className="border-red-400 text-red-400 text-xs">
-                                Requerido
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-slate-400 text-xs">
-                              Pos: {field.position}
-                            </span>
-                            {isEditing && (
-                              <Button size="sm" variant="outline">
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                            )}
-                          </div>
+              <NeuCard style={{ boxShadow: getShadow() }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Database style={{ color: '#6888ff', width: 20, height: 20 }} />
+                    Campos de Exportación
+                  </h3>
+                  {isEditing && (
+                    <NeuButton variant="primary">
+                      <Plus style={{ width: 14, height: 14, marginRight: 4 }} />
+                      Agregar Campo
+                    </NeuButton>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {selectedTemplate.fields.map((field) => (
+                    <div key={field.id} style={{ padding: '0.75rem', background: `${N.dark}30`, borderRadius: 8, border: `1px solid ${N.dark}60` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          {getFieldTypeIcon(field.type)}
+                          <span style={{ color: N.text, fontWeight: 500, fontSize: '0.875rem' }}>{field.label}</span>
+                          <StatusBadge status="info" label={field.type} />
+                          {field.required && <StatusBadge status="danger" label="Requerido" />}
                         </div>
-                        <div className="text-xs text-slate-400">
-                          <p>Nombre: <code className="text-blue-400">{field.name}</code></p>
-                          <p>Mapeo: <code className="text-green-400">{field.mapping}</code></p>
-                          {field.format && (
-                            <p>Formato: <code className="text-purple-400">{field.format}</code></p>
-                          )}
-                        </div>
+                        <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Pos: {field.position}</span>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      <div style={{ fontSize: '0.75rem', color: N.textSub }}>
+                        <p>Nombre: <code style={{ color: '#6888ff' }}>{field.name}</code></p>
+                        <p>Mapeo: <code style={{ color: '#6888ff' }}>{field.mapping}</code></p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </NeuCard>
             </div>
           ) : (
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardContent className="text-center py-12">
-                <Edit className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-slate-400 mb-2">
-                  Editor de Plantillas
-                </h3>
-                <p className="text-slate-500 mb-4">
-                  Selecciona una plantilla para editar o crea una nueva
-                </p>
-                <Button className="bg-green-600 hover:bg-green-700" onClick={createNewTemplate}>
-                  <Plus className="h-4 w-4 mr-2" />
+            <NeuCard style={{ boxShadow: getShadow() }}>
+              <div style={{ textAlign: 'center', padding: '3rem' }}>
+                <Edit style={{ width: 64, height: 64, color: N.textSub, margin: '0 auto 1rem' }} />
+                <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 500, marginBottom: '0.5rem' }}>Editor de Plantillas</h3>
+                <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '1rem' }}>Selecciona una plantilla para editar o crea una nueva</p>
+                <NeuButton variant="primary" onClick={createNewTemplate}>
+                  <Plus style={{ width: 16, height: 16, marginRight: 4 }} />
                   Nueva Plantilla
-                </Button>
-              </CardContent>
-            </Card>
+                </NeuButton>
+              </div>
+            </NeuCard>
           )}
-          
           {selectedTemplate && (
-            <div className="flex justify-end space-x-3">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? <XCircle className="h-4 w-4 mr-2" /> : <Edit className="h-4 w-4 mr-2" />}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+              <NeuButton variant="secondary" onClick={() => setIsEditing(!isEditing)}>
+                {isEditing ? <XCircle style={{ width: 16, height: 16, marginRight: 4 }} /> : <Edit style={{ width: 16, height: 16, marginRight: 4 }} />}
                 {isEditing ? 'Cancelar' : 'Editar'}
-              </Button>
+              </NeuButton>
               {isEditing && (
-                <Button className="bg-green-600 hover:bg-green-700" onClick={saveTemplate}>
-                  <CheckCircle className="h-4 w-4 mr-2" />
+                <NeuButton variant="primary" onClick={saveTemplate}>
+                  <CheckCircle style={{ width: 16, height: 16, marginRight: 4 }} />
                   Guardar
-                </Button>
+                </NeuButton>
               )}
             </div>
           )}
-        </TabsContent>
+        </div>
+      )}
 
-        {/* Tab Testing */}
-        <TabsContent value="testing" className="space-y-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Play className="h-5 w-5 text-purple-400" />
-                Validador de Plantillas
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Prueba automática de formatos con datos de muestra
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isTestingTemplate ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
-                  <p className="text-slate-400">Ejecutando validación...</p>
+      {/* Tab Testing */}
+      {activeTab === 'testing' && (
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Play style={{ color: '#6888ff', width: 20, height: 20 }} />
+            Validador de Plantillas
+          </h3>
+          <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '1.5rem' }}>Prueba automática de formatos con datos de muestra</p>
+
+          {isTestingTemplate ? (
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <div style={{ width: 48, height: 48, border: '4px solid #6888ff30', borderTopColor: '#6888ff', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+              <p style={{ color: N.textSub }}>Ejecutando validación...</p>
+            </div>
+          ) : testResult ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ padding: '1rem', borderRadius: 8, background: testResult.success ? '#6888ff15' : '#6888ff15', border: `1px solid ${testResult.success ? '#6888ff50' : '#6888ff50'}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  {testResult.success ? <CheckCircle style={{ width: 20, height: 20, color: '#6888ff' }} /> : <XCircle style={{ width: 20, height: 20, color: '#6888ff' }} />}
+                  <span style={{ color: testResult.success ? '#6888ff' : '#6888ff', fontWeight: 500 }}>{testResult.success ? 'Validación Exitosa' : 'Validación Fallida'}</span>
                 </div>
-              ) : testResult ? (
-                <div className="space-y-6">
-                  {/* Resultado de la Prueba */}
-                  <div className={`p-4 rounded-lg border ${
-                    testResult.success ? 'border-green-500 bg-green-500/10' : 'border-red-500 bg-red-500/10'
-                  }`}>
-                    <div className="flex items-center gap-2 mb-2">
-                      {testResult.success ? (
-                        <CheckCircle className="h-5 w-5 text-green-400" />
-                      ) : (
-                        <XCircle className="h-5 w-5 text-red-400" />
-                      )}
-                      <h4 className={`font-medium ${testResult.success ? 'text-green-400' : 'text-red-400'}`}>
-                        {testResult.success ? 'Validación Exitosa' : 'Validación Fallida'}
-                      </h4>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-slate-400">Tiempo:</span>
-                        <span className="text-white ml-2">{testResult.executionTime}s</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400">Registros:</span>
-                        <span className="text-white ml-2">{testResult.recordsProcessed}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400">Errores:</span>
-                        <span className={`ml-2 ${testResult.errors.length > 0 ? 'text-red-400' : 'text-green-400'}`}>
-                          {testResult.errors.length}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Errores y Advertencias */}
-                  {(testResult.errors.length > 0 || testResult.warnings.length > 0) && (
-                    <div className="space-y-3">
-                      {testResult.errors.map((error, index) => (
-                        <div key={error.field} className="p-3 border border-red-500 bg-red-500/10 rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <XCircle className="h-4 w-4 text-red-400" />
-                            <span className="text-red-400 font-medium">Error</span>
-                            {error.line && (
-                              <Badge variant="outline" className="border-red-400 text-red-400">
-                                Línea {error.line}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-red-300 text-sm mt-1">
-                            Campo: {error.field} - {error.message}
-                          </p>
-                        </div>
-                      ))}
-                      
-                      {testResult.warnings.map((warning, index) => (
-                        <div key={warning.field} className="p-3 border border-yellow-500 bg-yellow-500/10 rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4 text-yellow-400" />
-                            <span className="text-yellow-400 font-medium">Advertencia</span>
-                            {warning.line && (
-                              <Badge variant="outline" className="border-yellow-400 text-yellow-400">
-                                Línea {warning.line}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-yellow-300 text-sm mt-1">
-                            Campo: {warning.field} - {warning.message}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Salida de Muestra */}
-                  <Card className="bg-slate-700/30 border-slate-600">
-                    <CardHeader>
-                      <CardTitle className="text-white text-lg flex items-center gap-2">
-                        <Code className="h-5 w-5 text-blue-400" />
-                        Salida de Muestra
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <pre className="text-sm text-slate-300 bg-slate-800 p-4 rounded-lg overflow-x-auto">
-                        {testResult.sampleOutput}
-                      </pre>
-                    </CardContent>
-                  </Card>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', fontSize: '0.875rem' }}>
+                  <div><span style={{ color: N.textSub }}>Tiempo:</span><span style={{ color: N.text, marginLeft: '0.5rem' }}>{testResult.executionTime}s</span></div>
+                  <div><span style={{ color: N.textSub }}>Registros:</span><span style={{ color: N.text, marginLeft: '0.5rem' }}>{testResult.recordsProcessed}</span></div>
+                  <div><span style={{ color: N.textSub }}>Errores:</span><span style={{ color: testResult.errors.length > 0 ? '#6888ff' : '#6888ff', marginLeft: '0.5rem' }}>{testResult.errors.length}</span></div>
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <Play className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-slate-400 mb-2">
-                    Validador de Plantillas
-                  </h3>
-                  <p className="text-slate-500 mb-4">
-                    Selecciona una plantilla desde la pestaña "Plantillas" y haz clic en "Probar"
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setActiveTab('templates')}
-                  >
-                    Ver Plantillas
-                  </Button>
+              </div>
+              {(testResult.errors.length > 0 || testResult.warnings.length > 0) && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {testResult.errors.map((error, idx) => (
+                    <div key={idx} style={{ padding: '0.75rem', borderRadius: 8, background: '#6888ff15', border: '1px solid #6888ff50' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <XCircle style={{ width: 16, height: 16, color: '#6888ff' }} />
+                        <span style={{ color: '#6888ff', fontWeight: 500 }}>Error</span>
+                        {error.line && <StatusBadge status="danger" label={`Línea ${error.line}`} />}
+                      </div>
+                      <p style={{ color: '#fca5a5', fontSize: '0.875rem', marginTop: '0.25rem' }}>Campo: {error.field} - {error.message}</p>
+                    </div>
+                  ))}
+                  {testResult.warnings.map((warning, idx) => (
+                    <div key={idx} style={{ padding: '0.75rem', borderRadius: 8, background: '#6888ff15', border: '1px solid #6888ff50' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <AlertTriangle style={{ width: 16, height: 16, color: '#6888ff' }} />
+                        <span style={{ color: '#6888ff', fontWeight: 500 }}>Advertencia</span>
+                        {warning.line && <StatusBadge status="warning" label={`Línea ${warning.line}`} />}
+                      </div>
+                      <p style={{ color: '#fde047', fontSize: '0.875rem', marginTop: '0.25rem' }}>Campo: {warning.field} - {warning.message}</p>
+                    </div>
+                  ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <div style={{ padding: '1rem', background: `${N.dark}30`, borderRadius: 8, border: `1px solid ${N.dark}60` }}>
+                <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Code style={{ width: 16, height: 16, color: '#6888ff' }} />
+                  Salida de Muestra
+                </h4>
+                <pre style={{ color: N.textSub, fontSize: '0.875rem', background: `${N.dark}50`, padding: '1rem', borderRadius: 6, overflowX: 'auto' }}>
+                  {testResult.sampleOutput}
+                </pre>
+              </div>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <Play style={{ width: 64, height: 64, color: N.textSub, margin: '0 auto 1rem' }} />
+              <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 500, marginBottom: '0.5rem' }}>Validador de Plantillas</h3>
+              <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '1rem' }}>Selecciona una plantilla desde la pestaña "Plantillas" y haz clic en "Probar"</p>
+              <NeuButton variant="secondary" onClick={() => setActiveTab('templates')}>Ver Plantillas</NeuButton>
+            </div>
+          )}
+        </NeuCard>
+      )}
 
-        {/* Tab Sistemas */}
-        <TabsContent value="systems" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { id: 'dalet', name: 'Dalet Galaxy', icon: Database, color: 'blue', description: 'Sistema de automatización broadcast profesional' },
-              { id: 'wideorbit', name: 'WideOrbit', icon: Radio, color: 'green', description: 'Plataforma de gestión de tráfico de radio' },
-              { id: 'sara', name: 'Sara Automation', icon: Tv, color: 'purple', description: 'Automatización para radio y televisión' },
-              { id: 'rcs', name: 'RCS Zetta', icon: Music, color: 'red', description: 'Sistema de automatización de radio' },
-              { id: 'marketron', name: 'Marketron', icon: BarChart3, color: 'yellow', description: 'Gestión de ventas y tráfico' },
-              { id: 'nexgen', name: 'NexGen Digital', icon: Headphones, color: 'pink', description: 'Automatización digital avanzada' }
-            ].map((system) => {
-              const Icon = system.icon
-              const systemTemplates = templates.filter(t => t.system === system.id)
-              
-              return (
-                <Card key={system.id} className="bg-slate-800/50 border-slate-700">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 bg-${system.color}-600 rounded-lg`}>
-                        <Icon className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-white text-lg">
-                          {system.name}
-                        </CardTitle>
-                        <CardDescription className="text-slate-400">
-                          {systemTemplates.length} plantillas
-                        </CardDescription>
-                      </div>
+      {/* Tab Sistemas */}
+      {activeTab === 'systems' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+          {[
+            { id: 'dalet', name: 'Dalet Galaxy', icon: Database, color: '#6888ff', description: 'Sistema de automatización broadcast profesional' },
+            { id: 'wideorbit', name: 'WideOrbit', icon: Radio, color: '#6888ff', description: 'Plataforma de gestión de tráfico de radio' },
+            { id: 'sara', name: 'Sara Automation', icon: Tv, color: '#6888ff', description: 'Automatización para radio y televisión' },
+            { id: 'rcs', name: 'RCS Zetta', icon: Music, color: '#6888ff', description: 'Sistema de automatización de radio' },
+            { id: 'marketron', name: 'Marketron', icon: BarChart3, color: '#6888ff', description: 'Gestión de ventas y tráfico' },
+            { id: 'nexgen', name: 'NexGen Digital', icon: Headphones, color: '#6888ff', description: 'Automatización digital avanzada' }
+          ].map((system) => {
+            const Icon = system.icon
+            const systemTemplates = templates.filter(t => t.system === system.id)
+            return (
+              <NeuCard key={system.id} style={{ boxShadow: getShadow() }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <div style={{ padding: '0.5rem', background: system.color, borderRadius: 8 }}>
+                    <Icon style={{ width: 24, height: 24, color: N.base }} />
+                  </div>
+                  <div>
+                    <h3 style={{ color: N.text, fontWeight: 500 }}>{system.name}</h3>
+                    <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{systemTemplates.length} plantillas</p>
+                  </div>
+                </div>
+                <p style={{ color: N.textSub, fontSize: '0.875rem', marginBottom: '0.75rem' }}>{system.description}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {systemTemplates.slice(0, 3).map((template) => (
+                    <div key={template.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem', background: `${N.dark}30`, borderRadius: 6 }}>
+                      <span style={{ color: N.textSub, fontSize: '0.875rem' }}>{template.name}</span>
+                      <StatusBadge status="info" label={template.format} />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-400 text-sm mb-4">
-                      {system.description}
-                    </p>
-                    <div className="space-y-2">
-                      {systemTemplates.slice(0, 3).map((template) => (
-                        <div key={template.id} className="flex items-center justify-between p-2 bg-slate-700/30 rounded">
-                          <span className="text-slate-300 text-sm">{template.name}</span>
-                          <Badge 
-                            variant="outline"
-                            className={getFormatColor(template.format)}
-                          >
-                            {template.format}
-                          </Badge>
-                        </div>
-                      ))}
-                      {systemTemplates.length > 3 && (
-                        <p className="text-slate-500 text-xs text-center">
-                          +{systemTemplates.length - 3} más
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </TabsContent>
-      </Tabs>
+                  ))}
+                  {systemTemplates.length > 3 && (
+                    <p style={{ color: N.textSub, fontSize: '0.75rem', textAlign: 'center' }}>+{systemTemplates.length - 3} más</p>
+                  )}
+                </div>
+              </NeuCard>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
+
+export default ExportConfiguration

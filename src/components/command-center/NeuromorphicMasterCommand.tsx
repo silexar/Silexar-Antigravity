@@ -4,16 +4,17 @@
  * @description Sistema de control maestro con diseño neuromórfico para Fortune 10
  * @author SILEXAR AI SUPREMACY
  * @version 2040.5.0
+ * Migrated to AdminDesignSystem TIER_0
  */
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  BrainCircuit, 
-  ShieldCheck, 
-  Activity, 
-  Globe, 
-  Users, 
+import {
+  BrainCircuit,
+  ShieldCheck,
+  Activity,
+  Globe,
+  Users,
   TrendingUp,
   AlertTriangle,
   Zap,
@@ -26,12 +27,8 @@ import {
   BarChart3,
   Radar
 } from 'lucide-react';
-import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { NeuCard, NeuButton, StatusBadge } from '@/components/admin/_sdk/AdminDesignSystem';
+import { N, getShadow } from '@/components/admin/_sdk/AdminDesignSystem';
 
 // Interfaces de tipos para el sistema neuromórfico
 interface SystemMetrics {
@@ -178,21 +175,21 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   // Función para obtener color según nivel de riesgo
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
-      case 'low': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
-      case 'high': return 'text-orange-400';
-      case 'critical': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'low': return N.success;
+      case 'medium': return N.warning;
+      case 'high': return '#f97316';
+      case 'critical': return N.danger;
+      default: return N.textSub;
     }
   };
 
   // Función para obtener icono de tier
   const getTierIcon = (tier: string) => {
     switch (tier) {
-      case 'fortune10': return <BrainCircuit className="w-5 h-5 text-purple-400" />;
-      case 'enterprise': return <Network className="w-5 h-5 text-blue-400" />;
-      case 'premium': return <TrendingUp className="w-5 h-5 text-green-400" />;
-      default: return <Users className="w-5 h-5 text-gray-400" />;
+      case 'fortune10': return <BrainCircuit style={{ width: '1.25rem', height: '1.25rem', color: '#a855f7' }} />;
+      case 'enterprise': return <Network style={{ width: '1.25rem', height: '1.25rem', color: '#3b82f6' }} />;
+      case 'premium': return <TrendingUp style={{ width: '1.25rem', height: '1.25rem', color: N.success }} />;
+      default: return <Users style={{ width: '1.25rem', height: '1.25rem', color: N.textSub }} />;
     }
   };
 
@@ -206,25 +203,20 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   }> = ({ children, className, glowColor = 'blue', pulse = false, onClick }) => {
     return (
       <motion.div
-        className={cn(
-          "relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
-          "border border-[#D4D1CC] rounded-2xl p-6",
-          "shadow-2xl shadow-slate-900/50",
-          "before:absolute before:inset-0 before:rounded-2xl",
-          "before:bg-gradient-to-br before:from-white/5 before:to-transparent",
-          "after:absolute after:inset-0 after:rounded-2xl",
-          "after:bg-gradient-to-t after:from-transparent after:to-black/20",
-          pulse && "animate-pulse",
-          className
-        )}
+        style={{
+          position: 'relative',
+          background: `linear-gradient(135deg, ${N.dark}, ${N.dark})`,
+          border: `1px solid ${N.dark}`,
+          borderRadius: '1rem',
+          padding: '1.5rem',
+          boxShadow: getShadow(),
+          cursor: onClick ? 'pointer' : 'default',
+          transition: 'transform 0.2s'
+        }}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
         onClick={onClick}
       >
-        <div className={cn(
-          "absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300",
-          `bg-gradient-to-r from-${glowColor}-500/10 to-transparent blur-xl`
-        )} />
         {children}
       </motion.div>
     );
@@ -240,24 +232,39 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   }> = ({ title, value, icon, color, subtitle }) => {
     return (
       <NeuromorphicCard glowColor={color}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className={cn("p-2 rounded-lg bg-gradient-to-br", `from-${color}-900 to-${color}-700`)}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              padding: '0.5rem',
+              borderRadius: '0.5rem',
+              background: `linear-gradient(135deg, ${color}90, ${color}70)`
+            }}>
               {icon}
             </div>
             <div>
-              <p className="text-sm font-medium text-[#5F5E5A]">{title}</p>
-              {subtitle && <p className="text-xs text-[#888780]">{subtitle}</p>}
+              <p style={{ fontSize: '0.875rem', fontWeight: '500', color: N.textSub }}>{title}</p>
+              {subtitle && <p style={{ fontSize: '0.75rem', color: N.textSub }}>{subtitle}</p>}
             </div>
           </div>
-          <div className="text-right">
-            <p className={cn("text-2xl font-bold", `text-${color}-400`)}>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: color }}>
               {value.toFixed(1)}%
             </p>
           </div>
         </div>
-        <Progress value={value} className={cn("h-2", `bg-${color}-900`)} />
-        <div className="mt-2 h-1 bg-gradient-to-r from-transparent via-slate-600 to-transparent rounded-full" />
+        <div style={{
+          height: '0.5rem',
+          background: N.base,
+          borderRadius: '0.25rem',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${value}%`,
+            background: color,
+            transition: 'width 0.3s'
+          }} />
+        </div>
       </NeuromorphicCard>
     );
   };
@@ -266,20 +273,21 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   const NeuralPulse: React.FC<{ pulse: NeurologicalPulse }> = ({ pulse }) => {
     const getColorByType = (type: string) => {
       switch (type) {
-        case 'system': return 'blue';
-        case 'security': return 'green';
-        case 'performance': return 'yellow';
-        case 'business': return 'purple';
-        default: return 'gray';
+        case 'system': return N.accent;
+        case 'security': return N.success;
+        case 'performance': return N.warning;
+        case 'business': return '#a855f7';
+        default: return N.textSub;
       }
     };
 
     return (
       <motion.div
-        className={cn(
-          "h-2 rounded-full bg-gradient-to-r",
-          `from-${getColorByType(pulse.type)}-600 to-${getColorByType(pulse.type)}-400`
-        )}
+        style={{
+          height: '0.5rem',
+          borderRadius: '0.25rem',
+          background: `linear-gradient(90deg, ${getColorByType(pulse.type)}90, ${getColorByType(pulse.type)})`,
+        }}
         initial={{ width: 0 }}
         animate={{ width: `${pulse.intensity}%` }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -289,82 +297,62 @@ export const NeuromorphicMasterCommand: React.FC = () => {
 
   // Componente de cliente enterprise
   const EnterpriseClientCard: React.FC<{ client: ClientData }> = ({ client }) => {
+    const statusColor = client.status === 'active' ? N.success : client.status === 'warning' ? N.warning : N.danger;
+
     return (
-      <NeuromorphicCard 
-        glowColor={client.status === 'active' ? 'green' : client.status === 'warning' ? 'yellow' : 'red'}
-        className="cursor-pointer hover:scale-105 transition-transform"
+      <NeuromorphicCard
+        glowColor={client.status === 'active' ? N.success : client.status === 'warning' ? N.warning : N.danger}
         onClick={() => setSelectedClient(client.id)}
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {getTierIcon(client.tier)}
             <div>
-              <h3 className="font-semibold text-[#2C2C2A]">{client.name}</h3>
-              <p className="text-sm text-[#888780] capitalize">{client.tier}</p>
+              <h3 style={{ fontWeight: '600', color: N.text }}>{client.name}</h3>
+              <p style={{ fontSize: '0.875rem', color: N.textSub, textTransform: 'capitalize' }}>{client.tier}</p>
             </div>
           </div>
-          <Badge 
-            variant={client.status === 'active' ? 'default' : 'destructive'}
-            className={cn(
-              "uppercase",
-              client.status === 'active' && "bg-green-900/50 border-green-500 text-green-400",
-              client.status === 'warning' && "bg-yellow-900/50 border-yellow-500 text-yellow-400",
-              client.status === 'critical' && "bg-red-900/50 border-red-500 text-red-400"
-            )}
-          >
-            {client.status}
-          </Badge>
+          <StatusBadge status={client.status === 'active' ? 'success' : client.status === 'warning' ? 'warning' : 'danger'} label={client.status} />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
           <div>
-            <p className="text-xs text-[#888780]">Revenue</p>
-            <p className="text-lg font-bold text-green-400">
+            <p style={{ fontSize: '0.75rem', color: N.textSub }}>Revenue</p>
+            <p style={{ fontSize: '1.125rem', fontWeight: 'bold', color: N.success }}>
               ${(client.revenue / 1000000).toFixed(1)}M
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#888780]">Users</p>
-            <p className="text-lg font-bold text-blue-400">
+            <p style={{ fontSize: '0.75rem', color: N.textSub }}>Users</p>
+            <p style={{ fontSize: '1.125rem', fontWeight: 'bold', color: N.accent }}>
               {(client.users / 1000000).toFixed(1)}M
             </p>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-[#888780]">Engagement</span>
-            <span className="text-sm font-medium text-blue-400">{client.engagement}%</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Engagement</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: '500', color: N.accent }}>{client.engagement}%</span>
           </div>
-          <Progress value={client.engagement} className="h-1 bg-[#D4D1CC]" />
-          
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-[#888780]">Risk Level</span>
-            <span className={cn("text-sm font-medium capitalize", getRiskColor(client.riskLevel))}>
+          <div style={{ height: '0.25rem', background: N.base, borderRadius: '0.125rem', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${client.engagement}%`, background: N.accent }} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: N.textSub }}>Risk Level</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: '500', color: getRiskColor(client.riskLevel), textTransform: 'capitalize' }}>
               {client.riskLevel}
             </span>
           </div>
         </div>
 
-        <div className="mt-4 h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
-        
-        <div className="mt-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-[#888780]" />
-            <span className="text-sm text-[#888780]">{client.campaigns} campaigns</span>
-          </div>
-          <div className="flex space-x-1">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={`star-${i}`}
-                className={cn(
-                  "w-1 h-4 rounded-full",
-                  i <= (client.riskLevel === 'low' ? 1 : client.riskLevel === 'medium' ? 3 : 5)
-                    ? getRiskColor(client.riskLevel).replace('text-', 'bg-')
-                    : 'bg-slate-600'
-                )}
-              />
-            ))}
+        <div style={{ marginTop: '1rem', height: '1px', background: `linear-gradient(90deg, transparent, ${N.dark}, transparent)` }} />
+
+        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Activity style={{ width: '1rem', height: '1rem', color: N.textSub }} />
+            <span style={{ fontSize: '0.875rem', color: N.textSub }}>{client.campaigns} campaigns</span>
           </div>
         </div>
       </NeuromorphicCard>
@@ -375,20 +363,20 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   const GlobalThreatIndicator: React.FC<{ threat: GlobalThreat }> = ({ threat }) => {
     const getThreatColor = () => {
       switch (threat.severity) {
-        case 'critical': return 'red';
-        case 'high': return 'orange';
-        case 'medium': return 'yellow';
-        default: return 'blue';
+        case 'critical': return N.danger;
+        case 'high': return '#f97316';
+        case 'medium': return N.warning;
+        default: return N.accent;
       }
     };
 
     const getThreatIcon = () => {
       switch (threat.type) {
-        case 'ddos': return <Zap className="w-5 h-5" />;
-        case 'intrusion': return <Lock className="w-5 h-5" />;
-        case 'breach': return <Unlock className="w-5 h-5" />;
-        case 'anomaly': return <Radar className="w-5 h-5" />;
-        default: return <AlertTriangle className="w-5 h-5" />;
+        case 'ddos': return <Zap style={{ width: '1.25rem', height: '1.25rem' }} />;
+        case 'intrusion': return <Lock style={{ width: '1.25rem', height: '1.25rem' }} />;
+        case 'breach': return <Unlock style={{ width: '1.25rem', height: '1.25rem' }} />;
+        case 'anomaly': return <Radar style={{ width: '1.25rem', height: '1.25rem' }} />;
+        default: return <AlertTriangle style={{ width: '1.25rem', height: '1.25rem' }} />;
       }
     };
 
@@ -396,27 +384,26 @@ export const NeuromorphicMasterCommand: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className={cn(
-          "p-4 rounded-lg border bg-gradient-to-r",
-          `from-${getThreatColor()}-900/20 to-transparent`,
-          `border-${getThreatColor()}-500/30`
-        )}
+        style={{
+          padding: '1rem',
+          borderRadius: '0.5rem',
+          background: `linear-gradient(90deg, ${getThreatColor()}20, transparent)`,
+          border: `1px solid ${getThreatColor()}30`
+        }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className={cn("p-2 rounded-lg", `bg-${getThreatColor()}-900/50`)}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ padding: '0.5rem', borderRadius: '0.5rem', background: `${getThreatColor()}50` }}>
               {getThreatIcon()}
             </div>
             <div>
-              <p className="font-medium capitalize">{threat.type.replace('_', ' ')}</p>
-              <p className="text-sm text-[#888780]">{threat.location}</p>
+              <p style={{ fontWeight: '500', textTransform: 'capitalize', color: N.text }}>{threat.type.replace('_', ' ')}</p>
+              <p style={{ fontSize: '0.875rem', color: N.textSub }}>{threat.location}</p>
             </div>
           </div>
-          <div className="text-right">
-            <Badge variant="outline" className={cn("uppercase", `border-${getThreatColor()}-500 text-${getThreatColor()}-400`)}>
-              {threat.severity}
-            </Badge>
-            <p className="text-xs text-[#888780] mt-1">
+          <div style={{ textAlign: 'right' }}>
+            <StatusBadge status={threat.severity === 'critical' ? 'danger' : threat.severity === 'high' ? 'warning' : 'neutral'} label={threat.severity} />
+            <p style={{ fontSize: '0.75rem', color: N.textSub, marginTop: '0.25rem' }}>
               {new Date(threat.timestamp).toLocaleTimeString()}
             </p>
           </div>
@@ -426,344 +413,334 @@ export const NeuromorphicMasterCommand: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
+    <div style={{
+      minHeight: '100vh',
+      background: `linear-gradient(135deg, #020617, ${N.dark}, #020617)`,
+      padding: '1.5rem'
+    }}>
       {/* Header del Command Center */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        style={{ marginBottom: '2rem' }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-              <BrainCircuit className="w-8 h-8 text-blue-400" />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ padding: '0.75rem', borderRadius: '1rem', background: `linear-gradient(135deg, #1e40af, #7c3aed, #4f46e5)` }}>
+              <BrainCircuit style={{ width: '2rem', height: '2rem', color: N.accent }} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 style={{
+                fontSize: '1.875rem',
+                fontWeight: 'bold',
+                background: `linear-gradient(90deg, ${N.accent}, #a855f7)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
                 NEUROMORPHIC COMMAND CENTER
               </h1>
-              <p className="text-[#888780]">SILEXAR PULSE QUANTUM - TIER 0 SUPREMACY</p>
+              <p style={{ color: N.textSub }}>SILEXAR PULSE QUANTUM - TIER 0 SUPREMACY</p>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className={cn(
-                "w-3 h-3 rounded-full animate-pulse",
-                isSystemLocked ? 'bg-red-500' : 'bg-green-500'
-              )} />
-              <span className="text-sm text-[#888780]">
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{
+                width: '0.75rem',
+                height: '0.75rem',
+                borderRadius: '50%',
+                animation: 'pulse 2s infinite',
+                background: isSystemLocked ? N.danger : N.success
+              }} />
+              <span style={{ fontSize: '0.875rem', color: N.textSub }}>
                 SYSTEM {isSystemLocked ? 'LOCKED' : 'ACTIVE'}
               </span>
             </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsSystemLocked(!isSystemLocked)}
-              className={cn(
-                "border-[#CCCAC5] bg-[#F0EDE8]/50",
-                "hover:bg-[#E8E5E0]/50 transition-colors"
-              )}
-            >
-              {isSystemLocked ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-            </Button>
+
+            <div onClick={() => setIsSystemLocked(!isSystemLocked)} style={{ cursor: 'pointer' }}>
+              <NeuButton variant="secondary">
+                {isSystemLocked ? <Unlock style={{ width: '1rem', height: '1rem' }} /> : <Lock style={{ width: '1rem', height: '1rem' }} />}
+              </NeuButton>
+            </div>
           </div>
         </div>
       </motion.div>
 
       {/* Sistema de Tabs Neuromórfico */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-[#F0EDE8]/50 border border-[#D4D1CC] p-1">
-          <TabsTrigger 
-            value="overview" 
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-900 data-[state=active]:to-purple-900"
-          >
-            <Globe className="w-4 h-4 mr-2" />
-            Global Overview
-          </TabsTrigger>
-          <TabsTrigger 
-            value="clients"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-900 data-[state=active]:to-blue-900"
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Enterprise Clients
-          </TabsTrigger>
-          <TabsTrigger 
-            value="security"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-900 data-[state=active]:to-orange-900"
-          >
-            <ShieldCheck className="w-4 h-4 mr-2" />
-            Security Command
-          </TabsTrigger>
-          <TabsTrigger 
-            value="ai"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-900 data-[state=active]:to-indigo-900"
-          >
-            <Cpu className="w-4 h-4 mr-2" />
-            AI Cortex
-          </TabsTrigger>
-        </TabsList>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {/* Tab Navigation */}
+        <div style={{
+          display: 'flex',
+          gap: '0.5rem',
+          padding: '0.5rem',
+          background: N.base,
+          borderRadius: '0.5rem',
+          border: `1px solid ${N.dark}`
+        }}>
+          {[
+            { id: 'overview', label: 'Global Overview', icon: <Globe style={{ width: '1rem', height: '1rem' }} /> },
+            { id: 'clients', label: 'Enterprise Clients', icon: <Users style={{ width: '1rem', height: '1rem' }} /> },
+            { id: 'security', label: 'Security Command', icon: <ShieldCheck style={{ width: '1rem', height: '1rem' }} /> },
+            { id: 'ai', label: 'AI Cortex', icon: <Cpu style={{ width: '1rem', height: '1rem' }} /> }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.375rem',
+                border: 'none',
+                cursor: 'pointer',
+                background: activeTab === tab.id ? `linear-gradient(90deg, #1e40af, #7c3aed)` : 'transparent',
+                color: activeTab === tab.id ? 'white' : N.textSub,
+                fontWeight: activeTab === tab.id ? '600' : '400',
+                transition: 'all 0.2s'
+              }}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
         {/* Vista de Overview Global */}
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <NeuralMetric
-              title="System CPU"
-              value={systemMetrics.cpu}
-              icon={<Cpu className="w-5 h-5 text-blue-400" />}
-              color="blue"
-              subtitle="Quantum Processing"
-            />
-            <NeuralMetric
-              title="Memory Usage"
-              value={systemMetrics.memory}
-              icon={<Activity className="w-5 h-5 text-green-400" />}
-              color="green"
-              subtitle="Neural Networks"
-            />
-            <NeuralMetric
-              title="Network I/O"
-              value={systemMetrics.network}
-              icon={<Network className="w-5 h-5 text-purple-400" />}
-              color="purple"
-              subtitle="Data Streams"
-            />
-            <NeuralMetric
-              title="Storage"
-              value={systemMetrics.storage}
-              icon={<BarChart3 className="w-5 h-5 text-yellow-400" />}
-              color="yellow"
-              subtitle="Data Lake"
-            />
-            <NeuralMetric
-              title="AI Processing"
-              value={systemMetrics.aiProcessing}
-              icon={<BrainCircuit className="w-5 h-5 text-emerald-400" />}
-              color="emerald"
-              subtitle="ML Inference"
-            />
-            <NeuralMetric
-              title="Security Level"
-              value={systemMetrics.securityLevel}
-              icon={<ShieldCheck className="w-5 h-5 text-red-400" />}
-              color="red"
-              subtitle="Threat Defense"
-            />
-          </div>
+        {activeTab === 'overview' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+              <NeuralMetric
+                title="System CPU"
+                value={systemMetrics.cpu}
+                icon={<Cpu style={{ width: '1.25rem', height: '1.25rem', color: N.accent }} />}
+                color={N.accent}
+                subtitle="Quantum Processing"
+              />
+              <NeuralMetric
+                title="Memory Usage"
+                value={systemMetrics.memory}
+                icon={<Activity style={{ width: '1.25rem', height: '1.25rem', color: N.success }} />}
+                color={N.success}
+                subtitle="Neural Networks"
+              />
+              <NeuralMetric
+                title="Network I/O"
+                value={systemMetrics.network}
+                icon={<Network style={{ width: '1.25rem', height: '1.25rem', color: '#a855f7' }} />}
+                color="#a855f7"
+                subtitle="Data Streams"
+              />
+              <NeuralMetric
+                title="Storage"
+                value={systemMetrics.storage}
+                icon={<BarChart3 style={{ width: '1.25rem', height: '1.25rem', color: N.warning }} />}
+                color={N.warning}
+                subtitle="Data Lake"
+              />
+              <NeuralMetric
+                title="AI Processing"
+                value={systemMetrics.aiProcessing}
+                icon={<BrainCircuit style={{ width: '1.25rem', height: '1.25rem', color: '#10b981' }} />}
+                color="#10b981"
+                subtitle="ML Inference"
+              />
+              <NeuralMetric
+                title="Security Level"
+                value={systemMetrics.securityLevel}
+                icon={<ShieldCheck style={{ width: '1.25rem', height: '1.25rem', color: N.danger }} />}
+                color={N.danger}
+                subtitle="Threat Defense"
+              />
+            </div>
 
-          <NeuromorphicCard glowColor="purple">
-            <CardHeader>
-              <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                <BrainCircuit className="w-5 h-5 text-purple-400" />
-                Neurological Activity Monitor
-              </CardTitle>
-              <CardDescription className="text-[#888780]">
-                Real-time neural pulse monitoring across all system components
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
+            <NeuromorphicCard glowColor="#a855f7">
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <BrainCircuit style={{ width: '1.25rem', height: '1.25rem', color: '#a855f7' }} />
+                  <h3 style={{ fontWeight: '600', color: N.text }}>Neurological Activity Monitor</h3>
+                </div>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                  Real-time neural pulse monitoring across all system components
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {neurologicalPulses.slice(-10).map((pulse) => (
                   <NeuralPulse key={pulse.id} pulse={pulse} />
                 ))}
                 {neurologicalPulses.length === 0 && (
-                  <div className="text-center text-[#888780] py-8">
-                    <BrainCircuit className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <div style={{ textAlign: 'center', padding: '2rem', color: N.textSub }}>
+                    <BrainCircuit style={{ width: '3rem', height: '3rem', margin: '0 auto 0.5rem', opacity: 0.5 }} />
                     <p>Neural system initializing...</p>
                   </div>
                 )}
               </div>
-            </CardContent>
-          </NeuromorphicCard>
-        </TabsContent>
+            </NeuromorphicCard>
+          </div>
+        )}
 
         {/* Vista de Enterprise Clients */}
-        <TabsContent value="clients" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clients.map((client) => (
-              <EnterpriseClientCard key={client.id} client={client} />
-            ))}
-          </div>
+        {activeTab === 'clients' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+              {clients.map((client) => (
+                <EnterpriseClientCard key={client.id} client={client} />
+              ))}
+            </div>
 
-          {selectedClient && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-6"
-            >
-              <NeuromorphicCard glowColor="blue">
-                <CardHeader>
-                  <CardTitle className="text-[#2C2C2A]">Client Control Panel</CardTitle>
-                  <CardDescription className="text-[#888780]">
-                    Advanced controls for {clients.find(c => c.id === selectedClient)?.name}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
-                      <Activity className="w-4 h-4 mr-2" />
-                      Monitor
-                    </Button>
-                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
-                      <Power className="w-4 h-4 mr-2" />
-                      Control
-                    </Button>
-                    <Button variant="outline" className="bg-[#F0EDE8]/50 border-[#CCCAC5]">
-                      <BarChart3 className="w-4 h-4 mr-2" />
-                      Analyze
-                    </Button>
+            {selectedClient && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <NeuromorphicCard glowColor={N.accent}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <h3 style={{ fontWeight: '600', color: N.text }}>Client Control Panel</h3>
+                    <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                      Advanced controls for {clients.find(c => c.id === selectedClient)?.name}
+                    </p>
                   </div>
-                </CardContent>
-              </NeuromorphicCard>
-            </motion.div>
-          )}
-        </TabsContent>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+                    <NeuButton variant="secondary">
+                      <Settings style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                      Configure
+                    </NeuButton>
+                    <NeuButton variant="secondary">
+                      <Activity style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                      Monitor
+                    </NeuButton>
+                    <NeuButton variant="secondary">
+                      <Power style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                      Control
+                    </NeuButton>
+                    <NeuButton variant="secondary">
+                      <BarChart3 style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                      Analyze
+                    </NeuButton>
+                  </div>
+                </NeuromorphicCard>
+              </motion.div>
+            )}
+          </div>
+        )}
 
         {/* Vista de Seguridad */}
-        <TabsContent value="security" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <NeuromorphicCard glowColor="red">
-              <CardHeader>
-                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <AlertTriangle className="w-5 h-5 text-red-400" />
-                  Active Threats
-                </CardTitle>
-                <CardDescription className="text-[#888780]">
-                  Real-time global security threats
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {globalThreats.map((threat) => (
-                    <GlobalThreatIndicator key={threat.id} threat={threat} />
-                  ))}
+        {activeTab === 'security' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+            <NeuromorphicCard glowColor={N.danger}>
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <AlertTriangle style={{ width: '1.25rem', height: '1.25rem', color: N.danger }} />
+                  <h3 style={{ fontWeight: '600', color: N.text }}>Active Threats</h3>
                 </div>
-              </CardContent>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                  Real-time global security threats
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {globalThreats.map((threat) => (
+                  <GlobalThreatIndicator key={threat.id} threat={threat} />
+                ))}
+              </div>
             </NeuromorphicCard>
 
-            <NeuromorphicCard glowColor="green">
-              <CardHeader>
-                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <ShieldCheck className="w-5 h-5 text-green-400" />
-                  Security Metrics
-                </CardTitle>
-                <CardDescription className="text-[#888780]">
-                  System security status
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Encryption Level</span>
-                    <span className="text-green-400 font-bold">QUANTUM</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Threat Detection</span>
-                    <span className="text-green-400 font-bold">ACTIVE</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Access Control</span>
-                    <span className="text-green-400 font-bold">ZERO-TRUST</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Audit Trail</span>
-                    <span className="text-green-400 font-bold">IMMUTABLE</span>
-                  </div>
+            <NeuromorphicCard glowColor={N.success}>
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <ShieldCheck style={{ width: '1.25rem', height: '1.25rem', color: N.success }} />
+                  <h3 style={{ fontWeight: '600', color: N.text }}>Security Metrics</h3>
                 </div>
-              </CardContent>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                  System security status
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  { label: 'Encryption Level', value: 'QUANTUM', color: N.success },
+                  { label: 'Threat Detection', value: 'ACTIVE', color: N.success },
+                  { label: 'Access Control', value: 'ZERO-TRUST', color: N.success },
+                  { label: 'Audit Trail', value: 'IMMUTABLE', color: N.success }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: N.textSub }}>{item.label}</span>
+                    <span style={{ fontWeight: 'bold', color: item.color }}>{item.value}</span>
+                  </div>
+                ))}
+              </div>
             </NeuromorphicCard>
           </div>
-        </TabsContent>
+        )}
 
         {/* Vista de AI Cortex */}
-        <TabsContent value="ai" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <NeuromorphicCard glowColor="purple">
-              <CardHeader>
-                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <BrainCircuit className="w-5 h-5 text-purple-400" />
-                  Cortex Processing
-                </CardTitle>
-                <CardDescription className="text-[#888780]">
-                  AI decision engine status
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Model Version</span>
-                    <span className="text-purple-400 font-bold">v2.1.1</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Inference Speed</span>
-                    <span className="text-purple-400 font-bold">23ms</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Accuracy</span>
-                    <span className="text-purple-400 font-bold">97.3%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Learning Rate</span>
-                    <span className="text-purple-400 font-bold">0.01</span>
-                  </div>
+        {activeTab === 'ai' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+            <NeuromorphicCard glowColor="#a855f7">
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <BrainCircuit style={{ width: '1.25rem', height: '1.25rem', color: '#a855f7' }} />
+                  <h3 style={{ fontWeight: '600', color: N.text }}>Cortex Processing</h3>
                 </div>
-              </CardContent>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                  AI decision engine status
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  { label: 'Model Version', value: 'v2.1.1', color: '#a855f7' },
+                  { label: 'Inference Speed', value: '23ms', color: '#a855f7' },
+                  { label: 'Accuracy', value: '97.3%', color: '#a855f7' },
+                  { label: 'Learning Rate', value: '0.01', color: '#a855f7' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: N.textSub }}>{item.label}</span>
+                    <span style={{ fontWeight: 'bold', color: item.color }}>{item.value}</span>
+                  </div>
+                ))}
+              </div>
             </NeuromorphicCard>
 
-            <NeuromorphicCard glowColor="emerald">
-              <CardHeader>
-                <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <Network className="w-5 h-5 text-emerald-400" />
-                  Neural Networks
-                </CardTitle>
-                <CardDescription className="text-[#888780]">
-                  Federated learning status
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Active Devices</span>
-                    <span className="text-emerald-400 font-bold">2.5M</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Model Updates</span>
-                    <span className="text-emerald-400 font-bold">15,234</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Privacy Level</span>
-                    <span className="text-emerald-400 font-bold">MAXIMUM</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#5F5E5A]">Aggregation</span>
-                    <span className="text-emerald-400 font-bold">SECURE</span>
-                  </div>
+            <NeuromorphicCard glowColor="#10b981">
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Network style={{ width: '1.25rem', height: '1.25rem', color: '#10b981' }} />
+                  <h3 style={{ fontWeight: '600', color: N.text }}>Neural Networks</h3>
                 </div>
-              </CardContent>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>
+                  Federated learning status
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {[
+                  { label: 'Active Devices', value: '2.5M', color: '#10b981' },
+                  { label: 'Model Updates', value: '15,234', color: '#10b981' },
+                  { label: 'Privacy Level', value: 'MAXIMUM', color: '#10b981' },
+                  { label: 'Aggregation', value: 'SECURE', color: '#10b981' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: N.textSub }}>{item.label}</span>
+                    <span style={{ fontWeight: 'bold', color: item.color }}>{item.value}</span>
+                  </div>
+                ))}
+              </div>
             </NeuromorphicCard>
           </div>
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
 
       {/* Footer del Command Center */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="mt-8 text-center"
+        style={{ marginTop: '2rem', textAlign: 'center' }}
       >
-        <div className="flex items-center justify-center space-x-2 text-[#888780]">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm">NEUROMORPHIC SYSTEM ACTIVE</span>
-          <span className="text-slate-600">•</span>
-          <span className="text-sm">TIER 0 SUPREMACY</span>
-          <span className="text-slate-600">•</span>
-          <span className="text-sm">FORTUNE 10 READY</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: N.textSub }}>
+          <div style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: N.success, animation: 'pulse 2s infinite' }} />
+          <span style={{ fontSize: '0.875rem' }}>NEUROMORPHIC SYSTEM ACTIVE</span>
+          <span style={{ color: N.dark }}>•</span>
+          <span style={{ fontSize: '0.875rem' }}>TIER 0 SUPREMACY</span>
+          <span style={{ color: N.dark }}>•</span>
+          <span style={{ fontSize: '0.875rem' }}>FORTUNE 10 READY</span>
         </div>
       </motion.div>
     </div>

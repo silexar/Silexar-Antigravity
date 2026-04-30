@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📜 SILEXAR PULSE - GDPR Privacy Center
+ * ðŸ“œ SILEXAR PULSE - GDPR Privacy Center
  * Centro de privacidad y cumplimiento
  * 
  * @description Privacy Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Shield,
   Clock,
@@ -34,7 +32,7 @@ interface DataRequest {
   type: 'access' | 'deletion' | 'portability' | 'rectification'
   userId: string
   userEmail: string
-  status: 'pending' | 'processing' | 'completed' | 'rejected'
+  status: 'Pendiente' | 'Procesando' | 'completed' | 'rejected'
   createdAt: Date
   dueDate: Date
   completedAt?: Date
@@ -44,7 +42,7 @@ interface DataRequest {
 export function GDPRPrivacy() {
   const [requests, setRequests] = useState<DataRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all')
+  const [filter, setFilter] = useState<'all' | 'Pendiente' | 'completed'>('all')
 
   useEffect(() => {
     loadPrivacyData()
@@ -60,7 +58,7 @@ export function GDPRPrivacy() {
         type: 'access',
         userId: 'usr_12345',
         userEmail: 'maria@example.com',
-        status: 'pending',
+        status: 'Pendiente',
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
         dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000)
       },
@@ -69,7 +67,7 @@ export function GDPRPrivacy() {
         type: 'deletion',
         userId: 'usr_67890',
         userEmail: 'carlos@example.com',
-        status: 'processing',
+        status: 'Procesando',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
         dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
         notes: 'Eliminando datos de campañas asociadas'
@@ -101,21 +99,21 @@ export function GDPRPrivacy() {
 
   const getTypeStyle = (type: string) => {
     switch (type) {
-      case 'access': return 'bg-blue-500/20 text-blue-400'
-      case 'deletion': return 'bg-red-500/20 text-red-400'
-      case 'portability': return 'bg-purple-500/20 text-purple-400'
-      case 'rectification': return 'bg-yellow-500/20 text-yellow-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'access': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'deletion': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'portability': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'rectification': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400'
-      case 'processing': return 'bg-blue-500/20 text-blue-400'
-      case 'completed': return 'bg-green-500/20 text-green-400'
-      case 'rejected': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'Pendiente': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'Procesando': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'completed': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'rejected': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -125,7 +123,7 @@ export function GDPRPrivacy() {
   }
 
   const processRequest = (id: string) => {
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'processing' } : r))
+    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'Procesando' } : r))
   }
 
   const completeRequest = (id: string) => {
@@ -134,21 +132,21 @@ export function GDPRPrivacy() {
 
   const filteredRequests = requests.filter(r => {
     switch (filter) {
-      case 'pending': return r.status === 'pending' || r.status === 'processing'
+      case 'Pendiente': return r.status === 'Pendiente' || r.status === 'Procesando'
       case 'completed': return r.status === 'completed'
       default: return true
     }
   })
 
-  const pendingCount = requests.filter(r => r.status === 'pending' || r.status === 'processing').length
+  const pendingCount = requests.filter(r => r.status === 'Pendiente' || r.status === 'Procesando').length
   const urgentCount = requests.filter(r => getDaysRemaining(r.dueDate) <= 7 && r.status !== 'completed').length
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando GDPR Center...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando GDPR Center...</p>
         </div>
       </div>
     )
@@ -158,20 +156,19 @@ export function GDPRPrivacy() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Shield className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Shield className="w-5 h-5 text-[#6888ff]" />
           GDPR / Privacy Center
         </h3>
         <div className="flex items-center gap-2">
-          {(['all', 'pending', 'completed'] as const).map(f => (
+          {(['all', 'Pendiente', 'completed'] as const).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 text-sm rounded ${
-                filter === f ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
-              }`}
+              className={`px-3 py-1.5 text-sm rounded ${filter === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                }`}
             >
-              {f === 'all' ? 'Todas' : f === 'pending' ? 'Pendientes' : 'Completadas'}
+              {f === 'all' ? 'Todas' : f === 'Pendiente' ? 'Pendientes' : 'Completadas'}
             </button>
           ))}
         </div>
@@ -179,33 +176,33 @@ export function GDPRPrivacy() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{requests.length}</p>
-          <p className="text-xs text-slate-400">Total Requests</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{requests.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Requests</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{pendingCount}</p>
-          <p className="text-xs text-slate-400">Pendientes</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{pendingCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Pendientes</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{urgentCount}</p>
-          <p className="text-xs text-slate-400">Urgentes ({'<'}7 días)</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{urgentCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Urgentes ({'<'}7 días)</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {requests.filter(r => r.status === 'completed').length}
           </p>
-          <p className="text-xs text-slate-400">Completadas</p>
+          <p className="text-xs text-[#9aa3b8]">Completadas</p>
         </div>
       </div>
 
       {/* Urgent Warning */}
       {urgentCount > 0 && (
-        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-red-400" />
+        <div className="p-4 bg-[#6888ff]/10 border border-[#6888ff]/30 rounded-lg flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
           <div>
-            <span className="text-red-400 font-medium">{urgentCount} solicitudes vencen en menos de 7 días</span>
-            <p className="text-sm text-slate-400">GDPR requiere responder en 30 días máximo</p>
+            <span className="text-[#6888ff] font-medium">{urgentCount} solicitudes vencen en menos de 7 días</span>
+            <p className="text-sm text-[#9aa3b8]">GDPR requiere responder en 30 días máximo</p>
           </div>
         </div>
       )}
@@ -213,7 +210,7 @@ export function GDPRPrivacy() {
       {/* Requests List */}
       <div className="space-y-3">
         {filteredRequests.map(request => (
-          <NeuromorphicCard key={request.id} variant="embossed" className="p-4">
+          <NeuCard key={request.id} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
@@ -225,12 +222,11 @@ export function GDPRPrivacy() {
                   </span>
                 </div>
               </div>
-              <div className={`text-sm ${
-                getDaysRemaining(request.dueDate) <= 7 && request.status !== 'completed'
-                  ? 'text-red-400' : 'text-slate-400'
-              }`}>
+              <div className={`text-sm ${getDaysRemaining(request.dueDate) <= 7 && request.status !== 'completed'
+                ? 'text-[#6888ff]' : 'text-[#9aa3b8]'
+                }`}>
                 <Clock className="w-3 h-3 inline mr-1" />
-                {request.status === 'completed' 
+                {request.status === 'completed'
                   ? `Completado ${request.completedAt?.toLocaleDateString()}`
                   : `${getDaysRemaining(request.dueDate)} días restantes`
                 }
@@ -239,40 +235,40 @@ export function GDPRPrivacy() {
 
             <div className="flex items-center gap-4 mb-2">
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-slate-400" />
-                <span className="text-white">{request.userEmail}</span>
+                <User className="w-4 h-4 text-[#9aa3b8]" />
+                <span className="text-[#69738c]">{request.userEmail}</span>
               </div>
-              <span className="text-xs text-slate-500">ID: {request.userId}</span>
+              <span className="text-xs text-[#9aa3b8]">ID: {request.userId}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[#9aa3b8]">
                 Solicitado: {request.createdAt.toLocaleDateString()}
               </span>
 
-              {request.status === 'pending' && (
+              {request.status === 'Pendiente' && (
                 <div className="flex items-center gap-2">
-                  <NeuromorphicButton variant="primary" size="sm" onClick={() => processRequest(request.id)}>
+                  <NeuButton variant="primary" onClick={() => processRequest(request.id)}>
                     <Eye className="w-3 h-3 mr-1" />
                     Procesar
-                  </NeuromorphicButton>
+                  </NeuButton>
                 </div>
               )}
 
-              {request.status === 'processing' && (
+              {request.status === 'Procesando' && (
                 <div className="flex items-center gap-2">
-                  <NeuromorphicButton variant="primary" size="sm" onClick={() => completeRequest(request.id)}>
+                  <NeuButton variant="primary" onClick={() => completeRequest(request.id)}>
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Marcar Completado
-                  </NeuromorphicButton>
+                  </NeuButton>
                 </div>
               )}
             </div>
 
             {request.notes && (
-              <p className="mt-2 text-sm text-slate-400 italic">{request.notes}</p>
+              <p className="mt-2 text-sm text-[#9aa3b8] italic">{request.notes}</p>
             )}
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

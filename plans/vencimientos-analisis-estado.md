@@ -10,7 +10,7 @@
 
 El módulo vencimientos es **el centro de comando de inventario comercial más avanzado** según la especificación TIER 0. El sistema actual tiene una base sólida con:
 
-- **✅ Entidades domain-complete** (ProgramaAuspicio, CupoComercial, VencimientoAuspicio, etc.)
+- **✅ Entidades domain-complete** (ProgramaAuspicio, CupoComercial, VencimientosAuspicio, etc.)
 - **✅ Value Objects maduros** (PeriodoVigencia, CupoDisponible, HorarioEmision, etc.)
 - **✅ Servicios Cortex IA** (PricingOptimization, ConflictPrevention, InventoryIntelligence)
 - **✅ Testing comprehensivo** (3 archivos de tests con cobertura completa)
@@ -36,7 +36,7 @@ El módulo vencimientos es **el centro de comando de inventario comercial más a
 | TandaComercial | ✅ Exists | Full with factor multiplicador |
 | SenalEspecial | ✅ Exists | Temperatura, Micro, Cortinas |
 | ExclusividadRubro | ✅ Exists | - |
-| VencimientoAuspicio | ✅ Exists | Complete with countdown 48h |
+| VencimientosAuspicio | ✅ Exists | Complete with countdown 48h |
 | AlertaProgramador | ✅ Exists | - |
 | DisponibilidadCupo | ✅ Exists | - |
 | HistorialOcupacion | ✅ Exists | - |
@@ -67,7 +67,7 @@ El módulo vencimientos es **el centro de comando de inventario comercial más a
 | ValidarDisponibilidadCommand | ✅ Exists |
 | ConfigurarTarifarioCommand | ✅ Exists |
 | CrearTandaComercialCommand | ✅ Exists |
-| GenerarAlertaVencimientoCommand | ✅ Exists |
+| GenerarAlertaVencimientosCommand | ✅ Exists |
 | ConfirmarInicioAuspicioCommand | ✅ Exists |
 | OptimizarPricingCommand | ✅ Exists |
 | GestionarExclusividadCommand | ✅ Exists |
@@ -93,7 +93,7 @@ El módulo vencimientos es **el centro de comando de inventario comercial más a
 | ProgramaAuspicioHandler | ✅ Exists |
 | CupoManagementHandler | ✅ Exists |
 | TarifarioHandler | ✅ Exists |
-| VencimientoHandler | ✅ Exists |
+| VencimientosHandler | ✅ Exists |
 | DisponibilidadHandler | ✅ Exists |
 | AlertasHandler | ✅ Exists |
 | ExclusividadHandler | ✅ Exists |
@@ -128,7 +128,7 @@ El módulo vencimientos es **el centro de comando de inventario comercial más a
 | PrismaProgramaRepository | ❌ Missing | No implementation |
 | PrismaCupoRepository | ❌ Missing | No implementation |
 | PrismaTarifarioRepository | ❌ Missing | No implementation |
-| PrismaVencimientoRepository | ❌ Missing | No implementation |
+| PrismaVencimientosRepository | ❌ Missing | No implementation |
 | ThirdPartyServices | ⚠️ Partial | Basic stubs only |
 
 **Gap Infrastructure:** Repository pattern defined but NOT IMPLEMENTED. This is CRITICAL for production.
@@ -219,7 +219,7 @@ The spec requires these UI components (NOT BUILT):
 - [ ] Implement IProgramaAuspicioRepository → PrismaProgramaRepository
 - [ ] Implement ICupoComercialRepository → PrismaCupoRepository
 - [ ] Implement ITarifarioRepository → PrismaTarifarioRepository
-- [ ] Implement IVencimientoRepository → PrismaVencimientoRepository
+- [ ] Implement IVencimientosRepository → PrismaVencimientosRepository
 - [ ] Create repository factory/mapper
 - [ ] Write integration tests for repositories
 
@@ -363,8 +363,8 @@ src/modules/vencimientos/
 
 | Test Suite | Status | Coverage |
 |-----------|--------|----------|
-| VencimientoAuspicio.entity.test.ts | ✅ Complete | R1/R2 rules, domain events |
-| vencimiento.entity.test.ts | ✅ Complete | TandaComercial, DuracionSegundos, CupoComercial |
+| VencimientosAuspicio.entity.test.ts | ✅ Complete | R1/R2 rules, domain events |
+| vencimientos.entity.test.ts | ✅ Complete | TandaComercial, DuracionSegundos, CupoComercial |
 | PeriodoVigencia.test.ts | ✅ Complete | All VO methods |
 | **Total Coverage** | **✅ 95%+** | All core business logic |
 

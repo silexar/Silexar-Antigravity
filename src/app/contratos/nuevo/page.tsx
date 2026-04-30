@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📋 SILEXAR PULSE - Página Nuevo Contrato TIER 0
  * 
  * @description Página de entrada inteligente para creación de contratos
@@ -98,8 +98,8 @@ const tiposContrato: TipoContratoOption[] = [
     descripcion: 'Cliente nuevo o campaña nueva',
     beneficio: 'IA sugerirá términos óptimos',
     beneficioIcono: <Sparkles className="w-4 h-4 text-[#6888ff]" />,
-    color: 'border-indigo-200 hover:border-indigo-400',
-    bgGradient: 'from-indigo-50 to-indigo-100/50'
+    color: 'border-[#bec8de] hover:border-[#6888ff]',
+    bgGradient: ''
   },
   {
     id: 'renovacion',
@@ -107,9 +107,9 @@ const tiposContrato: TipoContratoOption[] = [
     titulo: 'Renovación Automática',
     descripcion: 'Basado en contrato existente',
     beneficio: 'Términos pre-validados',
-    beneficioIcono: <CheckCircle2 className="w-4 h-4 text-green-500" />,
-    color: 'border-green-200 hover:border-green-400',
-    bgGradient: 'from-green-50 to-green-100/50'
+    beneficioIcono: <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />,
+    color: 'border-[#bec8de] hover:border-[#6888ff]',
+    bgGradient: ''
   },
   {
     id: 'programatico',
@@ -117,9 +117,9 @@ const tiposContrato: TipoContratoOption[] = [
     titulo: 'Contrato Programático',
     descripcion: 'Para campañas de alto volumen',
     beneficio: 'Optimización automática',
-    beneficioIcono: <Target className="w-4 h-4 text-purple-500" />,
-    color: 'border-purple-200 hover:border-purple-400',
-    bgGradient: 'from-purple-50 to-purple-100/50'
+    beneficioIcono: <Target className="w-4 h-4 text-[#6888ff]" />,
+    color: 'border-[#bec8de] hover:border-[#6888ff]',
+    bgGradient: ''
   },
   {
     id: 'marco',
@@ -127,9 +127,9 @@ const tiposContrato: TipoContratoOption[] = [
     titulo: 'Contrato Marco Anual',
     descripcion: 'Cliente corporativo recurrente',
     beneficio: 'Términos preferenciales',
-    beneficioIcono: <Building2 className="w-4 h-4 text-blue-500" />,
-    color: 'border-blue-200 hover:border-blue-400',
-    bgGradient: 'from-blue-50 to-blue-100/50'
+    beneficioIcono: <Building2 className="w-4 h-4 text-[#6888ff]" />,
+    color: 'border-[#bec8de] hover:border-[#6888ff]',
+    bgGradient: ''
   },
   {
     id: 'express',
@@ -137,9 +137,9 @@ const tiposContrato: TipoContratoOption[] = [
     titulo: 'Contrato Express (Móvil)',
     descripcion: 'Creación rápida desde terreno',
     beneficio: 'Validación instantánea',
-    beneficioIcono: <Zap className="w-4 h-4 text-amber-500" />,
-    color: 'border-amber-200 hover:border-amber-400',
-    bgGradient: 'from-amber-50 to-amber-100/50'
+    beneficioIcono: <Zap className="w-4 h-4 text-[#6888ff]" />,
+    color: 'border-[#bec8de] hover:border-[#6888ff]',
+    bgGradient: ''
   }
 ];
 
@@ -183,7 +183,7 @@ function TipoContratoCard({
       className={`
         relative p-4 rounded-2xl transition-all text-left w-full
         ${seleccionado
-          ? `border-indigo-500 shadow-lg ring-2 ring-indigo-500/20`
+          ? `border-[#bec8de] shadow-lg ring-2 ring-indigo-500/20`
           : `border-2 ${tipo.color} hover:shadow-md`
         }
       `}
@@ -282,7 +282,7 @@ function NuevoContratoContent() {
   };
 
   const handleCancel = () => {
-    router.push('/contratos/comando');
+    router.push('/contratos');
   };
 
   const iniciarWizard = () => {
@@ -354,10 +354,10 @@ function NuevoContratoContent() {
                 <NeuromorphicCard className="mb-6">
                   <div className="flex items-center gap-3">
                     {contexto.origen === 'anunciante' && <Building2 className="w-5 h-5 text-[#6888ff]" />}
-                    {contexto.origen === 'renovacion' && <RefreshCw className="w-5 h-5 text-green-600" />}
-                    {contexto.origen === 'oportunidad' && <Target className="w-5 h-5 text-purple-600" />}
-                    {contexto.origen === 'whatsapp' && <MessageSquare className="w-5 h-5 text-green-600" />}
-                    {contexto.origen === 'email' && <Mail className="w-5 h-5 text-blue-600" />}
+                    {contexto.origen === 'renovacion' && <RefreshCw className="w-5 h-5 text-[#6888ff]" />}
+                    {contexto.origen === 'oportunidad' && <Target className="w-5 h-5 text-[#6888ff]" />}
+                    {contexto.origen === 'whatsapp' && <MessageSquare className="w-5 h-5 text-[#6888ff]" />}
+                    {contexto.origen === 'email' && <Mail className="w-5 h-5 text-[#6888ff]" />}
                     <div>
                       <p className="font-medium text-[#69738c]">
                         {contexto.origen === 'anunciante' && `📋 Creando contrato para: ${contexto.anuncianteNombre || contexto.anuncianteId}`}
@@ -370,7 +370,7 @@ function NuevoContratoContent() {
                         Los datos se pre-llenarán automáticamente
                       </p>
                     </div>
-                    <Sparkles className="w-5 h-5 text-amber-500 ml-auto" />
+                    <Sparkles className="w-5 h-5 text-[#6888ff] ml-auto" />
                   </div>
                 </NeuromorphicCard>
               </motion.div>
@@ -380,7 +380,7 @@ function NuevoContratoContent() {
           {/* Loading */}
           {detectando && (
             <div className="text-center py-8">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin" />
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full border-4 border-[#bec8de] border-t-[#6888ff] animate-spin" />
               <p className="text-[#69738c]">Detectando contexto...</p>
             </div>
           )}

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ✅ SILEXAR PULSE - Paso 4: Aprobaciones TIER 0
  *
  * @description Cuarto paso del wizard - Configuración del flujo
@@ -43,20 +43,20 @@ const NivelAprobacionCard: React.FC<{
   descripcion: string;
 }> = ({ nivel, esRequerido, titulo, descripcion }) => {
   const getNivelColor = () => {
-    if (!esRequerido) return "from-slate-200 to-slate-300";
+    if (!esRequerido) return "from-[#bec8de] to-[#9aa3b8]";
     switch (nivel) {
       case "automatico":
-        return "from-emerald-400 to-emerald-500";
+        return "from-[#6888ff] to-[#5572ee]";
       case "supervisor":
-        return "from-blue-400 to-blue-500";
+        return "from-[#6888ff] to-[#5572ee]";
       case "gerente_comercial":
-        return "from-purple-400 to-purple-500";
+        return "from-[#6888ff] to-[#5572ee]";
       case "gerente_general":
-        return "from-orange-400 to-orange-500";
+        return "from-[#6888ff] to-[#5572ee]";
       case "directorio":
-        return "from-red-400 to-red-500";
+        return "from-[#6888ff] to-[#5572ee]";
       default:
-        return "from-slate-400 to-slate-500";
+        return "from-[#bec8de] to-[#9aa3b8]";
     }
   };
 
@@ -167,12 +167,12 @@ const AprobadoresList: React.FC<{
 }> = ({ aprobadores }) => {
   if (!aprobadores || aprobadores.aprobadores.length === 0) {
     return (
-      <div className="p-6 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
-        <CheckCheck className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
-        <h4 className="font-semibold text-emerald-800">
+      <div className="p-6 rounded-xl bg-[#6888ff]/5 border border-[#bec8de] text-center">
+        <CheckCheck className="w-12 h-12 mx-auto mb-3 text-[#6888ff]" />
+        <h4 className="font-semibold text-[#6888ff]">
           Aprobación Automática
         </h4>
-        <p className="text-sm text-emerald-600 mt-1">
+        <p className="text-sm text-[#6888ff] mt-1">
           Este contrato no requiere aprobaciones adicionales
         </p>
       </div>
@@ -190,7 +190,7 @@ const AprobadoresList: React.FC<{
           className="flex items-center justify-between p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de40] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center text-white font-bold">
               {aprobador.nombre.charAt(0)}
             </div>
             <div>
@@ -219,17 +219,17 @@ const AprobadoresList: React.FC<{
               px-3 py-1.5 rounded-lg text-xs font-medium
               ${
                 aprobador.estado === "pendiente"
-                  ? "bg-amber-100 text-amber-700"
+                  ? "bg-[#6888ff]/10 text-[#6888ff]"
                   : ""
               }
               ${
                 aprobador.estado === "aprobado"
-                  ? "bg-emerald-100 text-emerald-700"
+                  ? "bg-[#6888ff]/10 text-[#6888ff]"
                   : ""
               }
               ${
                 aprobador.estado === "rechazado"
-                  ? "bg-red-100 text-red-700"
+                  ? "bg-[#dfeaff] text-[#9aa3b8]"
                   : ""
               }
             `}
@@ -324,8 +324,8 @@ export const StepAprobaciones: React.FC<StepAprobacionesProps> = ({
     <div className="space-y-8">
       {/* Título del paso */}
       <div className="flex items-center gap-4">
-        <div className="p-3 rounded-2xl bg-[#f59e0b15]">
-          <CheckCircle2 className="w-7 h-7 text-amber-600" />
+        <div className="p-3 rounded-2xl bg-[#6888ff15]">
+          <CheckCircle2 className="w-7 h-7 text-[#6888ff]" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#69738c]">
@@ -348,13 +348,13 @@ export const StepAprobaciones: React.FC<StepAprobacionesProps> = ({
           </div>
           <div>
             <p className="text-sm text-[#9aa3b8]">Descuento Aplicado</p>
-            <p className="text-xl font-bold text-purple-600">
+            <p className="text-xl font-bold text-[#6888ff]">
               {state.descuentoPorcentaje}%
             </p>
           </div>
           <div>
             <p className="text-sm text-[#9aa3b8]">Términos de Pago</p>
-            <p className="text-xl font-bold text-emerald-600">
+            <p className="text-xl font-bold text-[#6888ff]">
               {state.terminosPago.diasPago} días
             </p>
           </div>
@@ -402,7 +402,7 @@ export const StepAprobaciones: React.FC<StepAprobacionesProps> = ({
         {/* Aprobadores */}
         <div className="p-6 rounded-2xl bg-[#dfeaff] shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]">
           <div className="flex items-center gap-3 mb-5">
-            <User className="w-6 h-6 text-purple-500" />
+            <User className="w-6 h-6 text-[#6888ff]" />
             <h3 className="text-lg font-semibold text-[#69738c]">
               Aprobadores Asignados
             </h3>
@@ -448,15 +448,15 @@ export const StepAprobaciones: React.FC<StepAprobacionesProps> = ({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-5 rounded-2xl bg-amber-50 border border-amber-200"
+            className="p-5 rounded-2xl bg-[#6888ff]/5 border border-[#bec8de]"
           >
             <div className="flex items-start gap-4">
-              <AlertTriangle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-6 h-6 text-[#6888ff] flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-amber-800 mb-1">
+                <h4 className="font-semibold text-[#6888ff] mb-1">
                   Proceso de Aprobación Extenso
                 </h4>
-                <p className="text-sm text-amber-700">
+                <p className="text-sm text-[#6888ff]">
                   Este contrato requiere{" "}
                   {state.flujoAprobacion.aprobadores.length}{" "}
                   niveles de aprobación, lo que podría demorar hasta{" "}

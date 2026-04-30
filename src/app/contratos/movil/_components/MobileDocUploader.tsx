@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? MOBILE: Cargador de Documentos del Contrato
  * 
  * Permite al ejecutivo adjuntar documentos al contrato:
- * cámara, galería, archivos. Preview interactivo y
+ * cï¿½mara, galerï¿½a, archivos. Preview interactivo y
  * upload simulado con progreso.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -82,7 +82,7 @@ export function MobileDocUploader({
   }, [onAgregar]);
 
   const handleCamera = () => {
-    // En producción: abrir cámara real
+    // En producciï¿½n: abrir cï¿½mara real
     simularUpload('Foto_contrato.jpg', 'imagen', 'camara');
   };
 
@@ -133,10 +133,10 @@ export function MobileDocUploader({
             <div key={doc.id} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3">
               {/* ICONO */}
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                doc.tipo === 'imagen' ? 'bg-blue-100' : doc.tipo === 'pdf' ? 'bg-red-100' : 'bg-[#dfeaff]'
+                doc.tipo === 'imagen' ? 'bg-[#6888ff]/10' : doc.tipo === 'pdf' ? 'bg-[#dfeaff]' : 'bg-[#dfeaff]'
               }`}>
-                {doc.tipo === 'imagen' ? <Image className="w-5 h-5 text-blue-500" /> :
-                 doc.tipo === 'pdf' ? <File className="w-5 h-5 text-red-500" /> :
+                {doc.tipo === 'imagen' ? <Image className="w-5 h-5 text-[#6888ff]" /> :
+                 doc.tipo === 'pdf' ? <File className="w-5 h-5 text-[#9aa3b8]" /> :
                  <File className="w-5 h-5 text-[#9aa3b8]" />}
               </div>
 
@@ -151,12 +151,12 @@ export function MobileDocUploader({
                     </div>
                   )}
                   {doc.estado === 'completado' && (
-                    <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                    <span className="text-[10px] text-[#6888ff] font-bold flex items-center gap-0.5">
                       <CheckCircle2 className="w-3 h-3" /> Listo
                     </span>
                   )}
                   {doc.estado === 'error' && (
-                    <span className="text-[10px] text-red-600 font-bold flex items-center gap-0.5">
+                    <span className="text-[10px] text-[#9aa3b8] font-bold flex items-center gap-0.5">
                       <AlertTriangle className="w-3 h-3" /> Error
                     </span>
                   )}
@@ -173,8 +173,8 @@ export function MobileDocUploader({
                       <Eye className="w-3.5 h-3.5 text-[#9aa3b8]" />
                     </button>
                   )}
-                  <button aria-label="Eliminar" onClick={() => onEliminar(doc.id)} className="p-1.5 rounded-lg bg-red-50 active:scale-90">
-                    <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                  <button aria-label="Eliminar" onClick={() => onEliminar(doc.id)} className="p-1.5 rounded-lg bg-[#dfeaff] active:scale-90">
+                    <Trash2 className="w-3.5 h-3.5 text-[#9aa3b8]" />
                   </button>
                 </div>
               )}
@@ -199,23 +199,23 @@ export function MobileDocUploader({
             </div>
 
             <button onClick={handleCamera}
-              className="w-full p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-center gap-3 active:scale-[0.97]">
-              <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+              className="w-full p-4 bg-[#6888ff]/5 border border-[#bec8de] rounded-2xl flex items-center gap-3 active:scale-[0.97]">
+              <div className="w-10 h-10 rounded-xl bg-[#6888ff]/50 flex items-center justify-center">
                 <Camera className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
                 <p className="font-bold text-sm text-[#69738c]">Tomar Foto</p>
-                <p className="text-[10px] text-[#9aa3b8]">Fotografía un documento o propuesta</p>
+                <p className="text-[10px] text-[#9aa3b8]">Fotografï¿½a un documento o propuesta</p>
               </div>
             </button>
 
             <button onClick={handleGaleria}
-              className="w-full p-4 bg-purple-50 border border-purple-100 rounded-2xl flex items-center gap-3 active:scale-[0.97]">
-              <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
+              className="w-full p-4 bg-[#6888ff]/5 border border-[#bec8de] rounded-2xl flex items-center gap-3 active:scale-[0.97]">
+              <div className="w-10 h-10 rounded-xl bg-[#6888ff]/50 flex items-center justify-center">
                 <Image className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm text-[#69738c]">Galería</p>
+                <p className="font-bold text-sm text-[#69738c]">Galerï¿½a</p>
                 <p className="text-[10px] text-[#9aa3b8]">Seleccionar imagen existente</p>
               </div>
             </button>

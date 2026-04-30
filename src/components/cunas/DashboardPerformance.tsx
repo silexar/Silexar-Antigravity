@@ -188,7 +188,7 @@ export function DashboardPerformance() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [alertas, _setAlertas] = useState<AlertaOperativa[]>([
-    { id: '1', tipo: 'critica', categoria: 'vencimiento', mensaje: 'SPX000124 vence hoy', timestamp: new Date() },
+    { id: '1', tipo: 'critica', categoria: 'vencimientos', mensaje: 'SPX000124 vence hoy', timestamp: new Date() },
     { id: '2', tipo: 'alta', categoria: 'aprobacion', mensaje: '3 cuñas pendientes hace +4h', timestamp: new Date() },
     { id: '3', tipo: 'media', categoria: 'emision', mensaje: 'Banco Chile: emisiones -15% vs objetivo', timestamp: new Date() }
   ]);

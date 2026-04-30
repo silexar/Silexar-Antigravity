@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔑 SILEXAR PULSE - API Keys Manager
+ * ðŸ”‘ SILEXAR PULSE - API Keys Manager
  * Gestión de claves API
  * 
  * @description API Key Management:
@@ -13,13 +13,12 @@
  * @version 2025.1.0
  * @tier TIER_0_FORTUNE_10
  * @security MILITARY_GRADE
+ * @last_modified 2025-04-28 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Key,
   Plus,
@@ -63,7 +62,7 @@ export function APIKeysManager() {
         createdAt: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000),
         lastUsed: new Date(Date.now() - 5 * 60 * 1000),
         status: 'active',
-        permissions: ['read', 'write', 'delete'],
+        permissions: ['read', 'write', 'Eliminar'],
         usage: { requests: 1250000, limit: 5000000 }
       },
       {
@@ -106,7 +105,7 @@ export function APIKeysManager() {
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         lastUsed: new Date(),
         status: 'active',
-        permissions: ['read', 'write', 'delete'],
+        permissions: ['read', 'write', 'Eliminar'],
         usage: { requests: 12000, limit: 50000 }
       }
     ])
@@ -116,10 +115,10 @@ export function APIKeysManager() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500/20 text-green-400'
-      case 'expired': return 'bg-red-500/20 text-red-400'
-      case 'revoked': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'active': return { background: `${N.accent}20`, color: N.accent }
+      case 'expired': return { background: `${N.accent}20`, color: N.accent }
+      case 'revoked': return { background: `${N.dark}20`, color: N.textSub }
+      default: return { background: `${N.dark}20`, color: N.textSub }
     }
   }
 
@@ -130,12 +129,10 @@ export function APIKeysManager() {
   }
 
   const rotateKey = (id: string) => {
-    
     alert('Key rotada exitosamente. La nueva key ha sido generada.')
   }
 
   const copyKey = (id: string) => {
-    
     alert('API Key copiada al portapapeles')
   }
 
@@ -144,55 +141,63 @@ export function APIKeysManager() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando API Keys...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando API Keys...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Key className="w-5 h-5 text-yellow-400" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <Key style={{ width: 20, height: 20, color: N.accent }} />
           API Keys Manager
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
-          <Plus className="w-4 h-4 mr-1" />
+        <NeuButton variant="primary">
+          <Plus style={{ width: 16, height: 16, marginRight: 4 }} />
           Crear Nueva Key
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{activeKeys}</p>
-          <p className="text-xs text-slate-400">Keys Activas</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+        <div style={{ padding: '12px', background: `${N.accent}10`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{activeKeys}</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Keys Activas</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{keys.length}</p>
-          <p className="text-xs text-slate-400">Total Keys</p>
+        <div style={{ padding: '12px', background: `${N.dark}30`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{keys.length}</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Total Keys</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{expiringKeys.length}</p>
-          <p className="text-xs text-slate-400">Por Expirar</p>
+        <div style={{ padding: '12px', background: `${N.accent}10`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{expiringKeys.length}</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Por Expirar</p>
         </div>
       </div>
 
       {/* Expiring Warning */}
       {expiringKeys.length > 0 && (
-        <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-400" />
-            <span className="text-yellow-400 font-medium">Keys por expirar</span>
+        <div style={{ padding: '1rem', background: `${N.accent}10`, border: `1px solid ${N.accent}30`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <AlertTriangle style={{ width: 20, height: 20, color: N.accent }} />
+            <span style={{ color: N.accent, fontWeight: 500 }}>Keys por expirar</span>
           </div>
-          <div className="space-y-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {expiringKeys.map(key => (
-              <p key={key.id} className="text-sm text-slate-300">
+              <p key={key.id} style={{ color: N.text, fontSize: '0.875rem' }}>
                 {key.name} expira en {Math.ceil((key.expiresAt!.getTime() - Date.now()) / (24 * 60 * 60 * 1000))} días
               </p>
             ))}
@@ -201,79 +206,80 @@ export function APIKeysManager() {
       )}
 
       {/* Keys List */}
-      <div className="space-y-3">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {keys.map(key => (
-          <NeuromorphicCard key={key.id} variant="embossed" className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <Shield className={`w-5 h-5 ${key.status === 'active' ? 'text-green-400' : 'text-slate-400'}`} />
+          <NeuCard key={key.id} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Shield style={{ width: 20, height: 20, color: key.status === 'active' ? N.accent : N.textSub }} />
                 <div>
-                  <span className="text-white font-medium">{key.name}</span>
+                  <span style={{ color: N.text, fontWeight: 500 }}>{key.name}</span>
                   {key.tenant && (
-                    <span className="text-xs ml-2 px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+                    <span style={{ fontSize: '0.75rem', marginLeft: '8px', padding: '2px 8px', background: `${N.dark}50`, color: N.textSub, borderRadius: '4px' }}>
                       {key.tenant}
                     </span>
                   )}
-                  <div className="flex items-center gap-2 mt-1">
-                    <code className="text-xs text-slate-400">{key.keyPrefix}</code>
-                    <button onClick={() => copyKey(key.id)} className="text-slate-500 hover:text-white" aria-label="Copiar">
-                      <Copy className="w-3 h-3" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <code style={{ color: N.textSub, fontSize: '0.75rem' }}>{key.keyPrefix}</code>
+                    <button onClick={() => copyKey(key.id)} style={{ background: 'none', border: 'none', color: N.textSub, cursor: 'pointer' }} aria-label="Copiar">
+                      <Copy style={{ width: 12, height: 12 }} />
                     </button>
                   </div>
                 </div>
               </div>
-              <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(key.status)}`}>
+              <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '4px', ...getStatusStyle(key.status) }}>
                 {key.status}
               </span>
             </div>
 
-            <div className="grid grid-cols-4 gap-3 mb-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '12px' }}>
               <div>
-                <p className="text-xs text-slate-400">Permisos</p>
-                <div className="flex gap-1 mt-1">
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Permisos</p>
+                <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                   {key.permissions.map(p => (
-                    <span key={p} className="text-xs px-1.5 py-0.5 bg-slate-700 text-slate-300 rounded capitalize">
+                    <span key={p} style={{ fontSize: '0.75rem', padding: '2px 6px', background: `${N.dark}50`, color: N.textSub, borderRadius: '4px', textTransform: 'capitalize' }}>
                       {p}
                     </span>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Uso</p>
-                <p className="text-sm text-white">
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Uso</p>
+                <p style={{ color: N.text, fontSize: '0.875rem' }}>
                   {(key.usage.requests / 1000).toFixed(0)}K / {(key.usage.limit / 1000).toFixed(0)}K
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Último uso</p>
-                <p className="text-sm text-white">
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Ášltimo uso</p>
+                <p style={{ color: N.text, fontSize: '0.875rem' }}>
                   {key.lastUsed ? key.lastUsed.toLocaleDateString() : 'Nunca'}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Expira</p>
-                <p className={`text-sm ${
-                  key.expiresAt && key.expiresAt.getTime() < Date.now() + 7 * 24 * 60 * 60 * 1000 
-                    ? 'text-yellow-400' : 'text-white'
-                }`}>
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Expira</p>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: key.expiresAt && key.expiresAt.getTime() < Date.now() + 7 * 24 * 60 * 60 * 1000
+                    ? N.accent : N.text
+                }}>
                   {key.expiresAt ? key.expiresAt.toLocaleDateString() : 'Nunca'}
                 </p>
               </div>
             </div>
 
             {key.status === 'active' && (
-              <div className="flex items-center gap-2">
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => rotateKey(key.id)}>
-                  <RefreshCw className="w-3 h-3 mr-1" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <NeuButton variant="secondary" onClick={() => rotateKey(key.id)}>
+                  <RefreshCw style={{ width: 12, height: 12, marginRight: 4 }} />
                   Rotar
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => revokeKey(key.id)}>
-                  <Trash2 className="w-3 h-3 mr-1" />
+                </NeuButton>
+                <NeuButton variant="secondary" onClick={() => revokeKey(key.id)}>
+                  <Trash2 style={{ width: 12, height: 12, marginRight: 4 }} />
                   Revocar
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             )}
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

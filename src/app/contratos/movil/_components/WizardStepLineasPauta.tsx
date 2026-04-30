@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ?? MOBILE WIZARD � Paso 2: L�neas de Pauta
  * 
  * Cards interactivas para ver, editar, agregar y eliminar
@@ -161,7 +161,7 @@ export function WizardStepLineasPauta({
           {descuentoGlobal > 0 && (
             <div className="flex items-center justify-between mt-1">
               <span className="text-xs text-[#9aa3b8]">Descuento ({descuentoGlobal}%)</span>
-              <span className="text-sm font-mono text-red-400">-{formatMonto(totalBruto - totalNeto)}</span>
+              <span className="text-sm font-mono text-[#9aa3b8]">-{formatMonto(totalBruto - totalNeto)}</span>
             </div>
           )}
           <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#bec8de]">
@@ -257,9 +257,9 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
           <p className="text-[10px] text-[#9aa3b8]">{linea.productoNombre}</p>
         </div>
         <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
-          linea.fuenteDeteccion === 'manual' ? 'bg-blue-100 text-blue-700' :
-          linea.fuenteDeteccion === 'historial_cliente' ? 'bg-purple-100 text-purple-700' :
-          'bg-emerald-100 text-emerald-700'
+          linea.fuenteDeteccion === 'manual' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+          linea.fuenteDeteccion === 'historial_cliente' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+          'bg-[#6888ff]/10 text-[#6888ff]'
         }`}>
           {linea.fuenteDeteccion === 'ia_voz' ? 'IA Voz' :
            linea.fuenteDeteccion === 'ia_texto' ? 'IA Texto' :
@@ -296,7 +296,7 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
         </div>
         <div>
           <p className="text-[10px] text-[#9aa3b8]">Total Neto</p>
-          <p className="text-sm font-black text-emerald-600">{formatMonto(linea.totalNeto)}</p>
+          <p className="text-sm font-black text-[#6888ff]">{formatMonto(linea.totalNeto)}</p>
         </div>
       </div>
 
@@ -320,8 +320,8 @@ function LineaCard({ linea, editing, onToggleEdit, onCantidadChange, onDelete }:
 
       {/* ACCIONES EDICI�N */}
       {editing && (
-        <div className="px-4 py-2 bg-red-50 border-t border-red-100 flex justify-end">
-          <button onClick={onDelete} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 active:scale-95">
+        <div className="px-4 py-2 bg-[#dfeaff] border-t border-[#bec8de] flex justify-end">
+          <button onClick={onDelete} className="px-3 py-1.5 bg-[#dfeaff]0 text-white rounded-lg text-xs font-bold flex items-center gap-1 active:scale-95">
             <Trash2 className="w-3 h-3" /> Eliminar
           </button>
         </div>
@@ -351,19 +351,19 @@ function getCategoriaIcon(cat: LineaPautaSugerida['categoria']) {
 
 function getCategoriaColor(cat: LineaPautaSugerida['categoria']) {
   switch (cat) {
-    case 'Radio': return 'bg-gradient-to-br from-red-500 to-pink-500';
+    case 'Radio': return 'bg-gradient-to-br from-[#6888ff] to-pink-500';
     case 'Televisión': return 'bg-[#6888ff]';
-    case 'Digital': return 'bg-gradient-to-br from-emerald-500 to-teal-500';
-    case 'Prensa': return 'bg-gradient-to-br from-amber-500 to-orange-500';
+    case 'Digital': return 'bg-gradient-to-br from-[#6888ff] to-teal-500';
+    case 'Prensa': return 'bg-gradient-to-br from-[#6888ff] to-[#5572ee]';
   }
 }
 
 function getDisponibilidadConfig(estado?: string) {
   switch (estado) {
-    case 'disponible': return { label: 'Disponible', color: 'text-emerald-600', icon: <Check className="w-3 h-3" /> };
-    case 'limitado': return { label: 'Limitado', color: 'text-amber-600', icon: <TrendingUp className="w-3 h-3" /> };
-    case 'saturado': return { label: 'Saturado', color: 'text-orange-600', icon: <AlertTriangle className="w-3 h-3" /> };
-    case 'no_disponible': return { label: 'No disponible', color: 'text-red-600', icon: <AlertTriangle className="w-3 h-3" /> };
+    case 'disponible': return { label: 'Disponible', color: 'text-[#6888ff]', icon: <Check className="w-3 h-3" /> };
+    case 'limitado': return { label: 'Limitado', color: 'text-[#6888ff]', icon: <TrendingUp className="w-3 h-3" /> };
+    case 'saturado': return { label: 'Saturado', color: 'text-[#6888ff]', icon: <AlertTriangle className="w-3 h-3" /> };
+    case 'no_disponible': return { label: 'No disponible', color: 'text-[#9aa3b8]', icon: <AlertTriangle className="w-3 h-3" /> };
     default: return { label: 'Sin datos', color: 'text-[#9aa3b8]', icon: null };
   }
 }

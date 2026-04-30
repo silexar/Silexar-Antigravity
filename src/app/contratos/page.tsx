@@ -14,12 +14,12 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
 import apiClient from '@/lib/api/client';
-import { 
-  FileText, 
-  Search, 
-  Plus, 
-  Eye, 
-  Edit3, 
+import {
+  FileText,
+  Search,
+  Plus,
+  Eye,
+  Edit3,
   DollarSign,
   Calendar,
   TrendingUp,
@@ -30,8 +30,11 @@ import {
   XCircle,
   Pause,
   User,
-  Building2
+  Building2,
+  ArrowLeft,
+  Layout
 } from 'lucide-react';
+import { ModuleNavMenu } from '@/components/module-nav-menu';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -64,7 +67,7 @@ interface Stats {
 // COMPONENTES NEUROMÓRFICOS
 // ═══════════════════════════════════════════════════════════════
 
-const N = { base:'#dfeaff', dark:'#bec8de', light:'#ffffff', accent:'#6888ff', text:'#69738c', sub:'#9aa3b8' };
+const N = { base: '#dfeaff', dark: '#bec8de', light: '#ffffff', accent: '#6888ff', text: '#69738c', sub: '#9aa3b8' };
 const neu = `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`;
 const neuSm = `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`;
 const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
@@ -75,7 +78,7 @@ const NeuromorphicCard = ({ children, className = '' }: { children: React.ReactN
   </div>
 );
 
-const NeuromorphicButton = ({ children, onClick, variant = 'secondary', className = '' }: { 
+const NeuromorphicButton = ({ children, onClick, variant = 'secondary', className = '' }: {
   children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'secondary'; className?: string;
 }) => {
   const s = variant === 'primary'
@@ -89,19 +92,20 @@ const NeuromorphicButton = ({ children, onClick, variant = 'secondary', classNam
 };
 
 const StatusBadge = ({ estado }: { estado: string }) => {
-  const config: Record<string, { bg: string; icon: React.ElementType }> = {
-    activo: { bg: 'from-emerald-400 to-emerald-500', icon: CheckCircle },
-    completado: { bg: 'from-blue-400 to-blue-500', icon: CheckCircle },
-    pendiente_aprobacion: { bg: 'from-amber-400 to-amber-500', icon: AlertCircle },
-    borrador: { bg: 'from-slate-400 to-slate-500', icon: FileText },
-    pausado: { bg: 'from-orange-400 to-orange-500', icon: Pause },
-    cancelado: { bg: 'from-red-400 to-red-500', icon: XCircle },
-    vencido: { bg: 'from-gray-400 to-gray-500', icon: Clock }
+  const config: Record<string, { opacity: number; icon: React.ElementType }> = {
+    activo: { opacity: 1, icon: CheckCircle },
+    completado: { opacity: 0.85, icon: CheckCircle },
+    pendiente_aprobacion: { opacity: 0.7, icon: AlertCircle },
+    borrador: { opacity: 0.5, icon: FileText },
+    pausado: { opacity: 0.6, icon: Pause },
+    cancelado: { opacity: 0.4, icon: XCircle },
+    vencido: { opacity: 0.4, icon: Clock }
   };
-  const { bg, icon: Icon } = config[estado] || config.borrador;
+  const { opacity, icon: Icon } = config[estado] || config.borrador;
   const label = estado.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${bg} shadow-md`}>
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium shadow-md"
+      style={{ background: `${N.accent}15`, color: N.accent, opacity }}>
       <Icon className="w-3.5 h-3.5" />
       {label}
     </span>
@@ -109,7 +113,7 @@ const StatusBadge = ({ estado }: { estado: string }) => {
 };
 
 const ProgressBar = ({ percentage }: { percentage: number }) => {
-  const barColor = percentage >= 100 ? '#22c55e' : percentage >= 75 ? '#6888ff' : percentage >= 50 ? '#f59e0b' : '#ef4444';
+  const barOpacity = percentage >= 100 ? 1 : percentage >= 75 ? 0.85 : percentage >= 50 ? 0.7 : 0.5;
   return (
     <div className="w-32">
       <div className="flex justify-between text-xs mb-1">
@@ -117,7 +121,7 @@ const ProgressBar = ({ percentage }: { percentage: number }) => {
         <span className="font-bold" style={{ color: N.text }}>{percentage}%</span>
       </div>
       <div className="h-2 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }}>
-        <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(percentage,100)}%`, background: barColor }} />
+        <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(percentage, 100)}%`, background: N.accent, opacity: barOpacity }} />
       </div>
     </div>
   );
@@ -167,7 +171,7 @@ function ContratoRow({ contrato, router }: { contrato: Contrato; router: AppRout
         <StatusBadge estado={contrato.estado} />
         <div className="flex gap-1.5">
           <button onClick={() => router.push(`/contratos/${contrato.id}`)} className="p-2 rounded-xl transition-all" style={{ background: N.base, boxShadow: 'inset 2px 2px 4px #bec8de,inset -2px -2px 4px #ffffff', color: N.accent }}><Eye className="w-3.5 h-3.5" /></button>
-          <button onClick={() => router.push(`/contratos/${contrato.id}/editar`)} className="p-2 rounded-xl transition-all" style={{ background: N.base, boxShadow: 'inset 2px 2px 4px #bec8de,inset -2px -2px 4px #ffffff', color: '#f59e0b' }}><Edit3 className="w-3.5 h-3.5" /></button>
+          <button onClick={() => router.push(`/contratos/${contrato.id}/editar`)} className="p-2 rounded-xl transition-all" style={{ background: N.base, boxShadow: 'inset 2px 2px 4px #bec8de,inset -2px -2px 4px #ffffff', color: N.accent }}><Edit3 className="w-3.5 h-3.5" /></button>
         </div>
       </div>
     </>
@@ -221,28 +225,38 @@ export default function ContratosPage() {
   return (
     <div className="min-h-screen p-6 lg:p-8" style={{ background: N.base }}>
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black flex items-center gap-3" style={{ color: N.text }}>
-              <FileText className="w-8 h-8" style={{ color: N.accent }} />
-              Gestión de Contratos
-            </h1>
-            <p className="mt-1 text-sm" style={{ color: N.sub }}>Administra contratos comerciales y acuerdos con clientes</p>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push('/dashboard')} className="p-2.5 rounded-xl transition-all"
+              style={{ background: N.base, boxShadow: `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`, color: N.sub }}>
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+            <ModuleNavMenu />
+            <div>
+              <h1 className="text-3xl font-black flex items-center gap-3" style={{ color: N.text }}>
+                <FileText className="w-8 h-8" style={{ color: N.accent }} />
+                Gestión de Contratos
+              </h1>
+              <p className="mt-1 text-sm" style={{ color: N.sub }}>Administra contratos comerciales y acuerdos con clientes</p>
+            </div>
           </div>
           <NeuromorphicButton variant="primary" onClick={() => router.push('/contratos/nuevo')}>
             <Plus className="w-5 h-5" /> Nuevo Contrato
+          </NeuromorphicButton>
+          <NeuromorphicButton onClick={() => router.push('/contratos/comando')}>
+            <Layout className="w-5 h-5" /> Centro Comando
           </NeuromorphicButton>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
           {[
-            { label:'Total Contratos', value: stats.total,              icon: FileText,    color: N.accent   },
-            { label:'Activos',         value: stats.activos,            icon: TrendingUp,  color: '#22c55e'  },
-            { label:'Valor Total',     value: formatCurrency(stats.valorTotal), icon: DollarSign, color: N.accent },
-            { label:'Completados',     value: stats.completados,        icon: CheckCircle, color: '#a855f7'  },
+            { label: 'Total Contratos', value: stats.total, icon: FileText, color: N.accent },
+            { label: 'Activos', value: stats.activos, icon: TrendingUp, color: N.accent },
+            { label: 'Valor Total', value: formatCurrency(stats.valorTotal), icon: DollarSign, color: N.accent },
+            { label: 'Completados', value: stats.completados, icon: CheckCircle, color: N.accent },
           ].map(({ label, value, icon: Icon, color }) => (
             <NeuromorphicCard key={label}>
               <div className="flex items-center gap-4">
@@ -292,19 +306,19 @@ export default function ContratosPage() {
             <div className="space-y-4 p-4">
               {[1, 2, 3, 4].map(i => (
                 <div key={`skeleton-${i}`} className="flex items-center gap-4 p-4 rounded-xl">
-                  <div className="w-12 h-12 rounded-xl animate-pulse bg-[#E8E5E0]" />
+                  <div className="w-12 h-12 rounded-xl animate-pulse" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }} />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 animate-pulse bg-[#E8E5E0] rounded w-1/3" />
-                    <div className="h-3 animate-pulse bg-[#E8E5E0] rounded w-1/2" />
+                    <div className="h-4 animate-pulse rounded w-1/3" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }} />
+                    <div className="h-3 animate-pulse rounded w-1/2" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }} />
                   </div>
-                  <div className="h-6 w-20 animate-pulse bg-[#E8E5E0] rounded-full" />
+                  <div className="h-6 w-20 animate-pulse rounded-full" style={{ background: N.base, boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}` }} />
                 </div>
               ))}
             </div>
           ) : contratos.length === 0 ? (
             <div className="text-center py-12">
-              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-medium text-slate-600">No hay contratos</h3>
+              <FileText className="w-16 h-16 mx-auto mb-4" style={{ color: N.sub }} />
+              <h3 className="text-xl font-medium" style={{ color: N.text }}>No hay contratos</h3>
             </div>
           ) : (
             // Virtual list: scrollable container with fixed height when >50 items
@@ -350,8 +364,8 @@ export default function ContratosPage() {
         </NeuromorphicCard>
 
         {/* Footer */}
-        <div className="text-center text-slate-400 text-sm">
-          <p>📝 Módulo de Gestión de Contratos - SILEXAR PULSE TIER 0</p>
+        <div className="text-center text-sm" style={{ color: N.sub }}>
+          <p>&nbsp;</p>
         </div>
       </div>
     </div>

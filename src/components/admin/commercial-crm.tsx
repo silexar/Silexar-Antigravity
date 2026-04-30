@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 💼 SILEXAR PULSE - CRM Comercial
+ * ðŸ’¼ SILEXAR PULSE - CRM Comercial
  * Pipeline de ventas, leads y gestión comercial
  * 
  * @description CRM integrado para el CEO con:
@@ -16,10 +16,9 @@
 
 import { useState, useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
-import {
-  NeuromorphicCard,
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton, StatusBadge } from './_sdk/AdminDesignSystem'
+import { getShadow } from './_sdk/AdminDesignSystem'
+import { N } from './_sdk/AdminDesignSystem'
 import {
   Users,
   DollarSign,
@@ -63,13 +62,13 @@ interface PipelineStats {
 }
 
 const STAGE_CONFIG = {
-  new: { name: 'Nuevo', color: 'bg-slate-600', textColor: 'text-slate-300' },
-  contacted: { name: 'Contactado', color: 'bg-blue-600', textColor: 'text-blue-300' },
-  qualified: { name: 'Calificado', color: 'bg-purple-600', textColor: 'text-purple-300' },
-  proposal: { name: 'Propuesta', color: 'bg-orange-600', textColor: 'text-orange-300' },
-  negotiation: { name: 'Negociación', color: 'bg-yellow-600', textColor: 'text-yellow-300' },
-  closed_won: { name: 'Ganado', color: 'bg-green-600', textColor: 'text-green-300' },
-  closed_lost: { name: 'Perdido', color: 'bg-red-600', textColor: 'text-red-300' }
+  new: { name: 'Nuevo', color: '#64748b', textColor: '#cbd5e1' },
+  contacted: { name: 'Contactado', color: '#6888ff', textColor: '#93c5fd' },
+  qualified: { name: 'Calificado', color: '#6888ff', textColor: '#d8b4fe' },
+  proposal: { name: 'Propuesta', color: '#ea580c', textColor: '#fdba74' },
+  negotiation: { name: 'Negociación', color: '#ca8a04', textColor: '#fde047' },
+  closed_won: { name: 'Ganado', color: '#6888ff', textColor: '#86efac' },
+  closed_lost: { name: 'Perdido', color: '#6888ff', textColor: '#fca5a5' }
 }
 
 export function CommercialCRM() {
@@ -192,7 +191,7 @@ export function CommercialCRM() {
     // Calculate stats
     const activeLeads = demoLeads.filter(l => !['closed_won', 'closed_lost'].includes(l.stage))
     const wonLeads = demoLeads.filter(l => l.stage === 'closed_won')
-    
+
     setStats({
       totalLeads: activeLeads.length,
       totalValue: activeLeads.reduce((sum, l) => sum + l.value, 0),
@@ -207,20 +206,20 @@ export function CommercialCRM() {
 
   const moveLeadStage = (leadId: string, direction: 'forward' | 'back') => {
     const stages: Lead['stage'][] = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'closed_won']
-    
+
     setLeads(prev => prev.map(lead => {
       if (lead.id !== leadId) return lead
-      
+
       const currentIndex = stages.indexOf(lead.stage)
       if (direction === 'forward' && currentIndex < stages.length - 1) {
         const newStage = stages[currentIndex + 1]
-        const newProbability = 
+        const newProbability =
           newStage === 'contacted' ? 20 :
-          newStage === 'qualified' ? 40 :
-          newStage === 'proposal' ? 60 :
-          newStage === 'negotiation' ? 80 :
-          newStage === 'closed_won' ? 100 : lead.probability
-        
+            newStage === 'qualified' ? 40 :
+              newStage === 'proposal' ? 60 :
+                newStage === 'negotiation' ? 80 :
+                  newStage === 'closed_won' ? 100 : lead.probability
+
         return { ...lead, stage: newStage, probability: newProbability, lastActivity: new Date() }
       }
       if (direction === 'back' && currentIndex > 0) {
@@ -234,174 +233,235 @@ export function CommercialCRM() {
     return leads.filter(l => l.stage === stage)
   }
 
+  const getPlanBadge = (plan: Lead['plan']) => {
+    const planColors = {
+      starter: { bg: '#6888ff20', text: '#60a5fa' },
+      professional: { bg: '#6888ff20', text: '#60a5fa' },
+      enterprise: { bg: '#6888ff20', text: '#c084fc' },
+      enterprise_plus: { bg: '#6888ff20', text: '#facc15' }
+    }
+    const colors = planColors[plan]
+    return (
+      <span style={{
+        fontSize: '0.75rem',
+        padding: '0.125rem 0.5rem',
+        borderRadius: '0.25rem',
+        background: colors.bg,
+        color: colors.text
+      }}>
+        {plan.replace('_', '+')}
+      </span>
+    )
+  }
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando CRM...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '3rem',
+            height: '3rem',
+            border: '4px solid rgba(59, 130, 246, 0.3)',
+            borderTopColor: '#6888ff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando CRM...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white">CRM Comercial</h2>
-          <p className="text-slate-400">Pipeline de ventas y gestión de leads</p>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>CRM Comercial</h2>
+          <p style={{ color: N.textSub }}>Pipeline de ventas y gestión de leads</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ position: 'relative' }}>
+            <Search style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: '1rem', height: '1rem', color: N.textSub }} />
             <input
               type="text"
               placeholder="Buscar lead..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+              style={{
+                paddingLeft: '2.25rem',
+                paddingRight: '1rem',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+                background: N.base,
+                border: `1px solid ${N.dark}`,
+                borderRadius: '0.5rem',
+                color: N.text,
+                fontSize: '0.875rem',
+                width: '12rem'
+              }}
             />
           </div>
-          <div className="flex items-center gap-1 bg-slate-800 rounded-lg p-1">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: N.base, borderRadius: '0.5rem', padding: '0.25rem' }}>
             <button
               onClick={() => setViewMode('pipeline')}
-              className={`px-3 py-1 text-sm rounded ${viewMode === 'pipeline' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
+              style={{
+                padding: '0.25rem 0.75rem',
+                fontSize: '0.875rem',
+                borderRadius: '0.25rem',
+                background: viewMode === 'pipeline' ? '#6888ff' : 'transparent',
+                color: viewMode === 'pipeline' ? '#fff' : N.textSub,
+                border: 'none',
+                cursor: 'pointer'
+              }}
             >
               Pipeline
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-1 text-sm rounded ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
+              style={{
+                padding: '0.25rem 0.75rem',
+                fontSize: '0.875rem',
+                borderRadius: '0.25rem',
+                background: viewMode === 'list' ? '#6888ff' : 'transparent',
+                color: viewMode === 'list' ? '#fff' : N.textSub,
+                border: 'none',
+                cursor: 'pointer'
+              }}
             >
               Lista
             </button>
           </div>
-          <NeuromorphicButton variant="primary" size="sm">
-            <Plus className="w-4 h-4 mr-1" />
+          <NeuButton variant="primary" onClick={() => { }}>
+            <Plus style={{ width: '1rem', height: '1rem', marginRight: '0.25rem' }} />
             Nuevo Lead
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Leads Activos</p>
-              <p className="text-2xl font-bold text-white">{stats?.totalLeads}</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Leads Activos</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{stats?.totalLeads}</p>
             </div>
-            <Users className="w-8 h-8 text-blue-400" />
+            <Users style={{ width: '2rem', height: '2rem', color: '#60a5fa' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Valor Pipeline</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(stats?.totalValue || 0)}</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Valor Pipeline</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{formatCurrency(stats?.totalValue || 0)}</p>
             </div>
-            <DollarSign className="w-8 h-8 text-green-400" />
+            <DollarSign style={{ width: '2rem', height: '2rem', color: '#4ade80' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Valor Ponderado</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(stats?.weightedValue || 0)}</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Valor Ponderado</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{formatCurrency(stats?.weightedValue || 0)}</p>
             </div>
-            <Target className="w-8 h-8 text-purple-400" />
+            <Target style={{ width: '2rem', height: '2rem', color: '#c084fc' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Tasa Conversión</p>
-              <p className="text-2xl font-bold text-white">{stats?.conversionRate.toFixed(0)}%</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Tasa Conversión</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{stats?.conversionRate.toFixed(0)}%</p>
             </div>
-            <TrendingUp className="w-8 h-8 text-orange-400" />
+            <TrendingUp style={{ width: '2rem', height: '2rem', color: '#fb923c' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Ciclo Promedio</p>
-              <p className="text-2xl font-bold text-white">{stats?.avgCycleTime} días</p>
+              <p style={{ fontSize: '0.75rem', color: N.textSub }}>Ciclo Promedio</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>{stats?.avgCycleTime} días</p>
             </div>
-            <Clock className="w-8 h-8 text-cyan-400" />
+            <Clock style={{ width: '2rem', height: '2rem', color: '#22d3ee' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
       {/* Pipeline View */}
       {viewMode === 'pipeline' && (
-        <div className="overflow-x-auto">
-          <div className="flex gap-4 min-w-max pb-4">
+        <div style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'flex', gap: '1rem', minWidth: 'max-content', paddingBottom: '1rem' }}>
             {(['new', 'contacted', 'qualified', 'proposal', 'negotiation'] as Lead['stage'][]).map(stage => {
               const stageLeads = getLeadsByStage(stage)
               const stageValue = stageLeads.reduce((sum, l) => sum + l.value, 0)
               const config = STAGE_CONFIG[stage]
-              
+
               return (
-                <div key={stage} className="w-72 flex-shrink-0">
+                <div key={stage} style={{ width: '18rem', flexShrink: 0 }}>
                   {/* Stage Header */}
-                  <div className={`p-3 rounded-t-lg ${config.color}`}>
-                    <div className="flex items-center justify-between">
-                      <span className="text-white font-medium">{config.name}</span>
-                      <span className="text-white/80 text-sm">{stageLeads.length}</span>
+                  <div style={{ padding: '0.75rem', borderTopLeftRadius: '0.5rem', borderTopRightRadius: '0.5rem', background: config.color }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#fff', fontWeight: 500 }}>{config.name}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>{stageLeads.length}</span>
                     </div>
-                    <p className="text-white/60 text-xs mt-1">
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
                       {formatCurrency(stageValue)} en pipeline
                     </p>
                   </div>
 
                   {/* Stage Cards */}
-                  <div className="bg-slate-800/30 rounded-b-lg p-2 min-h-[400px] space-y-2">
+                  <div style={{ background: 'rgba(30,41,59,0.3)', borderBottomLeftRadius: '0.5rem', borderBottomRightRadius: '0.5rem', padding: '0.5rem', minHeight: '25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {stageLeads.map(lead => (
                       <div
                         key={lead.id}
-                        className="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-blue-500/50 transition-all cursor-pointer"
+                        style={{
+                          padding: '0.75rem',
+                          background: N.base,
+                          borderRadius: '0.5rem',
+                          border: `1px solid ${N.dark}`,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(59,130,246,0.5)'}
+                        onMouseLeave={(e) => e.currentTarget.style.borderColor = N.dark}
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                           <div>
-                            <p className="text-white font-medium text-sm">{lead.companyName}</p>
-                            <p className="text-xs text-slate-400">{lead.contactName}</p>
+                            <p style={{ color: N.text, fontWeight: 500, fontSize: '0.875rem' }}>{lead.companyName}</p>
+                            <p style={{ fontSize: '0.75rem', color: N.textSub }}>{lead.contactName}</p>
                           </div>
-                          <span className={`text-xs px-2 py-0.5 rounded ${
-                            lead.plan === 'enterprise_plus' ? 'bg-yellow-500/20 text-yellow-400' :
-                            lead.plan === 'enterprise' ? 'bg-purple-500/20 text-purple-400' :
-                            'bg-blue-500/20 text-blue-400'
-                          }`}>
-                            {lead.plan.replace('_', '+')}
-                          </span>
+                          {getPlanBadge(lead.plan)}
                         </div>
 
-                        <div className="flex items-center justify-between text-xs mb-2">
-                          <span className="text-green-400 font-medium">{formatCurrency(lead.value)}</span>
-                          <span className="text-slate-400">{lead.probability}% prob.</span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                          <span style={{ color: '#4ade80', fontWeight: 500 }}>{formatCurrency(lead.value)}</span>
+                          <span style={{ color: N.textSub }}>{lead.probability}% prob.</span>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-slate-500">
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '0.75rem', color: N.textSub }}>
                             {Math.floor((Date.now() - lead.lastActivity.getTime()) / (1000 * 60 * 60 * 24))}d sin actividad
                           </span>
                           <button
                             onClick={() => moveLeadStage(lead.id, 'forward')}
-                            className="p-1 text-slate-400 hover:text-blue-400 transition-colors"
+                            style={{ padding: '0.25rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#60a5fa'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = N.textSub}
                           >
-                            <ArrowRight className="w-4 h-4" />
+                            <ArrowRight style={{ width: '1rem', height: '1rem' }} />
                           </button>
                         </div>
                       </div>
                     ))}
-                    
+
                     {stageLeads.length === 0 && (
-                      <div className="text-center py-8 text-slate-500 text-sm">
+                      <div style={{ textAlign: 'center', paddingTop: '2rem', color: N.textSub, fontSize: '0.875rem' }}>
                         Sin leads en esta etapa
                       </div>
                     )}
@@ -411,26 +471,31 @@ export function CommercialCRM() {
             })}
 
             {/* Won Column */}
-            <div className="w-72 flex-shrink-0">
-              <div className="p-3 rounded-t-lg bg-green-600">
-                <div className="flex items-center justify-between">
-                  <span className="text-white font-medium flex items-center gap-1">
-                    <Award className="w-4 h-4" />
+            <div style={{ width: '18rem', flexShrink: 0 }}>
+              <div style={{ padding: '0.75rem', borderTopLeftRadius: '0.5rem', borderTopRightRadius: '0.5rem', background: '#6888ff' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#fff', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Award style={{ width: '1rem', height: '1rem' }} />
                     Ganados
                   </span>
-                  <span className="text-white/80 text-sm">{getLeadsByStage('closed_won').length}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>{getLeadsByStage('closed_won').length}</span>
                 </div>
               </div>
-              <div className="bg-green-500/10 rounded-b-lg p-2 min-h-[400px] space-y-2">
+              <div style={{ background: 'rgba(34,197,94,0.1)', borderBottomLeftRadius: '0.5rem', borderBottomRightRadius: '0.5rem', padding: '0.5rem', minHeight: '25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {getLeadsByStage('closed_won').map(lead => (
                   <div
                     key={lead.id}
-                    className="p-3 bg-green-500/20 rounded-lg border border-green-500/30"
+                    style={{
+                      padding: '0.75rem',
+                      background: 'rgba(34,197,94,0.2)',
+                      borderRadius: '0.5rem',
+                      border: '1px solid rgba(34,197,94,0.3)'
+                    }}
                   >
-                    <p className="text-white font-medium text-sm">{lead.companyName}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-green-400 font-medium text-sm">{formatCurrency(lead.value)}</span>
-                      <CheckCircle className="w-4 h-4 text-green-400" />
+                    <p style={{ color: N.text, fontWeight: 500, fontSize: '0.875rem' }}>{lead.companyName}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                      <span style={{ color: '#4ade80', fontWeight: 500, fontSize: '0.875rem' }}>{formatCurrency(lead.value)}</span>
+                      <CheckCircle style={{ width: '1rem', height: '1rem', color: '#4ade80' }} />
                     </div>
                   </div>
                 ))}
@@ -442,54 +507,64 @@ export function CommercialCRM() {
 
       {/* List View */}
       {viewMode === 'list' && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1rem' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%' }}>
               <thead>
-                <tr className="border-b border-slate-700">
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Empresa</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Contacto</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Etapa</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Valor</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Prob.</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Asignado</th>
-                  <th className="text-left p-3 text-slate-400 text-sm font-medium">Acciones</th>
+                <tr style={{ borderBottom: `1px solid ${N.dark}` }}>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Empresa</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Contacto</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Etapa</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Valor</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Prob.</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Asignado</th>
+                  <th style={{ textAlign: 'left', padding: '0.75rem', color: N.textSub, fontSize: '0.875rem', fontWeight: 500 }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {leads.filter(l => 
+                {leads.filter(l =>
                   l.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                   l.contactName.toLowerCase().includes(searchTerm.toLowerCase())
                 ).map(lead => {
                   const config = STAGE_CONFIG[lead.stage]
                   return (
-                    <tr key={lead.id} className="border-b border-slate-700/50 hover:bg-slate-800/30">
-                      <td className="p-3">
-                        <p className="text-white font-medium">{lead.companyName}</p>
-                        <p className="text-xs text-slate-400">{lead.plan.replace('_', '+')}</p>
+                    <tr key={lead.id} style={{ borderBottom: `1px solid ${N.dark}50`, transition: 'background 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(30,41,59,0.3)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <td style={{ padding: '0.75rem' }}>
+                        <p style={{ color: N.text, fontWeight: 500 }}>{lead.companyName}</p>
+                        <p style={{ fontSize: '0.75rem', color: N.textSub }}>{lead.plan.replace('_', '+')}</p>
                       </td>
-                      <td className="p-3">
-                        <p className="text-white text-sm">{lead.contactName}</p>
-                        <p className="text-xs text-slate-400">{lead.contactEmail}</p>
+                      <td style={{ padding: '0.75rem' }}>
+                        <p style={{ color: N.text, fontSize: '0.875rem' }}>{lead.contactName}</p>
+                        <p style={{ fontSize: '0.75rem', color: N.textSub }}>{lead.contactEmail}</p>
                       </td>
-                      <td className="p-3">
-                        <span className={`px-2 py-1 rounded text-xs ${config.color} text-white`}>
-                          {config.name}
-                        </span>
+                      <td style={{ padding: '0.75rem' }}>
+                        <StatusBadge status={lead.stage === 'closed_won' ? 'success' : lead.stage === 'closed_lost' ? 'danger' : 'neutral'} label={STAGE_CONFIG[lead.stage].name} />
                       </td>
-                      <td className="p-3 text-green-400 font-medium">{formatCurrency(lead.value)}</td>
-                      <td className="p-3 text-white">{lead.probability}%</td>
-                      <td className="p-3 text-slate-300 text-sm">{lead.assignedTo}</td>
-                      <td className="p-3">
-                        <div className="flex items-center gap-1">
-                          <button className="p-1.5 text-slate-400 hover:text-blue-400">
-                            <Phone className="w-4 h-4" />
+                      <td style={{ padding: '0.75rem', color: '#4ade80', fontWeight: 500 }}>{formatCurrency(lead.value)}</td>
+                      <td style={{ padding: '0.75rem', color: N.text }}>{lead.probability}%</td>
+                      <td style={{ padding: '0.75rem', color: N.textSub, fontSize: '0.875rem' }}>{lead.assignedTo}</td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <button style={{ padding: '0.375rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#60a5fa'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = N.textSub}
+                          >
+                            <Phone style={{ width: '1rem', height: '1rem' }} />
                           </button>
-                          <button className="p-1.5 text-slate-400 hover:text-green-400">
-                            <Mail className="w-4 h-4" />
+                          <button style={{ padding: '0.375rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#4ade80'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = N.textSub}
+                          >
+                            <Mail style={{ width: '1rem', height: '1rem' }} />
                           </button>
-                          <button className="p-1.5 text-slate-400 hover:text-purple-400">
-                            <MessageSquare className="w-4 h-4" />
+                          <button style={{ padding: '0.375rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#c084fc'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = N.textSub}
+                          >
+                            <MessageSquare style={{ width: '1rem', height: '1rem' }} />
                           </button>
                         </div>
                       </td>
@@ -499,7 +574,7 @@ export function CommercialCRM() {
               </tbody>
             </table>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

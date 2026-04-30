@@ -29,12 +29,12 @@ const facturacionCampana = {
   facturas: [
     {
       id: 'FAC-001', numero: 'F-2025-00145', estado: 'emitida',
-      fechaEmision: '2025-12-01', fechaVencimiento: '2025-12-31',
+      fechaEmision: '2025-12-01', fechaVencimientos: '2025-12-31',
       periodo: '01-15 Dic 2025', montoNeto: 1200000, iva: 228000, total: 1428000, siiStatus: 'aceptado'
     },
     {
       id: 'FAC-002', numero: 'F-2025-00189', estado: 'pendiente',
-      fechaEmision: '2025-12-16', fechaVencimiento: '2026-01-15',
+      fechaEmision: '2025-12-16', fechaVencimientos: '2026-01-15',
       periodo: '16-31 Dic 2025', montoNeto: 1100000, iva: 209000, total: 1309000, siiStatus: 'pendiente'
     }
   ],
@@ -258,7 +258,7 @@ export default function FacturacionCampanaPage() {
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Estado</th>
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Período</th>
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Emisión</th>
-                  <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Vencimiento</th>
+                  <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Vencimientos</th>
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Neto</th>
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>Total</th>
                   <th className="px-3 py-3 text-left text-xs font-black uppercase tracking-wider" style={{ color: N.textSub }}>SII</th>
@@ -272,7 +272,7 @@ export default function FacturacionCampanaPage() {
                     <td className="px-3 py-3"><EstadoBadge estado={f.estado} /></td>
                     <td className="px-3 py-3" style={{ color: N.text }}>{f.periodo}</td>
                     <td className="px-3 py-3" style={{ color: N.text }}>{f.fechaEmision}</td>
-                    <td className="px-3 py-3" style={{ color: N.text }}>{f.fechaVencimiento}</td>
+                    <td className="px-3 py-3" style={{ color: N.text }}>{f.fechaVencimientos}</td>
                     <td className="px-3 py-3" style={{ color: N.text }}>{formatCurrency(f.montoNeto)}</td>
                     <td className="px-3 py-3 font-bold" style={{ color: N.text }}>{formatCurrency(f.total)}</td>
                     <td className="px-3 py-3"><SIIBadge status={f.siiStatus} /></td>

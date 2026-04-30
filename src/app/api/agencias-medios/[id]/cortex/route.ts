@@ -167,8 +167,8 @@ const mockAlertas: AlertaInteligente[] = [
 
 // GET /api/agencias-medios/[id]/cortex - Obtener análisis Cortex
 export const GET = withApiRoute(
-    { resource: 'agencias-medios', action: 'read', allowPublic: true },
-    async ({ req }) => {
+    { resource: 'agencias-medios', action: 'read' },
+    async ({ ctx, req }) => {
         try {
             const url = new URL(req.url);
             const pathParts = url.pathname.split('/');
@@ -214,8 +214,8 @@ export const GET = withApiRoute(
 
 // PUT /api/agencias-medios/[id]/cortex - Marcar alerta como leída
 export const PUT = withApiRoute(
-    { resource: 'agencias-medios', action: 'update', allowPublic: true },
-    async ({ req }) => {
+    { resource: 'agencias-medios', action: 'update' },
+    async ({ ctx, req }) => {
         try {
             const body = await req.json();
             const { alertaId, accion } = body;

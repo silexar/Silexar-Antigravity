@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 💰 SILEXAR PULSE - Paso 2: Términos Comerciales TIER 0
  *
  * @description Segundo paso del wizard - Análisis de riesgo Cortex-AI,
@@ -630,7 +630,7 @@ const ModalDetalleFactura: React.FC<{
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-sm text-[#69738c] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />
                 Detalle de Factura
               </h3>
               <button
@@ -667,8 +667,8 @@ const ModalDetalleFactura: React.FC<{
               <div className="p-2 rounded-xl bg-[#dfeaff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]">
                 <p className="text-[10px] text-[#9aa3b8] uppercase tracking-wider">Estado</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-xs font-medium text-emerald-600">Facturada</span>
+                  <span className="w-2 h-2 rounded-full bg-[#6888ff]/50" />
+                  <span className="text-xs font-medium text-[#6888ff]">Facturada</span>
                 </div>
               </div>
             </div>
@@ -903,24 +903,24 @@ export const StepTerminosComerciales: React.FC<StepTerminosComercialesProps> = (
                         flex-1 min-w-0 p-1 rounded-lg text-center cursor-pointer
                         transition-all duration-200 select-none overflow-hidden
                         ${isFacturada
-                          ? "bg-emerald-50 shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] ring-1 ring-emerald-400/40"
+                          ? "bg-[#6888ff]/5 shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] ring-1 ring-emerald-400/40"
                           : "bg-[#dfeaff] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] hover:shadow-[3px_3px_6px_#bec8de,-3px_-3px_6px_#ffffff]"
                         }
                       `}
                       title={isFacturada ? "Cuota facturada — clic para ver detalle" : "Clic para facturar"}
                     >
                       <div className="flex items-center justify-center gap-0.5 mb-0.5">
-                        <span className={`text-[9px] font-black ${isFacturada ? "text-emerald-600" : "text-[#6888ff]"}`}>
+                        <span className={`text-[9px] font-black ${isFacturada ? "text-[#6888ff]" : "text-[#6888ff]"}`}>
                           {c.mes}
                         </span>
                         <span className="text-[8px] text-[#9aa3b8]">'{c.anio}</span>
                       </div>
-                      <p className={`text-[10px] font-bold leading-tight ${isFacturada ? "text-emerald-700" : "text-[#69738c]"}`}>
+                      <p className={`text-[10px] font-bold leading-tight ${isFacturada ? "text-[#6888ff]" : "text-[#69738c]"}`}>
                         {formatCurrency(c.valor, state.moneda)}
                       </p>
                       <div className="mt-0.5 flex items-center justify-center">
                         {isFacturada ? (
-                          <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                          <CheckCircle2 className="w-3 h-3 text-[#6888ff]" />
                         ) : (
                           <span className="w-3 h-3 rounded-full bg-[#dfeaff] shadow-[inset_1px_1px_2px_#bec8de,inset_-1px_-1px_2px_#ffffff]" />
                         )}

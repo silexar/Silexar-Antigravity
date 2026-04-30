@@ -1,7 +1,7 @@
-/**
- * ?? MOBILE: Ficha Cliente Rápida
+ï»¿/**
+ * ?? MOBILE: Ficha Cliente Rï¿½pida
  * 
- * Vista compacta 360° del cliente: contacto 1-toque,
+ * Vista compacta 360ï¿½ del cliente: contacto 1-toque,
  * historial, preferencias, oportunidades.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -18,7 +18,7 @@ import {
 
 const CL = {
   nombre: 'Banco Chile', rubro: 'Banca', score: 92,
-  contacto: 'José Rodríguez', tel: '+56 2 2345 6789', email: 'jrodriguez@bancochile.cl',
+  contacto: 'Josï¿½ Rodrï¿½guez', tel: '+56 2 2345 6789', email: 'jrodriguez@bancochile.cl',
   valorHist: 340e6, contratos: 4, tasaRenov: 100, pagoDias: 38,
   prefs: ['Radio FM prime', 'TV estelar', 'Digital SEM'],
   hist: [
@@ -27,8 +27,8 @@ const CL = {
     { num: 'SP-2023-0201', val: 90e6, est: 'completado' },
   ],
   ops: [
-    { titulo: 'Campaña tarjeta Q2', val: 95e6, prob: 85 },
-    { titulo: 'App Móvil', val: 40e6, prob: 60 },
+    { titulo: 'Campaï¿½a tarjeta Q2', val: 95e6, prob: 85 },
+    { titulo: 'App Mï¿½vil', val: 40e6, prob: 60 },
   ],
 };
 
@@ -38,13 +38,13 @@ export function MobileClienteCard() {
       {/* HEADER */}
       <div className="bg-[#6888ff] rounded-2xl p-4 text-white shadow-xl">
         <div className="flex items-center gap-3">
-          <Building2 className="w-8 h-8 text-blue-200" />
+          <Building2 className="w-8 h-8 text-[#6888ff]" />
           <div className="flex-1">
             <h3 className="font-black text-lg">{CL.nombre}</h3>
-            <p className="text-xs text-blue-200">{CL.rubro} · {CL.contacto}</p>
+            <p className="text-xs text-[#6888ff]">{CL.rubro} ï¿½ {CL.contacto}</p>
           </div>
           <div className="px-2 py-1 bg-[#dfeaff]/20 rounded-lg">
-            <Star className="w-3 h-3 text-amber-300 inline" />
+            <Star className="w-3 h-3 text-[#6888ff] inline" />
             <span className="text-xs font-bold ml-0.5">{CL.score}</span>
           </div>
         </div>
@@ -60,10 +60,10 @@ export function MobileClienteCard() {
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-2">
-        <MiniStat icon={<DollarSign className="w-3 h-3 text-emerald-500" />} val={`$${(CL.valorHist / 1e6).toFixed(0)}M`} lbl="Histórico" />
+        <MiniStat icon={<DollarSign className="w-3 h-3 text-[#6888ff]" />} val={`$${(CL.valorHist / 1e6).toFixed(0)}M`} lbl="Histï¿½rico" />
         <MiniStat icon={<FileText className="w-3 h-3 text-[#6888ff]" />} val={String(CL.contratos)} lbl="Contratos" />
-        <MiniStat icon={<TrendingUp className="w-3 h-3 text-blue-500" />} val={`${CL.tasaRenov}%`} lbl="Renovación" />
-        <MiniStat icon={<DollarSign className="w-3 h-3 text-amber-500" />} val={`${CL.pagoDias}d`} lbl="Pago prom." />
+        <MiniStat icon={<TrendingUp className="w-3 h-3 text-[#6888ff]" />} val={`${CL.tasaRenov}%`} lbl="Renovaciï¿½n" />
+        <MiniStat icon={<DollarSign className="w-3 h-3 text-[#6888ff]" />} val={`${CL.pagoDias}d`} lbl="Pago prom." />
       </div>
 
       {/* PREFERENCIAS */}
@@ -82,7 +82,7 @@ export function MobileClienteCard() {
         {CL.hist.map((h) => (
           <div key={h.num} className="flex items-center gap-2 py-1.5 border-b border-[#bec8de30]">
             <span className="text-[10px] font-mono text-[#6888ff]">{h.num}</span>
-            <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${h.est === 'activo' ? 'bg-emerald-100 text-emerald-600' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}>{h.est}</span>
+            <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded-full ${h.est === 'activo' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}>{h.est}</span>
             <span className="text-xs font-bold text-[#69738c] ml-auto">${(h.val / 1e6).toFixed(0)}M</span>
           </div>
         ))}
@@ -92,11 +92,11 @@ export function MobileClienteCard() {
       <div>
         <p className="text-[10px] font-bold text-[#9aa3b8] mb-1.5">Oportunidades</p>
         {CL.ops.map((o) => (
-          <div key={o.titulo} className="p-2.5 bg-amber-50 rounded-xl border border-[#bec8de30] mb-1.5 flex items-center gap-2">
-            <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" />
+          <div key={o.titulo} className="p-2.5 bg-[#6888ff]/5 rounded-xl border border-[#bec8de30] mb-1.5 flex items-center gap-2">
+            <ArrowUpRight className="w-3.5 h-3.5 text-[#6888ff]" />
             <div className="flex-1">
               <p className="text-xs font-bold text-[#69738c]">{o.titulo}</p>
-              <p className="text-[10px] text-[#9aa3b8]">${(o.val / 1e6).toFixed(0)}M · {o.prob}%</p>
+              <p className="text-[10px] text-[#9aa3b8]">${(o.val / 1e6).toFixed(0)}M ï¿½ {o.prob}%</p>
             </div>
           </div>
         ))}

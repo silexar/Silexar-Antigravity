@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * ⚙️ SILEXAR PULSE - Configuration Manager
+ * š™ï¸ SILEXAR PULSE - Configuration Manager
  * Configuración centralizada del sistema
  * 
  * @description Gestión completa de configuración:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Settings,
   Save,
@@ -167,7 +165,7 @@ export function ConfigManager() {
       if (cat.id !== categoryId) return cat
       return {
         ...cat,
-        settings: cat.settings.map(s => 
+        settings: cat.settings.map(s =>
           s.key === key ? { ...s, value, lastModified: new Date(), modifiedBy: 'CEO' } : s
         )
       }
@@ -180,7 +178,7 @@ export function ConfigManager() {
     await new Promise(resolve => setTimeout(resolve, 1000))
     setIsSaving(false)
     setHasChanges(false)
-    
+
   }
 
   const selectedCategoryData = categories.find(c => c.id === selectedCategory)
@@ -189,8 +187,8 @@ export function ConfigManager() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Configuración...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Configuración...</p>
         </div>
       </div>
     )
@@ -200,20 +198,20 @@ export function ConfigManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Settings className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Settings className="w-5 h-5 text-[#6888ff]" />
           Configuration Manager
         </h3>
         <div className="flex items-center gap-2">
           {hasChanges && (
-            <span className="text-xs text-yellow-400 flex items-center gap-1">
+            <span className="text-xs text-[#6888ff] flex items-center gap-1">
               <AlertTriangle className="w-3 h-3" />
               Cambios sin guardar
             </span>
           )}
-          <NeuromorphicButton 
-            variant="primary" 
-            size="sm" 
+          <NeuButton
+            variant="primary"
+
             onClick={saveConfiguration}
             disabled={!hasChanges || isSaving}
           >
@@ -225,19 +223,19 @@ export function ConfigManager() {
                 Guardar
               </>
             )}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
         <input
           type="text"
           placeholder="Buscar configuración..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+          className="w-full pl-9 pr-4 py-2 bg-[#dfeaff] border border-slate-700 rounded-lg text-[#69738c] text-sm"
         />
       </div>
 
@@ -248,16 +246,15 @@ export function ConfigManager() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`w-full flex items-center gap-2 p-3 rounded-lg text-left transition-all ${
-                selectedCategory === cat.id 
-                  ? 'bg-blue-600/20 border border-blue-500/30 text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
+              className={`w-full flex items-center gap-2 p-3 rounded-lg text-left transition-all ${selectedCategory === cat.id
+                ? 'bg-[#6888ff]/20 border border-[#6888ff]/30 text-white'
+                : 'bg-[#dfeaff]/50 text-[#9aa3b8] hover:bg-[#dfeaff] hover:text-[#69738c]'
+                }`}
             >
               {cat.icon}
               <div>
                 <p className="text-sm font-medium">{cat.name}</p>
-                <p className="text-xs text-slate-500">{cat.settings.length} settings</p>
+                <p className="text-xs text-[#9aa3b8]">{cat.settings.length} settings</p>
               </div>
               {selectedCategory === cat.id ? (
                 <ChevronDown className="w-4 h-4 ml-auto" />
@@ -271,71 +268,70 @@ export function ConfigManager() {
         {/* Settings Panel */}
         <div className="col-span-3">
           {selectedCategoryData && (
-            <NeuromorphicCard variant="embossed" className="p-6">
-              <h4 className="text-white font-bold mb-2 flex items-center gap-2">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
+              <h4 className="text-[#69738c] font-bold mb-2 flex items-center gap-2">
                 {selectedCategoryData.icon}
                 {selectedCategoryData.name}
               </h4>
-              <p className="text-sm text-slate-400 mb-4">{selectedCategoryData.description}</p>
+              <p className="text-sm text-[#9aa3b8] mb-4">{selectedCategoryData.description}</p>
 
               <div className="space-y-4">
                 {selectedCategoryData.settings
                   .filter(s => s.label.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map(setting => (
-                  <div key={setting.key} className="p-4 bg-slate-800/30 rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <label className="text-white font-medium flex items-center gap-2">
-                          {setting.label}
-                          {setting.sensitive && <Lock className="w-3 h-3 text-yellow-400" />}
-                        </label>
-                        <p className="text-xs text-slate-500">{setting.description}</p>
+                    <div key={setting.key} className="p-4 bg-[#dfeaff]/30 rounded-lg">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <label className="text-[#69738c] font-medium flex items-center gap-2">
+                            {setting.label}
+                            {setting.sensitive && <Lock className="w-3 h-3 text-[#6888ff]" />}
+                          </label>
+                          <p className="text-xs text-[#9aa3b8]">{setting.description}</p>
+                        </div>
+                        <span className="text-xs text-[#9aa3b8] flex items-center gap-1">
+                          <History className="w-3 h-3" />
+                          {setting.lastModified.toLocaleDateString()}
+                        </span>
                       </div>
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <History className="w-3 h-3" />
-                        {setting.lastModified.toLocaleDateString()}
-                      </span>
-                    </div>
 
-                    {setting.type === 'boolean' ? (
-                      <button
-                        onClick={() => updateSetting(selectedCategoryData.id, setting.key, !setting.value)}
-                        className={`px-3 py-1.5 rounded text-sm ${
-                          setting.value 
-                            ? 'bg-green-500/20 text-green-400' 
-                            : 'bg-slate-700 text-slate-400'
-                        }`}
-                      >
-                        {setting.value ? (
-                          <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Activado</span>
-                        ) : 'Desactivado'}
-                      </button>
-                    ) : setting.type === 'select' ? (
-                      <select
-                        value={setting.value as string}
-                        onChange={(e) => updateSetting(selectedCategoryData.id, setting.key, e.target.value)}
-                        className="bg-slate-700 text-white text-sm rounded px-3 py-2"
-                      >
-                        {setting.options?.map(opt => (
-                          <option key={opt} value={opt}>{opt}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        type={setting.type}
-                        value={setting.value as string}
-                        onChange={(e) => updateSetting(
-                          selectedCategoryData.id, 
-                          setting.key, 
-                          setting.type === 'number' ? parseInt(e.target.value) : e.target.value
-                        )}
-                        className="bg-slate-700 text-white text-sm rounded px-3 py-2 w-full max-w-xs"
-                      />
-                    )}
-                  </div>
-                ))}
+                      {setting.type === 'boolean' ? (
+                        <button
+                          onClick={() => updateSetting(selectedCategoryData.id, setting.key, !setting.value)}
+                          className={`px-3 py-1.5 rounded text-sm ${setting.value
+                            ? 'bg-[#6888ff]/20 text-[#6888ff]'
+                            : 'bg-[#dfeaff] text-[#9aa3b8]'
+                            }`}
+                        >
+                          {setting.value ? (
+                            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Activado</span>
+                          ) : 'Desactivado'}
+                        </button>
+                      ) : setting.type === 'select' ? (
+                        <select
+                          value={setting.value as string}
+                          onChange={(e) => updateSetting(selectedCategoryData.id, setting.key, e.target.value)}
+                          className="bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
+                        >
+                          {setting.options?.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={setting.type}
+                          value={setting.value as string}
+                          onChange={(e) => updateSetting(
+                            selectedCategoryData.id,
+                            setting.key,
+                            setting.type === 'number' ? parseInt(e.target.value) : e.target.value
+                          )}
+                          className="bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2 w-full max-w-xs"
+                        />
+                      )}
+                    </div>
+                  ))}
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
           )}
         </div>
       </div>

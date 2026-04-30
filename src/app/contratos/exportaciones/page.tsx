@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📤 SILEXAR PULSE - Exports Management Page TIER 0
  * 
  * @description Página de gestión de exportaciones masivas:
@@ -72,7 +72,7 @@ const neuro = {
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
   `,
   btnPrimary: `bg-[#6888ff] text-white`,
-  btnSuccess: `bg-gradient-to-br from-green-500 to-emerald-600 text-white`,
+  btnSuccess: `bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white`,
   btnSecondary: `bg-gradient-to-br from-[#dfeaff] to-[#dfeaff] text-[#69738c]`,
   badge: `px-3 py-1 rounded-lg text-xs font-medium`
 };
@@ -156,10 +156,10 @@ export default function ExportsPage() {
 
   const getFormatoIcon = (formato: string) => {
     switch (formato) {
-      case 'PDF': return <FileText className="w-5 h-5 text-red-500" />;
-      case 'EXCEL': return <FileSpreadsheet className="w-5 h-5 text-green-600" />;
-      case 'CSV': return <FileSpreadsheet className="w-5 h-5 text-blue-500" />;
-      case 'ZIP': return <Archive className="w-5 h-5 text-purple-500" />;
+      case 'PDF': return <FileText className="w-5 h-5 text-[#9aa3b8]" />;
+      case 'EXCEL': return <FileSpreadsheet className="w-5 h-5 text-[#6888ff]" />;
+      case 'CSV': return <FileSpreadsheet className="w-5 h-5 text-[#6888ff]" />;
+      case 'ZIP': return <Archive className="w-5 h-5 text-[#6888ff]" />;
       default: return <Package className="w-5 h-5 text-[#69738c]" />;
     }
   };
@@ -167,9 +167,9 @@ export default function ExportsPage() {
   const getEstadoConfig = (estado: string) => {
     switch (estado) {
       case 'PENDIENTE': return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Clock };
-      case 'PROCESANDO': return { color: 'text-blue-600', bg: 'bg-blue-100', icon: Loader2 };
-      case 'COMPLETADO': return { color: 'text-green-600', bg: 'bg-green-100', icon: CheckCircle };
-      case 'ERROR': return { color: 'text-red-600', bg: 'bg-red-100', icon: XCircle };
+      case 'PROCESANDO': return { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: Loader2 };
+      case 'COMPLETADO': return { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: CheckCircle };
+      case 'ERROR': return { color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]', icon: XCircle };
       case 'CANCELADO': return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: XCircle };
       default: return { color: 'text-[#69738c]', bg: 'bg-[#dfeaff]', icon: Clock };
     }
@@ -222,7 +222,7 @@ export default function ExportsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee]">
               <Download className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -242,7 +242,7 @@ export default function ExportsPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">En Proceso</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {trabajos.filter(t => t.estado === 'PROCESANDO').length}
               </p>
             </div>
@@ -250,7 +250,7 @@ export default function ExportsPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Listos para Descarga</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {trabajos.filter(t => t.estado === 'COMPLETADO').length}
               </p>
             </div>
@@ -266,7 +266,7 @@ export default function ExportsPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Tamaño Total</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {formatBytes(trabajos.reduce((acc, t) => acc + (t.tamañoBytes || 0), 0))}
               </p>
             </div>
@@ -372,9 +372,9 @@ export default function ExportsPage() {
 
                     {/* Error */}
                     {trabajo.error && (
-                      <div className="mt-3 p-3 bg-red-50 rounded-lg flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-                        <span className="text-sm text-red-600">{trabajo.error}</span>
+                      <div className="mt-3 p-3 bg-[#dfeaff] rounded-lg flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-[#9aa3b8] flex-shrink-0" />
+                        <span className="text-sm text-[#9aa3b8]">{trabajo.error}</span>
                       </div>
                     )}
 

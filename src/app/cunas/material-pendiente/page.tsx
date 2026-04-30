@@ -27,7 +27,7 @@ interface MaterialPendiente {
   anuncianteId: string;
   anuncianteNombre: string;
   contratoNumero: string | null;
-  vencimientoNombre: string | null;
+  vencimientosNombre: string | null;
   tipoMaterial: string;
   descripcion: string;
   duracionEsperada: number | null;
@@ -166,7 +166,7 @@ const AnuncianteCard = ({
               <tr className="text-left text-xs text-slate-500 uppercase">
                 <th className="pb-2">Material</th>
                 <th className="pb-2">Tipo</th>
-                <th className="pb-2">Vencimiento</th>
+                <th className="pb-2">Vencimientos</th>
                 <th className="pb-2">Estado</th>
                 <th className="pb-2">Plazo</th>
                 <th className="pb-2">Contacto</th>
@@ -178,8 +178,8 @@ const AnuncianteCard = ({
                 <tr key={mat.id} className="border-t border-slate-200">
                   <td className="py-3">
                     <p className="font-medium text-slate-800">{mat.descripcion}</p>
-                    {mat.vencimientoNombre && (
-                      <p className="text-xs text-purple-600">{mat.vencimientoNombre}</p>
+                    {mat.vencimientosNombre && (
+                      <p className="text-xs text-purple-600">{mat.vencimientosNombre}</p>
                     )}
                   </td>
                   <td className="py-3 text-sm text-slate-600 capitalize">{mat.tipoMaterial}</td>

@@ -22,6 +22,7 @@ import {
   ShieldAlert, CheckSquare, Square,
   ArrowLeft
 } from 'lucide-react';
+import { ModuleNavMenu } from '@/components/module-nav-menu';
 import useAtajosTeclado from '@/app/campanas/crear/components/WizardCampana/hooks/useAtajosTeclado';
 
 // Módulos extraídos
@@ -300,7 +301,7 @@ export default function CunasOperacionesPage() {
       
       // Alertas mock
       setAlertas([
-        { id: 'a1', tipo: 'vencimiento', prioridad: 'critica', mensaje: 'Cuña vence mañana', cunaId: 'cun-006', cunaCodigo: 'SPX000006', accion: 'Resolver' },
+        { id: 'a1', tipo: 'vencimientos', prioridad: 'critica', mensaje: 'Cuña vence mañana', cunaId: 'cun-006', cunaCodigo: 'SPX000006', accion: 'Resolver' },
         { id: 'a2', tipo: 'validacion', prioridad: 'alta', mensaje: 'Pendiente validación técnica', cunaId: 'cun-003', cunaCodigo: 'SPX000003', accion: 'Validar' },
         { id: 'a3', tipo: 'distribucion', prioridad: 'media', mensaje: '2 confirmaciones pendientes', cunaId: 'cun-002', cunaCodigo: 'SPX000002', accion: 'Ver' }
       ]);
@@ -377,6 +378,7 @@ export default function CunasOperacionesPage() {
               style={{ background: N.base, boxShadow: shadowOut(3), color: N.textSub }}>
               <ArrowLeft className="w-4 h-4" />
             </button>
+            <ModuleNavMenu />
             <div className="p-3 rounded-xl" style={{ background: '#22c55e', boxShadow: shadowOut(3) }}>
               <Music className="w-6 h-6 text-white" />
             </div>

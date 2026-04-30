@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * 🔔 SILEXAR PULSE - Alert Escalation Manager
+ * ðŸ”” SILEXAR PULSE - Alert Escalation Manager
  * Sistema de escalación automática de alertas
  * 
  * @description Escalation:
@@ -15,11 +15,9 @@
  * @security MILITARY_GRADE
  */
 
-import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { useState } from 'react'
+import { NeuCard, NeuButton, StatusBadge } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Bell,
   Plus,
@@ -73,297 +71,319 @@ interface ActiveAlert {
   status: 'active' | 'acknowledged' | 'resolved'
 }
 
+const mockPolicies: EscalationPolicy[] = [
+  {
+    id: 'pol_001',
+    name: 'Seguridad Crítica',
+    description: 'Alertas de seguridad que requieren atención inmediata',
+    severity: 'critical',
+    levels: [
+      { level: 1, delayMinutes: 0, contacts: [], channels: ['sms', 'phone'] },
+      { level: 2, delayMinutes: 5, contacts: [], channels: ['phone'] }
+    ],
+    status: 'active',
+    activeIncidents: 2
+  },
+  {
+    id: 'pol_002',
+    name: 'Rendimiento',
+    description: 'Alertas de performance y disponibilidad',
+    severity: 'high',
+    levels: [
+      { level: 1, delayMinutes: 15, contacts: [], channels: ['slack'] },
+      { level: 2, delayMinutes: 30, contacts: [], channels: ['email'] }
+    ],
+    status: 'active',
+    activeIncidents: 0
+  },
+  {
+    id: 'pol_003',
+    name: 'Licencias',
+    description: 'Vencimientos y renovación de licencias',
+    severity: 'medium',
+    levels: [
+      { level: 1, delayMinutes: 1440, contacts: [], channels: ['email'] }
+    ],
+    status: 'active',
+    activeIncidents: 1
+  }
+]
+
+const mockContacts: Contact[] = [
+  { id: 'cnt_001', name: 'Carlos CEO', email: 'ceo@silexar.com', phone: '+56912345678', role: 'CTO', onCall: true },
+  { id: 'cnt_002', name: 'María Garcia', email: 'maria@silexar.com', role: 'DevOps Lead', onCall: false },
+  { id: 'cnt_003', name: 'Juan Pérez', email: 'juan@silexar.com', phone: '+56987654321', role: 'Security Lead', onCall: true }
+]
+
+const mockActiveAlerts: ActiveAlert[] = [
+  {
+    id: 'alert_001',
+    title: 'Acceso no autorizado detectado',
+    severity: 'critical',
+    currentLevel: 2,
+    startedAt: new Date(Date.now() - 10 * 60 * 1000),
+    lastEscalated: new Date(Date.now() - 5 * 60 * 1000),
+    status: 'active'
+  },
+  {
+    id: 'alert_002',
+    title: 'CPU al 95% - Servidor Principal',
+    severity: 'high',
+    currentLevel: 1,
+    startedAt: new Date(Date.now() - 30 * 60 * 1000),
+    status: 'acknowledged',
+    acknowledgedBy: 'María Garcia'
+  }
+]
+
 export function AlertEscalation() {
-  const [policies, setPolicies] = useState<EscalationPolicy[]>([])
-  const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([])
-  const [contacts, setContacts] = useState<Contact[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    loadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const loadData = async () => {
-    setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    setContacts([
-      { id: 'contact_001', name: 'CEO', email: 'ceo@company.com', phone: '+56912345678', role: 'CEO', onCall: true },
-      { id: 'contact_002', name: 'CTO', email: 'cto@company.com', phone: '+56987654321', role: 'CTO', onCall: false },
-      { id: 'contact_003', name: 'DevOps Lead', email: 'devops@company.com', phone: '+56911111111', role: 'DevOps', onCall: true },
-      { id: 'contact_004', name: 'Support Lead', email: 'support@company.com', role: 'Support', onCall: true }
-    ])
-
-    setPolicies([
-      {
-        id: 'policy_001',
-        name: 'Critical Infrastructure',
-        description: 'Para incidentes críticos de infraestructura',
-        severity: 'critical',
-        levels: [
-          { level: 1, delayMinutes: 0, contacts: [], channels: ['slack', 'email'] },
-          { level: 2, delayMinutes: 5, contacts: [], channels: ['sms', 'phone'] },
-          { level: 3, delayMinutes: 15, contacts: [], channels: ['phone'] }
-        ],
-        status: 'active',
-        activeIncidents: 0
-      },
-      {
-        id: 'policy_002',
-        name: 'High Priority',
-        description: 'Para incidentes de alta prioridad',
-        severity: 'high',
-        levels: [
-          { level: 1, delayMinutes: 0, contacts: [], channels: ['slack'] },
-          { level: 2, delayMinutes: 15, contacts: [], channels: ['email', 'sms'] },
-          { level: 3, delayMinutes: 30, contacts: [], channels: ['phone'] }
-        ],
-        status: 'active',
-        activeIncidents: 1
-      },
-      {
-        id: 'policy_003',
-        name: 'Medium Priority',
-        description: 'Para incidentes de prioridad media',
-        severity: 'medium',
-        levels: [
-          { level: 1, delayMinutes: 0, contacts: [], channels: ['slack'] },
-          { level: 2, delayMinutes: 30, contacts: [], channels: ['email'] }
-        ],
-        status: 'active',
-        activeIncidents: 2
-      }
-    ])
-
-    setActiveAlerts([
-      {
-        id: 'alert_001',
-        title: 'Meta API degraded performance',
-        severity: 'high',
-        currentLevel: 2,
-        startedAt: new Date(Date.now() - 25 * 60 * 1000),
-        lastEscalated: new Date(Date.now() - 10 * 60 * 1000),
-        status: 'active'
-      },
-      {
-        id: 'alert_002',
-        title: 'Slow database queries',
-        severity: 'medium',
-        currentLevel: 1,
-        startedAt: new Date(Date.now() - 10 * 60 * 1000),
-        status: 'acknowledged',
-        acknowledgedBy: 'DevOps Lead'
-      },
-      {
-        id: 'alert_003',
-        title: 'Email delivery delayed',
-        severity: 'medium',
-        currentLevel: 1,
-        startedAt: new Date(Date.now() - 15 * 60 * 1000),
-        status: 'active'
-      }
-    ])
-
-    setIsLoading(false)
-  }
-
-  const acknowledgeAlert = (id: string) => {
-    setActiveAlerts(prev => prev.map(a => 
-      a.id === id ? { ...a, status: 'acknowledged', acknowledgedBy: 'CEO' } : a
-    ))
-  }
-
-  const resolveAlert = (id: string) => {
-    setActiveAlerts(prev => prev.filter(a => a.id !== id))
-  }
+  const [policies] = useState<EscalationPolicy[]>(mockPolicies)
+  const [activeAlerts] = useState<ActiveAlert[]>(mockActiveAlerts)
+  const [contacts] = useState<Contact[]>(mockContacts)
+  const [isLoading] = useState(false)
 
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-600/20 text-red-300 border-red-500/50'
-      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'low': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'critical': return { color: N.accent, bg: `${N.accent}15` }
+      case 'high': return { color: N.accent, bg: `${N.accent}15` }
+      case 'medium': return { color: N.accent, bg: `${N.accent}15` }
+      default: return { color: N.textSub, bg: `${N.dark}15` }
     }
   }
 
-  const getChannelIcon = (channel: string) => {
-    switch (channel) {
-      case 'email': return <Mail className="w-3 h-3" />
-      case 'sms': return <MessageSquare className="w-3 h-3" />
-      case 'phone': return <PhoneCall className="w-3 h-3" />
-      case 'slack': return <MessageSquare className="w-3 h-3" />
-      default: return <Bell className="w-3 h-3" />
+  const getSeverityBadge = (severity: string): 'danger' | 'warning' | 'info' | 'neutral' => {
+    switch (severity) {
+      case 'critical': return 'danger'
+      case 'high': return 'warning'
+      case 'medium': return 'info'
+      default: return 'neutral'
     }
   }
 
-  const onCallCount = contacts.filter(c => c.onCall).length
+  const formatTimeAgo = (date: Date) => {
+    const minutes = Math.floor((Date.now() - date.getTime()) / 60000)
+    if (minutes < 60) return `${minutes}m`
+    const hours = Math.floor(minutes / 60)
+    if (hours < 24) return `${hours}h`
+    return `${Math.floor(hours / 24)}d`
+  }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Alert Escalation...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Escalamiento...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Bell className="w-5 h-5 text-red-400" />
-          Alert Escalation
-          {activeAlerts.filter(a => a.status === 'active').length > 0 && (
-            <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded animate-pulse">
-              {activeAlerts.filter(a => a.status === 'active').length} Active
-            </span>
-          )}
-        </h3>
-        <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
-            <RefreshCw className="w-4 h-4 mr-1" />
-            Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
-            <Plus className="w-4 h-4 mr-1" />
-            New Policy
-          </NeuromorphicButton>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+            <Bell style={{ color: N.accent, width: 24, height: 24 }} />
+            Alert Escalation
+          </h2>
+          <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Gestión de escalamiento automático</p>
         </div>
+        <NeuButton variant="primary">
+          <Plus style={{ width: 16, height: 16, marginRight: 4 }} />
+          Nueva Política
+        </NeuButton>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{policies.length}</p>
-          <p className="text-xs text-slate-400">Policies</p>
-        </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{activeAlerts.filter(a => a.status === 'active').length}</p>
-          <p className="text-xs text-slate-400">Active Alerts</p>
-        </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{activeAlerts.filter(a => a.status === 'acknowledged').length}</p>
-          <p className="text-xs text-slate-400">Acknowledged</p>
-        </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{onCallCount}</p>
-          <p className="text-xs text-slate-400">On-Call</p>
-        </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '16px', background: N.base }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: N.accent, fontSize: '2rem', fontWeight: 700, margin: 0 }}>
+              {activeAlerts.filter(a => a.severity === 'critical').length}
+            </p>
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Críticas Activas</p>
+          </div>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '16px', background: N.base }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: N.accent, fontSize: '2rem', fontWeight: 700, margin: 0 }}>
+              {activeAlerts.filter(a => a.status === 'active').length}
+            </p>
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>En Escalamiento</p>
+          </div>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '16px', background: N.base }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: N.text, fontSize: '2rem', fontWeight: 700, margin: 0 }}>
+              {contacts.filter(c => c.onCall).length}
+            </p>
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>On-Call</p>
+          </div>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '16px', background: N.base }}>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: N.accent, fontSize: '2rem', fontWeight: 700, margin: 0 }}>
+              {policies.filter(p => p.status === 'active').length}
+            </p>
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Políticas Activas</p>
+          </div>
+        </NeuCard>
       </div>
 
-      {/* Active Alerts */}
-      {activeAlerts.length > 0 && (
-        <NeuromorphicCard variant="glow" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-400" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+        {/* Active Alerts */}
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1.5rem', background: N.base }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem' }}>
             Alertas Activas
-          </h4>
-          <div className="space-y-2">
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {activeAlerts.map(alert => (
-              <div key={alert.id} className={`flex items-center justify-between p-3 rounded-lg border ${getSeverityStyle(alert.severity)}`}>
-                <div className="flex items-center gap-3">
-                  {alert.status === 'active' && <AlertTriangle className="w-5 h-5 animate-pulse" />}
-                  {alert.status === 'acknowledged' && <Clock className="w-5 h-5" />}
+              <div
+                key={alert.id}
+                style={{
+                  padding: '12px',
+                  background: getSeverityStyle(alert.severity).bg,
+                  border: `1px solid ${getSeverityStyle(alert.severity).color}30`,
+                  borderRadius: '8px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <div>
-                    <span className="text-white">{alert.title}</span>
-                    <p className="text-xs text-slate-400">
-                      Level {alert.currentLevel} • Started {Math.round((Date.now() - alert.startedAt.getTime()) / 60000)} min ago
-                      {alert.acknowledgedBy && ` • ACK by ${alert.acknowledgedBy}`}
-                    </p>
+                    <p style={{ color: N.text, fontWeight: 500, margin: 0 }}>{alert.title}</p>
+                    <StatusBadge status={getSeverityBadge(alert.severity)} label={alert.severity} />
                   </div>
+                  <span style={{ fontSize: '0.75rem', color: N.textSub }}>
+                    {formatTimeAgo(alert.startedAt)}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: N.textSub }}>
+                    <span>Nivel {alert.currentLevel}</span>
+                    {alert.acknowledgedBy && (
+                      <span>Ack: {alert.acknowledgedBy}</span>
+                    )}
+                  </div>
                   {alert.status === 'active' && (
-                    <NeuromorphicButton variant="secondary" size="sm" onClick={() => acknowledgeAlert(alert.id)}>
-                      <CheckCircle className="w-3 h-3 mr-1" />
-                      ACK
-                    </NeuromorphicButton>
+                    <NeuButton variant="secondary">
+                      <CheckCircle style={{ width: 12, height: 12 }} />
+                      Ack
+                    </NeuButton>
                   )}
-                  <NeuromorphicButton variant="secondary" size="sm" onClick={() => resolveAlert(alert.id)}>
-                    <XCircle className="w-3 h-3 mr-1" />
-                    Resolve
-                  </NeuromorphicButton>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
-      )}
+        </NeuCard>
 
-      {/* Escalation Policies */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Políticas de Escalación</h4>
-        <div className="space-y-3">
-          {policies.map(policy => (
-            <div key={policy.id} className="p-4 bg-slate-800/50 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${policy.status === 'active' ? 'bg-green-400' : 'bg-yellow-400'}`} />
+        {/* Policies */}
+        <NeuCard style={{ boxShadow: getShadow(), padding: '1.5rem', background: N.base }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem' }}>
+            Políticas de Escalamiento
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {policies.map(policy => (
+              <div
+                key={policy.id}
+                style={{
+                  padding: '12px',
+                  background: `${N.dark}15`,
+                  borderRadius: '8px',
+                  border: `1px solid ${N.dark}30`
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <div>
-                    <span className="text-white font-medium">{policy.name}</span>
-                    <span className={`ml-2 text-xs px-2 py-0.5 rounded ${getSeverityStyle(policy.severity)}`}>
-                      {policy.severity.toUpperCase()}
+                    <p style={{ color: N.text, fontWeight: 500, margin: 0 }}>{policy.name}</p>
+                    <p style={{ color: N.textSub, fontSize: '0.75rem', marginTop: '4px' }}>{policy.description}</p>
+                  </div>
+                  <StatusBadge
+                    status={policy.status === 'active' ? 'success' : 'neutral'}
+                    label={policy.status}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.75rem', color: N.textSub }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Clock style={{ width: 12, height: 12 }} />
+                      {policy.levels[0]?.delayMinutes || 0}m delay
                     </span>
+                    <span>{policy.levels.length} niveles</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <NeuButton variant="ghost">
+                      <Edit style={{ width: 12, height: 12 }} />
+                    </NeuButton>
+                    <NeuButton variant="ghost">
+                      <Trash2 style={{ width: 12, height: 12 }} />
+                    </NeuButton>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button className="p-1 hover:bg-slate-700 rounded">
-                    <Edit className="w-4 h-4 text-blue-400" />
-                  </button>
-                  <button className="p-1 hover:bg-slate-700 rounded">
-                    <Trash2 className="w-4 h-4 text-red-400" />
-                  </button>
-                </div>
               </div>
-              <p className="text-xs text-slate-500 mb-3">{policy.description}</p>
-              <div className="flex items-center gap-4">
-                {policy.levels.map(level => (
-                  <div key={level.level} className="flex items-center gap-2 text-xs">
-                    <span className="text-slate-400">L{level.level}:</span>
-                    <span className="text-white">{level.delayMinutes}m</span>
-                    <div className="flex gap-1">
-                      {level.channels.map(ch => (
-                        <span key={ch} className="text-slate-400">{getChannelIcon(ch)}</span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </NeuromorphicCard>
+            ))}
+          </div>
+        </NeuCard>
+      </div>
 
-      {/* On-Call Contacts */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <User className="w-4 h-4 text-slate-400" />
-          Contactos On-Call
-        </h4>
-        <div className="grid grid-cols-2 gap-3">
+      {/* Contacts */}
+      <NeuCard style={{ boxShadow: getShadow(), padding: '1.5rem', background: N.base }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600 }}>
+            Contactos de Escalamiento
+          </h3>
+          <NeuButton variant="secondary">
+            <Plus style={{ width: 12, height: 12, marginRight: 4 }} />
+            Agregar
+          </NeuButton>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
           {contacts.map(contact => (
-            <div key={contact.id} className={`flex items-center justify-between p-3 rounded-lg ${contact.onCall ? 'bg-green-500/10' : 'bg-slate-800/50'}`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${contact.onCall ? 'bg-green-500' : 'bg-slate-600'}`}>
-                  <User className="w-4 h-4 text-white" />
+            <div
+              key={contact.id}
+              style={{
+                padding: '12px',
+                background: contact.onCall ? `${N.accent}15` : `${N.dark}15`,
+                borderRadius: '8px',
+                border: `1px solid ${contact.onCall ? N.accent : N.dark}30`
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <div style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: '50%',
+                  background: N.accent,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <User style={{ width: 16, height: 16, color: '#fff' }} />
                 </div>
                 <div>
-                  <span className="text-white text-sm">{contact.name}</span>
-                  <p className="text-xs text-slate-500">{contact.role}</p>
+                  <p style={{ color: N.text, fontWeight: 500, margin: 0 }}>{contact.name}</p>
+                  <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{contact.role}</p>
                 </div>
               </div>
-              {contact.onCall && (
-                <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">ON-CALL</span>
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.75rem', color: N.textSub }}>{contact.email}</span>
+                <StatusBadge
+                  status={contact.onCall ? 'success' : 'neutral'}
+                  label={contact.onCall ? 'On-Call' : 'Off'}
+                />
+              </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

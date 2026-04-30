@@ -12,7 +12,7 @@ export enum PrioridadAlerta {
 }
 
 export enum CategoriaAlerta {
-  VENCIMIENTO = 'vencimientos',
+  VENCIMIENTOS = 'vencimientos',
   APROBACION = 'aprobacion',
   INVENTARIO = 'inventario',
   RIESGO = 'riesgo',
@@ -82,7 +82,7 @@ export interface AlertaSeguimientoProps {
   prioridad: PrioridadAlerta;
   estado: EstadoAlerta;
   fechaCreacion: Date;
-  fechaVencimiento?: Date;
+  fechaVencimientos?: Date;
   fechaResolucion?: Date;
   responsableActual?: ResponsableProps;
   escalamientos: EscalamientoProps[];
@@ -106,7 +106,7 @@ export class AlertaSeguimiento {
   private _prioridad: PrioridadAlerta;
   private _estado: EstadoAlerta;
   private _fechaCreacion: Date;
-  private _fechaVencimiento?: Date;
+  private _fechaVencimientos?: Date;
   private _fechaResolucion?: Date;
   private _responsableActual?: ResponsableProps;
   private _escalamientos: EscalamientoProps[];
@@ -146,7 +146,7 @@ export class AlertaSeguimiento {
     this._prioridad = props.prioridad;
     this._estado = props.estado;
     this._fechaCreacion = props.fechaCreacion;
-    this._fechaVencimiento = props.fechaVencimiento;
+    this._fechaVencimientos = props.fechaVencimientos;
     this._fechaResolucion = props.fechaResolucion;
     this._responsableActual = props.responsableActual;
     this._escalamientos = props.escalamientos;
@@ -202,7 +202,7 @@ export class AlertaSeguimiento {
   get prioridad(): PrioridadAlerta { return this._prioridad; }
   get estado(): EstadoAlerta { return this._estado; }
   get fechaCreacion(): Date { return this._fechaCreacion; }
-  get fechaVencimiento(): Date | undefined { return this._fechaVencimiento; }
+  get fechaVencimientos(): Date | undefined { return this._fechaVencimientos; }
   get fechaResolucion(): Date | undefined { return this._fechaResolucion; }
   get responsableActual(): ResponsableProps | undefined { return this._responsableActual; }
   get escalamientos(): EscalamientoProps[] { return [...this._escalamientos]; }
@@ -635,7 +635,7 @@ export class AlertaSeguimiento {
       prioridad: this._prioridad,
       estado: this._estado,
       fechaCreacion: this._fechaCreacion.toISOString(),
-      fechaVencimiento: this._fechaVencimiento?.toISOString(),
+      fechaVencimientos: this._fechaVencimientos?.toISOString(),
       fechaResolucion: this._fechaResolucion?.toISOString(),
       responsableActual: this._responsableActual,
       escalamientos: this._escalamientos,

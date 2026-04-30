@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? MOBILE: Reportes Builder View
  * 
  * Builder de reportes simplificado para mobile.
@@ -26,19 +26,19 @@ interface ReportePlantilla {
 }
 
 const PLANTILLAS: ReportePlantilla[] = [
-  { id: 'rpt-1', nombre: 'Resumen Ejecutivo', descripcion: 'KPIs principales y métricas clave', tipo: 'kpi', favorito: true, ultimoUso: '2025-02-26' },
-  { id: 'rpt-2', nombre: 'Pipeline por Etapa', descripcion: 'Distribución y valor por etapa', tipo: 'pipeline', favorito: true, ultimoUso: '2025-02-25' },
-  { id: 'rpt-3', nombre: 'Tendencia Mensual', descripcion: 'Evolución de contratos por mes', tipo: 'tendencia', favorito: false, ultimoUso: '2025-02-20' },
-  { id: 'rpt-4', nombre: 'Comparativo YoY', descripcion: 'Comparación año anterior', tipo: 'comparativo', favorito: false },
+  { id: 'rpt-1', nombre: 'Resumen Ejecutivo', descripcion: 'KPIs principales y mï¿½tricas clave', tipo: 'kpi', favorito: true, ultimoUso: '2025-02-26' },
+  { id: 'rpt-2', nombre: 'Pipeline por Etapa', descripcion: 'Distribuciï¿½n y valor por etapa', tipo: 'pipeline', favorito: true, ultimoUso: '2025-02-25' },
+  { id: 'rpt-3', nombre: 'Tendencia Mensual', descripcion: 'Evoluciï¿½n de contratos por mes', tipo: 'tendencia', favorito: false, ultimoUso: '2025-02-20' },
+  { id: 'rpt-4', nombre: 'Comparativo YoY', descripcion: 'Comparaciï¿½n aï¿½o anterior', tipo: 'comparativo', favorito: false },
   { id: 'rpt-5', nombre: 'Top Clientes', descripcion: 'Ranking por valor de contrato', tipo: 'kpi', favorito: true, ultimoUso: '2025-02-24' },
-  { id: 'rpt-6', nombre: 'Análisis de Cobranza', descripcion: 'Estado de cuentas y aging', tipo: 'kpi', favorito: false },
+  { id: 'rpt-6', nombre: 'Anï¿½lisis de Cobranza', descripcion: 'Estado de cuentas y aging', tipo: 'kpi', favorito: false },
 ];
 
 const tipoConfig: Record<string, { icon: React.ReactNode; color: string; bg: string }> = {
   kpi: { icon: <BarChart3 className="w-5 h-5" />, color: 'text-[#6888ff]', bg: 'bg-[#dfeaff]' },
-  pipeline: { icon: <PieChart className="w-5 h-5" />, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-  tendencia: { icon: <TrendingUp className="w-5 h-5" />, color: 'text-blue-600', bg: 'bg-blue-100' },
-  comparativo: { icon: <Calendar className="w-5 h-5" />, color: 'text-amber-600', bg: 'bg-amber-100' },
+  pipeline: { icon: <PieChart className="w-5 h-5" />, color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
+  tendencia: { icon: <TrendingUp className="w-5 h-5" />, color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
+  comparativo: { icon: <Calendar className="w-5 h-5" />, color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10' },
 };
 
 export function MobileReportesView() {
@@ -53,11 +53,11 @@ export function MobileReportesView() {
       {/* HEADER */}
       <div className="bg-[#6888ff] rounded-2xl p-5 text-white shadow-xl">
         <div className="flex items-center gap-2 mb-2">
-          <BarChart3 className="w-5 h-5 text-purple-200" />
-          <p className="text-xs font-bold text-purple-200 uppercase tracking-widest">Reportes</p>
+          <BarChart3 className="w-5 h-5 text-[#6888ff]" />
+          <p className="text-xs font-bold text-[#6888ff] uppercase tracking-widest">Reportes</p>
         </div>
         <p className="text-lg font-black">{PLANTILLAS.length} plantillas</p>
-        <p className="text-xs text-purple-200 mt-1">Genera reportes personalizados desde tu móvil</p>
+        <p className="text-xs text-[#6888ff] mt-1">Genera reportes personalizados desde tu mï¿½vil</p>
       </div>
 
       {/* TABS */}
@@ -65,7 +65,7 @@ export function MobileReportesView() {
         {(['plantillas', 'recientes', 'favoritos'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-              tab === t ? 'bg-purple-600 text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
+              tab === t ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8] border border-[#bec8de30]'
             }`}>
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
@@ -84,7 +84,7 @@ export function MobileReportesView() {
               <div className="flex-1 text-left min-w-0">
                 <div className="flex items-center gap-1">
                   <p className="font-bold text-[#69738c] text-sm">{plantilla.nombre}</p>
-                  {plantilla.favorito && <Star className="w-3 h-3 text-amber-400 fill-amber-400" />}
+                  {plantilla.favorito && <Star className="w-3 h-3 text-[#6888ff] fill-amber-400" />}
                 </div>
                 <p className="text-[10px] text-[#9aa3b8] truncate">{plantilla.descripcion}</p>
                 {plantilla.ultimoUso && (
@@ -101,7 +101,7 @@ export function MobileReportesView() {
       </div>
 
       {/* NEW REPORT */}
-      <button className="w-full py-3 border-2 border-dashed border-purple-300 rounded-xl text-purple-600 font-bold flex items-center justify-center gap-2 active:scale-95">
+      <button className="w-full py-3 border-2 border-dashed border-[#bec8de] rounded-xl text-[#6888ff] font-bold flex items-center justify-center gap-2 active:scale-95">
         <Plus className="w-5 h-5" /> Crear Reporte Personalizado
       </button>
     </div>

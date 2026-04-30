@@ -7,15 +7,30 @@
  * Endpoints:
  *   POST /api/contratos/draft - Guarda un borrador
  *   GET /api/contratos/draft?sessionId=X - Recupera un borrador
+ *   DELETE /api/contratos/draft?sessionId=X - Elimina un borrador
  * 
  * @version 2025.6.0
  * @tier TIER_0_FORTUNE_10
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { z } from 'zod'
 import { logger } from '@/lib/observability';
 import { withApiRoute } from '@/lib/api/with-api-route';
-import { withTenantContext } from '@/lib/db/tenant-context';
+import { apiSuccess, apiError, apiServerError, apiNotFound } from '@/lib/api/response';
+import { auditLogger } from '@/lib/security/audit-logger';
+import { AuditEventType } from '@/lib/security/audit-types';
+
+// ─── Zod Schemas ──────────────────────────────────────────────────────────────
+
+const draftBodySchema = z.object({
+    sessionId: z.string().min(1, 'sessionId es requerido'),
+    titulo: z.string().min(1).optional(),
+    anuncianteId: z.string().uuid().optional(),
+    fechaInicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    fechaFin: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    valorTotalBruto: z.number().nonnegative().optional(),
+}).strict()
 
 // ═══════════════════════════════════════════════════════════════
 // STORAGE KEY PARA DRAFTS (usando cache en memoria para demo)
@@ -46,37 +61,63 @@ setInterval(() => {
 export const POST = withApiRoute(
     { resource: 'contratos', action: 'create', skipCsrf: true },
     async ({ ctx, req }) => {
-        try {
-            const body = await req.json();
-            const { sessionId, ...wizardState } = body;
+        const tenantId = ctx.tenantId
+        const userId = ctx.userId
 
-            if (!sessionId) {
-                return NextResponse.json({
-                    success: false,
-                    error: 'sessionId es requerido'
-                }, { status: 400 });
+        try {
+            let rawBody: unknown;
+            try {
+                rawBody = await req.json();
+            } catch {
+                return apiError('INVALID_JSON', 'Request body must be valid JSON', 400) as unknown as NextResponse;
             }
+
+            const parseResult = draftBodySchema.safeParse(rawBody);
+            if (!parseResult.success) {
+                return apiError(
+                    'VALIDATION_ERROR',
+                    'Error en la validación de los datos',
+                    400,
+                    parseResult.error.flatten().fieldErrors
+                ) as unknown as NextResponse;
+            }
+
+            const body = parseResult.data;
+            const { sessionId, ...wizardState } = body;
 
             // Guardar en cache
             draftsCache.set(sessionId, {
                 data: wizardState,
-                tenantId: ctx.tenantId,
-                userId: ctx.userId,
+                tenantId,
+                userId,
                 updatedAt: new Date()
+            });
+
+            // Log de auditoría
+            auditLogger.log({
+                type: AuditEventType.DATA_CREATE,
+                userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'guardar_draft',
+                    sessionId,
+                    tenantId
+                }
             });
 
             logger.debug('[API/Contratos/Draft] Borrador guardado', {
                 sessionId,
-                tenantId: ctx.tenantId,
-                userId: ctx.userId
+                tenantId,
+                userId
             });
 
-            return NextResponse.json({
+            return apiSuccess({
                 success: true,
                 message: 'Borrador guardado',
                 sessionId,
                 savedAt: new Date().toISOString()
-            });
+            }, 200, { message: 'Borrador guardado' }) as unknown as NextResponse;
+
         } catch (error) {
             logger.error('[API/Contratos/Draft] Error al guardar:', error instanceof Error ? error : undefined, {
                 module: 'contratos/draft',
@@ -84,10 +125,20 @@ export const POST = withApiRoute(
                 userId: ctx.userId,
                 tenantId: ctx.tenantId
             });
-            return NextResponse.json({
-                success: false,
-                error: 'Error al guardar borrador'
-            }, { status: 500 });
+
+            // Log de auditoría para fallo
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'guardar_draft',
+                    tenantId: ctx.tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            });
+
+            return apiServerError() as unknown as NextResponse;
         }
     }
 );
@@ -99,32 +150,42 @@ export const POST = withApiRoute(
 export const GET = withApiRoute(
     { resource: 'contratos', action: 'read', skipCsrf: true },
     async ({ ctx, req }) => {
+        const tenantId = ctx.tenantId
+        const userId = ctx.userId
+
         try {
             const { searchParams } = new URL(req.url);
             const sessionId = searchParams.get('sessionId');
 
             if (!sessionId) {
-                return NextResponse.json({
-                    success: false,
-                    error: 'sessionId es requerido'
-                }, { status: 400 });
+                return apiError('MISSING_PARAM', 'sessionId es requerido', 400) as unknown as NextResponse;
             }
 
             const draft = draftsCache.get(sessionId);
 
             // Verificar que el draft existe y pertenece al tenant
-            if (!draft || draft.tenantId !== ctx.tenantId) {
-                return NextResponse.json({
-                    success: false,
-                    error: 'Borrador no encontrado'
-                }, { status: 404 });
+            if (!draft || draft.tenantId !== tenantId) {
+                return apiNotFound('Borrador no encontrado') as unknown as NextResponse;
             }
 
-            return NextResponse.json({
+            // Log de auditoría para lectura de draft
+            auditLogger.log({
+                type: AuditEventType.DATA_READ,
+                userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'recuperar_draft',
+                    sessionId,
+                    tenantId
+                }
+            });
+
+            return apiSuccess({
                 success: true,
                 data: draft.data,
                 savedAt: draft.updatedAt.toISOString()
-            });
+            }, 200, { message: 'Borrador recuperado' }) as unknown as NextResponse;
+
         } catch (error) {
             logger.error('[API/Contratos/Draft] Error al recuperar:', error instanceof Error ? error : undefined, {
                 module: 'contratos/draft',
@@ -132,10 +193,20 @@ export const GET = withApiRoute(
                 userId: ctx.userId,
                 tenantId: ctx.tenantId
             });
-            return NextResponse.json({
-                success: false,
-                error: 'Error al recuperar borrador'
-            }, { status: 500 });
+
+            // Log de auditoría para fallo
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'recuperar_draft',
+                    tenantId: ctx.tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            });
+
+            return apiServerError() as unknown as NextResponse;
         }
     }
 );
@@ -147,33 +218,49 @@ export const GET = withApiRoute(
 export const DELETE = withApiRoute(
     { resource: 'contratos', action: 'delete', skipCsrf: true },
     async ({ ctx, req }) => {
+        const tenantId = ctx.tenantId
+        const userId = ctx.userId
+
         try {
             const { searchParams } = new URL(req.url);
             const sessionId = searchParams.get('sessionId');
 
             if (!sessionId) {
-                return NextResponse.json({
-                    success: false,
-                    error: 'sessionId es requerido'
-                }, { status: 400 });
+                return apiError('MISSING_PARAM', 'sessionId es requerido', 400) as unknown as NextResponse;
             }
 
             const draft = draftsCache.get(sessionId);
 
             // Verificar que el draft existe y pertenece al tenant
-            if (!draft || draft.tenantId !== ctx.tenantId) {
-                return NextResponse.json({
-                    success: false,
-                    error: 'Borrador no encontrado'
-                }, { status: 404 });
+            if (!draft || draft.tenantId !== tenantId) {
+                return apiNotFound('Borrador no encontrado') as unknown as NextResponse;
             }
 
             draftsCache.delete(sessionId);
 
-            return NextResponse.json({
+            // Log de auditoría
+            auditLogger.log({
+                type: AuditEventType.DATA_DELETE,
+                userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'eliminar_draft',
+                    sessionId,
+                    tenantId
+                }
+            });
+
+            logger.debug('[API/Contratos/Draft] Borrador eliminado', {
+                sessionId,
+                tenantId,
+                userId
+            });
+
+            return apiSuccess({
                 success: true,
                 message: 'Borrador eliminado'
-            });
+            }, 200, { message: 'Borrador eliminado' }) as unknown as NextResponse;
+
         } catch (error) {
             logger.error('[API/Contratos/Draft] Error al eliminar:', error instanceof Error ? error : undefined, {
                 module: 'contratos/draft',
@@ -181,10 +268,20 @@ export const DELETE = withApiRoute(
                 userId: ctx.userId,
                 tenantId: ctx.tenantId
             });
-            return NextResponse.json({
-                success: false,
-                error: 'Error al eliminar borrador'
-            }, { status: 500 });
+
+            // Log de auditoría para fallo
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'eliminar_draft',
+                    tenantId: ctx.tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            });
+
+            return apiServerError() as unknown as NextResponse;
         }
     }
 );

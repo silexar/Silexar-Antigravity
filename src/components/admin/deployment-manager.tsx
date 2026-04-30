@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * 🚀 SILEXAR PULSE - Deployment Manager
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Rocket,
   GitBranch,
@@ -133,10 +131,10 @@ export function DeploymentManager() {
 
   const deployToProduction = async () => {
     if (!confirm('¿Desplegar v2.6.0-rc.1 a producción?')) return
-    
+
     setIsDeploying(true)
     await new Promise(resolve => setTimeout(resolve, 5000))
-    
+
     const newDeployment: Deployment = {
       id: `deploy_${Date.now()}`,
       version: 'v2.6.0',
@@ -149,9 +147,9 @@ export function DeploymentManager() {
       commitMessage: 'Release: v2.6.0',
       changelog: ['New automation engine', 'Alert escalation', 'Performance improvements']
     }
-    
+
     setDeployments(prev => [newDeployment, ...prev])
-    setEnvironments(prev => prev.map(e => 
+    setEnvironments(prev => prev.map(e =>
       e.name === 'production' ? { ...e, currentVersion: 'v2.6.0', lastDeployment: new Date() } : e
     ))
     setIsDeploying(false)
@@ -159,15 +157,15 @@ export function DeploymentManager() {
 
   const rollback = async (deployment: Deployment) => {
     if (!confirm(`¿Hacer rollback a ${deployment.version}?`)) return
-    
+
     setIsDeploying(true)
     await new Promise(resolve => setTimeout(resolve, 3000))
-    
-    setDeployments(prev => prev.map(d => 
+
+    setDeployments(prev => prev.map(d =>
       d.id === deployment.id ? { ...d, status: 'rolled_back' } : d
     ))
-    
-    setEnvironments(prev => prev.map(e => 
+
+    setEnvironments(prev => prev.map(e =>
       e.name === deployment.environment ? { ...e, currentVersion: deployment.version, lastDeployment: new Date() } : e
     ))
     setIsDeploying(false)
@@ -175,20 +173,20 @@ export function DeploymentManager() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'success': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'failed': return <XCircle className="w-4 h-4 text-red-400" />
-      case 'running': return <Clock className="w-4 h-4 text-blue-400 animate-spin" />
-      case 'rolled_back': return <RotateCcw className="w-4 h-4 text-yellow-400" />
-      default: return <Clock className="w-4 h-4 text-slate-400" />
+      case 'success': return <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'failed': return <XCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'running': return <Clock className="w-4 h-4 text-[#6888ff] animate-spin" />
+      case 'rolled_back': return <RotateCcw className="w-4 h-4 text-[#6888ff]" />
+      default: return <Clock className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const getEnvColor = (env: string) => {
     switch (env) {
-      case 'production': return 'bg-red-500/20 text-red-400'
-      case 'staging': return 'bg-yellow-500/20 text-yellow-400'
-      case 'development': return 'bg-blue-500/20 text-blue-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'production': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'staging': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'development': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -198,8 +196,8 @@ export function DeploymentManager() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Deployment Manager...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Deployment Manager...</p>
         </div>
       </div>
     )
@@ -209,16 +207,16 @@ export function DeploymentManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Rocket className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Rocket className="w-5 h-5 text-[#6888ff]" />
           Deployment Manager
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={deployToProduction} disabled={isDeploying}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={deployToProduction} disabled={isDeploying}>
             {isDeploying ? (
               <>
                 <Clock className="w-4 h-4 mr-1 animate-spin" />
@@ -230,77 +228,75 @@ export function DeploymentManager() {
                 Deploy to Prod
               </>
             )}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Environments */}
       <div className="grid grid-cols-3 gap-3">
         {environments.map(env => (
-          <NeuromorphicCard key={env.name} variant="embossed" className="p-4">
+          <NeuCard key={env.name} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between mb-3">
               <span className={`text-sm font-medium px-2 py-0.5 rounded capitalize ${getEnvColor(env.name)}`}>
                 {env.name}
               </span>
-              <div className={`w-2 h-2 rounded-full ${
-                env.status === 'healthy' ? 'bg-green-400' :
-                env.status === 'degraded' ? 'bg-yellow-400' : 'bg-red-400'
-              }`} />
+              <div className={`w-2 h-2 rounded-full ${env.status === 'healthy' ? 'bg-[#6888ff]' :
+                env.status === 'degraded' ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                }`} />
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">{env.currentVersion}</p>
-              <p className="text-xs text-slate-500">{env.instances} instances</p>
-              <p className="text-xs text-slate-400 mt-2">
+              <p className="text-2xl font-bold text-[#69738c]">{env.currentVersion}</p>
+              <p className="text-xs text-[#9aa3b8]">{env.instances} instances</p>
+              <p className="text-xs text-[#9aa3b8] mt-2">
                 Last: {env.lastDeployment.toLocaleDateString()}
               </p>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Deployments History */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <GitBranch className="w-4 h-4 text-slate-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <GitBranch className="w-4 h-4 text-[#9aa3b8]" />
           Historial de Deployments ({prodDeployments} en producción)
         </h4>
         <div className="space-y-2">
           {deployments.map(deployment => (
-            <div 
+            <div
               key={deployment.id}
-              className={`flex items-center justify-between p-4 rounded-lg cursor-pointer ${
-                selectedDeployment?.id === deployment.id ? 'bg-slate-700' : 'bg-slate-800/50 hover:bg-slate-800'
-              }`}
+              className={`flex items-center justify-between p-4 rounded-lg cursor-pointer ${selectedDeployment?.id === deployment.id ? 'bg-[#dfeaff]' : 'bg-[#dfeaff]/50 hover:bg-[#dfeaff]'
+                }`}
               onClick={() => setSelectedDeployment(deployment)}
             >
               <div className="flex items-center gap-3">
                 {getStatusIcon(deployment.status)}
                 <div>
                   <div className="flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-blue-400" />
-                    <span className="text-white font-medium">{deployment.version}</span>
+                    <Tag className="w-4 h-4 text-[#6888ff]" />
+                    <span className="text-[#69738c] font-medium">{deployment.version}</span>
                     <span className={`text-xs px-2 py-0.5 rounded capitalize ${getEnvColor(deployment.environment)}`}>
                       {deployment.environment}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{deployment.commitMessage}</p>
+                  <p className="text-xs text-[#9aa3b8] mt-1">{deployment.commitMessage}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-sm text-slate-400">{deployment.deployedAt.toLocaleDateString()}</p>
-                  <p className="text-xs text-slate-500">{deployment.duration}s • {deployment.deployedBy}</p>
+                  <p className="text-sm text-[#9aa3b8]">{deployment.deployedAt.toLocaleDateString()}</p>
+                  <p className="text-xs text-[#9aa3b8]">{deployment.duration}s • {deployment.deployedBy}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <button className="p-1 hover:bg-slate-600 rounded">
-                    <Eye className="w-4 h-4 text-slate-400" />
+                    <Eye className="w-4 h-4 text-[#9aa3b8]" />
                   </button>
                   {deployment.status === 'success' && deployment.environment === 'production' && (
-                    <button 
+                    <button
                       onClick={(e) => { e.stopPropagation(); rollback(deployment); }}
                       className="p-1 hover:bg-slate-600 rounded"
                     >
-                      <RotateCcw className="w-4 h-4 text-yellow-400" />
+                      <RotateCcw className="w-4 h-4 text-[#6888ff]" />
                     </button>
                   )}
                 </div>
@@ -308,34 +304,34 @@ export function DeploymentManager() {
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Deployment Details */}
       {selectedDeployment && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">Detalles: {selectedDeployment.version}</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">Detalles: {selectedDeployment.version}</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="text-slate-500 text-sm">Commit</span>
-              <p className="text-cyan-400 font-mono">{selectedDeployment.commit}</p>
+              <span className="text-[#9aa3b8] text-sm">Commit</span>
+              <p className="text-[#6888ff] font-mono">{selectedDeployment.commit}</p>
             </div>
             <div>
-              <span className="text-slate-500 text-sm">Deployed By</span>
-              <p className="text-white">{selectedDeployment.deployedBy}</p>
+              <span className="text-[#9aa3b8] text-sm">Deployed By</span>
+              <p className="text-[#69738c]">{selectedDeployment.deployedBy}</p>
             </div>
             <div className="col-span-2">
-              <span className="text-slate-500 text-sm">Changelog</span>
+              <span className="text-[#9aa3b8] text-sm">Changelog</span>
               <ul className="mt-1 space-y-1">
                 {selectedDeployment.changelog.map((item, i) => (
-                  <li key={item} className="text-slate-300 text-sm flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
+                  <li key={item} className="text-[#69738c] text-sm flex items-center gap-2">
+                    <CheckCircle className="w-3 h-3 text-[#6888ff]" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

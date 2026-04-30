@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 👥 SILEXAR PULSE - User Management RBAC Fortune 10
+ * ðŸ‘¥ SILEXAR PULSE - User Management RBAC Fortune 10
  * Sistema de gestión de usuarios enterprise completo
  * 
  * @description RBAC Features:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Users, UserPlus, Edit, Trash2, Lock, Unlock, Eye, EyeOff, Shield,
   Mail, Key, RefreshCw, Search, CheckCircle, XCircle, Copy, Send,
@@ -29,15 +27,15 @@ import {
 
 // User Categories
 const USER_CATEGORIES = [
-  { id: 'vendedor', name: 'Vendedor', icon: '💰', color: 'green', description: 'Gestión de ventas y clientes' },
-  { id: 'ejecutivo', name: 'Ejecutivo', icon: '👔', color: 'blue', description: 'Dirección y estrategia' },
-  { id: 'trafico', name: 'Tráfico Digital', icon: '📊', color: 'purple', description: 'Campañas y ads' },
-  { id: 'operacional', name: 'Operacional', icon: '⚙️', color: 'orange', description: 'Operaciones diarias' },
-  { id: 'marketing', name: 'Marketing', icon: '📣', color: 'pink', description: 'Estrategia de marca' },
-  { id: 'soporte', name: 'Soporte', icon: '🎧', color: 'cyan', description: 'Atención al cliente' },
-  { id: 'analista', name: 'Analista', icon: '📈', color: 'yellow', description: 'Reportes y datos' },
-  { id: 'developer', name: 'Developer', icon: '💻', color: 'gray', description: 'Integraciones técnicas' },
-  { id: 'super_user', name: 'Super Usuario', icon: '👑', color: 'red', description: 'Acceso total + histórico' }
+  { id: 'vendedor', name: 'Vendedor', icon: 'ðŸ’°', color: 'green', description: 'Gestión de ventas y clientes' },
+  { id: 'ejecutivo', name: 'Ejecutivo', icon: 'ðŸ‘”', color: 'blue', description: 'Dirección y estrategia' },
+  { id: 'trafico', name: 'Tráfico Digital', icon: 'ðŸ“Š', color: 'purple', description: 'Campañas y ads' },
+  { id: 'operacional', name: 'Operacional', icon: 'š™ï¸', color: 'orange', description: 'Operaciones diarias' },
+  { id: 'marketing', name: 'Marketing', icon: 'ðŸ“£', color: 'pink', description: 'Estrategia de marca' },
+  { id: 'soporte', name: 'Soporte', icon: 'ðŸŽ§', color: 'cyan', description: 'Atención al cliente' },
+  { id: 'analista', name: 'Analista', icon: 'ðŸ“ˆ', color: 'yellow', description: 'Reportes y datos' },
+  { id: 'developer', name: 'Developer', icon: 'ðŸ’»', color: 'gray', description: 'Integraciones técnicas' },
+  { id: 'super_user', name: 'Super Usuario', icon: 'ðŸ‘‘', color: 'red', description: 'Acceso total + histórico' }
 ]
 
 // Permission Categories
@@ -50,7 +48,7 @@ const PERMISSION_CATEGORIES = {
   data: { name: 'Datos', icon: <Database className="w-4 h-4" /> },
   billing: { name: 'Facturación', icon: <FileText className="w-4 h-4" /> },
   integrations: { name: 'Integraciones', icon: <Zap className="w-4 h-4" /> },
-  super: { name: '👑 Super Usuario', icon: <Crown className="w-4 h-4" /> }
+  super: { name: 'ðŸ‘‘ Super Usuario', icon: <Crown className="w-4 h-4" /> }
 }
 
 // All Permissions
@@ -99,12 +97,12 @@ const ALL_PERMISSIONS = [
   { id: 'int_disconnect', name: 'Desconectar servicios', category: 'integrations' },
   { id: 'int_api', name: 'Gestionar API keys', category: 'integrations' },
   // Super User Only
-  { id: 'super_edit_history', name: '🔒 Modificar datos históricos', category: 'super' },
-  { id: 'super_delete_any', name: '🔒 Eliminar cualquier registro', category: 'super' },
-  { id: 'super_audit_clear', name: '🔒 Limpiar auditoría', category: 'super' },
-  { id: 'super_impersonate', name: '🔒 Impersonar usuarios', category: 'super' },
-  { id: 'super_override', name: '🔒 Override de sistema', category: 'super' },
-  { id: 'super_full_access', name: '🔒 Acceso total sin restricciones', category: 'super' }
+  { id: 'super_edit_history', name: 'ðŸ”’ Modificar datos históricos', category: 'super' },
+  { id: 'super_delete_any', name: 'ðŸ”’ Eliminar cualquier registro', category: 'super' },
+  { id: 'super_audit_clear', name: 'ðŸ”’ Limpiar auditoría', category: 'super' },
+  { id: 'super_impersonate', name: 'ðŸ”’ Impersonar usuarios', category: 'super' },
+  { id: 'super_override', name: 'ðŸ”’ Override de sistema', category: 'super' },
+  { id: 'super_full_access', name: 'ðŸ”’ Acceso total sin restricciones', category: 'super' }
 ]
 
 // Default permissions by category
@@ -129,7 +127,7 @@ interface ClientUser {
   position?: string
   category: string
   permissions: string[]
-  status: 'active' | 'inactive' | 'suspended' | 'pending'
+  status: 'active' | 'inactive' | 'suspended' | 'Pendiente'
   twoFactorEnabled: boolean
   lastLogin?: Date
   createdAt: Date
@@ -146,7 +144,7 @@ export function UserManagement() {
   const [showPassword, setShowPassword] = useState(false)
   const [filter, setFilter] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
-  
+
   // New user form
   const [newUser, setNewUser] = useState({
     name: '', email: '', phone: '', department: '', position: '',
@@ -231,16 +229,18 @@ export function UserManagement() {
       id: `user_${Date.now()}`, name: newUser.name, email: newUser.email,
       phone: newUser.phone || undefined, department: newUser.department || undefined,
       position: newUser.position || undefined, category: newUser.category,
-      permissions: newUser.permissions, status: newUser.sendInvite ? 'pending' : 'active',
+      permissions: newUser.permissions, status: newUser.sendInvite ? 'Pendiente' : 'active',
       twoFactorEnabled: newUser.enable2FA, createdAt: new Date(),
-      createdBy: 'Admin', isSuperUser: newUser.category === 'super_user'
+      createdBy: 'Administrador', isSuperUser: newUser.category === 'super_user'
     }
     setUsers(prev => [user, ...prev])
-    setNewUser({ name: '', email: '', phone: '', department: '', position: '', category: 'vendedor',
+    setNewUser({
+      name: '', email: '', phone: '', department: '', position: '', category: 'vendedor',
       permissions: CATEGORY_DEFAULT_PERMISSIONS['vendedor'], password: '', confirmPassword: '',
-      sendInvite: true, enable2FA: false })
+      sendInvite: true, enable2FA: false
+    })
     setShowCreateModal(false)
-    alert(`✅ Usuario ${user.name} creado${newUser.sendInvite ? '. Invitación enviada.' : ''}`)
+    alert(`œ… Usuario ${user.name} creado${newUser.sendInvite ? '. Invitación enviada.' : ''}`)
   }
 
   const toggleUserStatus = (userId: string, newStatus: 'active' | 'suspended') => {
@@ -256,8 +256,8 @@ export function UserManagement() {
 
   const filteredUsers = users.filter(u => {
     if (filter !== 'all' && u.category !== filter) return false
-    if (searchTerm && !u.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !u.email.toLowerCase().includes(searchTerm.toLowerCase())) return false
+    if (searchTerm && !u.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !u.email.toLowerCase().includes(searchTerm.toLowerCase())) return false
     return true
   })
 
@@ -265,8 +265,8 @@ export function UserManagement() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando...</p>
         </div>
       </div>
     )
@@ -276,41 +276,41 @@ export function UserManagement() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Users className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Users className="w-5 h-5 text-[#6888ff]" />
           Gestión de Usuarios RBAC
-          <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded">Fortune 10</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">Fortune 10</span>
         </h3>
-        <NeuromorphicButton variant="primary" size="sm" onClick={() => {
+        <NeuButton variant="primary" onClick={() => {
           setNewUser({ ...newUser, permissions: CATEGORY_DEFAULT_PERMISSIONS['vendedor'] })
           setShowCreateModal(true)
         }}>
           <UserPlus className="w-4 h-4 mr-1" />Nuevo Usuario
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats by Category */}
       <div className="grid grid-cols-5 gap-2">
-        <div className="p-2 bg-slate-800/50 rounded-lg text-center cursor-pointer" onClick={() => setFilter('all')}>
-          <p className="text-xl font-bold text-white">{users.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-2 bg-[#dfeaff]/50 rounded-lg text-center cursor-pointer" onClick={() => setFilter('all')}>
+          <p className="text-xl font-bold text-[#69738c]">{users.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
         {USER_CATEGORIES.slice(0, 4).map(cat => (
           <div key={cat.id} className={`p-2 bg-${cat.color}-500/10 rounded-lg text-center cursor-pointer`} onClick={() => setFilter(cat.id)}>
-            <p className="text-xl font-bold text-white">{users.filter(u => u.category === cat.id).length}</p>
-            <p className="text-xs text-slate-400">{cat.icon} {cat.name}</p>
+            <p className="text-xl font-bold text-[#69738c]">{users.filter(u => u.category === cat.id).length}</p>
+            <p className="text-xs text-[#9aa3b8]">{cat.icon} {cat.name}</p>
           </div>
         ))}
       </div>
 
       {/* Category Filter */}
       <div className="flex flex-wrap gap-2">
-        <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded text-sm ${filter === 'all' ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'}`}>
+        <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded text-sm ${filter === 'all' ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}>
           Todos
         </button>
         {USER_CATEGORIES.map(cat => (
           <button key={cat.id} onClick={() => setFilter(cat.id)}
-            className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${filter === cat.id ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'}`}>
+            className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${filter === cat.id ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}>
             {cat.icon} {cat.name}
           </button>
         ))}
@@ -318,22 +318,22 @@ export function UserManagement() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
         <input type="text" placeholder="Buscar..." value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" />
+          className="w-full pl-10 pr-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]" />
       </div>
 
       {/* Create Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <NeuromorphicCard variant="glow" className="w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
+          <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-white font-bold text-lg flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-green-400" />Crear Usuario
+              <h4 className="text-[#69738c] font-bold text-lg flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-[#6888ff]" />Crear Usuario
               </h4>
-              <button onClick={() => setShowCreateModal(false)} className="p-1 hover:bg-slate-700 rounded" aria-label="Cerrar">
-                <X className="w-5 h-5 text-slate-400" />
+              <button onClick={() => setShowCreateModal(false)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Cerrar">
+                <X className="w-5 h-5 text-[#9aa3b8]" />
               </button>
             </div>
 
@@ -342,53 +342,53 @@ export function UserManagement() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-slate-400 text-xs block mb-1">Nombre *</label>
+                    <label className="text-[#9aa3b8] text-xs block mb-1">Nombre *</label>
                     <input type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" placeholder="Juan Pérez" />
+                      className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]" placeholder="Juan Pérez" />
                   </div>
                   <div>
-                    <label className="text-slate-400 text-xs block mb-1">Email *</label>
+                    <label className="text-[#9aa3b8] text-xs block mb-1">Email *</label>
                     <input type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" placeholder="juan@empresa.com" />
+                      className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]" placeholder="juan@empresa.com" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-slate-400 text-xs block mb-1">Teléfono</label>
+                    <label className="text-[#9aa3b8] text-xs block mb-1">Teléfono</label>
                     <input type="tel" value={newUser.phone} onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" />
+                      className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]" />
                   </div>
                   <div>
-                    <label className="text-slate-400 text-xs block mb-1">Departamento</label>
+                    <label className="text-[#9aa3b8] text-xs block mb-1">Departamento</label>
                     <input type="text" value={newUser.department} onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white" />
+                      className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]" />
                   </div>
                 </div>
 
                 {/* Category Selection */}
                 <div>
-                  <label className="text-slate-400 text-xs block mb-2">Categoría de Usuario *</label>
+                  <label className="text-[#9aa3b8] text-xs block mb-2">Categoría de Usuario *</label>
                   <div className="grid grid-cols-3 gap-2">
                     {USER_CATEGORIES.map(cat => (
                       <button key={cat.id} onClick={() => handleCategoryChange(cat.id)}
-                        className={`p-2 rounded-lg border text-left ${newUser.category === cat.id 
-                          ? 'border-orange-500 bg-orange-500/10' : 'border-slate-700 bg-slate-800/50'}`}>
+                        className={`p-2 rounded-lg border text-left ${newUser.category === cat.id
+                          ? 'border-orange-500 bg-[#6888ff]/10' : 'border-slate-700 bg-[#dfeaff]/50'}`}>
                         <span className="text-lg">{cat.icon}</span>
-                        <p className={`text-sm font-medium ${newUser.category === cat.id ? 'text-orange-400' : 'text-white'}`}>{cat.name}</p>
-                        <p className="text-xs text-slate-500">{cat.description}</p>
+                        <p className={`text-sm font-medium ${newUser.category === cat.id ? 'text-[#6888ff]' : 'text-[#69738c]'}`}>{cat.name}</p>
+                        <p className="text-xs text-[#9aa3b8]">{cat.description}</p>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Password Section */}
-                <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                <div className="p-3 bg-[#dfeaff]/50 rounded-lg border border-slate-700">
                   <label className="flex items-center justify-between cursor-pointer mb-3">
-                    <span className="text-white text-sm flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-blue-400" />Enviar invitación por email
+                    <span className="text-[#69738c] text-sm flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-[#6888ff]" />Enviar invitación por email
                     </span>
-                    <div className={`w-12 h-6 rounded-full relative ${newUser.sendInvite ? 'bg-blue-500' : 'bg-slate-600'}`}
+                    <div className={`w-12 h-6 rounded-full relative ${newUser.sendInvite ? 'bg-[#6888ff]' : 'bg-slate-600'}`}
                       onClick={() => setNewUser({ ...newUser, sendInvite: !newUser.sendInvite })}>
                       <div className={`absolute w-5 h-5 bg-white rounded-full top-0.5 ${newUser.sendInvite ? 'left-6' : 'left-0.5'}`} />
                     </div>
@@ -400,41 +400,41 @@ export function UserManagement() {
                           <input type={showPassword ? 'text' : 'password'} value={newUser.password}
                             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                             aria-label="Contraseña"
-                            className="w-full px-3 py-2 pr-10 bg-[#F0EDE8] border border-slate-600 rounded text-white" placeholder="Contraseña" />
+                            className="w-full px-3 py-2 pr-10 bg-[#F0EDE8] border border-slate-600 rounded text-[#69738c]" placeholder="Contraseña" />
                           <button aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'} onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2">
-                            {showPassword ? <EyeOff className="w-4 h-4 text-slate-400" /> : <Eye className="w-4 h-4 text-slate-400" />}
+                            {showPassword ? <EyeOff className="w-4 h-4 text-[#9aa3b8]" /> : <Eye className="w-4 h-4 text-[#9aa3b8]" />}
                           </button>
                         </div>
-                        <NeuromorphicButton variant="secondary" size="sm" onClick={generatePassword}>
+                        <NeuButton variant="secondary" onClick={generatePassword}>
                           <RefreshCw className="w-4 h-4" />
-                        </NeuromorphicButton>
+                        </NeuButton>
                       </div>
                       <input type={showPassword ? 'text' : 'password'} value={newUser.confirmPassword}
                         onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
                         aria-label="Confirmar contraseña"
-                        className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-600 rounded text-white" placeholder="Confirmar contraseña" />
+                        className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-600 rounded text-[#69738c]" placeholder="Confirmar contraseña" />
                     </div>
                   )}
                 </div>
 
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={newUser.enable2FA} onChange={(e) => setNewUser({ ...newUser, enable2FA: e.target.checked })}
-                    className="w-4 h-4 rounded bg-slate-700" />
-                  <Smartphone className="w-4 h-4 text-blue-400" />
-                  <span className="text-slate-300 text-sm">Habilitar 2FA</span>
+                    className="w-4 h-4 rounded bg-[#dfeaff]" />
+                  <Smartphone className="w-4 h-4 text-[#6888ff]" />
+                  <span className="text-[#69738c] text-sm">Habilitar 2FA</span>
                 </label>
               </div>
 
               {/* Right: Permissions */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-white font-medium flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-blue-400" />
+                  <label className="text-[#69738c] font-medium flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-[#6888ff]" />
                     Permisos ({newUser.permissions.length})
                   </label>
                   {newUser.category === 'super_user' && (
-                    <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded animate-pulse">
-                      👑 SUPER USER - TODOS LOS PERMISOS
+                    <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded animate-pulse">
+                      ðŸ‘‘ SUPER USER - TODOS LOS PERMISOS
                     </span>
                   )}
                 </div>
@@ -444,35 +444,35 @@ export function UserManagement() {
                     const categoryPerms = ALL_PERMISSIONS.filter(p => p.category === catKey)
                     const selectedCount = categoryPerms.filter(p => newUser.permissions.includes(p.id)).length
                     const isSuperCategory = catKey === 'super'
-                    
+
                     return (
-                      <div key={catKey} className={`p-3 rounded-lg border ${isSuperCategory ? 'bg-red-500/5 border-red-500/30' : 'bg-slate-800/50 border-slate-700'}`}>
+                      <div key={catKey} className={`p-3 rounded-lg border ${isSuperCategory ? 'bg-[#6888ff]/5 border-[#6888ff]/30' : 'bg-[#dfeaff]/50 border-slate-700'}`}>
                         <div className="flex items-center justify-between mb-2">
-                          <span className={`text-sm font-medium flex items-center gap-2 ${isSuperCategory ? 'text-red-400' : 'text-white'}`}>
+                          <span className={`text-sm font-medium flex items-center gap-2 ${isSuperCategory ? 'text-[#6888ff]' : 'text-[#69738c]'}`}>
                             {catInfo.icon} {catInfo.name}
-                            <span className="text-xs text-slate-500">({selectedCount}/{categoryPerms.length})</span>
+                            <span className="text-xs text-[#9aa3b8]">({selectedCount}/{categoryPerms.length})</span>
                           </span>
                           <div className="flex gap-1">
-                            <button onClick={() => selectAllCategory(catKey)} className="text-xs text-blue-400 hover:underline">Todos</button>
-                            <span className="text-slate-600">|</span>
-                            <button onClick={() => deselectAllCategory(catKey)} className="text-xs text-red-400 hover:underline">Ninguno</button>
+                            <button onClick={() => selectAllCategory(catKey)} className="text-xs text-[#6888ff] hover:underline">Todos</button>
+                            <span className="text-[#69738c]">|</span>
+                            <button onClick={() => deselectAllCategory(catKey)} className="text-xs text-[#6888ff] hover:underline">Ninguno</button>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-1">
                           {categoryPerms.map(perm => (
-                            <label key={perm.id} className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-slate-700/50">
+                            <label key={perm.id} className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-[#dfeaff]/50">
                               <input type="checkbox" checked={newUser.permissions.includes(perm.id)}
                                 onChange={() => togglePermission(perm.id)}
                                 disabled={isSuperCategory && newUser.category !== 'super_user'}
-                                className="w-3.5 h-3.5 rounded bg-slate-700" />
-                              <span className={`text-xs ${newUser.permissions.includes(perm.id) ? 'text-green-400' : 'text-slate-400'}`}>
+                                className="w-3.5 h-3.5 rounded bg-[#dfeaff]" />
+                              <span className={`text-xs ${newUser.permissions.includes(perm.id) ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
                                 {perm.name}
                               </span>
                             </label>
                           ))}
                         </div>
                         {isSuperCategory && newUser.category !== 'super_user' && (
-                          <p className="text-xs text-red-400 mt-2">⚠️ Solo disponible para Super Usuario</p>
+                          <p className="text-xs text-[#6888ff] mt-2">š ï¸ Solo disponible para Super Usuario</p>
                         )}
                       </div>
                     )
@@ -482,23 +482,23 @@ export function UserManagement() {
             </div>
 
             <div className="flex justify-end gap-2 pt-4 mt-4 border-t border-slate-700">
-              <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowCreateModal(false)}>Cancelar</NeuromorphicButton>
-              <NeuromorphicButton variant="primary" size="sm" onClick={createUser}>
+              <NeuButton variant="secondary" onClick={() => setShowCreateModal(false)}>Cancelar</NeuButton>
+              <NeuButton variant="primary" onClick={createUser}>
                 <UserPlus className="w-4 h-4 mr-1" />Crear Usuario
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       )}
 
       {/* Users List */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Usuarios ({filteredUsers.length})</h4>
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3">Usuarios ({filteredUsers.length})</h4>
         <div className="space-y-3">
           {filteredUsers.map(user => {
             const catInfo = getCategoryInfo(user.category)
             return (
-              <div key={user.id} className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div key={user.id} className="p-4 bg-[#dfeaff]/50 rounded-lg border border-slate-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${user.isSuperUser ? 'bg-gradient-to-br from-red-500 to-yellow-500' : 'bg-gradient-to-br from-green-500 to-blue-500'}`}>
@@ -506,33 +506,33 @@ export function UserManagement() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-white font-medium">{user.name}</span>
-                        {user.isSuperUser && <span className="text-xs px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded animate-pulse">👑 SUPER</span>}
-                        <span className={`text-xs px-2 py-0.5 rounded ${user.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                        <span className="text-[#69738c] font-medium">{user.name}</span>
+                        {user.isSuperUser && <span className="text-xs px-1.5 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded animate-pulse">ðŸ‘‘ SUPER</span>}
+                        <span className={`text-xs px-2 py-0.5 rounded ${user.status === 'active' ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#6888ff]/20 text-[#6888ff]'}`}>
                           {user.status}
                         </span>
-                        <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">{catInfo.name}</span>
+                        <span className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded">{catInfo.name}</span>
                       </div>
-                      <p className="text-sm text-slate-400">{user.email}</p>
-                      <p className="text-xs text-slate-500">{user.permissions.length} permisos</p>
+                      <p className="text-sm text-[#9aa3b8]">{user.email}</p>
+                      <p className="text-xs text-[#9aa3b8]">{user.permissions.length} permisos</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => { setSelectedUser(user); setShowEditModal(true) }} className="p-2 hover:bg-slate-700 rounded text-blue-400" aria-label="Editar"><Edit className="w-4 h-4" /></button>
-                    <button onClick={() => alert('Resetear contraseña')} className="p-2 hover:bg-slate-700 rounded text-yellow-400" aria-label="Resetear contraseña"><Key className="w-4 h-4" /></button>
+                    <button onClick={() => { setSelectedUser(user); setShowEditModal(true) }} className="p-2 hover:bg-[#dfeaff] rounded text-[#6888ff]" aria-label="Editar"><Edit className="w-4 h-4" /></button>
+                    <button onClick={() => alert('Resetear contraseña')} className="p-2 hover:bg-[#dfeaff] rounded text-[#6888ff]" aria-label="Resetear contraseña"><Key className="w-4 h-4" /></button>
                     {user.status === 'active' ? (
-                      <button onClick={() => toggleUserStatus(user.id, 'suspended')} className="p-2 hover:bg-slate-700 rounded text-orange-400" aria-label="Bloquear"><Lock className="w-4 h-4" /></button>
+                      <button onClick={() => toggleUserStatus(user.id, 'suspended')} className="p-2 hover:bg-[#dfeaff] rounded text-[#6888ff]" aria-label="Bloquear"><Lock className="w-4 h-4" /></button>
                     ) : (
-                      <button onClick={() => toggleUserStatus(user.id, 'active')} className="p-2 hover:bg-slate-700 rounded text-green-400" aria-label="Activar/Desactivar"><Unlock className="w-4 h-4" /></button>
+                      <button onClick={() => toggleUserStatus(user.id, 'active')} className="p-2 hover:bg-[#dfeaff] rounded text-[#6888ff]" aria-label="Activar/Desactivar"><Unlock className="w-4 h-4" /></button>
                     )}
-                    <button onClick={() => deleteUser(user.id)} className="p-2 hover:bg-slate-700 rounded text-red-400" aria-label="Eliminar"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => deleteUser(user.id)} className="p-2 hover:bg-[#dfeaff] rounded text-[#6888ff]" aria-label="Eliminar"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
               </div>
             )
           })}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

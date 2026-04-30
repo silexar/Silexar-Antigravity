@@ -22,7 +22,7 @@ export type TipoPlantilla =
   | 'CONTRATO_RECHAZADO'
   | 'SOLICITUD_FIRMA'
   | 'FIRMA_COMPLETADA'
-  | 'RECORDATORIO_VENCIMIENTO'
+  | 'RECORDATORIO_VENCIMIENTOS'
   | 'RENOVACION_OFERTA'
   | 'FACTURA_EMITIDA'
   | 'RECORDATORIO_PAGO'
@@ -58,7 +58,7 @@ export interface DatosPlantilla {
   // Facturación
   facturaNumero?: string;
   facturaMonto?: number;
-  facturaFechaVencimiento?: Date;
+  facturaFechaVencimientos?: Date;
   facturaUrl?: string;
   
   // Cuenta Corriente
@@ -362,7 +362,7 @@ const plantillas: Record<TipoPlantilla, (datos: DatosPlantilla) => { asunto: str
           ${formatCurrency(datos.facturaMonto || 0, datos.moneda)}
         </p>
         <p style="margin: 0; color: ${ESTILOS.colores.textoClaro}; font-size: 14px;">
-          Vencimiento: <strong style="color: ${ESTILOS.colores.texto};">${formatFecha(datos.facturaFechaVencimiento)}</strong>
+          Vencimientos: <strong style="color: ${ESTILOS.colores.texto};">${formatFecha(datos.facturaFechaVencimientos)}</strong>
         </p>
       </div>
       
@@ -390,7 +390,7 @@ const plantillas: Record<TipoPlantilla, (datos: DatosPlantilla) => { asunto: str
   }),
 
   RECORDATORIO_PAGO: (datos) => ({
-    asunto: `⚠️ Recordatorio: Factura ${datos.facturaNumero} vence ${formatFecha(datos.facturaFechaVencimiento)}`,
+    asunto: `⚠️ Recordatorio: Factura ${datos.facturaNumero} vence ${formatFecha(datos.facturaFechaVencimientos)}`,
     contenido: `
       <h2 style="margin: 0 0 16px; color: ${ESTILOS.colores.texto}; font-size: 24px;">
         Recordatorio de Pago 🔔
@@ -506,7 +506,7 @@ const plantillas: Record<TipoPlantilla, (datos: DatosPlantilla) => { asunto: str
     `
   }),
 
-  RECORDATORIO_VENCIMIENTO: (datos) => ({
+  RECORDATORIO_VENCIMIENTOS: (datos) => ({
     asunto: `⏰ Contrato ${datos.contratoNumero} vence pronto`,
     contenido: `
       <h2 style="margin: 0 0 16px; color: ${ESTILOS.colores.texto}; font-size: 24px;">
@@ -559,7 +559,7 @@ const plantillas: Record<TipoPlantilla, (datos: DatosPlantilla) => { asunto: str
     asunto: `📋 Aviso: Documentos próximos a vencer`,
     contenido: `
       <h2 style="margin: 0 0 16px; color: ${ESTILOS.colores.texto}; font-size: 24px;">
-        Aviso de Vencimiento 📋
+        Aviso de Vencimientos 📋
       </h2>
       <p style="margin: 0 0 24px; color: ${ESTILOS.colores.textoClaro}; font-size: 16px;">
         Te recordamos que tienes documentos próximos a vencer. Regulariza tu situación para mantener tu historial en óptimas condiciones.
@@ -682,7 +682,7 @@ class EmailTemplatesEngine {
       { tipo: 'CONTRATO_RECHAZADO', descripcion: 'Contrato requiere modificaciones' },
       { tipo: 'SOLICITUD_FIRMA', descripcion: 'Solicitud de firma digital' },
       { tipo: 'FIRMA_COMPLETADA', descripcion: 'Firma completada' },
-      { tipo: 'RECORDATORIO_VENCIMIENTO', descripcion: 'Recordatorio de vencimientos' },
+      { tipo: 'RECORDATORIO_VENCIMIENTOS', descripcion: 'Recordatorio de vencimientos' },
       { tipo: 'RENOVACION_OFERTA', descripcion: 'Oferta de renovación' },
       { tipo: 'FACTURA_EMITIDA', descripcion: 'Factura emitida' },
       { tipo: 'RECORDATORIO_PAGO', descripcion: 'Recordatorio de pago' },

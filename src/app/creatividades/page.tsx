@@ -222,9 +222,9 @@ export default function CreatividadesPage() {
     total: creatividades.length,
     activas: creatividades.filter(c => c.estado === 'activa').length,
     porVencer: creatividades.filter(c => {
-      const vencimiento = new Date(c.vigencia.fin)
+      const vencimientos = new Date(c.vigencia.fin)
       const hoy = new Date()
-      const diasRestantes = Math.ceil((vencimiento.getTime() - hoy.getTime()) / (1000 * 3600 * 24))
+      const diasRestantes = Math.ceil((vencimientos.getTime() - hoy.getTime()) / (1000 * 3600 * 24))
       return diasRestantes <= 7 && diasRestantes > 0
     }).length,
     enRevision: creatividades.filter(c => c.estado === 'revision').length

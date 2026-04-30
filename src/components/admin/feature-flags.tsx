@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🚩 SILEXAR PULSE - Feature Flags
+ * ðŸš© SILEXAR PULSE - Feature Flags
  * Control de características con rollout gradual
  * 
  * @description Sistema de feature flags con:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Flag,
   ToggleLeft,
@@ -191,17 +189,17 @@ export function FeatureFlags() {
 
     switch (flag.aiRecommendation.suggestedAction) {
       case 'enable':
-        setFlags(prev => prev.map(f => 
+        setFlags(prev => prev.map(f =>
           f.id === flagId ? { ...f, enabled: true, lastModified: new Date() } : f
         ))
         break
       case 'disable':
-        setFlags(prev => prev.map(f => 
+        setFlags(prev => prev.map(f =>
           f.id === flagId ? { ...f, enabled: false, rolloutPercentage: 0, lastModified: new Date() } : f
         ))
         break
       case 'rollout':
-        setFlags(prev => prev.map(f => 
+        setFlags(prev => prev.map(f =>
           f.id === flagId ? { ...f, rolloutPercentage: 100, lastModified: new Date() } : f
         ))
         break
@@ -210,17 +208,17 @@ export function FeatureFlags() {
 
   const getCategoryStyle = (category: string) => {
     switch (category) {
-      case 'core': return 'bg-green-500/20 text-green-400'
-      case 'beta': return 'bg-blue-500/20 text-blue-400'
-      case 'experimental': return 'bg-purple-500/20 text-purple-400'
-      case 'deprecated': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'core': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'beta': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'experimental': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'deprecated': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const filteredFlags = flags.filter(flag => {
-    if (searchTerm && !flag.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !flag.key.toLowerCase().includes(searchTerm.toLowerCase())) return false
+    if (searchTerm && !flag.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !flag.key.toLowerCase().includes(searchTerm.toLowerCase())) return false
     if (categoryFilter !== 'all' && flag.category !== categoryFilter) return false
     return true
   })
@@ -229,8 +227,8 @@ export function FeatureFlags() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Feature Flags...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Feature Flags...</p>
         </div>
       </div>
     )
@@ -240,12 +238,12 @@ export function FeatureFlags() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Flag className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Flag className="w-5 h-5 text-[#6888ff]" />
           Feature Flags
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-[#9aa3b8]">
             {flags.filter(f => f.enabled).length}/{flags.length} activos
           </span>
         </div>
@@ -253,39 +251,39 @@ export function FeatureFlags() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-green-500/10 rounded-lg">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <CheckCircle className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-slate-400">Core</span>
+            <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Core</span>
           </div>
-          <p className="text-xl font-bold text-green-400">
+          <p className="text-xl font-bold text-[#6888ff]">
             {flags.filter(f => f.category === 'core').length}
           </p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <Beaker className="w-4 h-4 text-blue-400" />
-            <span className="text-xs text-slate-400">Beta</span>
+            <Beaker className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Beta</span>
           </div>
-          <p className="text-xl font-bold text-blue-400">
+          <p className="text-xl font-bold text-[#6888ff]">
             {flags.filter(f => f.category === 'beta').length}
           </p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <Zap className="w-4 h-4 text-purple-400" />
-            <span className="text-xs text-slate-400">Experimental</span>
+            <Zap className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Experimental</span>
           </div>
-          <p className="text-xl font-bold text-purple-400">
+          <p className="text-xl font-bold text-[#6888ff]">
             {flags.filter(f => f.category === 'experimental').length}
           </p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-red-400" />
-            <span className="text-xs text-slate-400">Deprecated</span>
+            <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Deprecated</span>
           </div>
-          <p className="text-xl font-bold text-red-400">
+          <p className="text-xl font-bold text-[#6888ff]">
             {flags.filter(f => f.category === 'deprecated').length}
           </p>
         </div>
@@ -294,19 +292,19 @@ export function FeatureFlags() {
       {/* Search & Filter */}
       <div className="flex items-center gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
           <input
             type="text"
             placeholder="Buscar flag..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+            className="w-full pl-9 pr-4 py-2 bg-[#dfeaff] border border-slate-700 rounded-lg text-[#69738c] text-sm"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="bg-slate-800 text-white text-sm rounded-lg px-3 py-2"
+          className="bg-[#dfeaff] text-[#69738c] text-sm rounded-lg px-3 py-2"
         >
           <option value="all">Todas</option>
           <option value="core">Core</option>
@@ -319,41 +317,41 @@ export function FeatureFlags() {
       {/* Flags List */}
       <div className="space-y-3">
         {filteredFlags.map(flag => (
-          <NeuromorphicCard 
+          <NeuCard
             key={flag.id}
-            variant="embossed" 
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
             className={`p-4 ${flag.aiRecommendation ? 'ring-1 ring-purple-500/30' : ''}`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-white font-medium">{flag.name}</span>
-                  <code className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">
+                  <span className="text-[#69738c] font-medium">{flag.name}</span>
+                  <code className="text-xs text-[#9aa3b8] bg-[#dfeaff] px-1.5 py-0.5 rounded">
                     {flag.key}
                   </code>
                   <span className={`text-xs px-2 py-0.5 rounded ${getCategoryStyle(flag.category)}`}>
                     {flag.category}
                   </span>
                 </div>
-                <p className="text-sm text-slate-400">{flag.description}</p>
-                
+                <p className="text-sm text-[#9aa3b8]">{flag.description}</p>
+
                 {/* AI Recommendation */}
                 {flag.aiRecommendation && (
-                  <div className="mt-2 p-2 bg-purple-500/10 rounded flex items-center justify-between">
+                  <div className="mt-2 p-2 bg-[#6888ff]/10 rounded flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-purple-400" />
-                      <span className="text-xs text-purple-400">
-                        IA sugiere: {flag.aiRecommendation.suggestedAction.toUpperCase()} 
+                      <Zap className="w-4 h-4 text-[#6888ff]" />
+                      <span className="text-xs text-[#6888ff]">
+                        IA sugiere: {flag.aiRecommendation.suggestedAction.toUpperCase()}
                         ({flag.aiRecommendation.confidence}% confianza) - {flag.aiRecommendation.reason}
                       </span>
                     </div>
-                    <NeuromorphicButton
+                    <NeuButton
                       variant="primary"
-                      size="sm"
+
                       onClick={() => applyAiRecommendation(flag.id)}
                     >
                       Aplicar
-                    </NeuromorphicButton>
+                    </NeuButton>
                   </div>
                 )}
               </div>
@@ -362,7 +360,7 @@ export function FeatureFlags() {
                 {/* Rollout Slider */}
                 {flag.enabled && (
                   <div className="flex items-center gap-2">
-                    <Percent className="w-4 h-4 text-slate-400" />
+                    <Percent className="w-4 h-4 text-[#9aa3b8]" />
                     <input
                       type="range"
                       min="0"
@@ -371,16 +369,15 @@ export function FeatureFlags() {
                       onChange={(e) => updateRollout(flag.id, parseInt(e.target.value))}
                       className="w-24 accent-purple-500"
                     />
-                    <span className="text-sm text-white w-10">{flag.rolloutPercentage}%</span>
+                    <span className="text-sm text-[#69738c] w-10">{flag.rolloutPercentage}%</span>
                   </div>
                 )}
 
                 {/* Toggle */}
                 <button
                   onClick={() => toggleFlag(flag.id)}
-                  className={`p-2 rounded-lg transition-colors ${
-                    flag.enabled ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'
-                  }`}
+                  className={`p-2 rounded-lg transition-colors ${flag.enabled ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                    }`}
                 >
                   {flag.enabled ? (
                     <ToggleRight className="w-6 h-6" />
@@ -392,7 +389,7 @@ export function FeatureFlags() {
             </div>
 
             {/* Metadata */}
-            <div className="flex items-center gap-4 mt-2 pt-2 border-t border-slate-700/50 text-xs text-slate-500">
+            <div className="flex items-center gap-4 mt-2 pt-2 border-t border-slate-700/50 text-xs text-[#9aa3b8]">
               <span>
                 {flag.targetType === 'all' ? (
                   <Globe className="w-3 h-3 inline mr-1" />
@@ -407,7 +404,7 @@ export function FeatureFlags() {
               </span>
               <span>Por: {flag.modifiedBy}</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

@@ -130,7 +130,7 @@ export const POST = withApiRoute(
   async ({ ctx, req }) => {
     try {
       const body = await req.json();
-      
+
       const { formato, fecha, emisora, emisoraCodigo, tandas } = body;
 
       if (!formato || !fecha || !tandas || !Array.isArray(tandas)) {

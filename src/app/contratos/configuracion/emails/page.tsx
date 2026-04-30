@@ -109,7 +109,7 @@ const mockPlantillas: PlantillaEmail[] = [
     descripcion: 'Notificación de nueva factura disponible',
     categoria: 'facturacion',
     activa: true,
-    variables: ['facturaNumero', 'monto', 'fechaVencimiento', 'urlDescarga'],
+    variables: ['facturaNumero', 'monto', 'fechaVencimientos', 'urlDescarga'],
     ultimoEnvio: new Date(Date.now() - 24 * 60 * 60 * 1000),
     enviosTotales: 567,
     tasaApertura: 85
@@ -151,10 +151,10 @@ const mockPlantillas: PlantillaEmail[] = [
 ];
 
 const categoriaConfig = {
-  contratos: { color: 'text-[#6888ff]', bg: 'bg-indigo-100', icon: FileText, label: 'Contratos' },
-  facturacion: { color: 'text-green-600', bg: 'bg-green-100', icon: DollarSign, label: 'Facturación' },
-  cobranza: { color: 'text-amber-600', bg: 'bg-amber-100', icon: AlertTriangle, label: 'Cobranza' },
-  sistema: { color: 'text-purple-600', bg: 'bg-purple-100', icon: Settings, label: 'Sistema' }
+  contratos: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: FileText, label: 'Contratos' },
+  facturacion: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: DollarSign, label: 'Facturación' },
+  cobranza: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: AlertTriangle, label: 'Cobranza' },
+  sistema: { color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/10', icon: Settings, label: 'Sistema' }
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -186,7 +186,7 @@ export default function EmailTemplatesPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500 to-[#5572ee]">
               <Mail className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -206,7 +206,7 @@ export default function EmailTemplatesPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Plantillas Activas</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {plantillas.filter(p => p.activa).length}
               </p>
             </div>
@@ -222,7 +222,7 @@ export default function EmailTemplatesPage() {
           <motion.div className={neuro.card} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="p-5">
               <p className="text-sm text-[#69738c] mb-1">Tasa Apertura Promedio</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-[#6888ff]">
                 {Math.round(plantillas.reduce((acc, p) => acc + p.tasaApertura, 0) / plantillas.length)}%
               </p>
             </div>
@@ -285,7 +285,7 @@ export default function EmailTemplatesPage() {
                         <p className="text-xs text-[#9aa3b8] font-mono">{plantilla.codigo}</p>
                       </div>
                     </div>
-                    <span className={`${neuro.badge} ${plantilla.activa ? 'bg-green-100 text-green-600' : 'bg-[#dfeaff] text-[#69738c]'}`}>
+                    <span className={`${neuro.badge} ${plantilla.activa ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#69738c]'}`}>
                       {plantilla.activa ? 'Activa' : 'Inactiva'}
                     </span>
                   </div>
@@ -312,7 +312,7 @@ export default function EmailTemplatesPage() {
                       <span className="text-[#69738c]">
                         {plantilla.enviosTotales} envíos
                       </span>
-                      <span className="text-green-600 font-medium">
+                      <span className="text-[#6888ff] font-medium">
                         {plantilla.tasaApertura}% apertura
                       </span>
                     </div>
@@ -418,7 +418,7 @@ export default function EmailTemplatesPage() {
                         <p className="text-sm text-[#69738c] mb-2">Variables disponibles:</p>
                         <div className="flex flex-wrap gap-2">
                           {plantillaPreview.variables.map(v => (
-                            <code key={v} className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-sm">
+                            <code key={v} className="px-2 py-1 bg-[#6888ff]/10 text-[#6888ff] rounded text-sm">
                               {`{{${v}}}`}
                             </code>
                           ))}

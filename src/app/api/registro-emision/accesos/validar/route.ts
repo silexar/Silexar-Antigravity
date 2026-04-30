@@ -20,8 +20,8 @@ const schema = z.object({
 });
 
 export const POST = withApiRoute(
-  { resource: 'emisiones', action: 'read', skipCsrf: true, allowPublic: true },
-  async ({ req }) => {
+  { resource: 'emisiones', action: 'read', skipCsrf: true },
+  async ({ ctx, req }) => {
     try {
       let body: unknown;
       try {

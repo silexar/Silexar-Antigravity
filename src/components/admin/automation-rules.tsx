@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * ⚡ SILEXAR PULSE - Automation Rules Engine
+ * š¡ SILEXAR PULSE - Automation Rules Engine
  * Motor de reglas de automatización
  * 
  * @description Automation:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Workflow,
   Plus,
@@ -164,7 +162,7 @@ export function AutomationRules() {
   }
 
   const toggleRule = (id: string) => {
-    setRules(prev => prev.map(r => 
+    setRules(prev => prev.map(r =>
       r.id === id ? { ...r, status: r.status === 'active' ? 'paused' : 'active' } : r
     ))
   }
@@ -183,10 +181,10 @@ export function AutomationRules() {
 
   const getTriggerLabel = (type: string) => {
     switch (type) {
-      case 'event': return '📡 Evento'
+      case 'event': return 'ðŸ“¡ Evento'
       case 'schedule': return '⏰ Programado'
-      case 'threshold': return '📊 Umbral'
-      case 'webhook': return '🔗 Webhook'
+      case 'threshold': return 'ðŸ“Š Umbral'
+      case 'webhook': return 'ðŸ”— Webhook'
       default: return type
     }
   }
@@ -199,7 +197,7 @@ export function AutomationRules() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Automation Rules...</p>
+          <p className="text-[#9aa3b8]">Cargando Automation Rules...</p>
         </div>
       </div>
     )
@@ -209,131 +207,128 @@ export function AutomationRules() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Workflow className="w-5 h-5 text-yellow-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Workflow className="w-5 h-5 text-[#6888ff]" />
           Automation Rules
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadRules}>
+          <NeuButton variant="secondary" onClick={loadRules}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
+          </NeuButton>
+          <NeuButton variant="primary">
             <Plus className="w-4 h-4 mr-1" />
             New Rule
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{rules.length}</p>
-          <p className="text-xs text-slate-400">Total Rules</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{rules.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Rules</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{activeCount}</p>
-          <p className="text-xs text-slate-400">Active</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{activeCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Active</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{totalTriggers}</p>
-          <p className="text-xs text-slate-400">Total Triggers</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalTriggers}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Triggers</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{rules.reduce((sum, r) => sum + r.actions.length, 0)}</p>
-          <p className="text-xs text-slate-400">Actions</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{rules.reduce((sum, r) => sum + r.actions.length, 0)}</p>
+          <p className="text-xs text-[#9aa3b8]">Actions</p>
         </div>
       </div>
 
       {/* Rules List */}
       <div className="space-y-3">
         {rules.map(rule => (
-          <NeuromorphicCard 
+          <NeuCard
             key={rule.id}
-            variant="embossed" 
-            className={`p-4 ${selectedRule === rule.id ? 'ring-1 ring-yellow-500/50' : ''}`}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
-                  rule.status === 'active' ? 'bg-green-400' :
-                  rule.status === 'error' ? 'bg-red-400' : 'bg-yellow-400'
-                }`} />
+                <div className={`w-3 h-3 rounded-full ${rule.status === 'active' ? 'bg-[#6888ff]' :
+                  rule.status === 'error' ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                  }`} />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{rule.name}</span>
-                    <span className="text-xs px-2 py-0.5 bg-slate-700 rounded">{getTriggerLabel(rule.trigger.type)}</span>
+                    <span className="text-[#69738c] font-medium">{rule.name}</span>
+                    <span className="text-xs px-2 py-0.5 bg-[#dfeaff] rounded">{getTriggerLabel(rule.trigger.type)}</span>
                   </div>
-                  <p className="text-xs text-slate-500">{rule.description}</p>
+                  <p className="text-xs text-[#9aa3b8]">{rule.description}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => toggleRule(rule.id)} className="p-1 hover:bg-slate-700 rounded">
-                  {rule.status === 'paused' ? <Play className="w-4 h-4 text-green-400" /> : <Pause className="w-4 h-4 text-yellow-400" />}
+                <button onClick={() => toggleRule(rule.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                  {rule.status === 'paused' ? <Play className="w-4 h-4 text-[#6888ff]" /> : <Pause className="w-4 h-4 text-[#6888ff]" />}
                 </button>
-                <button onClick={() => testRule(rule.id)} className="p-1 hover:bg-slate-700 rounded">
-                  <Zap className="w-4 h-4 text-cyan-400" />
+                <button onClick={() => testRule(rule.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                  <Zap className="w-4 h-4 text-[#6888ff]" />
                 </button>
-                <button onClick={() => loadExecutions(rule.id)} className="p-1 hover:bg-slate-700 rounded">
-                  <Clock className="w-4 h-4 text-slate-400" />
+                <button onClick={() => loadExecutions(rule.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                  <Clock className="w-4 h-4 text-[#9aa3b8]" />
                 </button>
-                <button className="p-1 hover:bg-slate-700 rounded">
-                  <Edit className="w-4 h-4 text-blue-400" />
+                <button className="p-1 hover:bg-[#dfeaff] rounded">
+                  <Edit className="w-4 h-4 text-[#6888ff]" />
                 </button>
-                <button onClick={() => deleteRule(rule.id)} className="p-1 hover:bg-slate-700 rounded">
-                  <Trash2 className="w-4 h-4 text-red-400" />
+                <button onClick={() => deleteRule(rule.id)} className="p-1 hover:bg-[#dfeaff] rounded">
+                  <Trash2 className="w-4 h-4 text-[#6888ff]" />
                 </button>
               </div>
             </div>
 
             <div className="flex items-center gap-6 text-sm">
-              <span className="text-slate-400">
-                Conditions: <span className="text-cyan-400">{rule.conditions.length}</span>
+              <span className="text-[#9aa3b8]">
+                Conditions: <span className="text-[#6888ff]">{rule.conditions.length}</span>
               </span>
-              <span className="text-slate-400">
-                Actions: <span className="text-purple-400">{rule.actions.length}</span>
+              <span className="text-[#9aa3b8]">
+                Actions: <span className="text-[#6888ff]">{rule.actions.length}</span>
               </span>
-              <span className="text-slate-400">
-                Triggers: <span className="text-white">{rule.triggerCount}</span>
+              <span className="text-[#9aa3b8]">
+                Triggers: <span className="text-[#69738c]">{rule.triggerCount}</span>
               </span>
               {rule.lastTriggered && (
-                <span className="text-slate-500">
+                <span className="text-[#9aa3b8]">
                   Last: {rule.lastTriggered.toLocaleString()}
                 </span>
               )}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Execution History */}
       {selectedRule && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">Historial de Ejecuciones</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">Historial de Ejecuciones</h4>
           <div className="space-y-2">
             {executions.map(exec => (
-              <div key={exec.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={exec.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  {exec.status === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                  {exec.status === 'failed' && <AlertTriangle className="w-4 h-4 text-red-400" />}
-                  {exec.status === 'skipped' && <Clock className="w-4 h-4 text-yellow-400" />}
-                  <span className="text-white text-sm">{exec.triggeredAt.toLocaleString()}</span>
+                  {exec.status === 'success' && <CheckCircle className="w-4 h-4 text-[#6888ff]" />}
+                  {exec.status === 'failed' && <AlertTriangle className="w-4 h-4 text-[#6888ff]" />}
+                  {exec.status === 'skipped' && <Clock className="w-4 h-4 text-[#6888ff]" />}
+                  <span className="text-[#69738c] text-sm">{exec.triggeredAt.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
-                  <span className="text-slate-400">{exec.duration}ms</span>
-                  <span className="text-slate-400">{exec.actionsExecuted} actions</span>
-                  <span className={`px-2 py-0.5 rounded ${
-                    exec.status === 'success' ? 'bg-green-500/20 text-green-400' :
-                    exec.status === 'failed' ? 'bg-red-500/20 text-red-400' :
-                    'bg-yellow-500/20 text-yellow-400'
-                  }`}>
+                  <span className="text-[#9aa3b8]">{exec.duration}ms</span>
+                  <span className="text-[#9aa3b8]">{exec.actionsExecuted} actions</span>
+                  <span className={`px-2 py-0.5 rounded ${exec.status === 'success' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    exec.status === 'failed' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                      'bg-[#6888ff]/20 text-[#6888ff]'
+                    }`}>
                     {exec.status}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

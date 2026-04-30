@@ -30,7 +30,7 @@
 ✅ **Rate cards dinámicos** por tipo de bloque  
 ✅ **Precios por duración** (5s, 10s, 15s, 20s, 30s, 45s, 60s)  
 ✅ **Descuentos máximos** configurables por tarifario  
-✅ **Vigencias automáticas** con alertas de vencimiento  
+✅ **Vigencias automáticas** con alertas de vencimientos  
 ✅ **Aplicación multi-emisora** por tarifario  
 
 #### **Sub-módulo 2.4: Inventario Digital**

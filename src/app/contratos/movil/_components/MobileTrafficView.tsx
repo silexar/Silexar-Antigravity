@@ -66,7 +66,7 @@ export function MobileTrafficView() {
   return (
     <div className="space-y-5">
       {/* HEADER */}
-      <div className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-2xl p-5 text-white shadow-xl">
+      <div className="bg-gradient-to-br from-cyan-600 to-[#5572ee] rounded-2xl p-5 text-white shadow-xl">
         <div className="flex items-center gap-2 mb-2">
           <Activity className="w-5 h-5 text-cyan-200" />
           <p className="text-xs font-bold text-cyan-200 uppercase tracking-widest">Tráfico Comercial</p>
@@ -94,8 +94,8 @@ export function MobileTrafficView() {
             <p className="text-[10px] text-[#9aa3b8] font-bold uppercase">{m.label}</p>
             <p className="text-lg font-black text-[#69738c] mt-1">{formatVal(m)}</p>
             <div className="flex items-center gap-1 mt-0.5">
-              {m.cambio >= 0 ? <TrendingUp className="w-3 h-3 text-emerald-500" /> : <TrendingDown className="w-3 h-3 text-red-500" />}
-              <span className={`text-[10px] font-bold ${m.cambio >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{m.cambio > 0 ? '+' : ''}{m.cambio}%</span>
+              {m.cambio >= 0 ? <TrendingUp className="w-3 h-3 text-[#6888ff]" /> : <TrendingDown className="w-3 h-3 text-[#9aa3b8]" />}
+              <span className={`text-[10px] font-bold ${m.cambio >= 0 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>{m.cambio > 0 ? '+' : ''}{m.cambio}%</span>
             </div>
           </div>
         ))}
@@ -114,7 +114,7 @@ export function MobileTrafficView() {
                 <span className="ml-auto text-xs font-black text-cyan-600">{flujo.tasa}%</span>
               </div>
               <div className="w-full h-2 bg-[#dfeaff] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style={{ width: `${flujo.tasa}%` }} />
+                <div className="h-full bg-gradient-to-r from-cyan-500 to-[#5572ee] rounded-full" style={{ width: `${flujo.tasa}%` }} />
               </div>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-[9px] text-[#9aa3b8]">{flujo.cantidad} contratos</span>
@@ -132,7 +132,7 @@ export function MobileTrafficView() {
           {EJECUTIVOS.sort((a, b) => b.valor - a.valor).map((ej, i) => (
             <div key={ej.nombre} className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-3 flex items-center gap-3">
               <span className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${
-                i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                i === 0 ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
               }`}>#{i + 1}</span>
               <div className="flex-1">
                 <p className="font-bold text-sm text-[#69738c]">{ej.nombre}</p>
@@ -140,7 +140,7 @@ export function MobileTrafficView() {
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold text-[#69738c]">{formatCurrency(ej.valor)}</p>
-                <p className="text-[9px] text-emerald-600 font-bold">{ej.tasa}% conv.</p>
+                <p className="text-[9px] text-[#6888ff] font-bold">{ej.tasa}% conv.</p>
               </div>
             </div>
           ))}

@@ -11,11 +11,11 @@
 import { AlertaProgramador } from '../../domain/entities/AlertaProgramador.js'
 import { EstadoAuspicio } from '../../domain/value-objects/EstadoAuspicio.js'
 import { ConfirmacionProgramador } from '../../domain/value-objects/ConfirmacionProgramador.js'
-import type { IVencimientoRepository } from '../../domain/repositories/IVencimientoRepository.js'
+import type { IVencimientosRepository } from '../../domain/repositories/IVencimientosRepository.js'
 import type { ICupoComercialRepository } from '../../domain/repositories/ICupoComercialRepository.js'
 import type { IEmisoraRepository } from '../../domain/repositories/IEmisoraRepository.js'
 import type {
-  GenerarAlertaVencimientoCommand,
+  GenerarAlertaVencimientosCommand,
   ConfirmarInicioAuspicioCommand,
   AprobarExtensionCommand
 } from '../commands/advanced.js'
@@ -23,13 +23,13 @@ import type { ObtenerAlertasProgramadorQuery, AlertaProgramadorResult } from '..
 
 export class AlertasHandler {
   constructor(
-    private readonly vencimientoRepo: IVencimientoRepository,
+    private readonly vencimientosRepo: IVencimientosRepository,
     private readonly cupoRepo: ICupoComercialRepository,
     private readonly emisoraRepo: IEmisoraRepository
   ) {}
 
   /** Generar alerta manual o programada */
-  async generarAlerta(command: GenerarAlertaVencimientoCommand): Promise<{ success: boolean; alertaId?: string; error?: string }> {
+  async generarAlerta(command: GenerarAlertaVencimientosCommand): Promise<{ success: boolean; alertaId?: string; error?: string }> {
     try {
       const cupo = await this.cupoRepo.findById(command.payload.cupoComercialId)
       if (!cupo) return { success: false, error: 'Cupo no encontrado' }
@@ -51,7 +51,7 @@ export class AlertasHandler {
         leida: false
       })
 
-      await this.vencimientoRepo.saveAlerta(alerta)
+      await this.vencimientosRepo.saveAlerta(alerta)
       return { success: true, alertaId: alerta.id }
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Error desconocido' }
@@ -76,7 +76,7 @@ export class AlertasHandler {
   /** R1: Aprobar o rechazar extensión por jefe/gerente comercial */
   async aprobarExtension(command: AprobarExtensionCommand): Promise<{ success: boolean; error?: string }> {
     try {
-      const solicitud = await this.vencimientoRepo.findExtensionById(command.payload.solicitudExtensionId)
+      const solicitud = await this.vencimientosRepo.findExtensionById(command.payload.solicitudExtensionId)
       if (!solicitud) return { success: false, error: 'Solicitud de extensión no encontrada' }
 
       if (command.payload.decision === 'aprobada') {
@@ -92,7 +92,7 @@ export class AlertasHandler {
         solicitud.rechazar(command.payload.aprobadorId, command.payload.aprobadorNombre, command.payload.motivoRechazo || 'Sin motivo')
       }
 
-      await this.vencimientoRepo.saveExtension(solicitud)
+      await this.vencimientosRepo.saveExtension(solicitud)
       return { success: true }
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Error desconocido' }
@@ -101,7 +101,7 @@ export class AlertasHandler {
 
   /** Obtener alertas para un programador */
   async obtenerAlertasProgramador(query: ObtenerAlertasProgramadorQuery): Promise<AlertaProgramadorResult> {
-    const alertas = await this.vencimientoRepo.findAlertasByDestinatario(query.payload.programadorId)
+    const alertas = await this.vencimientosRepo.findAlertasByDestinatario(query.payload.programadorId)
     let filtradas = alertas
     if (query.payload.emisoraId) filtradas = filtradas.filter(a => a.emisoraId === query.payload.emisoraId)
     if (query.payload.soloNoLeidas) filtradas = filtradas.filter(a => !a.leida)

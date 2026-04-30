@@ -119,6 +119,20 @@ export const GET = withApiRoute(
                 contratoId: id,
                 tenantId
             })
+
+            // Log de auditoría para errores
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'obtener_detalle',
+                    contratoId: id,
+                    tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            })
+
             return apiServerError() as unknown as NextResponse
         }
     }
@@ -176,31 +190,51 @@ export const PATCH = withApiRoute(
             // Obtener snapshot actual
             const snapActual = contratoExistente.toSnapshot()
 
-            // Actualizar propiedades permitidas usando el método del dominio
+            // Actualizar campos usando métodos del dominio
+            const cambios: string[] = []
+
             if (body.titulo) {
-                // El contrato no tiene método directo para cambiar el título
-                // Necesitaríamos recrear la entidad o añadir un método específico
-                // Por ahora solo actualizamos el estado
+                try {
+                    contratoExistente.actualizarTitulo(body.titulo)
+                    cambios.push('titulo')
+                } catch (e) {
+                    logger.warn('No se pudo actualizar el título', { error: e instanceof Error ? e.message : 'Unknown' })
+                }
+            }
+
+            if (body.fechaInicio || body.fechaFin) {
+                try {
+                    const nuevaFechaInicio = body.fechaInicio ? new Date(body.fechaInicio) : snapActual.fechaInicio
+                    const nuevaFechaFin = body.fechaFin ? new Date(body.fechaFin) : snapActual.fechaFin
+                    contratoExistente.actualizarFechas(nuevaFechaInicio, nuevaFechaFin)
+                    cambios.push('fechas')
+                } catch (e) {
+                    logger.warn('No se pudo actualizar las fechas', { error: e instanceof Error ? e.message : 'Unknown' })
+                }
+            }
+
+            if (body.ejecutivoId) {
+                try {
+                    contratoExistente.asignarEjecutivo(body.ejecutivoId, 'Ejecutivo Asignado', userId)
+                    cambios.push('ejecutivo')
+                } catch (e) {
+                    logger.warn('No se pudo asignar el ejecutivo', { error: e instanceof Error ? e.message : 'Unknown' })
+                }
             }
 
             // Verificar si hay cambios que requieren recalcular totales
             if (body.valorTotalBruto !== undefined || body.descuentoPorcentaje !== undefined) {
-                const nuevoBruto = body.valorTotalBruto ?? snapActual.totales.valorBruto
-                const nuevoDescuento = body.descuentoPorcentaje ?? snapActual.totales.descuentoPorcentaje
-
-                // Validar que el nuevo valor no exceda el 150% del valor actual
-                const limite = snapActual.totales.valorNeto * 1.5
-                if (nuevoBruto * (1 - nuevoDescuento / 100) > limite) {
-                    return apiError(
-                        'VALUE_EXCEEDS_LIMIT',
-                        'El nuevo valor excede el 50% del valor actual. Se requiere aprobación especial.',
-                        400
-                    ) as unknown as NextResponse
+                try {
+                    const nuevoBruto = body.valorTotalBruto ?? snapActual.totales.valorBruto
+                    const nuevoDescuento = body.descuentoPorcentaje ?? snapActual.totales.descuentoPorcentaje
+                    contratoExistente.actualizarValorBruto(nuevoBruto, nuevoDescuento, userId)
+                    cambios.push('valor')
+                } catch (e) {
+                    logger.warn('No se pudo actualizar el valor', { error: e instanceof Error ? e.message : 'Unknown' })
                 }
             }
 
-            // Actualizar estado del contrato si hay cambios significativos
-            // y volver a guardar
+            // Guardar cambios en el repositorio
             await repo.save(contratoExistente)
 
             // Log de auditoría
@@ -209,10 +243,11 @@ export const PATCH = withApiRoute(
                 userId,
                 metadata: {
                     module: 'contratos',
+                    accion: 'actualizar',
                     contratoId: id,
                     num: snapActual.numero.valor,
                     tenantId,
-                    cambios: Object.keys(body).filter(k => (body as Record<string, unknown>)[k] !== undefined)
+                    cambios
                 }
             })
 
@@ -251,6 +286,20 @@ export const PATCH = withApiRoute(
                 contratoId: id,
                 tenantId
             })
+
+            // Log de auditoría para errores
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'actualizar',
+                    contratoId: id,
+                    tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            })
+
             return apiServerError() as unknown as NextResponse
         }
     }
@@ -318,6 +367,20 @@ export const DELETE = withApiRoute(
                 contratoId: id,
                 tenantId
             })
+
+            // Log de auditoría para errores
+            auditLogger.log({
+                type: AuditEventType.API_ERROR,
+                userId: ctx.userId,
+                metadata: {
+                    module: 'contratos',
+                    accion: 'eliminar',
+                    contratoId: id,
+                    tenantId,
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                }
+            })
+
             return apiServerError() as unknown as NextResponse
         }
     }

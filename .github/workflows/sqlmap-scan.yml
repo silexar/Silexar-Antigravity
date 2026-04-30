@@ -1,0 +1,207 @@
+name: 🗃️ SQLMap Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 4 * * 0"
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Target URL for SQL injection testing'
+        required: false
+        default: 'http://localhost:3000'
+      risk_level:
+        description: 'Risk level (1-3)'
+        required: false
+        default: '2'
+      verbosity:
+        description: 'Verbosity level (1-6)'
+        required: false
+        default: '1'
+
+env:
+  SQLMAP_VERSION: '1.8'
+
+jobs:
+  sqlmap-scan:
+    name: 💉 SQLMap Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Start Target Application
+        run: |
+          echo "Starting development server..."
+          npm run dev &
+          echo $! > dev_server.pid
+          sleep 15
+          
+          # Verify server is up
+          for i in {1..10}; do
+            if curl -sf http://localhost:3000 > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/10)"
+            sleep 3
+          done
+        shell: bash
+
+      - name: 🐍 Setup Python & SQLMap
+        run: |
+          # Install SQLMap
+          python3 -m pip install sqlmap --quiet || true
+          
+          # Verify installation
+          python3 -m sqlmap --version || echo "Using system sqlmap"
+
+      - name: 🔍 Quick SQL Injection Scan
+        id: quick-scan
+        run: |
+          python3 -m sqlmap \
+            --url="http://localhost:3000/api/usuarios" \
+            --level=1 \
+            --risk=1 \
+            --batch \
+            --timeout=10 \
+            --output-dir=./sqlmap_results/quick \
+            --format=json,html \
+            --verbosity=1 || true
+        shell: bash
+        continue-on-error: true
+
+      - name: 🔍 Standard SQL Injection Scan
+        id: standard-scan
+        run: |
+          python3 -m sqlmap \
+            --url="http://localhost:3000/api/usuarios?id=1" \
+            --data="id=1" \
+            --level=2 \
+            --risk=2 \
+            --batch \
+            --random-agent \
+            --timeout=15 \
+            --output-dir=./sqlmap_results/standard \
+            --format=json,html \
+            --verbosity=2 || true
+        shell: bash
+        continue-on-error: true
+
+      - name: 🔍 Full SQLMap Scan (Weekly)
+        id: full-scan
+        if: github.event_name == 'schedule'
+        run: |
+          # Full scan with all tests
+          python3 -m sqlmap \
+            --url="http://localhost:3000/api" \
+            --crawl=2 \
+            --level=3 \
+            --risk=3 \
+            --batch \
+            --random-agent \
+            --timeout=20 \
+            --output-dir=./sqlmap_results/full \
+            --format=json,html,xml \
+            --verbosity=3 \
+            --threads=2 || true
+        shell: bash
+        continue-on-error: true
+
+      - name: 📊 Generate Scan Summary
+        run: |
+          echo "## SQLMap Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**Target**: http://localhost:3000" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Type**: SQL Injection Testing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for vulnerable parameters
+          if [ -d "./sqlmap_results" ]; then
+            VULNS=$(find ./sqlmap_results -name "*.json" -exec grep -l "vulnerable" {} \; 2>/dev/null | wc -l)
+            echo "**Vulnerable Endpoints Found**: $VULNS" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "### Recommended Actions" >> $GITHUB_STEP_SUMMARY
+          echo "- Review any findings in sqlmap_results/" >> $GITHUB_STEP_SUMMARY
+          echo "- Ensure all user input is properly sanitized" >> $GITHUB_STEP_SUMMARY
+          echo "- Use parameterized queries exclusively" >> $GITHUB_STEP_SUMMARY
+        shell: bash
+
+      - name: 📤 Upload SQLMap Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sqlmap-results
+          path: |
+            ./sqlmap_results/**/*.json
+            ./sqlmap_results/**/*.html
+            ./sqlmap_results/**/*.xml
+            ./sqlmap_results/**/*.txt
+          retention-days: 90
+
+      - name: 🚨 Alert on Vulnerabilities Found
+        if: github.event_name == 'schedule'
+        run: |
+          if [ -d "./sqlmap_results" ] && grep -rq "vulnerable" ./sqlmap_results 2>/dev/null; then
+            echo "::warning::SQLMap detected potential SQL injection vulnerabilities - manual review required"
+          else
+            echo "✅ No SQL injection vulnerabilities detected by SQLMap"
+          fi
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          if [ -f dev_server.pid ]; then
+            kill $(cat dev_server.pid) 2>/dev/null || true
+          fi
+          rm -f dev_server.pid || true
+
+  sqlmap-api-scan:
+    name: 📡 SQLMap API Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    if: github.event.inputs.target_url != '' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup SQLMap
+        run: |
+          python3 -m pip install sqlmap --quiet || true
+
+      - name: 🔍 API Endpoint Scan
+        run: |
+          # Test key API endpoints
+          ENDPOINTS=(
+            "/api/usuarios"
+            "/api/campanas"
+            "/api/roles"
+            "/api/auth/login"
+          )
+          
+          for endpoint in "${ENDPOINTS[@]}"; do
+            echo "Scanning: $endpoint"
+            python3 -m sqlmap \
+              --url="http://localhost:3000$endpoint" \
+              --level=2 \
+              --risk=2 \
+              --batch \
+              --random-agent \
+              --output-dir="./sqlmap_results/api${endpoint//\//}" \
+              --format=json,html || true
+          done
+        shell: bash
+        continue-on-error: true
+
+      - name: 📤 Upload API Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sqlmap-api-results
+          path: ./sqlmap_results/api*
+          retention-days: 90

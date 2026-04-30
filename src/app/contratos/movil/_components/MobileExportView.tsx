@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? MOBILE: Export View
  * 
  * Exportar reportes y datos en PDF/CSV/Excel.
@@ -23,14 +23,14 @@ const TIPOS: { id: TipoReporte; label: string; desc: string }[] = [
   { id: 'contratos', label: 'Contratos', desc: 'Lista completa de contratos' },
   { id: 'pipeline', label: 'Pipeline', desc: 'Estado del pipeline comercial' },
   { id: 'cobranza', label: 'Cobranza', desc: 'Cuentas pendientes y vencidas' },
-  { id: 'facturacion', label: 'Facturación', desc: 'Facturas emitidas y pagadas' },
-  { id: 'analytics', label: 'Analytics', desc: 'Métricas y tendencias' },
+  { id: 'facturacion', label: 'Facturaciï¿½n', desc: 'Facturas emitidas y pagadas' },
+  { id: 'analytics', label: 'Analytics', desc: 'Mï¿½tricas y tendencias' },
 ];
 
 const FORMATOS: { id: FormatoExport; label: string; icon: React.ReactNode; desc: string }[] = [
   { id: 'pdf', label: 'PDF', icon: <FileText className="w-5 h-5" />, desc: 'Documento formal' },
   { id: 'csv', label: 'CSV', icon: <Table2 className="w-5 h-5" />, desc: 'Datos tabulares' },
-  { id: 'excel', label: 'Excel', icon: <FileSpreadsheet className="w-5 h-5" />, desc: 'Hoja de cálculo' },
+  { id: 'excel', label: 'Excel', icon: <FileSpreadsheet className="w-5 h-5" />, desc: 'Hoja de cï¿½lculo' },
 ];
 
 export function MobileExportView() {
@@ -56,12 +56,12 @@ export function MobileExportView() {
           <Download className="w-5 h-5 text-[#9aa3b8]" />
           <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest">Exportaciones</p>
         </div>
-        <p className="text-sm text-[#9aa3b8]">Genera reportes y datos del módulo contratos en el formato que necesites.</p>
+        <p className="text-sm text-[#9aa3b8]">Genera reportes y datos del mï¿½dulo contratos en el formato que necesites.</p>
       </div>
 
       {/* TIPO */}
       <div>
-        <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">¿Qué exportar?</p>
+        <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1">ï¿½Quï¿½ exportar?</p>
         <div className="space-y-2">
           {TIPOS.map(t => (
             <button key={t.id} onClick={() => setTipo(t.id)}
@@ -105,7 +105,7 @@ export function MobileExportView() {
         {exportando ? (
           <><Loader2 className="w-5 h-5 animate-spin" /> Generando...</>
         ) : completado ? (
-          <><CheckCircle2 className="w-5 h-5" /> ¡Exportado!</>
+          <><CheckCircle2 className="w-5 h-5" /> ï¿½Exportado!</>
         ) : (
           <><Download className="w-5 h-5" /> Exportar {tipo.charAt(0).toUpperCase() + tipo.slice(1)} en {formato.toUpperCase()}</>
         )}
@@ -113,13 +113,13 @@ export function MobileExportView() {
 
       {/* SUCCESS */}
       {completado && (
-        <div className="bg-emerald-50 border border-[#bec8de30] rounded-xl p-4 flex items-center gap-3">
-          <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+        <div className="bg-[#6888ff]/5 border border-[#bec8de30] rounded-xl p-4 flex items-center gap-3">
+          <CheckCircle2 className="w-8 h-8 text-[#6888ff]" />
           <div className="flex-1">
-            <p className="font-bold text-emerald-700 text-sm">Archivo generado</p>
-            <p className="text-xs text-emerald-600">reporte-{tipo}-{new Date().toISOString().split('T')[0]}.{formato}</p>
+            <p className="font-bold text-[#6888ff] text-sm">Archivo generado</p>
+            <p className="text-xs text-[#6888ff]">reporte-{tipo}-{new Date().toISOString().split('T')[0]}.{formato}</p>
           </div>
-          <button className="p-2 rounded-lg bg-emerald-100 active:scale-90"><Share2 className="w-4 h-4 text-emerald-700" /></button>
+          <button className="p-2 rounded-lg bg-[#6888ff]/10 active:scale-90"><Share2 className="w-4 h-4 text-[#6888ff]" /></button>
         </div>
       )}
     </div>

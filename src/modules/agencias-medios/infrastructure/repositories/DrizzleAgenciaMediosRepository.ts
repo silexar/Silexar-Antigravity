@@ -1,662 +1,370 @@
 /**
- * 🏢 Infrastructure: DrizzleAgenciaMediosRepository
+ * 🌐 SILEXAR PULSE - Drizzle Repository Implementation for Agencias de Medios
  * 
- * Implementación del repositorio usando Drizzle ORM
+ * @description Database access implementation using Drizzle ORM
+ * Follows repository pattern with multi-tenancy support via RLS
  * 
  * @version 2025.1.0
- * @tier TIER_0_ENTERPRISE
+ * @tier TIER_0_FORTUNE_10
  */
 
-import { db } from '@/lib/db'
-import { agenciasMedios, contactosAgencia } from '@/lib/db/agencias-medios-schema'
-import { eq, and, ilike, or, desc, asc, count, gte, lte, sql } from 'drizzle-orm'
-import { withTenantContext } from '@/lib/db/tenant-context'
-import { AgenciaMedios } from '../../domain/entities/AgenciaMedios'
-import { ContactoAgencia } from '../../domain/entities/ContactoAgencia'
-import { IAgenciaMediosRepository, AgenciaMediosFilters, Ordenamiento } from '../../domain/repositories/IAgenciaMediosRepository'
-import { IContactoAgenciaRepository, ContactoAgenciaFilters } from '../../domain/repositories/IContactoAgenciaRepository'
-import { RutAgenciaMedios } from '../../domain/value-objects/RutAgenciaMedios'
-import { TipoAgenciaMedios, TipoAgenciaMediosValue } from '../../domain/value-objects/TipoAgenciaMedios'
-import { NivelColaboracion, NivelColaboracionValue } from '../../domain/value-objects/NivelColaboracion'
-import { ScorePartnership } from '../../domain/value-objects/ScorePartnership'
-import { Logger } from '@/lib/observability'
+import { eq, and, or, like, ilike, sql } from 'drizzle-orm';
+import { db } from '@/lib/db';
+import { withTenantContext } from '@/lib/db/tenant-context';
+import { agenciasMedios } from '@/lib/db/agencias-medios-schema';
+import type {
+    AgenciaMedios,
+    CreateAgenciaMediosDTO,
+    UpdateAgenciaMediosDTO
+} from '@/lib/db/agencias-medios-schema';
+import type {
+    IAgenciaMediosRepository,
+    PaginationParams,
+    BuscarAgenciasFilters
+} from '../../domain/repositories/IAgenciaMediosRepository';
 
-export interface DrizzleAgenciaMediosRepositoryDeps {
-    logger?: Logger
-}
-
-/**
- * Implementación del repositorio de agencias de medios usando Drizzle
- */
 export class DrizzleAgenciaMediosRepository implements IAgenciaMediosRepository {
-    private logger: Logger | undefined
 
-    constructor(deps: DrizzleAgenciaMediosRepositoryDeps = {}) {
-        this.logger = deps.logger
-    }
-
-    async save(agencia: AgenciaMedios): Promise<void> {
-        await withTenantContext(agencia.tenantId, async () => {
-            const existing = await db
-                .select({ id: agenciasMedios.id })
+    async findById(id: string, tenantId: string): Promise<AgenciaMedios | null> {
+        return withTenantContext(tenantId, async () => {
+            const result = await db
+                .select()
                 .from(agenciasMedios)
-                .where(eq(agenciasMedios.id, agencia.id))
-                .limit(1)
-
-            const data = agencia.toPersistence()
-
-            if (existing.length > 0) {
-                await db
-                    .update(agenciasMedios)
-                    .set({
-                        nombreRazonSocial: data.razonSocial as string,
-                        nombreComercial: data.nombreComercial as string | null,
-                        tipoAgencia: data.tipoAgencia as any,
-                        nivelColaboracion: data.nivelColaboracion as any,
-                        emailContacto: data.emailGeneral as string | null,
-                        telefonoContacto: data.telefonoGeneral as string | null,
-                        paginaWeb: data.paginaWeb as string | null,
-                        direccion: data.direccion as string | null,
-                        ciudad: data.ciudad as string | null,
-                        region: data.region as string | null,
-                        pais: data.pais as string | null,
-                        giroActividad: data.giroActividad as string | null,
-                        empleadosCantidad: data.empleadosCantidad !== null ? String(data.empleadosCantidad) : null,
-                        especializacionesVerticales: data.especializacionesVerticales as string,
-                        capacidadesDigitales: data.capacidadesDigitales as string,
-                        certificaciones: data.certificaciones as string,
-                        revenueAnual: data.revenueAnual !== null ? String(data.revenueAnual) : null,
-                        activa: data.activa as boolean,
-                        estado: data.estado as 'activa' | 'inactiva' | 'suspendida' | 'pendiente',
-                        fechaModificacion: new Date()
-                    })
-                    .where(eq(agenciasMedios.id, agencia.id))
-            } else {
-                await db.insert(agenciasMedios).values({
-                    id: agencia.id,
-                    tenantId: agencia.tenantId,
-                    codigo: data.codigo as string,
-                    rut: data.rut as string,
-                    nombreRazonSocial: data.razonSocial as string,
-                    nombreComercial: data.nombreComercial as string | null,
-                    tipoAgencia: data.tipoAgencia as any,
-                    nivelColaboracion: data.nivelColaboracion as any,
-                    scorePartnership: data.scorePartnership !== null ? String(data.scorePartnership) : null,
-                    emailContacto: data.emailGeneral as string | null,
-                    telefonoContacto: data.telefonoGeneral as string | null,
-                    paginaWeb: data.paginaWeb as string | null,
-                    direccion: data.direccion as string | null,
-                    ciudad: data.ciudad as string | null,
-                    region: data.region as string | null,
-                    pais: data.pais as string | null,
-                    activa: data.activa as boolean,
-                    estado: data.estado as 'activa' | 'inactiva' | 'suspendida' | 'pendiente',
-                    creadoPorId: data.creadoPorId as string,
-                    fechaCreacion: data.fechaCreacion as Date
-                })
-            }
-        })
-    }
-
-    async findById(id: string): Promise<AgenciaMedios | null> {
-        const [row] = await db
-            .select()
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.id, id))
-            .limit(1)
-
-        if (!row) return null
-
-        return this.rowToEntity(row)
-    }
-
-    async findByRut(rut: string, tenantId: string): Promise<AgenciaMedios | null> {
-        const [row] = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.rut, rut),
-                    eq(agenciasMedios.tenantId, tenantId)
+                .where(
+                    and(
+                        eq(agenciasMedios.id, id),
+                        eq(agenciasMedios.eliminado, false)
+                    )
                 )
-            )
-            .limit(1)
+                .limit(1);
 
-        if (!row) return null
-
-        return this.rowToEntity(row)
+            return result[0] || null;
+        });
     }
 
     async findByCodigo(codigo: string, tenantId: string): Promise<AgenciaMedios | null> {
-        const [row] = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.codigo, codigo),
-                    eq(agenciasMedios.tenantId, tenantId)
+        return withTenantContext(tenantId, async () => {
+            const result = await db
+                .select()
+                .from(agenciasMedios)
+                .where(
+                    and(
+                        eq(agenciasMedios.codigo, codigo),
+                        eq(agenciasMedios.eliminado, false)
+                    )
                 )
-            )
-            .limit(1)
+                .limit(1);
 
-        if (!row) return null
-
-        return this.rowToEntity(row)
+            return result[0] || null;
+        });
     }
 
     async findAll(
-        filtros: AgenciaMediosFilters,
-        ordenamiento?: Ordenamiento,
-        limite: number = 20,
-        offset: number = 0
-    ): Promise<{ agencias: AgenciaMedios[]; total: number; metricas: { totalAgencias: number; agenciasActivas: number; scorePromedio: number; revenueTotal: number } }> {
-        return withTenantContext(filtros.tenantId || '', async () => {
-            const conditions: any[] = []
+        tenantId: string,
+        filters?: BuscarAgenciasFilters,
+        pagination?: PaginationParams
+    ): Promise<AgenciaMedios[]> {
+        return withTenantContext(tenantId, async () => {
+            const page = pagination?.page ?? 1;
+            const limit = pagination?.limit ?? 20;
+            const offset = (page - 1) * limit;
 
-            if (filtros.tenantId) conditions.push(eq(agenciasMedios.tenantId, filtros.tenantId))
-            if (filtros.activa !== undefined) conditions.push(eq(agenciasMedios.activa, filtros.activa))
-            if (filtros.tipoAgencia) conditions.push(eq(agenciasMedios.tipoAgencia, filtros.tipoAgencia as any))
-            if (filtros.nivelColaboracion) conditions.push(eq(agenciasMedios.nivelColaboracion, filtros.nivelColaboracion as any))
-            if (filtros.ciudad) conditions.push(eq(agenciasMedios.ciudad, filtros.ciudad))
-            if (filtros.pais) conditions.push(eq(agenciasMedios.pais, filtros.pais))
+            let conditions = [eq(agenciasMedios.eliminado, false)];
 
-            if (filtros.busqueda) {
+            if (filters?.search) {
+                const searchLower = filters.search.toLowerCase();
                 conditions.push(
                     or(
-                        ilike(agenciasMedios.nombreRazonSocial, `%${filtros.busqueda}%`),
-                        ilike(agenciasMedios.nombreComercial, `%${filtros.busqueda}%`),
-                        ilike(agenciasMedios.codigo, `%${filtros.busqueda}%`)
+                        ilike(agenciasMedios.nombreRazonSocial, `%${searchLower}%`),
+                        ilike(agenciasMedios.codigo, `%${searchLower}%`),
+                        ilike(agenciasMedios.rut, `%${searchLower}%`),
+                        ilike(agenciasMedios.nombreComercial, `%${searchLower}%`)
+                    )!
+                );
+            }
+
+            if (filters?.estado) {
+                conditions.push(eq(agenciasMedios.estado, filters.estado as any));
+            }
+
+            if (filters?.tipoAgencia) {
+                conditions.push(eq(agenciasMedios.tipoAgencia, filters.tipoAgencia as any));
+            }
+
+            if (filters?.ciudad) {
+                conditions.push(ilike(agenciasMedios.ciudad, filters.ciudad));
+            }
+
+            const result = await db
+                .select()
+                .from(agenciasMedios)
+                .where(and(...conditions))
+                .orderBy(agenciasMedios.nombreRazonSocial)
+                .limit(limit)
+                .offset(offset);
+
+            return result;
+        });
+    }
+
+    async count(tenantId: string, filters?: BuscarAgenciasFilters): Promise<number> {
+        return withTenantContext(tenantId, async () => {
+            let conditions = [eq(agenciasMedios.eliminado, false)];
+
+            if (filters?.search) {
+                const searchLower = filters.search.toLowerCase();
+                conditions.push(
+                    or(
+                        ilike(agenciasMedios.nombreRazonSocial, `%${searchLower}%`),
+                        ilike(agenciasMedios.codigo, `%${searchLower}%`),
+                        ilike(agenciasMedios.rut, `%${searchLower}%`),
+                        ilike(agenciasMedios.nombreComercial, `%${searchLower}%`)
+                    )!
+                );
+            }
+
+            if (filters?.estado) {
+                conditions.push(eq(agenciasMedios.estado, filters.estado as any));
+            }
+
+            if (filters?.tipoAgencia) {
+                conditions.push(eq(agenciasMedios.tipoAgencia, filters.tipoAgencia as any));
+            }
+
+            if (filters?.ciudad) {
+                conditions.push(ilike(agenciasMedios.ciudad, filters.ciudad));
+            }
+
+            const countResult = await db
+                .select({ count: sql<number>`count(*)` })
+                .from(agenciasMedios)
+                .where(and(...conditions));
+
+            return Number(countResult[0]?.count ?? 0);
+        });
+    }
+
+    async create(
+        data: CreateAgenciaMediosDTO,
+        tenantId: string,
+        userId: string
+    ): Promise<AgenciaMedios> {
+        return withTenantContext(tenantId, async () => {
+            const codigo = await this.generateCode(tenantId);
+
+            const [result] = await db
+                .insert(agenciasMedios)
+                .values({
+                    tenantId,
+                    codigo,
+                    rut: data.rut,
+                    nombreRazonSocial: data.nombreRazonSocial,
+                    nombreComercial: data.nombreComercial,
+                    tipoAgencia: data.tipoAgencia ?? 'medios',
+                    giroActividad: data.giroActividad,
+                    direccion: data.direccion,
+                    ciudad: data.ciudad,
+                    comunaProvincia: data.comunaProvincia,
+                    pais: data.pais ?? 'Chile',
+                    emailContacto: data.emailContacto,
+                    telefonoContacto: data.telefonoContacto,
+                    paginaWeb: data.paginaWeb,
+                    nombreEjecutivo: data.nombreEjecutivo,
+                    emailEjecutivo: data.emailEjecutivo,
+                    telefonoEjecutivo: data.telefonoEjecutivo,
+                    comisionPorcentaje: data.comisionPorcentaje?.toString() ?? '15.00',
+                    tipoComision: 'porcentaje',
+                    estado: 'activa',
+                    activa: true,
+                    tieneFacturacionElectronica: data.tieneFacturacionElectronica ?? false,
+                    diasCredito: data.diasCredito ?? '30',
+                    emailFacturacion: data.emailFacturacion,
+                    notas: data.notas,
+                    creadoPorId: userId
+                })
+                .returning();
+
+            return result;
+        });
+    }
+
+    async update(
+        id: string,
+        data: UpdateAgenciaMediosDTO,
+        tenantId: string,
+        userId: string
+    ): Promise<AgenciaMedios> {
+        return withTenantContext(tenantId, async () => {
+            const updateData: Partial<typeof agenciasMedios.$inferInsert> = {
+                modificadoPorId: userId,
+                fechaModificacion: new Date()
+            };
+
+            // Only update provided fields
+            if (data.rut !== undefined) updateData.rut = data.rut;
+            if (data.nombreRazonSocial !== undefined) updateData.nombreRazonSocial = data.nombreRazonSocial;
+            if (data.nombreComercial !== undefined) updateData.nombreComercial = data.nombreComercial;
+            if (data.tipoAgencia !== undefined) updateData.tipoAgencia = data.tipoAgencia;
+            if (data.giroActividad !== undefined) updateData.giroActividad = data.giroActividad;
+            if (data.direccion !== undefined) updateData.direccion = data.direccion;
+            if (data.ciudad !== undefined) updateData.ciudad = data.ciudad;
+            if (data.comunaProvincia !== undefined) updateData.comunaProvincia = data.comunaProvincia;
+            if (data.pais !== undefined) updateData.pais = data.pais;
+            if (data.emailContacto !== undefined) updateData.emailContacto = data.emailContacto;
+            if (data.telefonoContacto !== undefined) updateData.telefonoContacto = data.telefonoContacto;
+            if (data.paginaWeb !== undefined) updateData.paginaWeb = data.paginaWeb;
+            if (data.nombreEjecutivo !== undefined) updateData.nombreEjecutivo = data.nombreEjecutivo;
+            if (data.emailEjecutivo !== undefined) updateData.emailEjecutivo = data.emailEjecutivo;
+            if (data.telefonoEjecutivo !== undefined) updateData.telefonoEjecutivo = data.telefonoEjecutivo;
+            if (data.comisionPorcentaje !== undefined) updateData.comisionPorcentaje = data.comisionPorcentaje.toString();
+            if (data.diasCredito !== undefined) updateData.diasCredito = data.diasCredito;
+            if (data.tieneFacturacionElectronica !== undefined) updateData.tieneFacturacionElectronica = data.tieneFacturacionElectronica;
+            if (data.emailFacturacion !== undefined) updateData.emailFacturacion = data.emailFacturacion;
+            if (data.notas !== undefined) updateData.notas = data.notas;
+            if (data.activa !== undefined) updateData.activa = data.activa;
+            if (data.estado !== undefined) updateData.estado = data.estado;
+
+            const [result] = await db
+                .update(agenciasMedios)
+                .set(updateData)
+                .where(
+                    and(
+                        eq(agenciasMedios.id, id),
+                        eq(agenciasMedios.tenantId, tenantId),
+                        eq(agenciasMedios.eliminado, false)
                     )
                 )
+                .returning();
+
+            return result;
+        });
+    }
+
+    async softDelete(id: string, tenantId: string, userId: string): Promise<void> {
+        return withTenantContext(tenantId, async () => {
+            await db
+                .update(agenciasMedios)
+                .set({
+                    eliminado: true,
+                    fechaEliminacion: new Date(),
+                    eliminadoPorId: userId,
+                    activa: false,
+                    estado: 'inactiva' as any
+                })
+                .where(
+                    and(
+                        eq(agenciasMedios.id, id),
+                        eq(agenciasMedios.tenantId, tenantId),
+                        eq(agenciasMedios.eliminado, false)
+                    )
+                );
+        });
+    }
+
+    async existsByRut(rut: string, tenantId: string, excludeId?: string): Promise<boolean> {
+        return withTenantContext(tenantId, async () => {
+            let conditions = [
+                eq(agenciasMedios.rut, rut),
+                eq(agenciasMedios.eliminado, false)
+            ];
+
+            if (excludeId) {
+                conditions.push(sql`${agenciasMedios.id} != ${excludeId}`);
             }
 
-            let query = db.select().from(agenciasMedios).where(and(...conditions))
+            const result = await db
+                .select({ id: agenciasMedios.id })
+                .from(agenciasMedios)
+                .where(and(...conditions))
+                .limit(1);
 
-            if (ordenamiento) {
-                const orderCol = ordenamiento.campo === 'nombre'
-                    ? agenciasMedios.nombreRazonSocial
-                    : ordenamiento.campo === 'fechaCreacion'
-                        ? agenciasMedios.fechaCreacion
-                        : ordenamiento.campo === 'scorePartnership'
-                            ? agenciasMedios.scorePartnership
-                            : agenciasMedios.revenueAnual
+            return result.length > 0;
+        });
+    }
 
-                query = query.orderBy(ordenamiento.direccion === 'asc' ? asc(orderCol) : desc(orderCol)) as any
+    async existsByCodigo(codigo: string, tenantId: string, excludeId?: string): Promise<boolean> {
+        return withTenantContext(tenantId, async () => {
+            let conditions = [
+                eq(agenciasMedios.codigo, codigo),
+                eq(agenciasMedios.eliminado, false)
+            ];
+
+            if (excludeId) {
+                conditions.push(sql`${agenciasMedios.id} != ${excludeId}`);
             }
 
-            query = query.limit(limite).offset(offset) as any
-
-            const rows = await query
-
-            const [{ total }] = await db
-                .select({ total: count() })
+            const result = await db
+                .select({ id: agenciasMedios.id })
                 .from(agenciasMedios)
                 .where(and(...conditions))
+                .limit(1);
 
-            const [{ total: totalActivas }] = await db
-                .select({ total: count() })
+            return result.length > 0;
+        });
+    }
+
+    async generateCode(tenantId: string): Promise<string> {
+        return withTenantContext(tenantId, async () => {
+            const year = new Date().getFullYear();
+            const prefix = `AGM-${year}-`;
+
+            // Get the highest sequence number for this year
+            const result = await db
+                .select({ codigo: agenciasMedios.codigo })
                 .from(agenciasMedios)
-                .where(and(...conditions, eq(agenciasMedios.activa, true)))
+                .where(
+                    and(
+                        like(agenciasMedios.codigo, `${prefix}%`),
+                        eq(agenciasMedios.tenantId, tenantId)
+                    )
+                )
+                .orderBy(sql`${agenciasMedios.codigo} desc`)
+                .limit(1);
 
-            const [{ avg: avgScore }] = await db
-                .select({ avg: sql`AVG(${agenciasMedios.scorePartnership})` })
-                .from(agenciasMedios)
-                .where(and(...conditions))
-
-            const [{ sum: sumRevenue }] = await db
-                .select({ sum: sql`COALESCE(SUM(${agenciasMedios.revenueAnual}), 0)` })
-                .from(agenciasMedios)
-                .where(and(...conditions))
-
-            return {
-                agencias: rows.map(row => this.rowToEntity(row)),
-                total: Number(total),
-                metricas: {
-                    totalAgencias: Number(total),
-                    agenciasActivas: Number(totalActivas),
-                    scorePromedio: Number(avgScore) || 500,
-                    revenueTotal: Number(sumRevenue)
+            let nextNum = 1;
+            if (result.length > 0) {
+                const lastCode = result[0].codigo;
+                const match = lastCode?.match(/AGM-\d{4}-(\d+)/);
+                if (match) {
+                    nextNum = parseInt(match[1], 10) + 1;
                 }
             }
-        })
+
+            return `${prefix}${nextNum.toString().padStart(4, '0')}`;
+        });
     }
 
-    async findAllActive(tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    eq(agenciasMedios.activa, true)
+    async findByCiudad(ciudad: string, tenantId: string): Promise<AgenciaMedios[]> {
+        return withTenantContext(tenantId, async () => {
+            const result = await db
+                .select()
+                .from(agenciasMedios)
+                .where(
+                    and(
+                        ilike(agenciasMedios.ciudad, ciudad),
+                        eq(agenciasMedios.eliminado, false)
+                    )
                 )
-            )
-            .orderBy(desc(agenciasMedios.fechaCreacion))
+                .orderBy(agenciasMedios.nombreRazonSocial);
 
-        return rows.map(row => this.rowToEntity(row))
+            return result;
+        });
     }
 
-    async findByTipo(tipo: string, tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    eq(agenciasMedios.tipoAgencia, tipo as any)
+    async findActive(tenantId: string): Promise<AgenciaMedios[]> {
+        return withTenantContext(tenantId, async () => {
+            const result = await db
+                .select()
+                .from(agenciasMedios)
+                .where(
+                    and(
+                        eq(agenciasMedios.activa, true),
+                        eq(agenciasMedios.eliminado, false)
+                    )
                 )
-            )
+                .orderBy(agenciasMedios.nombreRazonSocial);
 
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findByNivel(nivel: string, tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    eq(agenciasMedios.nivelColaboracion, nivel as any)
-                )
-            )
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findPremiumAgencies(tenantId: string, minScore: number = 750): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    gte(agenciasMedios.scorePartnership, String(minScore)),
-                    eq(agenciasMedios.activa, true)
-                )
-            )
-            .orderBy(desc(agenciasMedios.scorePartnership))
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findAgenciesNeedingAttention(tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    lte(agenciasMedios.scorePartnership, '450'),
-                    eq(agenciasMedios.activa, true)
-                )
-            )
-            .orderBy(asc(agenciasMedios.scorePartnership))
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async getPortfolioStats(tenantId: string): Promise<{
-        totalAgencias: number
-        agenciasActivas: number
-        scorePromedio: number
-        distribucionTipos: Record<string, number>
-        distribucionNiveles: Record<string, number>
-        revenueTotal: number
-        comisionPromedio: number
-    }> {
-        const [{ total }] = await db
-            .select({ total: count() })
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.tenantId, tenantId))
-
-        const [{ count: activas }] = await db
-            .select({ count: count() })
-            .from(agenciasMedios)
-            .where(and(eq(agenciasMedios.tenantId, tenantId), eq(agenciasMedios.activa, true)))
-
-        const [{ avg: avgScore }] = await db
-            .select({ avg: sql`AVG(${agenciasMedios.scorePartnership})` })
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.tenantId, tenantId))
-
-        const tipos = await db
-            .select({
-                tipo: agenciasMedios.tipoAgencia,
-                count: count()
-            })
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.tenantId, tenantId))
-            .groupBy(agenciasMedios.tipoAgencia)
-
-        const niveles = await db
-            .select({
-                nivel: agenciasMedios.nivelColaboracion,
-                count: count()
-            })
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.tenantId, tenantId))
-            .groupBy(agenciasMedios.nivelColaboracion)
-
-        const [{ sum: revenue }] = await db
-            .select({ sum: sql`COALESCE(SUM(${agenciasMedios.revenueAnual}), 0)` })
-            .from(agenciasMedios)
-            .where(eq(agenciasMedios.tenantId, tenantId))
-
-        const [{ avg: comision }] = await db
-            .select({ avg: sql`AVG(${agenciasMedios.comisionPorcentaje})` })
-            .from(agenciasMedios)
-            .where(and(eq(agenciasMedios.tenantId, tenantId), sql`${agenciasMedios.comisionPorcentaje} IS NOT NULL`))
-
-        return {
-            totalAgencias: Number(total),
-            agenciasActivas: Number(activas),
-            scorePromedio: Number(avgScore) || 500,
-            distribucionTipos: Object.fromEntries(tipos.map(t => [t.tipo, Number(t.count)])),
-            distribucionNiveles: Object.fromEntries(niveles.map(n => [n.nivel, Number(n.count)])),
-            revenueTotal: Number(revenue),
-            comisionPromedio: Number(comision) || 0
-        }
-    }
-
-    async getTopPerformers(limite: number, tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    eq(agenciasMedios.activa, true)
-                )
-            )
-            .orderBy(desc(agenciasMedios.scorePartnership))
-            .limit(limite)
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findSimilar(agenciaId: string, limite: number, tenantId: string): Promise<AgenciaMedios[]> {
-        const agencia = await this.findById(agenciaId)
-        if (!agencia) return []
-
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    eq(agenciasMedios.tipoAgencia, agencia.tipoAgencia.value as any),
-                    sql`${agenciasMedios.id} != ${agenciaId}`
-                )
-            )
-            .limit(limite)
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findByVertical(vertical: string, tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    ilike(agenciasMedios.especializacionesVerticales, `%${vertical}%`)
-                )
-            )
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async findByCertificacion(certificacion: string, tenantId: string): Promise<AgenciaMedios[]> {
-        const rows = await db
-            .select()
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.tenantId, tenantId),
-                    ilike(agenciasMedios.certificaciones, `%${certificacion}%`)
-                )
-            )
-
-        return rows.map(row => this.rowToEntity(row))
-    }
-
-    async existsByRut(rut: string, tenantId: string): Promise<boolean> {
-        const [row] = await db
-            .select({ id: agenciasMedios.id })
-            .from(agenciasMedios)
-            .where(
-                and(
-                    eq(agenciasMedios.rut, rut),
-                    eq(agenciasMedios.tenantId, tenantId)
-                )
-            )
-            .limit(1)
-
-        return !!row
-    }
-
-    async delete(id: string, tenantId: string): Promise<void> {
-        await db
-            .update(agenciasMedios)
-            .set({
-                activa: false,
-                estado: 'inactiva',
-                fechaModificacion: new Date()
-            })
-            .where(
-                and(
-                    eq(agenciasMedios.id, id),
-                    eq(agenciasMedios.tenantId, tenantId)
-                )
-            )
-    }
-
-    // === Métodos privados ===
-
-    private rowToEntity(row: any): AgenciaMedios {
-        return AgenciaMedios.fromPersistence(row)
-    }
-}
-
-/**
- * Implementación del repositorio de contactos
- */
-export class DrizzleContactoAgenciaRepository implements IContactoAgenciaRepository {
-    async save(contacto: ContactoAgencia): Promise<void> {
-        await withTenantContext(contacto.tenantId, async () => {
-            const existing = await db
-                .select({ id: contactosAgencia.id })
-                .from(contactosAgencia)
-                .where(eq(contactosAgencia.id, contacto.id))
-                .limit(1)
-
-            if (existing.length > 0) {
-                await db
-                    .update(contactosAgencia)
-                    .set({
-                        nombre: contacto.nombre,
-                        apellido: contacto.apellido,
-                        email: contacto.email,
-                        telefono: contacto.telefono,
-                        telefonoMovil: contacto.telefonoMovil,
-                        cargo: contacto.cargo,
-                        departamento: contacto.departamento,
-                        rol: contacto.rol,
-                        nivelDecision: contacto.nivelDecision,
-                        esPrincipal: contacto.esPrincipal,
-                        esDecisor: contacto.esDecisor,
-                        esInfluencer: contacto.esInfluencer,
-                        linkedIn: contacto.linkedIn,
-                        notas: contacto.notas,
-                        activo: contacto.activa,
-                        fechaModificacion: new Date()
-                    })
-                    .where(eq(contactosAgencia.id, contacto.id))
-            } else {
-                await db.insert(contactosAgencia).values({
-                    tenantId: contacto.tenantId,
-                    agenciaId: contacto.agenciaId,
-                    nombre: contacto.nombre,
-                    apellido: contacto.apellido,
-                    email: contacto.email,
-                    telefono: contacto.telefono,
-                    telefonoMovil: contacto.telefonoMovil,
-                    cargo: contacto.cargo,
-                    departamento: contacto.departamento,
-                    rol: contacto.rol,
-                    nivelDecision: contacto.nivelDecision,
-                    esPrincipal: contacto.esPrincipal,
-                    esDecisor: contacto.esDecisor,
-                    esInfluencer: contacto.esInfluencer,
-                    linkedIn: contacto.linkedIn,
-                    activo: contacto.activa,
-                    fechaCreacion: contacto.fechaCreacion
-                })
-            }
-        })
-    }
-
-    async findById(id: string): Promise<ContactoAgencia | null> {
-        const [row] = await db
-            .select()
-            .from(contactosAgencia)
-            .where(eq(contactosAgencia.id, id))
-            .limit(1)
-
-        if (!row) return null
-
-        return ContactoAgencia.fromPersistence(row)
-    }
-
-    async findByAgenciaId(agenciaId: string, activosSolo: boolean = true): Promise<ContactoAgencia[]> {
-        const conditions = [eq(contactosAgencia.agenciaId, agenciaId)]
-        if (activosSolo) {
-            conditions.push(eq(contactosAgencia.activo, true))
-        }
-
-        const rows = await db
-            .select()
-            .from(contactosAgencia)
-            .where(and(...conditions))
-
-        return rows.map(row => ContactoAgencia.fromPersistence(row))
-    }
-
-    async findPrincipalByAgenciaId(agenciaId: string): Promise<ContactoAgencia | null> {
-        const [row] = await db
-            .select()
-            .from(contactosAgencia)
-            .where(
-                and(
-                    eq(contactosAgencia.agenciaId, agenciaId),
-                    eq(contactosAgencia.esPrincipal, true),
-                    eq(contactosAgencia.activo, true)
-                )
-            )
-            .limit(1)
-
-        if (!row) return null
-
-        return ContactoAgencia.fromPersistence(row)
-    }
-
-    async findByRol(agenciaId: string, rol: any): Promise<ContactoAgencia[]> {
-        const rows = await db
-            .select()
-            .from(contactosAgencia)
-            .where(
-                and(
-                    eq(contactosAgencia.agenciaId, agenciaId),
-                    eq(contactosAgencia.rol, rol),
-                    eq(contactosAgencia.activo, true)
-                )
-            )
-
-        return rows.map(row => ContactoAgencia.fromPersistence(row))
-    }
-
-    async findActiveByAgenciaId(agenciaId: string): Promise<ContactoAgencia[]> {
-        return this.findByAgenciaId(agenciaId, true)
-    }
-
-    async findAll(filtros: ContactoAgenciaFilters, limite?: number, offset?: number): Promise<{ contactos: ContactoAgencia[]; total: number }> {
-        const conditions: any[] = []
-
-        if (filtros.agenciaId) conditions.push(eq(contactosAgencia.agenciaId, filtros.agenciaId))
-        if (filtros.tenantId) conditions.push(eq(contactosAgencia.tenantId, filtros.tenantId))
-        if (filtros.rol) conditions.push(eq(contactosAgencia.rol, filtros.rol))
-        if (filtros.esPrincipal !== undefined) conditions.push(eq(contactosAgencia.esPrincipal, filtros.esPrincipal))
-        if (filtros.esDecisor !== undefined) conditions.push(eq(contactosAgencia.esDecisor, filtros.esDecisor))
-        if (filtros.activa !== undefined) conditions.push(eq(contactosAgencia.activo, filtros.activa))
-
-        let query = db.select().from(contactosAgencia).where(and(...conditions))
-
-        if (limite) query = query.limit(limite) as any
-        if (offset) query = query.offset(offset) as any
-
-        const rows = await query
-
-        const [{ total }] = await db
-            .select({ total: count() })
-            .from(contactosAgencia)
-            .where(and(...conditions))
-
-        return {
-            contactos: rows.map(row => ContactoAgencia.fromPersistence(row)),
-            total: Number(total)
-        }
-    }
-
-    async countByAgenciaId(agenciaId: string): Promise<number> {
-        const [{ count: totalCount }] = await db
-            .select({ count: count() })
-            .from(contactosAgencia)
-            .where(
-                and(
-                    eq(contactosAgencia.agenciaId, agenciaId),
-                    eq(contactosAgencia.activo, true)
-                )
-            )
-
-        return Number(totalCount)
-    }
-
-    async findHighImpactByAgenciaId(agenciaId: string): Promise<ContactoAgencia[]> {
-        const rows = await db
-            .select()
-            .from(contactosAgencia)
-            .where(
-                and(
-                    eq(contactosAgencia.agenciaId, agenciaId),
-                    eq(contactosAgencia.esDecisor, true),
-                    eq(contactosAgencia.activo, true)
-                )
-            )
-
-        return rows.map(row => ContactoAgencia.fromPersistence(row))
-    }
-
-    async existsByEmail(email: string, agenciaId: string): Promise<boolean> {
-        const [row] = await db
-            .select({ id: contactosAgencia.id })
-            .from(contactosAgencia)
-            .where(
-                and(
-                    eq(contactosAgencia.email, email),
-                    eq(contactosAgencia.agenciaId, agenciaId)
-                )
-            )
-            .limit(1)
-
-        return !!row
-    }
-
-    async delete(id: string): Promise<void> {
-        await db
-            .update(contactosAgencia)
-            .set({ activo: false, fechaModificacion: new Date() })
-            .where(eq(contactosAgencia.id, id))
+            return result;
+        });
     }
 }

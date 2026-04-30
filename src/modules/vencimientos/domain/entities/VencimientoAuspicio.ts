@@ -1,5 +1,5 @@
 /**
- * ENTIDAD: VENCIMIENTO AUSPICIO - TIER 0 ENTERPRISE
+ * ENTIDAD: VENCIMIENTOS AUSPICIO - TIER 0 ENTERPRISE
  *
  * @description Tracking de vencimientos con cálculo de días restantes,
  * niveles de alerta, countdown 48h auto-eliminación (R1), y alertas de fin (R2).
@@ -10,7 +10,7 @@
 
 import { PeriodoVigencia } from '../value-objects/PeriodoVigencia.js'
 
-export type NivelAlertaVencimiento = 'verde' | 'amarillo' | 'rojo' | 'critico' | 'vencido' | 'no_iniciado'
+export type NivelAlertaVencimientos = 'verde' | 'amarillo' | 'rojo' | 'critico' | 'vencido' | 'no_iniciado'
 
 export type AccionSugerida =
   | 'ninguna'
@@ -23,7 +23,7 @@ export type AccionSugerida =
   | 'alertar_trafico_fin_hoy'
   | 'preparar_retiro_materiales'
 
-export interface VencimientoAuspicioProps {
+export interface VencimientosAuspicioProps {
   id: string
   cupoComercialId: string
   programaId: string
@@ -33,7 +33,7 @@ export interface VencimientoAuspicioProps {
   ejecutivoId: string
   ejecutivoNombre: string
   periodoVigencia: PeriodoVigencia
-  nivelAlerta: NivelAlertaVencimiento
+  nivelAlerta: NivelAlertaVencimientos
   accionSugerida: AccionSugerida
   notificacionEnviada: boolean
   countdown48hIniciado: boolean
@@ -46,14 +46,14 @@ export interface VencimientoAuspicioProps {
   version: number
 }
 
-export class VencimientoAuspicio {
+export class VencimientosAuspicio {
   private _domainEvents: string[] = []
 
-  private constructor(private props: VencimientoAuspicioProps) {}
+  private constructor(private props: VencimientosAuspicioProps) {}
 
-  static create(props: Omit<VencimientoAuspicioProps, 'id' | 'fechaCreacion' | 'fechaActualizacion' | 'version'>): VencimientoAuspicio {
+  static create(props: Omit<VencimientosAuspicioProps, 'id' | 'fechaCreacion' | 'fechaActualizacion' | 'version'>): VencimientosAuspicio {
     const now = new Date()
-    return new VencimientoAuspicio({
+    return new VencimientosAuspicio({
       ...props,
       id: `venc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       fechaCreacion: now,
@@ -62,8 +62,8 @@ export class VencimientoAuspicio {
     })
   }
 
-  static fromPersistence(props: VencimientoAuspicioProps): VencimientoAuspicio {
-    return new VencimientoAuspicio(props)
+  static fromPersistence(props: VencimientosAuspicioProps): VencimientosAuspicio {
+    return new VencimientosAuspicio(props)
   }
 
   // ── Getters ──
@@ -76,7 +76,7 @@ export class VencimientoAuspicio {
   get ejecutivoId(): string { return this.props.ejecutivoId }
   get ejecutivoNombre(): string { return this.props.ejecutivoNombre }
   get periodoVigencia(): PeriodoVigencia { return this.props.periodoVigencia }
-  get nivelAlerta(): NivelAlertaVencimiento { return this.props.nivelAlerta }
+  get nivelAlerta(): NivelAlertaVencimientos { return this.props.nivelAlerta }
   get accionSugerida(): AccionSugerida { return this.props.accionSugerida }
   get countdown48hIniciado(): boolean { return this.props.countdown48hIniciado }
   get countdown48hExpira(): Date | undefined { return this.props.countdown48hExpira }
@@ -192,5 +192,5 @@ export class VencimientoAuspicio {
 
   private addDomainEvent(event: string): void { this._domainEvents.push(event) }
   clearDomainEvents(): void { this._domainEvents = [] }
-  toSnapshot(): VencimientoAuspicioProps { return { ...this.props } }
+  toSnapshot(): VencimientosAuspicioProps { return { ...this.props } }
 }

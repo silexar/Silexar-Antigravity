@@ -1,21 +1,21 @@
 /**
- * REPOSITORIO: VENCIMIENTO - TIER 0 ENTERPRISE
+ * REPOSITORIO: VENCIMIENTOS - TIER 0 ENTERPRISE
  */
-import { VencimientoAuspicio } from '../entities/VencimientoAuspicio.js'
+import { VencimientosAuspicio } from '../entities/VencimientosAuspicio.js'
 import { AlertaProgramador } from '../entities/AlertaProgramador.js'
 import { SolicitudExtension } from '../entities/SolicitudExtension.js'
 import { ListaEspera } from '../entities/ListaEspera.js'
 
-export interface IVencimientoRepository {
+export interface IVencimientosRepository {
   // Vencimientos
-  saveVencimiento(vencimiento: VencimientoAuspicio): Promise<void>
-  findVencimientoById(id: string): Promise<VencimientoAuspicio | null>
-  findVencimientoByCupo(cupoId: string): Promise<VencimientoAuspicio | null>
-  findVencimientosProximos(dias: number): Promise<VencimientoAuspicio[]>
-  findVencimientosNoIniciados(): Promise<VencimientoAuspicio[]>
-  findVencimientosCountdown(): Promise<VencimientoAuspicio[]>
-  findVencimientosTerminanManana(): Promise<VencimientoAuspicio[]>
-  findVencimientosTerminanHoy(): Promise<VencimientoAuspicio[]>
+  saveVencimientos(vencimientos: VencimientosAuspicio): Promise<void>
+  findVencimientosById(id: string): Promise<VencimientosAuspicio | null>
+  findVencimientosByCupo(cupoId: string): Promise<VencimientosAuspicio | null>
+  findVencimientosProximos(dias: number): Promise<VencimientosAuspicio[]>
+  findVencimientosNoIniciados(): Promise<VencimientosAuspicio[]>
+  findVencimientosCountdown(): Promise<VencimientosAuspicio[]>
+  findVencimientosTerminanManana(): Promise<VencimientosAuspicio[]>
+  findVencimientosTerminanHoy(): Promise<VencimientosAuspicio[]>
 
   // Alertas
   saveAlerta(alerta: AlertaProgramador): Promise<void>

@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🗄️ SILEXAR PULSE - Database Health Monitor
+ * ðŸ—„ï¸ SILEXAR PULSE - Database Health Monitor
  * Monitoreo de bases de datos
  * 
  * @description Database Monitoring:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Database,
   RefreshCw,
@@ -85,20 +83,20 @@ export function DatabaseHealth() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-500/20 text-green-400'
-      case 'warning': return 'bg-yellow-500/20 text-yellow-400'
-      case 'critical': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'healthy': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'warning': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'critical': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'postgresql': return '🐘'
-      case 'redis': return '⚡'
-      case 'elasticsearch': return '🔍'
-      case 'mongodb': return '🍃'
-      default: return '💾'
+      case 'postgresql': return 'ðŸ˜'
+      case 'redis': return 'š¡'
+      case 'elasticsearch': return 'ðŸ”'
+      case 'mongodb': return 'ðŸƒ'
+      default: return 'ðŸ’¾'
     }
   }
 
@@ -109,8 +107,8 @@ export function DatabaseHealth() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Conectando a Databases...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Conectando a Databases...</p>
         </div>
       </div>
     )
@@ -120,53 +118,53 @@ export function DatabaseHealth() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Database className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Database className="w-5 h-5 text-[#6888ff]" />
           Database Health Monitor
-          <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">LIVE</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">LIVE</span>
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadDatabaseData}>
+        <NeuButton variant="secondary" onClick={loadDatabaseData}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Refresh
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{databases.length}</p>
-          <p className="text-xs text-slate-400">Instancias</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{databases.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Instancias</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {databases.filter(d => d.status === 'healthy').length}
           </p>
-          <p className="text-xs text-slate-400">Healthy</p>
+          <p className="text-xs text-[#9aa3b8]">Healthy</p>
         </div>
-        <div className="p-3 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">{totalConnections}</p>
-          <p className="text-xs text-slate-400">Conexiones</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalConnections}</p>
+          <p className="text-xs text-[#9aa3b8]">Conexiones</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{(totalQPS / 1000).toFixed(1)}K</p>
-          <p className="text-xs text-slate-400">QPS Total</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{(totalQPS / 1000).toFixed(1)}K</p>
+          <p className="text-xs text-[#9aa3b8]">QPS Total</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">{slowQueries.length}</p>
-          <p className="text-xs text-slate-400">Slow Queries</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{slowQueries.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Slow Queries</p>
         </div>
       </div>
 
       {/* Databases Grid */}
       <div className="grid grid-cols-2 gap-3">
         {databases.map(db => (
-          <NeuromorphicCard key={db.id} variant="embossed" className="p-4">
+          <NeuCard key={db.id} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{getTypeIcon(db.type)}</span>
                 <div>
-                  <span className="text-white font-medium">{db.name}</span>
-                  <p className="text-xs text-slate-500 capitalize">{db.role}</p>
+                  <span className="text-[#69738c] font-medium">{db.name}</span>
+                  <p className="text-xs text-[#9aa3b8] capitalize">{db.role}</p>
                 </div>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(db.status)}`}>
@@ -176,60 +174,58 @@ export function DatabaseHealth() {
 
             <div className="grid grid-cols-3 gap-3 mb-3">
               <div className="text-center">
-                <p className="text-lg font-bold text-white">{db.connections.active}</p>
-                <p className="text-xs text-slate-400">Conexiones</p>
+                <p className="text-lg font-bold text-[#69738c]">{db.connections.active}</p>
+                <p className="text-xs text-[#9aa3b8]">Conexiones</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-cyan-400">{db.queryTime}ms</p>
-                <p className="text-xs text-slate-400">Latencia</p>
+                <p className="text-lg font-bold text-[#6888ff]">{db.queryTime}ms</p>
+                <p className="text-xs text-[#9aa3b8]">Latencia</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-purple-400">{db.qps}</p>
-                <p className="text-xs text-slate-400">QPS</p>
+                <p className="text-lg font-bold text-[#6888ff]">{db.qps}</p>
+                <p className="text-xs text-[#9aa3b8]">QPS</p>
               </div>
             </div>
 
             {db.replicationLag !== undefined && (
-              <div className={`p-2 rounded text-center text-xs ${
-                db.replicationLag > 1 ? 'bg-yellow-500/10 text-yellow-400' : 'bg-green-500/10 text-green-400'
-              }`}>
+              <div className={`p-2 rounded text-center text-xs ${db.replicationLag > 1 ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#6888ff]/10 text-[#6888ff]'
+                }`}>
                 Replication Lag: {db.replicationLag}s
               </div>
             )}
 
             <div className="mt-3">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-400">Storage</span>
-                <span className="text-white">{db.storage.used}GB / {db.storage.total}GB</span>
+                <span className="text-[#9aa3b8]">Storage</span>
+                <span className="text-[#69738c]">{db.storage.used}GB / {db.storage.total}GB</span>
               </div>
-              <div className="w-full bg-slate-700 rounded-full h-1.5">
-                <div 
-                  className={`h-1.5 rounded-full ${
-                    (db.storage.used / db.storage.total) > 0.8 ? 'bg-red-500' : 'bg-purple-500'
-                  }`}
+              <div className="w-full bg-[#dfeaff] rounded-full h-1.5">
+                <div
+                  className={`h-1.5 rounded-full ${(db.storage.used / db.storage.total) > 0.8 ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                    }`}
                   style={{ width: `${(db.storage.used / db.storage.total) * 100}%` }}
                 />
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Slow Queries */}
       {slowQueries.length > 0 && (
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-yellow-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#6888ff]" />
             Slow Queries ({'>'}1000ms)
           </h4>
           <div className="space-y-2">
             {slowQueries.map((sq, i) => (
-              <div key={sq.query} className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <div key={sq.query} className="p-3 bg-[#6888ff]/10 border border-yellow-500/30 rounded-lg">
                 <div className="flex items-center justify-between mb-1">
-                  <code className="text-sm text-yellow-300 truncate max-w-[70%]">{sq.query}</code>
-                  <span className="text-red-400 font-bold">{sq.duration}ms</span>
+                  <code className="text-sm text-[#6888ff] truncate max-w-[70%]">{sq.query}</code>
+                  <span className="text-[#6888ff] font-bold">{sq.duration}ms</span>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-slate-400">
+                <div className="flex items-center gap-4 text-xs text-[#9aa3b8]">
                   <span>Table: {sq.table}</span>
                   <span>Llamadas: {sq.count}x</span>
                   <span>{sq.timestamp.toLocaleTimeString()}</span>
@@ -237,7 +233,7 @@ export function DatabaseHealth() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

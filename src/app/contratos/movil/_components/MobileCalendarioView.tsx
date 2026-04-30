@@ -1,8 +1,8 @@
 /**
  * ?? MOBILE: Vista Calendario
  * 
- * Calendario mensual compacto con event dots, panel de detalle por día,
- * y categorización de eventos. Adaptación de calendario/page.tsx.
+ * Calendario mensual compacto con event dots, panel de detalle por dï¿½a,
+ * y categorizaciï¿½n de eventos. Adaptaciï¿½n de calendario/page.tsx.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -23,18 +23,18 @@ import type { EventoCalendario, TipoEvento } from '../../_shared/types';
 // ---------------------------------------------------------------
 
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-const DIAS_SEMANA = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+const DIAS_SEMANA = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sï¿½', 'Do'];
 
 // ---------------------------------------------------------------
 // TIPO CONFIG
 // ---------------------------------------------------------------
 
 const TIPO_CONFIG: Record<TipoEvento, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-  vencimiento: { label: 'Vencimiento', color: 'text-red-600', bg: 'bg-red-500', icon: AlertTriangle },
-  renovacion: { label: 'Renovación', color: 'text-amber-600', bg: 'bg-amber-500', icon: RefreshCw },
-  reunion: { label: 'Reunión', color: 'text-purple-600', bg: 'bg-purple-500', icon: Users },
-  pago: { label: 'Pago', color: 'text-emerald-600', bg: 'bg-emerald-500', icon: DollarSign },
-  obligacion: { label: 'Obligación', color: 'text-blue-600', bg: 'bg-blue-500', icon: FileText },
+  vencimientos: { label: 'Vencimientos', color: 'text-[#9aa3b8]', bg: 'bg-[#dfeaff]0', icon: AlertTriangle },
+  renovacion: { label: 'Renovaciï¿½n', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/50', icon: RefreshCw },
+  reunion: { label: 'Reuniï¿½n', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/50', icon: Users },
+  pago: { label: 'Pago', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/50', icon: DollarSign },
+  obligacion: { label: 'Obligaciï¿½n', color: 'text-[#6888ff]', bg: 'bg-[#6888ff]/50', icon: FileText },
   recordatorio: { label: 'Recordatorio', color: 'text-[#69738c]', bg: 'bg-[#9aa3b8]', icon: Bell },
 };
 
@@ -45,9 +45,9 @@ const TIPO_CONFIG: Record<TipoEvento, { label: string; color: string; bg: string
 function generarEventosMock(): EventoCalendario[] {
   const hoy = new Date();
   const eventos: EventoCalendario[] = [];
-  const tipos: TipoEvento[] = ['vencimiento', 'renovacion', 'reunion', 'pago', 'obligacion', 'recordatorio'];
+  const tipos: TipoEvento[] = ['vencimientos', 'renovacion', 'reunion', 'pago', 'obligacion', 'recordatorio'];
   const clientes = ['Banco Chile', 'Falabella', 'Cencosud', 'Ripley', 'LATAM', 'Entel', 'Paris'];
-  const acciones = ['Renovar contrato', 'Reunión ejecutiva', 'Fecha de pago', 'Entrega material', 'Revisión trimestral', 'Vencimiento póliza', 'Firma digital'];
+  const acciones = ['Renovar contrato', 'Reuniï¿½n ejecutiva', 'Fecha de pago', 'Entrega material', 'Revisiï¿½n trimestral', 'Vencimientos pï¿½liza', 'Firma digital'];
 
   for (let i = -5; i < 30; i++) {
     if (Math.random() > 0.4) {
@@ -194,7 +194,7 @@ export function MobileCalendarioView() {
         {selectedEventsFiltered.length === 0 ? (
           <div className="bg-[#dfeaff] rounded-xl border border-[#bec8de30] p-8 text-center">
             <Calendar className="w-12 h-12 text-[#9aa3b8] mx-auto mb-3" />
-            <p className="text-sm font-bold text-[#9aa3b8]">Sin eventos para este día</p>
+            <p className="text-sm font-bold text-[#9aa3b8]">Sin eventos para este dï¿½a</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -208,8 +208,8 @@ export function MobileCalendarioView() {
       {/* UPCOMING URGENTS */}
       {eventos.filter(e => e.prioridad === 'alta' && !e.completado && e.fecha >= hoyStr).length > 0 && (
         <div>
-          <p className="text-xs font-bold text-red-500 uppercase tracking-widest mb-3 px-1 flex items-center gap-1">
-            <AlertTriangle className="w-3.5 h-3.5" /> Próximos Urgentes
+          <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest mb-3 px-1 flex items-center gap-1">
+            <AlertTriangle className="w-3.5 h-3.5" /> Prï¿½ximos Urgentes
           </p>
           <div className="space-y-2">
             {eventos
@@ -264,7 +264,7 @@ function EventCard({ evento, showDate }: { evento: EventoCalendario; showDate?: 
       </div>
       <div className="shrink-0 text-right">
         {evento.valor && (
-          <p className="text-xs font-bold text-emerald-600">${(evento.valor / 1000000).toFixed(0)}M</p>
+          <p className="text-xs font-bold text-[#6888ff]">${(evento.valor / 1000000).toFixed(0)}M</p>
         )}
         <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full ${config.bg}/10 ${config.color}`}>
           {config.label}

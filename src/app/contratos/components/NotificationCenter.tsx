@@ -24,7 +24,7 @@ import {
 
 interface Notificacion {
   id: string;
-  tipo: 'aprobacion' | 'vencimiento' | 'renovacion' | 'pago' | 'ia' | 'urgente';
+  tipo: 'aprobacion' | 'vencimientos' | 'renovacion' | 'pago' | 'ia' | 'urgente';
   titulo: string;
   descripcion: string;
   timestamp: string;
@@ -39,12 +39,12 @@ interface Notificacion {
 // ---------------------------------------------------------------
 
 const NOTIFS_MOCK: Notificacion[] = [
-  { id: 'n1', tipo: 'aprobacion', titulo: 'Contrato Banco Chile pendiente', descripcion: 'SP-2025-0012 requiere aprobación de gerencia ($85M)', timestamp: 'Hace 5 min', leida: false, prioridad: 'alta', accion: { label: 'Aprobar', tipo: 'aprobar' }, contratoRef: 'SP-2025-0012' },
-  { id: 'n2', tipo: 'urgente', titulo: 'Vencimiento crítico: LATAM', descripcion: 'Contrato SP-2024-0088 vence en 3 días. Valor: $200M', timestamp: 'Hace 15 min', leida: false, prioridad: 'alta', accion: { label: 'Renovar', tipo: 'renovar' }, contratoRef: 'SP-2024-0088' },
-  { id: 'n3', tipo: 'ia', titulo: 'IA detectó oportunidad', descripcion: 'Cencosud históricamente renueva en marzo. Contactar ahora.', timestamp: 'Hace 30 min', leida: false, prioridad: 'media', accion: { label: 'Llamar', tipo: 'llamar' } },
-  { id: 'n4', tipo: 'pago', titulo: 'Pago recibido: Falabella', descripcion: 'Factura #4521 pagada — $12.5M CLP', timestamp: 'Hace 1h', leida: true, prioridad: 'baja' },
-  { id: 'n5', tipo: 'vencimiento', titulo: 'Contrato por vencer', descripcion: 'Cencosud SP-2024-0201 vence en 15 días', timestamp: 'Hace 2h', leida: true, prioridad: 'media', accion: { label: 'Ver', tipo: 'ver' }, contratoRef: 'SP-2024-0201' },
-  { id: 'n6', tipo: 'renovacion', titulo: 'Renovación exitosa', descripcion: 'Entel renovó automáticamente SP-2024-0150 por 12 meses', timestamp: 'Hace 3h', leida: true, prioridad: 'baja' },
+  { id: 'n1', tipo: 'aprobacion', titulo: 'Contrato Banco Chile pendiente', descripcion: 'SP-2025-0012 requiere aprobaciï¿½n de gerencia ($85M)', timestamp: 'Hace 5 min', leida: false, prioridad: 'alta', accion: { label: 'Aprobar', tipo: 'aprobar' }, contratoRef: 'SP-2025-0012' },
+  { id: 'n2', tipo: 'urgente', titulo: 'Vencimientos crï¿½tico: LATAM', descripcion: 'Contrato SP-2024-0088 vence en 3 dï¿½as. Valor: $200M', timestamp: 'Hace 15 min', leida: false, prioridad: 'alta', accion: { label: 'Renovar', tipo: 'renovar' }, contratoRef: 'SP-2024-0088' },
+  { id: 'n3', tipo: 'ia', titulo: 'IA detectï¿½ oportunidad', descripcion: 'Cencosud histï¿½ricamente renueva en marzo. Contactar ahora.', timestamp: 'Hace 30 min', leida: false, prioridad: 'media', accion: { label: 'Llamar', tipo: 'llamar' } },
+  { id: 'n4', tipo: 'pago', titulo: 'Pago recibido: Falabella', descripcion: 'Factura #4521 pagada ï¿½ $12.5M CLP', timestamp: 'Hace 1h', leida: true, prioridad: 'baja' },
+  { id: 'n5', tipo: 'vencimientos', titulo: 'Contrato por vencer', descripcion: 'Cencosud SP-2024-0201 vence en 15 dï¿½as', timestamp: 'Hace 2h', leida: true, prioridad: 'media', accion: { label: 'Ver', tipo: 'ver' }, contratoRef: 'SP-2024-0201' },
+  { id: 'n6', tipo: 'renovacion', titulo: 'Renovaciï¿½n exitosa', descripcion: 'Entel renovï¿½ automï¿½ticamente SP-2024-0150 por 12 meses', timestamp: 'Hace 3h', leida: true, prioridad: 'baja' },
 ];
 
 // ---------------------------------------------------------------
@@ -80,12 +80,12 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
   };
 
   const tipoConfig: Record<string, { icon: React.ReactNode; color: string }> = {
-    aprobacion: { icon: <ThumbsUp className="w-4 h-4" />, color: 'bg-amber-100 text-amber-600' },
-    vencimiento: { icon: <Clock className="w-4 h-4" />, color: 'bg-orange-100 text-orange-600' },
-    renovacion: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-blue-100 text-blue-600' },
-    pago: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-emerald-100 text-emerald-600' },
+    aprobacion: { icon: <ThumbsUp className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+    vencimientos: { icon: <Clock className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+    renovacion: { icon: <RefreshCw className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+    pago: { icon: <DollarSign className="w-4 h-4" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
     ia: { icon: <Sparkles className="w-4 h-4" />, color: 'bg-violet-100 text-[#6888ff]' },
-    urgente: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-red-100 text-red-600' },
+    urgente: { icon: <AlertTriangle className="w-4 h-4" />, color: 'bg-[#dfeaff] text-[#9aa3b8]' },
   };
 
   return (
@@ -96,7 +96,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
           <Bell className="w-5 h-5 text-[#6888ff]" />
           <h2 className="font-black text-lg text-[#69738c]">Notificaciones</h2>
           {noLeidas > 0 && (
-            <span className="px-2.5 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">{noLeidas}</span>
+            <span className="px-2.5 py-0.5 bg-[#dfeaff]0 text-white text-xs font-bold rounded-full">{noLeidas}</span>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
       <div className="px-5 py-3 flex gap-2 overflow-x-auto border-b border-[#bec8de30]">
         {[
           { key: 'todas', label: 'Todas' },
-          { key: 'no_leidas', label: 'No leídas' },
+          { key: 'no_leidas', label: 'No leï¿½das' },
           { key: 'aprobacion', label: 'Aprobaciones' },
           { key: 'urgente', label: 'Urgentes' },
           { key: 'ia', label: 'IA' },
@@ -133,7 +133,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="text-center py-12">
-            <CheckCircle2 className="w-12 h-12 text-emerald-300 mx-auto" />
+            <CheckCircle2 className="w-12 h-12 text-[#6888ff] mx-auto" />
             <p className="mt-3 font-bold text-[#9aa3b8]">Sin notificaciones</p>
           </div>
         ) : (

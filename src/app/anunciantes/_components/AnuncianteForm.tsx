@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2, Save, ArrowLeft, ArrowRight, Loader2, Globe, Mail, Phone,
-  MapPin, User, Briefcase, FileText, AlertTriangle, FileSignature, Map, CheckCircle2
+  MapPin, User, Briefcase, FileText, AlertTriangle, FileSignature, Map, CheckCircle2,
+  Landmark, Ticket
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -34,6 +35,7 @@ export interface AnuncianteFormData {
   tipoDTE: string;
   condicionPago: string;
   riesgoFinanciero: string;
+  ivaPorcentaje: number;
   notas: string;
   estado?: 'activo' | 'inactivo' | 'suspendido' | 'pendiente';
 }
@@ -43,15 +45,19 @@ interface AnuncianteFormProps {
   mode: 'create' | 'edit';
   onSubmit: (data: AnuncianteFormData) => Promise<void>;
   isLoading?: boolean;
+  isPopup?: boolean;
 }
+
+const DRAFT_KEY = 'silexar_anunciante_draft';
+const SYNC_CHANNEL = 'silexar_anunciante_sync';
 
 const defaultData: AnuncianteFormData = {
   nombreRazonSocial: '', rut: '', categoriaCliente: '', giroActividad: '', direccion: '', numeroOficina: '',
   departamento: '', ciudad: '', comunaProvincia: '', pais: 'Chile', emailContacto: '',
   telefonoContacto: '', paginaWeb: '', nombreContactoPrincipal: '', cargoContactoPrincipal: '',
-  tieneFacturacionElectronica: false, direccionFacturacion: '', emailFacturacion: '',
-  numeroDeudor: '', tipoDTE: 'Factura Electrónica', condicionPago: '30 días',
-  riesgoFinanciero: 'A', notas: '', estado: 'activo',
+  tieneFacturacionElectronica: true, direccionFacturacion: '', emailFacturacion: '',
+  numeroDeudor: '', tipoDTE: 'Factura Electrónica (33)', condicionPago: '30 días',
+  riesgoFinanciero: 'A', ivaPorcentaje: 19, notas: '', estado: 'activo',
 };
 
 // --- Datos Geográficos ---
@@ -84,6 +90,20 @@ const RIESGOS_FINANCIEROS = [
 const TIPOS_DTE = ["Factura Electrónica (33)", "Factura Exenta Electrónica (34)", "Boleta Electrónica (39)"];
 const CONDICIONES_PAGO = ["Al contado", "15 días", "30 días", "45 días", "60 días", "90 días"];
 
+const IVA_POR_PAIS: Record<string, number> = {
+  Chile: 19,
+  Argentina: 21,
+  Perú: 18,
+  Colombia: 19,
+  México: 16,
+  España: 21,
+  Brasil: 17,
+  Uruguay: 22,
+  'Estados Unidos': 0,
+};
+
+const getIvaPorPais = (pais: string): number => IVA_POR_PAIS[pais] ?? 0;
+
 // --- Utilidades ---
 const formatRut = (rut: string): string => {
   const clean = rut.replace(/[^0-9kK]/g, '').toUpperCase();
@@ -91,32 +111,57 @@ const formatRut = (rut: string): string => {
   return `${clean.slice(0, -1)}-${clean.slice(-1)}`;
 };
 
-const validarRutChileno = (rut: string): boolean => {
-  if (!rut) return false;
-  // Debe contener exactamente un guión en la penúltima posición para ser formalmente válido
-  if (!/^[0-9]+-[0-9K]$/i.test(rut)) return false;
-  // Limpiamos todo menos números y K, y convertimos a mayúscula
-  const cleanRut = rut.replace(/[^0-9kK]+/g, '').toUpperCase();
-  if (cleanRut.length < 7) return false;
-  
-  const dv = cleanRut.slice(-1);
-  let rutNum = parseInt(cleanRut.slice(0, -1), 10);
-  
-  if (isNaN(rutNum)) return false;
+interface RutValidationResult {
+  valid: boolean;
+  error?: string;
+}
 
+const validarRutChileno = (rut: string): RutValidationResult => {
+  if (!rut || !rut.trim()) {
+    return { valid: false, error: 'El RUT es obligatorio' };
+  }
+  // Detectar puntos
+  if (rut.includes('.')) {
+    return { valid: false, error: 'El RUT no debe contener puntos. Ingréselo sin puntos, ej: 76123456-7' };
+  }
+  // Detectar caracteres inválidos (solo números, guión y K/k)
+  if (!/^[0-9]+[-]?[0-9Kk]?$/.test(rut)) {
+    return { valid: false, error: 'El RUT contiene caracteres no válidos' };
+  }
+  // Debe tener guión
+  if (!rut.includes('-')) {
+    return { valid: false, error: 'El RUT debe incluir el dígito verificador con guión, ej: 12345678-9' };
+  }
+  // Limpiamos todo menos números y K
+  const cleanRut = rut.replace(/[^0-9kK]+/g, '').toUpperCase();
+  const body = cleanRut.slice(0, -1);
+  const dv = cleanRut.slice(-1);
+  if (body.length < 7) {
+    return { valid: false, error: 'RUT demasiado corto. Verifique que esté completo' };
+  }
+  if (body.length > 8) {
+    return { valid: false, error: 'RUT demasiado largo' };
+  }
+  const rutNum = parseInt(body, 10);
+  if (isNaN(rutNum)) {
+    return { valid: false, error: 'El RUT contiene caracteres no válidos' };
+  }
   let m = 0, s = 1;
-  for (; rutNum; rutNum = Math.floor(rutNum / 10)) {
-    s = (s + (rutNum % 10) * (9 - (m++ % 6))) % 11;
+  let tempRut = rutNum;
+  for (; tempRut; tempRut = Math.floor(tempRut / 10)) {
+    s = (s + (tempRut % 10) * (9 - (m++ % 6))) % 11;
   }
   const expectedDv = s ? (s - 1).toString() : 'K';
-  
-  return dv === expectedDv;
+  if (dv !== expectedDv) {
+    return { valid: false, error: 'El dígito verificador no corresponde. El RUT ingresado no es válido' };
+  }
+  return { valid: true };
 };
 
 // --- Tokens Neumórficos TIER 0 Compactos ---
 const neoCard = "w-full bg-[#dfeaff] rounded-[1.5rem] p-6 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] border border-white/40";
 const neoInput = "bg-[#dfeaff] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] text-[#69738c] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/50 transition-all px-4 py-2.5 w-full placeholder-[#9aa3b8] border-none text-sm font-medium";
-const neoInputError = "ring-2 ring-red-400 focus:ring-red-400";
+const neoInputError = "ring-2 ring-[#6888ff]/60 focus:ring-[#6888ff]/60";
 const neoBtnPrimary = "bg-[#6888ff] rounded-full text-white font-bold shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff] hover:bg-[#5572ee] active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.2)] transition-all duration-300 px-6 py-2.5 flex items-center justify-center gap-2 border-none disabled:opacity-50 text-sm";
 const neoBtnSecondary = "bg-[#dfeaff] rounded-full text-[#69738c] font-bold shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] active:shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] transition-all duration-300 px-6 py-2.5 flex items-center justify-center gap-2 border-none disabled:opacity-50 text-sm";
 const labelClass = "block text-[13px] font-bold text-[#69738c] mb-1.5 ml-1";
@@ -130,11 +175,11 @@ const STEPS = [
 
 const NeumorphicMap = ({ address, label }: { address: string, label: string }) => (
   <div className="w-full h-32 mt-6 rounded-xl overflow-hidden relative shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] bg-[#dfeaff] flex flex-row items-center justify-center border border-white/30 group px-6 gap-5">
-    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-[#dfeaff] to-[#dfeaff] group-hover:scale-105 transition-transform duration-1000"></div>
+    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#bec8de] via-[#dfeaff] to-[#dfeaff] group-hover:scale-105 transition-transform duration-1000"></div>
     <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'linear-gradient(#6888ff 1px, transparent 1px), linear-gradient(90deg, #6888ff 1px, transparent 1px)', backgroundSize: '15px 15px' }}></div>
     <div className="relative z-10 flex-shrink-0">
       <MapPin className="w-10 h-10 text-[#6888ff] drop-shadow-md" />
-      <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full animate-pulse"></span>
+      <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#6888ff] border-2 border-white rounded-full animate-pulse"></span>
     </div>
     <div className="z-10 flex flex-col flex-1 min-w-0">
       <span className="text-[#69738c] font-bold text-xs bg-white/40 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm self-start mb-1.5 border border-white/50">📍 {label}</span>
@@ -144,15 +189,87 @@ const NeumorphicMap = ({ address, label }: { address: string, label: string }) =
   </div>
 );
 
-export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false }: AnuncianteFormProps) {
+export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false, isPopup = false }: AnuncianteFormProps) {
   const router = useRouter();
-  const [form, setForm] = useState<AnuncianteFormData>({ ...defaultData, ...initialData });
+
+  // Cargar draft desde localStorage al montar (solo modo create)
+  const [form, setForm] = useState<AnuncianteFormData>(() => {
+    if (mode === 'create' && !initialData) {
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem(DRAFT_KEY) : null;
+        if (raw) {
+          const draft = JSON.parse(raw);
+          return { ...defaultData, ...draft.form };
+        }
+      } catch { /* ignore */ }
+    }
+    return { ...defaultData, ...initialData };
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (mode === 'create' && !initialData) {
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem(DRAFT_KEY) : null;
+        if (raw) return JSON.parse(raw).currentStep ?? 1;
+      } catch { /* ignore */ }
+    }
+    return 1;
+  });
+  const [maxStepReached, setMaxStepReached] = useState(() => {
+    if (mode === 'create' && !initialData) {
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem(DRAFT_KEY) : null;
+        if (raw) return JSON.parse(raw).maxStepReached ?? 1;
+      } catch { /* ignore */ }
+    }
+    return 1;
+  });
   const [direction, setDirection] = useState(1);
   const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
   const [addressLoading, setAddressLoading] = useState(false);
   const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
+
+  // Persistir draft en localStorage (solo modo create)
+  useEffect(() => {
+    if (mode === 'create' && typeof window !== 'undefined') {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, currentStep, maxStepReached }));
+    }
+  }, [form, currentStep, maxStepReached, mode]);
+
+  // Sincronización cross-window via BroadcastChannel (limpieza de draft)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'create') return;
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel(SYNC_CHANNEL);
+      bc.onmessage = (ev) => {
+        if (ev.data?.type === 'CLEAR_DRAFT') {
+          setForm(defaultData);
+          setCurrentStep(1);
+          setMaxStepReached(1);
+          setErrors({});
+        }
+      };
+    } catch { /* BroadcastChannel no soportado */ }
+    return () => { if (bc) bc.close(); };
+  }, [mode]);
+
+  // Sincronización via storage event (otras pestañas/ventanas)
+  useEffect(() => {
+    if (typeof window === 'undefined' || mode !== 'create') return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === DRAFT_KEY && e.newValue) {
+        try {
+          const draft = JSON.parse(e.newValue);
+          if (draft.form) setForm(prev => ({ ...prev, ...draft.form }));
+          if (draft.currentStep) setCurrentStep(draft.currentStep);
+          if (draft.maxStepReached) setMaxStepReached(draft.maxStepReached);
+        } catch { /* ignore */ }
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [mode]);
 
   // Mapa de códigos de país para Nominatim
   const COUNTRY_CODES: Record<string, string> = {
@@ -179,7 +296,13 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
   };
 
   const handlePaisChange = (pais: string) => {
-    updateField('pais', pais); updateField('ciudad', ''); updateField('comunaProvincia', '');
+    updateField('pais', pais);
+    updateField('ciudad', '');
+    updateField('comunaProvincia', '');
+    // Si el tipo DTE es exenta (34), mantener IVA en 0; si no, aplicar IVA del país
+    if (!form.tipoDTE.includes('(34)')) {
+      updateField('ivaPorcentaje', getIvaPorPais(pais));
+    }
   };
 
   const ciudadesDisponibles = form.pais === 'Chile' ? CIUDADES_CHILE : (CIUDADES_EXTRANJERAS[form.pais] || []);
@@ -187,10 +310,20 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
   const validateStep = (step: number): boolean => {
     const nextErrors: Record<string, string> = {};
     if (step === 1) {
-      if (!form.nombreRazonSocial.trim()) nextErrors.nombreRazonSocial = 'La Razón Social es obligatoria';
+      if (!form.nombreRazonSocial.trim()) {
+        nextErrors.nombreRazonSocial = 'La Razón Social es obligatoria';
+      } else if (/^[0-9\s]+$/.test(form.nombreRazonSocial.trim())) {
+        nextErrors.nombreRazonSocial = 'La Razón Social no puede contener solo números. Debe incluir al menos una letra.';
+      }
       if (!form.categoriaCliente) nextErrors.categoriaCliente = 'Debe seleccionar una categoría de cliente';
-      if (!form.rut.trim()) nextErrors.rut = 'El RUT es obligatorio';
-      else if (form.pais === 'Chile' && !validarRutChileno(form.rut)) nextErrors.rut = 'El RUT ingresado no corresponde a un RUT válido. Recuerde el formato: 12345678-9';
+      if (form.pais === 'Chile') {
+        const rutValidation = validarRutChileno(form.rut);
+        if (!rutValidation.valid) {
+          nextErrors.rut = rutValidation.error || 'El RUT ingresado no corresponde a un RUT válido. Recuerde el formato: 12345678-9';
+        }
+      } else if (!form.rut.trim()) {
+        nextErrors.rut = 'El RUT es obligatorio';
+      }
     }
     if (step === 2) {
       if (!form.direccion.trim()) nextErrors.direccion = 'La dirección es obligatoria';
@@ -201,8 +334,19 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
       if (form.emailContacto && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.emailContacto)) {
         nextErrors.emailContacto = 'Formato de email inválido';
       }
-      if (!form.nombreContactoPrincipal.trim()) nextErrors.nombreContactoPrincipal = 'El nombre del representante es obligatorio';
-      if (!form.cargoContactoPrincipal.trim()) nextErrors.cargoContactoPrincipal = 'El cargo del representante es obligatorio';
+      if (form.telefonoContacto && /[^0-9+\s\-()]/.test(form.telefonoContacto)) {
+        nextErrors.telefonoContacto = 'El teléfono solo debe contener números';
+      }
+      if (!form.nombreContactoPrincipal.trim()) {
+        nextErrors.nombreContactoPrincipal = 'El nombre del representante es obligatorio';
+      } else if (/[0-9]/.test(form.nombreContactoPrincipal)) {
+        nextErrors.nombreContactoPrincipal = 'El nombre no debe contener números';
+      }
+      if (!form.cargoContactoPrincipal.trim()) {
+        nextErrors.cargoContactoPrincipal = 'El cargo del representante es obligatorio';
+      } else if (/[0-9]/.test(form.cargoContactoPrincipal)) {
+        nextErrors.cargoContactoPrincipal = 'El cargo no debe contener números';
+      }
     }
     if (step === 4) {
       if (!form.riesgoFinanciero) nextErrors.riesgoFinanciero = 'Debe asignar un perfil de riesgo financiero';
@@ -214,7 +358,14 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
     return Object.keys(nextErrors).length === 0;
   };
 
-  const handleNext = () => { if (validateStep(currentStep)) { setDirection(1); setCurrentStep(prev => Math.min(prev + 1, STEPS.length)); } };
+  const handleNext = () => {
+    if (validateStep(currentStep)) {
+      setDirection(1);
+      const nextStep = Math.min(currentStep + 1, STEPS.length);
+      setCurrentStep(nextStep);
+      setMaxStepReached(prev => Math.max(prev, nextStep));
+    }
+  };
   const handlePrev = () => { setDirection(-1); setCurrentStep(prev => Math.max(prev - 1, 1)); };
   const handleSubmit = async () => { if (validateStep(4)) await onSubmit(form); };
 
@@ -228,7 +379,7 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
     // Wrapper transparente, centrado, con menor padding vertical para aprovechar mejor la pantalla
     <div className="w-full flex flex-col items-center justify-center py-4">
       
-      <div className="w-full max-w-4xl mx-auto flex flex-col">
+      <div className={`w-full mx-auto flex flex-col ${isPopup ? 'max-w-full px-4 sm:px-8' : 'max-w-5xl'}`}>
         
         {/* HEADER Y STEPPER - Centrados, en línea y ultracompactos */}
         <div className="flex flex-col mb-5 w-full">
@@ -248,15 +399,28 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
           <div className="flex flex-nowrap items-center mx-auto bg-[#dfeaff] p-2.5 rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] max-w-full overflow-x-auto lg:overflow-visible">
             {STEPS.map((step, idx) => {
               const isActive = currentStep === step.id;
-              const isCompleted = currentStep > step.id;
+              const isCompleted = maxStepReached > step.id;
+              const isClickable = step.id <= maxStepReached;
               const Icon = isCompleted ? CheckCircle2 : step.icon;
               return (
                 <div key={step.id} className="flex items-center shrink-0">
-                  <div className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-300 ${isActive ? 'bg-[#6888ff] text-white shadow-[2px_2px_6px_#bec8de,-2px_-2px_6px_#ffffff]' : isCompleted ? 'text-emerald-500' : 'text-[#9aa3b8]'}`}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isClickable) {
+                        setDirection(step.id > currentStep ? 1 : -1);
+                        setCurrentStep(step.id);
+                      }
+                    }}
+                    disabled={!isClickable}
+                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-300 ${
+                      isActive ? 'bg-[#6888ff] text-white shadow-[2px_2px_6px_#bec8de,-2px_-2px_6px_#ffffff]' : isCompleted ? 'text-[#6888ff] hover:bg-[#6888ff]/10' : 'text-[#9aa3b8]'
+                    } ${isClickable ? 'cursor-pointer' : 'cursor-default opacity-60'}`}
+                  >
                     <Icon className="w-4 sm:w-5 h-4 sm:h-5" />
                     <span className="text-xs sm:text-sm font-bold hidden sm:inline-block">{step.title}</span>
-                  </div>
-                  {idx < STEPS.length - 1 && <div className={`w-6 sm:w-16 h-1 mx-2 rounded-full ${isCompleted ? 'bg-emerald-400' : 'bg-[#bec8de]/50'}`} />}
+                  </button>
+                  {idx < STEPS.length - 1 && <div className={`w-6 sm:w-16 h-1 mx-2 rounded-full ${isCompleted ? 'bg-[#6888ff]' : 'bg-[#bec8de]/50'}`} />}
                 </div>
               );
             })}
@@ -283,11 +447,12 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                     <label className={labelClass}>Categoría del Cliente *</label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
                       {[
-                        { id: 'normal', label: 'Cliente General', icon: '🏢', desc: 'Empresa o persona sin restricciones especiales', color: '#6888ff' },
-                        { id: 'politica', label: 'Contenido Político', icon: '🏛️', desc: 'Partidos, candidatos o propaganda electoral', color: '#f59e0b' },
-                        { id: 'juego_azar', label: 'Juego de Azar', icon: '🎰', desc: 'Casinos, apuestas y loterías', color: '#ef4444' },
+                        { id: 'normal', label: 'Cliente General', Icon: Building2, desc: 'Empresa o persona sin restricciones especiales' },
+                        { id: 'politica', label: 'Contenido Político', Icon: Landmark, desc: 'Partidos, candidatos o propaganda electoral' },
+                        { id: 'juego_azar', label: 'Juego de Azar', Icon: Ticket, desc: 'Casinos, apuestas y loterías' },
                       ].map((cat) => {
                         const isSel = form.categoriaCliente === cat.id;
+                        const CatIcon = cat.Icon;
                         return (
                           <button key={cat.id} type="button" onClick={() => updateField('categoriaCliente', cat.id)}
                             className={`flex flex-col items-start gap-1.5 p-4 rounded-2xl border-2 transition-all duration-200 text-left ${
@@ -295,26 +460,28 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                                 ? 'border-transparent shadow-[inset_4px_4px_8px_rgba(0,0,0,0.12)]'
                                 : 'border-transparent shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]'
                             } bg-[#dfeaff]`}
-                            style={isSel ? { boxShadow: `inset 3px 3px 7px #bec8de, inset -3px -3px 7px #ffffff, 0 0 0 2px ${cat.color}` } : {}}
+                            style={isSel ? { boxShadow: `inset 3px 3px 7px #bec8de, inset -3px -3px 7px #ffffff, 0 0 0 2px #6888ff` } : {}}
                           >
-                            <span className="text-2xl">{cat.icon}</span>
-                            <span className="text-sm font-bold" style={{ color: isSel ? cat.color : '#69738c' }}>{cat.label}</span>
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-0.5 ${isSel ? 'bg-[#6888ff]/15' : 'bg-[#dfeaff]'}`} style={isSel ? {} : { boxShadow: 'inset 2px 2px 4px #bec8de,inset -2px -2px 4px #ffffff' }}>
+                              <CatIcon className="w-5 h-5" style={{ color: isSel ? '#6888ff' : '#9aa3b8' }} />
+                            </div>
+                            <span className="text-sm font-bold" style={{ color: isSel ? '#6888ff' : '#69738c' }}>{cat.label}</span>
                             <span className="text-[11px] text-[#9aa3b8] leading-tight">{cat.desc}</span>
                           </button>
                         );
                       })}
                     </div>
-                    {errors.categoriaCliente && <p className="text-xs text-red-500 mt-2 font-bold ml-1">{errors.categoriaCliente}</p>}
+                    {errors.categoriaCliente && <p className="text-xs text-[#6888ff] mt-2 font-bold ml-1">{errors.categoriaCliente}</p>}
                   </div>
 
                   <div className="grid grid-cols-1 gap-5">
                     <div>
                       <label className={labelClass}>Razón Social *</label>
                       <input type="text" value={form.nombreRazonSocial} onChange={e => updateField('nombreRazonSocial', e.target.value)} className={`${neoInput} ${errors.nombreRazonSocial ? neoInputError : ''}`} placeholder="Ej: Inversiones Globales SpA" autoFocus />
-                      {errors.nombreRazonSocial && <p className="text-xs text-red-500 mt-1 font-bold ml-1">{errors.nombreRazonSocial}</p>}
+                      {errors.nombreRazonSocial && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.nombreRazonSocial}</p>}
                     </div>
                     <div>
-                      <label className={labelClass}>RUT Fiscal * <span className="text-[#9aa3b8] font-normal">(formato: 12345678-9, sin puntos)</span></label>
+                      <label className={labelClass}>RUT Fiscal * <span className="text-[#9aa3b8] font-normal">(sin puntos: 12345678-9)</span></label>
                       <input
                         type="text"
                         value={form.rut}
@@ -323,7 +490,7 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                         placeholder="Ej: 76123456-7"
                         maxLength={12}
                       />
-                      {errors.rut && <p className="text-xs text-red-500 mt-1 font-bold ml-1">{errors.rut}</p>}
+                      {errors.rut && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.rut}</p>}
                     </div>
                     <div>
                       <label className={labelClass}>Giro / Actividad Principal</label>
@@ -336,12 +503,12 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
               {/* PASO 2 */}
               {currentStep === 2 && (
                 <div className={neoCard}>
-                  <h2 className="text-xl font-bold text-emerald-500 mb-6 flex items-center gap-2"><MapPin className="w-6 h-6" /> Ubicación Geográfica</h2>
+                  <h2 className="text-xl font-bold text-[#6888ff] mb-6 flex items-center gap-2"><MapPin className="w-6 h-6" /> Ubicación Geográfica</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     <div className="sm:col-span-2 lg:col-span-2">
                       <label className={labelClass}>Dirección Comercial *</label>
                       <input type="text" value={form.direccion} onChange={e => updateField('direccion', e.target.value)} className={`${neoInput} ${errors.direccion ? neoInputError : ''}`} placeholder="Av. Apoquindo 3000" />
-                      {errors.direccion && <p className="text-sm text-red-500 mt-2 font-bold ml-1">{errors.direccion}</p>}
+                      {errors.direccion && <p className="text-sm text-[#6888ff] mt-2 font-bold ml-1">{errors.direccion}</p>}
                     </div>
                     <div className="col-span-1">
                       <label className={labelClass}>N° Oficina</label>
@@ -359,7 +526,7 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                     <div className="col-span-1 sm:col-span-2 lg:col-span-1">
                       <label className={labelClass}>Ciudad *</label>
                       <select value={form.ciudad} onChange={e => updateField('ciudad', e.target.value)} className={`${neoInput} ${errors.ciudad ? neoInputError : ''} cursor-pointer`}><option value="">Seleccione...</option>{ciudadesDisponibles.map(c => <option key={c} value={c}>{c}</option>)}<option value="Otra">Otra...</option></select>
-                      {errors.ciudad && <p className="text-sm text-red-500 mt-2 font-bold ml-1">{errors.ciudad}</p>}
+                      {errors.ciudad && <p className="text-sm text-[#6888ff] mt-2 font-bold ml-1">{errors.ciudad}</p>}
                     </div>
                     <div className="col-span-1 sm:col-span-2 lg:col-span-2">
                       <label className={labelClass}>{form.pais === 'Chile' ? 'Comuna' : 'Estado/Provincia'}</label>
@@ -377,16 +544,16 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
               {/* PASO 3 */}
               {currentStep === 3 && (
                 <div className={neoCard}>
-                  <h2 className="text-xl font-bold text-indigo-400 mb-6 flex items-center gap-2"><Mail className="w-6 h-6" /> Contacto Corporativo</h2>
+                  <h2 className="text-xl font-bold text-[#6888ff] mb-6 flex items-center gap-2"><Mail className="w-6 h-6" /> Contacto Corporativo</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className={labelClass}>Email Corporativo</label>
                       <div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" /><input type="email" value={form.emailContacto} onChange={e => updateField('emailContacto', e.target.value)} className={`${neoInput} pl-9 ${errors.emailContacto ? neoInputError : ''}`} placeholder="contacto@empresa.com" /></div>
-                      {errors.emailContacto && <p className="text-xs text-red-500 mt-1 font-bold ml-1">{errors.emailContacto}</p>}
+                      {errors.emailContacto && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.emailContacto}</p>}
                     </div>
                     <div>
                       <label className={labelClass}>Teléfono Central</label>
-                      <div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" /><input type="text" value={form.telefonoContacto} onChange={e => updateField('telefonoContacto', e.target.value)} className={`${neoInput} pl-9`} placeholder="+56 9 1234 5678" /></div>
+                      <div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" /><input type="text" inputMode="tel" value={form.telefonoContacto} onChange={e => { const v = e.target.value.replace(/[^0-9+\s\-()]/g, ''); updateField('telefonoContacto', v); }} className={`${neoInput} pl-9`} placeholder="+56 9 1234 5678" /></div>
                     </div>
                     <div className="sm:col-span-2">
                       <label className={labelClass}>Sitio Web</label>
@@ -399,12 +566,12 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                       <div>
                         <label className={labelClass}>Nombre Completo *</label>
                         <input type="text" value={form.nombreContactoPrincipal} onChange={e => updateField('nombreContactoPrincipal', e.target.value)} className={`${neoInput} ${errors.nombreContactoPrincipal ? neoInputError : ''}`} placeholder="Ej: Juan Pérez" />
-                        {errors.nombreContactoPrincipal && <p className="text-xs text-red-500 mt-1 font-bold ml-1">{errors.nombreContactoPrincipal}</p>}
+                        {errors.nombreContactoPrincipal && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.nombreContactoPrincipal}</p>}
                       </div>
                       <div>
                         <label className={labelClass}>Cargo / Título *</label>
                         <div className="relative"><Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" /><input type="text" value={form.cargoContactoPrincipal} onChange={e => updateField('cargoContactoPrincipal', e.target.value)} className={`${neoInput} pl-9 ${errors.cargoContactoPrincipal ? neoInputError : ''}`} placeholder="Ej: Gerente Comercial" /></div>
-                        {errors.cargoContactoPrincipal && <p className="text-xs text-red-500 mt-1 font-bold ml-1">{errors.cargoContactoPrincipal}</p>}
+                        {errors.cargoContactoPrincipal && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.cargoContactoPrincipal}</p>}
                       </div>
                     </div>
                   </div>
@@ -414,56 +581,83 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
               {/* PASO 4 */}
               {currentStep === 4 && (
                 <div className={neoCard}>
-                  <h2 className="text-xl font-bold text-amber-500 mb-6 flex items-center gap-2"><FileSignature className="w-6 h-6" /> Facturación y Riesgo</h2>
+                  <h2 className="text-xl font-bold text-[#6888ff] mb-4 flex items-center gap-2"><FileSignature className="w-6 h-6" /> Facturación y Riesgo</h2>
                   
                   {/* Riesgo Financiero */}
-                  <div className="mb-8 p-5 bg-[#dfeaff] rounded-[1.5rem] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border border-white/30">
-                    <label className="text-sm font-extrabold text-[#6888ff] mb-4 flex items-center gap-2 uppercase tracking-wide"><AlertTriangle className="w-4 h-4" /> Perfil de Riesgo Asignado</label>
+                  <div className="mb-4 p-4 bg-[#dfeaff] rounded-[1.5rem] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border border-white/30">
+                    <label className="text-sm font-extrabold text-[#6888ff] mb-3 flex items-center gap-2 uppercase tracking-wide"><AlertTriangle className="w-4 h-4" /> Perfil de Riesgo Asignado</label>
                     <div className="flex flex-wrap gap-2">
-                      {RIESGOS_FINANCIEROS.map((r) => {
+                      {RIESGOS_FINANCIEROS.map((r, idx) => {
                         const isSel = form.riesgoFinanciero === r.id;
-                        const isDanger = ['C', 'D', 'En Observación'].includes(r.id);
-                        const isWarn = ['BBB', 'BB', 'B', 'CCC', 'CC'].includes(r.id);
-                        let btnCls = 'bg-white/50 text-[#69738c] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] hover:bg-[#6888ff]/10';
-                        if (isSel) { btnCls = isDanger ? 'bg-red-500 text-white shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]' : isWarn ? 'bg-amber-500 text-white shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]' : 'bg-emerald-500 text-white shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]'; }
+                        const btnCls = isSel
+                          ? 'bg-[#6888ff] text-white shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]'
+                          : 'bg-white/50 text-[#69738c] shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff] hover:bg-[#6888ff]/10';
                         return (
                           <div key={r.id} className="relative group">
                             <button type="button" onClick={() => { updateField('riesgoFinanciero', r.id); if (errors.riesgoFinanciero) setErrors(prev => { const n = {...prev}; delete n.riesgoFinanciero; return n; }); }} className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${btnCls}`}>{r.id}</button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-3 bg-white/95 backdrop-blur-md rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-xs text-slate-700 font-bold border border-slate-200 text-center leading-relaxed">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-3 bg-white/95 backdrop-blur-md rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-xs text-[#69738c] font-bold border border-white/50 text-center leading-relaxed">
                               {r.desc}<div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-white/95"></div>
                             </div>
                           </div>
                         );
                       })}
                     </div>
-                    {errors.riesgoFinanciero && <p className="text-xs text-red-500 mt-3 font-bold ml-1">{errors.riesgoFinanciero}</p>}
+                    {errors.riesgoFinanciero && <p className="text-xs text-[#6888ff] mt-2 font-bold ml-1">{errors.riesgoFinanciero}</p>}
                   </div>
 
                   {/* DTE */}
-                  <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center gap-4 mb-4">
                     <Switch id="fact-electronica" checked={form.tieneFacturacionElectronica} onCheckedChange={v => updateField('tieneFacturacionElectronica', v)} className="data-[state=checked]:bg-[#6888ff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] scale-125 ml-2" />
                     <Label htmlFor="fact-electronica" className="text-lg font-bold text-[#69738c] cursor-pointer">Habilitar Facturación DTE</Label>
                   </div>
 
                   {form.tieneFacturacionElectronica && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                       <div>
                         <label className={labelClass}>N° Deudor (ERP) *</label>
                         <input type="text" value={form.numeroDeudor} onChange={e => updateField('numeroDeudor', e.target.value)} className={`${neoInput} ${errors.numeroDeudor ? neoInputError : ''}`} placeholder="Ej: D-100254" />
-                        {errors.numeroDeudor && <p className="text-sm text-red-500 mt-2 font-bold ml-1">{errors.numeroDeudor}</p>}
+                        {errors.numeroDeudor && <p className="text-xs text-[#6888ff] mt-1 font-bold ml-1">{errors.numeroDeudor}</p>}
                       </div>
                       <div>
                         <label className={labelClass}>Tipo DTE</label>
-                        <select value={form.tipoDTE} onChange={e => updateField('tipoDTE', e.target.value)} className={`${neoInput} cursor-pointer`}>{TIPOS_DTE.map(t => <option key={t} value={t}>{t}</option>)}</select>
+                        <select
+                          value={form.tipoDTE}
+                          onChange={e => {
+                            const val = e.target.value;
+                            updateField('tipoDTE', val);
+                            if (val.includes('(34)')) {
+                              updateField('ivaPorcentaje', 0);
+                            } else {
+                              updateField('ivaPorcentaje', getIvaPorPais(form.pais));
+                            }
+                          }}
+                          className={`${neoInput} cursor-pointer`}
+                        >{TIPOS_DTE.map(t => <option key={t} value={t}>{t}</option>)}</select>
                       </div>
                       <div>
                         <label className={labelClass}>Condición de Pago</label>
                         <select value={form.condicionPago} onChange={e => updateField('condicionPago', e.target.value)} className={`${neoInput} cursor-pointer`}>{CONDICIONES_PAGO.map(c => <option key={c} value={c}>{c}</option>)}</select>
                       </div>
-                      <div className="md:col-span-3 relative">
+                      <div>
                         <label className={labelClass}>
-                          Dirección Fiscal / Envío XML
-                          <span className="text-[#9aa3b8] font-normal ml-1">(escribe para buscar)</span>
+                          IVA (%)
+                          {form.tipoDTE.includes('(34)') && <span className="text-[#9aa3b8] font-normal ml-1">(Exento)</span>}
+                        </label>
+                        <input
+                          type="number"
+                          value={form.ivaPorcentaje}
+                          onChange={e => updateField('ivaPorcentaje', Number(e.target.value))}
+                          disabled={form.tipoDTE.includes('(34)')}
+                          className={`${neoInput} ${form.tipoDTE.includes('(34)') ? 'opacity-60 cursor-not-allowed' : ''}`}
+                          placeholder="19"
+                          min={0}
+                          max={50}
+                        />
+                      </div>
+                      <div className="md:col-span-4 relative">
+                        <label className={labelClass}>
+                          Dirección Fiscal
+                          <span className="text-[#9aa3b8] font-normal ml-1">(escribe para buscar dirección)</span>
                         </label>
                         <div className="relative">
                           <input
@@ -511,21 +705,21 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
                     </motion.div>
                   )}
 
-                  {/* Notas y Documentos (Movido al final) */}
-                  <div className="pt-8 border-t-2 border-[#bec8de]/30">
-                    <h3 className="text-base font-extrabold text-[#69738c] mb-4 flex items-center gap-2 uppercase tracking-wide"><FileText className="w-5 h-5 text-[#6888ff]" /> Notas y Documentos</h3>
-                    <div className="space-y-4">
+                  {/* Notas y Documentos */}
+                  <div className="pt-4 border-t-2 border-[#bec8de]/30">
+                    <h3 className="text-sm font-extrabold text-[#69738c] mb-3 flex items-center gap-2 uppercase tracking-wide"><FileText className="w-4 h-4 text-[#6888ff]" /> Notas y Documentos</h3>
+                    <div className="space-y-3">
                       <textarea
                         value={form.notas}
                         onChange={e => updateField('notas', e.target.value)}
-                        rows={4}
+                        rows={3}
                         className={`${neoInput} resize-none`}
                         placeholder="Ingresa acuerdos especiales, historial resumido o condiciones a tomar en cuenta..."
                       />
                       <div>
                         <label className={labelClass}>Adjuntar Documento (Opcional)</label>
                         <input type="file" className="block w-full text-sm text-[#69738c] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#6888ff] file:text-white hover:file:bg-[#5572ee] transition-all cursor-pointer bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] rounded-xl p-2" />
-                        <p className="text-xs text-[#9aa3b8] mt-2 ml-1">Formatos soportados: PDF, JPG, PNG (Max 5MB)</p>
+                        <p className="text-xs text-[#9aa3b8] mt-1 ml-1">Formatos soportados: PDF, JPG, PNG (Max 5MB)</p>
                       </div>
                     </div>
                   </div>
@@ -543,7 +737,7 @@ export function AnuncianteForm({ initialData, mode, onSubmit, isLoading = false 
           {currentStep < STEPS.length ? (
             <button type="button" onClick={handleNext} className={neoBtnPrimary}>Siguiente <ArrowRight className="w-4 h-4" /></button>
           ) : (
-            <button type="button" onClick={handleSubmit} disabled={isLoading} className="bg-emerald-500 rounded-full text-white font-bold shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff] hover:bg-emerald-400 active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.2)] transition-all duration-300 px-6 py-2.5 flex items-center justify-center gap-2 border-none disabled:opacity-50 text-sm">
+            <button type="button" onClick={handleSubmit} disabled={isLoading} className="bg-[#6888ff] rounded-full text-white font-bold shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff] hover:bg-[#5572ee] active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.2)] transition-all duration-300 px-6 py-2.5 flex items-center justify-center gap-2 border-none disabled:opacity-50 text-sm">
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Guardar Anunciante
             </button>
           )}

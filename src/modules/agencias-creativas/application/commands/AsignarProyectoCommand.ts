@@ -267,7 +267,7 @@ export interface AsignarProyectoResult {
     cronogramaPagos?: Array<{
       concepto: string
       monto: number
-      fechaVencimiento: Date
+      fechaVencimientos: Date
     }>
   }
   

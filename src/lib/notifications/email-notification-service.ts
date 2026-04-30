@@ -7,8 +7,6 @@
  * @tier TIER_0_ENTERPRISE
  */
 
-'use server';
-
 import { logger } from '@/lib/observability';
 
 // ═══════════════════════════════════════════════════════════════
@@ -183,14 +181,14 @@ const templates = {
     vencimientosProximo: (data: {
         clienteNombre: string;
         contratoNumero: string;
-        fechaVencimiento: string;
+        fechaVencimientos: string;
         diasRestantes: number;
         url: string;
     }) => ({
-        subject: `📅 Vencimiento en ${data.diasRestantes} días: ${data.contratoNumero}`,
+        subject: `📅 Vencimientos en ${data.diasRestantes} días: ${data.contratoNumero}`,
         html: baseTemplate(`
       <div class="alert" style="background: #fef3c7; border-left-color: #f59e0b;">
-        <strong>⚠️ Recordatorio de Vencimiento</strong>
+        <strong>⚠️ Recordatorio de Vencimientos</strong>
         <p style="margin: 8px 0 0;">Este contrato vence en <strong>${data.diasRestantes} días</strong>.</p>
       </div>
       
@@ -198,7 +196,7 @@ const templates = {
       <table>
         <tr><th>Número:</th><td>${data.contratoNumero}</td></tr>
         <tr><th>Cliente:</th><td>${data.clienteNombre}</td></tr>
-        <tr><th>Fecha Vencimiento:</th><td><strong style="color: #f59e0b;">${data.fechaVencimiento}</strong></td></tr>
+        <tr><th>Fecha Vencimientos:</th><td><strong style="color: #f59e0b;">${data.fechaVencimientos}</strong></td></tr>
       </table>
       
       <p>¿Deseas comenzar el proceso de renovación?</p>
@@ -216,7 +214,7 @@ const templates = {
         clienteNombre: string;
         contratoNumero: string;
         monto: string;
-        fechaVencimiento: string;
+        fechaVencimientos: string;
         estado: 'pendiente' | 'atrasado' | 'vencido';
         url: string;
     }) => ({
@@ -239,7 +237,7 @@ const templates = {
         <tr><th>Número:</th><td>${data.contratoNumero}</td></tr>
         <tr><th>Cliente:</th><td>${data.clienteNombre}</td></tr>
         <tr><th>Monto:</th><td><strong>${data.monto}</strong></td></tr>
-        <tr><th>Fecha Vencimiento:</th><td>${data.fechaVencimiento}</td></tr>
+        <tr><th>Fecha Vencimientos:</th><td>${data.fechaVencimientos}</td></tr>
         <tr><th>Estado:</th><td>
           <span style="color: ${data.estado === 'atrasado' || data.estado === 'vencido' ? '#ef4444' : '#f59e0b'}; font-weight: bold;">
             ${data.estado === 'pendiente' ? 'PENDIENTE' : data.estado === 'atrasado' ? 'EN MORA' : 'VENCIDO'}
@@ -398,11 +396,11 @@ export const emailNotificationService = {
     /**
      * Enviar recordatorio de vencimientos
      */
-    async enviarRecordatorioVencimiento(params: {
+    async enviarRecordatorioVencimientos(params: {
         destinatarios: string[];
         clienteNombre: string;
         contratoNumero: string;
-        fechaVencimiento: string;
+        fechaVencimientos: string;
         diasRestantes: number;
         contratoId: string;
     }): Promise<EmailResult> {
@@ -410,7 +408,7 @@ export const emailNotificationService = {
         const template = templates.vencimientosProximo({
             clienteNombre: params.clienteNombre,
             contratoNumero: params.contratoNumero,
-            fechaVencimiento: params.fechaVencimiento,
+            fechaVencimientos: params.fechaVencimientos,
             diasRestantes: params.diasRestantes,
             url
         });
@@ -432,7 +430,7 @@ export const emailNotificationService = {
         clienteNombre: string;
         contratoNumero: string;
         monto: number;
-        fechaVencimiento: string;
+        fechaVencimientos: string;
         estado: 'pendiente' | 'atrasado' | 'vencido';
         contratoId: string;
     }): Promise<EmailResult> {
@@ -441,7 +439,7 @@ export const emailNotificationService = {
             clienteNombre: params.clienteNombre,
             contratoNumero: params.contratoNumero,
             monto: new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(params.monto),
-            fechaVencimiento: params.fechaVencimiento,
+            fechaVencimientos: params.fechaVencimientos,
             estado: params.estado,
             url
         });

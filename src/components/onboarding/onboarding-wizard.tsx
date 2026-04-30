@@ -15,10 +15,8 @@
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Zap, Users, Megaphone, BarChart3,
   CheckCircle, ChevronRight, ChevronLeft,
@@ -65,7 +63,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">¡Hola, {userName}! 👋</h3>
           <p className="text-slate-400 mb-6">
-            Estamos emocionados de tenerte como parte de Silexar Pulse.<br/>
+            Estamos emocionados de tenerte como parte de Silexar Pulse.<br />
             Te guiaremos en tus primeros pasos.
           </p>
           <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-8">
@@ -102,11 +100,10 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
               { name: 'Crear Campañas', enabled: userCategory !== 'vendedor' },
               { name: 'Configuración', enabled: userCategory === 'admin' }
             ].map((perm, i) => (
-              <div key={`${perm}-${i}`} className={`p-3 rounded-lg flex items-center gap-3 ${
-                perm.enabled 
-                  ? 'bg-green-500/10 border border-green-500/30' 
-                  : 'bg-slate-800/50 border border-slate-700'
-              }`}>
+              <div key={`${perm}-${i}`} className={`p-3 rounded-lg flex items-center gap-3 ${perm.enabled
+                ? 'bg-green-500/10 border border-green-500/30'
+                : 'bg-slate-800/50 border border-slate-700'
+                }`}>
                 <CheckCircle className={`w-5 h-5 ${perm.enabled ? 'text-green-400' : 'text-slate-600'}`} />
                 <span className={perm.enabled ? 'text-white' : 'text-slate-500'}>{perm.name}</span>
               </div>
@@ -132,21 +129,20 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
                 <button
                   key={theme}
                   onClick={() => setPreferences({ ...preferences, theme })}
-                  className={`flex-1 p-3 rounded-lg border ${
-                    preferences.theme === theme 
-                      ? 'bg-orange-500/20 border-orange-500/50 text-orange-400' 
-                      : 'bg-slate-800/50 border-slate-700 text-slate-400'
-                  }`}
+                  className={`flex-1 p-3 rounded-lg border ${preferences.theme === theme
+                    ? 'bg-orange-500/20 border-orange-500/50 text-orange-400'
+                    : 'bg-slate-800/50 border-slate-700 text-slate-400'
+                    }`}
                 >
                   {theme === 'dark' ? '🌙 Oscuro' : theme === 'light' ? '☀️ Claro' : '💻 Sistema'}
                 </button>
               ))}
             </div>
           </div>
-          
+
           <div>
             <label className="text-slate-400 text-sm block mb-2">Idioma</label>
-            <select 
+            <select
               value={preferences.language}
               onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
               className="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white"
@@ -159,7 +155,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
 
           <div>
             <label className="text-slate-400 text-sm block mb-2">Zona Horaria</label>
-            <select 
+            <select
               value={preferences.timezone}
               onChange={(e) => setPreferences({ ...preferences, timezone: e.target.value })}
               className="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white"
@@ -172,8 +168,8 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
           </div>
 
           <label className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg cursor-pointer">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={preferences.notifications}
               onChange={(e) => setPreferences({ ...preferences, notifications: e.target.checked })}
               className="w-5 h-5"
@@ -219,13 +215,13 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">¡Felicitaciones! 🎉</h3>
           <p className="text-slate-400 mb-8">
-            Tu configuración está completa.<br/>
+            Tu configuración está completa.<br />
             Ya puedes comenzar a usar Silexar Pulse.
           </p>
-          <NeuromorphicButton variant="primary" size="lg" onClick={onComplete}>
+          <NeuButton variant="primary" onClick={onComplete}>
             <Rocket className="w-5 h-5 mr-2" />
             Comenzar a Trabajar
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       )
     }
@@ -248,7 +244,7 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <NeuromorphicCard variant="glow" className="w-full max-w-2xl">
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }} className="w-full max-w-2xl">
         {/* Header */}
         <div className="p-6 border-b border-slate-700 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -267,19 +263,17 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
         <div className="px-6 py-3 bg-slate-800/50 flex items-center gap-2">
           {steps.map((step, i) => (
             <div key={step.id} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                i < currentStep 
-                  ? 'bg-green-500 text-white' 
-                  : i === currentStep 
-                    ? 'bg-orange-500 text-white' 
-                    : 'bg-slate-700 text-slate-400'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${i < currentStep
+                ? 'bg-green-500 text-white'
+                : i === currentStep
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-slate-700 text-slate-400'
+                }`}>
                 {i < currentStep ? <CheckCircle className="w-5 h-5" /> : i + 1}
               </div>
               {i < steps.length - 1 && (
-                <div className={`w-12 h-1 mx-1 rounded ${
-                  i < currentStep ? 'bg-green-500' : 'bg-slate-700'
-                }`} />
+                <div className={`w-12 h-1 mx-1 rounded ${i < currentStep ? 'bg-green-500' : 'bg-slate-700'
+                  }`} />
               )}
             </div>
           ))}
@@ -292,14 +286,13 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
 
         {/* Footer */}
         <div className="p-6 border-t border-slate-700 flex items-center justify-between">
-          <button 
+          <button
             onClick={handleBack}
             disabled={currentStep === 0}
-            className={`flex items-center gap-1 px-4 py-2 rounded-lg ${
-              currentStep === 0 
-                ? 'text-slate-600 cursor-not-allowed' 
-                : 'text-slate-400 hover:text-white'
-            }`}
+            className={`flex items-center gap-1 px-4 py-2 rounded-lg ${currentStep === 0
+              ? 'text-slate-600 cursor-not-allowed'
+              : 'text-slate-400 hover:text-white'
+              }`}
           >
             <ChevronLeft className="w-5 h-5" />
             Anterior
@@ -310,14 +303,14 @@ export function OnboardingWizard({ userName, userCategory, onComplete, onSkip }:
               Omitir tour
             </button>
             {currentStep < steps.length - 1 && (
-              <NeuromorphicButton variant="primary" onClick={handleNext}>
+              <NeuButton variant="primary" onClick={handleNext}>
                 Siguiente
                 <ChevronRight className="w-5 h-5 ml-1" />
-              </NeuromorphicButton>
+              </NeuButton>
             )}
           </div>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

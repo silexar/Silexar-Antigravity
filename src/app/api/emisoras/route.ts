@@ -7,87 +7,27 @@
  * @tier TIER_0_FORTUNE_10
  */
 
-import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { apiSuccess, apiValidationError, apiServerError } from '@/lib/api/response';
 import { logger } from '@/lib/observability';
 import { withApiRoute } from '@/lib/api/with-api-route';
 import { withTenantContext } from '@/lib/db/tenant-context';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
+import { DrizzleEmisoraRepository } from '@/modules/emisoras/infrastructure/repositories/DrizzleEmisoraRepository';
+
+const repository = new DrizzleEmisoraRepository();
 
 // Zod schema for input validation
 const createEmisoraSchema = z.object({
   nombre: z.string().min(1, 'El nombre es requerido').max(200),
   nombreComercial: z.string().max(200).optional(),
-  tipoFrecuencia: z.enum(['fm', 'am', 'digital', 'online']).optional(),
+  tipoFrecuencia: z.enum(['fm', 'am', 'dab', 'online']).optional(),
   frecuencia: z.string().max(20).optional(),
   ciudad: z.string().max(100).optional(),
+  region: z.string().max(100).optional(),
   streamUrl: z.string().url('URL de stream inválida').or(z.literal('')).optional(),
-  formatoExportacion: z.enum(['csv', 'dalet', 'json', 'xml']).optional(),
+  formatoExportacion: z.enum(['csv', 'json', 'xml']).optional(),
 });
-
-// Mock de datos
-const mockEmisoras = [
-  {
-    id: 'emi-001',
-    codigo: 'EMI-001',
-    nombre: 'Radio Cooperativa',
-    nombreComercial: 'Cooperativa',
-    tipoFrecuencia: 'fm',
-    frecuencia: '93.3',
-    ciudad: 'Santiago',
-    streamUrl: 'https://stream.cooperativa.cl',
-    formatoExportacion: 'csv',
-    estado: 'activa',
-    activa: true,
-    programasCount: 12,
-    fechaCreacion: '2024-06-01T10:00:00Z'
-  },
-  {
-    id: 'emi-002',
-    codigo: 'EMI-002',
-    nombre: 'Radio Biobío',
-    nombreComercial: 'Biobío',
-    tipoFrecuencia: 'fm',
-    frecuencia: '99.7',
-    ciudad: 'Santiago',
-    streamUrl: 'https://stream.biobio.cl',
-    formatoExportacion: 'dalet',
-    estado: 'activa',
-    activa: true,
-    programasCount: 8,
-    fechaCreacion: '2024-05-15T09:30:00Z'
-  },
-  {
-    id: 'emi-003',
-    codigo: 'EMI-003',
-    nombre: 'Radio ADN',
-    nombreComercial: 'ADN Radio',
-    tipoFrecuencia: 'fm',
-    frecuencia: '91.7',
-    ciudad: 'Santiago',
-    streamUrl: 'https://stream.adnradio.cl',
-    formatoExportacion: 'csv',
-    estado: 'activa',
-    activa: true,
-    programasCount: 10,
-    fechaCreacion: '2024-04-20T11:00:00Z'
-  },
-  {
-    id: 'emi-004',
-    codigo: 'EMI-004',
-    nombre: 'Radio Pudahuel',
-    nombreComercial: 'Pudahuel',
-    tipoFrecuencia: 'fm',
-    frecuencia: '90.5',
-    ciudad: 'Santiago',
-    streamUrl: 'https://stream.pudahuel.cl',
-    formatoExportacion: 'csv',
-    estado: 'activa',
-    activa: true,
-    programasCount: 6,
-    fechaCreacion: '2024-03-10T08:45:00Z'
-  }
-];
 
 /**
  * GET - Listar emisoras
@@ -104,37 +44,51 @@ export const GET = withApiRoute(
         const page = parseInt(searchParams.get('page') || '1', 10);
         const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-        let filtered = [...mockEmisoras];
+        const tenantId = ctx.tenantId;
 
-        if (search) {
-          const searchLower = search.toLowerCase();
-          filtered = filtered.filter(e => 
-            e.nombre.toLowerCase().includes(searchLower) ||
-            e.codigo.toLowerCase().includes(searchLower) ||
-            e.frecuencia?.includes(search)
-          );
-        }
+        // Construir filtros para el repository
+        const filters = {
+          search: search || undefined,
+          ciudad: ciudad || undefined,
+        };
 
-        if (ciudad) {
-          filtered = filtered.filter(e => e.ciudad?.toLowerCase() === ciudad.toLowerCase());
-        }
+        // Consultar base de datos con repository
+        const emisorasDB = await repository.findAll(
+          tenantId,
+          filters,
+          { field: 'nombre', direction: 'asc' },
+          limit,
+          (page - 1) * limit
+        );
 
-        const total = filtered.length;
+        // Obtener total para paginación
+        const total = await repository.count(tenantId, filters);
         const totalPages = Math.ceil(total / limit);
-        const offset = (page - 1) * limit;
-        const data = filtered.slice(offset, offset + limit);
 
-        return apiSuccess(data, 200, {
+        return apiSuccess(emisorasDB, 200, {
           pagination: { total, page, limit, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 },
           consultadoPor: ctx.userId
         });
       });
     } catch (error) {
-      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { 
+      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, {
         module: 'emisoras',
         userId: ctx.userId,
-        tenantId: ctx.tenantId
+        tenantId: ctx.tenantId,
+        action: 'GET'
       });
+
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'emisoras',
+          accion: 'GET',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      });
+
       return apiServerError(error instanceof Error ? error.message : 'Error al obtener emisoras');
     }
   }
@@ -157,33 +111,50 @@ export const POST = withApiRoute(
           return apiValidationError(parsed.error.flatten().fieldErrors);
         }
 
-        const newEmisora = {
-          id: `emi-${Date.now()}`,
-          codigo: `EMI-${(mockEmisoras.length + 1).toString().padStart(3, '0')}`,
+        const tenantId = ctx.tenantId;
+
+        // Generar código secuencial del repository
+        const codigo = await repository.generateCode(tenantId);
+
+        // Crear emisora en base de datos
+        const createdEmisora = await repository.create({
+          tenantId,
+          codigo,
           nombre: parsed.data.nombre,
-          nombreComercial: parsed.data.nombreComercial ?? '',
-          tipoFrecuencia: parsed.data.tipoFrecuencia ?? 'fm',
-          frecuencia: parsed.data.frecuencia ?? '',
-          ciudad: parsed.data.ciudad ?? '',
-          streamUrl: parsed.data.streamUrl ?? '',
-          formatoExportacion: parsed.data.formatoExportacion ?? 'json',
+          nombreComercial: parsed.data.nombreComercial || null,
+          tipoFrecuencia: (parsed.data.tipoFrecuencia || 'fm') as 'fm' | 'am' | 'dab' | 'online',
+          frecuencia: parsed.data.frecuencia || null,
+          ciudad: parsed.data.ciudad || null,
+          region: parsed.data.region || null,
+          streamUrl: parsed.data.streamUrl || null,
+          formatoExportacion: (parsed.data.formatoExportacion || 'csv') as 'dalet' | 'rcs' | 'enco' | 'csv' | 'xml' | 'txt',
           estado: 'activa',
           activa: true,
-          programasCount: 0,
-          fechaCreacion: new Date().toISOString(),
-          creadoPor: ctx.userId
-        };
+          eliminado: false,
+          creadoPorId: ctx.userId,
+        });
 
-        mockEmisoras.push(newEmisora as typeof mockEmisoras[0]);
-
-        return apiSuccess(newEmisora, 201, { message: 'Emisora creada exitosamente' });
+        return apiSuccess(createdEmisora, 201, { message: 'Emisora creada exitosamente' });
       });
     } catch (error) {
-      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, { 
+      logger.error('[API/Emisoras] Error:', error instanceof Error ? error : undefined, {
         module: 'emisoras',
         userId: ctx.userId,
-        tenantId: ctx.tenantId
+        tenantId: ctx.tenantId,
+        action: 'POST'
       });
+
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'emisoras',
+          accion: 'POST',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      });
+
       return apiServerError(error instanceof Error ? error.message : 'Error al crear emisora');
     }
   }

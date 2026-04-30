@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -105,14 +105,14 @@ export default function EditarAnunciantePage() {
 
   if (isFetching || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#bec8de] via-slate-50 to-[#5572ee]">
+        <Loader2 className="w-10 h-10 text-[#6888ff] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#bec8de] via-slate-50 to-[#5572ee] p-6 lg:p-8">
       <div className="max-w-4xl mx-auto">
         <AnuncianteForm
           mode="edit"

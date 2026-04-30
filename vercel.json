@@ -3,6 +3,18 @@
     {
       "path": "/api/cron/limpiar-expirados",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/vencimientos/r1-procesar-no-iniciados",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/vencimientos/r2-alertas-trafico",
+      "schedule": "0 7,18 * * *"
+    },
+    {
+      "path": "/api/cron/vencimientos/daily-maintenance",
+      "schedule": "0 6 * * *"
     }
   ]
 }

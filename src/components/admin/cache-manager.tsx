@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 💾 SILEXAR PULSE - Cache Manager
+ * ðŸ’¾ SILEXAR PULSE - Cache Manager
  * Gestión de caché del sistema
  * 
  * @description Cache Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Database,
   Trash2,
@@ -124,7 +122,7 @@ export function CacheManager() {
     return `${Math.floor(ttl / 86400)}d`
   }
 
-  const filteredEntries = entries.filter(e => 
+  const filteredEntries = entries.filter(e =>
     e.key.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -132,8 +130,8 @@ export function CacheManager() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Cache Manager...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Cache Manager...</p>
         </div>
       </div>
     )
@@ -143,59 +141,58 @@ export function CacheManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Database className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Database className="w-5 h-5 text-[#6888ff]" />
           Cache Manager
-          <span className="text-xs px-2 py-0.5 bg-cyan-500/20 text-cyan-400 rounded">Redis</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">Redis</span>
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadCacheData}>
+          <NeuButton variant="secondary" onClick={loadCacheData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={flushAll}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={flushAll}>
             <Trash2 className="w-4 h-4 mr-1" />
             Flush All
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Zap className="w-6 h-6 text-green-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-400">{stats.hitRate}%</p>
-          <p className="text-xs text-slate-400">Hit Rate</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Database className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-cyan-400">{(stats.totalKeys / 1000).toFixed(1)}K</p>
-          <p className="text-xs text-slate-400">Total Keys</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <HardDrive className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-purple-400">{stats.memoryUsed}MB</p>
-          <p className="text-xs text-slate-400">/ {stats.memoryMax}MB</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Clock className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-yellow-400">{stats.evictions}</p>
-          <p className="text-xs text-slate-400">Evictions</p>
-        </NeuromorphicCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Zap className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{stats.hitRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Hit Rate</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Database className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{(stats.totalKeys / 1000).toFixed(1)}K</p>
+          <p className="text-xs text-[#9aa3b8]">Total Keys</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <HardDrive className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{stats.memoryUsed}MB</p>
+          <p className="text-xs text-[#9aa3b8]">/ {stats.memoryMax}MB</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base, textAlign: 'center' }}>
+          <Clock className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{stats.evictions}</p>
+          <p className="text-xs text-[#9aa3b8]">Evictions</p>
+        </NeuCard>
       </div>
 
       {/* Memory Bar */}
-      <div className="p-4 bg-slate-800/50 rounded-lg">
+      <div className="p-4 bg-[#dfeaff]/50 rounded-lg">
         <div className="flex justify-between text-sm mb-2">
-          <span className="text-slate-400">Memoria Utilizada</span>
-          <span className="text-white">{stats.memoryUsed}MB / {stats.memoryMax}MB ({((stats.memoryUsed / stats.memoryMax) * 100).toFixed(0)}%)</span>
+          <span className="text-[#9aa3b8]">Memoria Utilizada</span>
+          <span className="text-[#69738c]">{stats.memoryUsed}MB / {stats.memoryMax}MB ({((stats.memoryUsed / stats.memoryMax) * 100).toFixed(0)}%)</span>
         </div>
-        <div className="w-full bg-slate-700 rounded-full h-3">
-          <div 
-            className={`h-3 rounded-full transition-all ${
-              stats.memoryUsed / stats.memoryMax > 0.9 ? 'bg-red-500' :
-              stats.memoryUsed / stats.memoryMax > 0.7 ? 'bg-yellow-500' : 'bg-green-500'
-            }`}
+        <div className="w-full bg-[#dfeaff] rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all ${stats.memoryUsed / stats.memoryMax > 0.9 ? 'bg-[#6888ff]' :
+              stats.memoryUsed / stats.memoryMax > 0.7 ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+              }`}
             style={{ width: `${(stats.memoryUsed / stats.memoryMax) * 100}%` }}
           />
         </div>
@@ -203,21 +200,21 @@ export function CacheManager() {
 
       {/* Quick Actions */}
       <div className="flex items-center gap-2">
-        <button 
+        <button
           onClick={() => invalidatePattern('campaigns:*')}
-          className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded text-sm hover:bg-slate-700"
+          className="px-3 py-1.5 bg-[#dfeaff] text-[#69738c] rounded text-sm hover:bg-[#dfeaff]"
         >
           Invalidar campaigns:*
         </button>
-        <button 
+        <button
           onClick={() => invalidatePattern('analytics:*')}
-          className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded text-sm hover:bg-slate-700"
+          className="px-3 py-1.5 bg-[#dfeaff] text-[#69738c] rounded text-sm hover:bg-[#dfeaff]"
         >
           Invalidar analytics:*
         </button>
-        <button 
+        <button
           onClick={() => invalidatePattern('users:session:*')}
-          className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded text-sm hover:bg-slate-700"
+          className="px-3 py-1.5 bg-[#dfeaff] text-[#69738c] rounded text-sm hover:bg-[#dfeaff]"
         >
           Invalidar sessions
         </button>
@@ -225,38 +222,38 @@ export function CacheManager() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
         <input
           type="text"
           placeholder="Buscar keys..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+          className="w-full pl-10 pr-4 py-2 bg-[#dfeaff] border border-slate-700 rounded-lg text-[#69738c] text-sm"
         />
       </div>
 
       {/* Cache Entries */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Cache Entries ({filteredEntries.length})</h4>
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3">Cache Entries ({filteredEntries.length})</h4>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {filteredEntries.map(entry => (
-            <div key={entry.key} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={entry.key} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
               <div className="flex-1">
-                <code className="text-cyan-300 text-sm">{entry.key}</code>
-                <div className="flex items-center gap-4 mt-1 text-xs text-slate-500">
+                <code className="text-[#6888ff] text-sm">{entry.key}</code>
+                <div className="flex items-center gap-4 mt-1 text-xs text-[#9aa3b8]">
                   <span>Tipo: {entry.type}</span>
                   <span>Size: {formatBytes(entry.size)}</span>
                   <span>TTL: {formatTTL(entry.ttl)}</span>
                   <span>Hits: {entry.hits}</span>
                 </div>
               </div>
-              <button onClick={() => invalidateKey(entry.key)} className="p-1 hover:bg-slate-700 rounded">
-                <Trash2 className="w-4 h-4 text-red-400" />
+              <button onClick={() => invalidateKey(entry.key)} className="p-1 hover:bg-[#dfeaff] rounded">
+                <Trash2 className="w-4 h-4 text-[#6888ff]" />
               </button>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

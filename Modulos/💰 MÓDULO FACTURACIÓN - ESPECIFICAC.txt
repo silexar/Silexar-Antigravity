@@ -72,7 +72,7 @@ src/modules/facturacion/
 │   │   ├── DatosTributariosChile.ts (RUT validado SII)
 │   │   ├── CondicionesPagoAgencia.ts (Términos específicos)
 │   │   ├── TotalesFacturaCompleja.ts (Neto, IVA, Comisión)
-│   │   ├── FechaVencimientoCalculada.ts (Cálculo automático)
+│   │   ├── FechaVencimientosCalculada.ts (Cálculo automático)
 │   │   ├── CodigoActividadEconomica.ts (CIIU Chile)
 │   │   ├── TipoFacturacion.ts (Directo, Agencia, Canje)
 │   │   ├── MetodoPagoChile.ts (Transferencia, Cheque)
@@ -190,7 +190,7 @@ src/modules/facturacion/
 │   └── messaging/
 │       ├── FacturaComplejaEventPublisher.ts
 │       ├── PagoAgenciaRecibidoPublisher.ts
-│       ├── VencimientoComplejoAlertPublisher.ts
+│       ├── VencimientosComplejoAlertPublisher.ts
 │       ├── SIIChileStatusPublisher.ts
 │       ├── AgenciaEventPublisher.ts
 │       ├── CuotaEventPublisher.ts
@@ -343,7 +343,7 @@ Total final: Monto a cobrar
 │ 🎯 DSO: 27 días │
 └─────────────────┘
 
-Fechas críticas: Emisión y vencimiento
+Fechas críticas: Emisión y vencimientos
 Info cuotas: Número actual/total
 DSO: Días de cobro específicos
 
@@ -570,7 +570,7 @@ Configuración específica SII con estructura compleja:
 │ 🗓️ FECHAS FISCALES:                    │
 │ Fecha Emisión: [07/08/2025] (Hoy)     │
 │ Período Facturado: [Julio 2025]        │
-│ Fecha Vencimiento: [06/09/2025] (30 días)│
+│ Fecha Vencimientos: [06/09/2025] (30 días)│
 │                                         │
 │ 💰 CONFIGURACIÓN IMPUESTOS:            │
 │ • IVA: 19% (Estándar Chile) ✅         │
@@ -603,7 +603,7 @@ Confirmación completa con estructura Canal 13:
 │ • Folio SII: T1F31147 (aceptado)       │
 │ • DTE: 76543210-33-31147               │
 │ • Total: $3,894,156                    │
-│ • Vencimiento: 06/09/2025              │
+│ • Vencimientos: 06/09/2025              │
 │                                         │
 │ 🏢 ESTRUCTURA FACTURACIÓN:             │
 │ • Cliente paga: Universal McCann        │

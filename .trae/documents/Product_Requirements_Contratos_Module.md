@@ -47,7 +47,7 @@ El módulo de Contratos consta de las siguientes páginas principales:
 | | Pestaña Historial | Tabla cronológica con: Fecha/hora, Usuario, Acción realizada, Campo modificado, Valor anterior, Valor nuevo, Motivo del cambio |
 | | Pestaña Imprimir | Vista previa del PDF con botón de generación y descarga, formato profesional con logo y datos completos |
 | | Pestaña Cuñas | Tabla de cuñas asociadas al anunciante del contrato: Código, Nombre, Duración, Estado |
-| | Pestaña Facturas | Listado de facturas relacionadas: Número, Fecha, Monto, Estado, Fecha vencimiento |
+| | Pestaña Facturas | Listado de facturas relacionadas: Número, Fecha, Monto, Estado, Fecha vencimientos |
 | | Pestaña Documentos | Área drag & drop para adjuntar archivos, preview de documentos existentes, organización por carpetas |
 | | Pestaña Cerrar | Botón "Guardar y Cerrar" con dropdown obligatorio para seleccionar estado final: Confirmado/Pendiente/No Aprobado/Rechazado |
 | **Vista de Detalle** | Encabezado | Información resumida del contrato con badges de estado, fechas, valores totales y anunciante |

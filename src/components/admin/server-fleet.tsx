@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🖥️ SILEXAR PULSE - Server Fleet Manager
+ * ðŸ–¥ï¸ SILEXAR PULSE - Server Fleet Manager
  * Gestión de infraestructura de servidores
  * 
  * @description Fleet Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Server,
   HardDrive,
@@ -91,29 +89,29 @@ export function ServerFleet() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'running': return 'bg-green-500/20 text-green-400'
-      case 'warning': return 'bg-yellow-500/20 text-yellow-400'
-      case 'critical': return 'bg-red-500/20 text-red-400'
-      case 'stopped': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'running': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'warning': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'critical': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'stopped': return 'bg-slate-500/20 text-[#9aa3b8]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'web': return <Cloud className="w-4 h-4 text-blue-400" />
-      case 'api': return <Activity className="w-4 h-4 text-green-400" />
-      case 'database': return <HardDrive className="w-4 h-4 text-purple-400" />
-      case 'cache': return <Wifi className="w-4 h-4 text-cyan-400" />
-      case 'worker': return <Terminal className="w-4 h-4 text-orange-400" />
-      default: return <Server className="w-4 h-4 text-slate-400" />
+      case 'web': return <Cloud className="w-4 h-4 text-[#6888ff]" />
+      case 'api': return <Activity className="w-4 h-4 text-[#6888ff]" />
+      case 'database': return <HardDrive className="w-4 h-4 text-[#6888ff]" />
+      case 'cache': return <Wifi className="w-4 h-4 text-[#6888ff]" />
+      case 'worker': return <Terminal className="w-4 h-4 text-[#6888ff]" />
+      default: return <Server className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const getMetricColor = (value: number) => {
-    if (value >= 80) return 'bg-red-500'
-    if (value >= 60) return 'bg-yellow-500'
-    return 'bg-green-500'
+    if (value >= 80) return 'bg-[#6888ff]'
+    if (value >= 60) return 'bg-[#6888ff]'
+    return 'bg-[#6888ff]'
   }
 
   const totalContainers = servers.reduce((sum, s) => sum + (s.containers || 0), 0)
@@ -124,8 +122,8 @@ export function ServerFleet() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Conectando a Server Fleet...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Conectando a Server Fleet...</p>
         </div>
       </div>
     )
@@ -135,65 +133,61 @@ export function ServerFleet() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Server className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Server className="w-5 h-5 text-[#6888ff]" />
           Server Fleet Manager
-          <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">LIVE</span>
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">LIVE</span>
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadServerData}>
+        <NeuButton variant="secondary" onClick={loadServerData}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Refresh
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Fleet Stats */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{servers.length}</p>
-          <p className="text-xs text-slate-400">Servidores</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{servers.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Servidores</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {servers.filter(s => s.status === 'running').length}
           </p>
-          <p className="text-xs text-slate-400">Running</p>
+          <p className="text-xs text-[#9aa3b8]">Running</p>
         </div>
-        <div className="p-3 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">{totalContainers}</p>
-          <p className="text-xs text-slate-400">Containers</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalContainers}</p>
+          <p className="text-xs text-[#9aa3b8]">Containers</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">{avgCpu.toFixed(0)}%</p>
-          <p className="text-xs text-slate-400">CPU Promedio</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{avgCpu.toFixed(0)}%</p>
+          <p className="text-xs text-[#9aa3b8]">CPU Promedio</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{avgMemory.toFixed(0)}%</p>
-          <p className="text-xs text-slate-400">RAM Promedio</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{avgMemory.toFixed(0)}%</p>
+          <p className="text-xs text-[#9aa3b8]">RAM Promedio</p>
         </div>
       </div>
 
       {/* Server Grid */}
       <div className="grid grid-cols-2 gap-3">
         {servers.map(server => (
-          <NeuromorphicCard 
+          <NeuCard
             key={server.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer transition-all ${
-              selectedServer?.id === server.id ? 'ring-1 ring-green-500/50' : ''
-            }`}
-            onClick={() => setSelectedServer(server)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 {getTypeIcon(server.type)}
                 <div>
-                  <span className="text-white font-medium">{server.name}</span>
-                  <p className="text-xs text-slate-500">{server.provider} • {server.region}</p>
+                  <span className="text-[#69738c] font-medium">{server.name}</span>
+                  <p className="text-xs text-[#9aa3b8]">{server.provider} • {server.region}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 {server.containers && (
-                  <span className="text-xs text-slate-400">{server.containers} containers</span>
+                  <span className="text-xs text-[#9aa3b8]">{server.containers} containers</span>
                 )}
                 <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(server.status)}`}>
                   {server.status}
@@ -204,38 +198,38 @@ export function ServerFleet() {
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">CPU</span>
-                  <span className="text-white">{server.cpu.toFixed(0)}%</span>
+                  <span className="text-[#9aa3b8]">CPU</span>
+                  <span className="text-[#69738c]">{server.cpu.toFixed(0)}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
+                <div className="w-full bg-[#dfeaff] rounded-full h-1.5">
                   <div className={`h-1.5 rounded-full ${getMetricColor(server.cpu)}`} style={{ width: `${server.cpu}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">RAM</span>
-                  <span className="text-white">{server.memory.toFixed(0)}%</span>
+                  <span className="text-[#9aa3b8]">RAM</span>
+                  <span className="text-[#69738c]">{server.memory.toFixed(0)}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
+                <div className="w-full bg-[#dfeaff] rounded-full h-1.5">
                   <div className={`h-1.5 rounded-full ${getMetricColor(server.memory)}`} style={{ width: `${server.memory}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">Disk</span>
-                  <span className="text-white">{server.disk}%</span>
+                  <span className="text-[#9aa3b8]">Disk</span>
+                  <span className="text-[#69738c]">{server.disk}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
+                <div className="w-full bg-[#dfeaff] rounded-full h-1.5">
                   <div className={`h-1.5 rounded-full ${getMetricColor(server.disk)}`} style={{ width: `${server.disk}%` }} />
                 </div>
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-              <span>⬇️ {server.network.in.toFixed(0)} MB/s ⬆️ {server.network.out.toFixed(0)} MB/s</span>
+            <div className="mt-2 flex items-center justify-between text-xs text-[#9aa3b8]">
+              <span>¬‡ï¸ {server.network.in.toFixed(0)} MB/s ¬†ï¸ {server.network.out.toFixed(0)} MB/s</span>
               <span>Uptime: {server.uptime}%</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

@@ -9,7 +9,7 @@ export interface EventoCalendario {
   fechaInicio: Date
   fechaFin: Date
   participantes: string[]
-  tipo: 'inicio_auspicio' | 'fin_auspicio' | 'reunion_renovacion' | 'vencimiento_alerta' | 'countdown_48h'
+  tipo: 'inicio_auspicio' | 'fin_auspicio' | 'reunion_renovacion' | 'vencimientos_alerta' | 'countdown_48h'
   recordatorios: number[]     // Minutos antes
   enlace?: string
 }

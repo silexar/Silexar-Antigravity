@@ -21,7 +21,7 @@ export enum TipoTareaAgenda {
 }
 
 export enum PrioridadTarea {
-  CRITICA = 'CRITICA', // Vencimiento inminente, Deal Hot
+  CRITICA = 'CRITICA', // Vencimientos inminente, Deal Hot
   ALTA = 'ALTA', // Deal Warm, Seguimiento
   MEDIA = 'MEDIA', // Prospección
   BAJA = 'BAJA' // Admin

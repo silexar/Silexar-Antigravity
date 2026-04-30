@@ -1,0 +1,34 @@
+{
+    "rules": [
+        {
+            "id": 40012,
+            "name": "Debug Error Disclosure",
+            "enabled": true,
+            "confidence": "medium",
+            "risk": "info",
+            "threshold": "off"
+        },
+        {
+            "id": 10109,
+            "name": "Staging Banner Disclosure",
+            "enabled": true,
+            "confidence": "medium",
+            "risk": "info",
+            "threshold": "off"
+        },
+        {
+            "id": 90002,
+            "name": "ZAP WARNING",
+            "enabled": true,
+            "confidence": "medium",
+            "risk": "info",
+            "threshold": "off"
+        }
+    ],
+    "parameters": {
+        "maxChildren": 1000,
+        "maxScanDurationInMins": 0,
+        "maxRuleDurationInMins": 0,
+        "maxScanTimeInMins": 60
+    }
+}

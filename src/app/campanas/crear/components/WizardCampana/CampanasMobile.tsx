@@ -39,7 +39,7 @@ interface AlertaUrgente {
   id: string
   campanaId: string
   campanaNombre: string
-  tipo: 'conflicto' | 'cambio' | 'vencimiento'
+  tipo: 'conflicto' | 'cambio' | 'vencimientos'
   mensaje: string
 }
 

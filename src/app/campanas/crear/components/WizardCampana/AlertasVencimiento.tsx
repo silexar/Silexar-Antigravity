@@ -1,5 +1,5 @@
 /**
- * ⚠️ SILEXAR PULSE - Sistema de Alertas de Vencimiento 2050
+ * ⚠️ SILEXAR PULSE - Sistema de Alertas de Vencimientos 2050
  * 
  * @description Panel para monitorear cuñas próximas a vencer
  * con opciones de reemplazo, extensión y notificaciones
@@ -54,7 +54,7 @@ export interface CunaConVigencia {
   estado: 'activa' | 'por_vencer' | 'vencida';
 }
 
-interface AlertasVencimientoProps {
+interface AlertasVencimientosProps {
   cunas: CunaConVigencia[];
   onReemplazar: (cunaId: string, nuevaCunaId: string) => void;
   onExtender: (cunaId: string, nuevaFecha: Date) => void;
@@ -115,7 +115,7 @@ const CUNAS_MOCK: CunaConVigencia[] = [
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
-export const AlertasVencimiento: React.FC<AlertasVencimientoProps> = ({
+export const AlertasVencimientos: React.FC<AlertasVencimientosProps> = ({
   cunas = CUNAS_MOCK,
   onReemplazar,
   onExtender,
@@ -282,7 +282,7 @@ export const AlertasVencimiento: React.FC<AlertasVencimientoProps> = ({
             <Clock className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900">⏰ Alertas de Vencimiento</h3>
+            <h3 className="font-bold text-gray-900">⏰ Alertas de Vencimientos</h3>
             <p className="text-sm text-gray-500">Cuñas próximas a vencer o vencidas</p>
           </div>
         </div>
@@ -422,4 +422,4 @@ export const AlertasVencimiento: React.FC<AlertasVencimientoProps> = ({
   );
 };
 
-export default AlertasVencimiento;
+export default AlertasVencimientos;

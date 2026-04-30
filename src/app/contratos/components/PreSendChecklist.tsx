@@ -104,7 +104,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'datos',
     nombre: 'Datos del Contrato',
     icono: <FileText className="w-5 h-5" />,
-    color: 'bg-blue-100 text-blue-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     items: [
       {
         id: 'datos-1',
@@ -136,7 +136,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'comercial',
     nombre: 'Condiciones Comerciales',
     icono: <DollarSign className="w-5 h-5" />,
-    color: 'bg-green-100 text-green-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     items: [
       {
         id: 'com-1',
@@ -181,7 +181,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'documentos',
     nombre: 'Documentación',
     icono: <FileText className="w-5 h-5" />,
-    color: 'bg-purple-100 text-purple-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     items: [
       {
         id: 'doc-1',
@@ -217,7 +217,7 @@ const generarChecklist = (): CategoriaChecklist[] => [
     id: 'aprobaciones',
     nombre: 'Aprobaciones',
     icono: <Users className="w-5 h-5" />,
-    color: 'bg-amber-100 text-amber-600',
+    color: 'bg-[#6888ff]/10 text-[#6888ff]',
     items: [
       {
         id: 'apr-1',
@@ -307,9 +307,9 @@ const generarChecklist = (): CategoriaChecklist[] => [
 
 const getEstadoIcon = (estado: EstadoVerificacion) => {
   switch (estado) {
-    case 'ok': return <CheckCircle className="w-5 h-5 text-green-500" />;
-    case 'error': return <XCircle className="w-5 h-5 text-red-500" />;
-    case 'advertencia': return <AlertTriangle className="w-5 h-5 text-amber-500" />;
+    case 'ok': return <CheckCircle className="w-5 h-5 text-[#6888ff]" />;
+    case 'error': return <XCircle className="w-5 h-5 text-[#9aa3b8]" />;
+    case 'advertencia': return <AlertTriangle className="w-5 h-5 text-[#6888ff]" />;
     case 'verificando': return <Loader2 className="w-5 h-5 text-[#6888ff] animate-spin" />;
     default: return <div className="w-5 h-5 rounded-full bg-[#dfeaff]" />;
   }
@@ -395,12 +395,12 @@ export default function PreSendChecklist({
             </span>
             <div className="flex items-center gap-3">
               {estadisticas.errores > 0 && (
-                <span className="text-red-600">
+                <span className="text-[#9aa3b8]">
                   {estadisticas.errores} errores
                 </span>
               )}
               {estadisticas.advertencias > 0 && (
-                <span className="text-amber-600">
+                <span className="text-[#6888ff]">
                   {estadisticas.advertencias} advertencias
                 </span>
               )}
@@ -409,9 +409,9 @@ export default function PreSendChecklist({
           <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                estadisticas.errores > 0 ? 'bg-red-500' :
-                estadisticas.advertencias > 0 ? 'bg-amber-500' :
-                'bg-green-500'
+                estadisticas.errores > 0 ? 'bg-[#dfeaff]0' :
+                estadisticas.advertencias > 0 ? 'bg-[#6888ff]/50' :
+                'bg-[#6888ff]/50'
               }`}
               style={{ width: `${(estadisticas.ok / estadisticas.total) * 100}%` }}
             />
@@ -448,17 +448,17 @@ export default function PreSendChecklist({
 
                 <div className="flex items-center gap-3">
                   {hayErrores ? (
-                    <span className={`${neuro.badge} bg-red-100 text-red-700`}>
+                    <span className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8]`}>
                       <XCircle className="w-3 h-3 inline mr-1" />
                       Errores
                     </span>
                   ) : hayAdvertencias ? (
-                    <span className={`${neuro.badge} bg-amber-100 text-amber-700`}>
+                    <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                       <AlertTriangle className="w-3 h-3 inline mr-1" />
                       Advertencias
                     </span>
                   ) : (
-                    <span className={`${neuro.badge} bg-green-100 text-green-700`}>
+                    <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                       <CheckCircle className="w-3 h-3 inline mr-1" />
                       OK
                     </span>
@@ -483,21 +483,21 @@ export default function PreSendChecklist({
                       <div
                         key={item.id}
                         className={`p-3 rounded-xl flex items-start gap-3 ${
-                          item.estado === 'error' ? 'bg-red-50' :
-                          item.estado === 'advertencia' ? 'bg-amber-50' :
+                          item.estado === 'error' ? 'bg-[#dfeaff]' :
+                          item.estado === 'advertencia' ? 'bg-[#6888ff]/5' :
                           'bg-[#dfeaff]'
                         }`}
                       >
                         {getEstadoIcon(item.estado)}
                         <div className="flex-1">
                           <p className={`font-medium ${
-                            item.estado === 'error' ? 'text-red-800' :
-                            item.estado === 'advertencia' ? 'text-amber-800' :
+                            item.estado === 'error' ? 'text-[#9aa3b8]' :
+                            item.estado === 'advertencia' ? 'text-[#6888ff]' :
                             'text-[#69738c]'
                           }`}>
                             {item.nombre}
                             {item.obligatorio && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="text-[#9aa3b8] ml-1">*</span>
                             )}
                           </p>
                           <p className="text-xs text-[#9aa3b8] mt-0.5">
@@ -511,7 +511,7 @@ export default function PreSendChecklist({
                           )}
 
                           {item.accionCorrectiva && (
-                            <p className="text-xs text-amber-700 mt-1 flex items-center gap-1">
+                            <p className="text-xs text-[#6888ff] mt-1 flex items-center gap-1">
                               <Sparkles className="w-3 h-3" />
                               {item.accionCorrectiva}
                             </p>
@@ -540,12 +540,12 @@ export default function PreSendChecklist({
       <div className="px-6 py-4 bg-[#dfeaff]/50 border-t border-[#bec8de30] flex items-center justify-between">
         <div className="text-sm text-[#9aa3b8]">
           {puedeEnviar ? (
-            <span className="text-green-600 flex items-center gap-1">
+            <span className="text-[#6888ff] flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
               Listo para enviar
             </span>
           ) : (
-            <span className="text-red-600 flex items-center gap-1">
+            <span className="text-[#9aa3b8] flex items-center gap-1">
               <XCircle className="w-4 h-4" />
               Hay {estadisticas.errores} error(es) que corregir
             </span>

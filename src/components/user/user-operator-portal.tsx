@@ -17,10 +17,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   LayoutDashboard, Users, ShoppingCart, Megaphone, BarChart3,
   Settings, Database, FileText, Zap, HelpCircle, Bell, Clock,
@@ -199,7 +197,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
   }
 
   // Get available modules based on permissions
-  const availableModules = Object.values(ALL_MODULES).filter(m => 
+  const availableModules = Object.values(ALL_MODULES).filter(m =>
     currentUser.permissions.includes(m.requiredPermission)
   )
 
@@ -207,7 +205,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
   const quickActions = QUICK_ACTIONS[currentUser.category as keyof typeof QUICK_ACTIONS] || QUICK_ACTIONS.operacional
 
   const toggleChecklistItem = (taskId: string, itemId: string) => {
-    setTasks(prev => prev.map(t => 
+    setTasks(prev => prev.map(t =>
       t.id === taskId ? {
         ...t,
         checklist: t.checklist.map(c => c.id === itemId ? { ...c, done: !c.done } : c)
@@ -333,14 +331,14 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
           {/* Left: Quick Actions & Modules */}
           <div className="col-span-3 space-y-4">
             {/* Quick Actions */}
-            <NeuromorphicCard variant="embossed" className="p-4">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
               <h3 className="text-white font-medium mb-3 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-yellow-400" />
                 Acciones Rápidas
               </h3>
               <div className="space-y-2">
                 {quickActions.map(action => (
-                  <button 
+                  <button
                     key={action.id}
                     className="w-full p-3 bg-slate-800/50 hover:bg-slate-800 rounded-lg flex items-center gap-3 transition-colors"
                   >
@@ -352,24 +350,23 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                   </button>
                 ))}
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
 
             {/* Available Modules */}
-            <NeuromorphicCard variant="embossed" className="p-4">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
               <h3 className="text-white font-medium mb-3 flex items-center gap-2">
                 <LayoutDashboard className="w-4 h-4 text-blue-400" />
                 Mis Módulos
               </h3>
               <div className="space-y-2">
                 {availableModules.map(mod => (
-                  <button 
+                  <button
                     key={mod.id}
                     onClick={() => setActiveModule(mod.id)}
-                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-colors ${
-                      activeModule === mod.id 
-                        ? 'bg-orange-500/20 border border-orange-500/50' 
-                        : 'bg-slate-800/50 hover:bg-slate-800'
-                    }`}
+                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-colors ${activeModule === mod.id
+                      ? 'bg-orange-500/20 border border-orange-500/50'
+                      : 'bg-slate-800/50 hover:bg-slate-800'
+                      }`}
                   >
                     <div className={`text-${mod.color}-400`}>{mod.icon}</div>
                     <span className="text-white text-sm">{mod.name}</span>
@@ -379,10 +376,10 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
               <p className="text-xs text-slate-500 mt-3 text-center">
                 {availableModules.length} de {Object.keys(ALL_MODULES).length} módulos disponibles
               </p>
-            </NeuromorphicCard>
+            </NeuCard>
 
             {/* Support Button */}
-            <button 
+            <button
               onClick={() => setShowNewTicket(true)}
               className="w-full p-4 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-lg border border-orange-500/30 hover:border-orange-500/50 transition-colors"
             >
@@ -399,7 +396,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
           {/* Center: Tasks */}
           <div className="col-span-6 space-y-4">
             {/* Manual Tasks */}
-            <NeuromorphicCard variant="embossed" className="p-4">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-white font-medium flex items-center gap-2">
                   <CheckSquare className="w-5 h-5 text-green-400" />
@@ -419,20 +416,18 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="text-white font-medium">{task.title}</h4>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
+                            <span className={`text-xs px-2 py-0.5 rounded ${task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
                               task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                              task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                              'bg-green-500/20 text-green-400'
-                            }`}>
+                                task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                  'bg-green-500/20 text-green-400'
+                              }`}>
                               {task.priority}
                             </span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                            <span className={`text-xs px-2 py-0.5 rounded ${task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
                               task.status === 'in_progress' ? 'bg-blue-500/20 text-blue-400' :
-                              task.status === 'blocked' ? 'bg-red-500/20 text-red-400' :
-                              'bg-slate-500/20 text-slate-400'
-                            }`}>
+                                task.status === 'blocked' ? 'bg-red-500/20 text-red-400' :
+                                  'bg-slate-500/20 text-slate-400'
+                              }`}>
                               {task.status.replace('_', ' ')}
                             </span>
                           </div>
@@ -441,7 +436,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                         {task.status !== 'completed' && (
                           <div className="flex gap-1">
                             {task.status === 'pending' && (
-                              <button 
+                              <button
                                 onClick={() => updateTaskStatus(task.id, 'in_progress')}
                                 className="p-1.5 bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30"
                                 title="Iniciar"
@@ -450,7 +445,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                               </button>
                             )}
                             {task.status === 'in_progress' && (
-                              <button 
+                              <button
                                 onClick={() => updateTaskStatus(task.id, 'completed')}
                                 className="p-1.5 bg-green-500/20 text-green-400 rounded hover:bg-green-500/30"
                                 title="Completar"
@@ -469,7 +464,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                           <span className="text-white">{progress}%</span>
                         </div>
                         <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all"
                             style={{ width: `${progress}%` }}
                           />
@@ -479,7 +474,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                       {/* Checklist */}
                       <div className="space-y-2">
                         {task.checklist.map(item => (
-                          <label 
+                          <label
                             key={item.id}
                             className="flex items-center gap-2 cursor-pointer p-2 hover:bg-slate-700/50 rounded"
                           >
@@ -510,19 +505,19 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                   )
                 })}
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
           </div>
 
           {/* Right: My Tickets & Info */}
           <div className="col-span-3 space-y-4">
             {/* My Tickets */}
-            <NeuromorphicCard variant="embossed" className="p-4">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-white font-medium flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-orange-400" />
                   Mis Tickets
                 </h3>
-                <button 
+                <button
                   onClick={() => setShowNewTicket(true)}
                   className="p-1 bg-orange-500/20 text-orange-400 rounded hover:bg-orange-500/30"
                 >
@@ -540,11 +535,10 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                     <div key={ticket.id} className="p-3 bg-slate-800/50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-xs text-orange-400 font-mono">{ticket.ticketNumber}</span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${
-                          ticket.status === 'resolved' ? 'bg-green-500/20 text-green-400' :
+                        <span className={`text-xs px-1.5 py-0.5 rounded ${ticket.status === 'resolved' ? 'bg-green-500/20 text-green-400' :
                           ticket.status === 'in_progress' ? 'bg-blue-500/20 text-blue-400' :
-                          'bg-yellow-500/20 text-yellow-400'
-                        }`}>
+                            'bg-yellow-500/20 text-yellow-400'
+                          }`}>
                           {ticket.status}
                         </span>
                       </div>
@@ -556,10 +550,10 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                   ))}
                 </div>
               )}
-            </NeuromorphicCard>
+            </NeuCard>
 
             {/* Permissions Summary */}
-            <NeuromorphicCard variant="embossed" className="p-4">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
               <h3 className="text-white font-medium mb-3 flex items-center gap-2">
                 <User className="w-4 h-4 text-blue-400" />
                 Mi Perfil
@@ -578,7 +572,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
                   <span className="text-white">{availableModules.length}</span>
                 </div>
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
           </div>
         </div>
       </div>
@@ -586,7 +580,7 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
       {/* New Ticket Modal */}
       {showNewTicket && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <NeuromorphicCard variant="glow" className="w-full max-w-lg p-6">
+          <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }} className="w-full max-w-lg">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-white font-bold text-lg flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-orange-400" />
@@ -648,16 +642,16 @@ export function UserOperatorPortal({ user: propUser }: UserOperatorPortalProps) 
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-slate-700">
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowNewTicket(false)}>
+                <NeuButton variant="secondary" onClick={() => setShowNewTicket(false)}>
                   Cancelar
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="primary" size="sm" onClick={createTicket}>
+                </NeuButton>
+                <NeuButton variant="primary" onClick={createTicket}>
                   <Send className="w-4 h-4 mr-1" />
                   Enviar Ticket
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       )}
     </div>

@@ -12,7 +12,7 @@ import { EstadoAuspicio } from '../../domain/value-objects/EstadoAuspicio.js'
 import { logger } from '@/lib/observability';
 import { SolicitudExtension } from '../../domain/entities/SolicitudExtension.js'
 import type { ICupoComercialRepository } from '../../domain/repositories/ICupoComercialRepository.js'
-import type { IVencimientoRepository } from '../../domain/repositories/IVencimientoRepository.js'
+import type { IVencimientosRepository } from '../../domain/repositories/IVencimientosRepository.js'
 import type { IEmisoraRepository } from '../../domain/repositories/IEmisoraRepository.js'
 import type {
   ActivarAuspicioCommand,
@@ -26,7 +26,7 @@ import type { ConfirmarPreCierreCommand } from '../commands/fase5.js'
 export class CupoManagementHandler {
   constructor(
     private readonly cupoRepo: ICupoComercialRepository,
-    private readonly vencimientoRepo: IVencimientoRepository,
+    private readonly vencimientosRepo: IVencimientosRepository,
     private readonly emisoraRepo: IEmisoraRepository
   ) {}
 
@@ -56,11 +56,11 @@ export class CupoManagementHandler {
       await this.cupoRepo.save(cupo)
 
       // Notificar lista de espera si existe
-      const listaEspera = await this.vencimientoRepo.findListaEsperaByPrograma(cupo.programaId)
+      const listaEspera = await this.vencimientosRepo.findListaEsperaByPrograma(cupo.programaId)
       if (listaEspera?.tieneClientes) {
         const siguiente = listaEspera.notificarSiguiente()
         if (siguiente) {
-          await this.vencimientoRepo.saveListaEspera(listaEspera)
+          await this.vencimientosRepo.saveListaEspera(listaEspera)
         }
       }
 
@@ -83,7 +83,7 @@ export class CupoManagementHandler {
       if (!cupo) return { success: false, error: 'Cupo no encontrado' }
 
       // Contar extensiones previas
-      const extensionesPrevias = await this.vencimientoRepo.countExtensiones(cupo.id)
+      const extensionesPrevias = await this.vencimientosRepo.countExtensiones(cupo.id)
 
       // Crear solicitud (se auto-aprueba si es la primera)
       const solicitud = SolicitudExtension.create({
@@ -101,7 +101,7 @@ export class CupoManagementHandler {
         extensionesPrevias
       })
 
-      await this.vencimientoRepo.saveExtension(solicitud)
+      await this.vencimientosRepo.saveExtension(solicitud)
 
       // Si fue auto-aprobada, registrar en el cupo
       const autoAprobada = solicitud.nivelAprobacion.esAprobado()
@@ -135,11 +135,11 @@ export class CupoManagementHandler {
       await this.cupoRepo.save(cupo)
 
       // Notificar lista de espera
-      const listaEspera = await this.vencimientoRepo.findListaEsperaByPrograma(cupo.programaId)
+      const listaEspera = await this.vencimientosRepo.findListaEsperaByPrograma(cupo.programaId)
       if (listaEspera?.tieneClientes) {
         const siguiente = listaEspera.notificarSiguiente()
         if (siguiente) {
-          await this.vencimientoRepo.saveListaEspera(listaEspera)
+          await this.vencimientosRepo.saveListaEspera(listaEspera)
         }
       }
 

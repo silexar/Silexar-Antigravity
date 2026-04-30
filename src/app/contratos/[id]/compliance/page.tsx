@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📊 SILEXAR PULSE - Compliance Dashboard TIER 0
  * 
  * @description Dashboard de cumplimiento normativo para auditorías
@@ -64,27 +64,27 @@ interface MetricaRiesgo {
 
 const neuro = {
   panel: `
-    bg-gradient-to-br from-slate-50 to-slate-100
+    bg-gradient-to-br from-[#bec8de] to-[#9aa3b8]
     rounded-3xl
     shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff]
-    border border-slate-200/50
+    border border-[#bec8de]
   `,
   card: `
-    bg-gradient-to-br from-white to-slate-50
+    bg-gradient-to-br from-white to-[#9aa3b8]
     rounded-2xl
     shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-    border border-slate-200/30
+    border border-[#bec8de]
   `,
   btnPrimary: `
-    bg-gradient-to-br from-indigo-500 to-purple-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnSecondary: `
-    bg-gradient-to-br from-slate-50 to-slate-100
-    text-slate-700 font-medium rounded-xl
+    bg-gradient-to-br from-[#bec8de] to-[#9aa3b8]
+    text-[#69738c] font-medium rounded-xl
     shadow-[4px_4px_8px_#d1d5db,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
     transition-all duration-200
@@ -240,21 +240,21 @@ const mockMetricas: MetricaRiesgo[] = [
 
 const getEstadoInfo = (estado: EstadoCompliance) => {
   const info = {
-    cumple: { icon: <CheckCircle className="w-5 h-5" />, color: 'text-green-600 bg-green-100', label: 'Cumple' },
-    parcial: { icon: <AlertTriangle className="w-5 h-5" />, color: 'text-amber-600 bg-amber-100', label: 'Parcial' },
-    no_cumple: { icon: <XCircle className="w-5 h-5" />, color: 'text-red-600 bg-red-100', label: 'No cumple' },
-    pendiente: { icon: <Clock className="w-5 h-5" />, color: 'text-slate-600 bg-slate-100', label: 'Pendiente' },
-    no_aplica: { icon: <AlertCircle className="w-5 h-5" />, color: 'text-slate-400 bg-slate-50', label: 'N/A' }
+    cumple: { icon: <CheckCircle className="w-5 h-5" />, color: 'text-[#6888ff] bg-[#6888ff]/10', label: 'Cumple' },
+    parcial: { icon: <AlertTriangle className="w-5 h-5" />, color: 'text-[#6888ff] bg-[#6888ff]/10', label: 'Parcial' },
+    no_cumple: { icon: <XCircle className="w-5 h-5" />, color: 'text-[#9aa3b8] bg-[#dfeaff]', label: 'No cumple' },
+    pendiente: { icon: <Clock className="w-5 h-5" />, color: 'text-[#69738c] bg-[#dfeaff]', label: 'Pendiente' },
+    no_aplica: { icon: <AlertCircle className="w-5 h-5" />, color: 'text-[#9aa3b8] bg-[#dfeaff]', label: 'N/A' }
   };
   return info[estado];
 };
 
 const getCriticidadColor = (crit: string) => {
   switch (crit) {
-    case 'critica': return 'bg-red-100 text-red-700';
-    case 'alta': return 'bg-orange-100 text-orange-700';
-    case 'media': return 'bg-amber-100 text-amber-700';
-    default: return 'bg-slate-100 text-slate-700';
+    case 'critica': return 'bg-[#dfeaff] text-[#9aa3b8]';
+    case 'alta': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'media': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
 
@@ -296,20 +296,20 @@ export default function ComplianceDashboard({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#bec8de] via-slate-50 to-[#9aa3b8] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className={`${neuro.panel} p-6 mb-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee]">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">
+                <h1 className="text-2xl font-bold text-[#9aa3b8]">
                   Dashboard de Cumplimiento
                 </h1>
-                <p className="text-slate-500">
+                <p className="text-[#69738c]">
                   {numeroContrato} • Control interno y auditoría
                 </p>
               </div>
@@ -351,24 +351,24 @@ export default function ComplianceDashboard({
                   />
                   <defs>
                     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#22c55e" />
+                      <stop offset="0%" stopColor="#6888ff" />
                       <stop offset="100%" stopColor="#10b981" />
                     </linearGradient>
                   </defs>
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-slate-800">{scoreCompliance}%</span>
+                  <span className="text-3xl font-bold text-[#9aa3b8]">{scoreCompliance}%</span>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-lg font-bold text-slate-800">Score de Cumplimiento</h3>
-                <p className="text-sm text-slate-500 mt-1">
+                <h3 className="text-lg font-bold text-[#9aa3b8]">Score de Cumplimiento</h3>
+                <p className="text-sm text-[#69738c] mt-1">
                   {controlesCumplen} de {totalControles} controles cumplen
                 </p>
                 <div className="flex items-center gap-2 mt-3">
-                  <Award className="w-5 h-5 text-green-600" />
-                  <span className="text-sm font-semibold text-green-600">
+                  <Award className="w-5 h-5 text-[#6888ff]" />
+                  <span className="text-sm font-semibold text-[#6888ff]">
                     Apto para auditoría externa
                   </span>
                 </div>
@@ -379,25 +379,25 @@ export default function ComplianceDashboard({
           {/* Métricas de riesgo */}
           {metricas.map((metrica, idx) => (
             <div key={idx} className={`${neuro.card} p-4`}>
-              <p className="text-xs text-slate-500 mb-2">{metrica.categoria}</p>
+              <p className="text-xs text-[#69738c] mb-2">{metrica.categoria}</p>
               <div className="flex items-end justify-between">
-                <span className="text-2xl font-bold text-slate-800">
+                <span className="text-2xl font-bold text-[#9aa3b8]">
                   {metrica.valor}
                   {metrica.categoria.includes('promedio') ? '%' : ''}
                 </span>
                 <span className={`${neuro.badge} ${
-                  metrica.estado === 'ok' ? 'bg-green-100 text-green-700' :
-                  metrica.estado === 'warning' ? 'bg-amber-100 text-amber-700' :
-                  'bg-red-100 text-red-700'
+                  metrica.estado === 'ok' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                  metrica.estado === 'warning' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                  'bg-[#dfeaff] text-[#9aa3b8]'
                 }`}>
                   {metrica.estado === 'ok' ? '✓' : '⚠'} / {metrica.limite}
                 </span>
               </div>
-              <div className="mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+              <div className="mt-2 h-1.5 bg-[#dfeaff] rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full ${
-                    metrica.estado === 'ok' ? 'bg-green-500' :
-                    metrica.estado === 'warning' ? 'bg-amber-500' : 'bg-red-500'
+                    metrica.estado === 'ok' ? 'bg-[#6888ff]/50' :
+                    metrica.estado === 'warning' ? 'bg-[#6888ff]/50' : 'bg-[#dfeaff]0'
                   }`}
                   style={{ width: `${Math.min((metrica.valor / metrica.limite) * 100, 100)}%` }}
                 />
@@ -423,19 +423,19 @@ export default function ComplianceDashboard({
                 onClick={() => setCategoriaExpanded(categoriaExpanded === cat ? null : cat)}
               >
                 <div className={`p-2 rounded-xl w-fit mb-3 ${
-                  allOk ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'
+                  allOk ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#6888ff]/10 text-[#6888ff]'
                 }`}>
                   {categoriaIcons[cat] || <Shield className="w-5 h-5" />}
                 </div>
-                <p className="font-semibold text-slate-800 text-sm">{cat}</p>
+                <p className="font-semibold text-[#9aa3b8] text-sm">{cat}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-[#dfeaff] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-green-500 rounded-full"
+                      className="h-full bg-[#6888ff]/50 rounded-full"
                       style={{ width: `${(cumple / total) * 100}%` }}
                     />
                   </div>
-                  <span className="text-xs font-semibold text-slate-600">
+                  <span className="text-xs font-semibold text-[#69738c]">
                     {cumple}/{total}
                   </span>
                 </div>
@@ -446,10 +446,10 @@ export default function ComplianceDashboard({
 
         {/* Lista de controles */}
         <div className={`${neuro.panel} p-6`}>
-          <h3 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-500" />
+          <h3 className="font-bold text-lg text-[#9aa3b8] mb-4 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-[#6888ff]" />
             Controles de Cumplimiento
-            <span className={`${neuro.badge} bg-green-100 text-green-700`}>
+            <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
               {controlesCumplen}/{totalControles} OK
             </span>
           </h3>
@@ -463,12 +463,12 @@ export default function ComplianceDashboard({
                   onClick={() => setCategoriaExpanded(categoriaExpanded === categoria ? null : categoria)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-indigo-100 text-indigo-600">
+                    <div className="p-2 rounded-xl bg-[#6888ff]/10 text-[#6888ff]">
                       {categoriaIcons[categoria] || <Shield className="w-5 h-5" />}
                     </div>
                     <div>
-                      <p className="font-semibold text-slate-800">{categoria}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="font-semibold text-[#9aa3b8]">{categoria}</p>
+                      <p className="text-xs text-[#69738c]">
                         {ctrls.filter(c => c.estado === 'cumple').length} de {ctrls.length} controles cumplen
                       </p>
                     </div>
@@ -476,15 +476,15 @@ export default function ComplianceDashboard({
 
                   <div className="flex items-center gap-3">
                     {ctrls.every(c => c.estado === 'cumple') ? (
-                      <span className={`${neuro.badge} bg-green-100 text-green-700`}>
+                      <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                         ✓ Completo
                       </span>
                     ) : (
-                      <span className={`${neuro.badge} bg-amber-100 text-amber-700`}>
+                      <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
                         ⚠ Revisar
                       </span>
                     )}
-                    <ChevronRight className={`w-5 h-5 text-slate-400 transition-transform ${
+                    <ChevronRight className={`w-5 h-5 text-[#9aa3b8] transition-transform ${
                       categoriaExpanded === categoria ? 'rotate-90' : ''
                     }`} />
                   </div>
@@ -509,11 +509,11 @@ export default function ComplianceDashboard({
                                 {estadoInfo.icon}
                               </div>
                               <div>
-                                <p className="font-semibold text-slate-800">{ctrl.nombre}</p>
-                                <p className="text-sm text-slate-500 mt-1">{ctrl.descripcion}</p>
+                                <p className="font-semibold text-[#9aa3b8]">{ctrl.nombre}</p>
+                                <p className="text-sm text-[#69738c] mt-1">{ctrl.descripcion}</p>
                                 
                                 {ctrl.evidencia && (
-                                  <a href="#" className="flex items-center gap-1 text-xs text-indigo-600 mt-2 hover:underline">
+                                  <a href="#" className="flex items-center gap-1 text-xs text-[#6888ff] mt-2 hover:underline">
                                     <Eye className="w-3 h-3" />
                                     Ver evidencia: {ctrl.evidencia}
                                   </a>
@@ -543,12 +543,12 @@ export default function ComplianceDashboard({
         {/* Footer certificación */}
         <div className={`${neuro.card} p-6 mt-6 text-center`}>
           <div className="flex items-center justify-center gap-3 mb-3">
-            <Award className="w-8 h-8 text-green-600" />
-            <h3 className="text-xl font-bold text-slate-800">
+            <Award className="w-8 h-8 text-[#6888ff]" />
+            <h3 className="text-xl font-bold text-[#9aa3b8]">
               Certificación de Cumplimiento
             </h3>
           </div>
-          <p className="text-slate-600 max-w-2xl mx-auto">
+          <p className="text-[#69738c] max-w-2xl mx-auto">
             Este contrato cumple con todos los controles internos establecidos y está
             listo para revisión de auditoría externa. Última verificación: {new Date().toLocaleString('es-CL')}
           </p>

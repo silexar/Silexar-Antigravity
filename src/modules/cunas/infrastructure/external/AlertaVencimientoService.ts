@@ -1,5 +1,5 @@
 /**
- * EXTERNAL SERVICE: ALERTA VENCIMIENTO — TIER 0
+ * EXTERNAL SERVICE: ALERTA VENCIMIENTOS — TIER 0
  *
  * Programa alertas automáticas de vencimientos de cuñas.
  * Alertas: 7 días antes (aviso), 1 día antes (urgente).
@@ -17,7 +17,7 @@ export interface AlertaProgramada {
   destinatarios: string[];  // userIds
 }
 
-export class AlertaVencimientoService {
+export class Alertavencimientoservice {
   /**
    * Programa las dos alertas estándar de vencimientos para una cuña.
    * Solo aplica si la cuña tiene fechaFinVigencia definida.

@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📋 SILEXAR PULSE - System Logs Viewer
+ * ðŸ“‹ SILEXAR PULSE - System Logs Viewer
  * Visor de logs en tiempo real
  * 
  * @description Sistema de logs:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   FileText,
   Search,
@@ -115,12 +113,12 @@ export function SystemLogs() {
 
   const getLevelStyle = (level: string) => {
     switch (level) {
-      case 'debug': return 'bg-slate-500/20 text-slate-400'
-      case 'info': return 'bg-blue-500/20 text-blue-400'
-      case 'warn': return 'bg-yellow-500/20 text-yellow-400'
-      case 'error': return 'bg-red-500/20 text-red-400'
-      case 'critical': return 'bg-red-600/30 text-red-300 font-bold'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'debug': return 'bg-slate-500/20 text-[#9aa3b8]'
+      case 'info': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'warn': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'error': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'critical': return 'bg-[#6888ff]/30 text-[#6888ff] font-bold'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -136,7 +134,7 @@ export function SystemLogs() {
   }
 
   const services = [...new Set(logs.map(l => l.service))]
-  
+
   const filteredLogs = logs.filter(log => {
     if (levelFilter !== 'all' && log.level !== levelFilter) return false
     if (serviceFilter !== 'all' && log.service !== serviceFilter) return false
@@ -168,8 +166,8 @@ export function SystemLogs() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando System Logs...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando System Logs...</p>
         </div>
       </div>
     )
@@ -179,83 +177,83 @@ export function SystemLogs() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <FileText className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#6888ff]" />
           System Logs
-          <span className={`text-xs px-2 py-0.5 rounded ${isPaused ? 'bg-yellow-500/20 text-yellow-400' : 'bg-green-500/20 text-green-400'}`}>
+          <span className={`text-xs px-2 py-0.5 rounded ${isPaused ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#6888ff]/20 text-[#6888ff]'}`}>
             {isPaused ? 'PAUSED' : 'LIVE'}
           </span>
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={() => setIsPaused(!isPaused)}>
+          <NeuButton variant="secondary" onClick={() => setIsPaused(!isPaused)}>
             {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadLogs}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={loadLogs}>
             <RefreshCw className="w-4 h-4" />
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={exportLogs}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={exportLogs}>
             <Download className="w-4 h-4" />
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={clearLogs}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={clearLogs}>
             <Trash2 className="w-4 h-4" />
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-5 gap-2">
         <div className="p-2 bg-slate-500/10 rounded text-center">
-          <p className="text-lg font-bold text-slate-400">{logCounts.debug}</p>
-          <p className="text-xs text-slate-500">Debug</p>
+          <p className="text-lg font-bold text-[#9aa3b8]">{logCounts.debug}</p>
+          <p className="text-xs text-[#9aa3b8]">Debug</p>
         </div>
-        <div className="p-2 bg-blue-500/10 rounded text-center">
-          <p className="text-lg font-bold text-blue-400">{logCounts.info}</p>
-          <p className="text-xs text-slate-500">Info</p>
+        <div className="p-2 bg-[#6888ff]/10 rounded text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{logCounts.info}</p>
+          <p className="text-xs text-[#9aa3b8]">Info</p>
         </div>
-        <div className="p-2 bg-yellow-500/10 rounded text-center">
-          <p className="text-lg font-bold text-yellow-400">{logCounts.warn}</p>
-          <p className="text-xs text-slate-500">Warn</p>
+        <div className="p-2 bg-[#6888ff]/10 rounded text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{logCounts.warn}</p>
+          <p className="text-xs text-[#9aa3b8]">Warn</p>
         </div>
-        <div className="p-2 bg-red-500/10 rounded text-center">
-          <p className="text-lg font-bold text-red-400">{logCounts.error}</p>
-          <p className="text-xs text-slate-500">Error</p>
+        <div className="p-2 bg-[#6888ff]/10 rounded text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{logCounts.error}</p>
+          <p className="text-xs text-[#9aa3b8]">Error</p>
         </div>
-        <div className="p-2 bg-red-600/20 rounded text-center">
-          <p className="text-lg font-bold text-red-300">{logCounts.critical}</p>
-          <p className="text-xs text-slate-500">Critical</p>
+        <div className="p-2 bg-[#6888ff]/20 rounded text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{logCounts.critical}</p>
+          <p className="text-xs text-[#9aa3b8]">Critical</p>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
           <input
             type="text"
             placeholder="Buscar en logs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-[#dfeaff] border border-slate-700 rounded-lg text-[#69738c] text-sm"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-[#9aa3b8]" />
           <select
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value as LogLevel)}
-            className="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-white"
+            className="bg-[#dfeaff] border border-slate-700 rounded px-3 py-2 text-sm text-[#69738c]"
           >
             <option value="all">Todos los niveles</option>
             <option value="debug">Debug</option>
             <option value="info">Info</option>
             <option value="warn">Warning</option>
-            <option value="error">Error</option>
+            <option value="Error">Error</option>
             <option value="critical">Critical</option>
           </select>
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value)}
-            className="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-white"
+            className="bg-[#dfeaff] border border-slate-700 rounded px-3 py-2 text-sm text-[#69738c]"
           >
             <option value="all">Todos los servicios</option>
             {services.map(s => (
@@ -266,42 +264,41 @@ export function SystemLogs() {
       </div>
 
       {/* Logs List */}
-      <NeuromorphicCard variant="embossed" className="p-0">
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '0', background: N.base }}>
         <div className="h-96 overflow-y-auto font-mono text-xs">
           {filteredLogs.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-slate-400">
+            <div className="flex items-center justify-center h-full text-[#9aa3b8]">
               No hay logs que coincidan con los filtros
             </div>
           ) : (
             filteredLogs.map(log => (
-              <div 
-                key={log.id} 
-                className={`flex items-start gap-3 px-4 py-2 border-b border-slate-800 hover:bg-slate-800/50 ${
-                  log.level === 'critical' ? 'bg-red-500/5' : ''
-                }`}
+              <div
+                key={log.id}
+                className={`flex items-start gap-3 px-4 py-2 border-b border-slate-800 hover:bg-[#dfeaff]/50 ${log.level === 'critical' ? 'bg-[#6888ff]/5' : ''
+                  }`}
               >
-                <span className="text-slate-500 whitespace-nowrap">
+                <span className="text-[#9aa3b8] whitespace-nowrap">
                   {log.timestamp.toLocaleTimeString()}
                 </span>
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded whitespace-nowrap ${getLevelStyle(log.level)}`}>
                   {getLevelIcon(log.level)}
                   {log.level.toUpperCase()}
                 </span>
-                <span className="text-cyan-400 whitespace-nowrap">
+                <span className="text-[#6888ff] whitespace-nowrap">
                   [{log.service}]
                 </span>
-                <span className="text-white flex-1">
+                <span className="text-[#69738c] flex-1">
                   {log.message}
                 </span>
                 {log.requestId && (
-                  <span className="text-slate-500">{log.requestId}</span>
+                  <span className="text-[#9aa3b8]">{log.requestId}</span>
                 )}
               </div>
             ))
           )}
           <div ref={logsEndRef} />
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

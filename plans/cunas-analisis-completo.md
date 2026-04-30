@@ -81,11 +81,11 @@ src/modules/cunas/
 │   │   ├── CortexSenseService.ts ⚠️ STUB
 │   │   ├── EmisionExportService.ts ⚠️ STUB
 │   │   ├── BroadcastExportService.ts ⚠️ STUB
-│   │   ├── AlertaVencimientoService.ts ⚠️ STUB
+│   │   ├── Alertavencimientoservice.ts ⚠️ STUB
 │   │   └── VencimientosValidationService.ts ⚠️ STUB
 │   └── messaging/
 │       ├── CunaEventPublisher.ts ✅
-│       └── VencimientoAlertPublisher.ts ✅
+│       └── VencimientosAlertPublisher.ts ✅
 └── presentation/
     ├── controllers/
     │   └── CunaController.ts ✅
@@ -233,7 +233,7 @@ src/modules/cunas/
 | CortexSenseService | ⚠️ STUB | `console.log` - Sin verificación real |
 | EmisionExportService | ⚠️ STUB | Logs únicamente |
 | BroadcastExportService | ⚠️ STUB | Logs únicamente |
-| AlertaVencimientoService | ⚠️ STUB | Solo scheduling básico |
+| Alertavencimientoservice | ⚠️ STUB | Solo scheduling básico |
 | VencimientosValidationService | ⚠️ STUB | Fetch sin implementación real |
 
 ### ❌ NO IMPLEMENTADOS
@@ -354,7 +354,7 @@ rechazada
 
 **Estado:** ❌ NO IMPLEMENTADO
 
-### 10.3 Sistema Alertas Vencimiento Inteligente
+### 10.3 Sistema Alertas Vencimientos Inteligente
 
 **Especificación:** Líneas 1678-1799 del TXT
 - Alertas 7 días, 3 días, 1 día
@@ -362,7 +362,7 @@ rechazada
 - ML prediction score
 - Notificaciones escaladas
 
-**Estado:** ⚠️ PARCIAL - Solo scheduling básico en `AlertaVencimientoService`
+**Estado:** ⚠️ PARCIAL - Solo scheduling básico en `Alertavencimientoservice`
 
 ### 10.4 Dashboard Operativo Gerencial
 
@@ -503,8 +503,8 @@ rechazada
 - [ ] Crear `CierreEditorView.tsx` con sugerencias
 - [ ] Crear `PromoIDAEditorView.tsx` con variables
 
-### FASE 10: Sistema Alertas Vencimiento
-- [ ] Completar `AlertaVencimientoService`
+### FASE 10: Sistema Alertas Vencimientos
+- [ ] Completar `Alertavencimientoservice`
 - [ ] Implementar análisis predictivo
 - [ ] Implementar ML prediction para renovaciones
 - [ ] Implementar notificaciones escaladas
@@ -543,7 +543,7 @@ rechazada
 
 ### MEDIA PRIORIDAD (Mejora experiencia)
 7. Menciones/Presentaciones editor
-8. Sistema alertas vencimiento
+8. Sistema alertas vencimientos
 9. Wizard copiar cuña
 
 ### BAJA PRIORIDAD (Diferido)

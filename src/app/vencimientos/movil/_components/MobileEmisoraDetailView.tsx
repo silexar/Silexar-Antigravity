@@ -100,7 +100,7 @@ export default function MobileEmisoraDetailView() {
             
             <h4 className="font-black text-slate-100 uppercase text-xs mb-1 relative z-10">🚨 SONAR CLÁSICOS</h4>
             <div className="bg-[#ECEFF8]/50 p-2 rounded-lg border border-red-500/10 mb-2 relative z-10">
-               <p className="text-[10px] text-red-600 font-bold">Vencimiento: TeleTracker (Mañana)</p>
+               <p className="text-[10px] text-red-600 font-bold">Vencimientos: TeleTracker (Mañana)</p>
                <p className="text-[9px] text-emerald-600 font-bold mt-1">💡 Acción: Liberar cupo o renovar.</p>
             </div>
             <div className="flex gap-2 relative z-10">

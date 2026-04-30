@@ -54,30 +54,30 @@ export function MobileVoiceNotes() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Mic className="w-5 h-5 text-red-500" />
+        <Mic className="w-5 h-5 text-[#9aa3b8]" />
         <h3 className="font-bold text-lg text-[#69738c]">Notas de Voz</h3>
         <span className="text-[10px] text-[#9aa3b8] ml-auto">{notas.length} notas</span>
       </div>
 
       {/* GRABADOR */}
-      <div className={`p-6 rounded-2xl text-center ${grabando ? 'bg-red-50 border-2 border-red-200' : 'bg-[#dfeaff] border border-dashed border-[#bec8de30]'}`}>
+      <div className={`p-6 rounded-2xl text-center ${grabando ? 'bg-[#dfeaff] border-2 border-[#bec8de]' : 'bg-[#dfeaff] border border-dashed border-[#bec8de30]'}`}>
         {grabando ? (
           <>
-            <div className="w-14 h-14 rounded-full bg-red-500 mx-auto flex items-center justify-center animate-pulse shadow-lg">
+            <div className="w-14 h-14 rounded-full bg-[#dfeaff]0 mx-auto flex items-center justify-center animate-pulse shadow-lg">
               <MicOff className="w-7 h-7 text-white" />
             </div>
-            <p className="mt-2 text-2xl font-black text-red-600 font-mono">
+            <p className="mt-2 text-2xl font-black text-[#9aa3b8] font-mono">
               {Math.floor(seg / 60)}:{(seg % 60).toString().padStart(2, '0')}
             </p>
             <button onClick={detener}
-              className="mt-3 px-5 py-2 bg-red-600 text-white rounded-xl text-xs font-bold active:scale-95">
+              className="mt-3 px-5 py-2 bg-[#6888ff] text-white rounded-xl text-xs font-bold active:scale-95">
               Detener
             </button>
           </>
         ) : (
           <>
             <button onClick={iniciar}
-              className="w-14 h-14 rounded-full bg-gradient-to-br from-red-500 to-rose-600 mx-auto flex items-center justify-center shadow-lg active:scale-90">
+              className="w-14 h-14 rounded-full bg-gradient-to-br from-[#6888ff] to-[#5572ee] mx-auto flex items-center justify-center shadow-lg active:scale-90">
               <Mic className="w-7 h-7 text-white" />
             </button>
             <p className="mt-2 text-xs font-bold text-[#9aa3b8]">Toca para grabar</p>
@@ -94,8 +94,8 @@ export function MobileVoiceNotes() {
               {n.estado === 'transcribiendo' ? <Loader2 className="w-3 h-3 text-[#6888ff] animate-spin" /> : <Play className="w-3 h-3 text-[#9aa3b8]" />}
               <span className="text-[10px] font-mono text-[#9aa3b8]">{n.dur}</span>
               <span className="text-[10px] text-[#9aa3b8]">{n.fecha}</span>
-              <button onClick={() => setNotas(p => p.filter(x => x.id !== n.id))} className="ml-auto p-1 rounded bg-red-50 active:scale-90">
-                <Trash2 className="w-3 h-3 text-red-400" />
+              <button onClick={() => setNotas(p => p.filter(x => x.id !== n.id))} className="ml-auto p-1 rounded bg-[#dfeaff] active:scale-90">
+                <Trash2 className="w-3 h-3 text-[#9aa3b8]" />
               </button>
             </div>
             {n.estado === 'transcribiendo' ? (
@@ -104,8 +104,8 @@ export function MobileVoiceNotes() {
               <>
                 <p className="text-xs text-[#69738c] leading-relaxed">{n.texto}</p>
                 <div className="flex gap-1.5 mt-1.5">
-                  {n.cliente && <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-bold rounded-full flex items-center gap-0.5"><Building2 className="w-2.5 h-2.5" />{n.cliente}</span>}
-                  {n.accion && <span className="px-2 py-0.5 bg-amber-50 text-amber-600 text-[9px] font-bold rounded-full flex items-center gap-0.5"><Sparkles className="w-2.5 h-2.5" />{n.accion}</span>}
+                  {n.cliente && <span className="px-2 py-0.5 bg-[#6888ff]/5 text-[#6888ff] text-[9px] font-bold rounded-full flex items-center gap-0.5"><Building2 className="w-2.5 h-2.5" />{n.cliente}</span>}
+                  {n.accion && <span className="px-2 py-0.5 bg-[#6888ff]/5 text-[#6888ff] text-[9px] font-bold rounded-full flex items-center gap-0.5"><Sparkles className="w-2.5 h-2.5" />{n.accion}</span>}
                 </div>
               </>
             )}

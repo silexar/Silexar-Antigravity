@@ -1,7 +1,7 @@
-/**
+ï»¿/**
  * ?? MOBILE: Validation Queue View
  * 
- * Cola de borradores auto-generados por IA para revisión y aprobación.
+ * Cola de borradores auto-generados por IA para revisiï¿½n y aprobaciï¿½n.
  * Un supervisor puede ver todos los borradores, su confianza,
  * y aprobar/rechazar en lotes.
  * 
@@ -78,13 +78,13 @@ export function ValidationQueueView() {
             <p className="text-2xl font-black">{stats.total}</p>
             <p className="text-[10px] text-[#9aa3b8] font-bold">Total</p>
           </div>
-          <div className="bg-emerald-500/20 rounded-xl p-3 text-center">
-            <p className="text-2xl font-black text-emerald-300">{stats.listos}</p>
-            <p className="text-[10px] text-emerald-400 font-bold">Listos</p>
+          <div className="bg-[#6888ff]/50/20 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-[#6888ff]">{stats.listos}</p>
+            <p className="text-[10px] text-[#6888ff] font-bold">Listos</p>
           </div>
-          <div className="bg-amber-500/20 rounded-xl p-3 text-center">
-            <p className="text-2xl font-black text-amber-300">{stats.pendientes}</p>
-            <p className="text-[10px] text-amber-400 font-bold">Revisar</p>
+          <div className="bg-[#6888ff]/50/20 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-[#6888ff]">{stats.pendientes}</p>
+            <p className="text-[10px] text-[#6888ff] font-bold">Revisar</p>
           </div>
         </div>
       </div>
@@ -113,8 +113,8 @@ export function ValidationQueueView() {
       {/* QUEUE LIST */}
       {filteredQueue.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <CheckCircle2 className="w-16 h-16 text-emerald-200 mb-3" />
-          <p className="font-bold text-[#9aa3b8]">Cola vacía</p>
+          <CheckCircle2 className="w-16 h-16 text-[#6888ff] mb-3" />
+          <p className="font-bold text-[#9aa3b8]">Cola vacï¿½a</p>
           <p className="text-xs text-[#9aa3b8] mt-1">Todos los borradores han sido procesados</p>
         </div>
       ) : (
@@ -162,11 +162,11 @@ function BorradorCard({ borrador, onAprobar, onRechazar }: {
   };
 
   const metodoColor: Record<string, string> = {
-    voice: 'bg-red-100 text-red-600',
-    text: 'bg-blue-100 text-blue-600',
-    whatsapp: 'bg-green-100 text-green-600',
-    email: 'bg-purple-100 text-purple-600',
-    quick: 'bg-amber-100 text-amber-600',
+    voice: 'bg-[#dfeaff] text-[#9aa3b8]',
+    text: 'bg-[#6888ff]/10 text-[#6888ff]',
+    whatsapp: 'bg-[#6888ff]/10 text-[#6888ff]',
+    email: 'bg-[#6888ff]/10 text-[#6888ff]',
+    quick: 'bg-[#6888ff]/10 text-[#6888ff]',
     photo: 'bg-[#dfeaff] text-[#69738c]',
   };
 
@@ -179,7 +179,7 @@ function BorradorCard({ borrador, onAprobar, onRechazar }: {
 
   return (
     <div className={`bg-[#dfeaff] rounded-xl border overflow-hidden ${
-      borrador.requiereValidacion ? 'border-amber-200' : 'border-[#bec8de30]'
+      borrador.requiereValidacion ? 'border-[#bec8de]' : 'border-[#bec8de30]'
     }`}>
       <div className="p-4">
         <div className="flex items-center justify-between mb-2">
@@ -191,7 +191,7 @@ function BorradorCard({ borrador, onAprobar, onRechazar }: {
               <p className="font-bold text-[#69738c] text-sm">{borrador.cliente}</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="text-[10px] text-[#9aa3b8]">{borrador.metodo.toUpperCase()}</span>
-                <span className="text-[10px] text-[#9aa3b8]">·</span>
+                <span className="text-[10px] text-[#9aa3b8]">ï¿½</span>
                 <span className="text-[10px] text-[#9aa3b8] flex items-center gap-0.5">
                   <Clock className="w-3 h-3" /> {timeAgo}
                 </span>
@@ -199,11 +199,11 @@ function BorradorCard({ borrador, onAprobar, onRechazar }: {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-sm font-bold text-[#69738c]">{borrador.valor > 0 ? formatCurrency(borrador.valor) : '—'}</p>
+            <p className="text-sm font-bold text-[#69738c]">{borrador.valor > 0 ? formatCurrency(borrador.valor) : 'ï¿½'}</p>
             <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5 ml-auto w-fit ${
-              borrador.confianza >= 85 ? 'bg-emerald-100 text-emerald-700' :
-              borrador.confianza >= 60 ? 'bg-amber-100 text-amber-700' :
-              'bg-red-100 text-red-700'
+              borrador.confianza >= 85 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+              borrador.confianza >= 60 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+              'bg-[#dfeaff] text-[#9aa3b8]'
             }`}>
               <TrendingUp className="w-2.5 h-2.5" /> {borrador.confianza}%
             </span>
@@ -213,15 +213,15 @@ function BorradorCard({ borrador, onAprobar, onRechazar }: {
 
       {/* ACTIONS */}
       <div className="flex border-t border-[#bec8de30]">
-        <button onClick={onRechazar} className="flex-1 py-2.5 text-xs font-bold text-red-600 flex items-center justify-center gap-1 active:bg-red-50">
+        <button onClick={onRechazar} className="flex-1 py-2.5 text-xs font-bold text-[#9aa3b8] flex items-center justify-center gap-1 active:bg-[#dfeaff]">
           <XCircle className="w-4 h-4" /> Rechazar
         </button>
         <div className="w-px bg-[#dfeaff]" />
-        <button className="flex-1 py-2.5 text-xs font-bold text-blue-600 flex items-center justify-center gap-1 active:bg-blue-50">
+        <button className="flex-1 py-2.5 text-xs font-bold text-[#6888ff] flex items-center justify-center gap-1 active:bg-[#6888ff]/5">
           <ChevronRight className="w-4 h-4" /> Revisar
         </button>
         <div className="w-px bg-[#dfeaff]" />
-        <button onClick={onAprobar} className="flex-1 py-2.5 text-xs font-bold text-emerald-600 flex items-center justify-center gap-1 active:bg-emerald-50">
+        <button onClick={onAprobar} className="flex-1 py-2.5 text-xs font-bold text-[#6888ff] flex items-center justify-center gap-1 active:bg-[#6888ff]/5">
           <CheckCircle2 className="w-4 h-4" /> Aprobar
         </button>
       </div>

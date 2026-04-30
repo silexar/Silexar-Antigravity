@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📁 SILEXAR PULSE - Storage Manager
+ * ðŸ“ SILEXAR PULSE - Storage Manager
  * Gestión de almacenamiento y archivos
  * 
  * @description Storage Management:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   HardDrive,
   Folder,
@@ -110,7 +108,7 @@ export function StorageManager() {
   const totalCapacity = buckets.reduce((sum, b) => sum + b.totalSize, 0)
   const orphanFiles = files.filter(f => f.isOrphan)
 
-  const filteredFiles = files.filter(f => 
+  const filteredFiles = files.filter(f =>
     f.path.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -118,8 +116,8 @@ export function StorageManager() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Storage Manager...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Storage Manager...</p>
         </div>
       </div>
     )
@@ -129,118 +127,117 @@ export function StorageManager() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <HardDrive className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <HardDrive className="w-5 h-5 text-[#6888ff]" />
           Storage Manager
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadStorageData}>
+          <NeuButton variant="secondary" onClick={loadStorageData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
+          </NeuButton>
           {orphanFiles.length > 0 && (
-            <NeuromorphicButton variant="secondary" size="sm" onClick={cleanOrphans}>
+            <NeuButton variant="secondary" onClick={cleanOrphans}>
               <Trash2 className="w-4 h-4 mr-1" />
               Clean Orphans ({orphanFiles.length})
-            </NeuromorphicButton>
+            </NeuButton>
           )}
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <HardDrive className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{buckets.length}</p>
-          <p className="text-xs text-slate-400">Buckets</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Folder className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-cyan-400">{formatSize(totalUsed * 1024)}</p>
-          <p className="text-xs text-slate-400">Usado</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <File className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-purple-400">{buckets.reduce((sum, b) => sum + b.objectCount, 0).toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Objetos</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="text-center">
+          <HardDrive className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{buckets.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Buckets</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="text-center">
+          <Folder className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{formatSize(totalUsed * 1024)}</p>
+          <p className="text-xs text-[#9aa3b8]">Usado</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="text-center">
+          <File className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{buckets.reduce((sum, b) => sum + b.objectCount, 0).toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Objetos</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="text-center">
           <div className="w-6 h-6 mx-auto mb-2 flex items-center justify-center">
             <span className="text-lg">{Math.round((totalUsed / totalCapacity) * 100)}%</span>
           </div>
-          <div className="w-full bg-slate-700 rounded-full h-2 mb-1">
-            <div 
-              className={`h-2 rounded-full ${totalUsed / totalCapacity > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
+          <div className="w-full bg-[#dfeaff] rounded-full h-2 mb-1">
+            <div
+              className={`h-2 rounded-full ${totalUsed / totalCapacity > 0.8 ? 'bg-[#6888ff]' : 'bg-[#6888ff]'}`}
               style={{ width: `${(totalUsed / totalCapacity) * 100}%` }}
             />
           </div>
-          <p className="text-xs text-slate-400">Capacidad</p>
-        </NeuromorphicCard>
+          <p className="text-xs text-[#9aa3b8]">Capacidad</p>
+        </NeuCard>
       </div>
 
       {/* Buckets Grid */}
       <div className="grid grid-cols-2 gap-3">
         {buckets.map(bucket => (
-          <NeuromorphicCard 
+          <NeuCard
             key={bucket.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer ${selectedBucket === bucket.id ? 'ring-1 ring-blue-500/50' : ''}`}
-            onClick={() => loadFiles(bucket.id)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
+            className={`cursor-pointer ${selectedBucket === bucket.id ? 'ring-1 ring-blue-500/50' : ''}`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Folder className="w-5 h-5 text-yellow-400" />
-                <span className="text-white font-medium">{bucket.name}</span>
+                <Folder className="w-5 h-5 text-[#6888ff]" />
+                <span className="text-[#69738c] font-medium">{bucket.name}</span>
               </div>
-              <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">{bucket.provider}</span>
+              <span className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded">{bucket.provider}</span>
             </div>
 
             <div className="mb-2">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-400">Uso</span>
-                <span className="text-white">{formatSize(bucket.usedSize * 1024)} / {formatSize(bucket.totalSize * 1024)}</span>
+                <span className="text-[#9aa3b8]">Uso</span>
+                <span className="text-[#69738c]">{formatSize(bucket.usedSize * 1024)} / {formatSize(bucket.totalSize * 1024)}</span>
               </div>
-              <div className="w-full bg-slate-700 rounded-full h-2">
-                <div 
-                  className={`h-2 rounded-full ${bucket.usedSize / bucket.totalSize > 0.8 ? 'bg-red-500' : 'bg-cyan-500'}`}
+              <div className="w-full bg-[#dfeaff] rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full ${bucket.usedSize / bucket.totalSize > 0.8 ? 'bg-[#6888ff]' : 'bg-[#6888ff]'}`}
                   style={{ width: `${(bucket.usedSize / bucket.totalSize) * 100}%` }}
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center justify-between text-xs text-[#9aa3b8]">
               <span>{bucket.objectCount.toLocaleString()} objetos</span>
               <span>{bucket.region}</span>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Files Browser */}
       {selectedBucket && (
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-white font-medium">Archivos</h4>
+            <h4 className="text-[#69738c] font-medium">Archivos</h4>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
               <input
                 type="text"
                 placeholder="Buscar..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-1.5 bg-slate-800 border border-slate-700 rounded text-white text-sm"
+                className="w-full pl-10 pr-4 py-1.5 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c] text-sm"
               />
             </div>
           </div>
 
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredFiles.map(file => (
-              <div key={file.id} className={`flex items-center justify-between p-3 rounded-lg ${file.isOrphan ? 'bg-yellow-500/5 border border-yellow-500/20' : 'bg-slate-800/50'}`}>
+              <div key={file.id} className={`flex items-center justify-between p-3 rounded-lg ${file.isOrphan ? 'bg-[#6888ff]/5 border border-yellow-500/20' : 'bg-[#dfeaff]/50'}`}>
                 <div className="flex items-center gap-3">
-                  <File className={`w-5 h-5 ${file.isOrphan ? 'text-yellow-400' : 'text-slate-400'}`} />
+                  <File className={`w-5 h-5 ${file.isOrphan ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`} />
                   <div>
-                    <span className="text-white text-sm">{file.path}</span>
-                    <p className="text-xs text-slate-500">
+                    <span className="text-[#69738c] text-sm">{file.path}</span>
+                    <p className="text-xs text-[#9aa3b8]">
                       {formatSize(file.size)} • {file.type}
                       {file.tenantId && ` • ${file.tenantId}`}
                     </p>
@@ -248,22 +245,22 @@ export function StorageManager() {
                 </div>
                 <div className="flex items-center gap-2">
                   {file.isOrphan && (
-                    <span className="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded flex items-center gap-1">
+                    <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
                       Huérfano
                     </span>
                   )}
-                  <button className="p-1 hover:bg-slate-700 rounded" aria-label="Descargar">
-                    <Download className="w-4 h-4 text-slate-400" />
+                  <button className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Descargar">
+                    <Download className="w-4 h-4 text-[#9aa3b8]" />
                   </button>
-                  <button onClick={() => deleteFile(file.id)} className="p-1 hover:bg-slate-700 rounded" aria-label="Eliminar">
-                    <Trash2 className="w-4 h-4 text-red-400" />
+                  <button onClick={() => deleteFile(file.id)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Eliminar">
+                    <Trash2 className="w-4 h-4 text-[#6888ff]" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

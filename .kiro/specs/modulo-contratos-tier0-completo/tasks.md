@@ -8,7 +8,7 @@
 
 
   - Crear archivo `src/modules/contratos/domain/entities/PlanPagos.ts`
-  - Implementar métodos `generarCuotas()`, `calcularProximoVencimiento()`, `marcarCuotaComoPagada()`
+  - Implementar métodos `generarCuotas()`, `calcularProximoVencimientos()`, `marcarCuotaComoPagada()`
   - Agregar validaciones de negocio para modalidades hitos vs cuotas
   - Crear tests unitarios completos para todos los métodos
   - _Requisitos: US-001, US-004_
@@ -23,7 +23,7 @@
   - _Requisitos: US-001_
 
 - [x] 1.2 Implementar entidad CuotaPago
-  - ✅ Crear propiedades: numero, monto, fechaVencimiento, estado, metodoPago
+  - ✅ Crear propiedades: numero, monto, fechaVencimientos, estado, metodoPago
   - ✅ Implementar cálculo automático de intereses por mora
   - ✅ Agregar validaciones de coherencia con plan padre
   - ✅ Sistema de refinanciamiento automático
@@ -96,7 +96,7 @@
 
 - [x] 5.1 Crear sistema de prioridades y categorías
   - ✅ Implementar `PrioridadAlerta`: crítica, alta, media, baja
-  - ✅ Crear `CategoriaAlerta`: vencimiento, aprobación, inventario, riesgo, pago, firma, performance, compliance
+  - ✅ Crear `CategoriaAlerta`: vencimientos, aprobación, inventario, riesgo, pago, firma, performance, compliance
   - ✅ Agregar configuración de SLA automática por tipo de alerta
   - ✅ Sistema de escalamiento multi-nivel Fortune 10
   - _Requisitos: US-004_

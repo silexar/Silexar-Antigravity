@@ -73,7 +73,7 @@ export default function AnuncianteDetailModal({
 
   const getRiskColor = (clasificacion: string) => {
     const colors = {
-      'AAA': 'bg-green-500',
+      'AAA': 'bg-[#6888ff]',
       'AA': 'bg-green-400', 
       'A': 'bg-lime-500',
       'BBB': 'bg-yellow-500',
@@ -120,32 +120,32 @@ export default function AnuncianteDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-[#dfeaff] border-white/40 shadow-[12px_12px_24px_#bec8de,-12px_-12px_24px_#ffffff]">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white flex items-center gap-3">
-            <Building2 className="h-6 w-6 text-blue-400" />
+          <DialogTitle className="text-2xl text-[#69738c] flex items-center gap-3">
+            <Building2 className="h-6 w-6 text-[#6888ff]" />
             Vista 360° - {anunciante.nombreFantasia}
-            <Badge className={`${getRiskColor(anunciante.clasificacionRiesgo)} text-white ml-2`}>
+            <Badge className="bg-[#6888ff]/15 text-[#6888ff] ml-2 shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] rounded-full px-3 py-1 text-xs font-semibold">
               {anunciante.clasificacionRiesgo}
             </Badge>
           </DialogTitle>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
-            <TabsTrigger value="general" className="data-[state=active]:bg-blue-600">
+          <TabsList className="grid w-full grid-cols-5 bg-[#dfeaff] shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] rounded-2xl p-1">
+            <TabsTrigger value="general" className="data-[state=active]:bg-[#6888ff] data-[state=active]:text-white rounded-xl transition-all">
               General
             </TabsTrigger>
-            <TabsTrigger value="portfolio" className="data-[state=active]:bg-green-600">
+            <TabsTrigger value="portfolio" className="data-[state=active]:bg-[#6888ff] data-[state=active]:text-white rounded-xl transition-all">
               Portfolio
             </TabsTrigger>
-            <TabsTrigger value="historial" className="data-[state=active]:bg-purple-600">
+            <TabsTrigger value="historial" className="data-[state=active]:bg-[#6888ff] data-[state=active]:text-white rounded-xl transition-all">
               Historial
             </TabsTrigger>
-            <TabsTrigger value="performance" className="data-[state=active]:bg-orange-600">
+            <TabsTrigger value="performance" className="data-[state=active]:bg-[#6888ff] data-[state=active]:text-white rounded-xl transition-all">
               Performance
             </TabsTrigger>
-            <TabsTrigger value="financiero" className="data-[state=active]:bg-red-600">
+            <TabsTrigger value="financiero" className="data-[state=active]:bg-[#6888ff] data-[state=active]:text-white rounded-xl transition-all">
               Financiero
             </TabsTrigger>
           </TabsList>
@@ -153,120 +153,120 @@ export default function AnuncianteDetailModal({
           {/* Pestaña Información General */}
           <TabsContent value="general" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Building2 className="h-5 w-5 text-blue-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-[#6888ff]" />
                     Datos Corporativos
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm text-slate-400">RUT</label>
-                      <p className="text-white font-medium">{anunciante.rut}</p>
+                      <label className="text-sm text-[#9aa3b8]">RUT</label>
+                      <p className="text-[#69738c] font-medium">{anunciante.rut}</p>
                     </div>
                     <div>
-                      <label className="text-sm text-slate-400">Razón Social</label>
-                      <p className="text-white font-medium">{anunciante.razonSocial}</p>
+                      <label className="text-sm text-[#9aa3b8]">Razón Social</label>
+                      <p className="text-[#69738c] font-medium">{anunciante.razonSocial}</p>
                     </div>
                     <div>
-                      <label className="text-sm text-slate-400">Nombre Fantasía</label>
-                      <p className="text-white font-medium">{anunciante.nombreFantasia}</p>
+                      <label className="text-sm text-[#9aa3b8]">Nombre Fantasía</label>
+                      <p className="text-[#69738c] font-medium">{anunciante.nombreFantasia}</p>
                     </div>
                     <div>
-                      <label className="text-sm text-slate-400">Industria</label>
-                      <p className="text-white font-medium">{anunciante.industria}</p>
+                      <label className="text-sm text-[#9aa3b8]">Industria</label>
+                      <p className="text-[#69738c] font-medium">{anunciante.industria}</p>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm text-slate-400">Giro Comercial</label>
-                    <p className="text-white font-medium">
+                    <label className="text-sm text-[#9aa3b8]">Giro Comercial</label>
+                    <p className="text-[#69738c] font-medium">
                       {anunciante.giroComercial || 'Servicios financieros y bancarios'}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm text-slate-400">Dirección</label>
-                    <p className="text-white font-medium flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-slate-400" />
+                    <label className="text-sm text-[#9aa3b8]">Dirección</label>
+                    <p className="text-[#69738c] font-medium flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-[#9aa3b8]" />
                       {anunciante.direccion || 'Ahumada 251, Santiago Centro'}
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <User className="h-5 w-5 text-green-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <User className="h-5 w-5 text-[#6888ff]" />
                     Contacto Principal
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="text-sm text-slate-400">Nombre</label>
-                    <p className="text-white font-medium">{anunciante.contactoPrincipal}</p>
+                    <label className="text-sm text-[#9aa3b8]">Nombre</label>
+                    <p className="text-[#69738c] font-medium">{anunciante.contactoPrincipal}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-slate-400">Email</label>
-                    <p className="text-white font-medium flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-slate-400" />
+                    <label className="text-sm text-[#9aa3b8]">Email</label>
+                    <p className="text-[#69738c] font-medium flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-[#9aa3b8]" />
                       {anunciante.email}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm text-slate-400">Teléfono</label>
-                    <p className="text-white font-medium flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-slate-400" />
+                    <label className="text-sm text-[#9aa3b8]">Teléfono</label>
+                    <p className="text-[#69738c] font-medium flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-[#9aa3b8]" />
                       {anunciante.telefono}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm text-slate-400">Ejecutivo Asignado</label>
-                    <p className="text-white font-medium">{anunciante.ejecutivoAsignado}</p>
+                    <label className="text-sm text-[#9aa3b8]">Ejecutivo Asignado</label>
+                    <p className="text-[#69738c] font-medium">{anunciante.ejecutivoAsignado}</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-slate-800/50 border-white/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-purple-400" />
+                  <FileText className="h-5 w-5 text-[#6888ff]" />
                   Historial de Interacciones
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
                     <div className="flex items-center gap-3">
-                      <Calendar className="h-4 w-4 text-blue-400" />
+                      <Calendar className="h-4 w-4 text-[#6888ff]" />
                       <div>
-                        <p className="text-white font-medium">Reunión comercial</p>
-                        <p className="text-slate-400 text-sm">Presentación propuesta Q1 2025</p>
+                        <p className="text-[#69738c] font-medium">Reunión comercial</p>
+                        <p className="text-[#9aa3b8] text-sm">Presentación propuesta Q1 2025</p>
                       </div>
                     </div>
-                    <span className="text-slate-400 text-sm">Hace 3 días</span>
+                    <span className="text-[#9aa3b8] text-sm">Hace 3 días</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
                     <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-green-400" />
+                      <Mail className="h-4 w-4 text-[#6888ff]" />
                       <div>
-                        <p className="text-white font-medium">Email enviado</p>
-                        <p className="text-slate-400 text-sm">Seguimiento post-campaña con métricas</p>
+                        <p className="text-[#69738c] font-medium">Email enviado</p>
+                        <p className="text-[#9aa3b8] text-sm">Seguimiento post-campaña con métricas</p>
                       </div>
                     </div>
-                    <span className="text-slate-400 text-sm">Hace 1 semana</span>
+                    <span className="text-[#9aa3b8] text-sm">Hace 1 semana</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
                     <div className="flex items-center gap-3">
-                      <Phone className="h-4 w-4 text-orange-400" />
+                      <Phone className="h-4 w-4 text-[#6888ff]" />
                       <div>
-                        <p className="text-white font-medium">Llamada telefónica</p>
-                        <p className="text-slate-400 text-sm">Coordinación de creatividades</p>
+                        <p className="text-[#69738c] font-medium">Llamada telefónica</p>
+                        <p className="text-[#9aa3b8] text-sm">Coordinación de creatividades</p>
                       </div>
                     </div>
-                    <span className="text-slate-400 text-sm">Hace 2 semanas</span>
+                    <span className="text-[#9aa3b8] text-sm">Hace 2 semanas</span>
                   </div>
                 </div>
               </CardContent>
@@ -275,14 +275,14 @@ export default function AnuncianteDetailModal({
 
           {/* Pestaña Portfolio de Productos */}
           <TabsContent value="portfolio" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-slate-800/50 border-white/30">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Package className="h-5 w-5 text-green-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <Package className="h-5 w-5 text-[#6888ff]" />
                     Portfolio de Productos/Servicios
                   </CardTitle>
-                  <Button className="bg-green-600 hover:bg-green-700">
+                  <Button className="bg-[#6888ff] hover:bg-green-700">
                     <Package className="h-4 w-4 mr-2" />
                     Agregar Producto
                   </Button>
@@ -293,8 +293,8 @@ export default function AnuncianteDetailModal({
                   {productos.map((producto) => (
                     <Card key={producto.id} className="bg-slate-700/30 border-slate-600">
                       <CardContent className="p-4">
-                        <h3 className="text-white font-medium mb-2">{producto.nombre}</h3>
-                        <Badge variant="outline" className="text-green-400 border-green-400">
+                        <h3 className="text-[#69738c] font-medium mb-2">{producto.nombre}</h3>
+                        <Badge variant="outline" className="text-[#6888ff] border-green-400">
                           {producto.categoria}
                         </Badge>
                         <div className="mt-3 flex space-x-2">
@@ -315,37 +315,37 @@ export default function AnuncianteDetailModal({
 
           {/* Pestaña Historial Comercial */}
           <TabsContent value="historial" className="space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-slate-800/50 border-white/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <History className="h-5 w-5 text-purple-400" />
+                  <History className="h-5 w-5 text-[#6888ff]" />
                   Historial Comercial Completo
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {historialComercial.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border border-slate-600">
                       <div className="flex items-center space-x-4">
                         <div className="flex flex-col items-center">
-                          <Calendar className="h-5 w-5 text-blue-400" />
-                          <span className="text-xs text-slate-400 mt-1">
+                          <Calendar className="h-5 w-5 text-[#6888ff]" />
+                          <span className="text-xs text-[#9aa3b8] mt-1">
                             {new Date(item.fecha).toLocaleDateString()}
                           </span>
                         </div>
                         <div>
-                          <h3 className="text-white font-medium">{item.descripcion}</h3>
-                          <p className="text-slate-400 text-sm">Tipo: {item.tipo}</p>
+                          <h3 className="text-[#69738c] font-medium">{item.descripcion}</h3>
+                          <p className="text-[#9aa3b8] text-sm">Tipo: {item.tipo}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
                         <div className="text-right">
-                          <p className="text-white font-medium">
+                          <p className="text-[#69738c] font-medium">
                             ${item.valor.toLocaleString()}
                           </p>
                           <Badge 
                             variant={item.estado === 'Completada' ? 'default' : 'secondary'}
-                            className={item.estado === 'Completada' ? 'bg-green-600' : 'bg-blue-600'}
+                            className={item.estado === 'Completada' ? 'bg-[#6888ff]' : 'bg-blue-600'}
                           >
                             {item.estado}
                           </Badge>
@@ -361,39 +361,39 @@ export default function AnuncianteDetailModal({
           {/* Pestaña Análisis de Performance */}
           <TabsContent value="performance" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-orange-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-[#6888ff]" />
                     Métricas de Efectividad
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-2xl font-bold text-green-400">87%</p>
-                      <p className="text-slate-400 text-sm">ROI Promedio</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-2xl font-bold text-[#6888ff]">87%</p>
+                      <p className="text-[#9aa3b8] text-sm">ROI Promedio</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-400">2.3x</p>
-                      <p className="text-slate-400 text-sm">ROAS Promedio</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-2xl font-bold text-[#6888ff]">2.3x</p>
+                      <p className="text-[#9aa3b8] text-sm">ROAS Promedio</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-2xl font-bold text-purple-400">94%</p>
-                      <p className="text-slate-400 text-sm">Tasa Conversión</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-2xl font-bold text-[#6888ff]">94%</p>
+                      <p className="text-[#9aa3b8] text-sm">Tasa Conversión</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-2xl font-bold text-orange-400">156K</p>
-                      <p className="text-slate-400 text-sm">Leads Generados</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-2xl font-bold text-[#6888ff]">156K</p>
+                      <p className="text-[#9aa3b8] text-sm">Leads Generados</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Target className="h-5 w-5 text-green-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <Target className="h-5 w-5 text-[#6888ff]" />
                     Benchmarking vs Competencia
                   </CardTitle>
                 </CardHeader>
@@ -401,29 +401,29 @@ export default function AnuncianteDetailModal({
                   <div className="space-y-3">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-400">Performance vs Industria</span>
-                        <span className="text-green-400">+23%</span>
+                        <span className="text-[#9aa3b8]">Performance vs Industria</span>
+                        <span className="text-[#6888ff]">+23%</span>
                       </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{width: '78%'}}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-400">Eficiencia de Inversión</span>
-                        <span className="text-blue-400">+15%</span>
-                      </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{width: '65%'}}></div>
+                      <div className="w-full bg-[#dfeaff] rounded-full shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] h-2">
+                        <div className="bg-[#6888ff] h-2 rounded-full" style={{width: '78%'}}></div>
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-slate-400">Alcance de Audiencia</span>
-                        <span className="text-purple-400">+31%</span>
+                        <span className="text-[#9aa3b8]">Eficiencia de Inversión</span>
+                        <span className="text-[#6888ff]">+15%</span>
                       </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
-                        <div className="bg-purple-500 h-2 rounded-full" style={{width: '85%'}}></div>
+                      <div className="w-full bg-[#dfeaff] rounded-full shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] h-2">
+                        <div className="bg-[#6888ff] h-2 rounded-full" style={{width: '65%'}}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-[#9aa3b8]">Alcance de Audiencia</span>
+                        <span className="text-[#6888ff]">+31%</span>
+                      </div>
+                      <div className="w-full bg-[#dfeaff] rounded-full shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] h-2">
+                        <div className="bg-[#6888ff] h-2 rounded-full" style={{width: '85%'}}></div>
                       </div>
                     </div>
                   </div>
@@ -435,10 +435,10 @@ export default function AnuncianteDetailModal({
           {/* Pestaña Estado Financiero */}
           <TabsContent value="financiero" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-red-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-[#6888ff]" />
                     Evaluación Cortex-Risk
                   </CardTitle>
                 </CardHeader>
@@ -449,70 +449,70 @@ export default function AnuncianteDetailModal({
                         {anunciante.clasificacionRiesgo}
                       </span>
                     </div>
-                    <p className="text-white font-medium text-lg">Score: {anunciante.scoreRiesgo}</p>
-                    <p className="text-slate-400 text-sm">Evaluación automática Cortex-Risk</p>
+                    <p className="text-[#69738c] font-medium text-lg">Score: {anunciante.scoreRiesgo}</p>
+                    <p className="text-[#9aa3b8] text-sm">Evaluación automática Cortex-Risk</p>
                   </div>
                   
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Solvencia</span>
-                      <span className="text-green-400">Excelente</span>
+                      <span className="text-[#9aa3b8]">Solvencia</span>
+                      <span className="text-[#6888ff]">Excelente</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Historial de Pagos</span>
-                      <span className="text-green-400">Sin mora</span>
+                      <span className="text-[#9aa3b8]">Historial de Pagos</span>
+                      <span className="text-[#6888ff]">Sin mora</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Capacidad de Pago</span>
-                      <span className="text-green-400">Alta</span>
+                      <span className="text-[#9aa3b8]">Capacidad de Pago</span>
+                      <span className="text-[#6888ff]">Alta</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Riesgo de Impago</span>
-                      <span className="text-green-400">Muy Bajo (2%)</span>
+                      <span className="text-[#9aa3b8]">Riesgo de Impago</span>
+                      <span className="text-[#6888ff]">Muy Bajo (2%)</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-slate-700">
+              <Card className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-blue-400" />
+                  <CardTitle className="text-[#69738c] flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-[#6888ff]" />
                     Estado de Cuentas
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-xl font-bold text-green-400">$0</p>
-                      <p className="text-slate-400 text-sm">Facturas Vencidas</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-xl font-bold text-[#6888ff]">$0</p>
+                      <p className="text-[#9aa3b8] text-sm">Facturas Vencidas</p>
                     </div>
-                    <div className="text-center p-3 bg-slate-700/30 rounded-lg">
-                      <p className="text-xl font-bold text-blue-400">$8.5M</p>
-                      <p className="text-slate-400 text-sm">Facturas Pendientes</p>
+                    <div className="text-center p-3 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff]">
+                      <p className="text-xl font-bold text-[#6888ff]">$8.5M</p>
+                      <p className="text-[#9aa3b8] text-sm">Facturas Pendientes</p>
                     </div>
                   </div>
                   
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Límite de Crédito</span>
-                      <span className="text-white font-medium">
+                      <span className="text-[#9aa3b8]">Límite de Crédito</span>
+                      <span className="text-[#69738c] font-medium">
                         ${anunciante.limiteCredito?.toLocaleString() || '50,000,000'}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Utilización</span>
-                      <span className="text-green-400">17% (Bajo)</span>
+                      <span className="text-[#9aa3b8]">Utilización</span>
+                      <span className="text-[#6888ff]">17% (Bajo)</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Condiciones de Pago</span>
-                      <span className="text-white font-medium">
+                      <span className="text-[#9aa3b8]">Condiciones de Pago</span>
+                      <span className="text-[#69738c] font-medium">
                         {anunciante.condicionesPago || '30 días'}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Días Promedio Pago</span>
-                      <span className="text-green-400">22 días</span>
+                      <span className="text-[#9aa3b8]">Días Promedio Pago</span>
+                      <span className="text-[#6888ff]">22 días</span>
                     </div>
                   </div>
                 </CardContent>
@@ -521,11 +521,11 @@ export default function AnuncianteDetailModal({
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-slate-700">
-          <Button variant="outline" onClick={onClose} className="border-slate-600 text-slate-400">
+        <div className="flex justify-end space-x-4 pt-6 border-t border-white/30">
+          <Button variant="outline" onClick={onClose} className="border-slate-600 text-[#9aa3b8]">
             Cerrar
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button className="bg-[#6888ff] hover:bg-[#5572ee]">
             <FileText className="h-4 w-4 mr-2" />
             Crear Campaña
           </Button>

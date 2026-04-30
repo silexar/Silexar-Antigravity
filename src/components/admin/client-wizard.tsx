@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🏢 SILEXAR PULSE - Client Creation Wizard
+ * ðŸ¢ SILEXAR PULSE - Client Creation Wizard
  * Multi-step wizard for creating new tenant clients
  * 
  * @description Complete client onboarding with:
@@ -17,11 +17,9 @@
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton, 
-  NeuromorphicInput 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton, StatusBadge } from './_sdk/AdminDesignSystem'
+import { getShadow } from './_sdk/AdminDesignSystem'
+import { N } from './_sdk/AdminDesignSystem'
 import {
   Building2,
   User,
@@ -52,7 +50,8 @@ const PLANS = {
     features: ['campaigns', 'reports'],
     maxUsers: 5,
     icon: Zap,
-    color: 'from-slate-600 to-slate-700'
+    colorStart: '#475569',
+    colorEnd: '#334155'
   },
   professional: {
     name: 'Professional',
@@ -60,7 +59,8 @@ const PLANS = {
     features: ['campaigns', 'analytics', 'reports', 'api_access'],
     maxUsers: 25,
     icon: Star,
-    color: 'from-blue-600 to-cyan-600'
+    colorStart: '#6888ff',
+    colorEnd: '#6888ff'
   },
   enterprise: {
     name: 'Enterprise',
@@ -68,7 +68,8 @@ const PLANS = {
     features: ['campaigns', 'analytics', 'reports', 'api_access', 'ai_assistant', 'priority_support'],
     maxUsers: 100,
     icon: Shield,
-    color: 'from-purple-600 to-pink-600'
+    colorStart: '#6888ff',
+    colorEnd: '#6888ff'
   },
   enterprise_plus: {
     name: 'Enterprise Plus',
@@ -76,7 +77,8 @@ const PLANS = {
     features: ['campaigns', 'analytics', 'reports', 'api_access', 'ai_assistant', 'white_label', 'priority_support', 'custom_integrations'],
     maxUsers: -1, // unlimited
     icon: Crown,
-    color: 'from-yellow-500 to-orange-600'
+    colorStart: '#6888ff',
+    colorEnd: '#ea580c'
   }
 }
 
@@ -92,22 +94,22 @@ interface ClientFormData {
   country: string
   phone: string
   website: string
-  
+
   // Step 2: Plan Selection
   plan: PlanType
   customFeatures: string[]
-  
+
   // Step 3: License
   licenseDuration: number // months
   licenseStartDate: Date
   autoRenewal: boolean
-  
+
   // Step 4: URL & Access
   urlSlug: string
   adminName: string
   adminEmail: string
   adminPassword: string
-  
+
   // Step 5: Commercial Terms
   discountPercent: number
   billingCycle: 'monthly' | 'quarterly' | 'annual'
@@ -125,7 +127,7 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   const [formData, setFormData] = useState<ClientFormData>({
     companyName: '',
     tradeName: '',
@@ -176,7 +178,7 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
 
   const validateStep = (): boolean => {
     setError(null)
-    
+
     switch (step) {
       case 1:
         if (!formData.companyName || !formData.taxId || !formData.phone) {
@@ -201,7 +203,7 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
         }
         break
     }
-    
+
     return true
   }
 
@@ -217,12 +219,12 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
 
   const handleSubmit = async () => {
     if (!validateStep()) return
-    
+
     setIsSubmitting(true)
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     onComplete(formData)
     setIsSubmitting(false)
   }
@@ -230,36 +232,47 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
   const calculateTotal = () => {
     const plan = PLANS[formData.plan]
     const monthlyPrice = plan.price * (1 - formData.discountPercent / 100)
-    
+
     let multiplier = 1
     if (formData.billingCycle === 'quarterly') multiplier = 3
     if (formData.billingCycle === 'annual') multiplier = 12
-    
+
     return monthlyPrice * multiplier
   }
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-center gap-2 mb-8">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
       {Array.from({ length: totalSteps }).map((_, i) => (
         <div
           key={`step-${i}`}
-          className={`flex items-center ${i < totalSteps - 1 ? 'flex-1' : ''}`}
+          style={{ display: 'flex', alignItems: 'center', flex: i < totalSteps - 1 ? 1 : 'none' }}
         >
-          <div 
-            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-              i + 1 < step 
-                ? 'bg-green-600 text-white' 
-                : i + 1 === step 
-                  ? 'bg-blue-600 text-white ring-4 ring-blue-500/30' 
-                  : 'bg-slate-700 text-slate-400'
-            }`}
+          <div
+            style={{
+              width: '2.5rem',
+              height: '2.5rem',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              transition: 'all 0.2s',
+              background: i + 1 < step ? '#6888ff' : i + 1 === step ? '#6888ff' : '#334155',
+              color: i + 1 <= step ? '#fff' : '#94a3b8',
+              boxShadow: i + 1 === step ? `0 0 0 4px rgba(59,130,246,0.3)` : 'none'
+            }}
           >
-            {i + 1 < step ? <CheckCircle className="w-5 h-5" /> : i + 1}
+            {i + 1 < step ? <CheckCircle style={{ width: '1.25rem', height: '1.25rem' }} /> : i + 1}
           </div>
           {i < totalSteps - 1 && (
-            <div className={`flex-1 h-1 mx-2 rounded ${
-              i + 1 < step ? 'bg-green-600' : 'bg-slate-700'
-            }`} />
+            <div style={{
+              flex: 1,
+              height: '0.25rem',
+              marginLeft: '0.5rem',
+              marginRight: '0.5rem',
+              borderRadius: '0.125rem',
+              background: i + 1 < step ? '#6888ff' : '#334155'
+            }} />
           )}
         </div>
       ))}
@@ -267,133 +280,224 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
   )
 
   return (
-    <NeuromorphicCard variant="embossed" className="max-w-4xl mx-auto p-8">
-      <h2 className="text-2xl font-bold text-white mb-2 text-center">
+    <NeuCard style={{ boxShadow: getShadow(), maxWidth: '56rem', margin: '0 auto', padding: '2rem' }}>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text, marginBottom: '0.5rem', textAlign: 'center' }}>
         Crear Nuevo Cliente
       </h2>
-      <p className="text-slate-400 text-center mb-6">
+      <p style={{ color: N.textSub, textAlign: 'center', marginBottom: '1.5rem' }}>
         Complete el asistente para crear una nueva cuenta de cliente
       </p>
 
       {renderStepIndicator()}
 
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg mb-6">
-          <AlertCircle className="w-5 h-5 text-red-400" />
-          <span className="text-sm text-red-400">{error}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '0.5rem', marginBottom: '1.5rem' }}>
+          <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#f87171' }} />
+          <span style={{ fontSize: '0.875rem', color: '#f87171' }}>{error}</span>
         </div>
       )}
 
       {/* Step 1: Company Info */}
       {step === 1 && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-blue-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Building2 style={{ width: '1.25rem', height: '1.25rem', color: '#60a5fa' }} />
             Información de la Empresa
           </h3>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <NeuromorphicInput
-              label="Razón Social *"
-              placeholder="Empresa S.A."
-              value={formData.companyName}
-              onChange={(e) => {
-                updateFormData('companyName', e.target.value)
-                updateFormData('urlSlug', generateSlug(e.target.value))
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Razón Social *</label>
+              <input
+                type="text"
+                placeholder="Empresa S.A."
+                value={formData.companyName}
+                onChange={(e) => {
+                  updateFormData('companyName', e.target.value)
+                  updateFormData('urlSlug', generateSlug(e.target.value))
+                }}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Nombre Comercial</label>
+              <input
+                type="text"
+                placeholder="Mi Empresa"
+                value={formData.tradeName}
+                onChange={(e) => updateFormData('tradeName', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>RUT / Tax ID *</label>
+              <input
+                type="text"
+                placeholder="12.345.678-9"
+                value={formData.taxId}
+                onChange={(e) => updateFormData('taxId', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Teléfono *</label>
+              <input
+                type="text"
+                placeholder="+56 9 1234 5678"
+                value={formData.phone}
+                onChange={(e) => updateFormData('phone', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Dirección</label>
+            <input
+              type="text"
+              placeholder="Av. Principal 123, Oficina 456"
+              value={formData.address}
+              onChange={(e) => updateFormData('address', e.target.value)}
+              style={{
+                padding: '0.5rem 0.75rem',
+                background: N.base,
+                border: `1px solid ${N.dark}`,
+                borderRadius: '0.5rem',
+                color: N.text,
+                fontSize: '0.875rem'
               }}
-              icon={<Building2 className="w-4 h-4" />}
-            />
-            <NeuromorphicInput
-              label="Nombre Comercial"
-              placeholder="Mi Empresa"
-              value={formData.tradeName}
-              onChange={(e) => updateFormData('tradeName', e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <NeuromorphicInput
-              label="RUT / Tax ID *"
-              placeholder="12.345.678-9"
-              value={formData.taxId}
-              onChange={(e) => updateFormData('taxId', e.target.value)}
-              icon={<CreditCard className="w-4 h-4" />}
-            />
-            <NeuromorphicInput
-              label="Teléfono *"
-              placeholder="+56 9 1234 5678"
-              value={formData.phone}
-              onChange={(e) => updateFormData('phone', e.target.value)}
-              icon={<Phone className="w-4 h-4" />}
-            />
-          </div>
-
-          <NeuromorphicInput
-            label="Dirección"
-            placeholder="Av. Principal 123, Oficina 456"
-            value={formData.address}
-            onChange={(e) => updateFormData('address', e.target.value)}
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-            <NeuromorphicInput
-              label="Ciudad"
-              placeholder="Santiago"
-              value={formData.city}
-              onChange={(e) => updateFormData('city', e.target.value)}
-            />
-            <NeuromorphicInput
-              label="Sitio Web"
-              placeholder="https://www.ejemplo.com"
-              value={formData.website}
-              onChange={(e) => updateFormData('website', e.target.value)}
-              icon={<Globe className="w-4 h-4" />}
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Ciudad</label>
+              <input
+                type="text"
+                placeholder="Santiago"
+                value={formData.city}
+                onChange={(e) => updateFormData('city', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Sitio Web</label>
+              <input
+                type="text"
+                placeholder="https://www.ejemplo.com"
+                value={formData.website}
+                onChange={(e) => updateFormData('website', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Step 2: Plan Selection */}
       {step === 2 && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Star className="w-5 h-5 text-yellow-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Star style={{ width: '1.25rem', height: '1.25rem', color: '#facc15' }} />
             Selección de Plan
           </h3>
-          
-          <div className="grid grid-cols-2 gap-4">
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
             {(Object.entries(PLANS) as [PlanType, typeof PLANS[PlanType]][]).map(([key, plan]) => {
               const Icon = plan.icon
               const isSelected = formData.plan === key
-              
+
               return (
                 <div
                   key={key}
                   onClick={() => updateFormData('plan', key)}
-                  className={`p-6 rounded-xl border-2 cursor-pointer transition-all ${
-                    isSelected 
-                      ? 'border-blue-500 bg-blue-500/10' 
-                      : 'border-slate-700 bg-slate-800/30 hover:border-slate-600'
-                  }`}
+                  style={{
+                    padding: '1.5rem',
+                    borderRadius: '0.75rem',
+                    border: `2px solid ${isSelected ? '#6888ff' : N.dark}`,
+                    background: isSelected ? 'rgba(37,99,235,0.1)' : 'rgba(30,41,59,0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) e.currentTarget.style.borderColor = N.dark
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) e.currentTarget.style.borderColor = N.dark
+                  }}
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${plan.color} flex items-center justify-center mb-4`}>
-                    <Icon className="w-6 h-6 text-white" />
+                  <div style={{
+                    width: '3rem',
+                    height: '3rem',
+                    borderRadius: '0.75rem',
+                    background: `linear-gradient(135deg, ${plan.colorStart}, ${plan.colorEnd})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <Icon style={{ width: '1.5rem', height: '1.5rem', color: '#fff' }} />
                   </div>
-                  
-                  <h4 className="text-lg font-bold text-white mb-1">{plan.name}</h4>
-                  <p className="text-2xl font-bold text-white mb-2">
-                    ${plan.price.toLocaleString()} <span className="text-sm text-slate-400">/mes</span>
+
+                  <h4 style={{ fontSize: '1.125rem', fontWeight: 700, color: N.text, marginBottom: '0.25rem' }}>{plan.name}</h4>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text, marginBottom: '0.5rem' }}>
+                    ${plan.price.toLocaleString()} <span style={{ fontSize: '0.875rem', color: N.textSub }}>/mes</span>
                   </p>
-                  
-                  <ul className="space-y-1 text-sm text-slate-400">
+
+                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.875rem', color: N.textSub }}>
                     <li>• Hasta {plan.maxUsers === -1 ? 'ilimitados' : plan.maxUsers} usuarios</li>
                     <li>• {plan.features.length} módulos incluidos</li>
                   </ul>
 
                   {isSelected && (
-                    <div className="mt-4 flex items-center gap-2 text-blue-400">
-                      <CheckCircle className="w-5 h-5" />
-                      <span className="text-sm font-medium">Seleccionado</span>
+                    <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#60a5fa' }}>
+                      <CheckCircle style={{ width: '1.25rem', height: '1.25rem' }} />
+                      <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Seleccionado</span>
                     </div>
                   )}
                 </div>
@@ -405,21 +509,29 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
 
       {/* Step 3: License Configuration */}
       {step === 3 && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-purple-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Calendar style={{ width: '1.25rem', height: '1.25rem', color: '#c084fc' }} />
             Configuración de Licencia
           </h3>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>
                 Duración (meses)
               </label>
               <select
                 value={formData.licenseDuration}
                 onChange={(e) => updateFormData('licenseDuration', parseInt(e.target.value))}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                style={{
+                  width: '100%',
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
               >
                 <option value={1}>1 mes</option>
                 <option value={3}>3 meses</option>
@@ -429,42 +541,57 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>
                 Fecha de Inicio
               </label>
               <input
-                type="date"
+                type="Fecha"
                 value={formData.licenseStartDate.toISOString().split('T')[0]}
                 onChange={(e) => updateFormData('licenseStartDate', new Date(e.target.value))}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500"
+                style={{
+                  width: '100%',
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
               />
             </div>
           </div>
 
-          <div className="p-4 bg-slate-800/50 rounded-lg">
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div style={{ padding: '1rem', background: 'rgba(30,41,59,0.5)', borderRadius: '0.5rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
               <input
                 type="checkbox"
                 checked={formData.autoRenewal}
                 onChange={(e) => updateFormData('autoRenewal', e.target.checked)}
-                className="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-500"
+                style={{
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  borderRadius: '0.25rem',
+                  border: `1px solid ${N.dark}`,
+                  background: N.base,
+                  accentColor: '#6888ff'
+                }}
               />
               <div>
-                <span className="text-white font-medium">Renovación Automática</span>
-                <p className="text-xs text-slate-400">
+                <span style={{ color: N.text, fontWeight: 500 }}>Renovación Automática</span>
+                <p style={{ fontSize: '0.75rem', color: N.textSub }}>
                   La licencia se renovará automáticamente al vencer
                 </p>
               </div>
             </label>
           </div>
 
-          <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-            <p className="text-sm text-blue-300">
-              📅 La licencia expirará el: {' '}
+          <div style={{ padding: '1rem', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.3)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#93c5fd' }}>
+              ðŸ“… La licencia expirará el: {' '}
               <strong>
                 {new Date(
-                  formData.licenseStartDate.getTime() + 
+                  formData.licenseStartDate.getTime() +
                   formData.licenseDuration * 30 * 24 * 60 * 60 * 1000
                 ).toLocaleDateString()}
               </strong>
@@ -475,79 +602,117 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
 
       {/* Step 4: Access Configuration */}
       {step === 4 && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Globe className="w-5 h-5 text-green-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Globe style={{ width: '1.25rem', height: '1.25rem', color: '#4ade80' }} />
             Configuración de Acceso
           </h3>
 
-          <div className="p-4 bg-slate-800/50 rounded-lg">
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+          <div style={{ padding: '1rem', background: 'rgba(30,41,59,0.5)', borderRadius: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: N.textSub, marginBottom: '0.5rem' }}>
               URL de Acceso
             </label>
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400">silexar.com/</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ color: N.textSub }}>silexar.com/</span>
               <input
                 type="text"
                 value={formData.urlSlug}
                 onChange={(e) => updateFormData('urlSlug', generateSlug(e.target.value))}
-                className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white"
+                style={{
+                  flex: 1,
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
                 placeholder="miempresa"
               />
               <button
                 type="button"
                 onClick={() => navigator.clipboard.writeText(`silexar.com/${formData.urlSlug}`)}
-                className="p-2 text-slate-400 hover:text-white"
+                style={{ padding: '0.5rem', color: N.textSub, background: 'none', border: 'none', cursor: 'pointer' }}
               >
-                <Copy className="w-5 h-5" />
+                <Copy style={{ width: '1.25rem', height: '1.25rem' }} />
               </button>
             </div>
           </div>
 
-          <h4 className="text-white font-medium flex items-center gap-2">
-            <User className="w-4 h-4" />
+          <h4 style={{ color: N.text, fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <User style={{ width: '1rem', height: '1rem' }} />
             Usuario Administrador
           </h4>
 
-          <div className="grid grid-cols-2 gap-4">
-            <NeuromorphicInput
-              label="Nombre del Admin *"
-              placeholder="Juan Pérez"
-              value={formData.adminName}
-              onChange={(e) => updateFormData('adminName', e.target.value)}
-              icon={<User className="w-4 h-4" />}
-            />
-            <NeuromorphicInput
-              label="Email del Admin *"
-              type="email"
-              placeholder="admin@empresa.com"
-              value={formData.adminEmail}
-              onChange={(e) => updateFormData('adminEmail', e.target.value)}
-              icon={<Mail className="w-4 h-4" />}
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Nombre del Admin *</label>
+              <input
+                type="text"
+                placeholder="Juan Pérez"
+                value={formData.adminName}
+                onChange={(e) => updateFormData('adminName', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>Email del Admin *</label>
+              <input
+                type="email"
+                placeholder="admin@empresa.com"
+                value={formData.adminEmail}
+                onChange={(e) => updateFormData('adminEmail', e.target.value)}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: N.base,
+                  border: `1px solid ${N.dark}`,
+                  borderRadius: '0.5rem',
+                  color: N.text,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
           </div>
 
-          <div className="relative">
-            <NeuromorphicInput
-              label="Contraseña Inicial *"
+          <div style={{ position: 'relative' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: N.textSub, marginBottom: '0.25rem' }}>
+              Contraseña Inicial *
+            </label>
+            <input
               type={showPassword ? 'text' : 'password'}
               placeholder="Mínimo 8 caracteres"
               value={formData.adminPassword}
               onChange={(e) => updateFormData('adminPassword', e.target.value)}
-              icon={<Shield className="w-4 h-4" />}
+              style={{
+                width: '100%',
+                padding: '0.5rem 0.75rem',
+                paddingRight: '6rem',
+                background: N.base,
+                border: `1px solid ${N.dark}`,
+                borderRadius: '0.5rem',
+                color: N.text,
+                fontSize: '0.875rem'
+              }}
             />
-            <div className="absolute right-3 top-9 flex items-center gap-2">
+            <div style={{ position: 'absolute', right: '0.75rem', top: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-slate-400 hover:text-white"
+                style={{ color: N.textSub, background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem' }}
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff style={{ width: '1.25rem', height: '1.25rem' }} /> : <Eye style={{ width: '1.25rem', height: '1.25rem' }} />}
               </button>
               <button
                 type="button"
                 onClick={generatePassword}
-                className="text-xs px-2 py-1 bg-blue-600 text-white rounded"
+                style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', background: '#6888ff', color: '#fff', borderRadius: '0.25rem', border: 'none', cursor: 'pointer' }}
               >
                 Generar
               </button>
@@ -558,36 +723,36 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
 
       {/* Step 5: Summary & Terms */}
       {step === 5 && (
-        <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-green-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: N.text, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <CheckCircle style={{ width: '1.25rem', height: '1.25rem', color: '#4ade80' }} />
             Resumen y Confirmación
           </h3>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-800/50 rounded-lg">
-                <h4 className="text-xs text-slate-400 uppercase mb-2">Empresa</h4>
-                <p className="text-white font-medium">{formData.companyName}</p>
-                <p className="text-sm text-slate-400">{formData.taxId}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ padding: '1rem', background: 'rgba(30,41,59,0.5)', borderRadius: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.75rem', color: N.textSub, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Empresa</h4>
+                <p style={{ color: N.text, fontWeight: 500 }}>{formData.companyName}</p>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>{formData.taxId}</p>
               </div>
 
-              <div className="p-4 bg-slate-800/50 rounded-lg">
-                <h4 className="text-xs text-slate-400 uppercase mb-2">Plan</h4>
-                <p className="text-white font-medium">{PLANS[formData.plan].name}</p>
-                <p className="text-sm text-slate-400">{formData.licenseDuration} meses</p>
+              <div style={{ padding: '1rem', background: 'rgba(30,41,59,0.5)', borderRadius: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.75rem', color: N.textSub, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Plan</h4>
+                <p style={{ color: N.text, fontWeight: 500 }}>{PLANS[formData.plan].name}</p>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>{formData.licenseDuration} meses</p>
               </div>
 
-              <div className="p-4 bg-slate-800/50 rounded-lg">
-                <h4 className="text-xs text-slate-400 uppercase mb-2">Acceso</h4>
-                <p className="text-white font-medium">silexar.com/{formData.urlSlug}</p>
-                <p className="text-sm text-slate-400">{formData.adminEmail}</p>
+              <div style={{ padding: '1rem', background: 'rgba(30,41,59,0.5)', borderRadius: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.75rem', color: N.textSub, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Acceso</h4>
+                <p style={{ color: N.text, fontWeight: 500 }}>silexar.com/{formData.urlSlug}</p>
+                <p style={{ fontSize: '0.875rem', color: N.textSub }}>{formData.adminEmail}</p>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>
                   Descuento (%)
                 </label>
                 <input
@@ -596,18 +761,34 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
                   max={50}
                   value={formData.discountPercent}
                   onChange={(e) => updateFormData('discountPercent', parseInt(e.target.value) || 0)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white"
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.75rem',
+                    background: N.base,
+                    border: `1px solid ${N.dark}`,
+                    borderRadius: '0.5rem',
+                    color: N.text,
+                    fontSize: '0.875rem'
+                  }}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: 500, color: N.textSub }}>
                   Ciclo de Facturación
                 </label>
                 <select
                   value={formData.billingCycle}
                   onChange={(e) => updateFormData('billingCycle', e.target.value as ClientFormData['billingCycle'])}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white"
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.75rem',
+                    background: N.base,
+                    border: `1px solid ${N.dark}`,
+                    borderRadius: '0.5rem',
+                    color: N.text,
+                    fontSize: '0.875rem'
+                  }}
                 >
                   <option value="monthly">Mensual</option>
                   <option value="quarterly">Trimestral</option>
@@ -615,22 +796,22 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
                 </select>
               </div>
 
-              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <h4 className="text-xs text-green-400 uppercase mb-2">Total a Cobrar</h4>
-                <p className="text-2xl font-bold text-white">
+              <div style={{ padding: '1rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.75rem', color: '#4ade80', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Total a Cobrar</h4>
+                <p style={{ fontSize: '1.5rem', fontWeight: 700, color: N.text }}>
                   ${calculateTotal().toLocaleString()} CLP
                 </p>
-                <p className="text-xs text-slate-400">
-                  {formData.billingCycle === 'monthly' ? 'Por mes' : 
-                   formData.billingCycle === 'quarterly' ? 'Por trimestre' : 'Por año'}
+                <p style={{ fontSize: '0.75rem', color: N.textSub }}>
+                  {formData.billingCycle === 'monthly' ? 'Por mes' :
+                    formData.billingCycle === 'quarterly' ? 'Por trimestre' : 'Por año'}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-            <p className="text-sm text-blue-300 flex items-center gap-2">
-              <Send className="w-4 h-4" />
+          <div style={{ padding: '1rem', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.3)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#93c5fd', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Send style={{ width: '1rem', height: '1rem' }} />
               Al confirmar, se enviará un email de bienvenida a <strong>{formData.adminEmail}</strong> con las credenciales de acceso.
             </p>
           </div>
@@ -638,32 +819,25 @@ export function ClientWizard({ onComplete, onCancel }: ClientWizardProps) {
       )}
 
       {/* Navigation */}
-      <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-700">
-        <NeuromorphicButton
-          variant="secondary"
-          onClick={step === 1 ? onCancel : prevStep}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1.5rem', borderTop: `1px solid ${N.dark}` }}>
+        <NeuButton variant="secondary" onClick={step === 1 ? onCancel : prevStep}>
+          <ArrowLeft style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
           {step === 1 ? 'Cancelar' : 'Anterior'}
-        </NeuromorphicButton>
+        </NeuButton>
 
         {step < totalSteps ? (
-          <NeuromorphicButton variant="primary" onClick={nextStep}>
+          <NeuButton variant="primary" onClick={nextStep}>
             Siguiente
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </NeuromorphicButton>
+            <ArrowRight style={{ width: '1rem', height: '1rem', marginLeft: '0.5rem' }} />
+          </NeuButton>
         ) : (
-          <NeuromorphicButton
-            variant="success"
-            onClick={handleSubmit}
-            isLoading={isSubmitting}
-          >
-            <CheckCircle className="w-4 h-4 mr-2" />
+          <NeuButton variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
+            <CheckCircle style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
             Crear Cliente
-          </NeuromorphicButton>
+          </NeuButton>
         )}
       </div>
-    </NeuromorphicCard>
+    </NeuCard>
   )
 }
 

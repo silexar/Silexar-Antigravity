@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📢 SILEXAR PULSE - Sistema de Anuncios
+ * ðŸ“¢ SILEXAR PULSE - Sistema de Anuncios
  * Broadcast de mensajes a usuarios y tenants
  * 
  * @description Sistema de anuncios con:
@@ -12,13 +12,12 @@
  * 
  * @version 2025.1.0
  * @tier TIER_0_FORTUNE_10
+ * @last_modified 2025-04-28 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Megaphone,
   Send,
@@ -175,143 +174,151 @@ export function AnnouncementSystem() {
   }
 
   const toggleActive = (id: string) => {
-    setAnnouncements(prev => prev.map(a => 
+    setAnnouncements(prev => prev.map(a =>
       a.id === id ? { ...a, active: !a.active } : a
     ))
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'info': return <Info className="w-5 h-5 text-blue-400" />
-      case 'warning': return <AlertTriangle className="w-5 h-5 text-yellow-400" />
-      case 'maintenance': return <Wrench className="w-5 h-5 text-orange-400" />
-      case 'celebration': return <PartyPopper className="w-5 h-5 text-pink-400" />
-      default: return <Info className="w-5 h-5" />
+      case 'info': return <Info style={{ width: 20, height: 20, color: N.accent }} />
+      case 'warning': return <AlertTriangle style={{ width: 20, height: 20, color: N.accent }} />
+      case 'maintenance': return <Wrench style={{ width: 20, height: 20, color: '#6888ff' }} />
+      case 'celebration': return <PartyPopper style={{ width: 20, height: 20, color: '#6888ff' }} />
+      default: return <Info style={{ width: 20, height: 20, color: N.textSub }} />
     }
   }
 
   const getTypeStyle = (type: string) => {
     switch (type) {
-      case 'info': return 'bg-blue-500/10 border-blue-500/30'
-      case 'warning': return 'bg-yellow-500/10 border-yellow-500/30'
-      case 'maintenance': return 'bg-orange-500/10 border-orange-500/30'
-      case 'celebration': return 'bg-pink-500/10 border-pink-500/30'
-      default: return 'bg-slate-500/10 border-slate-500/30'
+      case 'info': return { background: `${N.accent}15`, border: `1px solid ${N.accent}30` }
+      case 'warning': return { background: `${N.accent}15`, border: `1px solid ${N.accent}30` }
+      case 'maintenance': return { background: '#6888ff15', border: '1px solid #6888ff30' }
+      case 'celebration': return { background: '#6888ff15', border: '1px solid #6888ff30' }
+      default: return { background: `${N.dark}15`, border: `1px solid ${N.dark}30` }
     }
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pink-500/30 border-t-pink-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Anuncios...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Anuncios...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Megaphone className="w-5 h-5 text-pink-400" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <Megaphone style={{ width: 20, height: 20, color: '#6888ff' }} />
           Sistema de Anuncios
         </h3>
-        <NeuromorphicButton variant="primary" size="sm" onClick={() => setShowCreateModal(true)}>
-          <Plus className="w-4 h-4 mr-1" />
+        <NeuButton variant="primary" onClick={() => setShowCreateModal(true)}>
+          <Plus style={{ width: 16, height: 16, marginRight: 4 }} />
           Nuevo Anuncio
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{announcements.filter(a => a.active).length}</p>
-          <p className="text-xs text-slate-400">Activos</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+        <div style={{ padding: '12px', background: `${N.dark}50`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{announcements.filter(a => a.active).length}</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Activos</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">
+        <div style={{ padding: '12px', background: `${N.dark}50`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
             {announcements.reduce((sum, a) => sum + a.views, 0)}
           </p>
-          <p className="text-xs text-slate-400">Vistas Totales</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Vistas Totales</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div style={{ padding: '12px', background: `${N.dark}50`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
             {announcements.filter(a => a.type === 'celebration').length}
           </p>
-          <p className="text-xs text-slate-400">Celebraciones</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Celebraciones</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-yellow-400">
+        <div style={{ padding: '12px', background: `${N.dark}50`, borderRadius: '8px', textAlign: 'center' }}>
+          <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
             {announcements.filter(a => a.priority === 'high').length}
           </p>
-          <p className="text-xs text-slate-400">Alta Prioridad</p>
+          <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Alta Prioridad</p>
         </div>
       </div>
 
       {/* Create Modal */}
       {showCreateModal && (
-        <NeuromorphicCard variant="glow" className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white font-bold">Crear Anuncio</h4>
-            <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-white" aria-label="Cerrar">
-              <X className="w-5 h-5" />
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <h4 style={{ color: N.text, fontWeight: 700 }}>Crear Anuncio</h4>
+            <button onClick={() => setShowCreateModal(false)} style={{ background: 'none', border: 'none', color: N.textSub, cursor: 'pointer' }} aria-label="Cerrar">
+              <X style={{ width: 20, height: 20 }} />
             </button>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Tipo</label>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Tipo</label>
               <select
                 value={newAnnouncement.type}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, type: e.target.value as Announcement['type'] }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50` }}
               >
-                <option value="info">ℹ️ Información</option>
-                <option value="warning">⚠️ Advertencia</option>
-                <option value="maintenance">🔧 Mantenimiento</option>
-                <option value="celebration">🎉 Celebración</option>
+                <option value="info">„¹ï¸ Información</option>
+                <option value="warning">š ï¸ Advertencia</option>
+                <option value="maintenance">ðŸ”§ Mantenimiento</option>
+                <option value="celebration">ðŸŽ‰ Celebración</option>
               </select>
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Destino</label>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Destino</label>
               <select
                 value={newAnnouncement.target}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, target: e.target.value as 'global' | 'tenants' }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50` }}
               >
-                <option value="global">🌍 Global (todos)</option>
-                <option value="tenants">🏢 Tenants específicos</option>
+                <option value="global">ðŸŒ Global (todos)</option>
+                <option value="tenants">ðŸ¢ Tenants específicos</option>
               </select>
             </div>
-            <div className="col-span-2">
-              <label className="text-xs text-slate-400 block mb-1">Título</label>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Título</label>
               <input
                 type="text"
                 value={newAnnouncement.title}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, title: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50` }}
                 placeholder="Título del anuncio"
               />
             </div>
-            <div className="col-span-2">
-              <label className="text-xs text-slate-400 block mb-1">Mensaje</label>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Mensaje</label>
               <textarea
                 value={newAnnouncement.message}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, message: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50`, resize: 'vertical' }}
                 rows={3}
                 placeholder="Contenido del anuncio..."
               />
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Prioridad</label>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Prioridad</label>
               <select
                 value={newAnnouncement.priority}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, priority: e.target.value as Announcement['priority'] }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50` }}
               >
                 <option value="low">Baja</option>
                 <option value="medium">Media</option>
@@ -319,11 +326,11 @@ export function AnnouncementSystem() {
               </select>
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Expira en</label>
+              <label style={{ color: N.textSub, fontSize: '0.75rem', display: 'block', marginBottom: '4px' }}>Expira en</label>
               <select
                 value={newAnnouncement.expiresIn}
                 onChange={(e) => setNewAnnouncement(na => ({ ...na, expiresIn: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                style={{ width: '100%', background: N.dark, color: N.text, fontSize: '0.875rem', borderRadius: '6px', padding: '8px 12px', border: `1px solid ${N.dark}50` }}
               >
                 <option value="1">1 hora</option>
                 <option value="6">6 horas</option>
@@ -332,90 +339,100 @@ export function AnnouncementSystem() {
                 <option value="168">1 semana</option>
               </select>
             </div>
-            <div className="col-span-2 flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+            <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: N.text, fontSize: '0.875rem' }}>
                 <input
                   type="checkbox"
                   checked={newAnnouncement.dismissible}
                   onChange={(e) => setNewAnnouncement(na => ({ ...na, dismissible: e.target.checked }))}
-                  className="rounded"
+                  style={{ borderRadius: '4px' }}
                 />
                 Permitir cerrar
               </label>
             </div>
-            <div className="col-span-2 flex justify-end gap-2">
-              <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowCreateModal(false)}>
+            <div style={{ gridColumn: 'span 2', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <NeuButton variant="secondary" onClick={() => setShowCreateModal(false)}>
                 Cancelar
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="primary" size="sm" onClick={createAnnouncement}>
-                <Send className="w-4 h-4 mr-1" />
+              </NeuButton>
+              <NeuButton variant="primary" onClick={createAnnouncement}>
+                <Send style={{ width: 16, height: 16, marginRight: 4 }} />
                 Enviar
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Announcements List */}
-      <div className="space-y-3">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {announcements.map(announcement => (
-          <div 
+          <div
             key={announcement.id}
-            className={`p-4 rounded-lg border ${getTypeStyle(announcement.type)} ${
-              !announcement.active ? 'opacity-50' : ''
-            }`}
+            style={{
+              ...getTypeStyle(announcement.type),
+              padding: '1rem',
+              borderRadius: '8px',
+              opacity: !announcement.active ? 0.5 : 1,
+              transition: 'opacity 0.2s'
+            }}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 {getTypeIcon(announcement.type)}
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{announcement.title}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ color: N.text, fontWeight: 500 }}>{announcement.title}</span>
                     {announcement.priority === 'high' && (
-                      <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded">
+                      <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.accent}20`, color: N.accent, borderRadius: '4px' }}>
                         Alta prioridad
                       </span>
                     )}
                     {announcement.target === 'global' ? (
-                      <Globe className="w-4 h-4 text-slate-400" />
+                      <Globe style={{ width: 16, height: 16, color: N.textSub }} />
                     ) : (
-                      <Building2 className="w-4 h-4 text-slate-400" />
+                      <Building2 style={{ width: 16, height: 16, color: N.textSub }} />
                     )}
                   </div>
-                  <p className="text-sm text-slate-400 mt-1">{announcement.message}</p>
-                  <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
+                  <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '4px' }}>{announcement.message}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '8px', fontSize: '0.75rem', color: N.textSub }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Eye style={{ width: 12, height: 12 }} />
                       {announcement.views} vistas
                     </span>
                     {announcement.dismissible && (
-                      <span className="flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" />
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <CheckCircle style={{ width: 12, height: 12 }} />
                         {announcement.dismissed} cerrados
                       </span>
                     )}
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Clock style={{ width: 12, height: 12 }} />
                       {announcement.createdAt.toLocaleDateString()}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <button
                   onClick={() => toggleActive(announcement.id)}
-                  className={`px-2 py-1 text-xs rounded ${
-                    announcement.active ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'
-                  }`}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: announcement.active ? `${N.accent}20` : `${N.dark}50`,
+                    color: announcement.active ? N.accent : N.textSub
+                  }}
                 >
                   {announcement.active ? 'Activo' : 'Pausado'}
                 </button>
                 <button
                   onClick={() => deleteAnnouncement(announcement.id)}
-                  className="p-1 text-red-400 hover:bg-red-500/20 rounded"
+                  style={{ padding: '4px', color: N.accent, background: 'none', border: 'none', cursor: 'pointer', borderRadius: '4px' }}
                   aria-label="Eliminar"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 style={{ width: 16, height: 16 }} />
                 </button>
               </div>
             </div>

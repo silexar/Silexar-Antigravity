@@ -60,7 +60,7 @@ type NivelProbabilidad = 'ALTA' | 'MEDIA' | 'BAJA' | 'CRITICA';
 interface ContratoRenovacion {
   id: string;
   clienteNombre: string;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   valorActual: number;
   probabilidadRenovacion: number;
   nivelProbabilidad: NivelProbabilidad;
@@ -74,7 +74,7 @@ interface ContratoRenovacion {
 
 const mockContratos: ContratoRenovacion[] = [
   {
-    id: '1', clienteNombre: 'SuperMax', fechaVencimiento: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+    id: '1', clienteNombre: 'SuperMax', fechaVencimientos: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
     valorActual: 125000000, probabilidadRenovacion: 92, nivelProbabilidad: 'ALTA',
     accionRecomendada: 'Contactar 7 días antes con oferta mejorada',
     factores: [
@@ -84,7 +84,7 @@ const mockContratos: ContratoRenovacion[] = [
     ]
   },
   {
-    id: '2', clienteNombre: 'Banco XYZ', fechaVencimiento: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
+    id: '2', clienteNombre: 'Banco XYZ', fechaVencimientos: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
     valorActual: 85000000, probabilidadRenovacion: 88, nivelProbabilidad: 'ALTA',
     accionRecomendada: 'Proponer extensión anual con descuento 5%',
     factores: [
@@ -93,7 +93,7 @@ const mockContratos: ContratoRenovacion[] = [
     ]
   },
   {
-    id: '3', clienteNombre: 'AutoMax', fechaVencimiento: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+    id: '3', clienteNombre: 'AutoMax', fechaVencimientos: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
     valorActual: 45000000, probabilidadRenovacion: 65, nivelProbabilidad: 'MEDIA',
     accionRecomendada: 'Reunión presencial + análisis de competencia',
     factores: [
@@ -102,7 +102,7 @@ const mockContratos: ContratoRenovacion[] = [
     ]
   },
   {
-    id: '4', clienteNombre: 'TechCorp', fechaVencimiento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    id: '4', clienteNombre: 'TechCorp', fechaVencimientos: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     valorActual: 95000000, probabilidadRenovacion: 35, nivelProbabilidad: 'CRITICA',
     accionRecomendada: 'Intervención gerencial + oferta defensiva',
     factores: [
@@ -162,13 +162,13 @@ const ContratoRenovacionCard: React.FC<{
   onToggle: () => void;
 }> = ({ contrato, expandido, onToggle }) => {
   const nivelConfig = {
-    ALTA: { bg: 'rgba(34,197,94,0.08)', border: '#22c55e40', icon: <CheckCircle2 className="w-5 h-5" style={{ color: '#22c55e' }} />, label: '✅ Alta Probabilidad', color: '#22c55e' },
-    MEDIA: { bg: 'rgba(245,158,11,0.08)', border: '#f59e0b40', icon: <AlertTriangle className="w-5 h-5" style={{ color: '#f59e0b' }} />, label: '⚠️ Riesgo Medio', color: '#f59e0b' },
+    ALTA: { bg: 'rgba(34,197,94,0.08)', border: '#6888ff40', icon: <CheckCircle2 className="w-5 h-5" style={{ color: '#6888ff' }} />, label: '✅ Alta Probabilidad', color: '#6888ff' },
+    MEDIA: { bg: 'rgba(245,158,11,0.08)', border: '#6888ff40', icon: <AlertTriangle className="w-5 h-5" style={{ color: '#6888ff' }} />, label: '⚠️ Riesgo Medio', color: '#6888ff' },
     BAJA: { bg: 'rgba(249,115,22,0.08)', border: '#f9731640', icon: <AlertCircle className="w-5 h-5" style={{ color: '#f97316' }} />, label: '🟠 Riesgo Alto', color: '#f97316' },
-    CRITICA: { bg: 'rgba(239,68,68,0.08)', border: '#ef444440', icon: <XCircle className="w-5 h-5" style={{ color: '#ef4444' }} />, label: '❌ Riesgo Crítico', color: '#ef4444' }
+    CRITICA: { bg: 'rgba(239,68,68,0.08)', border: '#9aa3b840', icon: <XCircle className="w-5 h-5" style={{ color: '#9aa3b8' }} />, label: '❌ Riesgo Crítico', color: '#9aa3b8' }
   }[contrato.nivelProbabilidad];
 
-  const diasRestantes = formatDias(contrato.fechaVencimiento);
+  const diasRestantes = formatDias(contrato.fechaVencimientos);
 
   return (
     <motion.div layout className="rounded-2xl overflow-hidden" style={{ background: nivelConfig.bg, border: `1px solid ${nivelConfig.border}` }}>
@@ -215,7 +215,7 @@ const ContratoRenovacionCard: React.FC<{
                           className="h-full rounded-full"
                           style={{ 
                             width: `${f.valor}%`,
-                            background: f.impacto === 'positivo' ? '#22c55e' : f.impacto === 'negativo' ? '#ef4444' : '#f59e0b'
+                            background: f.impacto === 'positivo' ? '#6888ff' : f.impacto === 'negativo' ? '#9aa3b8' : '#6888ff'
                           }}
                         />
                       </div>
@@ -236,7 +236,7 @@ const ContratoRenovacionCard: React.FC<{
                 <FileText className="w-4 h-4" />
                 Propuesta
               </button>
-              <button className="flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1 transition-all" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', boxShadow: neuXs }}>
+              <button className="flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1 transition-all" style={{ background: 'rgba(34,197,94,0.12)', color: '#6888ff', boxShadow: neuXs }}>
                 <Mail className="w-4 h-4" />
                 Email
               </button>
@@ -306,7 +306,7 @@ export default function RenovacionesDashboard() {
           <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
               <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />
+                <DollarSign className="w-5 h-5" style={{ color: '#6888ff' }} />
               </div>
               <span className="text-sm" style={{ color: N.textSub }}>Valor Total</span>
             </div>
@@ -315,20 +315,20 @@ export default function RenovacionesDashboard() {
           <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
               <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                <AlertTriangle className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                <AlertTriangle className="w-5 h-5" style={{ color: '#6888ff' }} />
               </div>
               <span className="text-sm" style={{ color: N.textSub }}>Valor en Riesgo</span>
             </div>
-            <p className="text-3xl font-black" style={{ color: '#f59e0b' }}>{formatCurrency(valorEnRiesgo)}</p>
+            <p className="text-3xl font-black" style={{ color: '#6888ff' }}>{formatCurrency(valorEnRiesgo)}</p>
           </NeuCard>
           <NeuCard className="p-5">
             <div className="flex items-center gap-2 mb-2">
               <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
+                <TrendingUp className="w-5 h-5" style={{ color: '#6888ff' }} />
               </div>
               <span className="text-sm" style={{ color: N.textSub }}>Tasa Renovación Histórica</span>
             </div>
-            <p className="text-3xl font-black" style={{ color: '#22c55e' }}>78%</p>
+            <p className="text-3xl font-black" style={{ color: '#6888ff' }}>78%</p>
           </NeuCard>
         </div>
 
@@ -338,14 +338,14 @@ export default function RenovacionesDashboard() {
           <div className="relative">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-2 rounded-xl" style={{ background: N.base, boxShadow: neuXs }}>
-                <Brain className="w-6 h-6" style={{ color: '#f59e0b' }} />
+                <Brain className="w-6 h-6" style={{ color: '#6888ff' }} />
               </div>
               <h2 className="font-black" style={{ color: N.text }}>🤖 FACTORES ANALIZADOS POR IA</h2>
             </div>
             <div className="grid md:grid-cols-3 gap-3">
               {factoresIA.map((factor, idx) => (
                 <div key={idx} className="flex items-center gap-2 p-2 rounded-xl" style={{ background: 'rgba(104,136,255,0.08)' }}>
-                  <CheckCircle2 className="w-4 h-4" style={{ color: '#22c55e' }} />
+                  <CheckCircle2 className="w-4 h-4" style={{ color: '#6888ff' }} />
                   <span className="text-sm" style={{ color: N.text }}>{factor}</span>
                 </div>
               ))}
@@ -358,7 +358,7 @@ export default function RenovacionesDashboard() {
           {/* Alta Probabilidad */}
           {contratosAgrupados.ALTA.length > 0 && (
             <div>
-              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#22c55e' }}>
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#6888ff' }}>
                 <CheckCircle2 className="w-5 h-5" />
                 ✅ ALTA PROBABILIDAD RENOVACIÓN (85%+)
               </h3>
@@ -378,7 +378,7 @@ export default function RenovacionesDashboard() {
           {/* Riesgo Medio */}
           {contratosAgrupados.MEDIA.length > 0 && (
             <div>
-              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#f59e0b' }}>
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#6888ff' }}>
                 <AlertTriangle className="w-5 h-5" />
                 ⚠️ RIESGO MEDIO (50-70%)
               </h3>
@@ -398,7 +398,7 @@ export default function RenovacionesDashboard() {
           {/* Riesgo Alto/Crítico */}
           {(contratosAgrupados.BAJA.length > 0 || contratosAgrupados.CRITICA.length > 0) && (
             <div>
-              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#ef4444' }}>
+              <h3 className="text-lg font-black mb-3 flex items-center gap-2" style={{ color: '#9aa3b8' }}>
                 <XCircle className="w-5 h-5" />
                 ❌ RIESGO ALTO/CRÍTICO (&lt;50%)
               </h3>

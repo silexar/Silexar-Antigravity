@@ -1,9 +1,9 @@
 /**
- * ?? DESKTOP: IA Predictiva de Renovación
+ * ?? DESKTOP: IA Predictiva de Renovaciï¿½n
  * 
  * Motor inteligente que analiza historial, predice probabilidad
- * de renovación, y genera alertas 30/15/7 días antes.
- * Sugiere acciones y calcula riesgo de pérdida.
+ * de renovaciï¿½n, y genera alertas 30/15/7 dï¿½as antes.
+ * Sugiere acciones y calcula riesgo de pï¿½rdida.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform DESKTOP
@@ -24,7 +24,7 @@ interface Prediccion {
   cliente: string;
   contrato: string;
   valorActual: number;
-  fechaVencimiento: string;
+  fechaVencimientos: string;
   diasRestantes: number;
   probabilidad: number;
   tendencia: 'subiendo' | 'estable' | 'bajando';
@@ -37,33 +37,33 @@ interface Prediccion {
 const PREDICCIONES: Prediccion[] = [
   {
     id: 'p1', cliente: 'Banco Chile', contrato: 'SP-2024-0142',
-    valorActual: 85000000, fechaVencimiento: '2025-03-15', diasRestantes: 15,
+    valorActual: 85000000, fechaVencimientos: '2025-03-15', diasRestantes: 15,
     probabilidad: 92, tendencia: 'subiendo', riesgo: 'bajo',
-    factores: ['3 renovaciones consecutivas', 'Satisfacción alta', 'Presupuesto aprobado'],
-    accionSugerida: { tipo: 'llamar', descripcion: 'Llamar para confirmar renovación y ofrecer upgrade' },
+    factores: ['3 renovaciones consecutivas', 'Satisfacciï¿½n alta', 'Presupuesto aprobado'],
+    accionSugerida: { tipo: 'llamar', descripcion: 'Llamar para confirmar renovaciï¿½n y ofrecer upgrade' },
     historialRenovaciones: 3,
   },
   {
     id: 'p2', cliente: 'LATAM', contrato: 'SP-2024-0088',
-    valorActual: 200000000, fechaVencimiento: '2025-03-07', diasRestantes: 7,
+    valorActual: 200000000, fechaVencimientos: '2025-03-07', diasRestantes: 7,
     probabilidad: 65, tendencia: 'bajando', riesgo: 'alto',
-    factores: ['Reestructuración interna', 'Sin respuesta 5 días', 'Competencia activa'],
-    accionSugerida: { tipo: 'reunion', descripcion: 'Agendar reunión urgente con director comercial' },
+    factores: ['Reestructuraciï¿½n interna', 'Sin respuesta 5 dï¿½as', 'Competencia activa'],
+    accionSugerida: { tipo: 'reunion', descripcion: 'Agendar reuniï¿½n urgente con director comercial' },
     historialRenovaciones: 1,
   },
   {
     id: 'p3', cliente: 'Falabella', contrato: 'SP-2024-0189',
-    valorActual: 120000000, fechaVencimiento: '2025-04-01', diasRestantes: 31,
+    valorActual: 120000000, fechaVencimientos: '2025-04-01', diasRestantes: 31,
     probabilidad: 78, tendencia: 'estable', riesgo: 'medio',
     factores: ['2 renovaciones previas', 'Evaluando propuestas', 'Buen historial de pago'],
-    accionSugerida: { tipo: 'descuento', descripcion: 'Ofrecer 3% descuento adicional por renovación anticipada' },
+    accionSugerida: { tipo: 'descuento', descripcion: 'Ofrecer 3% descuento adicional por renovaciï¿½n anticipada' },
     historialRenovaciones: 2,
   },
   {
     id: 'p4', cliente: 'Cencosud', contrato: 'SP-2024-0201',
-    valorActual: 45000000, fechaVencimiento: '2025-03-20', diasRestantes: 20,
+    valorActual: 45000000, fechaVencimientos: '2025-03-20', diasRestantes: 20,
     probabilidad: 88, tendencia: 'subiendo', riesgo: 'bajo',
-    factores: ['Cliente fiel 4 años', 'Ya solicitó propuesta Q2', 'Incremento de inversión'],
+    factores: ['Cliente fiel 4 aï¿½os', 'Ya solicitï¿½ propuesta Q2', 'Incremento de inversiï¿½n'],
     accionSugerida: { tipo: 'propuesta', descripcion: 'Enviar propuesta Q2 con incremento de medios' },
     historialRenovaciones: 4,
   },
@@ -83,27 +83,27 @@ export function PredictorRenovacion() {
           <Brain className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-black text-[#69738c]">Predictor de Renovación</h2>
-          <p className="text-sm text-[#9aa3b8]">Análisis IA de {PREDICCIONES.length} contratos próximos a vencer</p>
+          <h2 className="text-xl font-black text-[#69738c]">Predictor de Renovaciï¿½n</h2>
+          <p className="text-sm text-[#9aa3b8]">Anï¿½lisis IA de {PREDICCIONES.length} contratos prï¿½ximos a vencer</p>
         </div>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-[#6888ff] rounded-2xl p-4 text-white shadow-lg">
-          <Target className="w-5 h-5 text-emerald-200" />
+          <Target className="w-5 h-5 text-[#6888ff]" />
           <p className="text-2xl font-black mt-1">{promedioProb}%</p>
-          <p className="text-xs text-emerald-200">Prob. promedio</p>
+          <p className="text-xs text-[#6888ff]">Prob. promedio</p>
         </div>
         <div className="bg-[#6888ff] rounded-2xl p-4 text-white shadow-lg">
           <DollarSign className="w-5 h-5 text-white/70" />
           <p className="text-2xl font-black mt-1">${(valorTotal / 1e6).toFixed(0)}M</p>
           <p className="text-xs text-white/70">Valor en juego</p>
         </div>
-        <div className="bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl p-4 text-white shadow-lg">
-          <AlertTriangle className="w-5 h-5 text-red-200" />
+        <div className="bg-gradient-to-br from-[#6888ff] to-[#5572ee] rounded-2xl p-4 text-white shadow-lg">
+          <AlertTriangle className="w-5 h-5 text-[#9aa3b8]" />
           <p className="text-2xl font-black mt-1">{enRiesgo}</p>
-          <p className="text-xs text-red-200">En riesgo alto</p>
+          <p className="text-xs text-[#9aa3b8]">En riesgo alto</p>
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export function PredictorRenovacion() {
                   <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20" stroke="#bec8de" strokeWidth="4" fill="none" />
                     <circle cx="24" cy="24" r="20" strokeWidth="4" fill="none" strokeLinecap="round"
-                      stroke={p.probabilidad >= 80 ? '#10b981' : p.probabilidad >= 60 ? '#f59e0b' : '#ef4444'}
+                      stroke={p.probabilidad >= 80 ? '#10b981' : p.probabilidad >= 60 ? '#6888ff' : '#9aa3b8'}
                       strokeDasharray={`${p.probabilidad * 1.257} 125.7`} />
                   </svg>
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-[#69738c]">
@@ -132,17 +132,17 @@ export function PredictorRenovacion() {
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-sm text-[#69738c]">{p.cliente}</p>
                     <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${
-                      p.riesgo === 'bajo' ? 'bg-emerald-100 text-emerald-600' :
-                      p.riesgo === 'medio' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'
+                      p.riesgo === 'bajo' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                      p.riesgo === 'medio' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
                     }`}>Riesgo {p.riesgo}</span>
                   </div>
-                  <p className="text-[10px] text-[#9aa3b8]">{p.contrato} · ${(p.valorActual / 1e6).toFixed(0)}M</p>
+                  <p className="text-[10px] text-[#9aa3b8]">{p.contrato} ï¿½ ${(p.valorActual / 1e6).toFixed(0)}M</p>
                 </div>
 
                 <div className="text-right">
                   <div className="flex items-center gap-1">
-                    {p.tendencia === 'subiendo' && <TrendingUp className="w-4 h-4 text-emerald-500" />}
-                    {p.tendencia === 'bajando' && <TrendingDown className="w-4 h-4 text-red-500" />}
+                    {p.tendencia === 'subiendo' && <TrendingUp className="w-4 h-4 text-[#6888ff]" />}
+                    {p.tendencia === 'bajando' && <TrendingDown className="w-4 h-4 text-[#9aa3b8]" />}
                     {p.tendencia === 'estable' && <span className="text-xs text-[#9aa3b8]">?</span>}
                   </div>
                   <p className="text-xs text-[#9aa3b8] flex items-center gap-0.5">
@@ -160,7 +160,7 @@ export function PredictorRenovacion() {
                     <div className="mt-1 space-y-1">
                       {p.factores.map((f) => (
                         <div key={f} className="flex items-center gap-2 text-xs text-[#69738c]">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          <CheckCircle2 className="w-3 h-3 text-[#6888ff]" />
                           {f}
                         </div>
                       ))}
@@ -169,7 +169,7 @@ export function PredictorRenovacion() {
 
                   <div className="p-3 rounded-xl bg-[#dfeaff] border border-[#bec8de30]">
                     <p className="text-[10px] font-bold text-[#6888ff] flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> Acción sugerida por IA
+                      <Sparkles className="w-3 h-3" /> Acciï¿½n sugerida por IA
                     </p>
                     <p className="text-xs text-[#6888ff] mt-0.5">{p.accionSugerida.descripcion}</p>
                   </div>
@@ -178,7 +178,7 @@ export function PredictorRenovacion() {
                     <button className="flex-1 py-2 bg-[#6888ff] text-white rounded-xl text-xs font-bold hover:bg-[#6888ff]/80 transition flex items-center justify-center gap-1">
                       <Phone className="w-3 h-3" /> Contactar
                     </button>
-                    <button className="flex-1 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition flex items-center justify-center gap-1">
+                    <button className="flex-1 py-2 bg-[#6888ff] text-white rounded-xl text-xs font-bold hover:bg-[#6888ff] transition flex items-center justify-center gap-1">
                       <RefreshCw className="w-3 h-3" /> Renovar
                     </button>
                     <button className="flex-1 py-2 border border-[#bec8de30] text-[#69738c] rounded-xl text-xs font-bold hover:bg-[#dfeaff] transition flex items-center justify-center gap-1">
@@ -187,7 +187,7 @@ export function PredictorRenovacion() {
                   </div>
 
                   <p className="text-[9px] text-[#9aa3b8] text-center">
-                    <Calendar className="w-3 h-3 inline" /> Historial: {p.historialRenovaciones} renovación{p.historialRenovaciones !== 1 ? 'es' : ''} previas
+                    <Calendar className="w-3 h-3 inline" /> Historial: {p.historialRenovaciones} renovaciï¿½n{p.historialRenovaciones !== 1 ? 'es' : ''} previas
                   </p>
                 </div>
               )}

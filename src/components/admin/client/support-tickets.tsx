@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🎫 SILEXAR PULSE - Support Tickets ULTIMATE (Client)
+ * ðŸŽ« SILEXAR PULSE - Support Tickets ULTIMATE (Client)
  * Sistema de tickets profesional con Chat en Tiempo Real e IA
  * 
  * @description Support Ultimate:
@@ -21,10 +21,8 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   HelpCircle,
   Plus,
@@ -77,7 +75,7 @@ interface SupportTicket {
   ticketNumber: string
   subject: string
   description: string
-  category: 'bug' | 'error' | 'billing' | 'feature' | 'performance' | 'security' | 'general' | 'auto_error'
+  category: 'bug' | 'Error' | 'billing' | 'feature' | 'performance' | 'security' | 'general' | 'auto_error'
   priority: 'low' | 'medium' | 'high' | 'critical'
   status: 'open' | 'in_progress' | 'waiting_response' | 'resolved' | 'closed'
   createdAt: Date
@@ -121,7 +119,7 @@ interface FAQItem {
 const setupAutoErrorHandler = (createAutoTicket: (error: ErrorEvent | PromiseRejectionEvent) => void) => {
   if (typeof window === 'undefined') return
 
-  window.addEventListener('error', (event) => {
+  window.addEventListener('error', (event: ErrorEvent) => {
     createAutoTicket(event)
   })
 
@@ -143,7 +141,7 @@ export function SupportTickets() {
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
-  
+
   const [newTicket, setNewTicket] = useState({
     subject: '',
     description: '',
@@ -156,10 +154,10 @@ export function SupportTickets() {
 
   // AI responses for common issues
   const aiResponses: Record<string, string> = {
-    'meta': '🤖 **AI Assistant**: Para problemas con Meta API, te sugiero:\n1. Ve a Integraciones → Meta\n2. Haz clic en "Reconectar"\n3. Autoriza nuevamente la aplicación\n\n¿Esto resuelve tu problema?',
-    'factura': '🤖 **AI Assistant**: Para temas de facturación:\n1. Ve a Billing → Facturas\n2. Descarga la factura deseada\n3. Si necesitas datos fiscales, contacta a tu ejecutivo\n\n¿Necesitas más ayuda?',
+    'meta': '🤖 **AI Assistant**: Para problemas con Meta API, te sugiero:\n1. Ve a Integraciones †’ Meta\n2. Haz clic en "Reconectar"\n3. Autoriza nuevamente la aplicación\n\n¿Esto resuelve tu problema?',
+    'factura': '🤖 **AI Assistant**: Para temas de facturación:\n1. Ve a Billing †’ Facturas\n2. Descarga la factura deseada\n3. Si necesitas datos fiscales, contacta a tu ejecutivo\n\n¿Necesitas más ayuda?',
     'lento': '🤖 **AI Assistant**: Para problemas de rendimiento:\n1. Limpia el caché del navegador\n2. Verifica tu conexión a internet\n3. Intenta en modo incógnito\n\n¿El problema persiste?',
-    'error': '🤖 **AI Assistant**: He detectado un error. Por favor:\n1. ¿Puedes describir qué estabas haciendo?\n2. ¿El error aparece siempre o es intermitente?\n3. ¿Otros usuarios tienen el mismo problema?\n\nEstoy recopilando información para el equipo técnico.',
+    'Error': '🤖 **AI Assistant**: He detectado un error. Por favor:\n1. ¿Puedes describir qué estabas haciendo?\n2. ¿El error aparece siempre o es intermitente?\n3. ¿Otros usuarios tienen el mismo problema?\n\nEstoy recopilando información para el equipo técnico.',
     'default': '🤖 **AI Assistant**: Gracias por contactarnos. Un agente de soporte revisará tu caso pronto. Mientras tanto, ¿puedo ayudarte con algo más?'
   }
 
@@ -167,12 +165,12 @@ export function SupportTickets() {
   const createAutoTicket = useCallback((error: ErrorEvent | PromiseRejectionEvent) => {
     const errorMessage = 'message' in error ? error.message : String(error.reason)
     const errorStack = 'error' in error && error.error ? error.error.stack : ''
-    
+
     const now = new Date()
     const autoTicket: SupportTicket = {
       id: `auto_${Date.now()}`,
       ticketNumber: `TKT-AUTO-${Date.now().toString().slice(-6)}`,
-      subject: `🚨 [AUTO] Error detectado: ${errorMessage.slice(0, 50)}...`,
+      subject: `ðŸš¨ [AUTO] Error detectado: ${errorMessage.slice(0, 50)}...`,
       description: `Error automáticamente detectado por el sistema.\n\nMensaje: ${errorMessage}`,
       category: 'auto_error',
       priority: 'high',
@@ -187,7 +185,7 @@ export function SupportTickets() {
           id: `msg_auto_${Date.now()}`,
           sender: 'system',
           senderName: 'Sistema Automático',
-          content: `🚨 **Error Detectado Automáticamente**\n\n**Mensaje:** ${errorMessage}\n\n**Stack:**\n\`\`\`\n${errorStack || 'No disponible'}\n\`\`\``,
+          content: `ðŸš¨ **Error Detectado Automáticamente**\n\n**Mensaje:** ${errorMessage}\n\n**Stack:**\n\`\`\`\n${errorStack || 'No disponible'}\n\`\`\``,
           timestamp: now
         }
       ],
@@ -208,9 +206,9 @@ export function SupportTickets() {
     }
 
     setTickets(prev => [autoTicket, ...prev])
-    
+
     // Notify user
-    
+
   }, [])
 
   useEffect(() => {
@@ -230,14 +228,14 @@ export function SupportTickets() {
     await new Promise(resolve => setTimeout(resolve, 500))
 
     const now = new Date()
-    
+
     setTickets([
       {
         id: 'ticket_001',
         ticketNumber: 'TKT-2025-001234',
         subject: 'Error crítico al conectar con Meta API',
         description: 'Al intentar sincronizar campañas, aparece un error de autenticación',
-        category: 'error',
+        category: 'Error',
         priority: 'critical',
         status: 'in_progress',
         createdAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
@@ -352,19 +350,19 @@ export function SupportTickets() {
     if (lowerText.includes('meta') || lowerText.includes('facebook')) return aiResponses['meta']
     if (lowerText.includes('factura') || lowerText.includes('pago') || lowerText.includes('cobro')) return aiResponses['factura']
     if (lowerText.includes('lento') || lowerText.includes('carga') || lowerText.includes('demora')) return aiResponses['lento']
-    if (lowerText.includes('error') || lowerText.includes('falla') || lowerText.includes('bug')) return aiResponses['error']
+    if (lowerText.includes('Error') || lowerText.includes('falla') || lowerText.includes('bug')) return aiResponses['Error']
     return aiResponses['default']
   }
 
   const generateAISuggestions = (text: string) => {
     const suggestions: string[] = []
     const lowerText = text.toLowerCase()
-    
+
     if (lowerText.includes('meta') || lowerText.includes('api')) {
       suggestions.push('¿Has intentado reconectar la cuenta?')
       suggestions.push('¿El error aparece en todas las campañas?')
     }
-    if (lowerText.includes('error') || lowerText.includes('bug')) {
+    if (lowerText.includes('Error') || lowerText.includes('bug')) {
       suggestions.push('¿Puedes adjuntar una captura de pantalla?')
       suggestions.push('¿Cuándo empezó a ocurrir el problema?')
     }
@@ -372,7 +370,7 @@ export function SupportTickets() {
       suggestions.push('¿Necesitas factura de qué período?')
       suggestions.push('¿Cambió tu información fiscal?')
     }
-    
+
     setAiSuggestions(suggestions)
   }
 
@@ -381,16 +379,16 @@ export function SupportTickets() {
       alert('Por favor completa el asunto y la descripción')
       return
     }
-    
+
     const now = new Date()
     const slaHours = newTicket.priority === 'critical' ? 4 : newTicket.priority === 'high' ? 24 : newTicket.priority === 'medium' ? 48 : 72
-    
+
     const initialMessages: TicketMessage[] = [
-      { 
-        id: `msg_${Date.now()}`, 
-        sender: 'client', 
-        senderName: 'Admin', 
-        content: newTicket.description, 
+      {
+        id: `msg_${Date.now()}`,
+        sender: 'client',
+        senderName: 'Administrador',
+        content: newTicket.description,
         timestamp: now,
         attachments: pendingAttachments.length > 0 ? [...pendingAttachments] : undefined
       }
@@ -405,7 +403,7 @@ export function SupportTickets() {
       content: aiResponse,
       timestamp: new Date(now.getTime() + 2000)
     })
-    
+
     const ticket: SupportTicket = {
       id: `ticket_${Date.now()}`,
       ticketNumber: generateTicketNumber(),
@@ -428,7 +426,7 @@ export function SupportTickets() {
       chatActive: newTicket.enableChat,
       agentOnline: false
     }
-    
+
     setTickets(prev => [ticket, ...prev])
     setNewTicket({ subject: '', description: '', category: 'general', priority: 'medium', errorCode: '', errorStack: '', enableChat: false })
     setPendingAttachments([])
@@ -438,34 +436,34 @@ export function SupportTickets() {
 
   const sendMessage = () => {
     if (!newMessage.trim() || !selectedTicket) return
-    
+
     const message: TicketMessage = {
       id: `msg_${Date.now()}`,
       sender: 'client',
-      senderName: 'Admin',
+      senderName: 'Administrador',
       content: newMessage,
       timestamp: new Date(),
       attachments: pendingAttachments.length > 0 ? [...pendingAttachments] : undefined
     }
-    
+
     const updatedMessages = [...selectedTicket.messages, message]
-    
-    setTickets(prev => prev.map(t => 
-      t.id === selectedTicket.id ? { 
-        ...t, 
+
+    setTickets(prev => prev.map(t =>
+      t.id === selectedTicket.id ? {
+        ...t,
         messages: updatedMessages,
         attachments: [...t.attachments, ...pendingAttachments],
         updatedAt: new Date(),
         status: 'waiting_response' as const
       } : t
     ))
-    
-    setSelectedTicket(prev => prev ? { 
-      ...prev, 
+
+    setSelectedTicket(prev => prev ? {
+      ...prev,
       messages: updatedMessages,
       attachments: [...prev.attachments, ...pendingAttachments]
     } : null)
-    
+
     const messageCopy = newMessage
     setNewMessage('')
     setPendingAttachments([])
@@ -482,26 +480,26 @@ export function SupportTickets() {
           content: getAIResponse(messageCopy),
           timestamp: new Date()
         }
-        
-        setTickets(prev => prev.map(t => 
-          t.id === selectedTicket.id ? { 
-            ...t, 
+
+        setTickets(prev => prev.map(t =>
+          t.id === selectedTicket.id ? {
+            ...t,
             messages: [...t.messages, message, aiMessage]
           } : t
         ))
-        
-        setSelectedTicket(prev => prev ? { 
-          ...prev, 
+
+        setSelectedTicket(prev => prev ? {
+          ...prev,
           messages: [...prev.messages, aiMessage]
         } : null)
-        
+
         setIsTyping(false)
       }, 1500)
     }
   }
 
   const toggleChat = (ticketId: string) => {
-    setTickets(prev => prev.map(t => 
+    setTickets(prev => prev.map(t =>
       t.id === ticketId ? { ...t, chatActive: !t.chatActive } : t
     ))
     if (selectedTicket?.id === ticketId) {
@@ -511,19 +509,19 @@ export function SupportTickets() {
 
   const requestLiveAgent = () => {
     if (!selectedTicket) return
-    
+
     const systemMessage: TicketMessage = {
       id: `msg_sys_${Date.now()}`,
       sender: 'system',
       senderName: 'Sistema',
-      content: '📞 **Solicitando agente en vivo...** Un representante de soporte se conectará en breve.',
+      content: 'ðŸ“ž **Solicitando agente en vivo...** Un representante de soporte se conectará en breve.',
       timestamp: new Date()
     }
-    
-    setTickets(prev => prev.map(t => 
+
+    setTickets(prev => prev.map(t =>
       t.id === selectedTicket.id ? { ...t, messages: [...t.messages, systemMessage] } : t
     ))
-    
+
     setSelectedTicket(prev => prev ? { ...prev, messages: [...prev.messages, systemMessage] } : null)
 
     // Simulate agent connecting
@@ -535,18 +533,18 @@ export function SupportTickets() {
         content: '¡Hola! Soy Carlos del equipo de soporte. He revisado tu caso y estoy aquí para ayudarte. ¿Puedes darme más detalles sobre el error?',
         timestamp: new Date()
       }
-      
-      setTickets(prev => prev.map(t => 
-        t.id === selectedTicket.id ? { 
-          ...t, 
+
+      setTickets(prev => prev.map(t =>
+        t.id === selectedTicket.id ? {
+          ...t,
           messages: [...t.messages, agentMessage],
           agentOnline: true,
           assignedTo: 'Carlos Soporte'
         } : t
       ))
-      
-      setSelectedTicket(prev => prev ? { 
-        ...prev, 
+
+      setSelectedTicket(prev => prev ? {
+        ...prev,
         messages: [...prev.messages, agentMessage],
         agentOnline: true,
         assignedTo: 'Carlos Soporte'
@@ -556,21 +554,21 @@ export function SupportTickets() {
 
   const closeTicket = (ticketId: string) => {
     if (!confirm('¿Cerrar este ticket?')) return
-    
-    setTickets(prev => prev.map(t => 
+
+    setTickets(prev => prev.map(t =>
       t.id === ticketId ? { ...t, status: 'closed' as const, closedAt: new Date(), chatActive: false } : t
     ))
-    
+
     if (selectedTicket?.id === ticketId) {
       setSelectedTicket(prev => prev ? { ...prev, status: 'closed', closedAt: new Date(), chatActive: false } : null)
     }
   }
 
   const reopenTicket = (ticketId: string) => {
-    setTickets(prev => prev.map(t => 
+    setTickets(prev => prev.map(t =>
       t.id === ticketId ? { ...t, status: 'open' as const, closedAt: undefined } : t
     ))
-    
+
     if (selectedTicket?.id === ticketId) {
       setSelectedTicket(prev => prev ? { ...prev, status: 'open', closedAt: undefined } : null)
     }
@@ -578,29 +576,29 @@ export function SupportTickets() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'open': return 'bg-blue-500/20 text-blue-400'
-      case 'in_progress': return 'bg-yellow-500/20 text-yellow-400'
-      case 'waiting_response': return 'bg-purple-500/20 text-purple-400'
-      case 'resolved': return 'bg-green-500/20 text-green-400'
-      case 'closed': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'open': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'in_progress': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'waiting_response': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'resolved': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'closed': return 'bg-slate-500/20 text-[#9aa3b8]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getPriorityStyle = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500/20 text-red-400 animate-pulse'
-      case 'high': return 'bg-orange-500/20 text-orange-400'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400'
-      case 'low': return 'bg-green-500/20 text-green-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'critical': return 'bg-[#6888ff]/20 text-[#6888ff] animate-pulse'
+      case 'high': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'medium': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'low': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'bug': return <Bug className="w-4 h-4" />
-      case 'error': return <AlertTriangle className="w-4 h-4" />
+      case 'Error': return <AlertTriangle className="w-4 h-4" />
       case 'auto_error': return <AlertCircle className="w-4 h-4" />
       case 'billing': return <CreditCard className="w-4 h-4" />
       case 'feature': return <Zap className="w-4 h-4" />
@@ -612,9 +610,9 @@ export function SupportTickets() {
 
   const getSenderStyle = (sender: string) => {
     switch (sender) {
-      case 'client': return 'bg-blue-500/10 ml-8'
-      case 'support': return 'bg-orange-500/10 mr-8'
-      case 'ai': return 'bg-purple-500/10 mr-8 border border-purple-500/30'
+      case 'client': return 'bg-[#6888ff]/10 ml-8'
+      case 'support': return 'bg-[#6888ff]/10 mr-8'
+      case 'ai': return 'bg-[#6888ff]/10 mr-8 border border-[#6888ff]/30'
       case 'system': return 'bg-slate-500/10 mx-4 text-center'
       default: return 'bg-slate-500/10'
     }
@@ -622,18 +620,18 @@ export function SupportTickets() {
 
   const getSenderIcon = (sender: string) => {
     switch (sender) {
-      case 'ai': return <Bot className="w-4 h-4 text-purple-400" />
-      case 'system': return <AlertCircle className="w-4 h-4 text-slate-400" />
-      case 'support': return <HelpCircle className="w-4 h-4 text-orange-400" />
+      case 'ai': return <Bot className="w-4 h-4 text-[#6888ff]" />
+      case 'system': return <AlertCircle className="w-4 h-4 text-[#9aa3b8]" />
+      case 'support': return <HelpCircle className="w-4 h-4 text-[#6888ff]" />
       default: return null
     }
   }
 
   const getDaysOpenWarning = (days: number, status: string) => {
     if (status === 'closed' || status === 'resolved') return null
-    if (days >= 7) return { text: `⚠️ ${days} días`, style: 'text-red-400' }
-    if (days >= 3) return { text: `${days} días`, style: 'text-yellow-400' }
-    return { text: `${days}d`, style: 'text-slate-400' }
+    if (days >= 7) return { text: `š ï¸ ${days} días`, style: 'text-[#6888ff]' }
+    if (days >= 3) return { text: `${days} días`, style: 'text-[#6888ff]' }
+    return { text: `${days}d`, style: 'text-[#9aa3b8]' }
   }
 
   const filteredTickets = tickets.filter(t => {
@@ -651,7 +649,7 @@ export function SupportTickets() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Support Center...</p>
+          <p className="text-[#9aa3b8]">Cargando Support Center...</p>
         </div>
       </div>
     )
@@ -661,108 +659,108 @@ export function SupportTickets() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <HelpCircle className="w-5 h-5 text-orange-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <HelpCircle className="w-5 h-5 text-[#6888ff]" />
           Support Center
-          <span className="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded flex items-center gap-1">
+          <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded flex items-center gap-1">
             <Bot className="w-3 h-3" /> AI Powered
           </span>
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadData}>
+          <NeuButton variant="secondary" onClick={loadData}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm" onClick={() => setShowNewTicket(true)}>
+          </NeuButton>
+          <NeuButton variant="primary" onClick={() => setShowNewTicket(true)}>
             <Plus className="w-4 h-4 mr-1" />
             Nuevo Ticket
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{tickets.length}</p>
-          <p className="text-xs text-slate-400">Total</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{tickets.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('open')}>
-          <p className="text-2xl font-bold text-blue-400">{openCount}</p>
-          <p className="text-xs text-slate-400">Abiertos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('open')}>
+          <p className="text-2xl font-bold text-[#6888ff]">{openCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Abiertos</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('resolved')}>
-          <p className="text-2xl font-bold text-green-400">{tickets.filter(t => t.status === 'resolved').length}</p>
-          <p className="text-xs text-slate-400">Resueltos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center cursor-pointer" onClick={() => setFilter('resolved')}>
+          <p className="text-2xl font-bold text-[#6888ff]">{tickets.filter(t => t.status === 'resolved').length}</p>
+          <p className="text-xs text-[#9aa3b8]">Resueltos</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{tickets.filter(t => t.chatActive).length}</p>
-          <p className="text-xs text-slate-400">Chat Activo</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{tickets.filter(t => t.chatActive).length}</p>
+          <p className="text-xs text-[#9aa3b8]">Chat Activo</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{autoTicketCount}</p>
-          <p className="text-xs text-slate-400">Auto-Tickets</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{autoTicketCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Auto-Tickets</p>
         </div>
       </div>
 
       {/* New Ticket Form */}
       {showNewTicket && (
-        <NeuromorphicCard variant="glow" className="p-4">
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white font-medium flex items-center gap-2">
+            <h4 className="text-[#69738c] font-medium flex items-center gap-2">
               <Plus className="w-4 h-4" />
               Crear Nuevo Ticket
             </h4>
-            <button onClick={() => setShowNewTicket(false)} className="p-1 hover:bg-slate-700 rounded" aria-label="Cerrar">
-              <X className="w-4 h-4 text-slate-400" />
+            <button onClick={() => setShowNewTicket(false)} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Cerrar">
+              <X className="w-4 h-4 text-[#9aa3b8]" />
             </button>
           </div>
-          
+
           <div className="space-y-4">
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Asunto *</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Asunto *</label>
               <input
                 type="text"
                 placeholder="Describe brevemente el problema"
                 value={newTicket.subject}
                 onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+                className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-slate-400 text-xs block mb-1">Categoría</label>
+                <label className="text-[#9aa3b8] text-xs block mb-1">Categoría</label>
                 <select
                   value={newTicket.category}
                   onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value as SupportTicket['category'] })}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]"
                 >
                   <option value="general">General</option>
-                  <option value="bug">🐛 Bug</option>
-                  <option value="error">⚠️ Error del Sistema</option>
-                  <option value="billing">💳 Facturación</option>
-                  <option value="feature">⚡ Nueva Funcionalidad</option>
-                  <option value="performance">🚀 Rendimiento</option>
-                  <option value="security">🔒 Seguridad</option>
+                  <option value="bug">ðŸ› Bug</option>
+                  <option value="Error">š ï¸ Error del Sistema</option>
+                  <option value="billing">ðŸ’³ Facturación</option>
+                  <option value="feature">š¡ Nueva Funcionalidad</option>
+                  <option value="performance">ðŸš€ Rendimiento</option>
+                  <option value="security">ðŸ”’ Seguridad</option>
                 </select>
               </div>
               <div>
-                <label className="text-slate-400 text-xs block mb-1">Prioridad</label>
+                <label className="text-[#9aa3b8] text-xs block mb-1">Prioridad</label>
                 <select
                   value={newTicket.priority}
                   onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value as SupportTicket['priority'] })}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]"
                 >
-                  <option value="low">🟢 Baja (72h)</option>
-                  <option value="medium">🟡 Media (48h)</option>
-                  <option value="high">🟠 Alta (24h)</option>
-                  <option value="critical">🔴 Crítica (4h)</option>
+                  <option value="low">ðŸŸ¢ Baja (72h)</option>
+                  <option value="medium">ðŸŸ¡ Media (48h)</option>
+                  <option value="high">ðŸŸ  Alta (24h)</option>
+                  <option value="critical">ðŸ”´ Crítica (4h)</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Descripción *</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Descripción *</label>
               <textarea
                 placeholder="Describe el problema en detalle..."
                 value={newTicket.description}
@@ -770,14 +768,14 @@ export function SupportTickets() {
                   setNewTicket({ ...newTicket, description: e.target.value })
                   generateAISuggestions(e.target.value)
                 }}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white h-24 resize-none"
+                className="w-full px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c] h-24 resize-none"
               />
             </div>
 
             {/* AI Suggestions */}
             {aiSuggestions.length > 0 && (
-              <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
-                <p className="text-purple-400 text-xs flex items-center gap-1 mb-2">
+              <div className="p-3 bg-[#6888ff]/10 rounded-lg border border-[#6888ff]/30">
+                <p className="text-[#6888ff] text-xs flex items-center gap-1 mb-2">
                   <Sparkles className="w-3 h-3" /> Sugerencias de IA
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -785,7 +783,7 @@ export function SupportTickets() {
                     <button
                       key={s}
                       onClick={() => setNewTicket({ ...newTicket, description: newTicket.description + '\n\n' + s })}
-                      className="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded hover:bg-purple-500/30"
+                      className="text-xs px-2 py-1 bg-[#6888ff]/20 text-[#6888ff] rounded hover:bg-[#6888ff]/30"
                     >
                       {s}
                     </button>
@@ -795,29 +793,29 @@ export function SupportTickets() {
             )}
 
             {/* Chat Option */}
-            <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="p-3 bg-[#dfeaff]/50 rounded-lg border border-slate-700">
               <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-green-400" />
-                  <span className="text-white text-sm">Habilitar Chat en Tiempo Real</span>
+                  <MessageCircle className="w-4 h-4 text-[#6888ff]" />
+                  <span className="text-[#69738c] text-sm">Habilitar Chat en Tiempo Real</span>
                 </div>
-                <div 
-                  className={`w-12 h-6 rounded-full relative transition-colors ${newTicket.enableChat ? 'bg-green-500' : 'bg-slate-600'}`}
+                <div
+                  className={`w-12 h-6 rounded-full relative transition-colors ${newTicket.enableChat ? 'bg-[#6888ff]' : 'bg-slate-600'}`}
                   onClick={() => setNewTicket({ ...newTicket, enableChat: !newTicket.enableChat })}
                 >
                   <div className={`absolute w-5 h-5 bg-white rounded-full top-0.5 transition-transform ${newTicket.enableChat ? 'left-6' : 'left-0.5'}`} />
                 </div>
               </label>
-              <p className="text-xs text-slate-500 mt-1">
-                {newTicket.enableChat 
-                  ? '💬 Podrás chatear directamente con soporte cuando se conecte un agente' 
-                  : '📧 Modo email: envía mensajes y recibe respuestas en el historial'}
+              <p className="text-xs text-[#9aa3b8] mt-1">
+                {newTicket.enableChat
+                  ? 'ðŸ’¬ Podrás chatear directamente con soporte cuando se conecte un agente'
+                  : 'ðŸ“§ Modo email: envía mensajes y recibe respuestas en el historial'}
               </p>
             </div>
 
             {/* Attachments */}
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Adjuntos</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Adjuntos</label>
               <div className="flex gap-2 mb-2">
                 <input
                   type="file"
@@ -826,22 +824,22 @@ export function SupportTickets() {
                   multiple
                   className="hidden"
                 />
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <NeuButton variant="secondary" onClick={() => fileInputRef.current?.click()}>
                   <Paperclip className="w-4 h-4 mr-1" />
                   Adjuntar
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={captureScreenshot}>
+                </NeuButton>
+                <NeuButton variant="secondary" onClick={captureScreenshot}>
                   <Camera className="w-4 h-4 mr-1" />
                   Captura
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
               {pendingAttachments.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {pendingAttachments.map(att => (
-                    <div key={att.id} className="flex items-center gap-2 px-2 py-1 bg-slate-800 rounded text-xs">
-                      <span className="text-white">{att.name}</span>
+                    <div key={att.id} className="flex items-center gap-2 px-2 py-1 bg-[#dfeaff] rounded text-xs">
+                      <span className="text-[#69738c]">{att.name}</span>
                       <button onClick={() => removeAttachment(att.id)} aria-label="Eliminar adjunto">
-                        <X className="w-3 h-3 text-red-400" />
+                        <X className="w-3 h-3 text-[#6888ff]" />
                       </button>
                     </div>
                   ))}
@@ -850,16 +848,16 @@ export function SupportTickets() {
             </div>
 
             <div className="flex justify-end gap-2">
-              <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowNewTicket(false)}>
+              <NeuButton variant="secondary" onClick={() => setShowNewTicket(false)}>
                 Cancelar
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="primary" size="sm" onClick={createTicket}>
+              </NeuButton>
+              <NeuButton variant="primary" onClick={createTicket}>
                 <Send className="w-4 h-4 mr-1" />
                 Crear Ticket
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Filter Tabs */}
@@ -868,7 +866,7 @@ export function SupportTickets() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1 text-sm rounded capitalize ${filter === f ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400'}`}
+            className={`px-3 py-1 text-sm rounded capitalize ${filter === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'}`}
           >
             {f === 'all' ? 'Todos' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'}
           </button>
@@ -877,20 +875,19 @@ export function SupportTickets() {
 
       <div className="grid grid-cols-2 gap-4">
         {/* Tickets List */}
-        <NeuromorphicCard variant="embossed" className="p-4 max-h-[500px] overflow-y-auto">
-          <h4 className="text-white font-medium mb-3">Mis Tickets ({filteredTickets.length})</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="p-4 max-h-[500px] overflow-y-auto">
+          <h4 className="text-[#69738c] font-medium mb-3">Mis Tickets ({filteredTickets.length})</h4>
           <div className="space-y-2">
             {filteredTickets.map(ticket => {
               const daysWarning = getDaysOpenWarning(ticket.daysOpen, ticket.status)
               return (
-                <div 
+                <div
                   key={ticket.id}
                   onClick={() => setSelectedTicket(ticket)}
-                  className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                    selectedTicket?.id === ticket.id 
-                      ? 'bg-slate-800 border border-orange-500/50' 
-                      : 'bg-slate-800/50 hover:bg-slate-800'
-                  }`}
+                  className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedTicket?.id === ticket.id
+                    ? 'bg-[#dfeaff] border border-orange-500/50'
+                    : 'bg-[#dfeaff]/50 hover:bg-[#dfeaff]'
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -901,45 +898,44 @@ export function SupportTickets() {
                         {ticket.status.replace('_', ' ')}
                       </span>
                       {ticket.chatActive && (
-                        <span className="text-xs px-1 py-0.5 bg-green-500/20 text-green-400 rounded flex items-center gap-1">
+                        <span className="text-xs px-1 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded flex items-center gap-1">
                           <Circle className="w-2 h-2 fill-green-400" />
                           Chat
                         </span>
                       )}
                       {ticket.isAutoGenerated && (
-                        <span className="text-xs px-1 py-0.5 bg-red-500/20 text-red-400 rounded">
+                        <span className="text-xs px-1 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">
                           AUTO
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-orange-400 font-mono">{ticket.ticketNumber}</span>
+                    <span className="text-xs text-[#6888ff] font-mono">{ticket.ticketNumber}</span>
                   </div>
-                  <p className="text-white text-sm font-medium mb-1 line-clamp-1">{ticket.subject}</p>
+                  <p className="text-[#69738c] text-sm font-medium mb-1 line-clamp-1">{ticket.subject}</p>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500">{ticket.createdAt.toLocaleDateString()}</span>
+                    <span className="text-[#9aa3b8]">{ticket.createdAt.toLocaleDateString()}</span>
                     {daysWarning && <span className={daysWarning.style}>{daysWarning.text}</span>}
                   </div>
                 </div>
               )
             })}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Ticket Detail / Chat */}
-        <NeuromorphicCard variant="embossed" className="p-4 max-h-[500px] flex flex-col">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }} className="p-4 max-h-[500px] flex flex-col">
           {selectedTicket ? (
             <>
               {/* Ticket Header */}
               <div className="border-b border-slate-700 pb-3 mb-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-mono text-orange-400">{selectedTicket.ticketNumber}</span>
+                  <span className="text-sm font-mono text-[#6888ff]">{selectedTicket.ticketNumber}</span>
                   <div className="flex items-center gap-2">
                     {selectedTicket.chatEnabled && (
                       <button
                         onClick={() => toggleChat(selectedTicket.id)}
-                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                          selectedTicket.chatActive ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'
-                        }`}
+                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${selectedTicket.chatActive ? 'bg-[#6888ff]/20 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                          }`}
                       >
                         {selectedTicket.chatActive ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
                         {selectedTicket.chatActive ? 'Chat ON' : 'Chat OFF'}
@@ -950,15 +946,15 @@ export function SupportTickets() {
                     </span>
                   </div>
                 </div>
-                <h4 className="text-white font-medium mb-2">{selectedTicket.subject}</h4>
-                <div className="flex items-center gap-3 text-xs text-slate-400">
+                <h4 className="text-[#69738c] font-medium mb-2">{selectedTicket.subject}</h4>
+                <div className="flex items-center gap-3 text-xs text-[#9aa3b8]">
                   <span><Calendar className="w-3 h-3 inline mr-1" />{selectedTicket.createdAt.toLocaleDateString()}</span>
                   <span><Clock className="w-3 h-3 inline mr-1" />{selectedTicket.daysOpen}d</span>
                   {selectedTicket.assignedTo && (
-                    <span className="text-blue-400">👤 {selectedTicket.assignedTo}</span>
+                    <span className="text-[#6888ff]">ðŸ‘¤ {selectedTicket.assignedTo}</span>
                   )}
                   {selectedTicket.agentOnline && (
-                    <span className="text-green-400 flex items-center gap-1">
+                    <span className="text-[#6888ff] flex items-center gap-1">
                       <Circle className="w-2 h-2 fill-green-400" /> En línea
                     </span>
                   )}
@@ -970,22 +966,21 @@ export function SupportTickets() {
                 {selectedTicket.messages.map(msg => (
                   <div key={msg.id} className={`p-3 rounded-lg ${getSenderStyle(msg.sender)}`}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className={`text-xs font-medium flex items-center gap-1 ${
-                        msg.sender === 'ai' ? 'text-purple-400' :
-                        msg.sender === 'support' ? 'text-orange-400' :
-                        msg.sender === 'system' ? 'text-slate-400' :
-                        'text-blue-400'
-                      }`}>
+                      <span className={`text-xs font-medium flex items-center gap-1 ${msg.sender === 'ai' ? 'text-[#6888ff]' :
+                        msg.sender === 'support' ? 'text-[#6888ff]' :
+                          msg.sender === 'system' ? 'text-[#9aa3b8]' :
+                            'text-[#6888ff]'
+                        }`}>
                         {getSenderIcon(msg.sender)}
                         {msg.senderName}
                       </span>
-                      <span className="text-xs text-slate-500">{msg.timestamp.toLocaleTimeString()}</span>
+                      <span className="text-xs text-[#9aa3b8]">{msg.timestamp.toLocaleTimeString()}</span>
                     </div>
-                    <div className="text-white text-sm whitespace-pre-wrap">{msg.content}</div>
+                    <div className="text-[#69738c] text-sm whitespace-pre-wrap">{msg.content}</div>
                     {msg.attachments && msg.attachments.length > 0 && (
                       <div className="flex gap-1 mt-2">
                         {msg.attachments.map(att => (
-                          <span key={att.id} className="text-xs text-slate-400 flex items-center gap-1">
+                          <span key={att.id} className="text-xs text-[#9aa3b8] flex items-center gap-1">
                             <Paperclip className="w-3 h-3" />{att.name}
                           </span>
                         ))}
@@ -993,13 +988,13 @@ export function SupportTickets() {
                     )}
                   </div>
                 ))}
-                
+
                 {isTyping && (
-                  <div className="p-3 rounded-lg bg-purple-500/10 mr-8">
-                    <span className="text-purple-400 text-xs flex items-center gap-2">
+                  <div className="p-3 rounded-lg bg-[#6888ff]/10 mr-8">
+                    <span className="text-[#6888ff] text-xs flex items-center gap-2">
                       <Bot className="w-4 h-4" />
                       AI Assistant está escribiendo...
-                      <span className="animate-pulse">●●●</span>
+                      <span className="animate-pulse">———</span>
                     </span>
                   </div>
                 )}
@@ -1009,22 +1004,22 @@ export function SupportTickets() {
               {/* Actions */}
               <div className="flex gap-2 mb-3">
                 {selectedTicket.chatActive && !selectedTicket.agentOnline && (
-                  <NeuromorphicButton variant="secondary" size="sm" onClick={requestLiveAgent}>
+                  <NeuButton variant="secondary" onClick={requestLiveAgent}>
                     <Phone className="w-4 h-4 mr-1" />
                     Solicitar Agente
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
                 {selectedTicket.status !== 'closed' && (
-                  <NeuromorphicButton variant="secondary" size="sm" onClick={() => closeTicket(selectedTicket.id)}>
+                  <NeuButton variant="secondary" onClick={() => closeTicket(selectedTicket.id)}>
                     <XCircle className="w-4 h-4 mr-1" />
                     Cerrar
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
                 {selectedTicket.status === 'closed' && (
-                  <NeuromorphicButton variant="secondary" size="sm" onClick={() => reopenTicket(selectedTicket.id)}>
+                  <NeuButton variant="secondary" onClick={() => reopenTicket(selectedTicket.id)}>
                     <RotateCcw className="w-4 h-4 mr-1" />
                     Reabrir
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
               </div>
 
@@ -1038,22 +1033,22 @@ export function SupportTickets() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                      className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
+                      className="flex-1 px-3 py-2 bg-[#dfeaff] border border-slate-700 rounded text-[#69738c]"
                     />
-                    <button onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-slate-700 rounded" aria-label="Adjuntar archivo">
-                      <Paperclip className="w-4 h-4 text-slate-400" />
+                    <button onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-[#dfeaff] rounded" aria-label="Adjuntar archivo">
+                      <Paperclip className="w-4 h-4 text-[#9aa3b8]" />
                     </button>
-                    <NeuromorphicButton variant="primary" size="sm" onClick={sendMessage}>
+                    <NeuButton variant="primary" onClick={sendMessage}>
                       <Send className="w-4 h-4" />
-                    </NeuromorphicButton>
+                    </NeuButton>
                   </div>
                   {pendingAttachments.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {pendingAttachments.map(att => (
-                        <div key={att.id} className="flex items-center gap-2 px-2 py-1 bg-slate-800 rounded text-xs">
-                          <span className="text-white">{att.name}</span>
+                        <div key={att.id} className="flex items-center gap-2 px-2 py-1 bg-[#dfeaff] rounded text-xs">
+                          <span className="text-[#69738c]">{att.name}</span>
                           <button onClick={() => removeAttachment(att.id)} aria-label="Eliminar adjunto">
-                            <X className="w-3 h-3 text-red-400" />
+                            <X className="w-3 h-3 text-[#6888ff]" />
                           </button>
                         </div>
                       ))}
@@ -1063,28 +1058,28 @@ export function SupportTickets() {
               )}
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
+            <div className="flex-1 flex flex-col items-center justify-center text-[#9aa3b8]">
               <MessageSquare className="w-12 h-12 mb-2" />
               <p>Selecciona un ticket</p>
             </div>
           )}
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
       {/* FAQ Section */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-purple-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#6888ff]" />
           Preguntas Frecuentes
         </h4>
         <div className="grid grid-cols-3 gap-2">
           {faqs.map(faq => (
-            <div key={faq.id} className="p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer">
-              <span className="text-white text-sm">{faq.question}</span>
+            <div key={faq.id} className="p-3 bg-[#dfeaff]/50 rounded-lg hover:bg-[#dfeaff] cursor-pointer">
+              <span className="text-[#69738c] text-sm">{faq.question}</span>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🎯 SILEXAR PULSE - Pipeline Kanban Dashboard TIER 0
  * 
  * @description Dashboard ejecutivo con vista Kanban interactiva,
@@ -96,9 +96,9 @@ interface ColumnaKanban {
 
 const columnas: ColumnaKanban[] = [
   { id: 'BORRADOR', titulo: 'Borrador', icono: '📋', color: '#69738c', bgColor: 'rgba(105,115,140,0.08)', borderColor: '#bec8de' },
-  { id: 'NEGOCIACION', titulo: 'Negociación', icono: '📝', color: '#f59e0b', bgColor: 'rgba(245,158,11,0.08)', borderColor: '#f59e0b40' },
+  { id: 'NEGOCIACION', titulo: 'Negociación', icono: '📝', color: '#6888ff', bgColor: 'rgba(245,158,11,0.08)', borderColor: '#6888ff40' },
   { id: 'APROBACION', titulo: 'Aprobación', icono: '⏳', color: '#f97316', bgColor: 'rgba(249,115,22,0.08)', borderColor: '#f9731640' },
-  { id: 'FIRMADO', titulo: 'Firmado', icono: '✅', color: '#22c55e', bgColor: 'rgba(34,197,94,0.08)', borderColor: '#22c55e40' }
+  { id: 'FIRMADO', titulo: 'Firmado', icono: '✅', color: '#6888ff', bgColor: 'rgba(34,197,94,0.08)', borderColor: '#6888ff40' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -167,8 +167,8 @@ const ContratoCard: React.FC<{
   isDragging?: boolean;
 }> = ({ contrato, onView, onEdit, isDragging }) => {
   const urgenciaColor = {
-    critico: { border: '#ef4444', bg: 'rgba(239,68,68,0.04)' },
-    urgente: { border: '#f59e0b', bg: 'rgba(245,158,11,0.04)' },
+    critico: { border: '#9aa3b8', bg: 'rgba(239,68,68,0.04)' },
+    urgente: { border: '#6888ff', bg: 'rgba(245,158,11,0.04)' },
     normal: { border: '#bec8de', bg: 'transparent' }
   }[contrato.urgencia];
 
@@ -209,7 +209,7 @@ const ContratoCard: React.FC<{
             }`}
             style={{
               background: contrato.acciones[0].urgente ? 'rgba(239,68,68,0.12)' : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' ? 'rgba(34,197,94,0.12)' : N.base,
-              color: contrato.acciones[0].urgente ? '#ef4444' : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' ? '#22c55e' : N.text,
+              color: contrato.acciones[0].urgente ? '#9aa3b8' : contrato.acciones[0].tipo === 'pagar' && contrato.acciones[0].label === 'Pagado' ? '#6888ff' : N.text,
               boxShadow: contrato.acciones[0].urgente ? 'none' : insetSm
             }}
           >
@@ -225,7 +225,7 @@ const ContratoCard: React.FC<{
             <Eye className="w-4 h-4" style={{ color: N.accent }} />
           </button>
           <button onClick={onEdit} className="p-1.5 rounded-xl transition-all hover:scale-110" style={{ background: N.base, boxShadow: neuXs }} title="Editar">
-            <Edit3 className="w-4 h-4" style={{ color: '#f59e0b' }} />
+            <Edit3 className="w-4 h-4" style={{ color: '#6888ff' }} />
           </button>
         </div>
       </div>
@@ -484,8 +484,8 @@ export default function KanbanDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-xs" style={{ color: N.textSub }}>Pipeline Total:</span>
-            <span className="text-2xl font-black" style={{ color: '#22c55e' }}>{formatCurrency(totalGeneral.valor)}</span>
-            <Sparkles className="w-5 h-5" style={{ color: '#f59e0b' }} />
+            <span className="text-2xl font-black" style={{ color: '#6888ff' }}>{formatCurrency(totalGeneral.valor)}</span>
+            <Sparkles className="w-5 h-5" style={{ color: '#6888ff' }} />
           </div>
         </div>
       </footer>

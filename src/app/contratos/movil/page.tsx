@@ -110,27 +110,27 @@ export default function ContratosMovilPage() {
   const noLeidas = alertas.filter(a => !a.leida).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] to-indigo-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] to-[#5572ee] pb-24">
       {/* ═══════════════════════════════════════════════════════ */}
       {/*  HEADER                                                */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 pt-12 pb-6 rounded-b-3xl shadow-xl shadow-indigo-200">
+      <div className="bg-gradient-to-r from-[#6888ff] to-[#5572ee] text-white px-4 pt-12 pb-6 rounded-b-3xl shadow-xl shadow-indigo-200">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-indigo-200 text-sm">Bienvenido/a</p>
+            <p className="text-[#6888ff] text-sm">Bienvenido/a</p>
             <h1 className="text-xl font-black">{usuario?.nombre || 'Ejecutivo'}</h1>
-            <p className="text-xs text-indigo-300 mt-0.5">{usuario?.rol || 'Comercial'}</p>
+            <p className="text-xs text-[#6888ff] mt-0.5">{usuario?.rol || 'Comercial'}</p>
           </div>
           <div className="flex items-center gap-2">
             {online ? (
-              <Wifi className="w-5 h-5 text-green-300" />
+              <Wifi className="w-5 h-5 text-[#6888ff]" />
             ) : (
-              <WifiOff className="w-5 h-5 text-amber-300" />
+              <WifiOff className="w-5 h-5 text-[#6888ff]" />
             )}
             <button className="p-2 rounded-xl bg-[#dfeaff]/10 relative active:scale-90">
               <Bell className="w-5 h-5" />
               {noLeidas > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#dfeaff]0 rounded-full text-[10px] font-bold flex items-center justify-center">
                   {noLeidas}
                 </span>
               )}
@@ -141,15 +141,15 @@ export default function ContratosMovilPage() {
         {/* QUICK KPIs */}
         {kpis && (
           <div className="grid grid-cols-3 gap-3">
-            <KPIMini icon={<FileText className="w-4 h-4 text-indigo-200" />} valor={String(kpis.contratosActivos)} label="Activos" />
-            <KPIMini icon={<Target className="w-4 h-4 text-indigo-200" />} valor={String(kpis.accionesPendientes)} label="Pendientes" />
-            <KPIMini icon={<TrendingUp className="w-4 h-4 text-indigo-200" />} valor={`${Math.round((kpis.metaCompletada / kpis.metaMes) * 100)}%`} label="Meta" />
+            <KPIMini icon={<FileText className="w-4 h-4 text-[#6888ff]" />} valor={String(kpis.contratosActivos)} label="Activos" />
+            <KPIMini icon={<Target className="w-4 h-4 text-[#6888ff]" />} valor={String(kpis.accionesPendientes)} label="Pendientes" />
+            <KPIMini icon={<TrendingUp className="w-4 h-4 text-[#6888ff]" />} valor={`${Math.round((kpis.metaCompletada / kpis.metaMes) * 100)}%`} label="Meta" />
           </div>
         )}
 
         {loading && !kpis && (
           <div className="flex justify-center py-4">
-            <RefreshCw className="w-6 h-6 animate-spin text-indigo-200" />
+            <RefreshCw className="w-6 h-6 animate-spin text-[#6888ff]" />
           </div>
         )}
       </div>
@@ -162,7 +162,7 @@ export default function ContratosMovilPage() {
         {tabActiva === 'home' && (
           <>
             {/* ACCIONES RÁPIDAS */}
-            <SectionTitle icon={<Zap className="w-5 h-5 text-amber-500" />} title="ACCIONES RÁPIDAS" />
+            <SectionTitle icon={<Zap className="w-5 h-5 text-[#6888ff]" />} title="ACCIONES RÁPIDAS" />
             <div className="space-y-3">
               <AccionRapida
                 icon={<Sparkles className="w-5 h-5 text-white" />}
@@ -183,7 +183,7 @@ export default function ContratosMovilPage() {
                 titulo="Llamadas Pendientes"
                 badge={2}
                 onClick={() => setTabActiva('contratos')}
-                color="bg-gradient-to-r from-blue-500 to-cyan-500"
+                color="bg-gradient-to-r from-[#6888ff] to-cyan-500"
               />
               <AccionRapida
                 icon={<CheckCircle2 className="w-5 h-5 text-white" />}
@@ -193,20 +193,20 @@ export default function ContratosMovilPage() {
                   setSheetContrato({ id: 'ctr-002', numero: 'CTR-2025-00090', cliente: 'Falabella', acciones: ['aprobar', 'rechazar', 'comentar'] });
                   setSheetOpen(true);
                 }}
-                color="bg-gradient-to-r from-green-500 to-emerald-500"
+                color="bg-gradient-to-r from-[#6888ff] to-[#5572ee]"
               />
               <AccionRapida
                 icon={<Send className="w-5 h-5 text-white" />}
                 titulo="Enviar Propuesta"
                 onClick={() => setTabActiva('contratos')}
-                color="bg-gradient-to-r from-amber-500 to-orange-500"
+                color="bg-gradient-to-r from-[#6888ff] to-[#5572ee]"
               />
             </div>
 
             {/* ALERTAS */}
             {alertas.length > 0 && (
               <>
-                <SectionTitle icon={<AlertTriangle className="w-5 h-5 text-red-500" />} title="ALERTAS" />
+                <SectionTitle icon={<AlertTriangle className="w-5 h-5 text-[#9aa3b8]" />} title="ALERTAS" />
                 <div className="space-y-2">
                   {alertas.map(alerta => (
                     <AlertaCard key={alerta.id} alerta={alerta} />
@@ -221,7 +221,7 @@ export default function ContratosMovilPage() {
                 <SectionTitle icon={<BarChart3 className="w-5 h-5 text-[#6888ff]" />} title="PIPELINE" />
                 <div className="bg-[#dfeaff] rounded-2xl border border-[#bec8de30] p-4 shadow-sm">
                   {dashboard.pipeline.map((etapa) => (
-                    <div key={etapa.etapa} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                    <div key={etapa.etapa} className="flex items-center justify-between py-2 border-b border-[#bec8de] last:border-0">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: etapa.color }} />
                         <span className="text-sm font-medium text-[#69738c]">{etapa.etapa}</span>
@@ -261,7 +261,7 @@ export default function ContratosMovilPage() {
 
             {/* SENTINEL STATUS */}
             <div className="p-4 rounded-2xl bg-[#dfeaff] text-white flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="w-3 h-3 rounded-full bg-[#6888ff]/40 animate-pulse" />
               <div className="flex-1">
                 <p className="text-sm font-bold">Sentinel Activo</p>
                 <p className="text-xs text-[#9aa3b8]">Sincronización automática · {online ? 'Online' : 'Offline'}</p>
@@ -303,24 +303,24 @@ export default function ContratosMovilPage() {
                 <ValidationQueueView />
 
                 <SectionTitle icon={<MoreHorizontal className="w-5 h-5 text-[#9aa3b8]" />} title="MÁS OPCIONES" />
-                <MasOpcion icon={<DollarSign className="w-5 h-5" />} label="Cobranza" desc="Gestión de pagos vencidos" color="bg-red-100 text-red-600" onClick={() => setSubVista('cobranza')} />
-                <MasOpcion icon={<Shield className="w-5 h-5" />} label="Cuenta Corriente" desc="Balance y movimientos" color="bg-emerald-100 text-emerald-600" onClick={() => setSubVista('cuenta')} />
-                <MasOpcion icon={<FileText className="w-5 h-5" />} label="Facturación" desc="Emisión y consulta de facturas" color="bg-indigo-100 text-[#6888ff]" onClick={() => setSubVista('facturacion')} />
-                <MasOpcion icon={<RefreshCw className="w-5 h-5" />} label="Renovaciones" desc="Contratos por renovar" color="bg-amber-100 text-amber-600" onClick={() => setSubVista('renovaciones')} />
+                <MasOpcion icon={<DollarSign className="w-5 h-5" />} label="Cobranza" desc="Gestión de pagos vencidos" color="bg-[#dfeaff] text-[#9aa3b8]" onClick={() => setSubVista('cobranza')} />
+                <MasOpcion icon={<Shield className="w-5 h-5" />} label="Cuenta Corriente" desc="Balance y movimientos" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('cuenta')} />
+                <MasOpcion icon={<FileText className="w-5 h-5" />} label="Facturación" desc="Emisión y consulta de facturas" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('facturacion')} />
+                <MasOpcion icon={<RefreshCw className="w-5 h-5" />} label="Renovaciones" desc="Contratos por renovar" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('renovaciones')} />
                 <MasOpcion icon={<Activity className="w-5 h-5" />} label="Tráfico Comercial" desc="Flujo y conversión de leads" color="bg-cyan-100 text-cyan-600" onClick={() => setSubVista('traffic')} />
                 <MasOpcion icon={<Briefcase className="w-5 h-5" />} label="Workspace" desc="Tareas y notas del ejecutivo" color="bg-[#dfeaff] text-[#69738c]" onClick={() => setSubVista('workspace')} />
-                <MasOpcion icon={<Download className="w-5 h-5" />} label="Exportaciones" desc="Exportar reportes PDF/CSV" color="bg-blue-100 text-blue-600" onClick={() => setSubVista('exportar')} />
-                <MasOpcion icon={<BarChart3 className="w-5 h-5" />} label="Reportes" desc="Builder de reportes" color="bg-purple-100 text-purple-600" onClick={() => setSubVista('reportes')} />
+                <MasOpcion icon={<Download className="w-5 h-5" />} label="Exportaciones" desc="Exportar reportes PDF/CSV" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('exportar')} />
+                <MasOpcion icon={<BarChart3 className="w-5 h-5" />} label="Reportes" desc="Builder de reportes" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('reportes')} />
                 <MasOpcion icon={<Brain className="w-5 h-5" />} label="Comando IA" desc="Asistente inteligente" color="bg-violet-100 text-violet-600" onClick={() => setSubVista('comando')} />
-                <MasOpcion icon={<Shield className="w-5 h-5" />} label="Aprobaciones" desc="Contratos pendientes de firmar" color="bg-purple-100 text-purple-600" onClick={() => setSubVista('aprobaciones')} />
-                <MasOpcion icon={<Bell className="w-5 h-5" />} label="Notificaciones" desc="Alertas y avisos inteligentes" color="bg-red-100 text-red-600" onClick={() => setSubVista('notificaciones')} />
-                <MasOpcion icon={<TrendingUp className="w-5 h-5" />} label="Mi Rendimiento" desc="Metas, comisiones y ranking" color="bg-emerald-100 text-emerald-600" onClick={() => setSubVista('rendimiento')} />
-                <MasOpcion icon={<ClipboardList className="w-5 h-5" />} label="Checklist del Día" desc="Tareas prioritarias de hoy" color="bg-amber-100 text-amber-600" onClick={() => setSubVista('checklist')} />
-                <MasOpcion icon={<MessageSquare className="w-5 h-5" />} label="Timeline" desc="Actividad por contrato" color="bg-blue-100 text-blue-600" onClick={() => setSubVista('timeline')} />
+                <MasOpcion icon={<Shield className="w-5 h-5" />} label="Aprobaciones" desc="Contratos pendientes de firmar" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('aprobaciones')} />
+                <MasOpcion icon={<Bell className="w-5 h-5" />} label="Notificaciones" desc="Alertas y avisos inteligentes" color="bg-[#dfeaff] text-[#9aa3b8]" onClick={() => setSubVista('notificaciones')} />
+                <MasOpcion icon={<TrendingUp className="w-5 h-5" />} label="Mi Rendimiento" desc="Metas, comisiones y ranking" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('rendimiento')} />
+                <MasOpcion icon={<ClipboardList className="w-5 h-5" />} label="Checklist del Día" desc="Tareas prioritarias de hoy" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('checklist')} />
+                <MasOpcion icon={<MessageSquare className="w-5 h-5" />} label="Timeline" desc="Actividad por contrato" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('timeline')} />
                 <MasOpcion icon={<Brain className="w-5 h-5" />} label="Predictor IA" desc="Predicción de renovaciones" color="bg-violet-100 text-violet-600" onClick={() => setSubVista('predictor')} />
                 <MasOpcion icon={<Sparkles className="w-5 h-5" />} label="Propuesta Rápida" desc="Genera propuestas con IA" color="bg-fuchsia-100 text-fuchsia-600" onClick={() => setSubVista('propuestas')} />
-                <MasOpcion icon={<Building2 className="w-5 h-5" />} label="Ficha Cliente" desc="Vista 360° del cliente" color="bg-blue-100 text-blue-600" onClick={() => setSubVista('fichacliente')} />
-                <MasOpcion icon={<Mic className="w-5 h-5" />} label="Notas de Voz" desc="Graba y la IA transcribe" color="bg-red-100 text-red-600" onClick={() => setSubVista('voicenotes')} />
+                <MasOpcion icon={<Building2 className="w-5 h-5" />} label="Ficha Cliente" desc="Vista 360° del cliente" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setSubVista('fichacliente')} />
+                <MasOpcion icon={<Mic className="w-5 h-5" />} label="Notas de Voz" desc="Graba y la IA transcribe" color="bg-[#dfeaff] text-[#9aa3b8]" onClick={() => setSubVista('voicenotes')} />
                 <MasOpcion icon={<RefreshCw className="w-5 h-5" />} label="Seguimientos" desc="Auto-seguimiento inteligente" color="bg-cyan-100 text-cyan-600" onClick={() => setSubVista('seguimientos')} />
                 <MasOpcion icon={<Settings className="w-5 h-5" />} label="Configuración" desc="Permisos, emails, webhooks" color="bg-[#dfeaff] text-[#69738c]" onClick={() => setSubVista('config')} />
               </>
@@ -368,7 +368,7 @@ export default function ContratosMovilPage() {
       {/*  SMART CAPTURE OVERLAY                                 */}
       {/* ═══════════════════════════════════════════════════════ */}
       {showSmartCapture && (
-        <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#dfeaff] to-indigo-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#dfeaff] to-[#5572ee] overflow-y-auto">
           <div className="p-4 pt-12">
             <SmartCaptureView onClose={() => setShowSmartCapture(false)} />
           </div>
@@ -400,7 +400,7 @@ function KPIMini({ icon, valor, label }: { icon: React.ReactNode; valor: string;
     <div className="bg-[#dfeaff]/10 rounded-xl p-3 text-center">
       <div className="flex justify-center mb-1">{icon}</div>
       <p className="text-2xl font-black">{valor}</p>
-      <p className="text-[10px] text-indigo-200 font-bold uppercase">{label}</p>
+      <p className="text-[10px] text-[#6888ff] font-bold uppercase">{label}</p>
     </div>
   );
 }
@@ -430,11 +430,11 @@ function AccionRapida({ icon, titulo, badge, onClick, color, highlight }: {
 
 function AlertaCard({ alerta }: { alerta: AlertaContrato }) {
   const config = {
-    urgente: { bg: 'bg-red-50', border: 'border-red-200', icon: <AlertTriangle className="w-5 h-5 text-red-500" /> },
-    aprobacion: { bg: 'bg-amber-50', border: 'border-amber-200', icon: <CheckCircle2 className="w-5 h-5 text-amber-500" /> },
-    vencimiento: { bg: 'bg-orange-50', border: 'border-orange-200', icon: <Clock className="w-5 h-5 text-orange-500" /> },
-    renovacion: { bg: 'bg-blue-50', border: 'border-blue-200', icon: <RefreshCw className="w-5 h-5 text-blue-500" /> },
-    pago: { bg: 'bg-emerald-50', border: 'border-emerald-200', icon: <Target className="w-5 h-5 text-emerald-500" /> },
+    urgente: { bg: 'bg-[#dfeaff]', border: 'border-[#bec8de]', icon: <AlertTriangle className="w-5 h-5 text-[#9aa3b8]" /> },
+    aprobacion: { bg: 'bg-[#6888ff]/5', border: 'border-[#bec8de]', icon: <CheckCircle2 className="w-5 h-5 text-[#6888ff]" /> },
+    vencimientos: { bg: 'bg-[#6888ff]/5', border: 'border-[#bec8de]', icon: <Clock className="w-5 h-5 text-[#6888ff]" /> },
+    renovacion: { bg: 'bg-[#6888ff]/5', border: 'border-[#bec8de]', icon: <RefreshCw className="w-5 h-5 text-[#6888ff]" /> },
+    pago: { bg: 'bg-[#6888ff]/5', border: 'border-[#bec8de]', icon: <Target className="w-5 h-5 text-[#6888ff]" /> },
     info: { bg: 'bg-[#dfeaff]', border: 'border-[#bec8de30]', icon: <Bell className="w-5 h-5 text-[#69738c]" /> },
   }[alerta.tipo] || { bg: 'bg-[#dfeaff]', border: 'border-[#bec8de30]', icon: <Bell className="w-5 h-5 text-[#69738c]" /> };
 
@@ -445,7 +445,7 @@ function AlertaCard({ alerta }: { alerta: AlertaContrato }) {
         <p className="font-bold text-[#69738c] text-sm">{alerta.titulo}</p>
         <p className="text-xs text-[#69738c] truncate">{alerta.descripcion}</p>
       </div>
-      {!alerta.leida && <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />}
+      {!alerta.leida && <div className="w-2 h-2 rounded-full bg-[#dfeaff]0 shrink-0" />}
     </div>
   );
 }
@@ -496,7 +496,7 @@ function BottomNav({ activa, onChange, alertCount }: {
             ) : tab.icon}
             <span className={`text-[9px] font-bold ${tab.special ? 'text-violet-600' : ''}`}>{tab.label}</span>
             {tab.id === 'home' && alertCount > 0 && (
-              <span className="absolute -top-0.5 right-0 w-4 h-4 bg-red-500 rounded-full text-[8px] text-white font-bold flex items-center justify-center">
+              <span className="absolute -top-0.5 right-0 w-4 h-4 bg-[#dfeaff]0 rounded-full text-[8px] text-white font-bold flex items-center justify-center">
                 {alertCount}
               </span>
             )}

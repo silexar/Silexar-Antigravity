@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 💳 SILEXAR PULSE - Client Billing (Client)
+ * ðŸ’³ SILEXAR PULSE - Client Billing (Client)
  * Facturación y suscripción para clientes
  * 
  * @description Billing:
@@ -16,10 +16,8 @@
 
 import { useState, useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
-import {
-  NeuromorphicCard,
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   CreditCard,
   FileText,
@@ -50,7 +48,7 @@ interface Invoice {
   date: Date
   dueDate: Date
   amount: number
-  status: 'paid' | 'pending' | 'overdue'
+  status: 'paid' | 'Pendiente' | 'overdue'
   downloadUrl: string
 }
 
@@ -106,19 +104,19 @@ export function ClientBilling() {
 
   const getPlanIcon = (plan: string) => {
     switch (plan) {
-      case 'starter': return <Zap className="w-6 h-6 text-slate-400" />
-      case 'professional': return <Star className="w-6 h-6 text-blue-400" />
-      case 'enterprise': return <Crown className="w-6 h-6 text-yellow-400" />
+      case 'starter': return <Zap className="w-6 h-6 text-[#9aa3b8]" />
+      case 'professional': return <Star className="w-6 h-6 text-[#6888ff]" />
+      case 'enterprise': return <Crown className="w-6 h-6 text-[#6888ff]" />
       default: return <Zap className="w-6 h-6" />
     }
   }
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'paid': case 'active': return 'bg-green-500/20 text-green-400'
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400'
-      case 'overdue': case 'past_due': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'paid': case 'active': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'Pendiente': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'overdue': case 'past_due': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -126,8 +124,8 @@ export function ClientBilling() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Client Billing...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Client Billing...</p>
         </div>
       </div>
     )
@@ -137,121 +135,121 @@ export function ClientBilling() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <CreditCard className="w-5 h-5 text-[#6888ff]" />
           Billing & Subscription
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadBillingData}>
+        <NeuButton variant="secondary" onClick={loadBillingData}>
           <RefreshCw className="w-4 h-4 mr-1" />
           Refresh
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Current Plan */}
-      <NeuromorphicCard variant="glow" className="p-6">
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               {getPlanIcon(subscription.plan)}
             </div>
             <div>
-              <p className="text-slate-400 text-sm">Plan Actual</p>
-              <h2 className="text-2xl font-bold text-white capitalize">{subscription.plan}</h2>
+              <p className="text-[#9aa3b8] text-sm">Plan Actual</p>
+              <h2 className="text-2xl font-bold text-[#69738c] capitalize">{subscription.plan}</h2>
               <span className={`text-xs px-2 py-0.5 rounded capitalize ${getStatusStyle(subscription.status)}`}>
                 {subscription.status}
               </span>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-white">{formatCurrency(subscription.amount)}</p>
-            <p className="text-slate-400 text-sm">/{subscription.interval === 'monthly' ? 'mes' : 'año'}</p>
+            <p className="text-3xl font-bold text-[#69738c]">{formatCurrency(subscription.amount)}</p>
+            <p className="text-[#9aa3b8] text-sm">/{subscription.interval === 'monthly' ? 'mes' : 'año'}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-700">
           <div>
-            <p className="text-slate-400 text-xs">Usuarios</p>
-            <p className="text-white font-medium">{subscription.users.current} / {subscription.users.max}</p>
+            <p className="text-[#9aa3b8] text-xs">Usuarios</p>
+            <p className="text-[#69738c] font-medium">{subscription.users.current} / {subscription.users.max}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Próximo Cobro</p>
-            <p className="text-white font-medium">{subscription.currentPeriodEnd.toLocaleDateString()}</p>
+            <p className="text-[#9aa3b8] text-xs">Próximo Cobro</p>
+            <p className="text-[#69738c] font-medium">{subscription.currentPeriodEnd.toLocaleDateString()}</p>
           </div>
           <div className="text-right">
-            <NeuromorphicButton variant="primary" size="sm">
+            <NeuButton variant="primary" >
               <TrendingUp className="w-4 h-4 mr-1" />
               Upgrade
-            </NeuromorphicButton>
+            </NeuButton>
           </div>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       <div className="grid grid-cols-2 gap-4">
         {/* Invoices */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-slate-400" />
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-[#9aa3b8]" />
             Facturas Recientes
           </h4>
           <div className="space-y-2">
             {invoices.map(invoice => (
-              <div key={invoice.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={invoice.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div>
-                  <span className="text-white text-sm">{invoice.number}</span>
+                  <span className="text-[#69738c] text-sm">{invoice.number}</span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-slate-500">{invoice.date.toLocaleDateString()}</span>
+                    <span className="text-xs text-[#9aa3b8]">{invoice.date.toLocaleDateString()}</span>
                     <span className={`text-xs px-2 py-0.5 rounded capitalize ${getStatusStyle(invoice.status)}`}>
                       {invoice.status}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-white font-medium">{formatCurrency(invoice.amount)}</span>
-                  <button className="p-1 hover:bg-slate-700 rounded" aria-label="Descargar">
-                    <Download className="w-4 h-4 text-blue-400" />
+                  <span className="text-[#69738c] font-medium">{formatCurrency(invoice.amount)}</span>
+                  <button className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Descargar">
+                    <Download className="w-4 h-4 text-[#6888ff]" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Payment Methods */}
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-white font-medium flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-slate-400" />
+            <h4 className="text-[#69738c] font-medium flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-[#9aa3b8]" />
               Métodos de Pago
             </h4>
-            <NeuromorphicButton variant="secondary" size="sm">
+            <NeuButton variant="secondary" >
               Agregar
-            </NeuromorphicButton>
+            </NeuButton>
           </div>
           <div className="space-y-2">
             {paymentMethods.map(pm => (
-              <div key={pm.id} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+              <div key={pm.id} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded bg-slate-700 flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-slate-400" />
+                  <div className="w-10 h-10 rounded bg-[#dfeaff] flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-[#9aa3b8]" />
                   </div>
                   <div>
-                    <span className="text-white text-sm">
+                    <span className="text-[#69738c] text-sm">
                       {pm.type === 'card' ? `${pm.brand} •••• ${pm.last4}` : `Banco •••• ${pm.last4}`}
                     </span>
                     {pm.expiresAt && (
-                      <p className="text-xs text-slate-500">Exp: {pm.expiresAt}</p>
+                      <p className="text-xs text-[#9aa3b8]">Exp: {pm.expiresAt}</p>
                     )}
                   </div>
                 </div>
                 {pm.isDefault && (
-                  <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">
+                  <span className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">
                     Principal
                   </span>
                 )}
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
     </div>
   )

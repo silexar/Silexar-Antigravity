@@ -72,7 +72,7 @@ function generarMensajePredeterminado(
     tipoEnvio: string,
     numeroContrato: string,
     nombreCliente: string,
-    fechaVencimiento?: string
+    fechaVencimientos?: string
 ): string {
     switch (tipoEnvio) {
         case 'firma_respaldo':
@@ -84,7 +84,7 @@ Este documento es idéntico al enviado por nuestro sistema de firma electrónica
 
 Por favor, imprima el documento, firme en las páginas indicadas y envíenos una copia escaneada a este correo o porfax a nuestros datos de contacto.
 
-Plazo para el envío del documento firmado: ${fechaVencimiento || '7 días'}
+Plazo para el envío del documento firmado: ${fechaVencimientos || '7 días'}
 
 Quedamos atentos a su respuesta.
 

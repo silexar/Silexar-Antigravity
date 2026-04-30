@@ -176,7 +176,7 @@ Dividiremos el trabajo en cuatro grandes funcionalidades interconectadas:
 •	Propósito: La interfaz para que el equipo de Silexar administre a sus clientes.
 •	Funcionalidades:
 o	Creación de Tenant: Un formulario seguro donde un Super-Admin de Silexar puede crear una nueva cuenta para un cliente (ej. "Megamedia").
-o	Asignación de Licencia: Se le asigna un plan (ej. "Plan Enterprise - 100 usuarios") y una fecha de vencimiento.
+o	Asignación de Licencia: Se le asigna un plan (ej. "Plan Enterprise - 100 usuarios") y una fecha de vencimientos.
 o	Generación de Administrador Maestro: Al crear el tenant, el sistema genera automáticamente el primer usuario (el "Usuario Maestro") con permisos de administrador total sobre ese tenant.
 o	Dashboard de Tenants: Una vista para que Silexar vea a todos sus clientes, su estado (activo, suspendido, por vencer) y pueda acceder a su configuración.
 2.2. Gestión de Usuarios y Roles (RBAC - Control de Acceso Basado en Roles)
@@ -244,10 +244,10 @@ o	Interfaz y Flujo de Usuario:
 	Widget "Salud del Sistema": Tarjetas con métricas en tiempo real del rendimiento de la plataforma, uso de recursos de GCP (CPU, memoria), latencia promedio de la API y estado de los servicios clave (Base de Datos, Redis, Cortex API).
 	Widget "Actividad de Tenants": Un gráfico de las últimas 24 horas mostrando los tenants con mayor actividad de API.
 	Pestaña "Gestor de Tenants (Clientes)":
-	Una tabla con todos los clientes. Columnas: ID Tenant, Nombre Cliente, Plan de Licencia, Fecha de Vencimiento, Estado (Activo/Suspendido), Acciones.
+	Una tabla con todos los clientes. Columnas: ID Tenant, Nombre Cliente, Plan de Licencia, Fecha de Vencimientos, Estado (Activo/Suspendido), Acciones.
 	Botón "Crear Tenant": Abre un formulario seguro para crear una nueva cuenta cliente. Campos: Nombre Cliente, RUT, Email del Administrador Maestro, Asignar Plan de Licencia (dropdown). Al guardar, se genera el Tenant, su base de datos aislada, y se envía un correo de bienvenida al Admin Maestro con un enlace para establecer su contraseña.
 	Columna "Acciones":
-	Editar: Modificar el plan de licencia o la fecha de vencimiento.
+	Editar: Modificar el plan de licencia o la fecha de vencimientos.
 	Suspender/Activar: Cambiar el estado del tenant.
 	Tomar Control (Impersonation): Botón que permite a un Super-Admin iniciar sesión como el Usuario Maestro de ese cliente para soporte. Cada acción en este modo se registra en un log de auditoría especial (impersonation_logs) para total transparencia.
 Pestaña "Módulos y Licencias"
@@ -369,9 +369,9 @@ Esta es la lógica que automatiza y conecta el módulo con el resto del sistema.
 2.	Envía una notificación emergente y prioritaria únicamente al Programador asignado a la emisora correspondiente.
 3.	El mensaje dirá: "Confirmación de Inicio: El cliente [Nombre del Cliente] ha contratado el auspicio para [Nombre del Programa]. Por favor, confirma el inicio de la emisión." con botones "Confirmar" y "Rechazar".
 4.	Solo cuando el programador presiona "Confirmar", el sistema ocupa el cupo y cambia el estado a Verde en la vista de vencimientos.
-•	Flujo de Alerta de Vencimiento:
+•	Flujo de Alerta de Vencimientos:
 1.	El sistema monitorea diariamente las fechas de término de los auspicios activos.
-2.	24 horas antes de que un auspicio finalice, envía una notificación automática al programador correspondiente: "Recordatorio de Vencimiento: El auspicio de [Nombre del Cliente] en [Nombre del Programa] finaliza mañana. Por favor, realiza las modificaciones necesarias en las presentaciones y cierres del programa."
+2.	24 horas antes de que un auspicio finalice, envía una notificación automática al programador correspondiente: "Recordatorio de Vencimientos: El auspicio de [Nombre del Cliente] en [Nombre del Programa] finaliza mañana. Por favor, realiza las modificaciones necesarias en las presentaciones y cierres del programa."
 Sub-Módulo 2.6: Políticas de Compliance y Brand Safety
 2.7: Gestor de Paquetes Especiales y Promociones
 Propósito Estratégico: Dotar al equipo comercial de la agilidad necesaria para crear, gestionar y utilizar paquetes tácticos o promocionales de duración limitada. Estos paquetes especiales pueden ser diseñados para eventos, temporadas o negociaciones específicas con clientes, sin necesidad de alterar los tarifarios estándar.
@@ -693,7 +693,7 @@ Grupo V: Finanzas e Inteligencia (La Verificación del Valor)
 Propósito Estratégico: Automatizar y gestionar el ciclo de vida completo de la facturación, desde la creación del documento hasta su pago o anulación. El módulo busca asegurar la precisión, el cumplimiento normativo (local e internacional) y la trazabilidad financiera, vinculando cada transacción directamente a un resultado comercial.
 11.1: Panel Principal de Facturación
 •	Una vista de tabla centralizada que muestra todas las facturas y notas de crédito generadas.
-•	Columnas Clave: Número Documento, Tipo (Factura/Nota de Crédito), Estado (Borrador, Enviada, Pagada, Vencida, Anulada), Cliente, Contrato Asociado, Fecha Emisión, Fecha Vencimiento, Monto Total.
+•	Columnas Clave: Número Documento, Tipo (Factura/Nota de Crédito), Estado (Borrador, Enviada, Pagada, Vencida, Anulada), Cliente, Contrato Asociado, Fecha Emisión, Fecha Vencimientos, Monto Total.
 •	Herramientas avanzadas de búsqueda y filtrado por cualquiera de sus campos.
 11.2: Flujo de Creación de Factura
 Un wizard guiado que simplifica la creación de facturas.

@@ -1,62 +1,448 @@
-'use client'
+﻿'use client';
 
 /**
- * 🎛️ SILEXAR PULSE - CEO Admin Portal
+ * ðŸŽ›ï¸ SILEXAR PULSE - CEO Admin Portal
  * Complete Control Center for CEO/Super Admin
  * 
- * @description Enhanced admin portal with:
+ * @description Redesigned with proper Neumorphism design system (TIER 0):
  * - CEO Command Center (AI, Modules, Databases, Remote Control)
  * - Client Management (Wizard, License Management)
  * - System Configuration
  * 
- * @version 2025.4.0
- * @tier TIER_0_FORTUNE_10
- * @security MILITARY_GRADE
+ * @version 2025.4.2
+ * @tier ENTERPRISE_GRADE
+ * @design NEUMORPHISM_TIER_0
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/components/security-initializer'
-
-// WHY: Lazy loading de componentes pesados del admin. Cada panel pesa ~150-400KB.
-// Al cargarlos estáticamente el bundle inicial era ~2MB. Con dynamic se cargan
-// solo cuando el usuario activa el tab correspondiente.
-const AdminPanelSkeleton = () => <Skeleton className="w-full h-64 rounded-2xl" />
-
-const SuperAdminDashboard  = dynamic(() => import('@/components/admin/super-admin-dashboard').then(m => ({ default: m.SuperAdminDashboard })), { loading: AdminPanelSkeleton, ssr: false })
-const ClientAdminPanel     = dynamic(() => import('@/components/admin/client-admin-panel').then(m => ({ default: m.ClientAdminPanel })), { loading: AdminPanelSkeleton, ssr: false })
-const ExportConfiguration  = dynamic(() => import('@/components/admin/export-configuration').then(m => ({ default: m.ExportConfiguration })), { loading: AdminPanelSkeleton, ssr: false })
-const CEOCommandCenter     = dynamic(() => import('@/components/admin/ceo-command-center').then(m => ({ default: m.CEOCommandCenter })), { loading: AdminPanelSkeleton, ssr: false })
-const ClientWizard         = dynamic(() => import('@/components/admin/client-wizard').then(m => ({ default: m.ClientWizard })), { loading: AdminPanelSkeleton, ssr: false })
-const LicenseManager       = dynamic(() => import('@/components/admin/license-manager').then(m => ({ default: m.LicenseManager })), { loading: AdminPanelSkeleton, ssr: false })
-const ExecutiveDashboard   = dynamic(() => import('@/components/admin/executive-dashboard').then(m => ({ default: m.ExecutiveDashboard })), { loading: AdminPanelSkeleton, ssr: false })
-const CommercialCRM        = dynamic(() => import('@/components/admin/commercial-crm').then(m => ({ default: m.CommercialCRM })), { loading: AdminPanelSkeleton, ssr: false })
-const AlertCenter          = dynamic(() => import('@/components/admin/alert-center').then(m => ({ default: m.AlertCenter })), { loading: AdminPanelSkeleton, ssr: false })
-const SecurityPanel        = dynamic(() => import('@/components/admin/security-panel').then(m => ({ default: m.SecurityPanel })), { loading: AdminPanelSkeleton, ssr: false })
-import { 
-  Users, 
-  Crown,
-  Activity,
-  Globe,
-  BarChart3,
-  AlertTriangle,
-  CheckCircle,
-  Cpu,
-  HardDrive,
-  Brain,
-  Building2,
-  Plus,
-  Calendar,
-  DollarSign,
-  Target,
-  Bell,
-  Lock
+import { motion } from 'framer-motion'
+import {
+  Users, Crown, Activity, Globe, BarChart3, AlertTriangle,
+  CheckCircle, Cpu, HardDrive, Brain, Building2, Plus,
+  Calendar, DollarSign, Target, Bell, Shield, Settings,
+  Database, Zap, TrendingUp, Clock, Server, FileText, X,
+  Minus, Maximize2, Search, RefreshCw, Eye, Edit3, Trash2
 } from 'lucide-react'
+
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+// TOKENS NEUMORPHISM TIER 0 - VERSIÁ“N CORRECTA CON INLINE STYLES
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+const N = {
+  base: '#dfeaff',
+  dark: '#bec8de',
+  light: '#ffffff',
+  accent: '#6888ff',
+  accentHover: '#5572ee',
+  text: '#69738c',
+  textSub: '#9aa3b8',
+}
+
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+// COMPONENTES NEUMORPHISM TIER 0 - CON ESTILOS INLINE
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+function NeuCard({ children, className = '', style = {} }: {
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
+}) {
+  return (
+    <div
+      className={`rounded-3xl ${className}`}
+      style={{
+        background: N.base,
+        boxShadow: `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`,
+        ...style
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function NeuCardSmall({ children, className = '', style = {} }: {
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
+}) {
+  return (
+    <div
+      className={`rounded-2xl ${className}`}
+      style={{
+        background: N.base,
+        boxShadow: `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`,
+        ...style
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function NeuButton({
+  children,
+  onClick,
+  variant = 'secondary',
+  disabled = false,
+  className = '',
+  icon: Icon,
+  'aria-label': al
+}: {
+  children: React.ReactNode
+  onClick?: () => void
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
+  disabled?: boolean
+  className?: string
+  icon?: React.ElementType
+  'aria-label'?: string
+}) {
+  const styles: Record<string, React.CSSProperties> = {
+    primary: {
+      background: N.accent,
+      color: '#fff',
+      boxShadow: `4px 4px 8px ${N.dark},-2px -2px 6px ${N.light}`
+    },
+    secondary: {
+      background: N.base,
+      color: N.text,
+      boxShadow: `6px 6px 12px ${N.dark},-6px -6px 12px ${N.light}`
+    },
+    danger: {
+      background: N.base,
+      color: N.accent,
+      boxShadow: `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}`
+    },
+    ghost: {
+      background: 'transparent',
+      color: N.textSub
+    },
+  }
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={al}
+      className={`flex items-center gap-2 justify-center rounded-2xl font-bold text-sm transition-all duration-200 ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
+      style={styles[variant]}
+    >
+      {Icon && <Icon className="w-4 h-4" />}
+      {children}
+    </button>
+  )
+}
+
+function NeuInput({
+  placeholder,
+  value,
+  onChange,
+  icon: Icon,
+  type = 'text'
+}: {
+  placeholder?: string
+  value: string
+  onChange: (v: string) => void
+  icon?: React.ElementType
+  type?: string
+}) {
+  return (
+    <div className="relative">
+      {Icon && (
+        <Icon
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+          style={{ color: N.textSub }}
+        />
+      )}
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        aria-label={placeholder}
+        className="w-full py-3 rounded-2xl text-sm focus:outline-none transition-all"
+        style={{
+          background: N.base,
+          boxShadow: `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`,
+          color: N.text,
+          paddingLeft: Icon ? '2.5rem' : '1rem',
+          paddingRight: '1rem'
+        }}
+      />
+    </div>
+  )
+}
+
+function NeuSelect({
+  value,
+  onChange,
+  options
+}: {
+  value: string
+  onChange: (v: string) => void
+  options: { value: string; label: string }[]
+}) {
+  return (
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className="py-3 px-4 rounded-2xl text-sm focus:outline-none cursor-pointer"
+      style={{
+        background: N.base,
+        boxShadow: `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`,
+        color: N.text
+      }}
+    >
+      {options.map(o => (
+        <option key={o.value} value={o.value}>{o.label}</option>
+      ))}
+    </select>
+  )
+}
+
+function StatusBadge({ status, label }: { status: 'success' | 'warning' | 'danger' | 'info'; label: string }) {
+  // NEUMORPHISM TIER 0: UNICO color permitido para estados = #6888ff (accent)
+  // NO usar verde, rojo, amarillo según el skill
+  const c = { color: N.accent, bgColor: `${N.accent}18` }
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+      style={{
+        background: c.bgColor,
+        color: c.color,
+        boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}`
+      }}
+    >
+      {label}
+    </span>
+  )
+}
+
+function StatCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  trend,
+  color = N.accent
+}: {
+  title: string
+  value: string | number
+  subtitle?: string
+  icon: React.ElementType
+  trend?: 'up' | 'down' | 'neutral'
+  color?: string
+}) {
+  return (
+    <NeuCard className="p-5">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <p className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: N.textSub }}>
+            {title}
+          </p>
+          <p className="text-2xl font-bold" style={{ color: N.text }}>
+            {value}
+          </p>
+          {subtitle && (
+            <p className="text-xs mt-1" style={{ color: N.textSub }}>
+              {subtitle}
+            </p>
+          )}
+          {trend && (
+            <div
+              className={`flex items-center gap-1 mt-2 text-xs font-semibold`}
+              style={{
+                color: trend !== 'neutral' ? N.accent : N.textSub
+              }}
+            >
+              {trend === 'up' && <TrendingUp className="w-3 h-3" />}
+              {trend === 'down' && <TrendingUp className="w-3 h-3 rotate-180" />}
+              {trend !== 'neutral' ? '+2.5%' : '0%'}
+            </div>
+          )}
+        </div>
+        <div
+          className="p-3 rounded-2xl"
+          style={{
+            backgroundColor: `${color}15`,
+            boxShadow: `inset 2px 2px 4px ${color}20, inset -2px -2px 4px white`
+          }}
+        >
+          <Icon className="w-5 h-5" style={{ color }} />
+        </div>
+      </div>
+    </NeuCard>
+  )
+}
+
+function NeuTabs({ tabs, activeTab, onChange }: {
+  tabs: { id: string; label: string; icon?: React.ElementType }[]
+  activeTab: string
+  onChange: (id: string) => void
+}) {
+  return (
+    <div
+      className="flex flex-wrap gap-2 p-2 rounded-2xl"
+      style={{
+        background: N.base,
+        boxShadow: `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`
+      }}
+    >
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id
+        const Icon = tab.icon
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onChange(tab.id)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 text-sm font-bold"
+            style={isActive ? {
+              background: N.accent,
+              color: '#fff',
+              boxShadow: `3px 3px 6px ${N.dark},-3px -3px 6px ${N.light}`
+            } : {
+              color: N.textSub
+            }}
+          >
+            {Icon && <Icon className="w-4 h-4" />}
+            {tab.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function FloatingWindow({
+  title,
+  children,
+  onClose,
+  onMinimize,
+  onMaximize,
+  initialX = 100,
+  initialY = 100,
+  width = 800,
+  height = 600,
+  icon: Icon,
+  badgeCount
+}: FloatingWindowProps) {
+  const dragRef = useRef<HTMLDivElement>(null)
+  const [pos, setPos] = useState({ x: initialX, y: initialY })
+  const [isMinimized, setIsMinimized] = useState(false)
+  const dragging = useRef(false)
+  const offset = useRef({ x: 0, y: 0 })
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return
+    dragging.current = true
+    offset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y }
+    e.preventDefault()
+  }
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (dragging.current) {
+        setPos({ x: e.clientX - offset.current.x, y: e.clientY - offset.current.y })
+      }
+    }
+    const onUp = () => { dragging.current = false }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+  }, [])
+
+  const handleMinimize = () => setIsMinimized(!isMinimized)
+
+  return (
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="fixed z-50"
+      style={{
+        transform: `translate(${pos.x}px, ${pos.y}px)`,
+        width: isMinimized ? 300 : width,
+        height: isMinimized ? 'auto' : height,
+      }}
+    >
+      <div
+        className="rounded-3xl overflow-hidden flex flex-col h-full"
+        style={{
+          background: N.base,
+          boxShadow: `12px 12px 24px ${N.dark},-12px -12px 24px ${N.light}`,
+          borderTop: '1px solid rgba(255,255,255,0.4)',
+          borderLeft: '1px solid rgba(255,255,255,0.4)'
+        }}
+      >
+        {/* Header */}
+        <div
+          onMouseDown={onMouseDown}
+          className="flex items-center justify-between px-5 py-4 border-b cursor-grab active:cursor-grabbing"
+          style={{ borderColor: `${N.dark}40` }}
+        >
+          <div className="flex items-center gap-3">
+            {Icon && (
+              <div
+                className="p-2 rounded-xl"
+                style={{ background: N.base, boxShadow: `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}` }}
+              >
+                <Icon className="w-5 h-5" style={{ color: N.accent }} />
+              </div>
+            )}
+            <div>
+              <h3 className="text-base font-black" style={{ color: N.text }}>{title}</h3>
+              {badgeCount !== undefined && (
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-bold"
+                  style={{ background: `${N.accent}20`, color: N.accent }}
+                >
+                  {badgeCount}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* OS Window Controls - NEUMORPHISM TIER 0: Solo color #6888ff */}
+            <button
+              onClick={handleMinimize}
+              className="w-3.5 h-3.5 rounded-full transition-all hover:opacity-80"
+              style={{ background: N.base, boxShadow: `2px 2px 4px ${N.dark},-1px -1px 3px ${N.light}` }}
+              aria-label="Minimizar"
+            >
+              {isMinimized && <Minus className="w-2 h-2 mx-auto" style={{ color: N.accent }} />}
+            </button>
+            <button
+              onClick={onMaximize}
+              className="w-3.5 h-3.5 rounded-full transition-all hover:opacity-80"
+              style={{ background: N.base, boxShadow: `2px 2px 4px ${N.dark},-1px -1px 3px ${N.light}` }}
+              aria-label="Maximizar"
+            />
+            <button
+              onClick={onClose}
+              className="w-3.5 h-3.5 rounded-full transition-all hover:opacity-80"
+              style={{ background: N.base, boxShadow: `2px 2px 4px ${N.dark},-1px -1px 3px ${N.light}` }}
+              aria-label="Cerrar"
+            />
+          </div>
+        </div>
+
+        {/* Body */}
+        {!isMinimized && (
+          <div className="flex-1 overflow-auto p-5">
+            {children}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+// TIPOS
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 interface SystemOverview {
   health: 'healthy' | 'warning' | 'critical'
@@ -67,55 +453,72 @@ interface SystemOverview {
   activeUsers: number
   totalTemplates: number
   activeTemplates: number
-  systemLoad: {
-    cpu: number
-    memory: number
-    disk: number
-    network: number
-  }
-  securityStatus: {
-    failedLogins: number
-    suspiciousActivity: number
-    lastSecurityScan: string
-    vulnerabilities: number
-  }
+  systemLoad: { cpu: number; memory: number; disk: number; network: number }
+  securityStatus: { failedLogins: number; suspiciousActivity: number; lastSecurityScan: string; vulnerabilities: number }
 }
 
 interface UserInfo {
   id: string
   name: string
   email: string
-  role: 'super_admin' | 'admin' | 'manager' | 'user'
+  role: 'super_admin' | 'Administrador' | 'Gerente' | 'Usuario'
   tenantId?: string
   permissions: string[]
   avatar?: string
 }
 
+interface FloatingWindowProps {
+  title: string
+  children: React.ReactNode
+  onClose: () => void
+  onMinimize?: () => void
+  onMaximize?: () => void
+  initialX?: number
+  initialY?: number
+  width?: number
+  height?: number
+  icon?: React.ElementType
+  badgeCount?: number
+}
+
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+// LAZY LOADING
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+const AdminPanelSkeleton = () => (
+  <div
+    className="rounded-3xl h-64 animate-pulse"
+    style={{
+      background: N.base,
+      boxShadow: `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`
+    }}
+  />
+)
+
+const SuperAdminDashboard = dynamic(() => import('@/components/admin/super-admin-dashboard').then(m => ({ default: m.SuperAdminDashboard })), { loading: AdminPanelSkeleton, ssr: false })
+const ClientAdminPanel = dynamic(() => import('@/components/admin/client-admin-panel').then(m => ({ default: m.ClientAdminPanel })), { loading: AdminPanelSkeleton, ssr: false })
+const ExportConfiguration = dynamic(() => import('@/components/admin/export-configuration').then(m => ({ default: m.ExportConfiguration })), { loading: AdminPanelSkeleton, ssr: false })
+const CEOCommandCenter = dynamic(() => import('@/components/admin/ceo-command-center').then(m => ({ default: m.CEOCommandCenter })), { loading: AdminPanelSkeleton, ssr: false })
+const ClientWizard = dynamic(() => import('@/components/admin/client-wizard').then(m => ({ default: m.ClientWizard })), { loading: AdminPanelSkeleton, ssr: false })
+const LicenseManager = dynamic(() => import('@/components/admin/license-manager').then(m => ({ default: m.LicenseManager })), { loading: AdminPanelSkeleton, ssr: false })
+const ExecutiveDashboard = dynamic(() => import('@/components/admin/executive-dashboard').then(m => ({ default: m.ExecutiveDashboard })), { loading: AdminPanelSkeleton, ssr: false })
+const CommercialCRM = dynamic(() => import('@/components/admin/commercial-crm').then(m => ({ default: m.CommercialCRM })), { loading: AdminPanelSkeleton, ssr: false })
+const AlertCenter = dynamic(() => import('@/components/admin/alert-center').then(m => ({ default: m.AlertCenter })), { loading: AdminPanelSkeleton, ssr: false })
+const SecurityPanel = dynamic(() => import('@/components/admin/security-panel').then(m => ({ default: m.SecurityPanel })), { loading: AdminPanelSkeleton, ssr: false })
+
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+// PAGINA PRINCIPAL
+// •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 export default function AdminPage() {
-  // 🔐 Auth guard: Require authentication for admin access
   const { user, isLoading } = useAuth()
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <p className="text-slate-400">Verificando autenticación...</p>
-        </div>
-      </div>
-    )
-  }
-  if (!user) {
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login?callbackUrl=/admin'
-    }
-    return null
-  }
 
   const [activeTab, setActiveTab] = useState('command-center')
   const [systemOverview, setSystemOverview] = useState<SystemOverview | null>(null)
   const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [selectedTenant, setSelectedTenant] = useState<string>('tenant_001')
   const [showClientWizard, setShowClientWizard] = useState(false)
+  const [showDetailWindow, setShowDetailWindow] = useState(false)
 
   useEffect(() => {
     loadSystemOverview()
@@ -132,18 +535,8 @@ export default function AdminPage() {
       activeUsers: 89,
       totalTemplates: 28,
       activeTemplates: 22,
-      systemLoad: {
-        cpu: 68,
-        memory: 72,
-        disk: 45,
-        network: 23
-      },
-      securityStatus: {
-        failedLogins: 23,
-        suspiciousActivity: 5,
-        lastSecurityScan: new Date(Date.now() - 3600000).toISOString(),
-        vulnerabilities: 1
-      }
+      systemLoad: { cpu: 68, memory: 72, disk: 45, network: 23 },
+      securityStatus: { failedLogins: 23, suspiciousActivity: 5, lastSecurityScan: new Date(Date.now() - 3600000).toISOString(), vulnerabilities: 1 }
     }
     setSystemOverview(mockOverview)
   }
@@ -160,346 +553,504 @@ export default function AdminPage() {
     setCurrentUser(mockUser)
   }
 
-  const getHealthColor = (health: string) => {
+  const getHealthVariant = (health: string): 'success' | 'warning' | 'danger' => {
     switch (health) {
-      case 'healthy': return 'text-green-400 border-green-400'
-      case 'warning': return 'text-yellow-400 border-yellow-400'
-      case 'critical': return 'text-red-400 border-red-400'
-      default: return 'text-gray-400 border-gray-400'
+      case 'healthy': return 'success'
+      case 'warning': return 'warning'
+      case 'critical': return 'danger'
+      default: return 'warning'
     }
   }
 
-  if (!systemOverview || !currentUser) {
+  const getHealthLabel = (health: string): string => {
+    switch (health) {
+      case 'healthy': return 'Saludable'
+      case 'warning': return 'warning'
+      case 'critical': return 'Crítico'
+      default: return 'Desconocido'
+    }
+  }
+
+  // Loading state
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: N.base }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <p className="text-slate-400">Cargando Centro de Control CEO...</p>
+          <div
+            className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            style={{
+              background: N.base,
+              boxShadow: `8px 8px 16px ${N.dark},-8px -8px 16px ${N.light}`
+            }}
+          >
+            <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: N.accent, borderTopColor: 'transparent' }} />
+          </div>
+          <p className="text-sm font-medium" style={{ color: N.textSub }}>Verificando autenticación...</p>
         </div>
       </div>
     )
   }
 
-  // Client Wizard Modal
-  if (showClientWizard) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6">
-        <ClientWizard 
-          onComplete={(client) => {
-            
-            setShowClientWizard(false)
-          }}
-          onCancel={() => setShowClientWizard(false)}
-        />
-      </div>
-    )
+  // Not authenticated
+  if (!user) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login?callbackUrl=/admin'
+    }
+    return null
   }
+
+  const tabs = [
+    { id: 'command-center', label: 'Centro de Comando', icon: Crown },
+    { id: 'system', label: 'Sistema', icon: Server },
+    { id: 'clients', label: 'Clientes', icon: Building2 },
+    { id: 'users', label: 'Usuarios', icon: Users },
+    { id: 'security', label: 'Seguridad', icon: Shield },
+    { id: 'reports', label: 'Informes', icon: BarChart3 },
+    { id: 'alerts', label: 'Alertas', icon: Bell },
+    { id: 'settings', label: 'Configuración', icon: Settings },
+  ]
+
+  const tenants = [
+    { id: 'tenant_001', name: 'Silexar Principal' },
+    { id: 'tenant_002', name: 'Radio Central' },
+    { id: 'tenant_003', name: 'MediaCorp' },
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header Principal */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              🎛️ Centro de Control CEO
-            </h1>
-            <p className="text-slate-300">
-              Control total del sistema Silexar Pulse - TIER 0 Supremacy
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Badge 
-              variant="outline" 
-              className={getHealthColor(systemOverview.health)}
+    <div
+      className="min-h-screen"
+      style={{ background: N.base }}
+    >
+      <style>{`
+        .neu-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .neu-scrollbar::-webkit-scrollbar-track { background: rgba(104, 136, 255, 0.05); border-radius: 10px; margin: 4px; }
+        .neu-scrollbar::-webkit-scrollbar-thumb { background: rgba(104, 136, 255, 0.25); border-radius: 10px; }
+        .neu-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(104, 136, 255, 0.5); }
+      `}</style>
+
+      {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+          HEADER
+      ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+      <header
+        className="sticky top-0 z-40 px-6 py-4 border-b"
+        style={{ background: N.base, borderColor: `${N.dark}30`, boxShadow: `0 4px 12px ${N.dark}20` }}
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center"
+              style={{ background: N.base, boxShadow: `6px 6px 12px ${N.dark},-6px -6px 12px ${N.light}` }}
             >
-              Sistema: {systemOverview.health.toUpperCase()}
-            </Badge>
-            <Badge variant="outline" className="text-purple-400 border-purple-400">
-              🔐 SUPER CEO
-            </Badge>
+              <Crown className="w-6 h-6" style={{ color: N.accent }} />
+            </div>
+            <div>
+              <h1 className="text-xl font-black tracking-tight" style={{ color: N.text }}>
+                PANEL DE ADMINISTRACIÓN
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Tenant Selector */}
+            <NeuSelect
+              value={selectedTenant}
+              onChange={setSelectedTenant}
+              options={tenants.map(t => ({ value: t.id, label: t.name }))}
+            />
+
+            {/* System Health */}
+            {systemOverview && (
+              <StatusBadge
+                status={getHealthVariant(systemOverview.health)}
+                label={getHealthLabel(systemOverview.health)}
+              />
+            )}
+
+            {/* User Avatar */}
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-[#69738c] font-bold"
+              style={{ background: N.accent, boxShadow: `4px 4px 8px ${N.dark},-4px -4px 8px ${N.light}` }}
+            >
+              {currentUser?.name?.charAt(0) || 'U'}
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Uptime</CardTitle>
-              <Activity className="h-4 w-4 text-green-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">{systemOverview.uptime}%</div>
-            </CardContent>
-          </Card>
+      {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+          MAIN CONTENT
+      ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Tenants</CardTitle>
-              <Globe className="h-4 w-4 text-blue-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">{systemOverview.activeTenants}</div>
-              <p className="text-xs text-slate-400">{systemOverview.totalTenants} total</p>
-            </CardContent>
-          </Card>
+        {/* Tabs Navigation */}
+        <NeuTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Usuarios</CardTitle>
-              <Users className="h-4 w-4 text-purple-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">{systemOverview.activeUsers}</div>
-              <p className="text-xs text-slate-400">{systemOverview.totalUsers} total</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">CPU</CardTitle>
-              <Cpu className="h-4 w-4 text-green-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">{systemOverview.systemLoad.cpu}%</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-200">Memoria</CardTitle>
-              <HardDrive className="h-4 w-4 text-blue-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">{systemOverview.systemLoad.memory}%</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-10 bg-slate-800/50">
-            <TabsTrigger value="dashboard" className="data-[state=active]:bg-green-600">
-              <DollarSign className="h-4 w-4 mr-2" />
-              Ejecutivo
-            </TabsTrigger>
-            <TabsTrigger value="command-center" className="data-[state=active]:bg-purple-600">
-              <Brain className="h-4 w-4 mr-2" />
-              Comando
-            </TabsTrigger>
-            <TabsTrigger value="crm" className="data-[state=active]:bg-blue-600">
-              <Target className="h-4 w-4 mr-2" />
-              CRM
-            </TabsTrigger>
-            <TabsTrigger value="clients" className="data-[state=active]:bg-cyan-600">
-              <Building2 className="h-4 w-4 mr-2" />
-              Clientes
-            </TabsTrigger>
-            <TabsTrigger value="licenses" className="data-[state=active]:bg-green-600">
-              <Calendar className="h-4 w-4 mr-2" />
-              Licencias
-            </TabsTrigger>
-            <TabsTrigger value="super-admin" className="data-[state=active]:bg-red-600">
-              <Crown className="h-4 w-4 mr-2" />
-              Tenants
-            </TabsTrigger>
-            <TabsTrigger value="client-admin" className="data-[state=active]:bg-orange-600">
-              <Users className="h-4 w-4 mr-2" />
-              Usuarios
-            </TabsTrigger>
-            <TabsTrigger value="alerts" className="data-[state=active]:bg-orange-600">
-              <Bell className="h-4 w-4 mr-2" />
-              Alertas
-            </TabsTrigger>
-            <TabsTrigger value="security" className="data-[state=active]:bg-red-600">
-              <Lock className="h-4 w-4 mr-2" />
-              Seguridad
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Executive Dashboard Tab */}
-          <TabsContent value="dashboard">
-            <ExecutiveDashboard />
-          </TabsContent>
-
-          {/* CEO Command Center Tab */}
-          <TabsContent value="command-center">
-            <CEOCommandCenter />
-          </TabsContent>
-
-          {/* CRM Tab */}
-          <TabsContent value="crm">
-            <CommercialCRM />
-          </TabsContent>
-
-          {/* Clients Tab */}
-          <TabsContent value="clients" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-white">Gestión de Clientes</h2>
-                <p className="text-slate-400">Crear y administrar clientes del sistema</p>
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            COMMAND CENTER
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'command-center' && (
+          <div className="space-y-6">
+            {/* Welcome Section */}
+            <NeuCard className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                  style={{ background: `${N.accent}15`, boxShadow: `inset 4px 4px 8px ${N.dark}30,inset -4px -4px 8px ${N.light}` }}
+                >
+                  <Crown className="w-8 h-8" style={{ color: N.accent }} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black" style={{ color: N.text }}>
+                    Bienvenido, {currentUser?.name || 'Administrador'}
+                  </h2>
+                  <p className="text-sm" style={{ color: N.textSub }}>
+                    Panel de Control Central €” Sistema Operativo de Gestión Enterprise
+                  </p>
+                </div>
               </div>
-              <Button 
-                onClick={() => setShowClientWizard(true)}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Crear Nuevo Cliente
-              </Button>
+
+              {/* Quick Stats — NEUMORPHIC ELEVATED CARDS */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { value: systemOverview?.totalTenants || 0, label: 'Clientes Totales', icon: <Building2 className="w-5 h-5" /> },
+                  { value: systemOverview?.activeTenants || 0, label: 'Clientes Activos', icon: <CheckCircle className="w-5 h-5" /> },
+                  { value: systemOverview?.totalUsers || 0, label: 'Usuarios Totales', icon: <Users className="w-5 h-5" /> },
+                  { value: `${systemOverview?.uptime || 0}%`, label: 'Uptime del Sistema', icon: <Activity className="w-5 h-5" /> }
+                ].map((stat, i) => (
+                  <div
+                    key={i}
+                    className="p-4 rounded-2xl text-center"
+                    style={{ background: N.base, boxShadow: `6px 6px 12px ${N.dark},-6px -6px 12px ${N.light}` }}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2"
+                      style={{
+                        background: N.base,
+                        boxShadow: `inset 2px 2px 4px ${N.dark},inset -2px -2px 4px ${N.light}`,
+                        color: N.accent
+                      }}
+                    >
+                      {stat.icon}
+                    </div>
+                    <p className="text-2xl font-black" style={{ color: N.accent }}>{stat.value}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider mt-1" style={{ color: N.textSub }}>{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </NeuCard>
+
+            {/* CEO Command Center Components */}
+            <CEOCommandCenter />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            SYSTEM TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'system' && (
+          <div className="space-y-6">
+            {/* System Overview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                title="CPU"
+                value={`${systemOverview?.systemLoad.cpu || 0}%`}
+                subtitle="Uso del procesador"
+                icon={Cpu}
+                trend={systemOverview?.systemLoad.cpu && systemOverview.systemLoad.cpu > 80 ? 'up' : 'neutral'}
+                color={N.accent}
+              />
+              <StatCard
+                title="Memoria"
+                value={`${systemOverview?.systemLoad.memory || 0}%`}
+                subtitle="RAM utilizada"
+                icon={HardDrive}
+                trend={systemOverview?.systemLoad.memory && systemOverview.systemLoad.memory > 80 ? 'up' : 'neutral'}
+                color={N.accent}
+              />
+              <StatCard
+                title="Disco"
+                value={`${systemOverview?.systemLoad.disk || 0}%`}
+                subtitle="Almacenamiento"
+                icon={Database}
+                color={N.accent}
+              />
+              <StatCard
+                title="Red"
+                value={`${systemOverview?.systemLoad.network || 0}%`}
+                subtitle="Ancho de banda"
+                icon={Globe}
+                color={N.accent}
+              />
             </div>
 
+            {/* System Health */}
+            <NeuCard className="p-6">
+              <h3 className="text-lg font-black mb-4" style={{ color: N.text }}>Estado del Sistema</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium" style={{ color: N.textSub }}>Salud General</span>
+                  <StatusBadge status={getHealthVariant(systemOverview?.health || 'warning')} label={getHealthLabel(systemOverview?.health || 'warning')} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium" style={{ color: N.textSub }}>Uptime</span>
+                  <span className="text-sm font-bold" style={{ color: N.text }}>{systemOverview?.uptime || 0}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium" style={{ color: N.textSub }}>Plantillas Activas</span>
+                  <span className="text-sm font-bold" style={{ color: N.text }}>{systemOverview?.activeTemplates || 0} / {systemOverview?.totalTemplates || 0}</span>
+                </div>
+              </div>
+            </NeuCard>
+
+            <SuperAdminDashboard />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            CLIENTS TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'clients' && (
+          <div className="space-y-6">
             {/* Client Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-600/20 rounded-lg">
-                      <CheckCircle className="h-6 w-6 text-green-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">{systemOverview.activeTenants}</p>
-                      <p className="text-sm text-slate-400">Clientes Activos</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-yellow-600/20 rounded-lg">
-                      <AlertTriangle className="h-6 w-6 text-yellow-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">3</p>
-                      <p className="text-sm text-slate-400">Licencias por Expirar</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-600/20 rounded-lg">
-                      <BarChart3 className="h-6 w-6 text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">$12.5M</p>
-                      <p className="text-sm text-slate-400">Ingresos Mensuales</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <StatCard
+                title="Total Clientes"
+                value={systemOverview?.totalTenants || 0}
+                subtitle="En el sistema"
+                icon={Building2}
+                color={N.accent}
+              />
+              <StatCard
+                title="Clientes Activos"
+                value={systemOverview?.activeTenants || 0}
+                subtitle="Operando actualmente"
+                icon={CheckCircle}
+                trend="up"
+                color={N.accent}
+              />
+              <StatCard
+                title="Clientes Inactivos"
+                value={(systemOverview?.totalTenants || 0) - (systemOverview?.activeTenants || 0)}
+                subtitle="Requieren atención"
+                icon={AlertTriangle}
+                trend="down"
+                color={N.accent}
+              />
             </div>
 
-            {/* Recent Clients Quick View */}
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Clientes Recientes</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Últimos clientes creados en el sistema
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {[
-                    { name: 'RDF Media', plan: 'Enterprise', status: 'active', date: '2025-01-15' },
-                    { name: 'Grupo Prisa Chile', plan: 'Enterprise+', status: 'active', date: '2025-01-10' },
-                    { name: 'Mega Media', plan: 'Professional', status: 'expiring', date: '2024-12-20' },
-                  ].map((client) => (
-                    <div key={client.name} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-slate-600 rounded-lg flex items-center justify-center">
-                          <Building2 className="w-5 h-5 text-slate-300" />
-                        </div>
-                        <div>
-                          <p className="text-white font-medium">{client.name}</p>
-                          <p className="text-xs text-slate-400">{client.plan} • Creado {client.date}</p>
-                        </div>
-                      </div>
-                      <Badge variant={client.status === 'active' ? 'default' : 'destructive'} className={client.status === 'active' ? 'bg-green-600' : ''}>
-                        {client.status === 'active' ? 'Activo' : 'Por Expirar'}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            {/* Client Actions */}
+            <NeuCard className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-black" style={{ color: N.text }}>Gestión de Clientes</h3>
+                <NeuButton
+                  variant="primary"
+                  icon={Plus}
+                  onClick={() => setShowClientWizard(true)}
+                >
+                  Nuevo Cliente
+                </NeuButton>
+              </div>
+              <ClientAdminPanel tenantId={user?.tenantId || 'system'} currentUser={{ id: user?.id || 'unknown', name: user?.name || 'Unknown', email: user?.email || '', role: { id: 'role_001', name: 'Usuario', description: 'Usuario', level: 1, permissions: [], isSystem: false, color: '#6888ff' }, status: 'active', lastLogin: new Date().toISOString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), permissions: [], twoFactorEnabled: false, loginAttempts: 0, sessionCount: 1 }} />
+            </NeuCard>
+          </div>
+        )}
 
-          {/* Licenses Tab */}
-          <TabsContent value="licenses">
-            <LicenseManager />
-          </TabsContent>
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            USERS TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'users' && (
+          <div className="space-y-6">
+            {/* User Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <StatCard
+                title="Total Usuarios"
+                value={systemOverview?.totalUsers || 0}
+                icon={Users}
+                color={N.accent}
+              />
+              <StatCard
+                title="Usuarios Activos"
+                value={systemOverview?.activeUsers || 0}
+                subtitle="Conectados ahora"
+                icon={Activity}
+                trend="up"
+                color={N.accent}
+              />
+              <StatCard
+                title="Sesiones"
+                value={systemOverview?.activeUsers || 0}
+                icon={Clock}
+                color={N.accent}
+              />
+              <StatCard
+                title="Permisos"
+                value="256"
+                icon={Shield}
+                color={N.accent}
+              />
+            </div>
 
-          {/* Super Admin Tab */}
-          <TabsContent value="super-admin">
-            <SuperAdminDashboard 
-              currentUser={{
-                id: currentUser.id,
-                name: currentUser.name,
-                email: currentUser.email,
-                role: 'super_admin',
-                permissions: currentUser.permissions
-              }}
-            />
-          </TabsContent>
+            <ExecutiveDashboard />
+          </div>
+        )}
 
-          {/* Client Admin Tab */}
-          <TabsContent value="client-admin">
-            <ClientAdminPanel 
-              tenantId={selectedTenant}
-              currentUser={{
-                id: currentUser.id,
-                name: currentUser.name,
-                email: currentUser.email,
-                role: {
-                  id: 'role_admin',
-                  name: 'Administrador',
-                  description: 'Acceso completo al sistema',
-                  level: 10,
-                  permissions: [],
-                  isSystem: false,
-                  color: 'red'
-                },
-                permissions: [],
-                status: 'active',
-                lastLogin: new Date().toISOString(),
-                createdAt: '2024-01-15T00:00:00Z',
-                updatedAt: new Date().toISOString(),
-                department: 'Administración',
-                position: 'CEO',
-                twoFactorEnabled: true,
-                loginAttempts: 0,
-                sessionCount: 1
-              }}
-            />
-          </TabsContent>
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            SECURITY TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'security' && (
+          <div className="space-y-6">
+            {/* Security Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <StatCard
+                title="Logins Fallidos"
+                value={systemOverview?.securityStatus.failedLogins || 0}
+                icon={AlertTriangle}
+                color={N.accent}
+              />
+              <StatCard
+                title="Actividad Sospechosa"
+                value={systemOverview?.securityStatus.suspiciousActivity || 0}
+                icon={Shield}
+                color={N.accent}
+              />
+              <StatCard
+                title="Vulnerabilidades"
+                value={systemOverview?.securityStatus.vulnerabilities || 0}
+                icon={AlertTriangle}
+                color={N.accent}
+              />
+              <StatCard
+                title="Ášltimo Scan"
+                value="Hace 1h"
+                icon={Clock}
+                color={N.accent}
+              />
+            </div>
 
-          {/* Export Configuration Tab */}
-          <TabsContent value="export-config">
-            <ExportConfiguration tenantId={selectedTenant} />
-          </TabsContent>
-
-          {/* Alerts Tab */}
-          <TabsContent value="alerts">
-            <AlertCenter />
-          </TabsContent>
-
-          {/* Security Tab */}
-          <TabsContent value="security">
             <SecurityPanel />
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
 
-        {/* Footer */}
-        <div className="text-center text-slate-400 text-sm pt-6 border-t border-slate-700">
-          <p>🎛️ SILEXAR PULSE QUANTUM - CEO CONTROL CENTER - TIER 0 SUPREMACY</p>
-          <p>Pentagon++ Security • AI-Powered • 2030-Ready Architecture</p>
-        </div>
-      </div>
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            REPORTS TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'reports' && (
+          <div className="space-y-6">
+            <NeuCard className="p-6">
+              <h3 className="text-lg font-black mb-4" style={{ color: N.text }}>Centro de Informes</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <NeuCardSmall className="p-4 text-center cursor-pointer hover:scale-[1.02] transition-transform" style={{ padding: '1.5rem' }}>
+                  <BarChart3 className="w-8 h-8 mx-auto mb-2" style={{ color: N.accent }} />
+                  <p className="font-bold text-sm" style={{ color: N.text }}>Informe Ejecutivo</p>
+                  <p className="text-xs mt-1" style={{ color: N.textSub }}>Resumen del negocio</p>
+                </NeuCardSmall>
+                <NeuCardSmall className="p-4 text-center cursor-pointer hover:scale-[1.02] transition-transform" style={{ padding: '1.5rem' }}>
+                  <DollarSign className="w-8 h-8 mx-auto mb-2" style={{ color: N.accent }} />
+                  <p className="font-bold text-sm" style={{ color: N.text }}>Informe Financiero</p>
+                  <p className="text-xs mt-1" style={{ color: N.textSub }}>Ingresos y costos</p>
+                </NeuCardSmall>
+                <NeuCardSmall className="p-4 text-center cursor-pointer hover:scale-[1.02] transition-transform" style={{ padding: '1.5rem' }}>
+                  <Target className="w-8 h-8 mx-auto mb-2" style={{ color: N.accent }} />
+                  <p className="font-bold text-sm" style={{ color: N.text }}>Informe de Ventas</p>
+                  <p className="text-xs mt-1" style={{ color: N.textSub }}>Rendimiento comercial</p>
+                </NeuCardSmall>
+              </div>
+            </NeuCard>
+            <ExportConfiguration tenantId={user?.tenantId || 'system'} />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            ALERTS TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'alerts' && (
+          <div className="space-y-6">
+            <AlertCenter />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            SETTINGS TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            <NeuCard className="p-6">
+              <h3 className="text-lg font-black mb-4" style={{ color: N.text }}>Configuración General</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: N.text }}>Notificaciones por Email</p>
+                    <p className="text-xs" style={{ color: N.textSub }}>Recibir alertas al correo electrónico</p>
+                  </div>
+                  <NeuButton variant="secondary" icon={Bell}>Configurar</NeuButton>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: N.text }}>Integraciones</p>
+                    <p className="text-xs" style={{ color: N.textSub }}>Conectar con servicios externos</p>
+                  </div>
+                  <NeuButton variant="secondary" icon={Settings}>Gestionar</NeuButton>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: N.text }}>Respaldos</p>
+                    <p className="text-xs" style={{ color: N.textSub }}>Configurar backup automático</p>
+                  </div>
+                  <NeuButton variant="secondary" icon={Database}>Programar</NeuButton>
+                </div>
+              </div>
+            </NeuCard>
+            <LicenseManager />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            SUPER ADMIN TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'super-admin' && (
+          <div className="space-y-6">
+            <SuperAdminDashboard />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            CLIENT ADMIN TAB
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        {activeTab === 'client-admin' && (
+          <div className="space-y-6">
+            <ClientAdminPanel tenantId={user?.tenantId || 'system'} currentUser={{ id: user?.id || 'unknown', name: user?.name || 'Unknown', email: user?.email || '', role: { id: 'role_001', name: 'Usuario', description: 'Usuario', level: 1, permissions: [], isSystem: false, color: '#6888ff' }, status: 'active', lastLogin: new Date().toISOString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), permissions: [], twoFactorEnabled: false, loginAttempts: 0, sessionCount: 1 }} />
+          </div>
+        )}
+
+        {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+            FOOTER
+        ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+        <div className="text-center pt-6 border-t" style={{ borderColor: `${N.dark}30` }} />
+      </main>
+
+      {/* •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+          FLOATING WINDOW - Client Wizard
+      ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• */}
+      {showClientWizard && (
+        <FloatingWindow
+          title="Crear Nuevo Cliente"
+          onClose={() => setShowClientWizard(false)}
+          onMinimize={() => setShowClientWizard(false)}
+          initialX={150}
+          initialY={100}
+          width={700}
+          height={500}
+          icon={Building2}
+        >
+          <ClientWizard
+            onComplete={() => setShowClientWizard(false)}
+            onCancel={() => setShowClientWizard(false)}
+          />
+        </FloatingWindow>
+      )}
     </div>
   )
 }

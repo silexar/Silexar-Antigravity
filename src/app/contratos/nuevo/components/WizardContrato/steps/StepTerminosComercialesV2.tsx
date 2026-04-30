@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 💰 SILEXAR PULSE - Step 2: Términos Comerciales TIER 0
  *
  * @description Paso 2 con análisis automático de Cortex-Risk,
@@ -125,23 +125,23 @@ const RiskScoreGauge: React.FC<
   const porcentaje = (score / 1000) * 100;
   const config = {
     bajo: {
-      color: "from-green-400 to-emerald-500",
-      textColor: "text-green-600",
+      color: "from-[#6888ff] to-[#5572ee]",
+      textColor: "text-[#6888ff]",
       label: "BAJO RIESGO",
     },
     medio: {
-      color: "from-amber-400 to-orange-500",
-      textColor: "text-amber-600",
+      color: "from-[#6888ff] to-[#5572ee]",
+      textColor: "text-[#6888ff]",
       label: "RIESGO MEDIO",
     },
     alto: {
-      color: "from-orange-400 to-red-500",
-      textColor: "text-orange-600",
+      color: "from-[#6888ff] to-[#5572ee]",
+      textColor: "text-[#6888ff]",
       label: "RIESGO ALTO",
     },
     critico: {
-      color: "from-red-500 to-red-700",
-      textColor: "text-red-600",
+      color: "from-[#6888ff] to-[#5572ee]",
+      textColor: "text-[#9aa3b8]",
       label: "RIESGO CRÍTICO",
     },
   }[nivel];
@@ -203,7 +203,7 @@ const RecomendacionCard: React.FC<{
 }> = ({ icono, label, valor, aprobado, descripcion }) => (
   <div
     className={`p-4 rounded-xl border ${
-      aprobado ? "bg-green-50 border-green-200" : "bg-amber-50 border-amber-200"
+      aprobado ? "bg-[#6888ff]/5 border-[#bec8de]" : "bg-[#6888ff]/5 border-[#bec8de]"
     }`}
   >
     <div className="flex items-center justify-between mb-1">
@@ -212,12 +212,12 @@ const RecomendacionCard: React.FC<{
         <span className="text-sm font-medium text-[#69738c]">{label}</span>
       </div>
       {aprobado
-        ? <CheckCircle2 className="w-5 h-5 text-green-500" />
-        : <AlertTriangle className="w-5 h-5 text-amber-500" />}
+        ? <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
+        : <AlertTriangle className="w-5 h-5 text-[#6888ff]" />}
     </div>
     <p
       className={`text-lg font-bold ${
-        aprobado ? "text-green-700" : "text-amber-700"
+        aprobado ? "text-[#6888ff]" : "text-[#6888ff]"
       }`}
     >
       {valor}
@@ -235,8 +235,8 @@ const FactorItem: React.FC<{ factor: AnalisisCortexRisk["factores"][0] }> = (
     <div className="flex items-center gap-2">
       <span className="text-sm font-medium text-[#69738c]">{factor.valor}</span>
       {factor.positivo
-        ? <CheckCircle2 className="w-4 h-4 text-green-500" />
-        : <AlertCircle className="w-4 h-4 text-amber-500" />}
+        ? <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />
+        : <AlertCircle className="w-4 h-4 text-[#6888ff]" />}
     </div>
   </div>
 );
@@ -324,7 +324,7 @@ export default function StepTerminosComerciales({
             🛡️ ANÁLISIS CORTEX-RISK AUTOMÁTICO
           </h3>
           {analisisRisk && (
-            <span className="ml-auto px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+            <span className="ml-auto px-2 py-1 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium">
               {analisisRisk.confianza}% confianza
             </span>
           )}
@@ -359,7 +359,7 @@ export default function StepTerminosComerciales({
               {/* Recomendaciones */}
               <div>
                 <p className="text-sm font-semibold text-[#69738c] mb-3 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <CheckCircle2 className="w-4 h-4 text-[#6888ff]" />
                   Recomendaciones automáticas:
                 </p>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -427,11 +427,11 @@ export default function StepTerminosComerciales({
 
               {/* Alertas */}
               {analisisRisk.alertas.length > 0 && (
-                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                <div className="p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de]">
                   {analisisRisk.alertas.map((alerta, idx) => (
                     <p
                       key={idx}
-                      className="text-sm text-amber-700 flex items-center gap-2"
+                      className="text-sm text-[#6888ff] flex items-center gap-2"
                     >
                       <AlertTriangle className="w-4 h-4" />
                       {alerta}
@@ -446,7 +446,7 @@ export default function StepTerminosComerciales({
       {/* Configuración de Términos de Pago */}
       <div className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40]">
         <div className="flex items-center gap-2 mb-6">
-          <CreditCard className="w-5 h-5 text-purple-500" />
+          <CreditCard className="w-5 h-5 text-[#6888ff]" />
           <h3 className="text-lg font-semibold text-[#69738c]">
             Términos de Pago
           </h3>
@@ -476,7 +476,7 @@ export default function StepTerminosComerciales({
                   onClick={() => handleChange("modalidadPago", opcion.id)}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${
                     terminos.modalidadPago === opcion.id
-                      ? "border-indigo-500 bg-[#6888ff15]"
+                      ? "border-[#bec8de] bg-[#6888ff15]"
                       : "border-[#bec8de40] hover:border-[#bec8de50]"
                   }`}
                 >
@@ -493,7 +493,7 @@ export default function StepTerminosComerciales({
               Días de Pago
               {analisisRisk &&
                 terminos.diasPago > analisisRisk.recomendaciones.diasPago && (
-                <span className="ml-2 text-amber-600 text-xs">
+                <span className="ml-2 text-[#6888ff] text-xs">
                   ⚠️ Excede recomendación
                 </span>
               )}
@@ -505,7 +505,7 @@ export default function StepTerminosComerciales({
                   onClick={() => handleChange("diasPago", dias)}
                   className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${
                     terminos.diasPago === dias
-                      ? "border-indigo-500 bg-[#6888ff15] text-[#6888ff]"
+                      ? "border-[#bec8de] bg-[#6888ff15] text-[#6888ff]"
                       : "border-[#bec8de40] text-[#69738c] hover:border-[#bec8de50]"
                   }`}
                 >
@@ -539,7 +539,7 @@ export default function StepTerminosComerciales({
             <label className="block text-sm font-medium text-[#69738c] mb-2">
               Descuento General
               {excedeLimites && (
-                <span className="ml-2 text-red-600 text-xs">
+                <span className="ml-2 text-[#9aa3b8] text-xs">
                   🚨 Requiere aprobación especial
                 </span>
               )}
@@ -557,7 +557,7 @@ export default function StepTerminosComerciales({
               />
               <span
                 className={`text-xl font-bold ${
-                  excedeLimites ? "text-red-600" : "text-[#69738c]"
+                  excedeLimites ? "text-[#9aa3b8]" : "text-[#69738c]"
                 }`}
               >
                 {terminos.descuentoGeneral}%
@@ -577,11 +577,11 @@ export default function StepTerminosComerciales({
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-4 rounded-xl bg-red-50 border border-red-200"
+            className="mt-4 p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de]"
           >
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
-              <span className="font-medium text-red-700">
+              <AlertTriangle className="w-5 h-5 text-[#9aa3b8]" />
+              <span className="font-medium text-[#9aa3b8]">
                 Descuento excede límite autorizado - Se solicitará aprobación de
                 Gerente Comercial
               </span>
@@ -593,7 +593,7 @@ export default function StepTerminosComerciales({
       {/* Configuración de Facturación */}
       <div className="p-6 rounded-2xl bg-[#dfeaff] border border-[#bec8de40]">
         <div className="flex items-center gap-2 mb-6">
-          <Receipt className="w-5 h-5 text-emerald-500" />
+          <Receipt className="w-5 h-5 text-[#6888ff]" />
           <h3 className="text-lg font-semibold text-[#69738c]">
             Configuración de Facturación
           </h3>
@@ -639,7 +639,7 @@ export default function StepTerminosComerciales({
                   onClick={() => handleChange("facturacionEstilo", opcion.id)}
                   className={`w-full p-3 rounded-xl border-2 text-left transition-all ${
                     terminos.facturacionEstilo === opcion.id
-                      ? "border-emerald-500 bg-emerald-50"
+                      ? "border-[#bec8de] bg-[#6888ff]/5"
                       : "border-[#bec8de40] hover:border-[#bec8de50]"
                   }`}
                 >
@@ -684,7 +684,7 @@ export default function StepTerminosComerciales({
                   }}
                   className={`w-full p-3 rounded-xl border-2 text-left flex items-center gap-3 transition-all ${
                     terminos.direccionFacturacion === opcion.id
-                      ? "border-emerald-500 bg-emerald-50"
+                      ? "border-[#bec8de] bg-[#6888ff]/5"
                       : "border-[#bec8de40] hover:border-[#bec8de50]"
                   }`}
                 >
@@ -704,9 +704,9 @@ export default function StepTerminosComerciales({
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200"
+                className="mt-3 p-3 rounded-lg bg-[#6888ff]/5 border border-[#bec8de]"
               >
-                <p className="text-sm text-amber-700 flex items-center gap-2">
+                <p className="text-sm text-[#6888ff] flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />
                   Se requerirá carta de tercerización antes de activar el
                   contrato
@@ -720,8 +720,8 @@ export default function StepTerminosComerciales({
         <div className="mt-6 p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de40]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-100">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
+              <div className="p-2 rounded-lg bg-[#6888ff]/10">
+                <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
               </div>
               <div>
                 <p className="font-medium text-[#69738c]">Validación Fiscal</p>

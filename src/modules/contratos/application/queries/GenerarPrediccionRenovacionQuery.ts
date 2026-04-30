@@ -28,7 +28,7 @@ export class GenerarPrediccionRenovacionQueryHandler {
       clienteNombre: string;
       probabilidadRenovacion: number;
       confianzaPrediccion: number;
-      fechaVencimiento: Date;
+      fechaVencimientos: Date;
       valorActual: number;
       valorEstimadoRenovacion: number;
       factoresPositivos: string[];
@@ -52,13 +52,13 @@ export class GenerarPrediccionRenovacionQueryHandler {
     };
   }
 
-  private async obtenerContratosParaPrediccion(props: unknown): Promise<Array<{ id: string; clienteNombre: string; fechaVencimiento: Date; valorActual: number; nps: number; roi: number; satisfaccion: number; tiempoCliente: number }>> {
+  private async obtenerContratosParaPrediccion(props: unknown): Promise<Array<{ id: string; clienteNombre: string; fechaVencimientos: Date; valorActual: number; nps: number; roi: number; satisfaccion: number; tiempoCliente: number }>> {
     // Simular obtención de contratos próximos a vencer
     return [
       {
         id: 'contrato_1',
         clienteNombre: 'Cliente Premium',
-        fechaVencimiento: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        fechaVencimientos: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
         valorActual: 500000,
         nps: 85,
         roi: 320,
@@ -68,7 +68,7 @@ export class GenerarPrediccionRenovacionQueryHandler {
     ];
   }
 
-  private async generarPrediccionContrato(contrato: { id: string; clienteNombre: string; fechaVencimiento: Date; valorActual: number; nps: number; roi: number; satisfaccion: number; tiempoCliente: number }, modelo: string): Promise<unknown> {
+  private async generarPrediccionContrato(contrato: { id: string; clienteNombre: string; fechaVencimientos: Date; valorActual: number; nps: number; roi: number; satisfaccion: number; tiempoCliente: number }, modelo: string): Promise<unknown> {
     let probabilidad = 70; // Base
 
     // Ajustar por NPS
@@ -97,7 +97,7 @@ export class GenerarPrediccionRenovacionQueryHandler {
       clienteNombre: contrato.clienteNombre,
       probabilidadRenovacion: Math.max(0, Math.min(100, probabilidad)),
       confianzaPrediccion: 85,
-      fechaVencimiento: contrato.fechaVencimiento,
+      fechaVencimientos: contrato.fechaVencimientos,
       valorActual: contrato.valorActual,
       valorEstimadoRenovacion: contrato.valorActual * 1.1,
       factoresPositivos,

@@ -481,7 +481,7 @@ Centro de comando de recursos humanos digitales:
 │ 🚨 ALERTAS DE GESTIÓN:                                         │
 │ • 2 invitaciones sin activar (48h límite)                      │
 │ • Usuario inactivo por 30 días: maria.lopez@megamedia.com      │
-│ • Próximo vencimiento licencia: 15 días                        │
+│ • Próximo vencimientos licencia: 15 días                        │
 │                                                                 │
 │ 🤖 CORTEX SUGIERE:                                             │
 │ • Revisar permisos de 3 usuarios (acceso no usado en 60 días)  │
@@ -499,7 +499,7 @@ Filtros inteligentes:
 
 "Usuarios con acceso crítico"
 "Personal de ventas por performance"
-"Usuarios próximos a vencimiento"
+"Usuarios próximos a vencimientos"
 "Cuentas con actividad sospechosa"
 
 
@@ -1643,7 +1643,7 @@ CONFIGURACIÓN CORTEX-FLOW (Optimización Comercial):
 │                                                                 │
 │ 🔄 Renewal Prediction:                                         │
 │ • Estado: ✅ Activo                                            │
-│ • Ventana de predicción: 90 días antes de vencimiento         │
+│ • Ventana de predicción: 90 días antes de vencimientos         │
 │ • Accuracy: 91.3%                                             │
 │ • Acciones automáticas: Email sequences + task creation       │
 │ • Escalamiento: Si probabilidad < 60%                         │

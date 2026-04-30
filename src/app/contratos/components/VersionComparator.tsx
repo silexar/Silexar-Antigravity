@@ -309,9 +309,9 @@ const compararVersiones = (antigua: DatosContrato, nueva: DatosContrato): Cambio
 
 const getTipoBadge = (tipo: CambioDiff['tipo']) => {
   switch (tipo) {
-    case 'agregado': return 'bg-green-100 text-green-700';
-    case 'eliminado': return 'bg-red-100 text-red-700';
-    case 'modificado': return 'bg-amber-100 text-amber-700';
+    case 'agregado': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'eliminado': return 'bg-[#dfeaff] text-[#9aa3b8]';
+    case 'modificado': return 'bg-[#6888ff]/10 text-[#6888ff]';
     default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
@@ -459,37 +459,37 @@ export default function VersionComparator({
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Estado</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.estado !== versionNueva.datos.estado ? 'text-amber-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.estado !== versionNueva.datos.estado ? 'text-[#6888ff]' : ''}`}>
                     {versionNueva.datos.estado}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Valor Bruto</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.valorBruto !== versionNueva.datos.valorBruto ? 'text-green-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.valorBruto !== versionNueva.datos.valorBruto ? 'text-[#6888ff]' : ''}`}>
                     {formatCurrency(versionNueva.datos.valorBruto)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Descuento</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.descuento !== versionNueva.datos.descuento ? 'text-red-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.descuento !== versionNueva.datos.descuento ? 'text-[#9aa3b8]' : ''}`}>
                     {versionNueva.datos.descuento}%
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Valor Neto</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.valorNeto !== versionNueva.datos.valorNeto ? 'text-green-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.valorNeto !== versionNueva.datos.valorNeto ? 'text-[#6888ff]' : ''}`}>
                     {formatCurrency(versionNueva.datos.valorNeto)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Líneas</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.lineas.length !== versionNueva.datos.lineas.length ? 'text-purple-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.lineas.length !== versionNueva.datos.lineas.length ? 'text-[#6888ff]' : ''}`}>
                     {versionNueva.datos.lineas.length}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#9aa3b8]">Cláusulas</span>
-                  <span className={`font-semibold ${versionAntigua?.datos.clausulas.length !== versionNueva.datos.clausulas.length ? 'text-purple-600' : ''}`}>
+                  <span className={`font-semibold ${versionAntigua?.datos.clausulas.length !== versionNueva.datos.clausulas.length ? 'text-[#6888ff]' : ''}`}>
                     {versionNueva.datos.clausulas.length}
                   </span>
                 </div>
@@ -521,7 +521,7 @@ export default function VersionComparator({
                   <p className="font-semibold text-[#69738c]">{cambio.label}</p>
                   <div className="flex items-center gap-2 mt-1 text-sm">
                     {!!cambio.valorAnterior && (
-                      <span className="text-red-500 line-through">
+                      <span className="text-[#9aa3b8] line-through">
                         {typeof cambio.valorAnterior === 'number'
                           ? formatCurrency(cambio.valorAnterior)
                           : String(cambio.valorAnterior)}
@@ -531,7 +531,7 @@ export default function VersionComparator({
                       <ArrowRight className="w-4 h-4 text-[#9aa3b8]" />
                     )}
                     {!!cambio.valorNuevo && (
-                      <span className="text-green-600 font-semibold">
+                      <span className="text-[#6888ff] font-semibold">
                         {typeof cambio.valorNuevo === 'number'
                           ? formatCurrency(cambio.valorNuevo)
                           : String(cambio.valorNuevo)}
@@ -541,9 +541,9 @@ export default function VersionComparator({
                 </div>
 
                 <span className={`${neuro.badge} ${
-                  cambio.importancia === 'critica' ? 'bg-red-100 text-red-700' :
-                  cambio.importancia === 'alta' ? 'bg-orange-100 text-orange-700' :
-                  cambio.importancia === 'media' ? 'bg-amber-100 text-amber-700' :
+                  cambio.importancia === 'critica' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+                  cambio.importancia === 'alta' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                  cambio.importancia === 'media' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
                   'bg-[#dfeaff] text-[#69738c]'
                 }`}>
                   {cambio.importancia}
@@ -554,7 +554,7 @@ export default function VersionComparator({
 
           {cambios.length === 0 && (
             <div className="text-center py-8">
-              <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+              <CheckCircle className="w-12 h-12 text-[#6888ff] mx-auto mb-3" />
               <p className="text-[#69738c]">No hay cambios entre estas versiones</p>
             </div>
           )}

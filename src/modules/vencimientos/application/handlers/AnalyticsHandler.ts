@@ -11,7 +11,7 @@
 import type { IDisponibilidadRepository } from '../../domain/repositories/IDisponibilidadRepository.js'
 import type { IProgramaAuspicioRepository } from '../../domain/repositories/IProgramaAuspicioRepository.js'
 import type { ICupoComercialRepository } from '../../domain/repositories/ICupoComercialRepository.js'
-import type { IVencimientoRepository } from '../../domain/repositories/IVencimientoRepository.js'
+import type { IVencimientosRepository } from '../../domain/repositories/IVencimientosRepository.js'
 import type {
   GenerarAnalyticsInventarioQuery,
   AnalyticsInventarioResult,
@@ -24,7 +24,7 @@ export class AnalyticsHandler {
     private readonly dispRepo: IDisponibilidadRepository,
     private readonly programaRepo: IProgramaAuspicioRepository,
     private readonly cupoRepo: ICupoComercialRepository,
-    private readonly vencimientoRepo: IVencimientoRepository
+    private readonly vencimientosRepo: IVencimientosRepository
   ) {}
 
   async generarAnalyticsInventario(query: GenerarAnalyticsInventarioQuery): Promise<AnalyticsInventarioResult> {
@@ -32,7 +32,7 @@ export class AnalyticsHandler {
     const programas = await this.programaRepo.findByEmisora(query.payload.emisoraId)
     const ranking = await this.programaRepo.getRankingOcupacion(query.payload.emisoraId)
     const historial = await this.dispRepo.findHistorialByEmisora(query.payload.emisoraId)
-    const extensionesPendientes = await this.vencimientoRepo.findExtensionPendientes()
+    const extensionesPendientes = await this.vencimientosRepo.findExtensionPendientes()
 
     // Top performers
     const topProgramas = ranking.slice(0, 5).map(r => ({

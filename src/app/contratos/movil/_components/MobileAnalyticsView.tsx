@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? MOBILE: Vista Analytics
  * 
  * Dashboard predictivo compacto con KPIs, meta del mes, insights IA,
- * y recomendaciones priorizadas. Adaptación de analytics/page.tsx.
+ * y recomendaciones priorizadas. Adaptaciï¿½n de analytics/page.tsx.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -25,15 +25,15 @@ import type { PrediccionIA, RecomendacionIA } from '../../_shared/types';
 
 const MOCK_PREDICCIONES: PrediccionIA[] = [
   { id: 'i1', cliente: 'TechCorp', prediccion: 'Alta probabilidad de cierre esta semana', probabilidad: 92, tipo: 'positivo' },
-  { id: 'i2', cliente: 'Banco Chile', prediccion: 'Posible solicitud de extensión de plazo', probabilidad: 78, tipo: 'neutro' },
-  { id: 'i3', cliente: 'AutoMax', prediccion: 'Solicitará descuento adicional', probabilidad: 85, tipo: 'advertencia' },
-  { id: 'i4', cliente: 'Falabella', prediccion: 'Renovación anticipada detectada', probabilidad: 88, tipo: 'positivo' },
+  { id: 'i2', cliente: 'Banco Chile', prediccion: 'Posible solicitud de extensiï¿½n de plazo', probabilidad: 78, tipo: 'neutro' },
+  { id: 'i3', cliente: 'AutoMax', prediccion: 'Solicitarï¿½ descuento adicional', probabilidad: 85, tipo: 'advertencia' },
+  { id: 'i4', cliente: 'Falabella', prediccion: 'Renovaciï¿½n anticipada detectada', probabilidad: 88, tipo: 'positivo' },
 ];
 
 const MOCK_RECOMENDACIONES: RecomendacionIA[] = [
   { id: 'r1', accion: 'Contactar HOY para acelerar firma', cliente: 'TechCorp', prioridad: 'alta', impactoEstimado: '+$95M', razon: 'Cliente activo, alta probabilidad cierre' },
-  { id: 'r2', accion: 'Preparar propuesta de renovación', cliente: 'Banco Chile', prioridad: 'alta', impactoEstimado: '+$85M', razon: 'Contrato vence en 45 días' },
-  { id: 'r3', accion: 'Agendar llamada de seguimiento', cliente: 'SuperMax', prioridad: 'media', impactoEstimado: '+$15M', razon: 'Sin actividad hace 7 días' },
+  { id: 'r2', accion: 'Preparar propuesta de renovaciï¿½n', cliente: 'Banco Chile', prioridad: 'alta', impactoEstimado: '+$85M', razon: 'Contrato vence en 45 dï¿½as' },
+  { id: 'r3', accion: 'Agendar llamada de seguimiento', cliente: 'SuperMax', prioridad: 'media', impactoEstimado: '+$15M', razon: 'Sin actividad hace 7 dï¿½as' },
   { id: 'r4', accion: 'Enviar material de upselling', cliente: 'Cencosud', prioridad: 'baja', impactoEstimado: '+$20M', razon: 'Oportunidad de cross-sell detectada' },
 ];
 
@@ -64,7 +64,7 @@ export function MobileAnalyticsView() {
             <p className="text-3xl font-black">{formatCurrency(kpis?.metaCompletada || 0)}</p>
             <p className="text-xs text-white/70">de {formatCurrency(kpis?.metaMes || 0)}</p>
           </div>
-          <div className="flex items-center gap-1 text-emerald-300">
+          <div className="flex items-center gap-1 text-[#6888ff]">
             <TrendingUp className="w-4 h-4" />
             <span className="text-sm font-bold">+12%</span>
           </div>
@@ -73,7 +73,7 @@ export function MobileAnalyticsView() {
         {/* Progress bar */}
         <div className="h-3 bg-[#dfeaff]/20 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full transition-all duration-700"
+            className="h-full bg-gradient-to-r from-[#6888ff] to-[#5572ee] rounded-full transition-all duration-700"
             style={{ width: `${metaPct}%` }}
           />
         </div>
@@ -142,14 +142,14 @@ export function MobileAnalyticsView() {
             <div
               key={insight.id}
               className={`bg-[#dfeaff] rounded-xl border p-4 flex items-start gap-3 ${
-                insight.tipo === 'positivo' ? 'border-emerald-100' :
-                insight.tipo === 'advertencia' ? 'border-amber-100' : 'border-[#bec8de30]'
+                insight.tipo === 'positivo' ? 'border-[#bec8de]' :
+                insight.tipo === 'advertencia' ? 'border-[#bec8de]' : 'border-[#bec8de30]'
               }`}
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                insight.tipo === 'positivo' ? 'bg-emerald-100 text-emerald-600' :
-                insight.tipo === 'advertencia' ? 'bg-amber-100 text-amber-600' :
-                'bg-blue-100 text-blue-600'
+                insight.tipo === 'positivo' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                insight.tipo === 'advertencia' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                'bg-[#6888ff]/10 text-[#6888ff]'
               }`}>
                 <Brain className="w-5 h-5" />
               </div>
@@ -158,7 +158,7 @@ export function MobileAnalyticsView() {
                 <p className="text-xs text-[#9aa3b8] mt-0.5">{insight.prediccion}</p>
               </div>
               <div className={`text-right shrink-0 ${
-                insight.probabilidad >= 85 ? 'text-emerald-600' : 'text-amber-600'
+                insight.probabilidad >= 85 ? 'text-[#6888ff]' : 'text-[#6888ff]'
               }`}>
                 <p className="text-sm font-bold">{insight.probabilidad}%</p>
                 <p className="text-[9px] text-[#9aa3b8]">prob.</p>
@@ -176,12 +176,12 @@ export function MobileAnalyticsView() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${
-                    rec.prioridad === 'alta' ? 'bg-red-500' :
-                    rec.prioridad === 'media' ? 'bg-amber-500' : 'bg-[#bec8de]'
+                    rec.prioridad === 'alta' ? 'bg-[#dfeaff]0' :
+                    rec.prioridad === 'media' ? 'bg-[#6888ff]/50' : 'bg-[#bec8de]'
                   }`} />
                   <p className="font-bold text-[#69738c] text-sm">{rec.cliente}</p>
                 </div>
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-[#6888ff] bg-[#6888ff]/5 px-2 py-0.5 rounded-full">
                   {rec.impactoEstimado}
                 </span>
               </div>
@@ -190,10 +190,10 @@ export function MobileAnalyticsView() {
 
               {rec.prioridad === 'alta' && (
                 <div className="flex gap-2 mt-3 pt-3 border-t border-[#bec8de30]">
-                  <button className="flex-1 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
+                  <button className="flex-1 py-2 bg-[#6888ff]/10 text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                     <Phone className="w-3.5 h-3.5" /> Llamar
                   </button>
-                  <button className="flex-1 py-2 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
+                  <button className="flex-1 py-2 bg-[#6888ff]/10 text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                     <Mail className="w-3.5 h-3.5" /> Email
                   </button>
                   <button className="flex-1 py-2 bg-[#dfeaff] text-[#6888ff] rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
@@ -222,15 +222,15 @@ function KPICard({ icon, label, value, trend, color }: {
 }) {
   const colorClasses = {
     indigo: 'bg-[#dfeaff] text-[#6888ff]',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    red: 'bg-red-50 text-red-600',
+    emerald: 'bg-[#6888ff]/5 text-[#6888ff]',
+    amber: 'bg-[#6888ff]/5 text-[#6888ff]',
+    red: 'bg-[#dfeaff] text-[#9aa3b8]',
   };
   const iconBg = {
     indigo: 'bg-[#dfeaff]',
-    emerald: 'bg-emerald-100',
-    amber: 'bg-amber-100',
-    red: 'bg-red-100',
+    emerald: 'bg-[#6888ff]/10',
+    amber: 'bg-[#6888ff]/10',
+    red: 'bg-[#dfeaff]',
   };
 
   return (
@@ -241,7 +241,7 @@ function KPICard({ icon, label, value, trend, color }: {
       <p className="text-xl font-black">{value}</p>
       <div className="flex items-center justify-between mt-1">
         <span className="text-[10px] font-bold uppercase opacity-70">{label}</span>
-        <span className={`text-[10px] font-bold flex items-center gap-0.5 ${trend >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+        <span className={`text-[10px] font-bold flex items-center gap-0.5 ${trend >= 0 ? 'text-[#6888ff]' : 'text-[#9aa3b8]'}`}>
           {trend >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
           {Math.abs(trend)}%
         </span>

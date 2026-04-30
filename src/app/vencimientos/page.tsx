@@ -60,8 +60,15 @@ const inset = `inset 4px 4px 8px ${N.dark},inset -4px -4px 8px ${N.light}`;
 const insetSm = `inset 2px 2px 5px ${N.dark},inset -2px -2px 5px ${N.light}`;
 
 // ═══════════════════════════════════════════════════════════════
-// TIPOS
+// IMPORTS MOCK DATA
 // ═══════════════════════════════════════════════════════════════
+
+import {
+  programasMock,
+  vencimientosMock,
+  alertasMock,
+  metricasMock
+} from '@/lib/mock-data/vencimientos-mock';
 
 interface Programa {
   id: string;
@@ -891,31 +898,15 @@ export default function VencimientosDashboard() {
     programa: null as Programa | null,
   });
 
-  // Fetch data
+  // Fetch data - Usa datos mock para desarrollo local sin BD
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      // Fetch programas
-      const programasRes = await fetch('/api/vencimientos/programas');
-      const programasData = await programasRes.json();
-      if (programasData.success) {
-        setProgramas(programasData.data);
-        setMetricas(programasData.metricas);
-      }
-
-      // Fetch vencimientos
-      const vencRes = await fetch('/api/vencimientos/vencimientos?diasMax=30');
-      const vencData = await vencRes.json();
-      if (vencData.success) {
-        setVencimientos(vencData.data);
-      }
-
-      // Fetch alertas
-      const alertasRes = await fetch('/api/vencimientos/alertas?leida=false');
-      const alertasData = await alertasRes.json();
-      if (alertasData.success) {
-        setAlertas(alertasData.data);
-      }
+      // Usar datos mock directamente (sin llamada a API)
+      setProgramas(programasMock as unknown as Programa[]);
+      setMetricas(metricasMock);
+      setVencimientos(vencimientosMock as unknown as Vencimientos[]);
+      setAlertas(alertasMock as unknown as Alerta[]);
     } catch (error) {
       toast({
         title: 'Error',
@@ -931,87 +922,26 @@ export default function VencimientosDashboard() {
     fetchData();
   }, [fetchData]);
 
-  // Fetch clientes for programa
+  // Fetch clientes for programa - Usa datos mock
   const fetchClientesPrograma = useCallback(async (programa: Programa) => {
     setModalState(prev => ({ ...prev, isOpen: true, programa, loading: true }));
 
-    // Simular datos de clientes (en producción vendrían del API)
-    const mockClientes: ClientePrograma[] = [
-      {
-        id: 'cli-1',
-        clienteId: 'cliente-001',
-        clienteNombre: 'Coca-Cola Chile',
-        clienteRubro: 'Bebidas',
-        tipoCupo: 'PREMIUM',
-        estado: 'ACTIVO',
-        fechaInicio: '2026-01-01',
-        fechaFin: '2026-06-30',
-        valor: 1500000,
-        ejecutivoNombre: 'Pedro Sánchez',
-      },
-      {
-        id: 'cli-2',
-        clienteId: 'cliente-002',
-        clienteNombre: 'Bimbo Chile',
-        clienteRubro: 'Alimentos',
-        tipoCupo: 'STANDARD',
-        estado: 'ACTIVO',
-        fechaInicio: '2026-02-01',
-        fechaFin: '2026-07-31',
-        valor: 800000,
-        ejecutivoNombre: 'María López',
-      },
-      {
-        id: 'cli-3',
-        clienteId: 'cliente-003',
-        clienteNombre: 'Falabella',
-        clienteRubro: 'Retail',
-        tipoCupo: 'PREMIUM',
-        estado: 'POR_COMENZAR',
-        fechaInicio: '2026-05-01',
-        fechaFin: '2026-10-31',
-        valor: 2000000,
-        ejecutivoNombre: 'Juan Pérez',
-      },
-      {
-        id: 'cli-4',
-        clienteId: 'cliente-004',
-        clienteNombre: 'Samsung Chile',
-        clienteRubro: 'Tecnología',
-        tipoCupo: 'MENSAJE',
-        estado: 'LISTA_ESPERA',
-        fechaInicio: '2026-06-01',
-        fechaFin: '2026-12-31',
-        valor: 500000,
-        ejecutivoNombre: 'Ana Gómez',
-      },
-      {
-        id: 'cli-5',
-        clienteId: 'cliente-005',
-        clienteNombre: 'Entel',
-        clienteRubro: 'Telecomunicaciones',
-        tipoCupo: 'STANDARD',
-        estado: 'LISTA_ESPERA',
-        fechaInicio: '2026-07-01',
-        fechaFin: '2026-12-31',
-        valor: 600000,
-        ejecutivoNombre: 'Carlos Ruiz',
-      },
-    ];
+    // Importar clientes mock dinámicamente para evitar dependencia circular
+    const { clientesProgramaMock } = await import('@/lib/mock-data/vencimientos-mock');
 
     // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    const clientesActivos = mockClientes.filter(c => c.estado === 'ACTIVO');
-    const clientesPorComenzar = mockClientes.filter(c => c.estado === 'POR_COMENZAR');
-    const clientesListaEspera = mockClientes.filter(c => c.estado === 'LISTA_ESPERA');
+    const clientesActivos = clientesProgramaMock.filter(c => c.estado === 'ACTIVO');
+    const clientesPorComenzar = clientesProgramaMock.filter(c => c.estado === 'POR_COMENZAR');
+    const clientesListaEspera = clientesProgramaMock.filter(c => c.estado === 'LISTA_ESPERA');
 
     setModalState({
       isOpen: true,
       programa,
-      clientesActivos,
-      clientesPorComenzar,
-      clientesListaEspera,
+      clientesActivos: clientesActivos as unknown as ClientePrograma[],
+      clientesPorComenzar: clientesPorComenzar as unknown as ClientePrograma[],
+      clientesListaEspera: clientesListaEspera as unknown as ClientePrograma[],
       loading: false,
     });
   }, []);
@@ -1044,8 +974,14 @@ export default function VencimientosDashboard() {
     return true;
   });
 
-  // Unique emisoras
-  const emisoras = [...new Set(programas.map((p) => ({ id: p.emiId, nombre: p.emiNombre })))].sort(
+  // Unique emisoras - deduplicar por emiId manteniendo el primer nombre
+  const emisorasMap = programas.reduce((acc, p) => {
+    if (!acc.has(p.emiId)) {
+      acc.set(p.emiId, { id: p.emiId, nombre: p.emiNombre });
+    }
+    return acc;
+  }, new Map<string, { id: string; nombre: string }>());
+  const emisoras = Array.from(emisorasMap.values()).sort(
     (a, b) => a.nombre.localeCompare(b.nombre)
   );
 

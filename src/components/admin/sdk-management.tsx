@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SDK MANAGEMENT - TIER 0 Mobile Integration
  * 
  * @description Gestión de SDKs móviles para aprendizaje federado y targeting contextual
@@ -261,15 +261,15 @@ export function SDKManagement() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   Compatible con iOS 13.0+
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   Integración con CocoaPods y SPM
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   TensorFlow Lite incluido
                 </div>
                 <Button className="w-full">
@@ -291,15 +291,15 @@ export function SDKManagement() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   Compatible con Android API 21+
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   Integración con Gradle/Maven
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   TensorFlow Lite incluido
                 </div>
                 <Button className="w-full">
@@ -389,8 +389,8 @@ export function SDKManagement() {
                           <Badge 
                             className={
                               config.status === 'active' 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-red-100 text-red-800'
+                                ? 'bg-[#6888ff]/10 text-[#6888ff]' 
+                                : 'bg-[#6888ff]/10 text-[#6888ff]'
                             }
                           >
                             {config.status === 'active' ? 'Activo' : 'Revocado'}
@@ -429,7 +429,7 @@ export function SDKManagement() {
                               onClick={() => copyToClipboard(config.api_key, config.api_key)}
                             >
                               {copiedKey === config.api_key ? (
-                                <CheckCircle className="h-3 w-3 text-green-600" />
+                                <CheckCircle className="h-3 w-3 text-[#6888ff]" />
                               ) : (
                                 <Copy className="h-3 w-3" />
                               )}
@@ -452,7 +452,7 @@ export function SDKManagement() {
                         </div>
 
                         <div>
-                          <label className="text-gray-500">Último Uso</label>
+                          <label className="text-gray-500">Ášltimo Uso</label>
                           <div className="mt-1 text-gray-700">
                             {config.last_used ? formatDate(config.last_used) : 'Nunca'}
                           </div>
@@ -484,7 +484,7 @@ export function SDKManagement() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatNumber(analytics.active_installations)}</div>
-                    <div className="flex items-center text-xs text-green-600 mt-1">
+                    <div className="flex items-center text-xs text-[#6888ff] mt-1">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       +12.3% vs mes anterior
                     </div>
@@ -498,7 +498,7 @@ export function SDKManagement() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatNumber(analytics.daily_updates)}</div>
-                    <div className="flex items-center text-xs text-green-600 mt-1">
+                    <div className="flex items-center text-xs text-[#6888ff] mt-1">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       +8.7% vs ayer
                     </div>
@@ -512,7 +512,7 @@ export function SDKManagement() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{(analytics.model_accuracy * 100).toFixed(1)}%</div>
-                    <div className="flex items-center text-xs text-green-600 mt-1">
+                    <div className="flex items-center text-xs text-[#6888ff] mt-1">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       +2.1% vs semana anterior
                     </div>
@@ -528,7 +528,7 @@ export function SDKManagement() {
                     <div className="text-2xl font-bold">
                       {formatNumber(Object.values(analytics.context_detections).reduce((a, b) => a + b, 0))}
                     </div>
-                    <div className="flex items-center text-xs text-green-600 mt-1">
+                    <div className="flex items-center text-xs text-[#6888ff] mt-1">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       +15.4% vs semana anterior
                     </div>
@@ -549,7 +549,7 @@ export function SDKManagement() {
                       {Object.entries(analytics.context_detections).map(([context, count]) => (
                         <div key={context} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-[#6888ff]"></div>
                             <span className="text-sm font-medium">
                               {context.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
                             </span>
@@ -568,7 +568,7 @@ export function SDKManagement() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Adopción en los Últimos 30 Días</CardTitle>
+                    <CardTitle>Adopción en los Ášltimos 30 Días</CardTitle>
                     <CardDescription>
                       Instalaciones y actualizaciones del SDK
                     </CardDescription>

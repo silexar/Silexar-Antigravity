@@ -81,7 +81,7 @@ interface Task {
     asignadoA?: WorkspaceUser;
     estado: 'pending' | 'in_progress' | 'completed';
     prioridad: 'low' | 'medium' | 'high' | 'urgent';
-    fechaVencimiento?: string;
+    fechaVencimientos?: string;
     completado?: boolean;
 }
 
@@ -152,10 +152,10 @@ const mockMensajes: Mensaje[] = [
 ];
 
 const initialTasks: Task[] = [
-    { id: 'task-001', titulo: 'Revisar briefing Coca-Cola', descripcion: 'Analizar brief y validar objetivos de campaña', asignadoA: mockUsuarios[1], estado: 'in_progress', prioridad: 'high', fechaVencimiento: '2025-04-25' },
-    { id: 'task-002', titulo: 'Preparar propuesta de medios', descripcion: 'Crear plan de medios digitales y tradicionales', asignadoA: mockUsuarios[2], estado: 'pending', prioridad: 'medium', fechaVencimiento: '2025-04-28' },
+    { id: 'task-001', titulo: 'Revisar briefing Coca-Cola', descripcion: 'Analizar brief y validar objetivos de campaña', asignadoA: mockUsuarios[1], estado: 'in_progress', prioridad: 'high', fechaVencimientos: '2025-04-25' },
+    { id: 'task-002', titulo: 'Preparar propuesta de medios', descripcion: 'Crear plan de medios digitales y tradicionales', asignadoA: mockUsuarios[2], estado: 'pending', prioridad: 'medium', fechaVencimientos: '2025-04-28' },
     { id: 'task-003', titulo: 'Configurar tracking de campañas', descripcion: 'Implementar pixel de tracking y analytics', estado: 'completed', prioridad: 'high' },
-    { id: 'task-004', titulo: 'Presentación de quarterly results', descripcion: 'Preparar slides para reunión trimestral', asignadoA: mockUsuarios[0], estado: 'pending', prioridad: 'urgent', fechaVencimiento: '2025-04-24' }
+    { id: 'task-004', titulo: 'Presentación de quarterly results', descripcion: 'Preparar slides para reunión trimestral', asignadoA: mockUsuarios[0], estado: 'pending', prioridad: 'urgent', fechaVencimientos: '2025-04-24' }
 ];
 
 const mockDocumentos: Documento[] = [
@@ -494,10 +494,10 @@ export default function WorkspacePage() {
                                                             <span className="text-xs text-slate-500">{task.asignadoA.nombre}</span>
                                                         </div>
                                                     )}
-                                                    {task.fechaVencimiento && (
-                                                        <div className={`flex items-center gap-1 text-xs ${new Date(task.fechaVencimiento) < new Date() ? 'text-rose-500' : 'text-slate-400'}`}>
+                                                    {task.fechaVencimientos && (
+                                                        <div className={`flex items-center gap-1 text-xs ${new Date(task.fechaVencimientos) < new Date() ? 'text-rose-500' : 'text-slate-400'}`}>
                                                             <Calendar size={12} />
-                                                            {formatDate(task.fechaVencimiento)}
+                                                            {formatDate(task.fechaVencimientos)}
                                                         </div>
                                                     )}
                                                 </div>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🌐 SILEXAR PULSE - Panel de Especificaciones Digitales
  *
  * @description Panel neumórfico para configurar especificaciones de
@@ -30,53 +30,53 @@ import { EspecificacionDigitalData } from "../types/wizard.types";
 // ═══════════════════════════════════════════════════════════════
 
 const PLATAFORMAS = [
-  { id: "meta_ads", nombre: "Meta Ads", color: "from-blue-500 to-indigo-600" },
+  { id: "meta_ads", nombre: "Meta Ads", color: "from-[#6888ff] to-[#5572ee]" },
   {
     id: "google_ads",
     nombre: "Google Ads",
-    color: "from-emerald-400 to-teal-600",
+    color: "from-[#6888ff] to-teal-600",
   },
   {
     id: "tiktok_ads",
     nombre: "TikTok Ads",
-    color: "from-rose-400 to-pink-600",
+    color: "from-[#6888ff] to-pink-600",
   },
   {
     id: "linkedin_ads",
     nombre: "LinkedIn Ads",
-    color: "from-sky-500 to-blue-700",
+    color: "from-sky-500 to-[#5572ee]",
   },
   {
     id: "twitter_ads",
     nombre: "Twitter Ads",
-    color: "from-slate-400 to-slate-600",
+    color: "from-[#bec8de] to-[#9aa3b8]",
   },
-  { id: "spotify", nombre: "Spotify", color: "from-green-400 to-emerald-600" },
-  { id: "deezer", nombre: "Deezer", color: "from-orange-400 to-amber-600" },
+  { id: "spotify", nombre: "Spotify", color: "from-[#6888ff] to-[#5572ee]" },
+  { id: "deezer", nombre: "Deezer", color: "from-[#6888ff] to-[#5572ee]" },
   {
     id: "soundcloud",
     nombre: "SoundCloud",
-    color: "from-orange-500 to-red-600",
+    color: "from-[#6888ff] to-[#5572ee]",
   },
   {
     id: "youtube_ads",
     nombre: "YouTube Ads",
-    color: "from-red-500 to-rose-600",
+    color: "from-[#6888ff] to-[#5572ee]",
   },
   {
     id: "programmatic",
     nombre: "Programmatic",
-    color: "from-violet-400 to-purple-600",
+    color: "from-violet-400 to-[#5572ee]",
   },
   {
     id: "sitio_propio",
     nombre: "Sitio Propio",
-    color: "from-cyan-400 to-blue-600",
+    color: "from-cyan-400 to-[#5572ee]",
   },
   {
     id: "app_propia",
     nombre: "App Propia",
-    color: "from-fuchsia-400 to-purple-600",
+    color: "from-fuchsia-400 to-[#5572ee]",
   },
 ];
 
@@ -474,10 +474,10 @@ export const PanelEspecificacionesDigitales: React.FC<
                     </a>
                     <button
                       onClick={() => removeTrackingLink(idx)}
-                      className="p-1 hover:bg-red-100 rounded-lg transition-colors"
+                      className="p-1 hover:bg-[#dfeaff] rounded-lg transition-colors"
                       aria-label="Eliminar link"
                     >
-                      <X className="w-4 h-4 text-red-400" />
+                      <X className="w-4 h-4 text-[#9aa3b8]" />
                     </button>
                   </motion.div>
                 ))}
@@ -594,12 +594,12 @@ export const PanelEspecificacionesDigitales: React.FC<
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg text-[#6888ff] font-medium text-sm border border-[#6888ff30]"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#6888ff] to-[#5572ee] rounded-lg text-[#6888ff] font-medium text-sm border border-[#6888ff30]"
                     >
                       {region}
                       <button
                         onClick={() => removeRegion(idx)}
-                        className="hover:text-red-500 ml-1"
+                        className="hover:text-[#9aa3b8] ml-1"
                         aria-label="Eliminar región"
                       >
                         <X className="w-3.5 h-3.5" />

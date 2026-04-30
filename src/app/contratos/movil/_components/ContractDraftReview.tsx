@@ -1,7 +1,7 @@
-/**
+ï»¿/**
  * ? MOBILE: Contract Draft Review
  * 
- * Pantalla de revisión del borrador auto-generado por IA.
+ * Pantalla de revisiï¿½n del borrador auto-generado por IA.
  * Muestra campos detectados con score de confianza, permite
  * editar y confirmar en 1 click.
  * 
@@ -45,13 +45,13 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
   if (confirmed) {
     return (
       <div className="flex flex-col items-center justify-center py-16 space-y-6">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center animate-bounce">
-          <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <div className="w-20 h-20 rounded-full bg-[#6888ff]/10 flex items-center justify-center animate-bounce">
+          <CheckCircle2 className="w-10 h-10 text-[#6888ff]" />
         </div>
         <div className="text-center">
-          <p className="text-xl font-black text-[#69738c]">¡Contrato Creado!</p>
+          <p className="text-xl font-black text-[#69738c]">ï¿½Contrato Creado!</p>
           <p className="text-sm text-[#9aa3b8] mt-1">
-            {requiereValidacion ? 'Enviado a cola de validación' : 'Listo para aprobación'}
+            {requiereValidacion ? 'Enviado a cola de validaciï¿½n' : 'Listo para aprobaciï¿½n'}
           </p>
         </div>
         <div className="bg-[#dfeaff] rounded-xl px-4 py-2 flex items-center gap-2">
@@ -80,25 +80,25 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
 
       {/* AI CONFIDENCE BANNER */}
       <div className={`p-4 rounded-2xl flex items-center gap-3 ${
-        datosExtraidos.confianzaGlobal >= 80 ? 'bg-emerald-50 border border-[#bec8de30]' :
-        datosExtraidos.confianzaGlobal >= 50 ? 'bg-amber-50 border border-[#bec8de30]' :
-        'bg-red-50 border border-[#bec8de30]'
+        datosExtraidos.confianzaGlobal >= 80 ? 'bg-[#6888ff]/5 border border-[#bec8de30]' :
+        datosExtraidos.confianzaGlobal >= 50 ? 'bg-[#6888ff]/5 border border-[#bec8de30]' :
+        'bg-[#dfeaff] border border-[#bec8de30]'
       }`}>
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-          datosExtraidos.confianzaGlobal >= 80 ? 'bg-emerald-100 text-emerald-600' :
-          datosExtraidos.confianzaGlobal >= 50 ? 'bg-amber-100 text-amber-600' :
-          'bg-red-100 text-red-600'
+          datosExtraidos.confianzaGlobal >= 80 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+          datosExtraidos.confianzaGlobal >= 50 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+          'bg-[#dfeaff] text-[#9aa3b8]'
         }`}>
           <Shield className="w-5 h-5" />
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-[#69738c]">
-            {datosExtraidos.confianzaGlobal >= 80 ? 'Alta confianza — Listo para confirmar' :
-             datosExtraidos.confianzaGlobal >= 50 ? 'Confianza media — Verifica los campos marcados' :
-             'Baja confianza — Requiere edición manual'}
+            {datosExtraidos.confianzaGlobal >= 80 ? 'Alta confianza ï¿½ Listo para confirmar' :
+             datosExtraidos.confianzaGlobal >= 50 ? 'Confianza media ï¿½ Verifica los campos marcados' :
+             'Baja confianza ï¿½ Requiere ediciï¿½n manual'}
           </p>
           <p className="text-xs text-[#9aa3b8] mt-0.5">
-            {datosExtraidos.camposDetectados.length} campos detectados · {datosExtraidos.camposFaltantes.length} faltantes · {tiempoProcesamiento}ms
+            {datosExtraidos.camposDetectados.length} campos detectados ï¿½ {datosExtraidos.camposFaltantes.length} faltantes ï¿½ {tiempoProcesamiento}ms
           </p>
         </div>
       </div>
@@ -118,7 +118,7 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
             value={contratoSugerido.cliente.nombre}
             confianza={datosExtraidos.camposDetectados.find(c => c.campo === 'cliente')?.confianza}
             badge={contratoSugerido.cliente.esNuevo ? 'Nuevo' : 'Existente'}
-            badgeColor={contratoSugerido.cliente.esNuevo ? 'text-amber-600 bg-amber-50' : 'text-emerald-600 bg-emerald-50'}
+            badgeColor={contratoSugerido.cliente.esNuevo ? 'text-[#6888ff] bg-[#6888ff]/5' : 'text-[#6888ff] bg-[#6888ff]/5'}
           />
 
           {/* VALOR */}
@@ -139,10 +139,10 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
             />
           )}
 
-          {/* PERÍODO */}
+          {/* PERï¿½ODO */}
           <FieldRow
             icon={<Calendar className="w-4 h-4" />}
-            label="Período"
+            label="Perï¿½odo"
             value={`${contratoSugerido.fechaInicio} ? ${contratoSugerido.fechaFin}`}
           />
 
@@ -167,12 +167,12 @@ export function ContractDraftReview({ resultado, onBack, onConfirm }: {
           {/* MISSING FIELDS */}
           {datosExtraidos.camposFaltantes.length > 0 && (
             <div className="pt-3 border-t border-[#bec8de30]">
-              <p className="text-xs font-bold text-amber-600 flex items-center gap-1 mb-2">
+              <p className="text-xs font-bold text-[#6888ff] flex items-center gap-1 mb-2">
                 <AlertTriangle className="w-3.5 h-3.5" /> Campos no detectados
               </p>
               <div className="flex gap-2 flex-wrap">
                 {datosExtraidos.camposFaltantes.map(campo => (
-                  <span key={campo} className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold">
+                  <span key={campo} className="px-2.5 py-1 rounded-lg bg-[#6888ff]/5 text-[#6888ff] text-[10px] font-bold">
                     {campo}
                   </span>
                 ))}
@@ -237,7 +237,7 @@ function FieldRow({ icon, label, value, confianza, badge, badgeColor }: {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-bold text-[#9aa3b8] uppercase">{label}</p>
-        <p className="text-sm font-bold text-[#69738c] truncate">{value || '—'}</p>
+        <p className="text-sm font-bold text-[#69738c] truncate">{value || 'ï¿½'}</p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {badge && (
@@ -252,9 +252,9 @@ function FieldRow({ icon, label, value, confianza, badge, badgeColor }: {
 }
 
 function ConfianzaBadge({ value, small }: { value: number; small?: boolean }) {
-  const color = value >= 85 ? 'bg-emerald-100 text-emerald-700' :
-                value >= 60 ? 'bg-amber-100 text-amber-700' :
-                'bg-red-100 text-red-700';
+  const color = value >= 85 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                value >= 60 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                'bg-[#dfeaff] text-[#9aa3b8]';
 
   return (
     <span className={`font-black rounded-full flex items-center gap-0.5 ${color} ${

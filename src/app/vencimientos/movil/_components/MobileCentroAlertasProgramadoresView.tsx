@@ -69,7 +69,7 @@ export default function MobileCentroAlertasProgramadoresView() {
          </div>
       </div>
 
-      {/* ALERTAS DE VENCIMIENTO */}
+      {/* ALERTAS DE VENCIMIENTOS */}
       <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2 mt-4">
          🟡 VENCIMIENTOS (7 DÍAS)
       </h3>

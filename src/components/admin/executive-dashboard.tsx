@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - Dashboard Ejecutivo CEO
+ * ðŸ“Š SILEXAR PULSE - Dashboard Ejecutivo CEO
  * Métricas financieras, proyecciones IA y KPIs empresariales
  * 
  * @description Dashboard de alto nivel para el CEO con:
@@ -11,17 +11,14 @@
  * - NPS y satisfacción
  * - Comparativos temporales
  * 
- * @version 2025.1.0
+ * @version 2025.3.0
  * @tier TIER_0_FORTUNE_10
+ * 
+ * @last_modified 2025-04-27 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { formatCurrency } from '@/lib/utils'
-import {
-  NeuromorphicCard, 
-  NeuromorphicButton, 
-  NeuromorphicGrid
-} from '@/components/ui/neuromorphic'
+import { N, NeuCard, NeuCardSmall, NeuButton, StatCard, NeuProgress, NeuDivider, getShadow, getSmallShadow, StatusBadge } from './_sdk/AdminDesignSystem'
 import {
   TrendingUp,
   DollarSign,
@@ -69,6 +66,13 @@ interface AiPrediction {
   confidence: number
   timeframe: string
   recommendation: string
+}
+
+const formatCurrency = (value: number) => {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(1)}M`
+  }
+  return `$${(value / 1000).toFixed(0)}K`
 }
 
 export function ExecutiveDashboard() {
@@ -154,344 +158,357 @@ export function ExecutiveDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Dashboard Ejecutivo...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: '4px solid #6888ff30',
+            borderTopColor: '#6888ff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Dashboard Ejecutivo...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header con filtros */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white">Dashboard Ejecutivo</h2>
-          <p className="text-slate-400">Métricas financieras y proyecciones IA</p>
+          <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>Dashboard Ejecutivo</h2>
+          <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Métricas financieras y proyecciones IA</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-slate-800 rounded-lg p-1">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: `${N.dark}50`, borderRadius: 8, padding: '0.25rem' }}>
             {(['month', 'quarter', 'year'] as const).map(p => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className={`px-3 py-1.5 text-sm rounded ${
-                  period === p ? 'bg-green-600 text-white' : 'text-slate-400 hover:text-white'
-                }`}
+                style={{
+                  padding: '0.375rem 0.75rem',
+                  fontSize: '0.875rem',
+                  borderRadius: 6,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: period === p ? '#6888ff' : 'transparent',
+                  color: period === p ? N.base : N.textSub,
+                  fontWeight: period === p ? 600 : 400
+                }}
               >
                 {p === 'month' ? 'Mes' : p === 'quarter' ? 'Trimestre' : 'Año'}
               </button>
             ))}
           </div>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadDashboardData}>
-            <RefreshCw className="w-4 h-4 mr-1" />
+          <NeuButton variant="secondary" onClick={loadDashboardData}>
+            <RefreshCw style={{ width: 16, height: 16, marginRight: 4 }} />
             Actualizar
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm">
-            <Download className="w-4 h-4 mr-1" />
+          </NeuButton>
+          <NeuButton variant="secondary">
+            <Download style={{ width: 16, height: 16, marginRight: 4 }} />
             Exportar
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* KPIs Principales */}
-      <NeuromorphicGrid columns={4} gap="md">
-        <NeuromorphicCard variant="glow" className="p-6">
-          <div className="flex items-start justify-between">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400 uppercase mb-1">Revenue Total</p>
-              <p className="text-3xl font-bold text-white">{formatCurrency(totalRevenue)}</p>
-              <div className="flex items-center gap-1 mt-2">
-                <ArrowUpRight className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-green-400">+{revenueGrowth}%</span>
-                <span className="text-xs text-slate-400">vs año anterior</span>
+              <p style={{ color: N.textSub, fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Revenue Total</p>
+              <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{formatCurrency(totalRevenue)}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem' }}>
+                <ArrowUpRight style={{ color: '#6888ff', width: 16, height: 16 }} />
+                <span style={{ color: '#6888ff', fontSize: '0.875rem' }}>+{revenueGrowth}%</span>
+                <span style={{ color: N.textSub, fontSize: '0.75rem' }}>vs año anterior</span>
               </div>
             </div>
-            <div className="p-3 bg-green-600/20 rounded-xl">
-              <DollarSign className="w-8 h-8 text-green-400" />
+            <div style={{ padding: '0.75rem', background: '#6888ff20', borderRadius: 12 }}>
+              <DollarSign style={{ color: '#6888ff', width: 32, height: 32 }} />
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-6">
-          <div className="flex items-start justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400 uppercase mb-1">Clientes Activos</p>
-              <p className="text-3xl font-bold text-white">{customerMetrics?.totalCustomers}</p>
-              <div className="flex items-center gap-1 mt-2">
-                <ArrowUpRight className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-green-400">+{customerMetrics?.newThisMonth} nuevos</span>
+              <p style={{ color: N.textSub, fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Clientes Activos</p>
+              <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{customerMetrics?.totalCustomers}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem' }}>
+                <ArrowUpRight style={{ color: '#6888ff', width: 16, height: 16 }} />
+                <span style={{ color: '#6888ff', fontSize: '0.875rem' }}>+{customerMetrics?.newThisMonth} nuevos</span>
               </div>
             </div>
-            <div className="p-3 bg-blue-600/20 rounded-xl">
-              <Users className="w-8 h-8 text-blue-400" />
+            <div style={{ padding: '0.75rem', background: '#6888ff20', borderRadius: 12 }}>
+              <Users style={{ color: '#6888ff', width: 32, height: 32 }} />
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-6">
-          <div className="flex items-start justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400 uppercase mb-1">Churn Rate</p>
-              <p className="text-3xl font-bold text-white">{customerMetrics?.churnRate}%</p>
-              <div className="flex items-center gap-1 mt-2">
-                <ArrowDownRight className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-green-400">-0.3% vs mes anterior</span>
+              <p style={{ color: N.textSub, fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Churn Rate</p>
+              <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{customerMetrics?.churnRate}%</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem' }}>
+                <ArrowDownRight style={{ color: '#6888ff', width: 16, height: 16 }} />
+                <span style={{ color: '#6888ff', fontSize: '0.875rem' }}>-0.3% vs mes anterior</span>
               </div>
             </div>
-            <div className="p-3 bg-yellow-600/20 rounded-xl">
-              <UserMinus className="w-8 h-8 text-yellow-400" />
+            <div style={{ padding: '0.75rem', background: '#6888ff20', borderRadius: 12 }}>
+              <UserMinus style={{ color: '#6888ff', width: 32, height: 32 }} />
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-6">
-          <div className="flex items-start justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400 uppercase mb-1">NPS Score</p>
-              <p className="text-3xl font-bold text-white">{npsData?.score}</p>
-              <div className="flex items-center gap-1 mt-2">
+              <p style={{ color: N.textSub, fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>NPS Score</p>
+              <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{npsData?.score}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem' }}>
                 {npsData?.trend === 'up' ? (
                   <>
-                    <ArrowUpRight className="w-4 h-4 text-green-400" />
-                    <span className="text-sm text-green-400">+{npsData?.changePercent}%</span>
+                    <ArrowUpRight style={{ color: '#6888ff', width: 16, height: 16 }} />
+                    <span style={{ color: '#6888ff', fontSize: '0.875rem' }}>+{npsData?.changePercent}%</span>
                   </>
                 ) : (
                   <>
-                    <ArrowDownRight className="w-4 h-4 text-red-400" />
-                    <span className="text-sm text-red-400">-{npsData?.changePercent}%</span>
+                    <ArrowDownRight style={{ color: '#6888ff', width: 16, height: 16 }} />
+                    <span style={{ color: '#6888ff', fontSize: '0.875rem' }}>-{npsData?.changePercent}%</span>
                   </>
                 )}
               </div>
             </div>
-            <div className="p-3 bg-purple-600/20 rounded-xl">
-              <Star className="w-8 h-8 text-purple-400" />
+            <div style={{ padding: '0.75rem', background: '#6888ff20', borderRadius: 12 }}>
+              <Star style={{ color: '#6888ff', width: 32, height: 32 }} />
             </div>
           </div>
-        </NeuromorphicCard>
-      </NeuromorphicGrid>
+        </NeuCard>
+      </div>
 
       {/* Gráfico de Revenue */}
-      <NeuromorphicCard variant="embossed" className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-green-400" />
+      <NeuCard style={{ boxShadow: getShadow() }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <BarChart3 style={{ color: '#6888ff', width: 20, height: 20 }} />
             Revenue Mensual
           </h3>
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded" />
-              <span className="text-slate-400">Actual</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: '#6888ff', borderRadius: 4 }} />
+              <span style={{ color: N.textSub }}>Actual</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded" />
-              <span className="text-slate-400">Proyectado</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: '#6888ff', borderRadius: 4 }} />
+              <span style={{ color: N.textSub }}>Proyectado</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-slate-600 rounded" />
-              <span className="text-slate-400">Año anterior</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: N.textSub, borderRadius: 4 }} />
+              <span style={{ color: N.textSub }}>Año anterior</span>
             </div>
           </div>
         </div>
 
         {/* Gráfico de barras visual */}
-        <div className="flex items-end justify-between h-48 gap-2">
-          {revenueData.map((data, i) => {
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 192, gap: '0.5rem' }}>
+          {revenueData.map((data) => {
             const maxValue = Math.max(...revenueData.map(d => Math.max(d.actual, d.projected, d.previous)))
             const actualHeight = (data.actual / maxValue) * 100
             const projectedHeight = (data.projected / maxValue) * 100
             const previousHeight = (data.previous / maxValue) * 100
-            
+
             return (
-              <div key={data.month} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full flex items-end justify-center gap-1 h-40">
-                  <div 
-                    className="w-4 bg-slate-600 rounded-t transition-all"
-                    style={{ height: `${previousHeight}%` }}
+              <div key={data.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+                <div style={{ width: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '0.25rem', height: 160 }}>
+                  <div
+                    style={{ width: 16, background: N.textSub, borderRadius: '4px 4px 0 0', height: `${previousHeight}%` }}
                     title={`Anterior: ${formatCurrency(data.previous)}`}
                   />
-                  <div 
-                    className="w-4 bg-blue-500 rounded-t transition-all"
-                    style={{ height: `${projectedHeight}%` }}
+                  <div
+                    style={{ width: 16, background: '#6888ff', borderRadius: '4px 4px 0 0', height: `${projectedHeight}%` }}
                     title={`Proyectado: ${formatCurrency(data.projected)}`}
                   />
-                  <div 
-                    className="w-4 bg-green-500 rounded-t transition-all"
-                    style={{ height: `${actualHeight}%` }}
+                  <div
+                    style={{ width: 16, background: '#6888ff', borderRadius: '4px 4px 0 0', height: `${actualHeight}%` }}
                     title={`Actual: ${formatCurrency(data.actual)}`}
                   />
                 </div>
-                <span className="text-xs text-slate-400">{data.month}</span>
+                <span style={{ color: N.textSub, fontSize: '0.75rem' }}>{data.month}</span>
               </div>
             )
           })}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Predicciones IA y Clientes en Riesgo */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
         {/* Predicciones IA */}
-        <NeuromorphicCard variant="glow" className="p-6">
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-400" />
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Brain style={{ color: '#6888ff', width: 20, height: 20 }} />
             Predicciones IA
           </h3>
-          
-          <div className="space-y-4">
-            {aiPredictions.map((prediction, i) => (
-              <div key={prediction.metric} className="p-4 bg-slate-800/50 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium">{prediction.metric}</span>
-                  <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded">
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {aiPredictions.map((prediction) => (
+              <div key={prediction.metric} style={{ padding: '1rem', background: `${N.dark}50`, borderRadius: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ color: N.text, fontWeight: 500 }}>{prediction.metric}</span>
+                  <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', background: '#6888ff20', color: '#6888ff', borderRadius: 4 }}>
                     {prediction.confidence}% confianza
                   </span>
                 </div>
-                
-                <div className="flex items-center gap-4 mb-2">
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
                   <div>
-                    <p className="text-xs text-slate-400">Actual</p>
-                    <p className="text-lg font-bold text-white">
-                      {prediction.metric.includes('Rate') 
+                    <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Actual</p>
+                    <p style={{ color: N.text, fontSize: '1.125rem', fontWeight: 700 }}>
+                      {prediction.metric.includes('Rate')
                         ? `${prediction.currentValue}%`
-                        : prediction.currentValue >= 1000000 
-                          ? formatCurrency(prediction.currentValue) 
+                        : prediction.currentValue >= 1000000
+                          ? formatCurrency(prediction.currentValue)
                           : prediction.currentValue
                       }
                     </p>
                   </div>
-                  <div className="flex-1 flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-green-400" />
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <TrendingUp style={{ color: '#6888ff', width: 20, height: 20 }} />
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-slate-400">Predicción</p>
-                    <p className="text-lg font-bold text-green-400">
-                      {prediction.metric.includes('Rate') 
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Predicción</p>
+                    <p style={{ color: '#6888ff', fontSize: '1.125rem', fontWeight: 700 }}>
+                      {prediction.metric.includes('Rate')
                         ? `${prediction.predictedValue}%`
-                        : prediction.predictedValue >= 1000000 
-                          ? formatCurrency(prediction.predictedValue) 
+                        : prediction.predictedValue >= 1000000
+                          ? formatCurrency(prediction.predictedValue)
                           : prediction.predictedValue
                       }
                     </p>
                   </div>
                 </div>
-                
-                <p className="text-xs text-slate-400">
-                  💡 {prediction.recommendation}
+
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>
+                  ðŸ’¡ {prediction.recommendation}
                 </p>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Clientes en Riesgo */}
-        <NeuromorphicCard variant="embossed" className="p-6">
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Target className="w-5 h-5 text-yellow-400" />
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Target style={{ color: '#6888ff', width: 20, height: 20 }} />
             Clientes en Riesgo de Churn
           </h3>
-          
-          <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-            <div className="flex items-center justify-between">
+
+          <div style={{ marginBottom: '1rem', padding: '1rem', background: '#6888ff15', borderRadius: 8, border: `1px solid #6888ff50` }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <p className="text-yellow-400 font-medium">
+                <p style={{ color: '#6888ff', fontWeight: 500 }}>
                   {customerMetrics?.atRiskCustomers} clientes identificados
                 </p>
-                <p className="text-xs text-slate-400">
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>
                   Predicción de {customerMetrics?.predictedChurnNextMonth} bajas próximo mes
                 </p>
               </div>
-              <NeuromorphicButton variant="primary" size="sm">
+              <NeuButton variant="primary" onClick={() => { }}>
                 Ver Detalle
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
           </div>
 
           {/* Lista de clientes en riesgo */}
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {[
               { name: 'Mega Media', risk: 85, reason: 'Sin actividad 15 días', revenue: 299000 },
               { name: 'Radio Cooperativa', risk: 72, reason: 'Licencia expira en 7 días', revenue: 599000 },
               { name: 'Tele13 Digital', risk: 68, reason: 'Baja tasa de uso', revenue: 99000 },
-            ].map((client, i) => (
-              <div key={client.name} className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+            ].map((client) => (
+              <div key={client.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: `${N.dark}30`, borderRadius: 8 }}>
                 <div>
-                  <p className="text-white font-medium">{client.name}</p>
-                  <p className="text-xs text-slate-400">{client.reason}</p>
+                  <p style={{ color: N.text, fontWeight: 500 }}>{client.name}</p>
+                  <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{client.reason}</p>
                 </div>
-                <div className="text-right">
-                  <span className={`text-sm font-bold ${
-                    client.risk >= 80 ? 'text-red-400' : 
-                    client.risk >= 60 ? 'text-yellow-400' : 'text-green-400'
-                  }`}>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{
+                    color: client.risk >= 80 ? '#6888ff' : client.risk >= 60 ? '#6888ff' : '#6888ff',
+                    fontWeight: 700,
+                    fontSize: '0.875rem'
+                  }}>
                     {client.risk}% riesgo
                   </span>
-                  <p className="text-xs text-slate-400">${(client.revenue/1000).toFixed(0)}K/mes</p>
+                  <p style={{ color: N.textSub, fontSize: '0.75rem' }}>${(client.revenue / 1000).toFixed(0)}K/mes</p>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
       {/* NPS Breakdown */}
-      <NeuromorphicCard variant="embossed" className="p-6">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <Star className="w-5 h-5 text-purple-400" />
+      <NeuCard style={{ boxShadow: getShadow() }}>
+        <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Star style={{ color: '#6888ff', width: 20, height: 20 }} />
           Net Promoter Score - Desglose
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
           {/* NPS Score Grande */}
-          <div className="flex flex-col items-center justify-center p-6 bg-purple-500/10 rounded-xl">
-            <p className="text-6xl font-bold text-white">{npsData?.score}</p>
-            <p className="text-sm text-slate-400 mt-2">NPS Score</p>
-            <div className="flex items-center gap-1 mt-2">
-              {npsData?.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400" />}
-              <span className={`text-sm ${npsData?.trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', background: '#6888ff15', borderRadius: 12 }}>
+            <p style={{ color: N.text, fontSize: '3.75rem', fontWeight: 700 }}>{npsData?.score}</p>
+            <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.5rem' }}>NPS Score</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem' }}>
+              {npsData?.trend === 'up' && <TrendingUp style={{ color: '#6888ff', width: 16, height: 16 }} />}
+              <span style={{ color: npsData?.trend === 'up' ? '#6888ff' : '#6888ff', fontSize: '0.875rem' }}>
                 {npsData?.trend === 'up' ? '+' : '-'}{npsData?.changePercent}%
               </span>
             </div>
           </div>
 
           {/* Promotores */}
-          <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/30">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full" />
-              <span className="text-green-400 font-medium">Promotores (9-10)</span>
+          <div style={{ padding: '1rem', background: '#6888ff15', borderRadius: 8, border: '1px solid #6888ff50' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: '#6888ff', borderRadius: '50%' }} />
+              <span style={{ color: '#6888ff', fontWeight: 500 }}>Promotores (9-10)</span>
             </div>
-            <p className="text-3xl font-bold text-white">{npsData?.promoters}</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{npsData?.promoters}</p>
+            <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.25rem' }}>
               {((npsData?.promoters || 0) / (customerMetrics?.totalCustomers || 1) * 100).toFixed(0)}% del total
             </p>
           </div>
 
           {/* Pasivos */}
-          <div className="p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-              <span className="text-yellow-400 font-medium">Pasivos (7-8)</span>
+          <div style={{ padding: '1rem', background: '#6888ff15', borderRadius: 8, border: '1px solid #6888ff50' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: '#6888ff', borderRadius: '50%' }} />
+              <span style={{ color: '#6888ff', fontWeight: 500 }}>Pasivos (7-8)</span>
             </div>
-            <p className="text-3xl font-bold text-white">{npsData?.passives}</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{npsData?.passives}</p>
+            <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.25rem' }}>
               {((npsData?.passives || 0) / (customerMetrics?.totalCustomers || 1) * 100).toFixed(0)}% del total
             </p>
           </div>
 
           {/* Detractores */}
-          <div className="p-4 bg-red-500/10 rounded-lg border border-red-500/30">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full" />
-              <span className="text-red-400 font-medium">Detractores (0-6)</span>
+          <div style={{ padding: '1rem', background: '#6888ff15', borderRadius: 8, border: '1px solid #6888ff50' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: 12, height: 12, background: '#6888ff', borderRadius: '50%' }} />
+              <span style={{ color: '#6888ff', fontWeight: 500 }}>Detractores (0-6)</span>
             </div>
-            <p className="text-3xl font-bold text-white">{npsData?.detractors}</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p style={{ color: N.text, fontSize: '1.875rem', fontWeight: 700 }}>{npsData?.detractors}</p>
+            <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.25rem' }}>
               {((npsData?.detractors || 0) / (customerMetrics?.totalCustomers || 1) * 100).toFixed(0)}% del total
             </p>
           </div>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

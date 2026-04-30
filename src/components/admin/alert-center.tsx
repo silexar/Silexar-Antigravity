@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔔 SILEXAR PULSE - Centro de Alertas CEO
+ * ðŸ”” SILEXAR PULSE - Centro de Alertas CEO
  * Sistema de alertas multicanal con IA
  * 
  * @description Centro de alertas proactivo con:
@@ -10,16 +10,14 @@
  * - Escalamiento de incidentes
  * - SLA tracking
  * 
- * @version 2025.1.0
+ * @version 2025.3.0
  * @tier TIER_0_FORTUNE_10
+ * 
+ * @last_modified 2025-04-27 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton,
-  NeuromorphicStatus
-} from '@/components/ui/neuromorphic'
+import { N, NeuCard, NeuButton, StatusBadge, NeuProgress, getShadow, getSmallShadow } from './_sdk/AdminDesignSystem'
 import {
   Bell,
   MessageCircle,
@@ -161,7 +159,7 @@ export function AlertCenter() {
         type: 'whatsapp',
         enabled: true,
         target: '+56 9 8765 4321',
-        icon: <MessageCircle className="w-5 h-5 text-green-400" />
+        icon: <MessageCircle style={{ width: 20, height: 20, color: '#6888ff' }} />
       },
       {
         id: 'ch_002',
@@ -169,7 +167,7 @@ export function AlertCenter() {
         type: 'telegram',
         enabled: true,
         target: '@silexar_alerts',
-        icon: <Send className="w-5 h-5 text-blue-400" />
+        icon: <Send style={{ width: 20, height: 20, color: '#6888ff' }} />
       },
       {
         id: 'ch_003',
@@ -177,7 +175,7 @@ export function AlertCenter() {
         type: 'email',
         enabled: true,
         target: 'ceo@silexar.com',
-        icon: <Mail className="w-5 h-5 text-purple-400" />
+        icon: <Mail style={{ width: 20, height: 20, color: '#6888ff' }} />
       },
       {
         id: 'ch_004',
@@ -185,7 +183,7 @@ export function AlertCenter() {
         type: 'sms',
         enabled: false,
         target: '+56 9 8765 4321',
-        icon: <Smartphone className="w-5 h-5 text-orange-400" />
+        icon: <Smartphone style={{ width: 20, height: 20, color: '#6888ff' }} />
       }
     ])
 
@@ -203,38 +201,58 @@ export function AlertCenter() {
   }
 
   const acknowledgeAlert = (alertId: string) => {
-    setAlerts(prev => prev.map(a => 
+    setAlerts(prev => prev.map(a =>
       a.id === alertId ? { ...a, acknowledged: true } : a
     ))
   }
 
   const toggleChannel = (channelId: string) => {
-    setChannels(prev => prev.map(c => 
+    setChannels(prev => prev.map(c =>
       c.id === channelId ? { ...c, enabled: !c.enabled } : c
     ))
   }
 
   const sendTestAlert = (channelId: string) => {
     const channel = channels.find(c => c.id === channelId)
-    
     // Aquí iría la integración real
   }
 
   const getAlertIcon = (type: Alert['type']) => {
+    const color = type === 'critical' ? '#6888ff' :
+      type === 'warning' ? '#6888ff' :
+        type === 'info' ? '#6888ff' : '#6888ff'
     switch (type) {
-      case 'critical': return <XCircle className="w-5 h-5 text-red-400" />
-      case 'warning': return <AlertTriangle className="w-5 h-5 text-yellow-400" />
-      case 'info': return <Bell className="w-5 h-5 text-blue-400" />
-      case 'success': return <CheckCircle className="w-5 h-5 text-green-400" />
+      case 'critical': return <XCircle style={{ width: 20, height: 20, color }} />
+      case 'warning': return <AlertTriangle style={{ width: 20, height: 20, color }} />
+      case 'info': return <Bell style={{ width: 20, height: 20, color }} />
+      case 'success': return <CheckCircle style={{ width: 20, height: 20, color }} />
     }
   }
 
   const getAlertBg = (type: Alert['type']) => {
     switch (type) {
-      case 'critical': return 'bg-red-500/10 border-red-500/30'
-      case 'warning': return 'bg-yellow-500/10 border-yellow-500/30'
-      case 'info': return 'bg-blue-500/10 border-blue-500/30'
-      case 'success': return 'bg-green-500/10 border-green-500/30'
+      case 'critical': return '#6888ff10'
+      case 'warning': return '#6888ff10'
+      case 'info': return '#6888ff10'
+      case 'success': return '#6888ff10'
+    }
+  }
+
+  const getAlertBorder = (type: Alert['type']) => {
+    switch (type) {
+      case 'critical': return '#6888ff50'
+      case 'warning': return '#6888ff50'
+      case 'info': return '#6888ff50'
+      case 'success': return '#6888ff50'
+    }
+  }
+
+  const getAlertTypeBadge = (type: Alert['type']) => {
+    switch (type) {
+      case 'critical': return <StatusBadge status="danger" label={type} />
+      case 'warning': return <StatusBadge status="warning" label={type} />
+      case 'info': return <StatusBadge status="info" label={type} />
+      case 'success': return <StatusBadge status="success" label={type} />
     }
   }
 
@@ -254,106 +272,128 @@ export function AlertCenter() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Centro de Alertas...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: '4px solid #6888ff30',
+            borderTopColor: '#6888ff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando Centro de Alertas...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Bell className="w-6 h-6 text-orange-400" />
+          <h2 style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Bell style={{ color: '#6888ff', width: 24, height: 24 }} />
             Centro de Alertas
           </h2>
-          <p className="text-slate-400">Monitoreo proactivo multicanal</p>
+          <p style={{ color: N.textSub, fontSize: '0.875rem' }}>Monitoreo proactivo multicanal</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button
             onClick={() => setMuteAll(!muteAll)}
-            className={`p-2 rounded-lg ${muteAll ? 'bg-red-500/20 text-red-400' : 'bg-slate-700 text-slate-400'}`}
+            style={{
+              padding: '0.5rem',
+              borderRadius: 8,
+              background: muteAll ? '#6888ff20' : `${N.dark}70`,
+              color: muteAll ? '#6888ff' : N.textSub,
+              border: 'none',
+              cursor: 'pointer'
+            }}
           >
-            {muteAll ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            {muteAll ? <VolumeX style={{ width: 20, height: 20 }} /> : <Volume2 style={{ width: 20, height: 20 }} />}
           </button>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadAlertData}>
-            <RefreshCw className="w-4 h-4 mr-1" />
+          <NeuButton variant="secondary" onClick={loadAlertData}>
+            <RefreshCw style={{ width: 16, height: 16, marginRight: 4 }} />
             Actualizar
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Críticas Hoy</p>
-              <p className="text-2xl font-bold text-red-400">{summary?.criticalAlerts}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Críticas Hoy</p>
+              <p style={{ color: '#6888ff', fontSize: '1.5rem', fontWeight: 700 }}>{summary?.criticalAlerts}</p>
             </div>
-            <XCircle className="w-8 h-8 text-red-400/50" />
+            <XCircle style={{ width: 32, height: 32, color: '#6888ff50' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Advertencias</p>
-              <p className="text-2xl font-bold text-yellow-400">{summary?.warningAlerts}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Advertencias</p>
+              <p style={{ color: '#6888ff', fontSize: '1.5rem', fontWeight: 700 }}>{summary?.warningAlerts}</p>
             </div>
-            <AlertTriangle className="w-8 h-8 text-yellow-400/50" />
+            <AlertTriangle style={{ width: 32, height: 32, color: '#6888ff50' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Resueltas</p>
-              <p className="text-2xl font-bold text-green-400">{summary?.resolvedAlerts}</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Resueltas</p>
+              <p style={{ color: '#6888ff', fontSize: '1.5rem', fontWeight: 700 }}>{summary?.resolvedAlerts}</p>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-400/50" />
+            <CheckCircle style={{ width: 32, height: 32, color: '#6888ff50' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">Tiempo Resp.</p>
-              <p className="text-2xl font-bold text-white">{summary?.avgResponseTime}m</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Tiempo Resp.</p>
+              <p style={{ color: N.text, fontSize: '1.5rem', fontWeight: 700 }}>{summary?.avgResponseTime}m</p>
             </div>
-            <Clock className="w-8 h-8 text-blue-400/50" />
+            <Clock style={{ width: 32, height: 32, color: '#6888ff50' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <div className="flex items-center justify-between">
+        <NeuCard style={{ boxShadow: getShadow() }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-xs text-slate-400">SLA</p>
-              <p className="text-2xl font-bold text-green-400">{summary?.slaCompliance}%</p>
+              <p style={{ color: N.textSub, fontSize: '0.75rem' }}>SLA</p>
+              <p style={{ color: '#6888ff', fontSize: '1.5rem', fontWeight: 700 }}>{summary?.slaCompliance}%</p>
             </div>
-            <Shield className="w-8 h-8 text-green-400/50" />
+            <Shield style={{ width: 32, height: 32, color: '#6888ff50' }} />
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
         {/* Alert List */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white">Alertas Recientes</h3>
-            <div className="flex items-center gap-1 bg-slate-800 rounded-lg p-1">
+        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600 }}>Alertas Recientes</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: `${N.dark}50`, borderRadius: 8, padding: '0.25rem' }}>
               {(['all', 'critical', 'unacknowledged'] as const).map(f => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-3 py-1 text-xs rounded ${
-                    filter === f ? 'bg-orange-600 text-white' : 'text-slate-400'
-                  }`}
+                  style={{
+                    padding: '0.375rem 0.75rem',
+                    fontSize: '0.75rem',
+                    borderRadius: 6,
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: filter === f ? '#6888ff' : 'transparent',
+                    color: filter === f ? N.base : N.textSub,
+                    fontWeight: filter === f ? 600 : 400
+                  }}
                 >
                   {f === 'all' ? 'Todas' : f === 'critical' ? 'Críticas' : 'Pendientes'}
                 </button>
@@ -361,136 +401,152 @@ export function AlertCenter() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {filteredAlerts.map(alert => (
-              <NeuromorphicCard 
+              <NeuCard
                 key={alert.id}
-                variant="embossed" 
-                className={`p-4 border ${getAlertBg(alert.type)}`}
+                style={{
+                  boxShadow: getShadow(),
+                  background: getAlertBg(alert.type),
+                  border: `1px solid ${getAlertBorder(alert.type)}`
+                }}
               >
-                <div className="flex items-start gap-3">
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                   {getAlertIcon(alert.type)}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                       <div>
-                        <p className="text-white font-medium">{alert.title}</p>
-                        <p className="text-sm text-slate-400 mt-1">{alert.message}</p>
+                        <p style={{ color: N.text, fontWeight: 500 }}>{alert.title}</p>
+                        <p style={{ color: N.textSub, fontSize: '0.875rem', marginTop: '0.25rem' }}>{alert.message}</p>
                       </div>
-                      <span className="text-xs text-slate-500">{formatTimeAgo(alert.timestamp)}</span>
+                      <span style={{ color: N.textSub, fontSize: '0.75rem' }}>{formatTimeAgo(alert.timestamp)}</span>
                     </div>
 
                     {alert.suggestedAction && (
-                      <p className="text-xs text-blue-400 mt-2">
-                        💡 {alert.suggestedAction}
+                      <p style={{ color: '#6888ff', fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                        ðŸ’¡ {alert.suggestedAction}
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between mt-3">
-                      <div className="flex items-center gap-2">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {alert.channels.map(ch => (
-                          <span key={ch} className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+                          <span key={ch} style={{ fontSize: '0.75rem', padding: '0.125rem 0.5rem', background: `${N.dark}70`, color: N.textSub, borderRadius: 4 }}>
                             {ch}
                           </span>
                         ))}
                         {alert.escalated && (
-                          <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded">
+                          <span style={{ fontSize: '0.75rem', padding: '0.125rem 0.5rem', background: '#6888ff20', color: '#6888ff', borderRadius: 4 }}>
                             Escalada
                           </span>
                         )}
                       </div>
 
                       {!alert.acknowledged && (
-                        <NeuromorphicButton
+                        <NeuButton
                           variant="secondary"
-                          size="sm"
                           onClick={() => acknowledgeAlert(alert.id)}
                         >
-                          <CheckCircle className="w-3 h-3 mr-1" />
+                          <CheckCircle style={{ width: 12, height: 12, marginRight: 4 }} />
                           Reconocer
-                        </NeuromorphicButton>
+                        </NeuButton>
                       )}
                     </div>
                   </div>
                 </div>
-              </NeuromorphicCard>
+              </NeuCard>
             ))}
           </div>
         </div>
 
         {/* Channels Configuration */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Settings className="w-5 h-5 text-slate-400" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Settings style={{ color: N.textSub, width: 20, height: 20 }} />
             Canales de Notificación
           </h3>
 
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {channels.map(channel => (
-              <NeuromorphicCard key={channel.id} variant="embossed" className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
+              <NeuCard key={channel.id} style={{ boxShadow: getShadow() }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {channel.icon}
                     <div>
-                      <p className="text-white font-medium">{channel.name}</p>
-                      <p className="text-xs text-slate-400">{channel.target}</p>
+                      <p style={{ color: N.text, fontWeight: 500 }}>{channel.name}</p>
+                      <p style={{ color: N.textSub, fontSize: '0.75rem' }}>{channel.target}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => toggleChannel(channel.id)}
-                    className={`w-10 h-6 rounded-full transition-colors ${
-                      channel.enabled ? 'bg-green-600' : 'bg-slate-700'
-                    }`}
+                    style={{
+                      width: 40,
+                      height: 24,
+                      borderRadius: 12,
+                      transition: 'colors 0.2s',
+                      background: channel.enabled ? '#6888ff' : `${N.dark}70`,
+                      border: 'none',
+                      cursor: 'pointer',
+                      position: 'relative'
+                    }}
                   >
-                    <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
-                      channel.enabled ? 'translate-x-5' : 'translate-x-1'
-                    }`} />
+                    <div style={{
+                      width: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      background: N.base,
+                      position: 'absolute',
+                      top: 4,
+                      left: channel.enabled ? 20 : 4,
+                      transition: 'left 0.2s'
+                    }} />
                   </button>
                 </div>
 
                 {channel.enabled && (
-                  <NeuromorphicButton
-                    variant="secondary"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => sendTestAlert(channel.id)}
-                  >
-                    <Zap className="w-3 h-3 mr-1" />
-                    Enviar Prueba
-                  </NeuromorphicButton>
+                  <div style={{ width: '100%' }}>
+                    <NeuButton
+                      variant="secondary"
+                      onClick={() => sendTestAlert(channel.id)}
+                    >
+                      <Zap style={{ width: 12, height: 12, marginRight: 4 }} />
+                      Enviar Prueba
+                    </NeuButton>
+                  </div>
                 )}
-              </NeuromorphicCard>
+              </NeuCard>
             ))}
           </div>
 
           {/* Alert Rules */}
-          <NeuromorphicCard variant="embossed" className="p-4">
-            <h4 className="text-white font-medium mb-3">Reglas de Escalamiento</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400">Críticas → WhatsApp inmediato</span>
-                <NeuromorphicStatus status="online" size="sm" />
+          <NeuCard style={{ boxShadow: getShadow() }}>
+            <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '0.75rem' }}>Reglas de Escalamiento</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ color: N.textSub }}>Críticas †’ WhatsApp inmediato</span>
+                <StatusBadge status="success" label="Activo" />
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400">Sin respuesta 5min → SMS</span>
-                <NeuromorphicStatus status="online" size="sm" />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ color: N.textSub }}>Sin respuesta 5min †’ SMS</span>
+                <StatusBadge status="success" label="Activo" />
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400">Licencias → Email diario</span>
-                <NeuromorphicStatus status="online" size="sm" />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ color: N.textSub }}>Licencias †’ Email diario</span>
+                <StatusBadge status="success" label="Activo" />
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
 
           {/* Daily Summary Toggle */}
-          <NeuromorphicCard variant="glow" className="p-4">
-            <div className="flex items-center justify-between">
+          <NeuCard style={{ boxShadow: getShadow(), background: '#6888ff15' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <p className="text-white font-medium">Resumen Diario</p>
-                <p className="text-xs text-slate-400">Email a las 08:00</p>
+                <p style={{ color: N.text, fontWeight: 500 }}>Resumen Diario</p>
+                <p style={{ color: N.textSub, fontSize: '0.75rem' }}>Email a las 08:00</p>
               </div>
-              <NeuromorphicStatus status="online" pulse />
+              <StatusBadge status="success" label="Activo" />
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       </div>
     </div>

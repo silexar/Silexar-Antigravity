@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔐 SILEXAR PULSE - Panel de Autorización TIER 0
  *
  * @description Panel centralizado para gestión de autorizaciones anti-fraude.
@@ -90,7 +90,7 @@ const EvidenciaCard: React.FC<{
         p-4 rounded-xl border-2 transition-all
         ${
         evidencia.validado
-          ? "border-emerald-200 bg-emerald-50"
+          ? "border-[#bec8de] bg-[#6888ff]/5"
           : "border-[#bec8de40] bg-[#dfeaff] hover:border-[#6888ff30]"
       }
       `}
@@ -99,12 +99,12 @@ const EvidenciaCard: React.FC<{
         <div
           className={`
           p-2 rounded-lg
-          ${evidencia.validado ? "bg-emerald-100" : "bg-[#dfeaff]"}
+          ${evidencia.validado ? "bg-[#6888ff]/10" : "bg-[#dfeaff]"}
         `}
         >
           <FileText
             className={`w-5 h-5 ${
-              evidencia.validado ? "text-emerald-600" : "text-[#9aa3b8]"
+              evidencia.validado ? "text-[#6888ff]" : "text-[#9aa3b8]"
             }`}
           />
         </div>
@@ -115,7 +115,7 @@ const EvidenciaCard: React.FC<{
               {evidencia.nombre}
             </h4>
             {evidencia.validado && (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 Validada
               </span>
@@ -127,7 +127,7 @@ const EvidenciaCard: React.FC<{
             {new Date(evidencia.fechaSubida).toLocaleDateString("es-CL")}
           </p>
           {evidencia.validadoPor && (
-            <p className="text-xs text-emerald-600 mt-1">
+            <p className="text-xs text-[#6888ff] mt-1">
               ✓ Validado por {evidencia.validadoPor.nombre}
             </p>
           )}
@@ -145,7 +145,7 @@ const EvidenciaCard: React.FC<{
           {!evidencia.validado && puedeValidar && onValidar && (
             <button
               onClick={onValidar}
-              className="p-2 rounded-lg hover:bg-emerald-100 text-emerald-600 transition-colors"
+              className="p-2 rounded-lg hover:bg-[#6888ff]/10 text-[#6888ff] transition-colors"
               title="Validar evidencia"
             >
               <CheckCircle2 className="w-4 h-4" />
@@ -155,7 +155,7 @@ const EvidenciaCard: React.FC<{
           {!evidencia.validado && (
             <button
               onClick={onDelete}
-              className="p-2 rounded-lg hover:bg-red-100 text-red-500 transition-colors"
+              className="p-2 rounded-lg hover:bg-[#dfeaff] text-[#9aa3b8] transition-colors"
               title="Eliminar"
             >
               <Trash2 className="w-4 h-4" />
@@ -187,15 +187,15 @@ const NivelAprobacionCard: React.FC<{
   > = {
     "jefatura_directa": {
       titulo: "Jefatura Directa",
-      color: "from-blue-400 to-blue-500",
+      color: "from-[#6888ff] to-[#5572ee]",
     },
     "gerente_comercial": {
       titulo: "Gerente Comercial",
-      color: "from-purple-400 to-purple-500",
+      color: "from-[#6888ff] to-[#5572ee]",
     },
     "gerente_general": {
       titulo: "Gerente General",
-      color: "from-orange-400 to-orange-500",
+      color: "from-[#6888ff] to-[#5572ee]",
     },
   };
 
@@ -212,7 +212,7 @@ const NivelAprobacionCard: React.FC<{
 
     if (!aprobacion || aprobacion.estado === "pendiente") {
       return (
-        <span className="px-3 py-1 rounded-lg bg-amber-100 text-amber-700 text-sm flex items-center gap-1">
+        <span className="px-3 py-1 rounded-lg bg-[#6888ff]/10 text-[#6888ff] text-sm flex items-center gap-1">
           <Clock className="w-3 h-3" />
           Pendiente
         </span>
@@ -221,7 +221,7 @@ const NivelAprobacionCard: React.FC<{
 
     if (aprobacion.estado === "aprobado") {
       return (
-        <span className="px-3 py-1 rounded-lg bg-emerald-100 text-emerald-700 text-sm flex items-center gap-1">
+        <span className="px-3 py-1 rounded-lg bg-[#6888ff]/10 text-[#6888ff] text-sm flex items-center gap-1">
           <CheckCircle2 className="w-3 h-3" />
           Aprobado
         </span>
@@ -229,7 +229,7 @@ const NivelAprobacionCard: React.FC<{
     }
 
     return (
-      <span className="px-3 py-1 rounded-lg bg-red-100 text-red-700 text-sm flex items-center gap-1">
+      <span className="px-3 py-1 rounded-lg bg-[#dfeaff] text-[#9aa3b8] text-sm flex items-center gap-1">
         <XCircle className="w-3 h-3" />
         Rechazado
       </span>
@@ -243,10 +243,10 @@ const NivelAprobacionCard: React.FC<{
       ${!esRequerido ? "opacity-40 border-[#bec8de20]" : "border-[#bec8de40]"}
       ${
         aprobacion?.estado === "aprobado"
-          ? "border-emerald-200 bg-emerald-50/50"
+          ? "border-[#bec8de] bg-[#6888ff]/5/50"
           : ""
       }
-      ${aprobacion?.estado === "rechazado" ? "border-red-200 bg-red-50/50" : ""}
+      ${aprobacion?.estado === "rechazado" ? "border-[#bec8de] bg-[#dfeaff]/50" : ""}
     `}
     >
       <div className="flex items-center gap-4">
@@ -280,7 +280,7 @@ const NivelAprobacionCard: React.FC<{
             (
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="p-2 rounded-lg bg-[#6888ff25] text-[#6888ff] hover:bg-indigo-200 transition-colors"
+                className="p-2 rounded-lg bg-[#6888ff25] text-[#6888ff] hover:bg-[#6888ff]/20 transition-colors"
               >
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${
@@ -327,7 +327,7 @@ const NivelAprobacionCard: React.FC<{
                     setShowForm(false);
                     setComentarios("");
                   }}
-                  className="flex-1 py-2 rounded-lg bg-emerald-500 text-white font-medium hover:bg-emerald-600 flex items-center justify-center gap-2"
+                  className="flex-1 py-2 rounded-lg bg-[#6888ff]/50 text-white font-medium hover:bg-[#6888ff] flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   Aprobar
@@ -343,7 +343,7 @@ const NivelAprobacionCard: React.FC<{
                     setShowForm(false);
                     setComentarios("");
                   }}
-                  className="flex-1 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 flex items-center justify-center gap-2"
+                  className="flex-1 py-2 rounded-lg bg-[#dfeaff]0 text-white font-medium hover:bg-[#6888ff] flex items-center justify-center gap-2"
                 >
                   <XCircle className="w-4 h-4" />
                   Rechazar
@@ -546,9 +546,9 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
         p-5 rounded-2xl border-2 transition-all
         ${
           configuracion.estado === "operativo"
-            ? "border-emerald-300 bg-gradient-to-r from-emerald-50 to-emerald-100"
+            ? "border-[#bec8de] bg-gradient-to-r from-[#6888ff]/10 to-[#6888ff]/20"
             : configuracion.estado === "pendiente_reaprobacion"
-            ? "border-amber-300 bg-gradient-to-r from-amber-50 to-amber-100"
+            ? "border-[#bec8de] bg-gradient-to-r from-[#6888ff] to-[#5572ee]"
             : "border-[#bec8de40] bg-[#dfeaff]"
         }
       `}
@@ -559,15 +559,15 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
             p-3 rounded-xl
             ${
               configuracion.estado === "operativo"
-                ? "bg-emerald-200"
+                ? "bg-[#6888ff]/20"
                 : configuracion.estado === "pendiente_reaprobacion"
-                ? "bg-amber-200"
+                ? "bg-[#6888ff]/20"
                 : "bg-[#dfeaff]"
             }
           `}
           >
             {configuracion.estado === "operativo"
-              ? <Unlock className="w-6 h-6 text-emerald-700" />
+              ? <Unlock className="w-6 h-6 text-[#6888ff]" />
               : <Lock className="w-6 h-6 text-[#69738c]" />}
           </div>
 
@@ -592,9 +592,9 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
             <p
               className={`text-2xl font-bold ${
                 descuentoPorcentaje >= 65
-                  ? "text-red-600"
+                  ? "text-[#9aa3b8]"
                   : descuentoPorcentaje > 50
-                  ? "text-amber-600"
+                  ? "text-[#6888ff]"
                   : "text-[#69738c]"
               }`}
             >
@@ -619,8 +619,8 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
             <motion.div
               className={`h-full ${
                 configuracion.estado === "operativo"
-                  ? "bg-emerald-500"
-                  : "bg-indigo-500"
+                  ? "bg-[#6888ff]/50"
+                  : "bg-[#6888ff]/50"
               }`}
               initial={{ width: 0 }}
               animate={{
@@ -642,8 +642,8 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
           className="w-full p-4 flex items-center justify-between bg-[#dfeaff] hover:bg-[#dfeaff] transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-blue-100">
-              <Paperclip className="w-5 h-5 text-blue-600" />
+            <div className="p-2 rounded-lg bg-[#6888ff]/10">
+              <Paperclip className="w-5 h-5 text-[#6888ff]" />
             </div>
             <div className="text-left">
               <h4 className="font-semibold text-[#69738c]">
@@ -697,7 +697,7 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
                     <div
                       className={`
                       p-6 rounded-xl border-2 border-dashed border-[#bec8de50]
-                      hover:border-indigo-400 hover:bg-[#6888ff15] transition-all
+                      hover:border-[#bec8de] hover:bg-[#6888ff15] transition-all
                       flex flex-col items-center justify-center gap-2
                       ${uploading ? "opacity-50" : ""}
                     `}
@@ -720,8 +720,8 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
                 )}
 
                 {configuracion.evidenciasSubidas.length === 0 && (
-                  <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
-                    <p className="text-sm text-amber-700 flex items-center gap-2">
+                  <div className="p-4 rounded-lg bg-[#6888ff]/5 border border-[#bec8de]">
+                    <p className="text-sm text-[#6888ff] flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4" />
                       Debe adjuntar al menos 1 evidencia de negociación con el
                       cliente
@@ -741,8 +741,8 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
           className="w-full p-4 flex items-center justify-between bg-[#dfeaff] hover:bg-[#dfeaff] transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-100">
-              <Shield className="w-5 h-5 text-purple-600" />
+            <div className="p-2 rounded-lg bg-[#6888ff]/10">
+              <Shield className="w-5 h-5 text-[#6888ff]" />
             </div>
             <div className="text-left">
               <h4 className="font-semibold text-[#69738c]">
@@ -794,26 +794,26 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
 
       {/* Sección: Justificación (solo si descuento >= 65%) */}
       {reglas.requiereJustificacion && (
-        <div className="rounded-2xl border-2 border-orange-200 overflow-hidden bg-orange-50">
+        <div className="rounded-2xl border-2 border-[#bec8de] overflow-hidden bg-[#6888ff]/5">
           <button
             onClick={() => toggleSection("justificacion")}
-            className="w-full p-4 flex items-center justify-between hover:bg-orange-100/50 transition-colors"
+            className="w-full p-4 flex items-center justify-between hover:bg-[#6888ff]/10/50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-orange-200">
-                <MessageSquare className="w-5 h-5 text-orange-600" />
+              <div className="p-2 rounded-lg bg-[#6888ff]/20">
+                <MessageSquare className="w-5 h-5 text-[#6888ff]" />
               </div>
               <div className="text-left">
-                <h4 className="font-semibold text-orange-800">
+                <h4 className="font-semibold text-[#6888ff]">
                   Justificación Obligatoria
                 </h4>
-                <p className="text-sm text-orange-600">
+                <p className="text-sm text-[#6888ff]">
                   Descuento ≥65% requiere justificación escrita
                 </p>
               </div>
             </div>
             <ChevronRight
-              className={`w-5 h-5 text-orange-400 transition-transform ${
+              className={`w-5 h-5 text-[#6888ff] transition-transform ${
                 expandedSection === "justificacion" ? "rotate-90" : ""
               }`}
             />
@@ -827,19 +827,19 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
                 exit={{ height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="p-4 pt-0 border-t border-orange-200">
+                <div className="p-4 pt-0 border-t border-[#bec8de]">
                   <textarea
                     value={justificacionTexto}
                     onChange={(e) => setJustificacionTexto(e.target.value)}
                     placeholder="Explique detalladamente los motivos que justifican este nivel de descuento..."
-                    className="w-full p-4 rounded-xl border border-orange-200 bg-[#dfeaff] text-sm resize-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    className="w-full p-4 rounded-xl border border-[#bec8de] bg-[#dfeaff] text-sm resize-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     rows={4}
                     disabled={readOnly ||
                       !!configuracion.justificacionDescuento?.texto}
                   />
 
                   {configuracion.justificacionDescuento && (
-                    <p className="mt-2 text-xs text-orange-600">
+                    <p className="mt-2 text-xs text-[#6888ff]">
                       Justificación registrada por{" "}
                       {configuracion.justificacionDescuento.creadoPor.nombre}
                       el {new Date(
@@ -898,7 +898,7 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
                           p-3 rounded-lg border
                           ${
                           cambio.requiereReaprobacion
-                            ? "border-red-200 bg-red-50"
+                            ? "border-[#bec8de] bg-[#dfeaff]"
                             : "border-[#bec8de40] bg-[#dfeaff]"
                         }
                         `}
@@ -912,7 +912,7 @@ export const AutorizacionPanel: React.FC<AutorizacionPanelProps> = ({
                               "Líneas de Especificación"}
                           </span>
                           {cambio.requiereReaprobacion && (
-                            <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-xs">
+                            <span className="px-2 py-0.5 rounded bg-[#dfeaff] text-[#9aa3b8] text-xs">
                               Requiere re-aprobación
                             </span>
                           )}

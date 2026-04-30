@@ -35,7 +35,7 @@ Las instrucciones que el cliente/agencia envía con cada cuña:
 | Cuña backup             | ❌ Falta  |
 | Schedule por fecha      | ❌ Falta  |
 | Estadísticas de uso     | ❌ Falta  |
-| Alertas de vencimiento  | ❌ Falta  |
+| Alertas de vencimientos  | ❌ Falta  |
 
 ### 3. 📞 MENCIONES INLINE
 

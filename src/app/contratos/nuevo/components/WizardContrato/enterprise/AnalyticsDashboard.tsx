@@ -76,7 +76,7 @@ const mockAnalytics: ContractAnalyticsDashboard = {
         contratoId: "c-001",
         numeroContrato: "CON-2024-00145",
         clienteNombre: "Banco Nacional S.A.",
-        fechaVencimiento: new Date("2025-02-15"),
+        fechaVencimientos: new Date("2025-02-15"),
         probabilidadRenovacion: 92,
         factoresPositivos: ["Excelente historial", "Alta satisfacción"],
         factoresNegativos: [],
@@ -88,7 +88,7 @@ const mockAnalytics: ContractAnalyticsDashboard = {
         contratoId: "c-002",
         numeroContrato: "CON-2024-00189",
         clienteNombre: "SuperMax SpA",
-        fechaVencimiento: new Date("2025-01-31"),
+        fechaVencimientos: new Date("2025-01-31"),
         probabilidadRenovacion: 75,
         factoresPositivos: ["Cliente recurrente"],
         factoresNegativos: ["Reducción de presupuesto"],
@@ -100,7 +100,7 @@ const mockAnalytics: ContractAnalyticsDashboard = {
         contratoId: "c-003",
         numeroContrato: "CON-2024-00201",
         clienteNombre: "TechStart SpA",
-        fechaVencimiento: new Date("2025-03-01"),
+        fechaVencimientos: new Date("2025-03-01"),
         probabilidadRenovacion: 45,
         factoresPositivos: [],
         factoresNegativos: ["Startup en reestructuración", "Pagos retrasados"],
@@ -178,7 +178,7 @@ const mockAnalytics: ContractAnalyticsDashboard = {
     },
     {
       id: "a-002",
-      tipo: "vencimiento_obligacion",
+      tipo: "vencimientos_obligacion",
       titulo: "Material pendiente: SuperMax",
       descripcion: "El cliente debe entregar material creativo en 3 días.",
       urgencia: "media",
@@ -245,9 +245,9 @@ const MetricCard: React.FC<{
       <div
         className={`flex items-center gap-1 mt-4 text-sm ${
           tendencia.tipo === "subida"
-            ? "text-emerald-200"
+            ? "text-[#6888ff]"
             : tendencia.tipo === "bajada"
-            ? "text-red-200"
+            ? "text-[#9aa3b8]"
             : "text-white/60"
         }`}
       >
@@ -273,22 +273,22 @@ const AlertaCard: React.FC<{
 }> = ({ alerta, onAccion, onDescartar }) => {
   const urgenciaConfig = {
     critica: {
-      bg: "bg-red-50",
-      border: "border-red-200",
-      icon: "text-red-500",
-      badge: "bg-red-500",
+      bg: "bg-[#dfeaff]",
+      border: "border-[#bec8de]",
+      icon: "text-[#9aa3b8]",
+      badge: "bg-[#dfeaff]0",
     },
     alta: {
-      bg: "bg-amber-50",
-      border: "border-amber-200",
-      icon: "text-amber-500",
-      badge: "bg-amber-500",
+      bg: "bg-[#6888ff]/5",
+      border: "border-[#bec8de]",
+      icon: "text-[#6888ff]",
+      badge: "bg-[#6888ff]/50",
     },
     media: {
-      bg: "bg-blue-50",
-      border: "border-blue-200",
-      icon: "text-blue-500",
-      badge: "bg-blue-500",
+      bg: "bg-[#6888ff]/5",
+      border: "border-[#bec8de]",
+      icon: "text-[#6888ff]",
+      badge: "bg-[#6888ff]/50",
     },
     baja: {
       bg: "bg-[#dfeaff]",
@@ -337,7 +337,7 @@ const AlertaCard: React.FC<{
           <div className="flex items-center gap-2 mt-3">
             <button
               onClick={onAccion}
-              className="px-3 py-1.5 rounded-lg bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-600 transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg bg-[#6888ff]/50 text-white text-sm font-medium hover:bg-[#6888ff] transition-colors flex items-center gap-1"
             >
               {alerta.accionSugerida}
               <ArrowUpRight className="w-3 h-3" />
@@ -359,10 +359,10 @@ const PrediccionRenovacionCard: React.FC<{
   prediccion: PrediccionRenovacion;
 }> = ({ prediccion }) => {
   const probabilidadColor = prediccion.probabilidadRenovacion >= 80
-    ? "from-emerald-400 to-emerald-500"
+    ? "from-[#6888ff] to-[#5572ee]"
     : prediccion.probabilidadRenovacion >= 50
-    ? "from-amber-400 to-amber-500"
-    : "from-red-400 to-red-500";
+    ? "from-[#6888ff] to-[#5572ee]"
+    : "from-[#6888ff] to-[#5572ee]";
 
   return (
     <motion.div
@@ -386,7 +386,7 @@ const PrediccionRenovacionCard: React.FC<{
       <div className="flex items-center gap-4 text-sm text-[#69738c]">
         <div className="flex items-center gap-1">
           <Clock className="w-4 h-4" />
-          <span>Vence: {prediccion.fechaVencimiento.toLocaleDateString()}</span>
+          <span>Vence: {prediccion.fechaVencimientos.toLocaleDateString()}</span>
         </div>
         <div className="flex items-center gap-1">
           <DollarSign className="w-4 h-4" />
@@ -401,7 +401,7 @@ const PrediccionRenovacionCard: React.FC<{
           {prediccion.factoresPositivos.slice(0, 2).map((factor) => (
             <span
               key={factor}
-              className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs"
+              className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs"
             >
               {factor}
             </span>
@@ -414,7 +414,7 @@ const PrediccionRenovacionCard: React.FC<{
           {prediccion.factoresNegativos.slice(0, 2).map((factor) => (
             <span
               key={factor}
-              className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs"
+              className="px-2 py-0.5 rounded-full bg-[#dfeaff] text-[#9aa3b8] text-xs"
             >
               {factor}
             </span>
@@ -522,7 +522,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                   >
                     {vista.charAt(0).toUpperCase() + vista.slice(1)}
                     {vista === "alertas" && alertasVisibles.length > 0 && (
-                      <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-xs">
+                      <span className="ml-2 px-1.5 py-0.5 rounded-full bg-[#dfeaff]0 text-white text-xs">
                         {alertasVisibles.length}
                       </span>
                     )}
@@ -571,7 +571,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                   valor={contratosActivos}
                   subtitulo="En ejecución"
                   icono={FileText}
-                  color="from-emerald-500 to-teal-600"
+                  color="from-[#6888ff] to-teal-600"
                   tendencia={{ valor: 8, tipo: "subida" }}
                 />
                 <MetricCard
@@ -579,7 +579,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                   valor={`${analytics.metricas.tasaConversion}%`}
                   subtitulo="Borradores a firmados"
                   icono={Target}
-                  color="from-amber-500 to-orange-600"
+                  color="from-[#6888ff] to-[#5572ee]"
                   tendencia={{ valor: 3, tipo: "subida" }}
                 />
                 <MetricCard
@@ -587,7 +587,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                   valor={`${analytics.metricas.tiempoPromedioAprobacion}h`}
                   subtitulo="Promedio"
                   icono={Clock}
-                  color="from-blue-500 to-cyan-600"
+                  color="from-[#6888ff] to-cyan-600"
                   tendencia={{ valor: 15, tipo: "bajada" }}
                 />
               </div>
@@ -606,20 +606,20 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                 {/* KPIs */}
                 <div className="p-6 rounded-2xl bg-[#69738c]">
                   <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-emerald-400" />
+                    <Shield className="w-5 h-5 text-[#6888ff]" />
                     KPIs de Calidad
                   </h3>
 
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-[#9aa3b8] text-sm">NPS</span>
-                      <span className="text-2xl font-bold text-emerald-400">
+                      <span className="text-2xl font-bold text-[#6888ff]">
                         {analytics.kpis.nps}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-[#9aa3b8] text-sm">CSAT</span>
-                      <span className="text-2xl font-bold text-amber-400">
+                      <span className="text-2xl font-bold text-[#6888ff]">
                         {analytics.kpis.csat}/5
                       </span>
                     </div>
@@ -627,7 +627,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                       <span className="text-[#9aa3b8] text-sm">
                         SLA Cumplimiento
                       </span>
-                      <span className="text-2xl font-bold text-blue-400">
+                      <span className="text-2xl font-bold text-[#6888ff]">
                         {analytics.kpis.tasaCumplimientoSLA}%
                       </span>
                     </div>
@@ -674,11 +674,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
               className="space-y-6"
             >
               <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-5 h-5 text-amber-500" />
+                <Zap className="w-5 h-5 text-[#6888ff]" />
                 <h3 className="text-lg font-semibold text-[#69738c]">
                   Predicciones de Renovación
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs">
+                <span className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs">
                   IA
                 </span>
               </div>
@@ -738,7 +738,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = (
                       animate={{ opacity: 1 }}
                       className="p-8 text-center"
                     >
-                      <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                      <CheckCircle2 className="w-12 h-12 text-[#6888ff] mx-auto mb-3" />
                       <p className="text-[#69738c]">
                         No hay alertas pendientes
                       </p>

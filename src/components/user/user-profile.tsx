@@ -19,10 +19,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   User, Shield, Bell, Settings, Activity, HelpCircle, Star,
   Camera, Mail, Phone, Building, MapPin, Globe, Clock,
@@ -128,7 +126,7 @@ export function UserProfile() {
   const [activeTab, setActiveTab] = useState('profile')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  
+
   // Profile data
   const [profile, setProfile] = useState<UserProfileData | null>(null)
   const [sessions, setSessions] = useState<UserSession[]>([])
@@ -136,7 +134,7 @@ export function UserProfile() {
   const [notificationSettings, setNotificationSettings] = useState<NotificationSetting[]>([])
   const [shortcuts, setShortcuts] = useState<KeyboardShortcut[]>([])
   const [favorites, setFavorites] = useState<FavoriteItem[]>([])
-  
+
   // Modals
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [showEnable2FA, setShowEnable2FA] = useState(false)
@@ -274,7 +272,7 @@ export function UserProfile() {
   }
 
   const toggleNotification = (id: string, channel: 'email' | 'push' | 'inApp') => {
-    setNotificationSettings(prev => prev.map(n => 
+    setNotificationSettings(prev => prev.map(n =>
       n.id === id ? { ...n, [channel]: !n[channel] } : n
     ))
   }
@@ -323,10 +321,10 @@ export function UserProfile() {
             <p className="text-xs text-slate-500">Último acceso: {profile.lastLogin.toLocaleString()}</p>
           </div>
         </div>
-        <NeuromorphicButton variant="primary" onClick={saveProfile} disabled={isSaving}>
+        <NeuButton variant="primary" onClick={saveProfile} disabled={isSaving}>
           {isSaving ? <RefreshCw className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
           Guardar Cambios
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Tabs */}
@@ -335,9 +333,8 @@ export function UserProfile() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              activeTab === tab.id ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${activeTab === tab.id ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              }`}
           >
             {tab.icon}
             {tab.name}
@@ -349,7 +346,7 @@ export function UserProfile() {
       <div className="grid grid-cols-1 gap-6">
         {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <User className="w-5 h-5 text-blue-400" />
               Información Personal
@@ -386,14 +383,14 @@ export function UserProfile() {
                   className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded text-slate-500 cursor-not-allowed" />
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Security Tab */}
         {activeTab === 'security' && (
           <div className="space-y-4">
             {/* Password */}
-            <NeuromorphicCard variant="embossed" className="p-6">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-white font-medium flex items-center gap-2">
@@ -402,14 +399,14 @@ export function UserProfile() {
                   </h3>
                   <p className="text-slate-500 text-sm">Última modificación hace 7 días</p>
                 </div>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowChangePassword(true)}>
+                <NeuButton variant="secondary" onClick={() => setShowChangePassword(true)}>
                   Cambiar Contraseña
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
 
             {/* 2FA */}
-            <NeuromorphicCard variant="embossed" className="p-6">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-white font-medium flex items-center gap-2">
@@ -422,31 +419,31 @@ export function UserProfile() {
                 </div>
                 {profile.twoFactorEnabled ? (
                   <div className="flex gap-2">
-                    <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowBackupCodes(true)}>
+                    <NeuButton variant="secondary" onClick={() => setShowBackupCodes(true)}>
                       Ver Códigos
-                    </NeuromorphicButton>
-                    <NeuromorphicButton variant="secondary" size="sm" onClick={disable2FA}>
+                    </NeuButton>
+                    <NeuButton variant="secondary" onClick={disable2FA}>
                       Desactivar
-                    </NeuromorphicButton>
+                    </NeuButton>
                   </div>
                 ) : (
-                  <NeuromorphicButton variant="primary" size="sm" onClick={() => setShowEnable2FA(true)}>
+                  <NeuButton variant="primary" onClick={() => setShowEnable2FA(true)}>
                     Activar 2FA
-                  </NeuromorphicButton>
+                  </NeuButton>
                 )}
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
 
             {/* Active Sessions */}
-            <NeuromorphicCard variant="embossed" className="p-6">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-white font-medium flex items-center gap-2">
                   <Monitor className="w-5 h-5 text-green-400" />
                   Sesiones Activas ({sessions.length})
                 </h3>
-                <NeuromorphicButton variant="secondary" size="sm" onClick={revokeAllSessions}>
+                <NeuButton variant="secondary" onClick={revokeAllSessions}>
                   Cerrar Todas
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
               <div className="space-y-3">
                 {sessions.map(session => (
@@ -472,13 +469,13 @@ export function UserProfile() {
                   </div>
                 ))}
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
           </div>
         )}
 
         {/* Preferences Tab */}
         {activeTab === 'preferences' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <Settings className="w-5 h-5 text-purple-400" />
               Preferencias del Sistema
@@ -523,12 +520,12 @@ export function UserProfile() {
                 </div>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Notifications Tab */}
         {activeTab === 'notifications' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <Bell className="w-5 h-5 text-yellow-400" />
               Preferencias de Notificaciones
@@ -570,23 +567,22 @@ export function UserProfile() {
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Activity Tab */}
         {activeTab === 'activity' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <Activity className="w-5 h-5 text-cyan-400" />
               Historial de Actividad
             </h3>
             <div className="space-y-3">
               {activityLogs.map(log => (
-                <div key={log.id} className={`p-3 rounded-lg border ${
-                  log.result === 'success' ? 'bg-green-500/5 border-green-500/20' :
+                <div key={log.id} className={`p-3 rounded-lg border ${log.result === 'success' ? 'bg-green-500/5 border-green-500/20' :
                   log.result === 'warning' ? 'bg-yellow-500/5 border-yellow-500/20' :
-                  'bg-red-500/5 border-red-500/20'
-                }`}>
+                    'bg-red-500/5 border-red-500/20'
+                  }`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       {log.result === 'success' && <CheckCircle className="w-5 h-5 text-green-400" />}
@@ -602,12 +598,12 @@ export function UserProfile() {
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Shortcuts Tab */}
         {activeTab === 'shortcuts' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <Keyboard className="w-5 h-5 text-purple-400" />
               Atajos de Teclado
@@ -627,12 +623,12 @@ export function UserProfile() {
                 </div>
               ))}
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Favorites Tab */}
         {activeTab === 'favorites' && (
-          <NeuromorphicCard variant="embossed" className="p-6">
+          <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
             <h3 className="text-white font-medium mb-4 flex items-center gap-2">
               <Star className="w-5 h-5 text-yellow-400" />
               Mis Favoritos
@@ -662,13 +658,13 @@ export function UserProfile() {
                 Agregar Favorito
               </button>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         )}
 
         {/* Help Tab */}
         {activeTab === 'help' && (
           <div className="grid grid-cols-2 gap-4">
-            <NeuromorphicCard variant="embossed" className="p-6">
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
               <h3 className="text-white font-medium mb-4 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-blue-400" />
                 Guías y Tutoriales
@@ -681,8 +677,8 @@ export function UserProfile() {
                   </button>
                 ))}
               </div>
-            </NeuromorphicCard>
-            <NeuromorphicCard variant="embossed" className="p-6">
+            </NeuCard>
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }}>
               <h3 className="text-white font-medium mb-4 flex items-center gap-2">
                 <Video className="w-5 h-5 text-purple-400" />
                 Videos de Capacitación
@@ -695,24 +691,24 @@ export function UserProfile() {
                   </button>
                 ))}
               </div>
-            </NeuromorphicCard>
-            <NeuromorphicCard variant="embossed" className="p-6 col-span-2">
+            </NeuCard>
+            <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1.5rem', background: N.base }} className="col-span-2">
               <h3 className="text-white font-medium mb-4 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-orange-400" />
                 ¿Necesitas más ayuda?
               </h3>
               <p className="text-slate-400 mb-4">Nuestro equipo de soporte está disponible 24/7 para ayudarte.</p>
               <div className="flex gap-3">
-                <NeuromorphicButton variant="primary">
+                <NeuButton variant="primary">
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Crear Ticket de Soporte
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="secondary">
+                </NeuButton>
+                <NeuButton variant="secondary">
                   <Mail className="w-4 h-4 mr-2" />
                   Enviar Email
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
-            </NeuromorphicCard>
+            </NeuCard>
           </div>
         )}
       </div>
@@ -720,7 +716,7 @@ export function UserProfile() {
       {/* Change Password Modal */}
       {showChangePassword && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <NeuromorphicCard variant="glow" className="w-full max-w-md p-6">
+          <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }} className="w-full max-w-md">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-white font-bold">Cambiar Contraseña</h4>
               <button onClick={() => setShowChangePassword(false)} aria-label="Cerrar"><X className="w-5 h-5 text-slate-400" /></button>
@@ -748,18 +744,18 @@ export function UserProfile() {
                 <input type="checkbox" checked={showPasswords} onChange={(e) => setShowPasswords(e.target.checked)} className="w-4 h-4" />
                 <span className="text-slate-400 text-sm">Mostrar contraseñas</span>
               </label>
-              <NeuromorphicButton variant="primary" className="w-full" onClick={changePassword}>
+              <NeuButton variant="primary" onClick={changePassword}>
                 Cambiar Contraseña
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       )}
 
       {/* Backup Codes Modal */}
       {showBackupCodes && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <NeuromorphicCard variant="glow" className="w-full max-w-md p-6">
+          <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }} className="w-full max-w-md">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-white font-bold">Códigos de Respaldo</h4>
               <button onClick={() => setShowBackupCodes(false)} aria-label="Cerrar"><X className="w-5 h-5 text-slate-400" /></button>
@@ -771,14 +767,14 @@ export function UserProfile() {
               ))}
             </div>
             <div className="flex gap-2">
-              <NeuromorphicButton variant="secondary" className="flex-1" onClick={() => navigator.clipboard.writeText(profile.backupCodes.join('\n'))}>
+              <NeuButton variant="secondary" onClick={() => navigator.clipboard.writeText(profile.backupCodes.join('\n'))}>
                 <Copy className="w-4 h-4 mr-1" />Copiar
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="secondary" className="flex-1">
+              </NeuButton>
+              <NeuButton variant="secondary">
                 <Download className="w-4 h-4 mr-1" />Descargar
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         </div>
       )}
     </div>

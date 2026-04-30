@@ -1,12 +1,12 @@
-/**
+ï»¿/**
  * ?? SILEXAR PULSE - Notes Panel Component TIER 0
  * 
  * @description Panel de notas y comentarios para contratos con:
- * - Notas internas y públicas
+ * - Notas internas y pï¿½blicas
  * - Menciones a usuarios (@usuario)
  * - Hilos de respuestas
  * - Adjuntos
- * - Filtros y búsqueda
+ * - Filtros y bï¿½squeda
  * 
  * @version 2025.4.0
  * @tier TIER_0_FORTUNE_10
@@ -128,7 +128,7 @@ const mockNotas: NotaContrato[] = [
   {
     id: 'n-001',
     contratoId: 'ctr-001',
-    contenido: 'Confirmar con el cliente el horario prime de 20:00 a 22:00 hrs antes de continuar con la aprobación. @Ana.Garcia',
+    contenido: 'Confirmar con el cliente el horario prime de 20:00 a 22:00 hrs antes de continuar con la aprobaciï¿½n. @Ana.Garcia',
     tipoNota: 'INSTRUCCION',
     visibilidad: 'INTERNA',
     prioridad: 'ALTA',
@@ -143,14 +143,14 @@ const mockNotas: NotaContrato[] = [
       {
         id: 'n-002',
         contratoId: 'ctr-001',
-        contenido: 'Cliente confirmó el horario. Se puede proceder.',
+        contenido: 'Cliente confirmï¿½ el horario. Se puede proceder.',
         tipoNota: 'COMENTARIO',
         visibilidad: 'INTERNA',
         prioridad: 'NORMAL',
         notaPadreId: 'n-001',
         cantidadRespuestas: 0,
         tieneAdjuntos: false,
-        autor: { id: 'u-003', nombre: 'Ana García', rol: 'Supervisora' },
+        autor: { id: 'u-003', nombre: 'Ana Garcï¿½a', rol: 'Supervisora' },
         editado: false,
         fijado: false,
         fechaCreacion: new Date(Date.now() - 1 * 60 * 60 * 1000),
@@ -160,7 +160,7 @@ const mockNotas: NotaContrato[] = [
   {
     id: 'n-003',
     contratoId: 'ctr-001',
-    contenido: '?? El cliente pidió revisar el descuento aplicado. Adjunto email de solicitud.',
+    contenido: '?? El cliente pidiï¿½ revisar el descuento aplicado. Adjunto email de solicitud.',
     tipoNota: 'NEGOCIACION',
     visibilidad: 'INTERNA',
     prioridad: 'URGENTE',
@@ -175,13 +175,13 @@ const mockNotas: NotaContrato[] = [
   {
     id: 'n-004',
     contratoId: 'ctr-001',
-    contenido: 'Se aprobó el descuento adicional del 5% por decisión del Gerente General.',
+    contenido: 'Se aprobï¿½ el descuento adicional del 5% por decisiï¿½n del Gerente General.',
     tipoNota: 'DECISION',
     visibilidad: 'SOLO_APROBADORES',
     prioridad: 'NORMAL',
     cantidadRespuestas: 0,
     tieneAdjuntos: false,
-    autor: { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General' },
+    autor: { id: 'u-005', nombre: 'Patricia Muï¿½oz', rol: 'Gerente General' },
     editado: false,
     fijado: false,
     fechaCreacion: new Date(Date.now() - 10 * 60 * 1000),
@@ -189,11 +189,11 @@ const mockNotas: NotaContrato[] = [
 ];
 
 const mockUsuarios: UsuarioMencionable[] = [
-  { id: 'u-001', nombre: 'María López', rol: 'Ejecutivo Junior' },
+  { id: 'u-001', nombre: 'Marï¿½a Lï¿½pez', rol: 'Ejecutivo Junior' },
   { id: 'u-002', nombre: 'Carlos Mendoza', rol: 'Ejecutivo Senior' },
-  { id: 'u-003', nombre: 'Ana García', rol: 'Supervisora' },
+  { id: 'u-003', nombre: 'Ana Garcï¿½a', rol: 'Supervisora' },
   { id: 'u-004', nombre: 'Roberto Silva', rol: 'Gerente Comercial' },
-  { id: 'u-005', nombre: 'Patricia Muñoz', rol: 'Gerente General' }
+  { id: 'u-005', nombre: 'Patricia Muï¿½oz', rol: 'Gerente General' }
 ];
 
 // ---------------------------------------------------------------
@@ -203,20 +203,20 @@ const mockUsuarios: UsuarioMencionable[] = [
 const getTipoColor = (tipo: TipoNota) => {
   switch (tipo) {
     case 'COMENTARIO': return 'bg-[#dfeaff] text-[#69738c]';
-    case 'INSTRUCCION': return 'bg-blue-100 text-blue-700';
-    case 'ALERTA': return 'bg-red-100 text-red-700';
-    case 'RECORDATORIO': return 'bg-amber-100 text-amber-700';
-    case 'DECISION': return 'bg-green-100 text-green-700';
-    case 'NEGOCIACION': return 'bg-purple-100 text-purple-700';
+    case 'INSTRUCCION': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'ALERTA': return 'bg-[#dfeaff] text-[#9aa3b8]';
+    case 'RECORDATORIO': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'DECISION': return 'bg-[#6888ff]/10 text-[#6888ff]';
+    case 'NEGOCIACION': return 'bg-[#6888ff]/10 text-[#6888ff]';
     default: return 'bg-[#dfeaff] text-[#69738c]';
   }
 };
 
 const getPrioridadColor = (prioridad: Prioridad) => {
   switch (prioridad) {
-    case 'URGENTE': return 'bg-red-500';
-    case 'ALTA': return 'bg-orange-500';
-    case 'NORMAL': return 'bg-green-500';
+    case 'URGENTE': return 'bg-[#dfeaff]0';
+    case 'ALTA': return 'bg-[#6888ff]/50';
+    case 'NORMAL': return 'bg-[#6888ff]/50';
     case 'BAJA': return 'bg-[#9aa3b8]';
     default: return 'bg-[#9aa3b8]';
   }
@@ -307,7 +307,7 @@ const NotaCard: React.FC<{
           {/* Menu */}
           <div className="relative">
             <button
-              aria-label="Más opciones"
+              aria-label="Mï¿½s opciones"
               onClick={() => setShowMenu(!showMenu)}
               className="p-1 rounded-lg hover:bg-[#dfeaff]"
             >
@@ -467,7 +467,7 @@ export default function NotasPanel({
           </h3>
           
           <div className="flex items-center gap-2">
-            {/* Búsqueda */}
+            {/* Bï¿½squeda */}
             <div className={`${neuro.input} px-3 py-1.5 flex items-center gap-2`}>
               <Search className="w-4 h-4 text-[#9aa3b8]" />
               <input
@@ -489,7 +489,7 @@ export default function NotasPanel({
               <option value="TODOS">Todos</option>
               <option value="COMENTARIO">Comentarios</option>
               <option value="INSTRUCCION">Instrucciones</option>
-              <option value="NEGOCIACION">Negociación</option>
+              <option value="NEGOCIACION">Negociaciï¿½n</option>
               <option value="DECISION">Decisiones</option>
               <option value="ALERTA">Alertas</option>
             </select>
@@ -532,9 +532,9 @@ export default function NotasPanel({
                 className={`${neuro.input} px-2 py-1 text-xs`}
               >
                 <option value="COMENTARIO">?? Comentario</option>
-                <option value="INSTRUCCION">?? Instrucción</option>
-                <option value="NEGOCIACION">?? Negociación</option>
-                <option value="DECISION">? Decisión</option>
+                <option value="INSTRUCCION">?? Instrucciï¿½n</option>
+                <option value="NEGOCIACION">?? Negociaciï¿½n</option>
+                <option value="DECISION">? Decisiï¿½n</option>
                 <option value="ALERTA">?? Alerta</option>
                 <option value="RECORDATORIO">? Recordatorio</option>
               </select>
@@ -546,7 +546,7 @@ export default function NotasPanel({
                 className={`${neuro.input} px-2 py-1 text-xs`}
               >
                 <option value="INTERNA">?? Interna</option>
-                <option value="PUBLICA">??? Pública</option>
+                <option value="PUBLICA">??? Pï¿½blica</option>
                 <option value="SOLO_APROBADORES">??? Solo aprobadores</option>
               </select>
               
@@ -622,8 +622,8 @@ export default function NotasPanel({
         {notasOrdenadas.length === 0 && (
           <div className="text-center py-12 text-[#9aa3b8]">
             <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>No hay notas aún</p>
-            <p className="text-sm">Sé el primero en agregar una nota</p>
+            <p>No hay notas aï¿½n</p>
+            <p className="text-sm">Sï¿½ el primero en agregar una nota</p>
           </div>
         )}
       </div>

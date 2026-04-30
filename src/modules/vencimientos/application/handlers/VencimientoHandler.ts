@@ -1,5 +1,5 @@
 /**
- * HANDLER: VENCIMIENTO - TIER 0 ENTERPRISE
+ * HANDLER: VENCIMIENTOS - TIER 0 ENTERPRISE
  *
  * @description Tracking de vencimientos, R1 (48h + extensiones),
  * R2 (alertas tráfico), gestión de renovaciones.
@@ -10,26 +10,26 @@
 
 
 import { AlertaProgramador } from '../../domain/entities/AlertaProgramador.js'
-import type { IVencimientoRepository } from '../../domain/repositories/IVencimientoRepository.js'
+import type { IVencimientosRepository } from '../../domain/repositories/IVencimientosRepository.js'
 import type { ICupoComercialRepository } from '../../domain/repositories/ICupoComercialRepository.js'
 import type { IEmisoraRepository } from '../../domain/repositories/IEmisoraRepository.js'
 import type {
   ObtenerVencimientosProximosQuery,
-  VencimientoProximoResult,
+  VencimientosProximoResult,
   ObtenerAuspiciosNoIniciadosQuery,
   AuspicioNoIniciadoResult
 } from '../queries/index.js'
 
-export class VencimientoHandler {
+export class VencimientosHandler {
   constructor(
-    private readonly vencimientoRepo: IVencimientoRepository,
+    private readonly vencimientosRepo: IVencimientosRepository,
     private readonly cupoRepo: ICupoComercialRepository,
     private readonly emisoraRepo: IEmisoraRepository
   ) {}
 
   /** Obtener vencimientos próximos con evaluación automática */
-  async obtenerVencimientosProximos(query: ObtenerVencimientosProximosQuery): Promise<VencimientoProximoResult[]> {
-    const vencimientos = await this.vencimientoRepo.findVencimientosProximos(query.payload.diasAnticipacion)
+  async obtenerVencimientosProximos(query: ObtenerVencimientosProximosQuery): Promise<VencimientosProximoResult[]> {
+    const vencimientos = await this.vencimientosRepo.findVencimientosProximos(query.payload.diasAnticipacion)
     const filtrados = vencimientos
       .filter(v => !query.payload.emisoraId || v.emisoraId === query.payload.emisoraId)
       .filter(v => !query.payload.programaId || v.programaId === query.payload.programaId)
@@ -55,7 +55,7 @@ export class VencimientoHandler {
 
   /** R1: Obtener auspicios que no han iniciado */
   async obtenerAuspiciosNoIniciados(query: ObtenerAuspiciosNoIniciadosQuery): Promise<AuspicioNoIniciadoResult[]> {
-    const vencimientos = await this.vencimientoRepo.findVencimientosNoIniciados()
+    const vencimientos = await this.vencimientosRepo.findVencimientosNoIniciados()
     const filtrados = vencimientos
       .filter(v => !query.payload.emisoraId || v.emisoraId === query.payload.emisoraId)
 
@@ -84,7 +84,7 @@ export class VencimientoHandler {
     let alertasCreadas = 0
 
     // Obtener auspicios que terminan mañana
-    const terminanManana = await this.vencimientoRepo.findVencimientosTerminanManana()
+    const terminanManana = await this.vencimientosRepo.findVencimientosTerminanManana()
     for (const v of terminanManana) {
       const emisora = await this.emisoraRepo.findById(v.emisoraId)
       if (!emisora) continue
@@ -98,14 +98,14 @@ export class VencimientoHandler {
         operadorTraficoId: emisora.operadorTraficoId,
         operadorTraficoNombre: emisora.operadorTraficoNombre
       })
-      await this.vencimientoRepo.saveAlerta(alerta)
+      await this.vencimientosRepo.saveAlerta(alerta)
       v.marcarAlertaTraficoEnviada()
-      await this.vencimientoRepo.saveVencimiento(v)
+      await this.vencimientosRepo.saveVencimientos(v)
       alertasCreadas++
     }
 
     // Obtener auspicios que terminan hoy
-    const terminanHoy = await this.vencimientoRepo.findVencimientosTerminanHoy()
+    const terminanHoy = await this.vencimientosRepo.findVencimientosTerminanHoy()
     for (const v of terminanHoy) {
       const emisora = await this.emisoraRepo.findById(v.emisoraId)
       if (!emisora) continue
@@ -119,9 +119,9 @@ export class VencimientoHandler {
         operadorTraficoId: emisora.operadorTraficoId,
         operadorTraficoNombre: emisora.operadorTraficoNombre
       })
-      await this.vencimientoRepo.saveAlerta(alerta)
+      await this.vencimientosRepo.saveAlerta(alerta)
       v.marcarAlertaTraficoFinalEnviada()
-      await this.vencimientoRepo.saveVencimiento(v)
+      await this.vencimientosRepo.saveVencimientos(v)
       alertasCreadas++
     }
 
@@ -133,7 +133,7 @@ export class VencimientoHandler {
     let eliminados = 0
     let alertas = 0
 
-    const noIniciados = await this.vencimientoRepo.findVencimientosNoIniciados()
+    const noIniciados = await this.vencimientosRepo.findVencimientosNoIniciados()
     for (const v of noIniciados) {
       v.evaluar()
 
@@ -147,7 +147,7 @@ export class VencimientoHandler {
         }
       }
 
-      await this.vencimientoRepo.saveVencimiento(v)
+      await this.vencimientosRepo.saveVencimientos(v)
       alertas++
     }
 

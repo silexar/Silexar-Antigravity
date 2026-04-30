@@ -40,7 +40,7 @@ const ProductoFinancieroSchema = z.object({
   saldo: z.number().optional(),
   limite: z.number().optional(),
   tasaInteres: z.number().optional(),
-  fechaVencimiento: z.string().datetime().optional(),
+  fechaVencimientos: z.string().datetime().optional(),
   estado: z.enum(['activo', 'bloqueado', 'vencido', 'cancelado']).default('activo')
 })
 
@@ -67,7 +67,7 @@ export interface ProductoFinanciero {
   saldo?: number
   limite?: number
   tasaInteres?: number
-  fechaVencimiento?: string
+  fechaVencimientos?: string
   estado: 'activo' | 'bloqueado' | 'vencido' | 'cancelado'
   detalles?: Record<string, unknown>
 }

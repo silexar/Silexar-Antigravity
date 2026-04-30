@@ -1,9 +1,9 @@
-/**
+ï»¿/**
  * ? MOBILE: Vista de Aprobaciones de Contrato
  * 
- * Muestra los contratos pendientes de aprobación del ejecutivo.
+ * Muestra los contratos pendientes de aprobaciï¿½n del ejecutivo.
  * El aprobador puede aprobar, rechazar o solicitar cambios
- * directamente desde el móvil con notificaciones push.
+ * directamente desde el mï¿½vil con notificaciones push.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -44,21 +44,21 @@ interface AprobacionPendiente {
 const APROBACIONES_MOCK: AprobacionPendiente[] = [
   {
     id: 'apr-001', contratoNumero: 'SP-2025-0012', cliente: 'Banco Chile',
-    ejecutivo: 'María González', valor: 85000000, descuento: 15,
+    ejecutivo: 'Marï¿½a Gonzï¿½lez', valor: 85000000, descuento: 15,
     lineasPauta: 3, nivelRequerido: 'gerencia',
     motivo: 'Monto superior a $80M ($85.0M)',
     fechaSolicitud: '2025-03-01', urgente: true,
   },
   {
     id: 'apr-002', contratoNumero: 'SP-2025-0015', cliente: 'LATAM',
-    ejecutivo: 'Carlos Pérez', valor: 200000000, descuento: 20,
+    ejecutivo: 'Carlos Pï¿½rez', valor: 200000000, descuento: 20,
     lineasPauta: 5, nivelRequerido: 'directorio',
     motivo: 'Monto superior a $150M ($200.0M)',
     fechaSolicitud: '2025-03-01', urgente: true,
   },
   {
     id: 'apr-003', contratoNumero: 'SP-2025-0018', cliente: 'Cencosud',
-    ejecutivo: 'Ana López', valor: 45000000, descuento: 12,
+    ejecutivo: 'Ana Lï¿½pez', valor: 45000000, descuento: 12,
     lineasPauta: 2, nivelRequerido: 'jefatura',
     motivo: 'Descuento superior al 10% (12%)',
     fechaSolicitud: '2025-02-28', urgente: false,
@@ -78,7 +78,7 @@ export function MobileAprobacionView() {
 
   const handleAccion = async (id: string, accion: 'aprobar' | 'rechazar') => {
     setProcesando(id);
-    // Simular llamada API — en producción: POST /api/contratos/{id}/aprobar
+    // Simular llamada API ï¿½ en producciï¿½n: POST /api/contratos/{id}/aprobar
     ;
     await new Promise(resolve => setTimeout(resolve, 1200));
     setAprobaciones(prev => prev.filter(a => a.id !== id));
@@ -101,23 +101,23 @@ export function MobileAprobacionView() {
           <h3 className="font-bold text-lg text-[#69738c]">Aprobaciones</h3>
           <p className="text-xs text-[#9aa3b8]">
             {pendientes} pendiente{pendientes !== 1 ? 's' : ''}
-            {urgentes > 0 && <span className="text-red-500 font-bold"> · {urgentes} urgente{urgentes !== 1 ? 's' : ''}</span>}
+            {urgentes > 0 && <span className="text-[#9aa3b8] font-bold"> ï¿½ {urgentes} urgente{urgentes !== 1 ? 's' : ''}</span>}
           </p>
         </div>
       </div>
 
       {/* LISTA */}
       {aprobaciones.length === 0 ? (
-        <div className="text-center py-12 bg-emerald-50 rounded-2xl border border-[#bec8de30]">
-          <CheckCircle2 className="w-16 h-16 text-emerald-300 mx-auto" />
-          <p className="mt-4 text-lg font-black text-emerald-600">Todo al día</p>
-          <p className="text-sm text-emerald-500 mt-1">No hay aprobaciones pendientes</p>
+        <div className="text-center py-12 bg-[#6888ff]/5 rounded-2xl border border-[#bec8de30]">
+          <CheckCircle2 className="w-16 h-16 text-[#6888ff] mx-auto" />
+          <p className="mt-4 text-lg font-black text-[#6888ff]">Todo al dï¿½a</p>
+          <p className="text-sm text-[#6888ff] mt-1">No hay aprobaciones pendientes</p>
         </div>
       ) : (
         <div className="space-y-3">
           {aprobaciones.map(apr => (
             <div key={apr.id} className={`bg-[#dfeaff] rounded-2xl border overflow-hidden shadow-sm ${
-              apr.urgente ? 'border-red-200' : 'border-[#bec8de30]'
+              apr.urgente ? 'border-[#bec8de]' : 'border-[#bec8de30]'
             }`}>
               {/* HEADER CARD */}
               <button
@@ -125,22 +125,22 @@ export function MobileAprobacionView() {
                 className="w-full px-4 py-3 flex items-center gap-3 text-left"
               >
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                  apr.nivelRequerido === 'directorio' ? 'bg-red-100' :
-                  apr.nivelRequerido === 'gerencia' ? 'bg-amber-100' : 'bg-blue-100'
+                  apr.nivelRequerido === 'directorio' ? 'bg-[#dfeaff]' :
+                  apr.nivelRequerido === 'gerencia' ? 'bg-[#6888ff]/10' : 'bg-[#6888ff]/10'
                 }`}>
                   <Shield className={`w-4 h-4 ${
-                    apr.nivelRequerido === 'directorio' ? 'text-red-500' :
-                    apr.nivelRequerido === 'gerencia' ? 'text-amber-500' : 'text-blue-500'
+                    apr.nivelRequerido === 'directorio' ? 'text-[#9aa3b8]' :
+                    apr.nivelRequerido === 'gerencia' ? 'text-[#6888ff]' : 'text-[#6888ff]'
                   }`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-sm text-[#69738c] truncate">{apr.cliente}</p>
                     {apr.urgente && (
-                      <span className="px-1.5 py-0.5 bg-red-500 text-white text-[8px] font-bold rounded-full">URGENTE</span>
+                      <span className="px-1.5 py-0.5 bg-[#dfeaff]0 text-white text-[8px] font-bold rounded-full">URGENTE</span>
                     )}
                   </div>
-                  <p className="text-[10px] text-[#9aa3b8]">{apr.contratoNumero} · {apr.ejecutivo}</p>
+                  <p className="text-[10px] text-[#9aa3b8]">{apr.contratoNumero} ï¿½ {apr.ejecutivo}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-bold text-[#69738c]">{fmtMonto(apr.valor)}</p>
@@ -157,16 +157,16 @@ export function MobileAprobacionView() {
                   <div className="grid grid-cols-2 gap-2 pt-3">
                     <InfoChip icon={<DollarSign className="w-3 h-3" />} label="Valor" value={fmtMonto(apr.valor)} />
                     <InfoChip icon={<Building2 className="w-3 h-3" />} label="Descuento" value={`${apr.descuento}%`} />
-                    <InfoChip icon={<FileText className="w-3 h-3" />} label="Líneas" value={String(apr.lineasPauta)} />
+                    <InfoChip icon={<FileText className="w-3 h-3" />} label="Lï¿½neas" value={String(apr.lineasPauta)} />
                     <InfoChip icon={<User className="w-3 h-3" />} label="Ejecutivo" value={apr.ejecutivo.split(' ')[0]} />
                   </div>
 
                   {/* MOTIVO */}
-                  <div className="p-2 rounded-lg bg-amber-50 border border-[#bec8de30]">
-                    <p className="text-[10px] font-bold text-amber-700 flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3" /> Motivo de aprobación
+                  <div className="p-2 rounded-lg bg-[#6888ff]/5 border border-[#bec8de30]">
+                    <p className="text-[10px] font-bold text-[#6888ff] flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" /> Motivo de aprobaciï¿½n
                     </p>
-                    <p className="text-xs text-amber-600 mt-0.5">{apr.motivo}</p>
+                    <p className="text-xs text-[#6888ff] mt-0.5">{apr.motivo}</p>
                   </div>
 
                   {/* COMENTARIO */}
@@ -187,7 +187,7 @@ export function MobileAprobacionView() {
                     <button
                       onClick={() => handleAccion(apr.id, 'rechazar')}
                       disabled={procesando === apr.id}
-                      className="flex-1 py-3 bg-red-50 border border-[#bec8de30] text-red-600 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50"
+                      className="flex-1 py-3 bg-[#dfeaff] border border-[#bec8de30] text-[#9aa3b8] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.97] disabled:opacity-50"
                     >
                       {procesando === apr.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <ThumbsDown className="w-4 h-4" />}
                       Rechazar

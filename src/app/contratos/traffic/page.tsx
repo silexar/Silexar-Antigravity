@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📺 SILEXAR PULSE - Dashboard Traffic/Operaciones TIER 0
  * 
  * @description Vista para programadores y traffic con tracking
@@ -210,10 +210,10 @@ const MedioIcon: React.FC<{ tipo: string }> = ({ tipo }) => {
 const EstadoBadge: React.FC<{ estado: OrdenPauta['estado'] }> = ({ estado }) => {
   const config = {
     programado: { bg: 'bg-[#dfeaff]', text: 'text-[#69738c]', icon: Clock, label: 'Programado' },
-    en_ejecucion: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Play, label: 'En Ejecución' },
-    pausado: { bg: 'bg-amber-100', text: 'text-amber-700', icon: Pause, label: 'Pausado' },
-    completado: { bg: 'bg-emerald-100', text: 'text-emerald-700', icon: CheckCircle2, label: 'Completado' },
-    con_problemas: { bg: 'bg-red-100', text: 'text-red-700', icon: AlertTriangle, label: 'Con Problemas' }
+    en_ejecucion: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', icon: Play, label: 'En Ejecución' },
+    pausado: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', icon: Pause, label: 'Pausado' },
+    completado: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', icon: CheckCircle2, label: 'Completado' },
+    con_problemas: { bg: 'bg-[#dfeaff]', text: 'text-[#9aa3b8]', icon: AlertTriangle, label: 'Con Problemas' }
   }[estado];
 
   const Icon = config.icon;
@@ -227,10 +227,10 @@ const EstadoBadge: React.FC<{ estado: OrdenPauta['estado'] }> = ({ estado }) => 
 
 const MaterialBadge: React.FC<{ estado: OrdenPauta['estadoMaterial'] }> = ({ estado }) => {
   const config = {
-    pendiente: { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Material Pendiente' },
-    recibido: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Recibido' },
-    aprobado: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Aprobado' },
-    rechazado: { bg: 'bg-red-100', text: 'text-red-700', label: 'Rechazado' }
+    pendiente: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', label: 'Material Pendiente' },
+    recibido: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', label: 'Recibido' },
+    aprobado: { bg: 'bg-[#6888ff]/10', text: 'text-[#6888ff]', label: 'Aprobado' },
+    rechazado: { bg: 'bg-[#dfeaff]', text: 'text-[#9aa3b8]', label: 'Rechazado' }
   }[estado];
 
   return (
@@ -246,7 +246,7 @@ const AutorizacionBadge: React.FC<{
 }> = ({ estado }) => {
   if (!estado || estado === 'operativo') {
     return (
-      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">
+      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#6888ff]/10 text-[#6888ff]">
         <ShieldCheck className="w-3 h-3" />
         Autorizado
       </span>
@@ -255,7 +255,7 @@ const AutorizacionBadge: React.FC<{
   
   if (estado === 'pendiente_aprobacion') {
     return (
-      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700">
+      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#6888ff]/10 text-[#6888ff]">
         <ShieldAlert className="w-3 h-3" />
         Pendiente
       </span>
@@ -263,7 +263,7 @@ const AutorizacionBadge: React.FC<{
   }
   
   return (
-    <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
+    <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#dfeaff] text-[#9aa3b8]">
       <Lock className="w-3 h-3" />
       Bloqueado
     </span>
@@ -307,7 +307,7 @@ const OrdenRow: React.FC<{
       >
         <div className="flex items-center gap-4">
           {/* Medio */}
-          <div className={`p-2 rounded-lg ${orden.medioTipo === 'TV' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
+          <div className={`p-2 rounded-lg ${orden.medioTipo === 'TV' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#6888ff]/10 text-[#6888ff]'}`}>
             <MedioIcon tipo={orden.medioTipo} />
           </div>
           
@@ -336,9 +336,9 @@ const OrdenRow: React.FC<{
             <div className="h-2 bg-[#dfeaff] rounded-full overflow-hidden">
               <motion.div
                 className={`h-full rounded-full ${
-                  orden.estado === 'con_problemas' ? 'bg-red-500' :
-                  orden.porcentajeEjecucion >= 90 ? 'bg-emerald-500' :
-                  'bg-blue-500'
+                  orden.estado === 'con_problemas' ? 'bg-[#dfeaff]0' :
+                  orden.porcentajeEjecucion >= 90 ? 'bg-[#6888ff]/50' :
+                  'bg-[#6888ff]/50'
                 }`}
                 initial={{ width: 0 }}
                 animate={{ width: `${orden.porcentajeEjecucion}%` }}
@@ -386,16 +386,16 @@ const OrdenRow: React.FC<{
               </div>
               
               <div className="col-span-4 flex items-center gap-3 pt-2 border-t border-[#bec8de30]">
-                <button className="px-3 py-1.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 flex items-center gap-1">
+                <button className="px-3 py-1.5 rounded-lg bg-[#6888ff]/50 text-white text-sm font-medium hover:bg-[#6888ff] flex items-center gap-1">
                   <Eye className="w-4 h-4" /> Ver Programación
                 </button>
                 {orden.estadoMaterial === 'pendiente' && (
-                  <button className="px-3 py-1.5 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-600 flex items-center gap-1">
+                  <button className="px-3 py-1.5 rounded-lg bg-[#6888ff]/50 text-white text-sm font-medium hover:bg-[#6888ff] flex items-center gap-1">
                     <Upload className="w-4 h-4" /> Solicitar Material
                   </button>
                 )}
                 {orden.cunasRechazadas > 0 && (
-                  <button className="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 text-sm font-medium hover:bg-red-200 flex items-center gap-1">
+                  <button className="px-3 py-1.5 rounded-lg bg-[#dfeaff] text-[#9aa3b8] text-sm font-medium hover:bg-[#dfeaff] flex items-center gap-1">
                     <XCircle className="w-4 h-4" /> {orden.cunasRechazadas} Rechazadas
                   </button>
                 )}
@@ -440,26 +440,26 @@ export default function TrafficPage() {
   }, [ordenes, filtroEstado, filtroMedio, busqueda]);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-[#dfeaff] via-slate-50 to-[#5572ee]/30">
       {/* Header */}
       <div className="bg-[#dfeaff] border-b border-[#bec8de30] sticky top-0 z-20">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600">
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-[#6888ff] to-cyan-600">
                 <Radio className="w-7 h-7 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-[#69738c]">Traffic & Operaciones</h1>
                 <p className="text-[#69738c] text-sm flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-blue-500" />
+                  <Sparkles className="w-4 h-4 text-[#6888ff]" />
                   Tracking de pauta en tiempo real
                 </p>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
-              <button className="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium flex items-center gap-2 hover:bg-blue-600 transition-colors">
+              <button className="px-4 py-2 rounded-xl bg-[#6888ff]/50 text-white font-medium flex items-center gap-2 hover:bg-[#6888ff] transition-colors">
                 <RefreshCw className="w-4 h-4" />
                 Sincronizar
               </button>
@@ -480,32 +480,32 @@ export default function TrafficPage() {
             valor={resumen.cunasHoy}
             sufijo={`/${resumen.cunasProgramadas}`}
             icono={Play}
-            color="bg-gradient-to-br from-blue-500 to-blue-600 text-white"
+            color="bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white"
           />
           <ResumenCard
             titulo="En Ejecución"
             valor={resumen.ordenesEnEjecucion}
             icono={Radio}
-            color="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white"
+            color="bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white"
           />
           <ResumenCard
             titulo="Material Pendiente"
             valor={resumen.materialesPendientes}
             icono={Package}
-            color="bg-gradient-to-br from-amber-500 to-amber-600 text-white"
+            color="bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white"
           />
           <ResumenCard
             titulo="Con Problemas"
             valor={resumen.ordenesConProblemas}
             icono={AlertTriangle}
-            color="bg-gradient-to-br from-red-500 to-red-600 text-white"
+            color="bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white"
           />
           <ResumenCard
             titulo="Cumplimiento"
             valor={resumen.porcentajeCumplimiento.toFixed(1)}
             sufijo="%"
             icono={TrendingUp}
-            color="bg-gradient-to-br from-purple-500 to-purple-600 text-white"
+            color="bg-gradient-to-br from-[#6888ff] to-[#5572ee] text-white"
           />
         </div>
         

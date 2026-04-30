@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🎯 SILEXAR PULSE - Customer Success Hub
+ * ðŸŽ¯ SILEXAR PULSE - Customer Success Hub
  * Centro de éxito del cliente
  * 
  * @description Gestión de Customer Success:
@@ -16,9 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Heart,
   TrendingUp,
@@ -161,9 +160,9 @@ export function CustomerSuccess() {
   }
 
   const getHealthColor = (score: number) => {
-    if (score >= 80) return 'text-green-400 bg-green-500/20'
-    if (score >= 60) return 'text-yellow-400 bg-yellow-500/20'
-    return 'text-red-400 bg-red-500/20'
+    if (score >= 80) return 'text-[#6888ff] bg-[#6888ff]/20'
+    if (score >= 60) return 'text-[#6888ff] bg-[#6888ff]/20'
+    return 'text-[#6888ff] bg-[#6888ff]/20'
   }
 
   const filteredCustomers = customers.filter(c => {
@@ -183,8 +182,8 @@ export function CustomerSuccess() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-pink-500/30 border-t-pink-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Customer Success...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-pink-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Customer Success...</p>
         </div>
       </div>
     )
@@ -194,8 +193,8 @@ export function CustomerSuccess() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Heart className="w-5 h-5 text-pink-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Heart className="w-5 h-5 text-[#6888ff]" />
           Customer Success Hub
         </h3>
         <div className="flex items-center gap-2">
@@ -203,11 +202,10 @@ export function CustomerSuccess() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 text-sm rounded ${
-                filter === f ? 'bg-pink-600 text-white' : 'bg-slate-800 text-slate-400'
-              }`}
+              className={`px-3 py-1.5 text-sm rounded ${filter === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                }`}
             >
-              {f === 'all' ? 'Todos' : f === 'at-risk' ? '🚨 En Riesgo' : f === 'healthy' ? '✓ Sanos' : '⬆️ Upsell'}
+              {f === 'all' ? 'Todos' : f === 'at-risk' ? 'ðŸš¨ En Riesgo' : f === 'healthy' ? 'œ“ Sanos' : '¬†ï¸ Upsell'}
             </button>
           ))}
         </div>
@@ -219,54 +217,54 @@ export function CustomerSuccess() {
           <p className="text-2xl font-bold">{avgHealth}%</p>
           <p className="text-xs opacity-80">Health Score Prom</p>
         </div>
-        <div className="p-4 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{atRiskCount}</p>
-          <p className="text-xs text-slate-400">En Riesgo</p>
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{atRiskCount}</p>
+          <p className="text-xs text-[#9aa3b8]">En Riesgo</p>
         </div>
-        <div className="p-4 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{upsellReady}</p>
-          <p className="text-xs text-slate-400">Listos para Upsell</p>
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{upsellReady}</p>
+          <p className="text-xs text-[#9aa3b8]">Listos para Upsell</p>
         </div>
-        <div className="p-4 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">{npsData[0]?.score || 0}</p>
-          <p className="text-xs text-slate-400">NPS Enterprise</p>
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{npsData[0]?.score || 0}</p>
+          <p className="text-xs text-[#9aa3b8]">NPS Enterprise</p>
         </div>
-        <div className="p-4 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">{onboarding.avgDaysToComplete}d</p>
-          <p className="text-xs text-slate-400">Avg Onboarding</p>
+        <div className="p-4 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{onboarding.avgDaysToComplete}d</p>
+          <p className="text-xs text-[#9aa3b8]">Avg Onboarding</p>
         </div>
       </div>
 
       {/* Onboarding Progress */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-cyan-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#6888ff]" />
           Onboarding Pipeline
         </h4>
         <div className="grid grid-cols-4 gap-3">
-          <div className="p-3 bg-slate-800/50 rounded text-center">
-            <p className="text-xl font-bold text-white">{onboarding.totalOnboarding}</p>
-            <p className="text-xs text-slate-400">Total</p>
+          <div className="p-3 bg-[#dfeaff]/50 rounded text-center">
+            <p className="text-xl font-bold text-[#69738c]">{onboarding.totalOnboarding}</p>
+            <p className="text-xs text-[#9aa3b8]">Total</p>
           </div>
-          <div className="p-3 bg-green-500/10 rounded text-center">
-            <p className="text-xl font-bold text-green-400">{onboarding.completed}</p>
-            <p className="text-xs text-slate-400">Completados</p>
+          <div className="p-3 bg-[#6888ff]/10 rounded text-center">
+            <p className="text-xl font-bold text-[#6888ff]">{onboarding.completed}</p>
+            <p className="text-xs text-[#9aa3b8]">Completados</p>
           </div>
-          <div className="p-3 bg-blue-500/10 rounded text-center">
-            <p className="text-xl font-bold text-blue-400">{onboarding.inProgress}</p>
-            <p className="text-xs text-slate-400">En Progreso</p>
+          <div className="p-3 bg-[#6888ff]/10 rounded text-center">
+            <p className="text-xl font-bold text-[#6888ff]">{onboarding.inProgress}</p>
+            <p className="text-xs text-[#9aa3b8]">En Progreso</p>
           </div>
-          <div className="p-3 bg-red-500/10 rounded text-center">
-            <p className="text-xl font-bold text-red-400">{onboarding.stuck}</p>
-            <p className="text-xs text-slate-400">Atascados</p>
+          <div className="p-3 bg-[#6888ff]/10 rounded text-center">
+            <p className="text-xl font-bold text-[#6888ff]">{onboarding.stuck}</p>
+            <p className="text-xs text-[#9aa3b8]">Atascados</p>
           </div>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Customer Health List */}
       <div className="space-y-3">
         {filteredCustomers.map(customer => (
-          <NeuromorphicCard key={customer.tenantId} variant="embossed" className="p-4">
+          <NeuCard key={customer.tenantId} style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getHealthColor(customer.healthScore)}`}>
@@ -274,17 +272,17 @@ export function CustomerSuccess() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{customer.tenantName}</span>
-                    {customer.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400" />}
-                    {customer.trend === 'down' && <TrendingDown className="w-4 h-4 text-red-400" />}
+                    <span className="text-[#69738c] font-medium">{customer.tenantName}</span>
+                    {customer.trend === 'up' && <TrendingUp className="w-4 h-4 text-[#6888ff]" />}
+                    {customer.trend === 'down' && <TrendingDown className="w-4 h-4 text-[#6888ff]" />}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                  <div className="flex items-center gap-3 text-xs text-[#9aa3b8] mt-1">
                     <span className="flex items-center gap-1">
                       <Star className="w-3 h-3" /> NPS: {customer.npsScore}
                     </span>
                     <span>Uso: {customer.usageLevel}</span>
                     {customer.openTickets > 0 && (
-                      <span className="text-yellow-400">{customer.openTickets} tickets</span>
+                      <span className="text-[#6888ff]">{customer.openTickets} tickets</span>
                     )}
                   </div>
                 </div>
@@ -293,15 +291,15 @@ export function CustomerSuccess() {
               <div className="flex items-center gap-4">
                 {customer.riskFactors.length > 0 && (
                   <div className="text-right">
-                    <span className="text-xs text-red-400 flex items-center gap-1">
+                    <span className="text-xs text-[#6888ff] flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
                       {customer.riskFactors.length} factores de riesgo
                     </span>
                   </div>
                 )}
                 {customer.upsellPotential >= 60 && (
-                  <div className="p-2 bg-green-500/10 rounded">
-                    <span className="text-xs text-green-400 flex items-center gap-1">
+                  <div className="p-2 bg-[#6888ff]/10 rounded">
+                    <span className="text-xs text-[#6888ff] flex items-center gap-1">
                       <ArrowUp className="w-3 h-3" />
                       Upsell {customer.upsellPotential}%
                     </span>
@@ -314,27 +312,27 @@ export function CustomerSuccess() {
               <div className="mt-3 pt-3 border-t border-slate-700 grid grid-cols-2 gap-4">
                 {customer.riskFactors.length > 0 && (
                   <div>
-                    <p className="text-xs text-red-400 mb-1">⚠️ Riesgos:</p>
+                    <p className="text-xs text-[#6888ff] mb-1">š ï¸ Riesgos:</p>
                     <div className="flex flex-wrap gap-1">
                       {customer.riskFactors.map((r, i) => (
-                        <span key={r} className="text-xs px-2 py-0.5 bg-red-500/20 text-red-300 rounded">{r}</span>
+                        <span key={r} className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">{r}</span>
                       ))}
                     </div>
                   </div>
                 )}
                 {customer.opportunities.length > 0 && (
                   <div>
-                    <p className="text-xs text-green-400 mb-1">💰 Oportunidades:</p>
+                    <p className="text-xs text-[#6888ff] mb-1">ðŸ’° Oportunidades:</p>
                     <div className="flex flex-wrap gap-1">
                       {customer.opportunities.map((o, i) => (
-                        <span key={o} className="text-xs px-2 py-0.5 bg-green-500/20 text-green-300 rounded">{o}</span>
+                        <span key={o} className="text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded">{o}</span>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
             )}
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

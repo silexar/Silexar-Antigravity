@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ⚡ DESKTOP WIZARD EXPRESS — Creación Rápida de Contratos IA
  *
  * Wizard compacto de 3 pasos para desktop que permite
@@ -256,10 +256,10 @@ export function WizardExpressContainer(
             </p>
             <button
               onClick={copyNumero}
-              className="p-2 rounded-xl bg-[#6888ff25] hover:bg-indigo-200 transition"
+              className="p-2 rounded-xl bg-[#6888ff25] hover:bg-[#6888ff]/20 transition"
             >
               {copiedNum
-                ? <Check className="w-5 h-5 text-emerald-500" />
+                ? <Check className="w-5 h-5 text-[#6888ff]" />
                 : <Copy className="w-5 h-5 text-[#6888ff]" />}
             </button>
           </div>
@@ -267,8 +267,8 @@ export function WizardExpressContainer(
         <div
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${
             confirmacion.estado === "activo"
-              ? "bg-emerald-50 text-emerald-700"
-              : "bg-amber-50 text-amber-700"
+              ? "bg-[#6888ff]/5 text-[#6888ff]"
+              : "bg-[#6888ff]/5 text-[#6888ff]"
           }`}
         >
           {confirmacion.estado === "activo"
@@ -289,7 +289,7 @@ export function WizardExpressContainer(
           )}
           <button
             onClick={onClose}
-            className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center gap-2"
+            className="px-8 py-3 bg-[#6888ff] text-white rounded-xl font-bold text-sm hover:bg-[#6888ff]/10 transition flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" /> Listo
           </button>
@@ -326,9 +326,9 @@ export function WizardExpressContainer(
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                   i === stepIndex
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-[#6888ff] text-white"
                     : i < stepIndex
-                    ? "bg-emerald-500 text-white"
+                    ? "bg-[#6888ff]/50 text-white"
                     : "bg-[#dfeaff] text-[#9aa3b8]"
                 }`}
               >
@@ -344,7 +344,7 @@ export function WizardExpressContainer(
               {i < 2 && (
                 <div
                   className={`w-8 h-0.5 ${
-                    i < stepIndex ? "bg-emerald-400" : "bg-[#dfeaff]"
+                    i < stepIndex ? "bg-[#6888ff]/40" : "bg-[#dfeaff]"
                   }`}
                 />
               )}
@@ -373,8 +373,8 @@ export function WizardExpressContainer(
                   value={contrato.cliente.nombre}
                   badge={contrato.cliente.esNuevo ? "Nuevo" : "Existente"}
                   badgeColor={contrato.cliente.esNuevo
-                    ? "bg-amber-100 text-amber-700"
-                    : "bg-emerald-100 text-emerald-700"}
+                    ? "bg-[#6888ff]/10 text-[#6888ff]"
+                    : "bg-[#6888ff]/10 text-[#6888ff]"}
                 />
                 <DesktopField
                   label="Tipo contrato"
@@ -413,7 +413,7 @@ export function WizardExpressContainer(
             )}
 
             {lineas.length > 0 && (
-              <div className="p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-[#6888ff20]">
+              <div className="p-3 rounded-xl bg-gradient-to-r from-[#6888ff] to-[#5572ee] border border-[#6888ff20]">
                 <p className="text-sm font-bold text-[#6888ff]">
                   {lineas.length} línea{lineas.length > 1 ? "s" : ""}{" "}
                   de pauta detectada{lineas.length > 1 ? "s" : ""}
@@ -430,17 +430,17 @@ export function WizardExpressContainer(
             <div
               className={`p-4 rounded-2xl border ${
                 datos.confianzaGlobal >= 85
-                  ? "bg-emerald-50 border-emerald-200"
+                  ? "bg-[#6888ff]/5 border-[#bec8de]"
                   : datos.confianzaGlobal >= 70
-                  ? "bg-amber-50 border-amber-200"
-                  : "bg-red-50 border-red-200"
+                  ? "bg-[#6888ff]/5 border-[#bec8de]"
+                  : "bg-[#dfeaff] border-[#bec8de]"
               }`}
             >
               <Sparkles
                 className={`w-6 h-6 ${
                   datos.confianzaGlobal >= 85
-                    ? "text-emerald-500"
-                    : "text-amber-500"
+                    ? "text-[#6888ff]"
+                    : "text-[#6888ff]"
                 }`}
               />
               <p className="text-3xl font-black mt-2">
@@ -448,31 +448,31 @@ export function WizardExpressContainer(
               </p>
               <p className="text-xs text-[#9aa3b8]">Confianza IA</p>
               {datos.lineasClonadas && (
-                <span className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">
+                <span className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-[#6888ff]/10 text-[#6888ff] text-[10px] font-bold rounded-full">
                   <History className="w-3 h-3" /> Desde historial
                 </span>
               )}
             </div>
 
             {datos.camposFaltantes.length > 0 && (
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
-                <p className="text-xs font-bold text-amber-700 flex items-center gap-1">
+              <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de]">
+                <p className="text-xs font-bold text-[#6888ff] flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3" /> Campos pendientes
                 </p>
-                <p className="text-[10px] text-amber-600 mt-1">
+                <p className="text-[10px] text-[#6888ff] mt-1">
                   {datos.camposFaltantes.join(", ")}
                 </p>
               </div>
             )}
 
             {contrato.aprobacionRequerida && (
-              <div className="p-3 rounded-xl bg-purple-50 border border-purple-200">
-                <p className="text-xs font-bold text-purple-700 flex items-center gap-1">
+              <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de]">
+                <p className="text-xs font-bold text-[#6888ff] flex items-center gap-1">
                   <Shield className="w-3 h-3" /> Aprobación:{" "}
                   {contrato.nivelAprobacion}
                 </p>
                 {contrato.motivoAprobacion && (
-                  <p className="text-[10px] text-purple-500 mt-1">
+                  <p className="text-[10px] text-[#6888ff] mt-1">
                     {contrato.motivoAprobacion}
                   </p>
                 )}
@@ -497,8 +497,8 @@ export function WizardExpressContainer(
                     <span
                       className={`font-bold ${
                         c.confianza >= 85
-                          ? "text-emerald-500"
-                          : "text-amber-500"
+                          ? "text-[#6888ff]"
+                          : "text-[#6888ff]"
                       }`}
                     >
                       {c.confianza}%
@@ -513,7 +513,7 @@ export function WizardExpressContainer(
           <div className="col-span-3 flex justify-end">
             <button
               onClick={() => setStep("lineas")}
-              className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-indigo-200"
+              className="px-8 py-3 bg-[#6888ff] text-white rounded-xl font-bold flex items-center gap-2 hover:bg-[#6888ff]/10 transition shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-indigo-200"
             >
               Revisar Líneas de Pauta <ArrowRight className="w-4 h-4" />
             </button>
@@ -534,7 +534,7 @@ export function WizardExpressContainer(
             </p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-[#6888ff] text-white rounded-xl text-sm font-bold flex items-center gap-1.5 hover:bg-[#6888ff]/10 transition"
             >
               <Plus className="w-4 h-4" /> Agregar emisora
             </button>
@@ -552,7 +552,7 @@ export function WizardExpressContainer(
                 </p>
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition"
+                  className="mt-4 px-6 py-3 bg-[#6888ff] text-white rounded-xl font-bold hover:bg-[#6888ff]/10 transition"
                 >
                   <Plus className="w-4 h-4 inline mr-1" /> Agregar emisora
                 </button>
@@ -634,7 +634,7 @@ export function WizardExpressContainer(
                                       l,
                                       l.cantidad + 1,
                                     )}
-                                  className="w-6 h-6 rounded bg-indigo-500 text-white text-xs font-bold"
+                                  className="w-6 h-6 rounded bg-[#6888ff]/50 text-white text-xs font-bold"
                                 >
                                   +
                                 </button>
@@ -665,7 +665,7 @@ export function WizardExpressContainer(
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-right font-bold text-emerald-600">
+                        <td className="px-4 py-3 text-right font-bold text-[#6888ff]">
                           {fmt(l.totalNeto)}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -679,9 +679,9 @@ export function WizardExpressContainer(
                             </button>
                             <button
                               onClick={() => eliminarLinea(l.id)}
-                              className="p-1 rounded hover:bg-red-50"
+                              className="p-1 rounded hover:bg-[#dfeaff]"
                             >
-                              <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                              <Trash2 className="w-3.5 h-3.5 text-[#9aa3b8]" />
                             </button>
                           </div>
                         </td>
@@ -714,7 +714,7 @@ export function WizardExpressContainer(
             <button
               onClick={() => setStep("confirmar")}
               disabled={lineas.length === 0}
-              className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-indigo-200 disabled:opacity-50"
+              className="px-8 py-3 bg-[#6888ff] text-white rounded-xl font-bold flex items-center gap-2 hover:bg-[#6888ff]/10 transition shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-indigo-200 disabled:opacity-50"
             >
               Confirmar y Enviar <ArrowRight className="w-4 h-4" />
             </button>
@@ -838,7 +838,7 @@ export function WizardExpressContainer(
                   <span className="text-xs text-[#9aa3b8]">
                     {l.cantidad} frases
                   </span>
-                  <span className="text-sm font-bold text-emerald-600">
+                  <span className="text-sm font-bold text-[#6888ff]">
                     {fmt(l.totalNeto)}
                   </span>
                 </div>
@@ -848,16 +848,16 @@ export function WizardExpressContainer(
 
           <div className="space-y-4">
             {contrato.aprobacionRequerida && (
-              <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
-                <Shield className="w-5 h-5 text-purple-500" />
-                <p className="text-sm font-bold text-purple-700 mt-2">
+              <div className="p-4 rounded-2xl bg-[#6888ff]/5 border border-[#bec8de]">
+                <Shield className="w-5 h-5 text-[#6888ff]" />
+                <p className="text-sm font-bold text-[#6888ff] mt-2">
                   Requiere aprobación
                 </p>
-                <p className="text-xs text-purple-500">
+                <p className="text-xs text-[#6888ff]">
                   {contrato.nivelAprobacion}
                 </p>
                 {contrato.motivoAprobacion && (
-                  <p className="text-[10px] text-purple-400 mt-1">
+                  <p className="text-[10px] text-[#6888ff] mt-1">
                     {contrato.motivoAprobacion}
                   </p>
                 )}
@@ -865,9 +865,9 @@ export function WizardExpressContainer(
             )}
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-500" />
-                <p className="text-xs text-red-600 font-medium">{error}</p>
+              <div className="p-3 rounded-xl bg-[#dfeaff] border border-[#bec8de] flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-[#9aa3b8]" />
+                <p className="text-xs text-[#9aa3b8] font-medium">{error}</p>
               </div>
             )}
 
@@ -875,7 +875,7 @@ export function WizardExpressContainer(
               <button
                 onClick={handleConfirmar}
                 disabled={confirming}
-                className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-green-700 transition disabled:opacity-70 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-emerald-200"
+                className="w-full py-4 bg-gradient-to-r from-[#6888ff] to-[#5572ee] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:from-[#6888ff] hover:to-[#5572ee] transition disabled:opacity-70 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff] shadow-emerald-200"
               >
                 {confirming
                   ? (
@@ -968,13 +968,13 @@ function catIconSmall(c: string) {
 function catColor(c: string) {
   switch (c) {
     case "Radio":
-      return "bg-gradient-to-br from-red-500 to-pink-500";
+      return "bg-gradient-to-br from-[#6888ff] to-pink-500";
     case "Televisión":
-      return "bg-gradient-to-br from-blue-500 to-indigo-500";
+      return "bg-gradient-to-br from-[#6888ff] to-[#5572ee]";
     case "Digital":
-      return "bg-gradient-to-br from-emerald-500 to-teal-500";
+      return "bg-gradient-to-br from-[#6888ff] to-teal-500";
     case "Prensa":
-      return "bg-gradient-to-br from-amber-500 to-orange-500";
+      return "bg-gradient-to-br from-[#6888ff] to-[#5572ee]";
     default:
       return "bg-[#69738c]";
   }
@@ -982,13 +982,13 @@ function catColor(c: string) {
 function dispColor(s: string) {
   switch (s) {
     case "disponible":
-      return "text-emerald-600";
+      return "text-[#6888ff]";
     case "limitado":
-      return "text-amber-600";
+      return "text-[#6888ff]";
     case "saturado":
-      return "text-orange-600";
+      return "text-[#6888ff]";
     case "no_disponible":
-      return "text-red-600";
+      return "text-[#9aa3b8]";
     default:
       return "text-[#9aa3b8]";
   }

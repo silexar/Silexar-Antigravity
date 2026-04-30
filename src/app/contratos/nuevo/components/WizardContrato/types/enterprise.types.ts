@@ -204,7 +204,7 @@ export interface PrediccionRenovacion {
   contratoId: string;
   numeroContrato: string;
   clienteNombre: string;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   probabilidadRenovacion: number; // 0-100
   factoresPositivos: string[];
   factoresNegativos: string[];

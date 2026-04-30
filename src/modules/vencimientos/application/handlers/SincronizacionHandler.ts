@@ -36,7 +36,7 @@ export class SincronizacionHandler {
         const result = await this.contratoSync.sincronizacionCompleta(command.payload.cupoComercialId, command.payload.contratoId)
         return { success: result.success, cuposSincronizados: result.cuposSincronizados }
       }
-      const result = command.payload.direccion === 'contrato_a_vencimiento'
+      const result = command.payload.direccion === 'contrato_a_vencimientos'
         ? await this.contratoSync.sincronizarDesdeContrato({
             contratoId: command.payload.contratoId,
             numeroContrato: '', clienteId: '', clienteNombre: '',

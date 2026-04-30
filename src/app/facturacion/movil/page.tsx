@@ -21,7 +21,7 @@ interface Factura {
   tipoDocumento: string
   razonSocialReceptor: string
   rutReceptor: string
-  fechaVencimiento: string
+  fechaVencimientos: string
   total: number
   montoPagado: number
   estado: 'pendiente' | 'pagada' | 'vencida' | 'anulada'

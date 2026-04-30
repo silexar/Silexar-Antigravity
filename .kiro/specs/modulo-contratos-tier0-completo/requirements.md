@@ -114,7 +114,7 @@ Quiero predicciones automáticas de renovación de contratos
 Para planificar estrategias de retención proactivas
 
 Criterios de Aceptación:
-- Análisis automático 30 días antes del vencimiento
+- Análisis automático 30 días antes del vencimientos
 - Score de probabilidad de renovación con factores explicativos
 - Recomendaciones de acción específicas por contrato
 - Alertas escalonadas: 30, 21, 14, 7 días antes
@@ -199,7 +199,7 @@ interface PlanPagosProps {
   cuotas: CuotaPago[]
   fechasPago: Date[]
   estadoPagos: EstadoPago[]
-  alertasVencimiento: AlertaVencimiento[]
+  alertasVencimientos: AlertaVencimientos[]
 }
 ```
 
@@ -254,7 +254,7 @@ interface AlertaSeguimientoProps {
   prioridad: PrioridadAlerta
   mensaje: string
   fechaCreacion: Date
-  fechaVencimiento: Date
+  fechaVencimientos: Date
   responsables: string[]
   acciones: AccionAlerta[]
 }

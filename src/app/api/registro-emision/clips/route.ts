@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { withApiRoute } from '@/lib/api/with-api-route';
 import { apiSuccess, apiError, apiServerError } from '@/lib/api/response';
 import { logger } from '@/lib/observability';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
 
 import {
   DrizzleClipEvidenciaRepository,
@@ -65,7 +66,12 @@ export const POST = withApiRoute(
 
       return apiSuccess({ id }, 201, { message: 'Clip creado exitosamente' }) as unknown as NextResponse;
     } catch (error) {
-      logger.error('Error creando clip', error instanceof Error ? error : undefined, { module: 'registro-emision', action: 'POST_CLIP' });
+      logger.error('Error creando clip', error instanceof Error ? error : undefined, { module: 'registro-emision', action: 'POST_CLIP', userId: ctx.userId });
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al crear clip de evidencia',
+        metadata: { module: 'registro-emision', action: 'POST_CLIP' }
+      });
       return apiServerError() as unknown as NextResponse;
     }
   }

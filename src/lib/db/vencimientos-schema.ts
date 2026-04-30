@@ -186,8 +186,8 @@ export const vencimientos = pgTable('vencimientos', {
   tenantIdx: index('vencimientos_tenant_idx').on(table.tenantId),
   inventarioIdx: index('vencimientos_inventario_idx').on(table.inventarioId),
   fechaIdx: index('vencimientos_fecha_idx').on(table.fecha),
-  estadoIdx: index('venimientos_estado_idx').on(table.estado),
-  tenantFechaIdx: index('venimientos_tenant_fecha_idx').on(table.tenantId, table.fecha)
+  estadoIdx: index('vencimientos_estado_idx').on(table.estado),
+  tenantFechaIdx: index('vencimientos_tenant_fecha_idx').on(table.tenantId, table.fecha)
 }));
 
 // ═══════════════════════════════════════════════════════════════
@@ -233,6 +233,293 @@ export const auspicios = pgTable('auspicios', {
 }));
 
 // ═══════════════════════════════════════════════════════════════
+// TABLA: VENCIMIENTOS AUSPICIO (Tracking de vencimientos)
+// ═══════════════════════════════════════════════════════════════
+
+export const vencimientosAuspicio = pgTable('vencimientos_auspicio', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  codigo: varchar('codigo', { length: 30 }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  programaNombre: varchar('programa_nombre', { length: 255 }),
+  clienteId: uuid('cliente_id').notNull(),
+  clienteNombre: varchar('cliente_nombre', { length: 255 }).notNull(),
+  contratoId: uuid('contrato_id').references(() => contratos.id),
+  contratoCodigo: varchar('contrato_codigo', { length: 30 }),
+  tipo: varchar('tipo', { length: 50 }).default('auspicio_programa').notNull(),
+  fechaInicio: date('fecha_inicio').notNull(),
+  fechaVencimientos: date('fecha_vencimientos').notNull(),
+  nivel: varchar('nivel', { length: 20 }).default('verde').notNull(),
+  estado: varchar('estado', { length: 20 }).default('ACTIVO').notNull(),
+  diasRestantes: integer('dias_restantes').default(0),
+  horasCountdown: integer('horas_countdown'),
+  valorContrato: decimal('valor_contrato', { precision: 14, scale: 2 }),
+  montoPagado: decimal('monto_pagado', { precision: 14, scale: 2 }).default('0'),
+  montoPendiente: decimal('monto_pendiente', { precision: 14, scale: 2 }).default('0'),
+  accionesData: text('acciones_data'), // JSON array de acciones
+  notificacion48hEnviada: boolean('notificacion_48h_enviada').default(false),
+  notificacion7diasEnviada: boolean('notificacion_7dias_enviada').default(false),
+  alertaTraficoEnviada: boolean('alerta_trafico_enviada').default(false),
+  alertaTraficoFinalEnviada: boolean('alerta_trafico_final_enviada').default(false),
+  ejecutivoId: uuid('ejecutivo_id').references(() => users.id),
+  ejecutivoNombre: varchar('ejecutivo_nombre', { length: 255 }),
+  notas: text('notas'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  version: integer('version').default(1).notNull(),
+}, (table) => ({
+  tenantIdx: index('venc_auspicio_tenant_idx').on(table.tenantId),
+  programaIdx: index('venc_auspicio_programa_idx').on(table.programaId),
+  fechaIdx: index('venc_auspicio_fecha_idx').on(table.fechaVencimientos),
+  estadoIdx: index('venc_auspicio_estado_idx').on(table.estado),
+  clienteIdx: index('venc_auspicio_cliente_idx').on(table.clienteId),
+  ejecutivoIdx: index('venc_auspicio_ejecutivo_idx').on(table.ejecutivoId),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: ALERTAS PROGRAMADOR
+// ═══════════════════════════════════════════════════════════════
+
+export const alertasProgramador = pgTable('alertas_programador', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  programaNombre: varchar('programa_nombre', { length: 255 }),
+  cupoComercialId: uuid('cupo_comercial_id').notNull(),
+  clienteNombre: varchar('cliente_nombre', { length: 255 }).notNull(),
+  tipo: varchar('tipo', { length: 50 }).notNull(),
+  titulo: varchar('titulo', { length: 255 }).notNull(),
+  mensaje: text('mensaje').notNull(),
+  prioridad: varchar('prioridad', { length: 20 }).default('media').notNull(),
+  destinatarioId: uuid('destinatario_id').references(() => users.id).notNull(),
+  destinatarioNombre: varchar('destinatario_nombre', { length: 255 }),
+  canalesNotificacion: text('canales_notificacion'), // JSON array
+  estadoConfirmacion: varchar('estado_confirmacion', { length: 20 }).default('pendiente'),
+  comentarioConfirmacion: text('comentario_confirmacion'),
+  leida: boolean('leida').default(false),
+  fechaLectura: timestamp('fecha_lectura'),
+  fechaExpiracion: timestamp('fecha_expiracion'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  version: integer('version').default(1).notNull(),
+}, (table) => ({
+  tenantIdx: index('alertas_prog_tenant_idx').on(table.tenantId),
+  destinatarioIdx: index('alertas_prog_dest_idx').on(table.destinatarioId),
+  estadoIdx: index('alertas_prog_estado_idx').on(table.estadoConfirmacion),
+  prioridadIdx: index('alertas_prog_prio_idx').on(table.prioridad),
+  tipoIdx: index('alertas_prog_tipo_idx').on(table.tipo),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: SOLICITUDES EXTENSIÓN
+// ═══════════════════════════════════════════════════════════════
+
+export const solicitudesExtension = pgTable('solicitudes_extension', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  cupoComercialId: uuid('cupo_comercial_id').notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  clienteId: uuid('cliente_id').notNull(),
+  clienteNombre: varchar('cliente_nombre', { length: 255 }).notNull(),
+  ejecutivoId: uuid('ejecutivo_id').references(() => users.id).notNull(),
+  ejecutivoNombre: varchar('ejecutivo_nombre', { length: 255 }),
+  fechaInicioOriginal: date('fecha_inicio_original').notNull(),
+  fechaFinOriginal: date('fecha_fin_original').notNull(),
+  fechaInicioSolicitada: date('fecha_inicio_solicitada').notNull(),
+  fechaFinSolicitada: date('fecha_fin_solicitada').notNull(),
+  motivoSolicitud: text('motivo_solicitud').notNull(),
+  nivelAprobacion: varchar('nivel_aprobacion', { length: 50 }).default('automatico').notNull(),
+  aprobadorId: uuid('aprobador_id').references(() => users.id),
+  aprobadorNombre: varchar('aprobador_nombre', { length: 255 }),
+  extensionesPrevias: integer('extensiones_previas').default(0),
+  estado: varchar('estado', { length: 20 }).default('pendiente').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  version: integer('version').default(1).notNull(),
+}, (table) => ({
+  tenantIdx: index('ext_tenant_idx').on(table.tenantId),
+  cupoIdx: index('ext_cupo_idx').on(table.cupoComercialId),
+  programaIdx: index('ext_programa_idx').on(table.programaId),
+  estadoIdx: index('ext_estado_idx').on(table.estado),
+  clienteIdx: index('ext_cliente_idx').on(table.clienteId),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: LISTAS DE ESPERA
+// ═══════════════════════════════════════════════════════════════
+
+export const listasEspera = pgTable('listas_espera', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  programaNombre: varchar('programa_nombre', { length: 255 }),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  emisoraNombre: varchar('emisora_nombre', { length: 255 }),
+  clientesData: text('clientes_data'), // JSON array de clientes en espera
+  maxEspera: integer('max_espera').default(20).notNull(),
+  notificacionAutomatica: boolean('notificacion_automatica').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  version: integer('version').default(1).notNull(),
+}, (table) => ({
+  tenantIdx: index('lista_espera_tenant_idx').on(table.tenantId),
+  programaIdx: index('lista_espera_programa_idx').on(table.programaId),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: TANDAS COMERCIALES
+// ═══════════════════════════════════════════════════════════════
+
+export const tandasComerciales = pgTable('tandas_comerciales', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  nombre: varchar('nombre', { length: 100 }).notNull(),
+  horaInicio: time('hora_inicio').notNull(),
+  horaFin: time('hora_fin').notNull(),
+  factorMultiplicador: decimal('factor_multiplicador', { precision: 4, scale: 2 }).default('1.00'),
+  audienciaPromedio: integer('audiencia_promedio'),
+  ratingPromedio: decimal('rating_promedio', { precision: 4, scale: 2 }),
+  tarifasData: text('tarifas_data'), // JSON array de tarifas por duración
+  activo: boolean('activo').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index('tandas_tenant_idx').on(table.tenantId),
+  emisoraIdx: index('tandas_emisora_idx').on(table.emisoraId),
+  nombreIdx: index('tandas_nombre_idx').on(table.nombre),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: SEÑALES ESPECIALES
+// ═══════════════════════════════════════════════════════════════
+
+export const senalesEspeciales = pgTable('senales_especiales', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  tipo: varchar('tipo', { length: 50 }).notNull(),
+  nombre: varchar('nombre', { length: 255 }).notNull(),
+  horarios: text('horarios'), // JSON array de strings
+  duracionSegundos: integer('duracion_segundos'),
+  formato: text('formato'),
+  precioMensual: decimal('precio_mensual', { precision: 12, scale: 2 }),
+  exclusividad: integer('exclusividad').default(1),
+  estado: varchar('estado', { length: 20 }).default('disponible'),
+  anuncianteId: uuid('anunciante_id').references(() => anunciantes.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index('senales_tenant_idx').on(table.tenantId),
+  emisoraIdx: index('senales_emisora_idx').on(table.emisoraId),
+  tipoIdx: index('senales_tipo_idx').on(table.tipo),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: EXCLUSIVIDADES RUBRO
+// ═══════════════════════════════════════════════════════════════
+
+export const exclusividadesRubro = pgTable('exclusividades_rubro', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  rubro: varchar('rubro', { length: 100 }).notNull(),
+  tipoRestriccion: varchar('tipo_restriccion', { length: 50 }).default('unico').notNull(),
+  maximoClientes: integer('maximo_clientes').default(1),
+  separacionMinimaMinutos: integer('separacion_minima_minutos').default(0),
+  activo: boolean('activo').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index('excl_tenant_idx').on(table.tenantId),
+  programaIdx: index('excl_programa_idx').on(table.programaId),
+  rubroIdx: index('excl_rubro_idx').on(table.rubro),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: CONFIGURACIÓN TARIFA
+// ═══════════════════════════════════════════════════════════════
+
+export const configuracionTarifa = pgTable('configuracion_tarifa', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  tipoAuspicio: varchar('tipo_auspicio', { length: 50 }).notNull(),
+  duracionSegundos: integer('duracion_segundos'),
+  precioBase: decimal('precio_base', { precision: 12, scale: 2 }).notNull(),
+  factorTemporada: decimal('factor_temporada', { precision: 4, scale: 2 }).default('1.00'),
+  factorRating: decimal('factor_rating', { precision: 4, scale: 2 }).default('1.00'),
+  factorOcupacion: decimal('factor_ocupacion', { precision: 4, scale: 2 }).default('1.00'),
+  descuentoClienteNuevo: decimal('descuento_cliente_nuevo', { precision: 4, scale: 2 }).default('0.00'),
+  descuentoRenovacion: decimal('descuento_renovacion', { precision: 4, scale: 2 }).default('0.00'),
+  vigenciaDesde: date('vigencia_desde'),
+  vigenciaHasta: date('vigencia_hasta'),
+  activo: boolean('activo').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index('tarifa_tenant_idx').on(table.tenantId),
+  programaIdx: index('tarifa_programa_idx').on(table.programaId),
+  tipoIdx: index('tarifa_tipo_idx').on(table.tipoAuspicio),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: HISTORIAL OCUPACIÓN
+// ═══════════════════════════════════════════════════════════════
+
+export const historialOcupacion = pgTable('historial_ocupacion', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }),
+  mes: integer('mes').notNull(),
+  anio: integer('anio').notNull(),
+  ocupacionPromedio: decimal('ocupacion_promedio', { precision: 5, scale: 2 }),
+  revenueTotal: decimal('revenue_total', { precision: 14, scale: 2 }),
+  revenuePotencial: decimal('revenue_potencial', { precision: 14, scale: 2 }),
+  cuposVendidos: integer('cupos_vendidos'),
+  cuposDisponibles: integer('cupos_disponibles'),
+  metricasData: text('metricas_data'), // JSON
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index('hist_tenant_idx').on(table.tenantId),
+  emisoraIdx: index('hist_emisora_idx').on(table.emisoraId),
+  periodoIdx: index('hist_periodo_idx').on(table.anio, table.mes),
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// TABLA: CUPO COMERCIAL
+// ═══════════════════════════════════════════════════════════════
+
+export const cupoComercial = pgTable('cupo_comercial', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }).notNull(),
+  programaId: uuid('programa_id').references(() => programas.id, { onDelete: 'cascade' }).notNull(),
+  emisoraId: uuid('emisora_id').references(() => emisoras.id, { onDelete: 'cascade' }).notNull(),
+  clienteId: uuid('cliente_id').references(() => anunciantes.id),
+  clienteNombre: varchar('cliente_nombre', { length: 255 }),
+  ejecutivoId: uuid('ejecutivo_id').references(() => users.id),
+  ejecutivoNombre: varchar('ejecutivo_nombre', { length: 255 }),
+  tipoAuspicio: varchar('tipo_auspicio', { length: 50 }).notNull(),
+  estado: varchar('estado', { length: 20 }).default('disponible').notNull(),
+  fechaInicio: date('fecha_inicio'),
+  fechaFin: date('fecha_fin'),
+  valor: decimal('valor', { precision: 14, scale: 2 }),
+  historialModificaciones: text('historial_modificaciones'), // JSON array
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  version: integer('version').default(1).notNull(),
+}, (table) => ({
+  tenantIdx: index('cupo_tenant_idx').on(table.tenantId),
+  programaIdx: index('cupo_programa_idx').on(table.programaId),
+  emisoraIdx: index('cupo_emisora_idx').on(table.emisoraId),
+  estadoIdx: index('cupo_estado_idx').on(table.estado),
+  clienteIdx: index('cupo_cliente_idx').on(table.clienteId),
+}));
+
+// ═══════════════════════════════════════════════════════════════
 // RELACIONES
 // ═══════════════════════════════════════════════════════════════
 
@@ -262,16 +549,91 @@ export const auspiciosRelations = relations(auspicios, ({ one }) => ({
   contrato: one(contratos, { fields: [auspicios.contratoId], references: [contratos.id] })
 }));
 
+export const vencimientosAuspicioRelations = relations(vencimientosAuspicio, ({ one }) => ({
+  tenant: one(tenants, { fields: [vencimientosAuspicio.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [vencimientosAuspicio.programaId], references: [programas.id] }),
+  contrato: one(contratos, { fields: [vencimientosAuspicio.contratoId], references: [contratos.id] }),
+  ejecutivo: one(users, { fields: [vencimientosAuspicio.ejecutivoId], references: [users.id] }),
+}));
+
+export const alertasProgramadorRelations = relations(alertasProgramador, ({ one }) => ({
+  tenant: one(tenants, { fields: [alertasProgramador.tenantId], references: [tenants.id] }),
+  emisora: one(emisoras, { fields: [alertasProgramador.emisoraId], references: [emisoras.id] }),
+  programa: one(programas, { fields: [alertasProgramador.programaId], references: [programas.id] }),
+  destinatario: one(users, { fields: [alertasProgramador.destinatarioId], references: [users.id] }),
+}));
+
+export const solicitudesExtensionRelations = relations(solicitudesExtension, ({ one }) => ({
+  tenant: one(tenants, { fields: [solicitudesExtension.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [solicitudesExtension.programaId], references: [programas.id] }),
+  emisora: one(emisoras, { fields: [solicitudesExtension.emisoraId], references: [emisoras.id] }),
+  ejecutivo: one(users, { fields: [solicitudesExtension.ejecutivoId], references: [users.id] }),
+  aprobador: one(users, { fields: [solicitudesExtension.aprobadorId], references: [users.id] }),
+}));
+
+export const listasEsperaRelations = relations(listasEspera, ({ one }) => ({
+  tenant: one(tenants, { fields: [listasEspera.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [listasEspera.programaId], references: [programas.id] }),
+  emisora: one(emisoras, { fields: [listasEspera.emisoraId], references: [emisoras.id] }),
+}));
+
+export const tandasComercialesRelations = relations(tandasComerciales, ({ one }) => ({
+  tenant: one(tenants, { fields: [tandasComerciales.tenantId], references: [tenants.id] }),
+  emisora: one(emisoras, { fields: [tandasComerciales.emisoraId], references: [emisoras.id] }),
+}));
+
+export const senalesEspecialesRelations = relations(senalesEspeciales, ({ one }) => ({
+  tenant: one(tenants, { fields: [senalesEspeciales.tenantId], references: [tenants.id] }),
+  emisora: one(emisoras, { fields: [senalesEspeciales.emisoraId], references: [emisoras.id] }),
+  anunciante: one(anunciantes, { fields: [senalesEspeciales.anuncianteId], references: [anunciantes.id] }),
+}));
+
+export const exclusividadesRubroRelations = relations(exclusividadesRubro, ({ one }) => ({
+  tenant: one(tenants, { fields: [exclusividadesRubro.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [exclusividadesRubro.programaId], references: [programas.id] }),
+}));
+
+export const configuracionTarifaRelations = relations(configuracionTarifa, ({ one }) => ({
+  tenant: one(tenants, { fields: [configuracionTarifa.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [configuracionTarifa.programaId], references: [programas.id] }),
+}));
+
+export const historialOcupacionRelations = relations(historialOcupacion, ({ one }) => ({
+  tenant: one(tenants, { fields: [historialOcupacion.tenantId], references: [tenants.id] }),
+  emisora: one(emisoras, { fields: [historialOcupacion.emisoraId], references: [emisoras.id] }),
+  programa: one(programas, { fields: [historialOcupacion.programaId], references: [programas.id] }),
+}));
+
+export const cupoComercialRelations = relations(cupoComercial, ({ one }) => ({
+  tenant: one(tenants, { fields: [cupoComercial.tenantId], references: [tenants.id] }),
+  programa: one(programas, { fields: [cupoComercial.programaId], references: [programas.id] }),
+  emisora: one(emisoras, { fields: [cupoComercial.emisoraId], references: [emisoras.id] }),
+  cliente: one(anunciantes, { fields: [cupoComercial.clienteId], references: [anunciantes.id] }),
+  ejecutivo: one(users, { fields: [cupoComercial.ejecutivoId], references: [users.id] }),
+}));
+
 // ═══════════════════════════════════════════════════════════════
 // TIPOS EXPORTADOS
 // ═══════════════════════════════════════════════════════════════
 
 export type Programa = typeof programas.$inferSelect;
 export type InventarioCupo = typeof inventarioCupos.$inferSelect;
-export type Vencimiento = typeof vencimientos.$inferSelect;
+export type Vencimientos = typeof vencimientos.$inferSelect;
 export type Auspicio = typeof auspicios.$inferSelect;
 export type EstadoCupo = 'disponible' | 'reservado' | 'vendido' | 'bloqueado' | 'cortesia';
 export type TipoInventario = 'auspicio_programa' | 'tanda_comercial' | 'mencion_programa' | 'spot_horario' | 'patrocinio' | 'banner_digital';
+
+// ── Nuevos tipos de entidades Vencimientos ──
+export type VencimientosAuspicio = typeof vencimientosAuspicio.$inferSelect;
+export type AlertaProgramador = typeof alertasProgramador.$inferSelect;
+export type SolicitudExtension = typeof solicitudesExtension.$inferSelect;
+export type ListaEspera = typeof listasEspera.$inferSelect;
+export type TandaComercial = typeof tandasComerciales.$inferSelect;
+export type SenalEspecial = typeof senalesEspeciales.$inferSelect;
+export type ExclusividadRubro = typeof exclusividadesRubro.$inferSelect;
+export type ConfiguracionTarifa = typeof configuracionTarifa.$inferSelect;
+export type HistorialOcupacion = typeof historialOcupacion.$inferSelect;
+export type CupoComercial = typeof cupoComercial.$inferSelect;
 
 // ═══════════════════════════════════════════════════════════════
 // DTOs PARA TORPEDO DIGITAL

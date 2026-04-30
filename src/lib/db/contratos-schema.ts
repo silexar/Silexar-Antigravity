@@ -204,7 +204,7 @@ export const contratosVencimientos = pgTable('contratos_vencimientos', {
   
   // Información del vencimientos
   numeroCuota: integer('numero_cuota').notNull(),
-  fechaVencimiento: date('fecha_vencimientos').notNull(),
+  fechaVencimientos: date('fecha_vencimientos').notNull(),
   monto: decimal('monto', { precision: 14, scale: 2 }).notNull(),
   
   // Estado de facturación
@@ -223,7 +223,7 @@ export const contratosVencimientos = pgTable('contratos_vencimientos', {
   fechaCreacion: timestamp('fecha_creacion').defaultNow().notNull()
 }, (table) => ({
   contratoIdx: index('contratos_venc_contrato_id_idx').on(table.contratoId),
-  fechaIdx: index('contratos_venc_fecha_idx').on(table.fechaVencimiento),
+  fechaIdx: index('contratos_venc_fecha_idx').on(table.fechaVencimientos),
   estadoIdx: index('contratos_venc_estado_idx').on(table.facturado, table.pagado)
 }));
 
@@ -389,7 +389,7 @@ export const contratosVencimientosRelations = relations(contratosVencimientos, (
 export type Contrato = typeof contratos.$inferSelect;
 export type NewContrato = typeof contratos.$inferInsert;
 export type ContratoItem = typeof contratosItems.$inferSelect;
-export type ContratoVencimiento = typeof contratosVencimientos.$inferSelect;
+export type ContratoVencimientos = typeof contratosVencimientos.$inferSelect;
 export type EstadoContrato = 'borrador' | 'pendiente_aprobacion' | 'aprobado' | 'activo' | 'pausado' | 'completado' | 'cancelado' | 'vencido';
 export type TipoContrato = 'anual' | 'semestral' | 'trimestral' | 'mensual' | 'campaña' | 'evento' | 'marco';
 export type ModalidadPago = 'anticipado' | 'mensual' | 'por_emisiones' | 'post_pago' | 'mixto';

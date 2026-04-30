@@ -15,10 +15,8 @@
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   FileText, CheckSquare, Square, ExternalLink, AlertTriangle,
   Shield, Lock, Eye, Clock
@@ -111,7 +109,7 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <NeuromorphicCard variant="glow" className="w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }} className="w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-6 border-b border-slate-700">
           <div className="flex items-center gap-4">
@@ -162,7 +160,7 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
                 </ul>
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowFullTerms(true)}
                 className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
               >
@@ -174,7 +172,7 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-white font-medium">Términos Completos v{CURRENT_TERMS.version}</h3>
-                <button 
+                <button
                   onClick={() => setShowFullTerms(false)}
                   className="text-slate-400 hover:text-white text-sm"
                 >
@@ -195,11 +193,10 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
           {/* Consent Checkboxes */}
           <div className="space-y-3">
             <h3 className="text-white font-medium mb-3">Consentimientos Requeridos</h3>
-            
+
             {/* Terms - Required */}
-            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${
-              consents.termsAccepted ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-800/50 border-slate-700'
-            }`}>
+            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${consents.termsAccepted ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-800/50 border-slate-700'
+              }`}>
               <button onClick={() => setConsents({ ...consents, termsAccepted: !consents.termsAccepted })}>
                 {consents.termsAccepted ? (
                   <CheckSquare className="w-5 h-5 text-green-400" />
@@ -214,9 +211,8 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
             </label>
 
             {/* Privacy - Required */}
-            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${
-              consents.privacyAccepted ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-800/50 border-slate-700'
-            }`}>
+            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${consents.privacyAccepted ? 'bg-green-500/10 border-green-500/30' : 'bg-slate-800/50 border-slate-700'
+              }`}>
               <button onClick={() => setConsents({ ...consents, privacyAccepted: !consents.privacyAccepted })}>
                 {consents.privacyAccepted ? (
                   <CheckSquare className="w-5 h-5 text-green-400" />
@@ -233,9 +229,8 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
             <h3 className="text-white font-medium mt-6 mb-3">Consentimientos Opcionales</h3>
 
             {/* Marketing - Optional */}
-            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${
-              consents.marketingOptIn ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-800/50 border-slate-700'
-            }`}>
+            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${consents.marketingOptIn ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-800/50 border-slate-700'
+              }`}>
               <button onClick={() => setConsents({ ...consents, marketingOptIn: !consents.marketingOptIn })}>
                 {consents.marketingOptIn ? (
                   <CheckSquare className="w-5 h-5 text-blue-400" />
@@ -250,9 +245,8 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
             </label>
 
             {/* Analytics - Optional */}
-            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${
-              consents.analyticsOptIn ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-800/50 border-slate-700'
-            }`}>
+            <label className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer border ${consents.analyticsOptIn ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-800/50 border-slate-700'
+              }`}>
               <button onClick={() => setConsents({ ...consents, analyticsOptIn: !consents.analyticsOptIn })}>
                 {consents.analyticsOptIn ? (
                   <CheckSquare className="w-5 h-5 text-blue-400" />
@@ -276,19 +270,19 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
 
         {/* Actions */}
         <div className="p-6 border-t border-slate-700 flex items-center justify-between">
-          <button 
+          <button
             onClick={onDecline}
             className="text-slate-400 hover:text-white"
           >
             Cancelar y salir
           </button>
-          <NeuromorphicButton 
-            variant="primary" 
+          <NeuButton
+            variant="primary"
             onClick={handleAccept}
             disabled={!canProceed || isSubmitting}
           >
             {isSubmitting ? 'Procesando...' : 'Aceptar y Continuar'}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
 
         {/* Warning if not complete */}
@@ -300,7 +294,7 @@ export function TermsAcceptance({ userName, userEmail, onAccept, onDecline }: Te
             </div>
           </div>
         )}
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

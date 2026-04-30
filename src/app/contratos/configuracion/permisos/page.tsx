@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ⚙️ SILEXAR PULSE - User Permissions Configuration Panel TIER 0
  * 
  * @description Panel de configuración de permisos de usuario con
@@ -97,7 +97,7 @@ const neuroStyles = {
   // Toggle switch neuromorphic
   toggle: `
     relative w-14 h-7
-    bg-gradient-to-br from-slate-200 to-[#dfeaff]
+    bg-gradient-to-br from-[#bec8de] to-[#dfeaff]
     rounded-full
     shadow-[inset_2px_2px_4px_#c9cbd0,inset_-2px_-2px_4px_#ffffff]
     cursor-pointer
@@ -105,7 +105,7 @@ const neuroStyles = {
   `,
   
   toggleActive: `
-    bg-gradient-to-br from-indigo-400 to-purple-500
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
   `,
   
@@ -120,7 +120,7 @@ const neuroStyles = {
   // Slider neuromorphic
   slider: `
     w-full h-2
-    bg-gradient-to-r from-slate-200 to-[#dfeaff]
+    bg-gradient-to-r from-[#bec8de] to-[#dfeaff]
     rounded-full
     shadow-[inset_1px_1px_2px_#c9cbd0,inset_-1px_-1px_2px_#ffffff]
     appearance-none
@@ -297,7 +297,7 @@ const NeuroSlider: React.FC<{
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
       aria-label={label}
-      className={`${neuroStyles.slider} [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-br [&::-webkit-slider-thumb]:from-indigo-400 [&::-webkit-slider-thumb]:to-purple-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer`}
+      className={`${neuroStyles.slider} [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-br [&::-webkit-slider-thumb]:from-[#6888ff] [&::-webkit-slider-thumb]:to-[#5572ee] [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer`}
     />
     <div className="flex justify-between text-xs text-[#9aa3b8]">
       <span>{formatValue ? formatValue(min) : min}{suffix}</span>
@@ -368,8 +368,8 @@ const UserPermissionCard: React.FC<{
   };
 
   const getRolIcon = () => {
-    if (usuario.rol.includes('Gerente')) return <Crown className="w-5 h-5 text-amber-500" />;
-    if (usuario.rol.includes('Supervisor')) return <Briefcase className="w-5 h-5 text-purple-500" />;
+    if (usuario.rol.includes('Gerente')) return <Crown className="w-5 h-5 text-[#6888ff]" />;
+    if (usuario.rol.includes('Supervisor')) return <Briefcase className="w-5 h-5 text-[#6888ff]" />;
     if (usuario.rol.includes('Senior')) return <Zap className="w-5 h-5 text-[#6888ff]" />;
     return <Users className="w-5 h-5 text-[#69738c]" />;
   };
@@ -394,7 +394,7 @@ const UserPermissionCard: React.FC<{
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-[#69738c]">{usuario.nombre}</h3>
               {usuario.rolPersonalizado && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">
+                <span className="px-2 py-0.5 rounded-full bg-[#6888ff]/10 text-[#6888ff] text-xs font-medium">
                   Personalizado
                 </span>
               )}
@@ -408,13 +408,13 @@ const UserPermissionCard: React.FC<{
           {/* Indicadores rápidos */}
           <div className="flex gap-2">
             {limites.puedeFirmar && (
-              <div className={`${neuroStyles.badge} text-green-600 flex items-center gap-1`}>
+              <div className={`${neuroStyles.badge} text-[#6888ff] flex items-center gap-1`}>
                 <FileSignature className="w-3 h-3" />
                 Firma
               </div>
             )}
             {limites.puedeAprobar && (
-              <div className={`${neuroStyles.badge} text-blue-600 flex items-center gap-1`}>
+              <div className={`${neuroStyles.badge} text-[#6888ff] flex items-center gap-1`}>
                 <Check className="w-3 h-3" />
                 Aprueba
               </div>
@@ -444,7 +444,7 @@ const UserPermissionCard: React.FC<{
               {/* Columna 1: Límites de valor */}
               <div className={`${neuroStyles.cardInset} p-5 space-y-5`}>
                 <h4 className="font-bold text-[#69738c] flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-green-500" />
+                  <DollarSign className="w-4 h-4 text-[#6888ff]" />
                   Límites de Valor
                 </h4>
                 
@@ -676,10 +676,10 @@ export default function PermisosConfiguracion() {
         {/* Estadísticas rápidas */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'Usuarios Totales', value: usuarios.length, icon: <Users className="w-5 h-5" />, color: 'text-blue-600' },
-            { label: 'Con Permisos Custom', value: usuarios.filter(u => u.rolPersonalizado).length, icon: <Settings className="w-5 h-5" />, color: 'text-amber-600' },
-            { label: 'Pueden Aprobar', value: usuarios.filter(u => u.limitesPersonalizados.puedeAprobar).length, icon: <Check className="w-5 h-5" />, color: 'text-green-600' },
-            { label: 'Pueden Firmar', value: usuarios.filter(u => u.limitesPersonalizados.puedeFirmar).length, icon: <FileSignature className="w-5 h-5" />, color: 'text-purple-600' }
+            { label: 'Usuarios Totales', value: usuarios.length, icon: <Users className="w-5 h-5" />, color: 'text-[#6888ff]' },
+            { label: 'Con Permisos Custom', value: usuarios.filter(u => u.rolPersonalizado).length, icon: <Settings className="w-5 h-5" />, color: 'text-[#6888ff]' },
+            { label: 'Pueden Aprobar', value: usuarios.filter(u => u.limitesPersonalizados.puedeAprobar).length, icon: <Check className="w-5 h-5" />, color: 'text-[#6888ff]' },
+            { label: 'Pueden Firmar', value: usuarios.filter(u => u.limitesPersonalizados.puedeFirmar).length, icon: <FileSignature className="w-5 h-5" />, color: 'text-[#6888ff]' }
           ].map((stat) => (
             <div key={stat.label} className={`${neuroStyles.cardRaised} p-5`}>
               <div className="flex items-center gap-3">

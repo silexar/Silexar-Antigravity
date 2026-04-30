@@ -1,9 +1,9 @@
-import { eq, and, ilike, or, ne, count, desc } from 'drizzle-orm';
+import { eq, and, ilike, or, ne, count, desc, gte } from 'drizzle-orm';
 import { getDB } from '@/lib/db';
-import { anunciantes } from '@/lib/db/schema';
+import { anunciantes, contratos, campanas, cunas, registroEmisiones } from '@/lib/db/schema';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { Anunciante } from '../../domain/entities/Anunciante';
-import { IAnuncianteRepository, BuscarAnunciantesFilters, PaginationParams } from '../../domain/repositories/IAnuncianteRepository';
+import { IAnuncianteRepository, BuscarAnunciantesFilters, PaginationParams, AnuncianteEnriquecido } from '../../domain/repositories/IAnuncianteRepository';
 
 export class AnuncianteDrizzleRepository implements IAnuncianteRepository {
   async findById(id: string, tenantId: string): Promise<Anunciante | null> {
@@ -186,6 +186,100 @@ export class AnuncianteDrizzleRepository implements IAnuncianteRepository {
         .from(anunciantes)
         .where(and(eq(anunciantes.tenantId, tenantId), ne(anunciantes.eliminado, true)));
       return `ANU-${(Number(total) + 1).toString().padStart(4, '0')}`;
+    });
+  }
+
+  async findEnriched(tenantId: string, search?: string, limit: number = 10): Promise<AnuncianteEnriquecido[]> {
+    return withTenantContext(tenantId, async () => {
+      const db = getDB();
+
+      // Construir condiciones base con tenant y no eliminado
+      const baseConditions = [eq(anunciantes.tenantId, tenantId), eq(anunciantes.eliminado, false)];
+
+      // Agregar búsqueda si existe
+      if (search) {
+        const s = `%${search}%`;
+        baseConditions.push(or(
+          ilike(anunciantes.nombreRazonSocial, s),
+          ilike(anunciantes.rut, s),
+          ilike(anunciantes.giroActividad, s)
+        ) as ReturnType<typeof eq>);
+      }
+
+      // Obtener anunciantes
+      const rows = await db
+        .select()
+        .from(anunciantes)
+        .where(and(...baseConditions))
+        .limit(limit);
+
+      // Para cada anunciante, calcular datos enriquecidos
+      const enrichedResults: AnuncianteEnriquecido[] = [];
+
+      for (const row of rows) {
+        // Contar contratos activos del anunciante
+        const [contratosCountResult] = await db
+          .select({ total: count() })
+          .from(contratos)
+          .where(and(
+            eq(contratos.anuncianteId, row.id),
+            eq(contratos.tenantId, tenantId),
+            eq(contratos.eliminado, false)
+          ));
+
+        // Contar cuñas activas (últimos 30 días) - vía campañas del anunciante
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+
+        // Contar emisiones directamente por anuncianteId y fecha de última emisión
+        const [cunasCountResult] = await db
+          .select({ total: count() })
+          .from(registroEmisiones)
+          .innerJoin(cunas, eq(registroEmisiones.cunaId, cunas.id))
+          .innerJoin(campanas, eq(cunas.campanaId, campanas.id))
+          .where(and(
+            eq(cunas.anuncianteId, row.id),
+            eq(campanas.tenantId, tenantId),
+            eq(campanas.eliminado, false),
+            gte(registroEmisiones.fechaEmision, thirtyDaysAgoStr)
+          ));
+
+        // Obtener última actividad (fecha más reciente de emisión o modificación)
+        // Por simplicidad, usamos la fecha de creación del anunciante como proxy
+        const ultimaActividad = row.fechaCreacion?.toISOString() || new Date().toISOString();
+
+        // Calcular riskScore basado en estado y actividad
+        let riskScore = 500; // default
+        let riskLevel: 'bajo' | 'medio' | 'alto' = 'medio';
+
+        if (row.estado === 'activo') {
+          riskScore = Number(contratosCountResult?.total || 0) > 0 ? 700 : 500;
+          riskLevel = 'bajo';
+        } else if (row.estado === 'inactivo' || row.estado === 'suspendido') {
+          riskScore = 300;
+          riskLevel = 'alto';
+        }
+
+        // Calcular creditScore basado en número de contratos
+        const creditScore = Math.min(100, (Number(contratosCountResult?.total || 0) * 15) + 40);
+
+        enrichedResults.push({
+          id: row.id,
+          nombre: row.nombreRazonSocial,
+          razonSocial: row.nombreRazonSocial,
+          rut: row.rut || '',
+          industria: row.giroActividad || 'General',
+          estado: row.estado as 'activo' | 'inactivo' | 'suspendido',
+          contratosActivos: Number(contratosCountResult?.total || 0),
+          cunasActivas: Number(cunasCountResult?.total || 0),
+          ultimaActividad,
+          riskLevel,
+          riskScore,
+          creditScore,
+        });
+      }
+
+      return enrichedResults;
     });
   }
 

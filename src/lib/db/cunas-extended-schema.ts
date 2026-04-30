@@ -341,7 +341,7 @@ export const enviosDistribucion = pgTable('envios_distribucion', {
 }));
 
 // ═══════════════════════════════════════════════════════════════
-// ALERTAS DE VENCIMIENTO
+// ALERTAS DE VENCIMIENTOS
 // ═══════════════════════════════════════════════════════════════
 
 export const alertasCuna = pgTable('alertas_cuna', {

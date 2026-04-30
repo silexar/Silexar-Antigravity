@@ -364,7 +364,7 @@ export function InvoiceGenerator() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="due-date">Fecha de Vencimiento</Label>
+                    <Label htmlFor="due-date">Fecha de Vencimientos</Label>
                     <Input
                       id="due-date"
                       type="date"
@@ -582,7 +582,7 @@ export function InvoiceGenerator() {
                         <p><strong>Tipo:</strong> {invoiceData.type}</p>
                         <p><strong>Cliente:</strong> {invoiceData.client?.name}</p>
                         <p><strong>Total:</strong> ${invoiceData.total.toLocaleString()} {invoiceData.currency}</p>
-                        <p><strong>Vencimiento:</strong> {invoiceData.dueDate}</p>
+                        <p><strong>Vencimientos:</strong> {invoiceData.dueDate}</p>
                       </div>
                     </div>
                     <div>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📊 SILEXAR PULSE - Custom Reports Builder TIER 0
  * 
  * @description Constructor de reportes personalizados que permite
@@ -274,7 +274,7 @@ const WidgetRender: React.FC<{
 
       case 'pie_chart':
         if (Array.isArray(datos)) {
-          const colores = ['#6888ff', '#a855f7', '#22c55e', '#f59e0b', '#ef4444'];
+          const colores = ['#6888ff', '#a855f7', '#6888ff', '#6888ff', '#9aa3b8'];
           return (
             <div className="flex items-center gap-4 py-2">
               <div className="relative w-24 h-24">
@@ -337,7 +337,7 @@ const WidgetRender: React.FC<{
             <div className="h-4 rounded-full overflow-hidden" style={{ background: N.base, boxShadow: inset }}>
               <div 
                 className="h-full rounded-full"
-                style={{ width: `${Math.min(valor, 100)}%`, background: '#22c55e' }}
+                style={{ width: `${Math.min(valor, 100)}%`, background: '#6888ff' }}
               />
             </div>
             <p className="text-center mt-2 text-2xl font-black" style={{ color: N.text }}>{valor}%</p>
@@ -363,7 +363,7 @@ const WidgetRender: React.FC<{
           <button onClick={onEdit} className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: N.textSub }}>
             <Settings className="w-4 h-4" />
           </button>
-          <button onClick={onRemove} className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: '#ef4444' }}>
+          <button onClick={onRemove} className="p-1.5 rounded-xl transition-all" style={{ background: N.base, boxShadow: neuXs, color: '#9aa3b8' }}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -383,12 +383,12 @@ export default function ReportsBuilderPage() {
     nombre: 'Mi Reporte Semanal',
     widgets: [
       { id: 'w-1', tipo: 'metric', titulo: 'Contratos Creados', metrica: 'contratos_creados', tamaño: 'sm', orden: 1, color: '#6888ff' },
-      { id: 'w-2', tipo: 'metric', titulo: 'Valor Total', metrica: 'valor_total', tamaño: 'sm', orden: 2, color: '#22c55e' },
+      { id: 'w-2', tipo: 'metric', titulo: 'Valor Total', metrica: 'valor_total', tamaño: 'sm', orden: 2, color: '#6888ff' },
       { id: 'w-3', tipo: 'metric', titulo: 'Tasa Conversión', metrica: 'tasa_conversion', tamaño: 'sm', orden: 3, color: '#a855f7' },
-      { id: 'w-4', tipo: 'metric', titulo: 'Vencimientos', metrica: 'vencimientos_proximos', tamaño: 'sm', orden: 4, color: '#f59e0b' },
+      { id: 'w-4', tipo: 'metric', titulo: 'Vencimientos', metrica: 'vencimientos_proximos', tamaño: 'sm', orden: 4, color: '#6888ff' },
       { id: 'w-5', tipo: 'bar_chart', titulo: 'Por Estado', metrica: 'contratos_por_estado', tamaño: 'md', orden: 5, color: '#6888ff' },
       { id: 'w-6', tipo: 'pie_chart', titulo: 'Por Medio', metrica: 'contratos_por_medio', tamaño: 'md', orden: 6, color: '#a855f7' },
-      { id: 'w-7', tipo: 'list', titulo: 'Top Clientes', metrica: 'top_clientes', tamaño: 'lg', orden: 7, color: '#22c55e' }
+      { id: 'w-7', tipo: 'list', titulo: 'Top Clientes', metrica: 'top_clientes', tamaño: 'lg', orden: 7, color: '#6888ff' }
     ],
     filtros: [],
     periodo: 'semana',

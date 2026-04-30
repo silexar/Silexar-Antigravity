@@ -1,16 +1,16 @@
 /**
- * 🛡️ SILEXAR PULSE — RBAC (Role-Based Access Control)
+ * ðŸ›¡ï¸ SILEXAR PULSE â€” RBAC (Role-Based Access Control)
  * 
  * Sistema real de control de acceso por roles.
- * Valida permisos de usuario contra políticas definidas.
+ * Valida permisos de usuario contra polÃ­ticas definidas.
  * 
  * @version 2026.3.0
- * @security OWASP A01 — Broken Access Control
+ * @security OWASP A01 â€” Broken Access Control
  */
 
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // TIPOS Y CONSTANTES
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 export type UserRole =
   | 'SUPER_CEO'
@@ -19,9 +19,9 @@ export type UserRole =
   | 'GERENTE_VENTAS'
   | 'EJECUTIVO_VENTAS'
   | 'EJECUTIVO'          // Ejecutivo general (contratos y campanas)
-  | 'TM_SENIOR'          // Traffic Manager Senior (gestión de pauta y emisión)
-  | 'FINANCIERO'         // Analista financiero (facturación y contratos)
-  | 'PROGRAMADOR'        // Programador de emisora (scheduling de cuñas)
+  | 'TM_SENIOR'          // Traffic Manager Senior (gestiÃ³n de pauta y emisiÃ³n)
+  | 'FINANCIERO'         // Analista financiero (facturaciÃ³n y contratos)
+  | 'PROGRAMADOR'        // Programador de emisora (scheduling de cuÃ±as)
   | 'OPERADOR_EMISION'
   | 'AGENCIA'
   | 'ANUNCIANTE'
@@ -36,6 +36,7 @@ export type Resource =
   | 'cunas'
   | 'emisiones'
   | 'anunciantes'
+  | 'paquetes'
   | 'equipos-ventas'
   | 'facturacion'
   | 'inventario'
@@ -48,13 +49,27 @@ export type Resource =
   | 'dashboard'
   | 'analytics'
   | 'agencias-medios'
+  | 'activos-digitales'
+  | 'conciliacion'
   | 'vencimientos'
   | 'vencimientos.programas'
   | 'vencimientos.vencimientos'
   | 'vencimientos.alertas'
   | 'vencimientos.analytics'
   | 'vencimientos.disponibilidad'
-  | 'vencimientos.search';
+  | 'vencimientos.search'
+  | 'backup_restore'
+  | 'brand_safety'
+  | 'encryption'
+  | 'health_monitoring'
+  | 'sellos'
+  | 'cortex'
+  | 'politicas'
+  | 'sso'
+  | 'monitoreo'
+  | 'feature_flags'
+  | 'kill_switches'
+  | 'sso_configurations';
 
 export interface RBACPolicy {
   resource: Resource;
@@ -69,9 +84,9 @@ export interface AuthContext {
   permissions?: string[];
 }
 
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MATRIZ DE PERMISOS POR ROL
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> = {
   SUPER_CEO: {
@@ -80,6 +95,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     cunas: ['create', 'read', 'update', 'delete', 'admin', 'export', 'approve'],
     emisiones: ['create', 'read', 'update', 'delete', 'admin', 'export', 'approve'],
     anunciantes: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    paquetes: ['create', 'read', 'update', 'delete', 'admin', 'export'],
     'equipos-ventas': ['create', 'read', 'update', 'delete', 'admin'],
     facturacion: ['create', 'read', 'update', 'delete', 'admin', 'export', 'approve'],
     inventario: ['create', 'read', 'update', 'delete', 'admin'],
@@ -92,13 +108,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read', 'admin'],
     analytics: ['read', 'export', 'admin'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'delete', 'admin', 'export'],
     vencimientos: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    conciliacion: ['create', 'read', 'update', 'delete', 'admin', 'export'],
     'vencimientos.programas': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.vencimientos': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.alertas': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.analytics': ['read', 'export', 'admin'],
     'vencimientos.disponibilidad': ['read', 'admin'],
     'vencimientos.search': ['read', 'admin'],
+    backup_restore: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    brand_safety: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    encryption: ['create', 'read', 'update', 'delete', 'admin'],
+    health_monitoring: ['create', 'read', 'update', 'delete', 'admin'],
+    sellos: ['create', 'read', 'update', 'delete', 'admin', 'export', 'approve'],
+    cortex: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    politicas: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    sso: ['create', 'read', 'update', 'delete', 'admin'],
+    monitoreo: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    feature_flags: ['create', 'read', 'update', 'delete', 'admin'],
+    kill_switches: ['create', 'read', 'update', 'delete', 'admin'],
+    sso_configurations: ['create', 'read', 'update', 'delete', 'admin'],
   },
   ADMIN: {
     contratos: ['create', 'read', 'update', 'delete', 'export', 'approve'],
@@ -106,6 +136,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     cunas: ['create', 'read', 'update', 'delete', 'export'],
     emisiones: ['create', 'read', 'update', 'delete', 'export'],
     anunciantes: ['create', 'read', 'update', 'delete', 'export'],
+    paquetes: ['create', 'read', 'update', 'delete', 'export'],
     'equipos-ventas': ['create', 'read', 'update', 'delete'],
     facturacion: ['create', 'read', 'update', 'delete', 'export', 'approve'],
     inventario: ['create', 'read', 'update', 'delete'],
@@ -118,20 +149,36 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read', 'export'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'delete', 'export'],
     vencimientos: ['create', 'read', 'update', 'delete', 'export'],
+    conciliacion: ['create', 'read', 'update', 'delete', 'export'],
     'vencimientos.programas': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.vencimientos': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.alertas': ['create', 'read', 'update', 'delete', 'admin'],
     'vencimientos.analytics': ['read', 'export', 'admin'],
     'vencimientos.disponibilidad': ['read', 'admin'],
     'vencimientos.search': ['read', 'admin'],
+    backup_restore: ['create', 'read', 'update', 'delete', 'admin', 'export'],
+    brand_safety: ['read', 'update', 'admin'],
+    encryption: ['read', 'update', 'admin'],
+    health_monitoring: ['read', 'admin'],
+    sellos: ['read', 'update', 'admin'],
+    cortex: ['read', 'admin'],
+    politicas: ['read', 'update', 'admin'],
+    sso: ['read', 'admin'],
+    monitoreo: ['read', 'admin'],
+    feature_flags: ['read', 'admin'],
+    kill_switches: ['read', 'admin'],
+    sso_configurations: ['read', 'admin'],
   },
   CLIENT_ADMIN: {
+    conciliacion: ['read'],
     contratos: ['create', 'read', 'update', 'export', 'approve'],
     campanas: ['create', 'read', 'update', 'export'],
     cunas: ['create', 'read', 'update'],
     emisiones: ['read'],
     anunciantes: ['read', 'update'],
+    paquetes: ['create', 'read', 'update', 'export'],
     'equipos-ventas': ['read', 'update'],
     facturacion: ['read', 'export'],
     inventario: ['read'],
@@ -144,6 +191,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
@@ -151,13 +199,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: ['read'],
+    health_monitoring: ['read'],
+    sellos: ['read'],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   GERENTE_VENTAS: {
     contratos: ['create', 'read', 'update', 'export', 'approve'],
     campanas: ['create', 'read', 'update'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: ['read', 'update'],
     anunciantes: ['create', 'read', 'update'],
+    paquetes: ['create', 'read', 'update', 'export'],
     'equipos-ventas': ['read', 'update'],
     facturacion: ['read'],
     inventario: ['read'],
@@ -170,6 +232,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read', 'export'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
@@ -177,13 +240,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   EJECUTIVO_VENTAS: {
     contratos: ['create', 'read', 'update'],
     campanas: ['create', 'read'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: ['read', 'update'],
     anunciantes: ['create', 'read', 'update'],
+    paquetes: ['read'],
     'equipos-ventas': ['read'],
     facturacion: ['read'],
     inventario: ['read'],
@@ -196,6 +273,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
@@ -203,13 +281,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   EJECUTIVO: {
     contratos: ['create', 'read', 'update', 'export'],
     campanas: ['create', 'read', 'update', 'approve'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: ['read', 'update'],
     anunciantes: ['create', 'read', 'update'],
+    paquetes: ['read'],
     'equipos-ventas': ['read'],
     facturacion: ['read'],
     inventario: ['read'],
@@ -222,6 +314,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['read'],
     vencimientos: ['read', 'create', 'update'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
@@ -229,13 +322,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   TM_SENIOR: {
+    conciliacion: ['read'],
     contratos: ['read'],
     campanas: ['create', 'read', 'update', 'delete', 'export', 'approve'],
     cunas: ['create', 'read', 'update', 'delete', 'export'],
     emisiones: ['create', 'read', 'update', 'delete', 'export'],
     anunciantes: ['read'],
+    paquetes: ['create', 'read', 'update', 'export'],
     'equipos-ventas': ['read'],
     facturacion: ['read'],
     inventario: ['create', 'read', 'update', 'delete'],
@@ -248,6 +355,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read', 'export'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
@@ -255,6 +363,18 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   FINANCIERO: {
     contratos: ['read', 'export', 'approve'],
@@ -262,6 +382,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     cunas: [],
     emisiones: [],
     anunciantes: ['read'],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: ['create', 'read', 'update', 'delete', 'export', 'approve'],
     inventario: ['read'],
@@ -274,13 +395,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read', 'export'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
+    conciliacion: ['read', 'export'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
     'vencimientos.alertas': ['read'],
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   PROGRAMADOR: {
     contratos: ['read'],
@@ -288,6 +423,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     cunas: ['create', 'read', 'update', 'delete'],
     emisiones: ['create', 'read', 'update', 'delete'],
     anunciantes: ['read'],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: [],
     inventario: ['read', 'update'],
@@ -300,13 +436,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
+    conciliacion: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
     'vencimientos.alertas': ['read'],
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: ['read'],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   OPERADOR_EMISION: {
     contratos: ['read'],
@@ -314,6 +464,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     cunas: ['create', 'read', 'update'],
     emisiones: ['create', 'read', 'update'],
     anunciantes: ['read'],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: [],
     inventario: ['read', 'update'],
@@ -326,20 +477,36 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['create', 'read', 'update', 'export'],
     vencimientos: ['read'],
+    conciliacion: ['read'],
     'vencimientos.programas': ['read'],
     'vencimientos.vencimientos': ['read'],
     'vencimientos.alertas': ['read'],
     'vencimientos.analytics': ['read'],
     'vencimientos.disponibilidad': ['read'],
     'vencimientos.search': ['read'],
+    backup_restore: [],
+    brand_safety: [],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   AGENCIA: {
     contratos: ['read'],
     campanas: ['read'],
     cunas: ['create', 'read', 'update'],
     emisiones: ['read'],
+    conciliacion: [],
     anunciantes: [],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: [],
     inventario: [],
@@ -352,6 +519,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['read'],
     vencimientos: [],
     'vencimientos.programas': [],
     'vencimientos.vencimientos': [],
@@ -359,13 +527,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': [],
     'vencimientos.disponibilidad': [],
     'vencimientos.search': [],
+    backup_restore: [],
+    brand_safety: [],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   ANUNCIANTE: {
     contratos: ['read'],
     campanas: ['read'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: [],
     anunciantes: ['read'],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: ['read'],
     inventario: [],
@@ -378,6 +560,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['read'],
     vencimientos: [],
     'vencimientos.programas': [],
     'vencimientos.vencimientos': [],
@@ -385,13 +568,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': [],
     'vencimientos.disponibilidad': [],
     'vencimientos.search': [],
+    backup_restore: [],
+    brand_safety: [],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   VIEWER: {
     contratos: ['read'],
     campanas: ['read'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: [],
     anunciantes: ['read'],
+    paquetes: ['read'],
     'equipos-ventas': ['read'],
     facturacion: ['read'],
     inventario: ['read'],
@@ -404,6 +601,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: ['read'],
     'agencias-medios': ['read'],
+    'activos-digitales': ['read'],
     vencimientos: [],
     'vencimientos.programas': [],
     'vencimientos.vencimientos': [],
@@ -411,13 +609,27 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': [],
     'vencimientos.disponibilidad': [],
     'vencimientos.search': [],
+    backup_restore: [],
+    brand_safety: [],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
   USER: {
     contratos: ['read'],
     campanas: ['read'],
     cunas: ['read'],
     emisiones: ['read'],
+    conciliacion: [],
     anunciantes: [],
+    paquetes: ['read'],
     'equipos-ventas': [],
     facturacion: [],
     inventario: [],
@@ -430,6 +642,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     dashboard: ['read'],
     analytics: [],
     'agencias-medios': ['read'],
+    'activos-digitales': ['read'],
     vencimientos: [],
     'vencimientos.programas': [],
     'vencimientos.vencimientos': [],
@@ -437,12 +650,24 @@ const ROLE_PERMISSIONS: Record<UserRole, Record<Resource, PermissionAction[]>> =
     'vencimientos.analytics': [],
     'vencimientos.disponibilidad': [],
     'vencimientos.search': [],
+    backup_restore: [],
+    brand_safety: [],
+    encryption: [],
+    health_monitoring: [],
+    sellos: [],
+    cortex: [],
+    politicas: [],
+    sso: [],
+    monitoreo: [],
+    feature_flags: [],
+    kill_switches: [],
+    sso_configurations: [],
   },
 };
 
-// ═══════════════════════════════════════════════════════════════
-// JERARQUÍA DE ROLES
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// JERARQUÃA DE ROLES
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 export const ROLE_HIERARCHY: Record<UserRole, number> = {
   SUPER_CEO: 100,
@@ -461,13 +686,13 @@ export const ROLE_HIERARCHY: Record<UserRole, number> = {
   USER: 10,
 };
 
-// ═══════════════════════════════════════════════════════════════
-// FUNCIONES DE VALIDACIÓN
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// FUNCIONES DE VALIDACIÃ“N
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 /**
- * Obtener contexto de autenticación desde la request
- * En producción, esto decodifica el JWT verificado
+ * Obtener contexto de autenticaciÃ³n desde la request
+ * En producciÃ³n, esto decodifica el JWT verificado
  */
 export function getAuthContext(request?: Request): AuthContext | null {
   if (!request) return null;
@@ -478,8 +703,8 @@ export function getAuthContext(request?: Request): AuthContext | null {
 
   if (!token) return null;
 
-  // En producción, el middleware ya verificó el JWT
-  // Aquí extraemos los datos del header que el middleware inyectó
+  // En producciÃ³n, el middleware ya verificÃ³ el JWT
+  // AquÃ­ extraemos los datos del header que el middleware inyectÃ³
   const userId = request.headers?.get?.('x-silexar-user-id');
   const role = request.headers?.get?.('x-silexar-user-role') as UserRole;
   const tenantId = request.headers?.get?.('x-silexar-tenant-id');
@@ -490,7 +715,7 @@ export function getAuthContext(request?: Request): AuthContext | null {
 }
 
 /**
- * Verificar si un usuario tiene permiso para una acción sobre un recurso
+ * Verificar si un usuario tiene permiso para una acciÃ³n sobre un recurso
  */
 export function checkPermission(
   ctx: AuthContext,
@@ -524,7 +749,7 @@ export function requireRole(
   // Verificar pertenencia directa al rol
   if (roles.includes(ctx.role as UserRole)) return true;
 
-  // Verificar jerarquía: un rol superior incluye permisos de roles inferiores
+  // Verificar jerarquÃ­a: un rol superior incluye permisos de roles inferiores
   const userLevel = ROLE_HIERARCHY[ctx.role as UserRole] ?? 0;
   const requiredMinLevel = Math.min(...roles.map(r => ROLE_HIERARCHY[r] ?? Infinity));
 
@@ -532,14 +757,14 @@ export function requireRole(
 }
 
 /**
- * Verificar si el contexto puede validar una política RBAC
+ * Verificar si el contexto puede validar una polÃ­tica RBAC
  */
 export function validatePolicy(ctx: AuthContext, policy: RBACPolicy): boolean {
   if (!ctx || !policy) return false;
 
-  // Verificar que el rol está en la lista de roles permitidos
+  // Verificar que el rol estÃ¡ en la lista de roles permitidos
   if (!policy.roles.includes(ctx.role as UserRole)) {
-    // Verificar jerarquía
+    // Verificar jerarquÃ­a
     const userLevel = ROLE_HIERARCHY[ctx.role as UserRole] ?? 0;
     const requiredMinLevel = Math.min(...policy.roles.map(r => ROLE_HIERARCHY[r] ?? Infinity));
     if (userLevel < requiredMinLevel) return false;
@@ -550,9 +775,9 @@ export function validatePolicy(ctx: AuthContext, policy: RBACPolicy): boolean {
 }
 
 /**
- * Retornar respuesta 403 Forbidden estándar
+ * Retornar respuesta 403 Forbidden estÃ¡ndar
  */
-export function forbid(message = 'No tiene permisos para realizar esta acción'): Response {
+export function forbid(message = 'No tiene permisos para realizar esta acciÃ³n'): Response {
   return new Response(
     JSON.stringify({
       success: false,
@@ -573,9 +798,9 @@ export function forbid(message = 'No tiene permisos para realizar esta acción')
 }
 
 /**
- * Retornar respuesta 401 Unauthorized estándar
+ * Retornar respuesta 401 Unauthorized estÃ¡ndar
  */
-export function unauthorized(message = 'Autenticación requerida'): Response {
+export function unauthorized(message = 'AutenticaciÃ³n requerida'): Response {
   return new Response(
     JSON.stringify({
       success: false,

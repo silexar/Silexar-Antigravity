@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🤖 SILEXAR PULSE - Contextual Wizard Assistant TIER 0
  *
  * @description Asistente contextual que guía al usuario durante
@@ -253,18 +253,18 @@ const getTipoConfig = (tipo: TipoAyuda) => {
   const configs = {
     tip: {
       icon: <Lightbulb className="w-4 h-4" />,
-      color: "bg-blue-100 text-blue-600",
-      border: "border-blue-200",
+      color: "bg-[#6888ff]/10 text-[#6888ff]",
+      border: "border-[#bec8de]",
     },
     sugerencia: {
       icon: <Sparkles className="w-4 h-4" />,
-      color: "bg-purple-100 text-purple-600",
-      border: "border-purple-200",
+      color: "bg-[#6888ff]/10 text-[#6888ff]",
+      border: "border-[#bec8de]",
     },
     advertencia: {
       icon: <AlertTriangle className="w-4 h-4" />,
-      color: "bg-amber-100 text-amber-600",
-      border: "border-amber-300",
+      color: "bg-[#6888ff]/10 text-[#6888ff]",
+      border: "border-[#bec8de]",
     },
     guia: {
       icon: <BookOpen className="w-4 h-4" />,
@@ -463,13 +463,13 @@ export default function WizardAssistant({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleFeedback(ayudaSeleccionada.id, true)}
-                className="p-1.5 hover:bg-green-100 rounded-lg text-[#9aa3b8] hover:text-green-600 transition-colors"
+                className="p-1.5 hover:bg-[#6888ff]/10 rounded-lg text-[#9aa3b8] hover:text-[#6888ff] transition-colors"
               >
                 <ThumbsUp className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleFeedback(ayudaSeleccionada.id, false)}
-                className="p-1.5 hover:bg-red-100 rounded-lg text-[#9aa3b8] hover:text-red-600 transition-colors"
+                className="p-1.5 hover:bg-[#dfeaff] rounded-lg text-[#9aa3b8] hover:text-[#9aa3b8] transition-colors"
               >
                 <ThumbsDown className="w-4 h-4" />
               </button>

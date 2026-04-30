@@ -1,5 +1,5 @@
-/**
- * 💾 Backup Automático - Sistema de Respaldo Enterprise 2050
+﻿/**
+ * ðŸ’¾ Backup Automático - Sistema de Respaldo Enterprise 2050
  *
  * Sistema de backup y versionado con:
  * - Backup automático antes de acciones críticas
@@ -195,22 +195,22 @@ export function BackupAutomatico() {
 
   const getTipoIcon = (tipo: string) => {
     switch (tipo) {
-      case 'creacion': return <CheckCircle className="h-4 w-4 text-green-600" />
-      case 'edicion': return <History className="h-4 w-4 text-blue-600" />
-      case 'programacion': return <Clock className="h-4 w-4 text-purple-600" />
-      case 'aprobacion': return <CheckCircle className="h-4 w-4 text-emerald-600" />
-      case 'restauracion': return <RotateCcw className="h-4 w-4 text-orange-600" />
+      case 'creacion': return <CheckCircle className="h-4 w-4 text-[#6888ff]" />
+      case 'edicion': return <History className="h-4 w-4 text-[#6888ff]" />
+      case 'programacion': return <Clock className="h-4 w-4 text-[#6888ff]" />
+      case 'aprobacion': return <CheckCircle className="h-4 w-4 text-[#6888ff]" />
+      case 'restauracion': return <RotateCcw className="h-4 w-4 text-[#6888ff]" />
       default: return <History className="h-4 w-4" />
     }
   }
 
   const getTipoBadge = (tipo: string) => {
     switch (tipo) {
-      case 'creacion': return <Badge className="bg-green-100 text-green-700">Creación</Badge>
-      case 'edicion': return <Badge className="bg-blue-100 text-blue-700">Edición</Badge>
-      case 'programacion': return <Badge className="bg-purple-100 text-purple-700">Programación</Badge>
-      case 'aprobacion': return <Badge className="bg-emerald-100 text-emerald-700">Aprobación</Badge>
-      case 'restauracion': return <Badge className="bg-orange-100 text-orange-700">Restauración</Badge>
+      case 'creacion': return <Badge className="bg-[#6888ff]/10 text-[#6888ff]">Creación</Badge>
+      case 'edicion': return <Badge className="bg-[#6888ff]/10 text-[#6888ff]">Edición</Badge>
+      case 'programacion': return <Badge className="bg-[#6888ff]/10 text-[#6888ff]">Programación</Badge>
+      case 'aprobacion': return <Badge className="bg-[#6888ff]/10 text-[#6888ff]">Aprobación</Badge>
+      case 'restauracion': return <Badge className="bg-[#6888ff]/10 text-[#6888ff]">Restauración</Badge>
       default: return null
     }
   }
@@ -235,28 +235,28 @@ export function BackupAutomatico() {
       <Card className="border-2 border-blue-100">
         <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50">
           <CardTitle className="text-xl flex items-center gap-2">
-            <Database className="h-6 w-6 text-blue-600" />
-            💾 BACKUP AUTOMÁTICO - VERSIONADO CAMPAÑAS
+            <Database className="h-6 w-6 text-[#6888ff]" />
+            ðŸ’¾ BACKUP AUTOMÁTICO - VERSIONADO CAMPAÁ‘AS
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
           {/* Stats */}
           <div className="grid grid-cols-4 gap-3">
             <div className="bg-slate-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-slate-700">{stats.totalVersiones}</div>
-              <div className="text-xs text-slate-500">Versiones</div>
+              <div className="text-2xl font-bold text-[#69738c]">{stats.totalVersiones}</div>
+              <div className="text-xs text-[#9aa3b8]">Versiones</div>
             </div>
-            <div className="bg-blue-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-blue-700">{stats.tamanioTotalMB}MB</div>
-              <div className="text-xs text-blue-600">Tamaño Total</div>
+            <div className="bg-[#6888ff]/08 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-[#6888ff]">{stats.tamanioTotalMB}MB</div>
+              <div className="text-xs text-[#6888ff]">Tamaño Total</div>
             </div>
-            <div className="bg-green-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-700">{stats.ultimoBackup}</div>
-              <div className="text-xs text-green-600">Último Backup</div>
+            <div className="bg-[#6888ff]/08 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-[#6888ff]">{stats.ultimoBackup}</div>
+              <div className="text-xs text-[#6888ff]">Ášltimo Backup</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-purple-700">{config.retencionDias}d</div>
-              <div className="text-xs text-purple-600">Retención</div>
+            <div className="bg-[#6888ff]/08 rounded-lg p-3 text-center">
+              <div className="text-2xl font-bold text-[#6888ff]">{config.retencionDias}d</div>
+              <div className="text-xs text-[#6888ff]">Retención</div>
             </div>
           </div>
 
@@ -266,15 +266,15 @@ export function BackupAutomatico() {
               <div className="flex items-center gap-4 text-sm">
                 <span className="flex items-center gap-1">
                   {config.backupAutomatico ? (
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-[#6888ff]" />
                   ) : (
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <AlertTriangle className="h-4 w-4 text-[#6888ff]" />
                   )}
                   Auto: {config.backupAutomatico ? 'ON' : 'OFF'}
                 </span>
                 <span>Intervalo: {config.intervaloMinutos}min</span>
-                <span>Compresión: {config.compresion ? '✅' : '❌'}</span>
-                <span>Encriptación: {config.encriptacion ? '🔐' : '❌'}</span>
+                <span>Compresión: {config.compresion ? 'œ…' : 'Œ'}</span>
+                <span>Encriptación: {config.encriptacion ? 'ðŸ”' : 'Œ'}</span>
               </div>
               <Button size="sm" variant="outline" onClick={handleCrearBackup} disabled={creandoBackup}>
                 {creandoBackup ? (
@@ -294,7 +294,7 @@ export function BackupAutomatico() {
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <History className="h-5 w-5" />
-            📜 HISTORIAL DE VERSIONES
+            ðŸ“œ HISTORIAL DE VERSIONES
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -315,11 +315,11 @@ export function BackupAutomatico() {
                 {versiones.map(version => (
                   <tr
                     key={version.id}
-                    className={`border-b hover:bg-slate-50 ${version.esActual ? 'bg-green-50' : ''}`}
+                    className={`border-b hover:bg-slate-50 ${version.esActual ? 'bg-[#6888ff]/08' : ''}`}
                   >
                     <td className="px-3 py-2">
                       <span className="font-mono font-bold">v{version.version}</span>
-                      {version.esActual && <Badge className="ml-1 bg-green-600 text-white text-xs">Actual</Badge>}
+                      {version.esActual && <Badge className="ml-1 bg-[#6888ff] text-white text-xs">Actual</Badge>}
                     </td>
                     <td className="px-3 py-2 text-gray-600">
                       <div>{version.fechaCreacion}</div>
@@ -350,7 +350,7 @@ export function BackupAutomatico() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 text-orange-600"
+                            className="h-7 w-7 text-[#6888ff]"
                             title="Restaurar"
                             onClick={() => handleRestaurar(version.id)}
                             disabled={restaurando === version.id}
@@ -376,13 +376,13 @@ export function BackupAutomatico() {
       <div className="flex gap-3">
         <Button variant="outline" className="gap-2">
           <Archive className="h-4 w-4" />
-          📦 Exportar Todas
+          ðŸ“¦ Exportar Todas
         </Button>
         <Button variant="outline" className="gap-2">
           <RefreshCw className="h-4 w-4" />
-          🔄 Sincronizar Cloud
+          ðŸ”„ Sincronizar Cloud
         </Button>
-        <Button variant="ghost" className="gap-2 text-red-600">
+        <Button variant="ghost" className="gap-2 text-[#6888ff]">
           <Trash2 className="h-4 w-4" />
           Limpiar Antiguas
         </Button>

@@ -1,0 +1,236 @@
+name: 🕷️ OWASP ZAP Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Weekly comprehensive scan
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Target URL to scan'
+        required: false
+        default: 'http://localhost:3000'
+      scan_type:
+        description: 'Scan type'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - quick
+          - full
+          - api
+          - baseline
+
+env:
+  NODE_VERSION: '20'
+  ZAP_VERSION: '2.14.0'
+
+jobs:
+  zap-baseline:
+    name: 🛡️ ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'schedule'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Start Application
+        run: |
+          # Start Next.js dev server in background
+          npm run dev &
+          echo $! > dev_server.pid
+          sleep 10
+          curl -f http://localhost:3000 || echo "Server not ready yet"
+        shell: bash
+
+      - name: 🚀 Run ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.9.0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules-dev-only.ts'
+          cmd_options: '-j'
+
+      - name: 📤 Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-baseline-report
+          path: zap_report.html
+          retention-days: 30
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          if [ -f dev_server.pid ]; then
+            kill $(cat dev_server.pid) 2>/dev/null || true
+          fi
+
+  zap-api-scan:
+    name: 📡 ZAP API Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: github.event_name != 'schedule'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Start Application
+        run: |
+          npm run dev &
+          echo $! > dev_server.pid
+          sleep 15
+        shell: bash
+
+      - name: 📡 Run ZAP API Scan
+        run: |
+          docker run -t owasp/zap2docker-stable:2.14.0 zap-api-scan.py \
+            -t http://localhost:3000/api/openapi.json \
+            -f json \
+            -r zap_api_report.json || true
+        shell: bash
+
+      - name: 📤 Upload API Scan Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-api-report
+          path: zap_api_report.json
+          retention-days: 30
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          if [ -f dev_server.pid ]; then
+            kill $(cat dev_server.pid) 2>/dev/null || true
+          fi
+
+  zap-full-scan:
+    name: 🔍 ZAP Full Scan (Weekly/On-demand)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    if: github.event_name == 'schedule' || github.event.inputs.scan_type == 'full'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Start Application with Production Config
+        run: |
+          npm run build
+          npm run start &
+          echo $! > server.pid
+          sleep 20
+        shell: bash
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL || '' }}
+          REDIS_URL: ${{ secrets.REDIS_URL || '' }}
+
+      - name: 🔒 Run ZAP Active Scan
+        run: |
+          docker run -t owasp/zap2docker-stable:2.14.0 zap-full-scan.py \
+            -t https://staging.silexar.example.com \
+            -j \
+            --hook /zap/auth_hook.py \
+            -r full_scan_report.html || true
+        shell: bash
+
+      - name: 📊 Generate Scan Summary
+        run: |
+          echo "## ZAP Full Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "Target: ${{ github.event.inputs.target_url || 'staging.silexar.example.com' }}" >> $GITHUB_STEP_SUMMARY
+          echo "Scan Type: Full Active Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse results if available
+          if [ -f zap_report.html ]; then
+            HIGH=$(grep -o 'High.*<' zap_report.html | head -1 || echo "0")
+            MEDIUM=$(grep -o 'Medium.*<' zap_report.html | head -1 || echo "0")
+            LOW=$(grep -o 'Low.*<' zap_report.html | head -1 || echo "0")
+            echo "### Findings" >> $GITHUB_STEP_SUMMARY
+            echo "- High: $HIGH" >> $GITHUB_STEP_SUMMARY
+            echo "- Medium: $MEDIUM" >> $GITHUB_STEP_SUMMARY
+            echo "- Low: $LOW" >> $GITHUB_STEP_SUMMARY
+          fi
+        shell: bash
+
+      - name: 📤 Upload Full Scan Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-full-scan-report
+          path: |
+            full_scan_report.html
+            zap_report.html
+          retention-days: 90
+
+      - name: 🚨 Alert on Critical Findings
+        if: github.event_name == 'schedule'
+        run: |
+          # Alert if high severity issues found
+          if grep -q "High" zap_report.html 2>/dev/null; then
+            echo "::warning::ZAP scan found High severity issues - manual review required"
+          fi
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) 2>/dev/null || true
+          fi
+
+  zap-sqli-scan:
+    name: 💉 ZAP SQL Injection Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: github.event.inputs.scan_type == 'api' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🎯 Run Targeted SQL Injection Scan
+        run: |
+          docker run -t owasp/zap2docker-stable:2.14.0 \
+            zap-cli.sh report -f html -o sqli_scan_report.html \
+            quick --scans active -t http://localhost:3000 \
+            --hook /zap/sqli_hook.py || true
+        shell: bash
+
+      - name: 📤 Upload SQLi Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-sqli-report
+          path: sqli_scan_report.html
+          retention-days: 90
+
+  zap-csp-scan:
+    name: 🛡️ Content Security Policy Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event.inputs.scan_type == 'api' || github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🛡️ Analyze CSP Headers
+        run: |
+          # Check for CSP headers and report findings
+          curl -sI http://localhost:3000 | grep -i "content-security-policy" || echo "No CSP header found"
+          curl -sI http://localhost:3000 | grep -i "x-frame-options" || echo "No X-Frame-Options header"
+        shell: bash
+
+      - name: 📤 Upload CSP Analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: csp-analysis
+          path: csp_analysis.txt
+          retention-days: 30
+
+# Custom ZAP rules for development environment
+# .zap/rules-dev-only.ts

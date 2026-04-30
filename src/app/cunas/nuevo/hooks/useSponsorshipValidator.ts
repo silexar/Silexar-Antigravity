@@ -41,8 +41,8 @@ interface ValidationContext {
 export function useSponsorshipValidator(context: ValidationContext) {
   const [isValidating, setIsValidating] = useState(false);
 
-  // Mock Service: VencimientosService
-  const vencimientosService = {
+  // Mock Service: vencimientoservice
+  const vencimientoservice = {
     findSponsorship: async (params: { clientName: string }) => {
        // Simular búsqueda exitosa para "Cliente Demo"
        if (params.clientName === 'Cliente Demo' || params.clientName.includes('SuperMax')) {
@@ -71,9 +71,9 @@ export function useSponsorshipValidator(context: ValidationContext) {
     let score = 100;
 
     // 1. Búsqueda de asociación (Cross-Validation)
-    const sponsorship = await vencimientosService.findSponsorship({
+    const sponsorship = await vencimientoservice.findSponsorship({
       clientName: context.clientName,
-    } as Parameters<typeof vencimientosService.findSponsorship>[0]);
+    } as Parameters<typeof vencimientoservice.findSponsorship>[0]);
 
     if (!sponsorship) {
       items.push({

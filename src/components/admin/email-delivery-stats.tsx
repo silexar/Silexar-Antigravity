@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📨 SILEXAR PULSE - Email Delivery Stats
+ * ðŸ“¨ SILEXAR PULSE - Email Delivery Stats
  * Estadísticas de entrega de email
  * 
  * @description Email Analytics:
@@ -16,9 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Mail,
   Send,
@@ -83,10 +82,10 @@ export function EmailDeliveryStats() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-500/20 text-green-400'
-      case 'degraded': return 'bg-yellow-500/20 text-yellow-400'
-      case 'down': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'healthy': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'degraded': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'down': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -98,8 +97,8 @@ export function EmailDeliveryStats() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Email Stats...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Email Stats...</p>
         </div>
       </div>
     )
@@ -114,8 +113,8 @@ export function EmailDeliveryStats() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Mail className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Mail className="w-5 h-5 text-[#6888ff]" />
           Email Delivery Stats
         </h3>
         <div className="flex items-center gap-2">
@@ -123,9 +122,8 @@ export function EmailDeliveryStats() {
             <button
               key={tf}
               onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1.5 text-sm rounded ${
-                timeframe === tf ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'
-              }`}
+              className={`px-3 py-1.5 text-sm rounded ${timeframe === tf ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                }`}
             >
               {tf === 'today' ? 'Hoy' : tf === 'week' ? 'Semana' : 'Mes'}
             </button>
@@ -135,71 +133,69 @@ export function EmailDeliveryStats() {
 
       {/* Main Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Send className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-white">{(stats.sent / 1000).toFixed(1)}K</p>
-          <p className="text-xs text-slate-400">Enviados</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-400">{deliveryRate}%</p>
-          <p className="text-xs text-slate-400">Delivery Rate</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <Activity className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-purple-400">{openRate}%</p>
-          <p className="text-xs text-slate-400">Open Rate</p>
-        </NeuromorphicCard>
-        <NeuromorphicCard variant="embossed" className="p-4 text-center">
-          <TrendingUp className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-cyan-400">{clickRate}%</p>
-          <p className="text-xs text-slate-400">Click Rate</p>
-        </NeuromorphicCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <Send className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#69738c]">{(stats.sent / 1000).toFixed(1)}K</p>
+          <p className="text-xs text-[#9aa3b8]">Enviados</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <CheckCircle className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{deliveryRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Delivery Rate</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <Activity className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{openRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Open Rate</p>
+        </NeuCard>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <TrendingUp className="w-6 h-6 text-[#6888ff] mx-auto mb-2" />
+          <p className="text-2xl font-bold text-[#6888ff]">{clickRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Click Rate</p>
+        </NeuCard>
       </div>
 
       {/* Detailed Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-lg font-bold text-green-400">{stats.delivered.toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Entregados</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{stats.delivered.toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Entregados</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-lg font-bold text-purple-400">{stats.opened.toLocaleString()}</p>
-          <p className="text-xs text-slate-400">Abiertos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{stats.opened.toLocaleString()}</p>
+          <p className="text-xs text-[#9aa3b8]">Abiertos</p>
         </div>
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-lg font-bold text-red-400">{bounceRate}%</p>
-          <p className="text-xs text-slate-400">Bounce Rate</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{bounceRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Bounce Rate</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg text-center">
-          <p className="text-lg font-bold text-yellow-400">{stats.complained}</p>
-          <p className="text-xs text-slate-400">Spam Reports</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{stats.complained}</p>
+          <p className="text-xs text-[#9aa3b8]">Spam Reports</p>
         </div>
       </div>
 
       {/* Provider Status */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <Activity className="w-4 h-4 text-cyan-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+          <Activity className="w-4 h-4 text-[#6888ff]" />
           Email Providers Status
         </h4>
         <div className="space-y-3">
           {providers.map(provider => (
-            <div key={provider.name} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={provider.name} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
-                  provider.status === 'healthy' ? 'bg-green-400' :
-                  provider.status === 'degraded' ? 'bg-yellow-400' : 'bg-red-400'
-                }`} />
-                <span className="text-white">{provider.name}</span>
+                <div className={`w-3 h-3 rounded-full ${provider.status === 'healthy' ? 'bg-[#6888ff]' :
+                  provider.status === 'degraded' ? 'bg-[#6888ff]' : 'bg-[#6888ff]'
+                  }`} />
+                <span className="text-[#69738c]">{provider.name}</span>
               </div>
               <div className="flex items-center gap-6">
-                <span className={`text-sm ${
-                  provider.deliveryRate >= 99 ? 'text-green-400' : 'text-yellow-400'
-                }`}>
+                <span className={`text-sm ${provider.deliveryRate >= 99 ? 'text-[#6888ff]' : 'text-[#6888ff]'
+                  }`}>
                   {provider.deliveryRate}% delivery
                 </span>
-                <span className="text-sm text-slate-400">
+                <span className="text-sm text-[#9aa3b8]">
                   {provider.avgLatency}s latency
                 </span>
                 <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(provider.status)}`}>
@@ -209,16 +205,16 @@ export function EmailDeliveryStats() {
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Warnings */}
       {parseFloat(bounceRate) > 2 && (
-        <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-yellow-400" />
+        <div className="p-4 bg-[#6888ff]/10 border border-yellow-500/30 rounded-lg flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-[#6888ff]" />
           <div>
-            <span className="text-yellow-400 font-medium">Bounce rate alto detectado</span>
-            <p className="text-sm text-slate-400">
-              Tu bounce rate de {bounceRate}% está por encima del límite recomendado (2%). 
+            <span className="text-[#6888ff] font-medium">Bounce rate alto detectado</span>
+            <p className="text-sm text-[#9aa3b8]">
+              Tu bounce rate de {bounceRate}% está por encima del límite recomendado (2%).
               Considera limpiar tu lista de emails.
             </p>
           </div>

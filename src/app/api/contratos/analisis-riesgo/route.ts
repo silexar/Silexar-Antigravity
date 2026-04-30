@@ -8,11 +8,19 @@
  * @tier TIER_0_FORTUNE_10
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { z } from 'zod'
 import { logger } from '@/lib/observability';
-import { apiSuccess, apiServerError } from '@/lib/api/response';
+import { apiSuccess, apiServerError, apiError } from '@/lib/api/response';
 import { withApiRoute } from '@/lib/api/with-api-route';
-import { withTenantContext } from '@/lib/db/tenant-context';
+import { auditLogger } from '@/lib/security/audit-logger';
+import { AuditEventType } from '@/lib/security/audit-types';
+
+// ─── Zod Schemas ──────────────────────────────────────────────────────────────
+
+const analisisRiesgoQuerySchema = z.object({
+  anuncianteId: z.string().uuid('UUID inválido para anuncianteId'),
+}).strict()
 
 // Mock de análisis de riesgo basado en anunciante
 const anunciantesRiesgo: Record<string, {
@@ -147,60 +155,93 @@ const anunciantesRiesgo: Record<string, {
 export const GET = withApiRoute(
   { resource: 'contratos', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
+    const tenantId = ctx.tenantId
+    const userId = ctx.userId
+
     try {
-      return await withTenantContext(ctx.tenantId, async () => {
-        const { searchParams } = new URL(req.url);
-        const anuncianteId = searchParams.get('anuncianteId');
-        
-        if (!anuncianteId) {
-          return NextResponse.json(
-            { success: false, error: 'Se requiere anuncianteId' },
-            { status: 400 }
-          );
+      const { searchParams } = new URL(req.url);
+
+      // Validar query parameters con Zod
+      const queryParams = {
+        anuncianteId: searchParams.get('anuncianteId') || undefined,
+      }
+
+      const parseResult = analisisRiesgoQuerySchema.safeParse(queryParams)
+      if (!parseResult.success) {
+        return apiError(
+          'VALIDATION_ERROR',
+          'Parámetros de consulta inválidos',
+          400,
+          parseResult.error.flatten().fieldErrors
+        ) as unknown as NextResponse
+      }
+
+      const { anuncianteId } = parseResult.data
+
+      // Simular delay de procesamiento de IA
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Buscar análisis o generar uno por defecto
+      const analisis = anunciantesRiesgo[anuncianteId] || {
+        score: 500,
+        maxScore: 1000,
+        nivelRiesgo: 'medio' as const,
+        factoresPositivos: ['Sin historial negativo conocido'],
+        factoresNegativos: ['Cliente nuevo sin historial'],
+        recomendaciones: {
+          terminosPago: 15,
+          limiteCredito: 10000000,
+          descuentoMaximo: 10,
+          requiereGarantia: true
+        },
+        indicadores: {
+          historialPagos: 0,
+          tendenciaFacturacion: 'estable' as const,
+          industria: 'estable' as const,
+          contratosExitosos: 0
+        },
+        confianza: 50
+      };
+
+      // Log de auditoría para lectura de análisis de riesgo
+      auditLogger.log({
+        type: AuditEventType.DATA_READ,
+        userId,
+        metadata: {
+          resource: 'contratos',
+          resourceId: 'analisis-riesgo',
+          tenantId,
+          anuncianteId
         }
-        
-        // Simular delay de procesamiento de IA
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Buscar análisis o generar uno por defecto
-        const analisis = anunciantesRiesgo[anuncianteId] || {
-          score: 500,
-          maxScore: 1000,
-          nivelRiesgo: 'medio' as const,
-          factoresPositivos: ['Sin historial negativo conocido'],
-          factoresNegativos: ['Cliente nuevo sin historial'],
-          recomendaciones: {
-            terminosPago: 15,
-            limiteCredito: 10000000,
-            descuentoMaximo: 10,
-            requiereGarantia: true
-          },
-          indicadores: {
-            historialPagos: 0,
-            tendenciaFacturacion: 'estable' as const,
-            industria: 'estable' as const,
-            contratosExitosos: 0
-          },
-          confianza: 50
-        };
-        
-        return NextResponse.json({
-          success: true,
-          data: {
-            ...analisis,
-            fechaActualizacion: new Date().toISOString(),
-            anuncianteId,
-            consultadoPor: ctx.userId
-          }
-        });
-      });
+      })
+
+      return apiSuccess({
+        ...analisis,
+        fechaActualizacion: new Date().toISOString(),
+        anuncianteId,
+        consultadoPor: userId
+      }, 200) as unknown as NextResponse
+
     } catch (error) {
-      logger.error('[API/Contratos/AnalisisRiesgo] Error:', error instanceof Error ? error : undefined, { 
+      logger.error('[API/Contratos/AnalisisRiesgo] Error:', error instanceof Error ? error : undefined, {
         module: 'analisis-riesgo',
         userId: ctx.userId,
         tenantId: ctx.tenantId
       });
-      return apiServerError();
+
+      // Log de auditoría para fallo
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          resource: 'contratos',
+          resourceId: 'analisis-riesgo',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
+      return apiServerError() as unknown as NextResponse
     }
   }
 );

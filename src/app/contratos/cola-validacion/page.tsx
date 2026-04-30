@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🤖 SILEXAR PULSE - AI Contract Validation Queue Page TIER 0
  * 
  * @description Panel para validar contratos creados automáticamente
@@ -102,14 +102,14 @@ const neuro = {
     transition-all duration-200
   `,
   btnSuccess: `
-    bg-gradient-to-br from-green-500 to-emerald-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
     transition-all duration-200
   `,
   btnDanger: `
-    bg-gradient-to-br from-red-500 to-rose-600
+    bg-gradient-to-br from-[#6888ff] to-[#5572ee]
     text-white font-semibold rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
     hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
@@ -197,10 +197,10 @@ const mockSolicitudes: SolicitudIA[] = [
 
 const getOrigenIcon = (origen: OrigenSolicitud) => {
   switch (origen) {
-    case 'WHATSAPP': return <MessageSquare className="w-5 h-5 text-green-600" />;
-    case 'AUDIO': return <Mic className="w-5 h-5 text-purple-600" />;
-    case 'DOCUMENTO': return <FileText className="w-5 h-5 text-blue-600" />;
-    case 'EMAIL': return <Mail className="w-5 h-5 text-red-600" />;
+    case 'WHATSAPP': return <MessageSquare className="w-5 h-5 text-[#6888ff]" />;
+    case 'AUDIO': return <Mic className="w-5 h-5 text-[#6888ff]" />;
+    case 'DOCUMENTO': return <FileText className="w-5 h-5 text-[#6888ff]" />;
+    case 'EMAIL': return <Mail className="w-5 h-5 text-[#9aa3b8]" />;
     case 'CHAT': return <MessageCircle className="w-5 h-5 text-[#6888ff]" />;
   }
 };
@@ -216,9 +216,9 @@ const getOrigenLabel = (origen: OrigenSolicitud) => {
 };
 
 const getConfianzaColor = (confianza: number) => {
-  if (confianza >= 85) return 'text-green-600 bg-green-100';
-  if (confianza >= 70) return 'text-amber-600 bg-amber-100';
-  return 'text-red-600 bg-red-100';
+  if (confianza >= 85) return 'text-[#6888ff] bg-[#6888ff]/10';
+  if (confianza >= 70) return 'text-[#6888ff] bg-[#6888ff]/10';
+  return 'text-[#9aa3b8] bg-[#dfeaff]';
 };
 
 const formatTimeAgo = (date: Date) => {
@@ -257,9 +257,9 @@ const SolicitudCard: React.FC<{
           {/* Origen e Info */}
           <div className="flex items-start gap-4">
             <div className={`p-3 rounded-xl ${
-              solicitud.origen === 'WHATSAPP' ? 'bg-green-100' :
-              solicitud.origen === 'AUDIO' ? 'bg-purple-100' :
-              solicitud.origen === 'DOCUMENTO' ? 'bg-blue-100' :
+              solicitud.origen === 'WHATSAPP' ? 'bg-[#6888ff]/10' :
+              solicitud.origen === 'AUDIO' ? 'bg-[#6888ff]/10' :
+              solicitud.origen === 'DOCUMENTO' ? 'bg-[#6888ff]/10' :
               'bg-[#dfeaff]'
             }`}>
               {getOrigenIcon(solicitud.origen)}
@@ -268,9 +268,9 @@ const SolicitudCard: React.FC<{
             <div>
               <div className="flex items-center gap-2">
                 <span className={`${neuro.badge} ${
-                  solicitud.origen === 'WHATSAPP' ? 'bg-green-100 text-green-700' :
-                  solicitud.origen === 'AUDIO' ? 'bg-purple-100 text-purple-700' :
-                  solicitud.origen === 'DOCUMENTO' ? 'bg-blue-100 text-blue-700' :
+                  solicitud.origen === 'WHATSAPP' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                  solicitud.origen === 'AUDIO' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                  solicitud.origen === 'DOCUMENTO' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
                   'bg-[#dfeaff] text-[#69738c]'
                 }`}>
                   {getOrigenLabel(solicitud.origen)}
@@ -310,7 +310,7 @@ const SolicitudCard: React.FC<{
         {/* Quick info */}
         <div className="mt-4 flex flex-wrap gap-3">
           {solicitud.datosExtraidos.mediosDetectados?.map(medio => (
-            <span key={medio} className={`${neuro.badge} bg-indigo-100 text-indigo-700`}>
+            <span key={medio} className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
               {medio}
             </span>
           ))}
@@ -320,7 +320,7 @@ const SolicitudCard: React.FC<{
             </span>
           )}
           {solicitud.datosExtraidos.descuentoMencionado && (
-            <span className={`${neuro.badge} bg-amber-100 text-amber-700`}>
+            <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
               {solicitud.datosExtraidos.descuentoMencionado}% dto
             </span>
           )}
@@ -328,7 +328,7 @@ const SolicitudCard: React.FC<{
 
         {/* Campos faltantes */}
         {solicitud.camposFaltantes.length > 0 && (
-          <div className="mt-3 flex items-center gap-2 text-amber-600 text-sm">
+          <div className="mt-3 flex items-center gap-2 text-[#6888ff] text-sm">
             <AlertCircle className="w-4 h-4" />
             Campos faltantes: {solicitud.camposFaltantes.join(', ')}
           </div>
@@ -485,7 +485,7 @@ export default function ColaValidacionIA() {
             <div>
               <h1 className="text-3xl font-bold text-[#69738c] flex items-center gap-3">
                 Cola de Validación IA
-                <span className={`${neuro.badge} bg-indigo-100 text-indigo-700 text-lg`}>
+                <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff] text-lg`}>
                   {solicitudes.length}
                 </span>
               </h1>
@@ -498,10 +498,10 @@ export default function ColaValidacionIA() {
           {/* Estadísticas rápidas */}
           <div className="grid grid-cols-4 gap-4 mt-6">
             {[
-              { label: 'WhatsApp', count: solicitudes.filter(s => s.origen === 'WHATSAPP').length, icon: <MessageSquare className="w-5 h-5" />, color: 'bg-green-100 text-green-600' },
-              { label: 'Audio', count: solicitudes.filter(s => s.origen === 'AUDIO').length, icon: <Mic className="w-5 h-5" />, color: 'bg-purple-100 text-purple-600' },
-              { label: 'Documentos', count: solicitudes.filter(s => s.origen === 'DOCUMENTO').length, icon: <FileText className="w-5 h-5" />, color: 'bg-blue-100 text-blue-600' },
-              { label: 'Emails', count: solicitudes.filter(s => s.origen === 'EMAIL').length, icon: <Mail className="w-5 h-5" />, color: 'bg-red-100 text-red-600' }
+              { label: 'WhatsApp', count: solicitudes.filter(s => s.origen === 'WHATSAPP').length, icon: <MessageSquare className="w-5 h-5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+              { label: 'Audio', count: solicitudes.filter(s => s.origen === 'AUDIO').length, icon: <Mic className="w-5 h-5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+              { label: 'Documentos', count: solicitudes.filter(s => s.origen === 'DOCUMENTO').length, icon: <FileText className="w-5 h-5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+              { label: 'Emails', count: solicitudes.filter(s => s.origen === 'EMAIL').length, icon: <Mail className="w-5 h-5" />, color: 'bg-[#dfeaff] text-[#9aa3b8]' }
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}

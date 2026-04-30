@@ -27,7 +27,7 @@ export const MobileAlertasPanel: React.FC = () => {
     },
     {
       id: "a3",
-      tipo: "vencimiento",
+      tipo: "vencimientos",
       prioridad: "media",
       mensaje: "Derechos musicales expiran en 48 hrs.",
       cunaCodigo: "SPX-045",

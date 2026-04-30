@@ -138,22 +138,15 @@ export default function CreateAnuncianteModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#F0EDE8] border-slate-700">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#dfeaff] border-white/40 shadow-[12px_12px_24px_#bec8de,-12px_-12px_24px_#ffffff]">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white flex items-center gap-3">
+          <DialogTitle className="text-2xl text-[#69738c] flex items-center gap-3">
             <Building2 className="h-6 w-6 text-blue-400" />
             Crear Nuevo Anunciante
             {riskEvaluation && (
-              <Badge className={`ml-2 ${
-                riskEvaluation.riskScore.category === 'AAA' ? 'bg-green-500' :
-                riskEvaluation.riskScore.category === 'AA' ? 'bg-green-400' :
-                riskEvaluation.riskScore.category === 'A' ? 'bg-lime-500' :
-                riskEvaluation.riskScore.category === 'BBB' ? 'bg-yellow-500' :
-                riskEvaluation.riskScore.category === 'BB' ? 'bg-orange-500' :
-                'bg-red-500'
-              } text-white`}>
-                {riskEvaluation.riskScore.category} - {riskEvaluation.riskScore.score}
-              </Badge>
+              <Badge className="ml-2 bg-[#6888ff]/15 text-[#6888ff] shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff] rounded-full px-3 py-1 text-xs font-semibold">
+              {riskEvaluation.riskScore.category} - {riskEvaluation.riskScore.score}
+            </Badge>
             )}
           </DialogTitle>
         </DialogHeader>
@@ -161,52 +154,52 @@ export default function CreateAnuncianteModal({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Columna Izquierda - Datos Corporativos */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-white flex items-center gap-2">
+            <h3 className="text-lg font-medium text-[#69738c] flex items-center gap-2">
               <Building2 className="h-5 w-5 text-blue-400" />
               Datos Corporativos
             </h3>
             
             <div className="space-y-3">
               <div>
-                <Label htmlFor="rut" className="text-slate-300">RUT *</Label>
+                <Label htmlFor="rut" className="text-[#9aa3b8]">RUT *</Label>
                 <Input
                   id="rut"
                   value={formData.rut}
                   onChange={(e) => handleInputChange('rut', e.target.value)}
                   placeholder="12.345.678-9"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="razonSocial" className="text-slate-300">Razón Social *</Label>
+                <Label htmlFor="razonSocial" className="text-[#9aa3b8]">Razón Social *</Label>
                 <Input
                   id="razonSocial"
                   value={formData.razonSocial}
                   onChange={(e) => handleInputChange('razonSocial', e.target.value)}
                   placeholder="Empresa S.A."
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="nombreFantasia" className="text-slate-300">Nombre Fantasía</Label>
+                <Label htmlFor="nombreFantasia" className="text-[#9aa3b8]">Nombre Fantasía</Label>
                 <Input
                   id="nombreFantasia"
                   value={formData.nombreFantasia}
                   onChange={(e) => handleInputChange('nombreFantasia', e.target.value)}
                   placeholder="Marca Comercial"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="industria" className="text-slate-300">Industria *</Label>
+                <Label htmlFor="industria" className="text-[#9aa3b8]">Industria *</Label>
                 <Select onValueChange={(value) => handleInputChange('industria', value)}>
-                  <SelectTrigger className="bg-slate-800 border-slate-600 text-white">
+                  <SelectTrigger className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full">
                     <SelectValue placeholder="Seleccionar industria" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-slate-600">
+                  <SelectContent className="bg-[#dfeaff] border-white/40 shadow-[8px_8px_16px_#bec8de,-8px_-8px_16px_#ffffff]">
                     <SelectItem value="Banca y Finanzas">Banca y Finanzas</SelectItem>
                     <SelectItem value="Retail">Retail</SelectItem>
                     <SelectItem value="Tecnología">Tecnología</SelectItem>
@@ -220,25 +213,25 @@ export default function CreateAnuncianteModal({
               </div>
 
               <div>
-                <Label htmlFor="giroComercial" className="text-slate-300">Giro Comercial</Label>
+                <Label htmlFor="giroComercial" className="text-[#9aa3b8]">Giro Comercial</Label>
                 <Textarea
                   id="giroComercial"
                   value={formData.giroComercial}
                   onChange={(e) => handleInputChange('giroComercial', e.target.value)}
                   placeholder="Descripción del giro comercial"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                   rows={2}
                 />
               </div>
 
               <div>
-                <Label htmlFor="direccion" className="text-slate-300">Dirección</Label>
+                <Label htmlFor="direccion" className="text-[#9aa3b8]">Dirección</Label>
                 <Input
                   id="direccion"
                   value={formData.direccion}
                   onChange={(e) => handleInputChange('direccion', e.target.value)}
                   placeholder="Dirección completa"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
             </div>
@@ -246,48 +239,48 @@ export default function CreateAnuncianteModal({
 
           {/* Columna Derecha - Contacto y Evaluación */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-white flex items-center gap-2">
-              <User className="h-5 w-5 text-green-400" />
+            <h3 className="text-lg font-medium text-[#69738c] flex items-center gap-2">
+              <User className="h-5 w-5 text-[#6888ff]" />
               Contacto Principal
             </h3>
             
             <div className="space-y-3">
               <div>
-                <Label htmlFor="contactoPrincipal" className="text-slate-300">Nombre Contacto *</Label>
+                <Label htmlFor="contactoPrincipal" className="text-[#9aa3b8]">Nombre Contacto *</Label>
                 <Input
                   id="contactoPrincipal"
                   value={formData.contactoPrincipal}
                   onChange={(e) => handleInputChange('contactoPrincipal', e.target.value)}
                   placeholder="Nombre del contacto"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="email" className="text-slate-300">Email *</Label>
+                <Label htmlFor="email" className="text-[#9aa3b8]">Email *</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="contacto@empresa.cl"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="telefono" className="text-slate-300">Teléfono</Label>
+                <Label htmlFor="telefono" className="text-[#9aa3b8]">Teléfono</Label>
                 <Input
                   id="telefono"
                   value={formData.telefono}
                   onChange={(e) => handleInputChange('telefono', e.target.value)}
                   placeholder="+56 2 2000 0000"
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-[#dfeaff] border-white/40 text-[#69738c] rounded-xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] focus:outline-none focus:ring-2 focus:ring-[#6888ff]/30 px-4 py-2.5 w-full"
                 />
               </div>
 
               <div>
-                <Label htmlFor="ejecutivoAsignado" className="text-slate-300">Ejecutivo Asignado</Label>
+                <Label htmlFor="ejecutivoAsignado" className="text-[#9aa3b8]">Ejecutivo Asignado</Label>
                 <Select onValueChange={(value) => handleInputChange('ejecutivoAsignado', value)}>
                   <SelectTrigger className="bg-slate-800 border-slate-600 text-white">
                     <SelectValue placeholder="Seleccionar ejecutivo" />
@@ -303,9 +296,9 @@ export default function CreateAnuncianteModal({
             </div>
 
             {/* Evaluación de Riesgo */}
-            <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-              <h4 className="text-white font-medium flex items-center gap-2 mb-3">
-                <Shield className="h-5 w-5 text-red-400" />
+            <div className="mt-6 p-4 bg-[#dfeaff] rounded-2xl shadow-[inset_4px_4px_8px_#bec8de,inset_-4px_-4px_8px_#ffffff] border border-white/30">
+              <h4 className="text-[#69738c] font-medium flex items-center gap-2 mb-3">
+                <Shield className="h-5 w-5 text-[#6888ff]" />
                 Evaluación Cortex-Risk
               </h4>
               
@@ -368,7 +361,7 @@ export default function CreateAnuncianteModal({
                     onClick={handleEvaluateRisk}
                     variant="outline"
                     size="sm"
-                    className="w-full border-slate-600 text-slate-400"
+                    className="w-full border-white/40 text-[#9aa3b8] bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
                   >
                     Re-evaluar Riesgo
                   </Button>
@@ -382,14 +375,14 @@ export default function CreateAnuncianteModal({
           <Button 
             variant="outline" 
             onClick={onClose}
-            className="border-slate-600 text-slate-400"
+            className="border-white/40 text-[#9aa3b8] bg-[#dfeaff] shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]"
           >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !riskEvaluation}
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+            className="bg-[#6888ff] hover:bg-[#5572ee] disabled:opacity-50 text-white rounded-xl shadow-[4px_4px_8px_#bec8de,-2px_-2px_6px_#ffffff]"
           >
             {isSubmitting ? (
               <>

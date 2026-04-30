@@ -79,6 +79,19 @@ export const GET = withApiRoute(
       }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes GET', error instanceof Error ? error : undefined, { module: 'anunciantes', action: 'GET' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'listar',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -128,6 +141,19 @@ export const POST = withApiRoute(
       return apiSuccess(result.data.toJSON(), 201, { message: 'Anunciante creado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in anunciantes POST', error instanceof Error ? error : undefined, { module: 'anunciantes', action: 'POST' })
+
+      // Audit logging para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'anunciantes',
+          accion: 'crear',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }

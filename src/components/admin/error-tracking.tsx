@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🚨 SILEXAR PULSE - Error Tracking Center
+ * ðŸš¨ SILEXAR PULSE - Error Tracking Center
  * Seguimiento de errores en tiempo real
  * 
  * @description Error Tracking:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   AlertTriangle,
   Bug,
@@ -131,21 +129,21 @@ export function ErrorTracking() {
 
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'high': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'low': return 'bg-slate-500/20 text-slate-400 border-slate-500/30'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'critical': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/30'
+      case 'high': return 'bg-[#6888ff]/20 text-[#6888ff] border-orange-500/30'
+      case 'medium': return 'bg-[#6888ff]/20 text-[#6888ff] border-yellow-500/30'
+      case 'low': return 'bg-slate-500/20 text-[#9aa3b8] border-slate-500/30'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'new': return <AlertTriangle className="w-4 h-4 text-red-400" />
-      case 'investigating': return <Eye className="w-4 h-4 text-yellow-400" />
-      case 'resolved': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'ignored': return <XCircle className="w-4 h-4 text-slate-400" />
-      default: return <Bug className="w-4 h-4 text-slate-400" />
+      case 'new': return <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+      case 'investigating': return <Eye className="w-4 h-4 text-[#6888ff]" />
+      case 'resolved': return <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+      case 'ignored': return <XCircle className="w-4 h-4 text-[#9aa3b8]" />
+      default: return <Bug className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
@@ -168,8 +166,8 @@ export function ErrorTracking() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Error Tracking...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Error Tracking...</p>
         </div>
       </div>
     )
@@ -179,8 +177,8 @@ export function ErrorTracking() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Bug className="w-5 h-5 text-red-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Bug className="w-5 h-5 text-[#6888ff]" />
           Error Tracking Center
         </h3>
         <div className="flex items-center gap-2">
@@ -188,9 +186,8 @@ export function ErrorTracking() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 text-sm rounded ${
-                filter === f ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-400'
-              }`}
+              className={`px-3 py-1.5 text-sm rounded ${filter === f ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                }`}
             >
               {f === 'all' ? 'Todos' : f === 'new' ? 'Nuevos' : 'Críticos'}
             </button>
@@ -200,44 +197,43 @@ export function ErrorTracking() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-red-400">{activeErrors.length}</p>
-          <p className="text-xs text-slate-400">Errores Activos</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{activeErrors.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Errores Activos</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{totalErrors}</p>
-          <p className="text-xs text-slate-400">Ocurrencias</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{totalErrors}</p>
+          <p className="text-xs text-[#9aa3b8]">Ocurrencias</p>
         </div>
-        <div className="p-3 bg-orange-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-orange-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {errors.reduce((sum, e) => sum + e.usersAffected, 0)}
           </p>
-          <p className="text-xs text-slate-400">Usuarios Afectados</p>
+          <p className="text-xs text-[#9aa3b8]">Usuarios Afectados</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {errors.filter(e => e.status === 'resolved').length}
           </p>
-          <p className="text-xs text-slate-400">Resueltos</p>
+          <p className="text-xs text-[#9aa3b8]">Resueltos</p>
         </div>
       </div>
 
       {/* Error List */}
       <div className="space-y-3">
         {filteredErrors.map(error => (
-          <NeuromorphicCard 
+          <NeuCard
             key={error.id}
-            variant="embossed" 
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
             className={`p-4 cursor-pointer ${getSeverityStyle(error.severity)} border`}
-            onClick={() => setSelectedError(error)}
           >
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-2">
                 {getStatusIcon(error.status)}
                 <div>
-                  <span className="text-white font-medium">{error.message}</span>
+                  <span className="text-[#69738c] font-medium">{error.message}</span>
                   {error.file && (
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-[#9aa3b8]">
                       <Code className="w-3 h-3 inline mr-1" />
                       {error.file}:{error.line}
                     </p>
@@ -250,20 +246,20 @@ export function ErrorTracking() {
             </div>
 
             <div className="flex items-center gap-6 text-sm">
-              <span className="flex items-center gap-1 text-slate-400">
+              <span className="flex items-center gap-1 text-[#9aa3b8]">
                 <TrendingUp className="w-3 h-3" />
                 {error.occurrences}x
               </span>
-              <span className="flex items-center gap-1 text-slate-400">
+              <span className="flex items-center gap-1 text-[#9aa3b8]">
                 <Users className="w-3 h-3" />
                 {error.usersAffected} usuarios
               </span>
-              <span className="flex items-center gap-1 text-slate-400">
+              <span className="flex items-center gap-1 text-[#9aa3b8]">
                 <Clock className="w-3 h-3" />
-                Última: {error.lastSeen.toLocaleTimeString()}
+                Ášltima: {error.lastSeen.toLocaleTimeString()}
               </span>
               {error.tenant && (
-                <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+                <span className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded">
                   {error.tenant}
                 </span>
               )}
@@ -271,37 +267,35 @@ export function ErrorTracking() {
 
             {error.status === 'new' && (
               <div className="mt-3 flex items-center gap-2">
-                <NeuromorphicButton 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={(e) => { e.stopPropagation(); updateStatus(error.id, 'investigating'); }}
+                <NeuButton
+                  variant="secondary"
+                  onClick={() => { updateStatus(error.id, 'investigating'); }}
                 >
                   Investigar
-                </NeuromorphicButton>
-                <NeuromorphicButton 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={(e) => { e.stopPropagation(); updateStatus(error.id, 'resolved'); }}
+                </NeuButton>
+                <NeuButton
+                  variant="secondary"
+                  onClick={() => { updateStatus(error.id, 'resolved'); }}
                 >
                   Marcar Resuelto
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
             )}
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Stack Trace Modal */}
       {selectedError?.stack && (
-        <NeuromorphicCard variant="glow" className="p-4">
-          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-            <Code className="w-4 h-4 text-red-400" />
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3 flex items-center gap-2">
+            <Code className="w-4 h-4 text-[#6888ff]" />
             Stack Trace
           </h4>
-          <pre className="bg-[#F0EDE8] p-4 rounded text-xs text-slate-300 overflow-x-auto">
+          <pre className="bg-[#F0EDE8] p-4 rounded text-xs text-[#69738c] overflow-x-auto">
             {selectedError.stack}
           </pre>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

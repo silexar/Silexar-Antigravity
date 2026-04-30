@@ -99,8 +99,8 @@ const mockBenchmarks: CompetitorBenchmark[] = [
 
 // GET /api/agencias-medios/[id]/analytics - Obtener analytics
 export const GET = withApiRoute(
-    { resource: 'agencias-medios', action: 'read', allowPublic: true },
-    async ({ req }) => {
+    { resource: 'agencias-medios', action: 'read' },
+    async ({ ctx, req }) => {
         try {
             const url = new URL(req.url);
             const pathParts = url.pathname.split('/');

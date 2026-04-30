@@ -256,8 +256,8 @@ export class ObligacionesService {
         contrato.terminosPago.numeroCuotas;
 
       for (let i = 0; i < contrato.terminosPago.numeroCuotas; i++) {
-        const fechaVencimiento = new Date(contrato.fechaInicio);
-        fechaVencimiento.setMonth(fechaVencimiento.getMonth() + i + 1);
+        const fechaVencimientos = new Date(contrato.fechaInicio);
+        fechaVencimientos.setMonth(fechaVencimientos.getMonth() + i + 1);
 
         const obligacion = this.crearObligacionExtraida({
           contratoId: contrato.id,
@@ -270,7 +270,7 @@ export class ObligacionesService {
           clausulaOrigen: "Cláusula de Pagos",
           responsable: { tipo: "cliente" },
           fechaInicio: contrato.fechaInicio,
-          fechaLimite: fechaVencimiento,
+          fechaLimite: fechaVencimientos,
           frecuencia: "unico",
           diasAnticipacionAlerta: [5, 2, 1],
           penalizacion: {

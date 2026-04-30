@@ -61,7 +61,7 @@ const DTESchema = z.object({
   })),
   observaciones: z.string().optional(),
   formaPago: z.enum(['contado', 'credito']).default('contado'),
-  fechaVencimiento: z.string().datetime().optional()
+  fechaVencimientos: z.string().datetime().optional()
 })
 
 // Interfaces TIER 0
@@ -108,7 +108,7 @@ export interface DTE {
   }>
   observaciones?: string
   formaPago: 'contado' | 'credito'
-  fechaVencimiento?: string
+  fechaVencimientos?: string
   estado?: 'borrador' | 'enviado' | 'aceptado' | 'rechazado' | 'anulado'
   trackId?: string
   timbre?: string

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? DESKTOP: Generador de Propuestas IA
  * 
  * Genera propuestas comerciales completas con IA en 1 click:
@@ -47,7 +47,7 @@ const CLIENTES: ClienteSugerido[] = [
   { id: 'cli-001', nombre: 'Banco Chile', rubro: 'Banca', ultimoContrato: 'SP-2024-0142', valorAnterior: 85000000 },
   { id: 'cli-002', nombre: 'Falabella', rubro: 'Retail', ultimoContrato: 'SP-2024-0189', valorAnterior: 120000000 },
   { id: 'cli-003', nombre: 'Cencosud', rubro: 'Retail', ultimoContrato: 'SP-2024-0201', valorAnterior: 45000000 },
-  { id: 'cli-007', nombre: 'LATAM', rubro: 'Aerolínea', ultimoContrato: 'SP-2024-0088', valorAnterior: 200000000 },
+  { id: 'cli-007', nombre: 'LATAM', rubro: 'Aerolï¿½nea', ultimoContrato: 'SP-2024-0088', valorAnterior: 200000000 },
   { id: 'cli-010', nombre: 'Ripley', rubro: 'Retail', ultimoContrato: '', valorAnterior: 0 },
 ];
 
@@ -75,10 +75,10 @@ export function ProposalGenerator() {
     await new Promise(r => setTimeout(r, 2000));
 
     setPropuesta({
-      titulo: `Propuesta Comercial ${cliente?.nombre || 'Cliente'} — Q2 2025`,
-      objetivo: objetivo || `Campaña multimedia Q2 para incrementar awareness y conversión`,
+      titulo: `Propuesta Comercial ${cliente?.nombre || 'Cliente'} ï¿½ Q2 2025`,
+      objetivo: objetivo || `Campaï¿½a multimedia Q2 para incrementar awareness y conversiï¿½n`,
       medios: [
-        { nombre: 'Radio Corazón', tipo: 'Radio FM', cantidad: 25, tarifa: 675000 },
+        { nombre: 'Radio Corazï¿½n', tipo: 'Radio FM', cantidad: 25, tarifa: 675000 },
         { nombre: 'ADN Radio', tipo: 'Radio FM', cantidad: 15, tarifa: 832000 },
         { nombre: 'Canal 13', tipo: 'TV Abierta', cantidad: 8, tarifa: 5000000 },
         { nombre: 'Google Ads', tipo: 'Digital SEM', cantidad: 1, tarifa: 12000000 },
@@ -89,7 +89,7 @@ export function ProposalGenerator() {
       argumentosVenta: [
         `Cobertura multimedia integrada: Radio + TV + Digital`,
         `Historial exitoso: ${cliente?.ultimoContrato ? `contrato ${cliente.ultimoContrato} renovado` : 'nueva oportunidad'}`,
-        `ROI estimado 3.2x basado en campañas similares del sector ${cliente?.rubro}`,
+        `ROI estimado 3.2x basado en campaï¿½as similares del sector ${cliente?.rubro}`,
         `Horarios prime validados con datos de audiencia actualizados`,
       ],
     });
@@ -127,7 +127,7 @@ export function ProposalGenerator() {
                   </div>
                   <p className="text-[10px] text-[#9aa3b8]">{c.rubro}</p>
                   {c.valorAnterior > 0 && (
-                    <p className="text-[10px] text-[#6888ff] mt-1">Último: ${(c.valorAnterior / 1e6).toFixed(0)}M</p>
+                    <p className="text-[10px] text-[#6888ff] mt-1">ï¿½ltimo: ${(c.valorAnterior / 1e6).toFixed(0)}M</p>
                   )}
                 </button>
               ))}
@@ -147,9 +147,9 @@ export function ProposalGenerator() {
             </div>
 
             <div>
-              <label className="text-xs font-bold text-[#9aa3b8] block mb-1">Objetivo de la campaña (opcional)</label>
+              <label className="text-xs font-bold text-[#9aa3b8] block mb-1">Objetivo de la campaï¿½a (opcional)</label>
               <textarea value={objetivo} onChange={e => setObjetivo(e.target.value)}
-                placeholder="Ej: Incrementar ventas navideñas 20%... La IA completará si lo dejas vacío"
+                placeholder="Ej: Incrementar ventas navideï¿½as 20%... La IA completarï¿½ si lo dejas vacï¿½o"
                 rows={2} className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] text-sm outline-none focus:ring-2 focus:ring-[#6888ff]/50 resize-none" />
             </div>
 
@@ -158,7 +158,7 @@ export function ProposalGenerator() {
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa3b8]" />
                 <input value={presupuesto} onChange={e => setPresupuesto(e.target.value)}
-                  placeholder="La IA sugerirá basado en historial"
+                  placeholder="La IA sugerirï¿½ basado en historial"
                   aria-label="Presupuesto objetivo"
                   type="number" className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#bec8de30] text-sm outline-none focus:ring-2 focus:ring-[#6888ff]/50" />
               </div>
@@ -184,7 +184,7 @@ export function ProposalGenerator() {
         {step === 'resultado' && propuesta && (
           <div className="space-y-5">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+              <CheckCircle2 className="w-5 h-5 text-[#6888ff]" />
               <h3 className="font-black text-lg text-[#69738c]">{propuesta.titulo}</h3>
             </div>
 
@@ -210,8 +210,8 @@ export function ProposalGenerator() {
                   {propuesta.medios.map((m) => (
                     <tr key={m.nombre} className="border-b border-[#bec8de30]">
                       <td className="py-2 font-bold text-[#69738c] flex items-center gap-1">
-                        {m.tipo.includes('Radio') ? <Radio className="w-3 h-3 text-blue-400" /> :
-                         m.tipo.includes('TV') ? <Tv className="w-3 h-3 text-purple-400" /> :
+                        {m.tipo.includes('Radio') ? <Radio className="w-3 h-3 text-[#6888ff]" /> :
+                         m.tipo.includes('TV') ? <Tv className="w-3 h-3 text-[#6888ff]" /> :
                          <Globe className="w-3 h-3 text-cyan-400" />}
                         {m.nombre}
                       </td>
@@ -232,25 +232,25 @@ export function ProposalGenerator() {
                 <p className="text-lg font-black text-[#69738c] mt-1">${(propuesta.presupuestoTotal / 1e6).toFixed(0)}M</p>
                 <p className="text-[9px] text-[#6888ff]">Presupuesto</p>
               </div>
-              <div className="bg-emerald-50 rounded-xl p-3 text-center">
-                <Target className="w-4 h-4 text-emerald-500 mx-auto" />
+              <div className="bg-[#6888ff]/5 rounded-xl p-3 text-center">
+                <Target className="w-4 h-4 text-[#6888ff] mx-auto" />
                 <p className="text-lg font-black text-[#69738c] mt-1">{propuesta.descuentoSugerido}%</p>
-                <p className="text-[9px] text-emerald-500">Descuento</p>
+                <p className="text-[9px] text-[#6888ff]">Descuento</p>
               </div>
-              <div className="bg-blue-50 rounded-xl p-3 text-center">
-                <Calendar className="w-4 h-4 text-blue-500 mx-auto" />
+              <div className="bg-[#6888ff]/5 rounded-xl p-3 text-center">
+                <Calendar className="w-4 h-4 text-[#6888ff] mx-auto" />
                 <p className="text-lg font-black text-[#69738c] mt-1">2 meses</p>
-                <p className="text-[9px] text-blue-500">Duración</p>
+                <p className="text-[9px] text-[#6888ff]">Duraciï¿½n</p>
               </div>
             </div>
 
             {/* ARGUMENTOS VENTA */}
-            <div className="p-3 bg-amber-50 rounded-xl border border-[#bec8de30]">
-              <p className="text-[10px] font-bold text-amber-700 mb-2 flex items-center gap-1">
+            <div className="p-3 bg-[#6888ff]/5 rounded-xl border border-[#bec8de30]">
+              <p className="text-[10px] font-bold text-[#6888ff] mb-2 flex items-center gap-1">
                 <Zap className="w-3 h-3" /> Argumentos de Venta IA
               </p>
               {propuesta.argumentosVenta.map((a, i) => (
-                <p key={`arg-${i}`} className="text-xs text-amber-700 mt-1 flex items-start gap-1.5">
+                <p key={`arg-${i}`} className="text-xs text-[#6888ff] mt-1 flex items-start gap-1.5">
                   <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" /> {a}
                 </p>
               ))}

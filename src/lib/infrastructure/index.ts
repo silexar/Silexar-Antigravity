@@ -1,25 +1,43 @@
 /**
- * SILEXAR PULSE - TIER0+ INFRASTRUCTURE INDEX
- * Barrel export para módulo de infraestructura
+ * SILEXAR PULSE - Infrastructure Services
+ * 
+ * @description Unified export for all infrastructure services:
+ *              Cache, Transactions, Locking, and Middleware
+ * 
+ * Usage:
+ * import { cacheService, withTransaction, distributedLock } from '@/lib/infrastructure';
  */
 
-export interface InfrastructureConfig {
-    readonly environment: 'development' | 'staging' | 'production';
-    readonly region: string;
-    readonly version: string;
-}
+export * from '../cache';
+export * from '../db';
+export * from '../lock';
+export * from '../middleware';
 
-export const getInfrastructureConfig = (): InfrastructureConfig => ({
-    environment: (process.env.NODE_ENV as 'development' | 'staging' | 'production') || 'development',
-    region: process.env.NEXT_PUBLIC_REGION || 'us-east-1',
-    version: process.env.NEXT_PUBLIC_VERSION || '1.0.0',
-});
+// ═══════════════════════════════════════════════════════════════════
+// CONVENIENCE RE-EXPORTS FOR COMMON PATTERNS
+// ═══════════════════════════════════════════════════════════════════
 
-export const isProduction = (): boolean => getInfrastructureConfig().environment === 'production';
-export const isDevelopment = (): boolean => getInfrastructureConfig().environment === 'development';
+// Cache
+export { cacheService, getCacheService, Cacheable, CacheInvalidate } from '../cache';
 
-export default {
-    getInfrastructureConfig,
-    isProduction,
-    isDevelopment,
-};
+// Transactions
+export { withTransaction, batchTransaction, transactionManager } from '../db';
+
+// Locking
+export { distributedLock, lock, withLock } from '../lock';
+
+// Middleware
+export {
+    extractAuthContext,
+    requireAuth,
+    authorize,
+    requirePermission,
+    validateBody,
+    validateQuery,
+    createValidator,
+    requestLogger,
+    rateLimit,
+    RateLimitTier,
+    compose,
+    crudMiddleware,
+} from '../middleware';

@@ -427,7 +427,7 @@ export class ValidationService {
         id: `venc_semana_${Date.now()}`,
         tipo: 'info',
         categoria: 'vencimientos',
-        titulo: 'Vencimiento próximo',
+        titulo: 'Vencimientos próximo',
         mensaje: `La cuña vence en ${diasRestantes} días`,
         accionRequerida: false
       });

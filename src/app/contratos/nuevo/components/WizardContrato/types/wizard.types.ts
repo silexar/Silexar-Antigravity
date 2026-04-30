@@ -800,11 +800,12 @@ export const formatDate = (date: Date | null): string => {
 };
 
 export const getNivelRiesgoColor = (nivel: NivelRiesgo): string => {
+  // UNICA linea de color permitida: azul #6888ff para todos los estados
   const colors: Record<NivelRiesgo, string> = {
-    bajo: "from-emerald-400 to-emerald-500",
-    medio: "from-amber-400 to-amber-500",
-    alto: "from-orange-400 to-orange-500",
-    critico: "from-red-400 to-red-500",
+    bajo: "from-[#6888ff] to-[#5572ee]",
+    medio: "from-[#6888ff] to-[#5572ee]",
+    alto: "from-[#6888ff] to-[#5572ee]",
+    critico: "from-[#6888ff] to-[#5572ee]",
   };
   return colors[nivel];
 };

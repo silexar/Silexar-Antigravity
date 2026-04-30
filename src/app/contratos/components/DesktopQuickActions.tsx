@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ? DESKTOP: Quick Actions Command Palette
  * 
- * Barra de acciones rápidas tipo Spotlight/Command Palette.
- * Acceso rápido a: Smart Capture, nuevo contrato,
+ * Barra de acciones rï¿½pidas tipo Spotlight/Command Palette.
+ * Acceso rï¿½pido a: Smart Capture, nuevo contrato,
  * buscar cliente, clonar contrato.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -43,8 +43,8 @@ export function DesktopQuickActions({
   const actions: QuickAction[] = [
     { id: 'capture', icon: <Sparkles className="w-4 h-4 text-[#6888ff]" />, label: 'Smart Capture IA', shortcut: 'Ctrl+I', categoria: 'IA', onExecute: onSmartCapture },
     { id: 'nuevo', icon: <FileText className="w-4 h-4 text-[#6888ff]" />, label: 'Nuevo Contrato', shortcut: 'Ctrl+N', categoria: 'Contratos', onExecute: onNuevoContrato },
-    { id: 'clonar', icon: <Copy className="w-4 h-4 text-blue-500" />, label: 'Clonar Contrato Anterior', categoria: 'Contratos', onExecute: onClonarContrato },
-    { id: 'buscar', icon: <Building2 className="w-4 h-4 text-emerald-500" />, label: 'Buscar Cliente', shortcut: 'Ctrl+K', categoria: 'Clientes', onExecute: onBuscarCliente },
+    { id: 'clonar', icon: <Copy className="w-4 h-4 text-[#6888ff]" />, label: 'Clonar Contrato Anterior', categoria: 'Contratos', onExecute: onClonarContrato },
+    { id: 'buscar', icon: <Building2 className="w-4 h-4 text-[#6888ff]" />, label: 'Buscar Cliente', shortcut: 'Ctrl+K', categoria: 'Clientes', onExecute: onBuscarCliente },
     { id: 'llamar', icon: <Phone className="w-4 h-4 text-cyan-500" />, label: 'Registrar Llamada', categoria: 'Actividad', onExecute: () => {} },
   ];
 
@@ -77,7 +77,7 @@ export function DesktopQuickActions({
       <button onClick={() => setOpen(true)}
         className="flex items-center gap-2 px-4 py-2 bg-[#dfeaff] hover:bg-[#dfeaff] rounded-xl text-sm text-[#9aa3b8] transition group">
         <Search className="w-4 h-4" />
-        <span>Acciones rápidas...</span>
+        <span>Acciones rï¿½pidas...</span>
         <kbd className="ml-4 px-2 py-0.5 bg-[#dfeaff] rounded text-[10px] font-mono text-[#9aa3b8] border border-[#bec8de30] group-hover:text-[#69738c]">
           Ctrl+K
         </kbd>
@@ -128,7 +128,7 @@ export function DesktopQuickActions({
 
           {/* FOOTER */}
           <div className="px-5 py-2 bg-[#dfeaff] border-t border-[#bec8de30] flex items-center gap-4 text-[10px] text-[#9aa3b8]">
-            <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Acciones rápidas</span>
+            <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Acciones rï¿½pidas</span>
             <span>?? Navegar</span>
             <span>? Ejecutar</span>
           </div>

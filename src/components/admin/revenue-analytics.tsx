@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📈 SILEXAR PULSE - Revenue Analytics & Forecasting
+ * ðŸ“ˆ SILEXAR PULSE - Revenue Analytics & Forecasting
  * Dashboard de análisis de ingresos con IA
  * 
  * @description Análisis financiero avanzado:
@@ -17,10 +17,8 @@
 
 import { useState, useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
-import {
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   TrendingUp,
   DollarSign,
@@ -115,17 +113,17 @@ export function RevenueAnalytics() {
   }
 
   const getRiskColor = (score: number) => {
-    if (score >= 70) return 'text-red-400 bg-red-500/20'
-    if (score >= 40) return 'text-yellow-400 bg-yellow-500/20'
-    return 'text-green-400 bg-green-500/20'
+    if (score >= 70) return 'text-[#6888ff] bg-[#6888ff]/20'
+    if (score >= 40) return 'text-[#6888ff] bg-[#6888ff]/20'
+    return 'text-[#6888ff] bg-[#6888ff]/20'
   }
 
   if (isLoading || !metrics) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Revenue Analytics...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Revenue Analytics...</p>
         </div>
       </div>
     )
@@ -135,8 +133,8 @@ export function RevenueAnalytics() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-green-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[#6888ff]" />
           Revenue Analytics & Forecasting
         </h3>
         <div className="flex items-center gap-2">
@@ -144,96 +142,95 @@ export function RevenueAnalytics() {
             <button
               key={tf}
               onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1.5 text-sm rounded ${
-                timeframe === tf ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-400'
-              }`}
+              className={`px-3 py-1.5 text-sm rounded ${timeframe === tf ? 'bg-[#6888ff] text-white' : 'bg-[#dfeaff] text-[#9aa3b8]'
+                }`}
             >
               {tf === 'month' ? 'Mes' : tf === 'quarter' ? 'Trimestre' : 'Año'}
             </button>
           ))}
-          <NeuromorphicButton variant="secondary" size="sm">
+          <NeuButton variant="secondary">
             <Download className="w-4 h-4 mr-1" />
             Export
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-4 gap-4">
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-green-400 flex items-center gap-1">
+            <DollarSign className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-xs text-[#6888ff] flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
               +{metrics.mrrGrowth}%
             </span>
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(metrics.mrr)}</p>
-          <p className="text-xs text-slate-400">MRR (Monthly Recurring)</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(metrics.mrr)}</p>
+          <p className="text-xs text-[#9aa3b8]">MRR (Monthly Recurring)</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-2">
-            <Target className="w-5 h-5 text-blue-400" />
+            <Target className="w-5 h-5 text-[#6888ff]" />
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(metrics.arr)}</p>
-          <p className="text-xs text-slate-400">ARR (Annual Recurring)</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(metrics.arr)}</p>
+          <p className="text-xs text-[#9aa3b8]">ARR (Annual Recurring)</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-2">
-            <Users className="w-5 h-5 text-purple-400" />
-            <span className={`text-xs ${metrics.churnRate < 3 ? 'text-green-400' : 'text-red-400'}`}>
+            <Users className="w-5 h-5 text-[#6888ff]" />
+            <span className={`text-xs ${metrics.churnRate < 3 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
               {metrics.churnRate}%
             </span>
           </div>
-          <p className="text-2xl font-bold text-white">{metrics.nrr}%</p>
-          <p className="text-xs text-slate-400">Net Revenue Retention</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{metrics.nrr}%</p>
+          <p className="text-xs text-[#9aa3b8]">Net Revenue Retention</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center justify-between mb-2">
-            <Brain className="w-5 h-5 text-cyan-400" />
+            <Brain className="w-5 h-5 text-[#6888ff]" />
           </div>
-          <p className="text-2xl font-bold text-white">{(metrics.ltv / metrics.cac).toFixed(1)}x</p>
-          <p className="text-xs text-slate-400">LTV:CAC Ratio</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{(metrics.ltv / metrics.cac).toFixed(1)}x</p>
+          <p className="text-xs text-[#9aa3b8]">LTV:CAC Ratio</p>
+        </NeuCard>
       </div>
 
       {/* Secondary Metrics */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{formatCurrency(metrics.arpu)}</p>
-          <p className="text-xs text-slate-400">ARPU</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{formatCurrency(metrics.arpu)}</p>
+          <p className="text-xs text-[#9aa3b8]">ARPU</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{formatCurrency(metrics.ltv)}</p>
-          <p className="text-xs text-slate-400">LTV</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{formatCurrency(metrics.ltv)}</p>
+          <p className="text-xs text-[#9aa3b8]">LTV</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{formatCurrency(metrics.cac)}</p>
-          <p className="text-xs text-slate-400">CAC</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{formatCurrency(metrics.cac)}</p>
+          <p className="text-xs text-[#9aa3b8]">CAC</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{metrics.churnRate}%</p>
-          <p className="text-xs text-slate-400">Churn Rate</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{metrics.churnRate}%</p>
+          <p className="text-xs text-[#9aa3b8]">Churn Rate</p>
         </div>
       </div>
 
       {/* Churn Predictions */}
       {churnPredictions.length > 0 && (
-        <NeuromorphicCard variant="glow" className="p-4">
-          <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-red-400" />
-            🚨 Predicción de Churn (IA)
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-[#6888ff]" />
+            ðŸš¨ Predicción de Churn (IA)
           </h4>
           <div className="space-y-3">
             {churnPredictions.map(prediction => (
-              <div key={prediction.tenantId} className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <div key={prediction.tenantId} className="p-4 bg-[#6888ff]/10 border border-[#6888ff]/30 rounded-lg">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <span className="text-white font-medium">{prediction.tenantName}</span>
-                    <p className="text-xs text-slate-400">
+                    <span className="text-[#69738c] font-medium">{prediction.tenantName}</span>
+                    <p className="text-xs text-[#9aa3b8]">
                       Churn estimado: {prediction.predictedChurnDate.toLocaleDateString()}
                     </p>
                   </div>
@@ -243,14 +240,14 @@ export function RevenueAnalytics() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-slate-400 text-xs mb-1">Razones:</p>
-                    <ul className="list-disc list-inside text-red-300">
+                    <p className="text-[#9aa3b8] text-xs mb-1">Razones:</p>
+                    <ul className="list-disc list-inside text-[#6888ff]">
                       {prediction.reasons.map((r, i) => <li key={r}>{r}</li>)}
                     </ul>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-xs mb-1">Acciones recomendadas:</p>
-                    <ul className="list-disc list-inside text-green-300">
+                    <p className="text-[#9aa3b8] text-xs mb-1">Acciones recomendadas:</p>
+                    <ul className="list-disc list-inside text-[#6888ff]">
                       {prediction.recommendedActions.map((a, i) => <li key={a}>{a}</li>)}
                     </ul>
                   </div>
@@ -258,19 +255,19 @@ export function RevenueAnalytics() {
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Cohort Retention */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-purple-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-[#6888ff]" />
           Análisis de Cohortes - Retención
         </h4>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-400">
+              <tr className="text-[#9aa3b8]">
                 <th className="text-left py-2">Cohorte</th>
                 <th className="text-center py-2">Clientes</th>
                 <th className="text-center py-2">M0</th>
@@ -284,28 +281,27 @@ export function RevenueAnalytics() {
             <tbody>
               {cohorts.map(cohort => (
                 <tr key={cohort.month} className="border-t border-slate-700">
-                  <td className="py-2 text-white">{cohort.month}</td>
-                  <td className="text-center text-slate-400">{cohort.customers}</td>
+                  <td className="py-2 text-[#69738c]">{cohort.month}</td>
+                  <td className="text-center text-[#9aa3b8]">{cohort.customers}</td>
                   {cohort.retention.map((ret, i) => (
                     <td key={`retention-${i}`} className="text-center">
-                      <span className={`px-2 py-0.5 rounded text-xs ${
-                        ret >= 90 ? 'bg-green-500/20 text-green-400' :
-                        ret >= 80 ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-red-500/20 text-red-400'
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${ret >= 90 ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                        ret >= 80 ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                          'bg-[#6888ff]/20 text-[#6888ff]'
+                        }`}>
                         {ret}%
                       </span>
                     </td>
                   ))}
                   {Array(6 - cohort.retention.length).fill(0).map((_, i) => (
-                    <td key={`empty-${i}`} className="text-center text-slate-600">-</td>
+                    <td key={`empty-${i}`} className="text-center text-[#69738c]">-</td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

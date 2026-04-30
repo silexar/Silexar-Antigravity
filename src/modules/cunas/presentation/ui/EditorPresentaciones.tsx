@@ -62,7 +62,7 @@ export const EditorPresentaciones: React.FC<EditorPresentacionesProps> = ({
     const [isValidating, setIsValidating] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
 
-    const vencimientosService = new VencimientosValidationService();
+    const vencimientoservice = new VencimientosValidationService();
 
     // Plantillas predefinidas
     const PLANTILLAS = {
@@ -112,21 +112,21 @@ export const EditorPresentaciones: React.FC<EditorPresentacionesProps> = ({
         let contractStatus;
         if (contratoId) {
             try {
-                const validacion = await vencimientosService.validarCuna(
+                const validacion = await vencimientoservice.validarCuna(
                     presentacion.id || 'new',
                     contratoId,
                     'default-tenant' // En producción vendría del contexto
                 );
 
                 contractStatus = {
-                    hasContract: validacion.tieneVencimientoActivo,
+                    hasContract: validacion.tieneVencimientosActivo,
                     contractId: contratoId,
-                    expirationDate: validacion.fechaVencimiento || undefined,
+                    expirationDate: validacion.fechaVencimientos || undefined,
                     daysRemaining: validacion.diasRestantes || undefined,
                 };
 
-                if (!validacion.tieneVencimientoActivo) {
-                    errors.push('El contrato no tiene vencimiento activo');
+                if (!validacion.tieneVencimientosActivo) {
+                    errors.push('El contrato no tiene vencimientos activo');
                 } else if (validacion.diasRestantes != null && validacion.diasRestantes <= 7) {
                     warnings.push(`El contrato vence en ${validacion.diasRestantes} días`);
                 } else if (validacion.diasRestantes != null && validacion.diasRestantes <= 0) {
@@ -145,7 +145,7 @@ export const EditorPresentaciones: React.FC<EditorPresentacionesProps> = ({
         });
 
         setIsValidating(false);
-    }, [presentacion, contratoId, vencimientosService]);
+    }, [presentacion, contratoId, vencimientoservice]);
 
     // Validar cuando cambian los datos
     useEffect(() => {

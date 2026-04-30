@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/observability';
 import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiServerError, getUserContext } from '@/lib/api/response';
-import { auditLogger } from '@/lib/security/audit-logger';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
 import { withTenantContext } from '@/lib/db/tenant-context';
 import { withApiRoute } from '@/lib/api/with-api-route';
 
@@ -54,6 +54,19 @@ export const GET = withApiRoute(
       }
     } catch (error) {
       logger.error('[API/EquiposVentas/Deals] Error GET:', error instanceof Error ? error : undefined, { module: 'equipos-ventas/deals', action: 'GET' });
+
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'equipos-ventas',
+          subModule: 'deals',
+          accion: 'GET',
+          tenantId: ctx.tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      });
+
       return apiServerError()
     }
   }

@@ -4,7 +4,7 @@
  * Dashboard completo con métricas operativas en tiempo real:
  * - Resumen de cuñas (total, activas, en aire, pendientes)
  * - Distribución por tipo y estado
- * - Alertas de vencimiento
+ * - Alertas de vencimientos
  * - Accesos rápidos
  * - Actividad reciente
  * 

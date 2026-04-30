@@ -42,6 +42,15 @@ const createContratoSchema = z.object({
   path: ['anuncianteId'],
 })
 
+const listContratoQuerySchema = z.object({
+  search: z.string().optional().default(''),
+  estado: z.string().optional(),
+  tipo: z.string().optional(),
+  contratoId: z.string().uuid().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+}).strict()
+
 // Pipeline metric shape returned by repo.getPipelineData
 interface PipelineMetric {
   estado: string
@@ -55,15 +64,37 @@ export const GET = withApiRoute(
   { resource: 'contratos', action: 'read', skipCsrf: true },
   async ({ ctx, req }) => {
     const tenantId = ctx.tenantId
+    const userId = ctx.userId
     try {
       const { searchParams } = new URL(req.url)
 
+      // Zod validation for query parameters
+      const queryValidation = listContratoQuerySchema.safeParse({
+        search: searchParams.get('search') ?? undefined,
+        estado: searchParams.get('estado') ?? undefined,
+        tipo: searchParams.get('tipo') ?? undefined,
+        contratoId: searchParams.get('contratoId') ?? undefined,
+        page: searchParams.get('page') ?? undefined,
+        limit: searchParams.get('limit') ?? undefined,
+      })
+
+      if (!queryValidation.success) {
+        return apiError(
+          'VALIDATION_ERROR',
+          'Parámetros de consulta inválidos',
+          400,
+          queryValidation.error.flatten().fieldErrors
+        ) as unknown as NextResponse
+      }
+
+      const validatedQuery = queryValidation.data
+
       const cr = {
-        busquedaTexto: searchParams.get('search') || '',
-        estados: searchParams.get('estado') ? [searchParams.get('estado') as string] : undefined,
+        busquedaTexto: validatedQuery.search,
+        estados: validatedQuery.estado ? [validatedQuery.estado] : undefined,
         anuncianteId: searchParams.get('anuncianteId') || undefined,
-        pagina: parseInt(searchParams.get('page') || '1', 10),
-        tamanoPagina: Math.min(parseInt(searchParams.get('limit') || '20', 10), 100),
+        pagina: validatedQuery.page,
+        tamanoPagina: validatedQuery.limit,
       }
 
       const repo = new DrizzleContratoRepository(tenantId)
@@ -109,6 +140,27 @@ export const GET = withApiRoute(
         valorTotal: totalValue,
       }
 
+      // Audit logging for successful read
+      auditLogger.log({
+        type: AuditEventType.DATA_ACCESS,
+        userId,
+        metadata: {
+          module: 'contratos',
+          accion: 'listar',
+          tenantId,
+          resultado: {
+            total: data.total,
+            pagina: data.pagina,
+            tamanoPagina: data.tamanoPagina,
+            filtros: {
+              search: validatedQuery.search,
+              estado: validatedQuery.estado,
+              tipo: validatedQuery.tipo,
+            }
+          }
+        }
+      })
+
       return apiSuccess(contratosFrontend, 200, {
         stats,
         pagination: {
@@ -122,6 +174,19 @@ export const GET = withApiRoute(
       }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in contratos GET', error instanceof Error ? error : undefined, { module: 'contratos', action: 'GET' })
+
+      // Log de auditoría para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId: ctx.userId,
+        metadata: {
+          module: 'contratos',
+          accion: 'listar',
+          tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -257,6 +322,19 @@ export const POST = withApiRoute(
       return apiSuccess(newContrato, 201, { message: 'Contrato creado exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in contratos POST', error instanceof Error ? error : undefined, { module: 'contratos', action: 'POST' })
+
+      // Log de auditoría para errores
+      auditLogger.log({
+        type: AuditEventType.API_ERROR,
+        userId,
+        metadata: {
+          module: 'contratos',
+          accion: 'crear',
+          tenantId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }

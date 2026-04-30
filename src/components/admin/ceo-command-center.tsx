@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🎛️ SILEXAR PULSE - CEO Command Center Ultimate
+ * ðŸŽ›ï¸ SILEXAR PULSE - CEO Command Center Ultimate
  * Total System Control with AI Integration
  * 
  * @description Enterprise command center for CEO with:
@@ -16,15 +16,15 @@
  * - Database Connections
  * - Remote Session Control
  * 
- * @version 2025.2.0
+ * @version 2025.3.0
  * @tier TIER_0_FORTUNE_10
  * @security MILITARY_GRADE
+ * 
+ * @last_modified 2025-04-27 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState } from 'react'
-import { 
-  NeuromorphicCard
-} from '@/components/ui/neuromorphic'
+import { N, NeuCard, NeuCardSmall, NeuButton, StatusBadge, NeuTabs, NeuProgress, getShadow, getSmallShadow } from './_sdk/AdminDesignSystem'
 import {
   Brain,
   Activity,
@@ -36,7 +36,8 @@ import {
   Zap,
   Settings,
   Monitor,
-  MessageSquare
+  MessageSquare,
+  Users
 } from 'lucide-react'
 
 // Import all command center modules
@@ -109,100 +110,124 @@ export function CEOCommandCenter({ className }: CEOCommandCenterProps) {
   const [activeTab, setActiveTab] = useState<CommandTab>('quick')
 
   const tabs = [
-    { id: 'quick' as const, label: 'Quick Actions', icon: <Zap className="w-4 h-4" />, color: 'text-yellow-400' },
-    { id: 'activity' as const, label: 'Activity', icon: <Activity className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'maintenance' as const, label: 'Manten.', icon: <Wrench className="w-4 h-4" />, color: 'text-orange-400' },
-    { id: 'flags' as const, label: 'Flags', icon: <Flag className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'announcements' as const, label: 'Anuncios', icon: <Megaphone className="w-4 h-4" />, color: 'text-pink-400' },
-    { id: 'api' as const, label: 'API', icon: <BarChart3 className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'backup' as const, label: 'Backup', icon: <HardDrive className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'config' as const, label: 'Config', icon: <Settings className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'email' as const, label: 'Email', icon: <Megaphone className="w-4 h-4" />, color: 'text-pink-400' },
-    { id: 'audit' as const, label: 'Audit', icon: <Activity className="w-4 h-4" />, color: 'text-red-400' },
-    { id: 'reports' as const, label: 'Reports', icon: <BarChart3 className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'ai' as const, label: 'AI', icon: <Brain className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'billing' as const, label: 'Billing', icon: <BarChart3 className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'regions' as const, label: 'Regions', icon: <Monitor className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'push' as const, label: 'Push', icon: <Megaphone className="w-4 h-4" />, color: 'text-orange-400' },
+    { id: 'quick' as const, label: 'Acciones Rápidas', icon: <Zap style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'activity' as const, label: 'Actividad', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'maintenance' as const, label: 'Manten.', icon: <Wrench style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'flags' as const, label: 'Banderas', icon: <Flag style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'announcements' as const, label: 'Anuncios', icon: <Megaphone style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'api' as const, label: 'API', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'backup' as const, label: 'Respaldo', icon: <HardDrive style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'config' as const, label: 'Config', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'email' as const, label: 'Correo', icon: <Megaphone style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'audit' as const, label: 'Auditoría', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'reports' as const, label: 'Informes', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'ai' as const, label: 'IA', icon: <Brain style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'billing' as const, label: 'Facturación', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'regions' as const, label: 'Regiones', icon: <Monitor style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'push' as const, label: 'Push', icon: <Megaphone style={{ width: 16, height: 16 }} />, color: N.accent },
     // Strategic Modules
-    { id: 'revenue' as const, label: '📈 Revenue', icon: <BarChart3 className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'competitive' as const, label: '🏆 Competitive', icon: <Activity className="w-4 h-4" />, color: 'text-orange-400' },
-    { id: 'investors' as const, label: '👥 IR', icon: <Settings className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'csuccess' as const, label: '🎯 CS', icon: <Activity className="w-4 h-4" />, color: 'text-pink-400' },
-    { id: 'mobile' as const, label: '📱 Mobile', icon: <Monitor className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'voice' as const, label: '🎙️ Voice', icon: <Activity className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'partners' as const, label: '🤝 Partners', icon: <Settings className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'copilot' as const, label: '🧠 Copilot', icon: <Brain className="w-4 h-4" />, color: 'text-purple-400' },
+    { id: 'revenue' as const, label: 'Ingresos', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'competitive' as const, label: 'Competencia', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'investors' as const, label: 'Inversionistas', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'csuccess' as const, label: 'Éxito Cliente', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'mobile' as const, label: 'Móvil', icon: <Monitor style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'voice' as const, label: 'Voz', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'partners' as const, label: 'Socios', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'copilot' as const, label: 'Copiloto', icon: <Brain style={{ width: 16, height: 16 }} />, color: N.accent },
     // Technical Modules
-    { id: 'servers' as const, label: '🖥️ Servers', icon: <Monitor className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'dbhealth' as const, label: '🗄️ DB', icon: <HardDrive className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'queries' as const, label: '📊 Queries', icon: <BarChart3 className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'errors' as const, label: '🚨 Errors', icon: <Activity className="w-4 h-4" />, color: 'text-red-400' },
-    { id: 'emailstats' as const, label: '📨 Email Stats', icon: <Megaphone className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'integrations' as const, label: '🔌 Integrations', icon: <Settings className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'apikeys' as const, label: '🔑 Keys', icon: <Settings className="w-4 h-4" />, color: 'text-yellow-400' },
-    { id: 'gdpr' as const, label: '📜 GDPR', icon: <Settings className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'impersonate' as const, label: '👤 Impersonate', icon: <Activity className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'roles' as const, label: '🎭 Roles', icon: <Settings className="w-4 h-4" />, color: 'text-orange-400' },
-    { id: 'sla' as const, label: '📉 SLA', icon: <BarChart3 className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'infracosts' as const, label: '💸 Costs', icon: <BarChart3 className="w-4 h-4" />, color: 'text-green-400' },
+    { id: 'servers' as const, label: 'Servidores', icon: <Monitor style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'dbhealth' as const, label: 'Base de Datos', icon: <HardDrive style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'queries' as const, label: 'Consultas', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'errors' as const, label: 'Errores', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'emailstats' as const, label: 'Estadísticas Correo', icon: <Megaphone style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'integrations' as const, label: 'Integraciones', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'apikeys' as const, label: 'Claves API', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'gdpr' as const, label: 'GDPR', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'impersonate' as const, label: 'Suplantar', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'roles' as const, label: 'Roles', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'sla' as const, label: 'SLA', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'infracosts' as const, label: 'Costos', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
     // Admin Control Total Modules
-    { id: 'logs' as const, label: '📋 Logs', icon: <Activity className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'queues' as const, label: '📊 Queues', icon: <BarChart3 className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'cache' as const, label: '💾 Cache', icon: <HardDrive className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'jobs' as const, label: '⏰ Jobs', icon: <Activity className="w-4 h-4" />, color: 'text-orange-400' },
-    { id: 'migrations' as const, label: '🗃️ Migrations', icon: <HardDrive className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'ssl' as const, label: '🔐 SSL', icon: <Settings className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'domains' as const, label: '🌐 Domains', icon: <Monitor className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'storage' as const, label: '📁 Storage', icon: <HardDrive className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'webhooks' as const, label: '🔗 Webhooks', icon: <Settings className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'selfrepair' as const, label: '🔧 Repair', icon: <Wrench className="w-4 h-4" />, color: 'text-orange-400' },
+    { id: 'logs' as const, label: 'Registros', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'queues' as const, label: 'Colas', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'cache' as const, label: 'Caché', icon: <HardDrive style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'jobs' as const, label: 'Tareas', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'migrations' as const, label: 'Migraciones', icon: <HardDrive style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'ssl' as const, label: 'SSL', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'domains' as const, label: 'Dominios', icon: <Monitor style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'storage' as const, label: 'Almacenamiento', icon: <HardDrive style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'webhooks' as const, label: 'Webhooks', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'selfrepair' as const, label: 'Reparación', icon: <Wrench style={{ width: 16, height: 16 }} />, color: N.accent },
     // Enterprise Final Modules (8)
-    { id: 'automation' as const, label: '⚡ Automation', icon: <Zap className="w-4 h-4" />, color: 'text-yellow-400' },
-    { id: 'escalation' as const, label: '🔔 Alerts', icon: <Activity className="w-4 h-4" />, color: 'text-red-400' },
-    { id: 'deployments' as const, label: '🚀 Deploy', icon: <Activity className="w-4 h-4" />, color: 'text-blue-400' },
-    { id: 'incidents' as const, label: '🚨 Incidents', icon: <Activity className="w-4 h-4" />, color: 'text-red-400' },
-    { id: 'profiler' as const, label: '📊 Profiler', icon: <BarChart3 className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'anomalies' as const, label: '🧠 Anomalies', icon: <Brain className="w-4 h-4" />, color: 'text-purple-400' },
-    { id: 'usage' as const, label: '📈 Usage', icon: <BarChart3 className="w-4 h-4" />, color: 'text-cyan-400' },
-    { id: 'healthcheck' as const, label: '✅ Health', icon: <Activity className="w-4 h-4" />, color: 'text-green-400' },
-    { id: 'tickets' as const, label: '🎫 Tickets', icon: <MessageSquare className="w-4 h-4" />, color: 'text-orange-400' },
-    { id: 'system' as const, label: 'Sistema', icon: <Settings className="w-4 h-4" />, color: 'text-slate-400' }
+    { id: 'automation' as const, label: 'Automatización', icon: <Zap style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'escalation' as const, label: 'Alertas', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'deployments' as const, label: 'Despliegue', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'incidents' as const, label: 'Incidentes', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'profiler' as const, label: 'Perfilador', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'anomalies' as const, label: 'Anomalías', icon: <Brain style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'usage' as const, label: 'Uso', icon: <BarChart3 style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'healthcheck' as const, label: 'Salud', icon: <Activity style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'tickets' as const, label: 'Tickets', icon: <MessageSquare style={{ width: 16, height: 16 }} />, color: N.accent },
+    { id: 'system' as const, label: 'Sistema', icon: <Settings style={{ width: 16, height: 16 }} />, color: N.accent }
   ]
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      {/* Header with Brain Icon */}
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-          <Brain className="w-6 h-6 text-white" />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {/* Header CEO */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{
+          width: 48,
+          height: 48,
+          borderRadius: 12,
+          background: `linear-gradient(135deg, ${N.accent}, ${N.accentHover})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: getShadow()
+        }}>
+          <Settings style={{ width: 24, height: 24, color: N.base }} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">CEO Command Center</h2>
-          <p className="text-sm text-slate-400">Control Total del Sistema • AI-Powered</p>
+          <h2 style={{ color: N.text, fontSize: '1.25rem', fontWeight: 700 }}>CENTRO DE COMANDO CEO</h2>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        overflowX: 'auto',
+        paddingBottom: '0.5rem'
+      }}>
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
-              activeTab === tab.id
-                ? 'bg-slate-700 text-white'
-                : 'bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem 1rem',
+              borderRadius: 8,
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s ease',
+              background: activeTab === tab.id ? N.accent : `${N.dark}40`,
+              color: activeTab === tab.id ? N.base : N.textSub,
+              fontSize: '0.875rem',
+              fontWeight: activeTab === tab.id ? 600 : 400
+            }}
           >
-            <span className={activeTab === tab.id ? tab.color : ''}>{tab.icon}</span>
-            <span className="text-sm">{tab.label}</span>
+            <span style={{ color: activeTab === tab.id ? N.base : tab.color }}>{tab.icon}</span>
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
 
       {/* Tab Content */}
-      <NeuromorphicCard variant="embossed" className="p-6">
+      <NeuCard style={{ boxShadow: getShadow() }}>
         {activeTab === 'quick' && <QuickActionsPanel />}
         {activeTab === 'activity' && <ActivityLog />}
         {activeTab === 'maintenance' && <MaintenanceMode />}
@@ -262,7 +287,7 @@ export function CEOCommandCenter({ className }: CEOCommandCenterProps) {
         {activeTab === 'healthcheck' && <HealthChecker />}
         {activeTab === 'tickets' && <TicketInbox />}
         {activeTab === 'system' && <SystemControlPanel />}
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }
@@ -273,92 +298,104 @@ function SystemControlPanel() {
   const [aiMode, setAiMode] = useState<'autonomous' | 'copilot' | 'monitoring'>('copilot')
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* AI Control */}
-      <div className="p-4 bg-slate-800/30 rounded-lg">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <Brain className="w-5 h-5 text-purple-400" />
+      <div style={{ padding: '1rem', background: `${N.dark}30`, borderRadius: 8 }}>
+        <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Brain style={{ color: N.accent, width: 20, height: 20 }} />
           Control de IA Global
         </h4>
-        
-        <div className="flex items-center justify-between mb-4">
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
           <div>
-            <p className="text-white">Sistema IA</p>
-            <p className="text-xs text-slate-400">12 modelos activos</p>
+            <p style={{ color: N.text, fontWeight: 500 }}>Sistema IA</p>
+            <p style={{ color: N.textSub, fontSize: '0.75rem' }}>12 modelos activos</p>
           </div>
-          <button
+          <NeuButton
+            variant={aiEnabled ? "secondary" : "primary"}
             onClick={() => setAiEnabled(!aiEnabled)}
-            className={`px-4 py-2 rounded-lg ${
-              aiEnabled ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-            }`}
           >
             {aiEnabled ? 'Desactivar' : 'Activar'}
-          </button>
+          </NeuButton>
         </div>
 
         {aiEnabled && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-400">Modo:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ color: N.textSub, fontSize: '0.875rem' }}>Modo:</span>
             {(['autonomous', 'copilot', 'monitoring'] as const).map(mode => (
-              <button
+              <NeuButton
                 key={mode}
+                variant={aiMode === mode ? "primary" : "secondary"}
                 onClick={() => setAiMode(mode)}
-                className={`px-3 py-1.5 rounded-lg text-sm ${
-                  aiMode === mode
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
-                }`}
               >
-                {mode === 'autonomous' && '🤖 Autónomo'}
-                {mode === 'copilot' && '🧑‍✈️ Copiloto'}
-                {mode === 'monitoring' && '👁️ Monitoreo'}
-              </button>
+                {mode === 'autonomous' && 'ðŸ¤– Autónomo'}
+                {mode === 'copilot' && 'ðŸ§‘€œˆï¸ Copiloto'}
+                {mode === 'monitoring' && 'ðŸ‘ï¸ Monitoreo'}
+              </NeuButton>
             ))}
           </div>
         )}
       </div>
 
-      {/* System Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="p-4 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">99.97%</p>
-          <p className="text-xs text-slate-400">Uptime</p>
-        </div>
-        <div className="p-4 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">847</p>
-          <p className="text-xs text-slate-400">Decisiones IA Hoy</p>
-        </div>
-        <div className="p-4 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">98.3%</p>
-          <p className="text-xs text-slate-400">Precisión IA</p>
-        </div>
-        <div className="p-4 bg-cyan-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-cyan-400">15</p>
-          <p className="text-xs text-slate-400">Tenants Activos</p>
-        </div>
+      {/* System Stats €” NEUMORPHIC CARDS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+        {[
+          { label: 'Uptime', value: '99.97%', icon: <Activity style={{ width: 18, height: 18 }} /> },
+          { label: 'Decisiones IA Hoy', value: '847', icon: <Brain style={{ width: 18, height: 18 }} /> },
+          { label: 'Precisión IA', value: '98.3%', icon: <BarChart3 style={{ width: 18, height: 18 }} /> },
+          { label: 'Tenants Activos', value: '15', icon: <Users style={{ width: 18, height: 18 }} /> }
+        ].map(stat => (
+          <div key={stat.label} style={{
+            padding: '1.25rem 1rem',
+            background: N.base,
+            borderRadius: 16,
+            textAlign: 'center',
+            boxShadow: getSmallShadow()
+          }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: N.base,
+              boxShadow: getSmallShadow(true),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 0.75rem',
+              color: N.accent
+            }}>
+              {stat.icon}
+            </div>
+            <p style={{ color: N.accent, fontSize: '1.5rem', fontWeight: 800 }}>{stat.value}</p>
+            <p style={{ color: N.textSub, fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 4 }}>{stat.label}</p>
+          </div>
+        ))}
       </div>
 
       {/* Database Connections */}
-      <div className="p-4 bg-slate-800/30 rounded-lg">
-        <h4 className="text-white font-medium mb-3 flex items-center gap-2">
-          <Monitor className="w-5 h-5 text-green-400" />
+      <div style={{ padding: '1rem', background: `${N.dark}30`, borderRadius: 8 }}>
+        <h4 style={{ color: N.text, fontWeight: 500, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Monitor style={{ color: N.accent, width: 20, height: 20 }} />
           Conexiones de Base de Datos
         </h4>
-        <div className="grid grid-cols-2 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
           {[
-            { name: 'PostgreSQL Principal', status: 'connected', latency: 8 },
-            { name: 'PostgreSQL Réplica', status: 'connected', latency: 12 },
-            { name: 'Redis Cache', status: 'connected', latency: 2 },
-            { name: 'Elasticsearch', status: 'connected', latency: 15 }
+            { name: 'PostgreSQL Principal', status: 'Conectado', latency: 8 },
+            { name: 'PostgreSQL Réplica', status: 'Conectado', latency: 12 },
+            { name: 'Redis Cache', status: 'Conectado', latency: 2 },
+            { name: 'Elasticsearch', status: 'Conectado', latency: 15 }
           ].map(db => (
-            <div key={db.name} className="flex items-center justify-between p-3 bg-slate-800/50 rounded">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${
-                  db.status === 'connected' ? 'bg-green-500' : 'bg-red-500'
-                }`} />
-                <span className="text-sm text-white">{db.name}</span>
+            <div key={db.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: `${N.dark}50`, borderRadius: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: N.accent
+                }} />
+                <span style={{ color: N.text, fontSize: '0.875rem' }}>{db.name}</span>
               </div>
-              <span className="text-xs text-slate-400">{db.latency}ms</span>
+              <span style={{ color: N.textSub, fontSize: '0.75rem' }}>{db.latency}ms</span>
             </div>
           ))}
         </div>

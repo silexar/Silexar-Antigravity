@@ -1,10 +1,10 @@
-/**
+ï»¿/**
  * ?? SILEXAR PULSE - Smart Contract Calculator TIER 0
  * 
  * @description Calculadora inteligente para contratos que permite:
  * - Simular descuentos y comisiones
  * - Comparar escenarios
- * - Calcular márgenes
+ * - Calcular mï¿½rgenes
  * - Analizar rentabilidad
  * 
  * @version 2025.4.0
@@ -189,7 +189,7 @@ export default function SmartCalculator({
 
   const resultado = useMemo(() => calcular(datos), [datos]);
 
-  // Límites del usuario (simular)
+  // Lï¿½mites del usuario (simular)
   const limiteDescuento = 20;
   const excedeLimite = datos.descuentoPorcentaje > limiteDescuento;
 
@@ -224,7 +224,7 @@ export default function SmartCalculator({
             </div>
             <div>
               <h3 className="font-bold text-lg text-[#69738c]">Calculadora Inteligente</h3>
-              <p className="text-sm text-[#9aa3b8]">Simula descuentos, comisiones y márgenes</p>
+              <p className="text-sm text-[#9aa3b8]">Simula descuentos, comisiones y mï¿½rgenes</p>
             </div>
           </div>
 
@@ -284,12 +284,12 @@ export default function SmartCalculator({
                 </label>
                 <div className="flex items-center gap-2">
                   {excedeLimite && (
-                    <span className={`${neuro.badge} bg-red-100 text-red-700`}>
+                    <span className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8]`}>
                       <AlertTriangle className="w-3 h-3 inline mr-1" />
-                      Excede límite ({limiteDescuento}%)
+                      Excede lï¿½mite ({limiteDescuento}%)
                     </span>
                   )}
-                  <span className={`font-bold text-lg ${excedeLimite ? 'text-red-600' : 'text-[#69738c]'}`}>
+                  <span className={`font-bold text-lg ${excedeLimite ? 'text-[#9aa3b8]' : 'text-[#69738c]'}`}>
                     {datos.descuentoPorcentaje}%
                   </span>
                 </div>
@@ -305,17 +305,17 @@ export default function SmartCalculator({
               />
               <div className="flex justify-between text-xs text-[#9aa3b8] mt-1">
                 <span>0%</span>
-                <span className="text-amber-500">Límite: {limiteDescuento}%</span>
+                <span className="text-[#6888ff]">Lï¿½mite: {limiteDescuento}%</span>
                 <span>50%</span>
               </div>
             </div>
 
-            {/* Comisión Agencia */}
+            {/* Comisiï¿½n Agencia */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-sm text-[#69738c]">
                   <TrendingDown className="w-4 h-4 inline mr-1" />
-                  Comisión Agencia
+                  Comisiï¿½n Agencia
                 </label>
                 <span className="font-bold text-lg text-[#69738c]">
                   {datos.comisionAgenciaPorcentaje}%
@@ -325,7 +325,7 @@ export default function SmartCalculator({
                 type="range"
                 min="0"
                 max="30"
-                aria-label="Comisión agencia en porcentaje"
+                aria-label="Comisiï¿½n agencia en porcentaje"
                 value={datos.comisionAgenciaPorcentaje}
                 onChange={e => setDatos({ ...datos, comisionAgenciaPorcentaje: Number(e.target.value) })}
                 className={neuro.slider}
@@ -342,7 +342,7 @@ export default function SmartCalculator({
               >
                 <option value={19}>19% (Chile)</option>
                 <option value={21}>21% (Argentina)</option>
-                <option value={18}>18% (Perú)</option>
+                <option value={18}>18% (Perï¿½)</option>
                 <option value={0}>0% (Exento)</option>
               </select>
             </div>
@@ -368,17 +368,17 @@ export default function SmartCalculator({
             <div className={`${neuro.card} p-4`}>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-[#9aa3b8]">Monto Descuento</span>
-                <span className="font-semibold text-red-600">
+                <span className="font-semibold text-[#9aa3b8]">
                   -{formatCurrency(resultado.montoDescuento)}
                 </span>
               </div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#9aa3b8]">Después descuento</span>
+                <span className="text-sm text-[#9aa3b8]">Despuï¿½s descuento</span>
                 <span className="font-semibold">{formatCurrency(resultado.valorConDescuento)}</span>
               </div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#9aa3b8]">Comisión Agencia</span>
-                <span className="font-semibold text-orange-600">
+                <span className="text-sm text-[#9aa3b8]">Comisiï¿½n Agencia</span>
+                <span className="font-semibold text-[#6888ff]">
                   -{formatCurrency(resultado.montoComision)}
                 </span>
               </div>
@@ -397,7 +397,7 @@ export default function SmartCalculator({
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm font-semibold text-[#69738c]">VALOR TOTAL (con IVA)</span>
-                <span className="text-2xl font-bold text-green-600">
+                <span className="text-2xl font-bold text-[#6888ff]">
                   {formatCurrency(resultado.valorTotal)}
                 </span>
               </div>
@@ -407,9 +407,9 @@ export default function SmartCalculator({
             <div className="grid grid-cols-2 gap-3">
               <div className={`${neuro.card} p-4 text-center`}>
                 <TrendingUp className={`w-6 h-6 mx-auto mb-1 ${
-                  resultado.rentabilidad > 50 ? 'text-green-500' :
-                  resultado.rentabilidad > 30 ? 'text-amber-500' :
-                  'text-red-500'
+                  resultado.rentabilidad > 50 ? 'text-[#6888ff]' :
+                  resultado.rentabilidad > 30 ? 'text-[#6888ff]' :
+                  'text-[#9aa3b8]'
                 }`} />
                 <p className="text-2xl font-bold text-[#69738c]">
                   {resultado.rentabilidad.toFixed(1)}%
@@ -425,7 +425,7 @@ export default function SmartCalculator({
               </div>
             </div>
 
-            {/* Botón aplicar */}
+            {/* Botï¿½n aplicar */}
             <button
               onClick={() => onAplicar?.(resultado)}
               className={`${neuro.btnPrimary} w-full py-3 flex items-center justify-center gap-2`}
@@ -441,33 +441,33 @@ export default function SmartCalculator({
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-4 bg-amber-50 border border-[#bec8de30] rounded-2xl flex items-start gap-3"
+            className="mt-4 p-4 bg-[#6888ff]/5 border border-[#bec8de30] rounded-2xl flex items-start gap-3"
           >
-            <Sparkles className="w-5 h-5 text-amber-600 mt-0.5" />
+            <Sparkles className="w-5 h-5 text-[#6888ff] mt-0.5" />
             <div>
-              <p className="text-sm text-amber-800 font-semibold">
+              <p className="text-sm text-[#6888ff] font-semibold">
                 Sugerencia de Cortex-Flow
               </p>
-              <p className="text-sm text-amber-700 mt-1">
-                El descuento del {datos.descuentoPorcentaje}% excede tu límite autorizado ({limiteDescuento}%). 
-                Necesitarás aprobación de tu supervisor. Considera ofrecer {limiteDescuento}% 
+              <p className="text-sm text-[#6888ff] mt-1">
+                El descuento del {datos.descuentoPorcentaje}% excede tu lï¿½mite autorizado ({limiteDescuento}%). 
+                Necesitarï¿½s aprobaciï¿½n de tu supervisor. Considera ofrecer {limiteDescuento}% 
                 con valor agregado adicional.
               </p>
             </div>
           </motion.div>
         )}
 
-        {/* Comparación de escenarios */}
+        {/* Comparaciï¿½n de escenarios */}
         {showComparacion && escenarios.length > 0 && (
           <div className="mt-6">
-            <h4 className="font-bold text-[#69738c] mb-4">Comparación de escenarios</h4>
+            <h4 className="font-bold text-[#69738c] mb-4">Comparaciï¿½n de escenarios</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-[#9aa3b8] border-b border-[#bec8de30]">
                     <th className="pb-2">Escenario</th>
                     <th className="pb-2 text-right">Descuento</th>
-                    <th className="pb-2 text-right">Comisión</th>
+                    <th className="pb-2 text-right">Comisiï¿½n</th>
                     <th className="pb-2 text-right">Valor Neto</th>
                     <th className="pb-2 text-right">Rentabilidad</th>
                     <th className="pb-2"></th>
@@ -482,9 +482,9 @@ export default function SmartCalculator({
                       <td className="py-3 text-right font-semibold">{formatCurrency(esc.resultado.valorNeto)}</td>
                       <td className="py-3 text-right">
                         <span className={`${neuro.badge} ${
-                          esc.resultado.rentabilidad > 50 ? 'bg-green-100 text-green-700' :
-                          esc.resultado.rentabilidad > 30 ? 'bg-amber-100 text-amber-700' :
-                          'bg-red-100 text-red-700'
+                          esc.resultado.rentabilidad > 50 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                          esc.resultado.rentabilidad > 30 ? 'bg-[#6888ff]/10 text-[#6888ff]' :
+                          'bg-[#dfeaff] text-[#9aa3b8]'
                         }`}>
                           {esc.resultado.rentabilidad.toFixed(1)}%
                         </span>

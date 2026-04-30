@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 👥 SILEXAR PULSE - Investor Relations Dashboard
+ * ðŸ‘¥ SILEXAR PULSE - Investor Relations Dashboard
  * Métricas e informes para inversores
  * 
  * @description Gestión de IR:
@@ -17,10 +17,8 @@
 
 import { useState, useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils'
-import {
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   TrendingUp,
   DollarSign,
@@ -119,11 +117,11 @@ export function InvestorRelations() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'founder': return 'bg-purple-500/20 text-purple-400'
-      case 'investor': return 'bg-blue-500/20 text-blue-400'
-      case 'employee': return 'bg-green-500/20 text-green-400'
-      case 'advisor': return 'bg-yellow-500/20 text-yellow-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'founder': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'investor': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'employee': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'advisor': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
@@ -131,8 +129,8 @@ export function InvestorRelations() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Investor Relations...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Investor Relations...</p>
         </div>
       </div>
     )
@@ -142,86 +140,85 @@ export function InvestorRelations() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-[#6888ff]" />
           Investor Relations Dashboard
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary">
           <Download className="w-4 h-4 mr-1" />
           Export Board Deck
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Key Metrics for Investors */}
       <div className="grid grid-cols-4 gap-4">
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center gap-2 mb-2">
-            <Calendar className="w-5 h-5 text-green-400" />
-            <span className={`text-xs ${metrics.runway > 18 ? 'text-green-400' : 'text-yellow-400'}`}>
-              {metrics.runway > 18 ? '✓ Healthy' : '⚠️ Monitor'}
+            <Calendar className="w-5 h-5 text-[#6888ff]" />
+            <span className={`text-xs ${metrics.runway > 18 ? 'text-[#6888ff]' : 'text-[#6888ff]'}`}>
+              {metrics.runway > 18 ? 'œ“ Healthy' : 'š ï¸ Monitor'}
             </span>
           </div>
-          <p className="text-2xl font-bold text-white">{metrics.runway} meses</p>
-          <p className="text-xs text-slate-400">Runway</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{metrics.runway} meses</p>
+          <p className="text-xs text-[#9aa3b8]">Runway</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-5 h-5 text-blue-400" />
+            <DollarSign className="w-5 h-5 text-[#6888ff]" />
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(metrics.cashBalance)}</p>
-          <p className="text-xs text-slate-400">Cash Balance</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(metrics.cashBalance)}</p>
+          <p className="text-xs text-[#9aa3b8]">Cash Balance</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-green-400">+{metrics.growthRate}% MoM</span>
+            <TrendingUp className="w-5 h-5 text-[#6888ff]" />
+            <span className="text-xs text-[#6888ff]">+{metrics.growthRate}% MoM</span>
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(metrics.currentMRR)}</p>
-          <p className="text-xs text-slate-400">MRR</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(metrics.currentMRR)}</p>
+          <p className="text-xs text-[#9aa3b8]">MRR</p>
+        </NeuCard>
 
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="flex items-center gap-2 mb-2">
-            <Target className="w-5 h-5 text-cyan-400" />
+            <Target className="w-5 h-5 text-[#6888ff]" />
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(metrics.lastRoundValuation)}</p>
-          <p className="text-xs text-slate-400">Last Valuation</p>
-        </NeuromorphicCard>
+          <p className="text-2xl font-bold text-[#69738c]">{formatCurrency(metrics.lastRoundValuation)}</p>
+          <p className="text-xs text-[#9aa3b8]">Last Valuation</p>
+        </NeuCard>
       </div>
 
       {/* Secondary Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="p-3 bg-red-500/10 rounded-lg text-center">
-          <p className="text-lg font-bold text-red-400">{formatCurrency(metrics.monthlyBurn)}</p>
-          <p className="text-xs text-slate-400">Monthly Burn</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#6888ff]">{formatCurrency(metrics.monthlyBurn)}</p>
+          <p className="text-xs text-[#9aa3b8]">Monthly Burn</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{metrics.employeeCount}</p>
-          <p className="text-xs text-slate-400">Empleados</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{metrics.employeeCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Empleados</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-lg font-bold text-white">{metrics.customersCount}</p>
-          <p className="text-xs text-slate-400">Clientes</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-lg font-bold text-[#69738c]">{metrics.customersCount}</p>
+          <p className="text-xs text-[#9aa3b8]">Clientes</p>
         </div>
       </div>
 
       {/* Upcoming Board Meeting Alert */}
       {meetings.filter(m => m.status === 'scheduled').map(meeting => (
-        <div key={meeting.id} className={`p-4 rounded-lg border ${
-          meeting.deckReady ? 'bg-green-500/10 border-green-500/30' : 'bg-yellow-500/10 border-yellow-500/30'
-        }`}>
+        <div key={meeting.id} className={`p-4 rounded-lg border ${meeting.deckReady ? 'bg-[#6888ff]/10 border-[#6888ff]/30' : 'bg-[#6888ff]/10 border-yellow-500/30'
+          }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-yellow-400" />
+              <Calendar className="w-5 h-5 text-[#6888ff]" />
               <div>
-                <span className="text-white font-medium">{meeting.title}</span>
-                <p className="text-xs text-slate-400">{meeting.date.toLocaleDateString()}</p>
+                <span className="text-[#69738c] font-medium">{meeting.title}</span>
+                <p className="text-xs text-[#9aa3b8]">{meeting.date.toLocaleDateString()}</p>
               </div>
             </div>
             {!meeting.deckReady && (
-              <span className="text-xs px-2 py-1 bg-yellow-500 text-black rounded flex items-center gap-1">
+              <span className="text-xs px-2 py-1 bg-[#6888ff] text-black rounded flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" />
                 Deck pendiente
               </span>
@@ -231,26 +228,26 @@ export function InvestorRelations() {
       ))}
 
       {/* Cap Table */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-          <PieChart className="w-5 h-5 text-purple-400" />
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-[#69738c] font-medium mb-4 flex items-center gap-2">
+          <PieChart className="w-5 h-5 text-[#6888ff]" />
           Cap Table
         </h4>
         <div className="space-y-2">
           {shareholders.map((sh, i) => (
-            <div key={sh.name} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+            <div key={sh.name} className="flex items-center justify-between p-3 bg-[#dfeaff]/50 rounded-lg">
               <div className="flex items-center gap-3">
                 <span className={`text-xs px-2 py-0.5 rounded ${getTypeColor(sh.type)}`}>
                   {sh.type}
                 </span>
-                <span className="text-white">{sh.name}</span>
+                <span className="text-[#69738c]">{sh.name}</span>
               </div>
               <div className="flex items-center gap-6">
-                <span className="text-slate-400 text-sm">{sh.shares.toLocaleString()} shares</span>
-                <span className="text-white font-bold">{sh.percentage}%</span>
-                <div className="w-24 bg-slate-700 rounded-full h-2">
-                  <div 
-                    className="bg-purple-500 h-2 rounded-full"
+                <span className="text-[#9aa3b8] text-sm">{sh.shares.toLocaleString()} shares</span>
+                <span className="text-[#69738c] font-bold">{sh.percentage}%</span>
+                <div className="w-24 bg-[#dfeaff] rounded-full h-2">
+                  <div
+                    className="bg-[#6888ff] h-2 rounded-full"
                     style={{ width: `${sh.percentage * 2}%` }}
                   />
                 </div>
@@ -258,7 +255,7 @@ export function InvestorRelations() {
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

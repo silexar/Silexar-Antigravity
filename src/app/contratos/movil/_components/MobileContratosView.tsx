@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? MOBILE: Vista de Contratos
  * 
- * Lista completa con búsqueda, filtros por urgencia, cards con acciones
- * rápidas (aprobar, llamar, email). Paridad 1:1 con desktop.
+ * Lista completa con bï¿½squeda, filtros por urgencia, cards con acciones
+ * rï¿½pidas (aprobar, llamar, email). Paridad 1:1 con desktop.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -147,7 +147,7 @@ function ContratoCard({ contrato, onAprobar, processingAction }: {
             <div className="flex items-center gap-2">
               <p className="font-bold text-[#69738c] text-sm truncate">{contrato.cliente.nombre}</p>
               {contrato.alertas > 0 && (
-                <span className="w-5 h-5 bg-red-500 rounded-full text-[10px] text-white font-bold flex items-center justify-center">
+                <span className="w-5 h-5 bg-[#dfeaff]0 rounded-full text-[10px] text-white font-bold flex items-center justify-center">
                   {contrato.alertas}
                 </span>
               )}
@@ -232,11 +232,11 @@ function ActionButton({ accion, onPress, disabled }: {
   };
 
   const colorMap: Record<string, string> = {
-    aprobar: 'bg-emerald-100 text-emerald-700',
-    rechazar: 'bg-red-100 text-red-700',
-    firmar: 'bg-purple-100 text-purple-700',
-    llamar: 'bg-blue-100 text-blue-700',
-    email: 'bg-amber-100 text-amber-700',
+    aprobar: 'bg-[#6888ff]/10 text-[#6888ff]',
+    rechazar: 'bg-[#dfeaff] text-[#9aa3b8]',
+    firmar: 'bg-[#6888ff]/10 text-[#6888ff]',
+    llamar: 'bg-[#6888ff]/10 text-[#6888ff]',
+    email: 'bg-[#6888ff]/10 text-[#6888ff]',
   };
 
   return (

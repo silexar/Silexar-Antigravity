@@ -194,7 +194,7 @@ export default function CollaborationPanel({
             ))}
           </div>
           {comentarios.filter(c => !c.resuelto).length > 0 && (
-            <span className={`${neuro.badge} bg-red-100 text-red-700`}>
+            <span className={`${neuro.badge} bg-[#dfeaff] text-[#9aa3b8]`}>
               {comentarios.filter(c => !c.resuelto).length}
             </span>
           )}
@@ -215,7 +215,7 @@ export default function CollaborationPanel({
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-[#6888ff]" />
             <span className="font-semibold text-sm text-[#69738c]">Colaboración</span>
-            <span className={`${neuro.badge} bg-green-100 text-green-700`}>
+            <span className={`${neuro.badge} bg-[#6888ff]/10 text-[#6888ff]`}>
               {usuarios.length} online
             </span>
           </div>
@@ -249,7 +249,7 @@ export default function CollaborationPanel({
           >
             Comentarios
             {comentarios.filter(c => !c.resuelto).length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#dfeaff]0 text-white text-xs rounded-full flex items-center justify-center">
                 {comentarios.filter(c => !c.resuelto).length}
               </span>
             )}
@@ -279,7 +279,7 @@ export default function CollaborationPanel({
                         {usuario.nombre.charAt(0)}
                       </div>
                       <Circle 
-                        className="w-3 h-3 absolute -bottom-0.5 -right-0.5 text-green-500 fill-green-500"
+                        className="w-3 h-3 absolute -bottom-0.5 -right-0.5 text-[#6888ff] fill-green-500"
                       />
                     </div>
                     <div className="flex-1">
@@ -362,7 +362,7 @@ export default function CollaborationPanel({
                           Responder
                         </button>
                         {!com.resuelto && (
-                          <button className="text-xs text-green-500 hover:text-green-600 flex items-center gap-1">
+                          <button className="text-xs text-[#6888ff] hover:text-[#6888ff] flex items-center gap-1">
                             <Check className="w-3 h-3" />
                             Resolver
                           </button>

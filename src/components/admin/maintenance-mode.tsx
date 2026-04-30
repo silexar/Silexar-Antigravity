@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 🔧 SILEXAR PULSE - Modo Mantenimiento
+ * ðŸ”§ SILEXAR PULSE - Modo Mantenimiento
  * Control de mantenimiento global y por tenant
  * 
  * @description Sistema de mantenimiento con:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Wrench,
   Power,
@@ -171,18 +169,18 @@ export function MaintenanceMode() {
     })
 
     if (newMaintenance.notifyUsers) {
-      
+
     }
   }
 
   const cancelMaintenance = (id: string) => {
-    setMaintenanceWindows(prev => prev.map(w => 
+    setMaintenanceWindows(prev => prev.map(w =>
       w.id === id ? { ...w, status: 'cancelled' as const } : w
     ))
   }
 
   const startMaintenanceNow = (id: string) => {
-    setMaintenanceWindows(prev => prev.map(w => 
+    setMaintenanceWindows(prev => prev.map(w =>
       w.id === id ? { ...w, status: 'active' as const, startTime: new Date() } : w
     ))
   }
@@ -202,7 +200,7 @@ export function MaintenanceMode() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Modo Mantenimiento...</p>
+          <p className="text-[#9aa3b8]">Cargando Modo Mantenimiento...</p>
         </div>
       </div>
     )
@@ -211,149 +209,148 @@ export function MaintenanceMode() {
   return (
     <div className="space-y-4">
       {/* Global Maintenance Toggle */}
-      <NeuromorphicCard 
-        variant={globalMaintenance ? 'glow' : 'embossed'} 
-        className={`p-6 ${globalMaintenance ? 'border-red-500/50' : ''}`}
+      <NeuCard
+        style={{ boxShadow: globalMaintenance ? getFloatingShadow() : getSmallShadow(), padding: '1.5rem', background: N.base }}
+        className={`p-6 ${globalMaintenance ? 'border-[#6888ff]/50' : ''}`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-              globalMaintenance ? 'bg-red-600 animate-pulse' : 'bg-slate-700'
-            }`}>
-              <Wrench className="w-7 h-7 text-white" />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${globalMaintenance ? 'bg-[#6888ff] animate-pulse' : 'bg-[#dfeaff]'
+              }`}>
+              <Wrench className="w-7 h-7 text-[#69738c]" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Modo Mantenimiento Global</h3>
-              <p className="text-sm text-slate-400">
-                {globalMaintenance 
-                  ? '⚠️ ACTIVO - Usuarios bloqueados' 
+              <h3 className="text-lg font-bold text-[#69738c]">Modo Mantenimiento Global</h3>
+              <p className="text-sm text-[#9aa3b8]">
+                {globalMaintenance
+                  ? 'š ï¸ ACTIVO - Usuarios bloqueados'
                   : 'Sistema operativo normalmente'
                 }
               </p>
             </div>
           </div>
-          <NeuromorphicButton
-            variant={globalMaintenance ? 'success' : 'danger'}
+          <NeuButton
+            variant={globalMaintenance ? 'primary' : 'secondary'}
             onClick={toggleGlobalMaintenance}
           >
             <Power className="w-4 h-4 mr-2" />
             {globalMaintenance ? 'Desactivar' : 'Activar'}
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
 
         {globalMaintenance && (
-          <div className="mt-4 p-4 bg-red-500/10 rounded-lg">
-            <label className="text-xs text-slate-400 block mb-2">Mensaje para usuarios:</label>
+          <div className="mt-4 p-4 bg-[#6888ff]/10 rounded-lg">
+            <label className="text-xs text-[#9aa3b8] block mb-2">Mensaje para usuarios:</label>
             <textarea
               value={globalMessage}
               onChange={(e) => setGlobalMessage(e.target.value)}
-              className="w-full bg-slate-800 text-white text-sm rounded-lg p-3 border border-red-500/30"
+              className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded-lg p-3 border border-[#6888ff]/30"
               rows={2}
             />
           </div>
         )}
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg">
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-red-400" />
-            <span className="text-xs text-slate-400">Activos</span>
+            <AlertTriangle className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Activos</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.activeMaintenances}</p>
+          <p className="text-xl font-bold text-[#69738c]">{stats?.activeMaintenances}</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <Calendar className="w-4 h-4 text-blue-400" />
-            <span className="text-xs text-slate-400">Programados</span>
+            <Calendar className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Programados</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.scheduledMaintenances}</p>
+          <p className="text-xl font-bold text-[#69738c]">{stats?.scheduledMaintenances}</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <CheckCircle className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-slate-400">Este Mes</span>
+            <CheckCircle className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Este Mes</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.completedThisMonth}</p>
+          <p className="text-xl font-bold text-[#69738c]">{stats?.completedThisMonth}</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg">
           <div className="flex items-center gap-2 mb-1">
-            <Clock className="w-4 h-4 text-yellow-400" />
-            <span className="text-xs text-slate-400">Downtime Total</span>
+            <Clock className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs text-[#9aa3b8]">Downtime Total</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.totalDowntimeHours}h</p>
+          <p className="text-xl font-bold text-[#69738c]">{stats?.totalDowntimeHours}h</p>
         </div>
       </div>
 
       {/* Schedule New */}
       <div className="flex items-center justify-between">
-        <h4 className="text-white font-medium">Mantenimientos Programados</h4>
-        <NeuromorphicButton
+        <h4 className="text-[#69738c] font-medium">Mantenimientos Programados</h4>
+        <NeuButton
           variant="primary"
-          size="sm"
+
           onClick={() => setShowScheduleModal(true)}
         >
           <Plus className="w-4 h-4 mr-1" />
           Programar
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Schedule Modal */}
       {showScheduleModal && (
-        <NeuromorphicCard variant="glow" className="p-6">
-          <h4 className="text-white font-bold mb-4">Programar Mantenimiento</h4>
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-bold mb-4">Programar Mantenimiento</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Tipo</label>
+              <label className="text-xs text-[#9aa3b8] block mb-1">Tipo</label>
               <select
                 value={newMaintenance.type}
                 onChange={(e) => setNewMaintenance(nm => ({ ...nm, type: e.target.value as 'global' | 'tenant' }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
               >
                 <option value="global">Global (Todo el sistema)</option>
                 <option value="tenant">Por Tenant</option>
               </select>
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Título</label>
+              <label className="text-xs text-[#9aa3b8] block mb-1">Título</label>
               <input
                 type="text"
                 value={newMaintenance.title}
                 onChange={(e) => setNewMaintenance(nm => ({ ...nm, title: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
                 placeholder="Ej: Actualización de seguridad"
               />
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Inicio</label>
+              <label className="text-xs text-[#9aa3b8] block mb-1">Inicio</label>
               <input
                 type="datetime-local"
                 value={newMaintenance.startTime}
                 onChange={(e) => setNewMaintenance(nm => ({ ...nm, startTime: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
               />
             </div>
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Fin</label>
+              <label className="text-xs text-[#9aa3b8] block mb-1">Fin</label>
               <input
                 type="datetime-local"
                 value={newMaintenance.endTime}
                 onChange={(e) => setNewMaintenance(nm => ({ ...nm, endTime: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
               />
             </div>
             <div className="col-span-2">
-              <label className="text-xs text-slate-400 block mb-1">Mensaje</label>
+              <label className="text-xs text-[#9aa3b8] block mb-1">Mensaje</label>
               <textarea
                 value={newMaintenance.message}
                 onChange={(e) => setNewMaintenance(nm => ({ ...nm, message: e.target.value }))}
-                className="w-full bg-slate-800 text-white text-sm rounded px-3 py-2"
+                className="w-full bg-[#dfeaff] text-[#69738c] text-sm rounded px-3 py-2"
                 rows={2}
               />
             </div>
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+              <label className="flex items-center gap-2 text-sm text-[#69738c]">
                 <input
                   type="checkbox"
                   checked={newMaintenance.notifyUsers}
@@ -362,7 +359,7 @@ export function MaintenanceMode() {
                 />
                 Notificar usuarios
               </label>
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+              <label className="flex items-center gap-2 text-sm text-[#69738c]">
                 <input
                   type="checkbox"
                   checked={newMaintenance.allowAdminAccess}
@@ -373,68 +370,66 @@ export function MaintenanceMode() {
               </label>
             </div>
             <div className="flex items-center gap-2 justify-end">
-              <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowScheduleModal(false)}>
+              <NeuButton variant="secondary" onClick={() => setShowScheduleModal(false)}>
                 Cancelar
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="primary" size="sm" onClick={scheduleMaintenance}>
+              </NeuButton>
+              <NeuButton variant="primary" onClick={scheduleMaintenance}>
                 Programar
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Scheduled Windows */}
       <div className="space-y-2">
         {maintenanceWindows.filter(w => w.status !== 'cancelled').map(window => (
-          <div 
+          <div
             key={window.id}
-            className={`p-4 rounded-lg border ${
-              window.status === 'active' 
-                ? 'bg-red-500/10 border-red-500/30' 
-                : 'bg-slate-800/30 border-slate-700/50'
-            }`}
+            className={`p-4 rounded-lg border ${window.status === 'active'
+              ? 'bg-[#6888ff]/10 border-[#6888ff]/30'
+              : 'bg-[#dfeaff]/30 border-slate-700/50'
+              }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {window.type === 'global' ? (
-                  <Globe className="w-5 h-5 text-blue-400" />
+                  <Globe className="w-5 h-5 text-[#6888ff]" />
                 ) : (
-                  <Building2 className="w-5 h-5 text-purple-400" />
+                  <Building2 className="w-5 h-5 text-[#6888ff]" />
                 )}
                 <div>
-                  <p className="text-white font-medium">{window.title}</p>
-                  <p className="text-xs text-slate-400">
-                    {window.type === 'global' ? 'Global' : window.tenantName} • 
+                  <p className="text-[#69738c] font-medium">{window.title}</p>
+                  <p className="text-xs text-[#9aa3b8]">
+                    {window.type === 'global' ? 'Global' : window.tenantName} •
                     {formatDateTime(window.startTime)} - {formatDateTime(window.endTime)}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-1 rounded ${
-                  window.status === 'active' ? 'bg-red-500/20 text-red-400' :
-                  window.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400' :
-                  'bg-green-500/20 text-green-400'
-                }`}>
+                <span className={`text-xs px-2 py-1 rounded ${window.status === 'active' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                  window.status === 'scheduled' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   {window.status === 'active' ? 'En Curso' :
-                   window.status === 'scheduled' ? 'Programado' : 'Completado'}
+                    window.status === 'scheduled' ? 'Programado' : 'completed'}
                 </span>
                 {window.status === 'scheduled' && (
                   <>
-                    <NeuromorphicButton
-                      variant="success"
-                      size="sm"
+                    <NeuButton
+                      variant="primary"
+
                       onClick={() => startMaintenanceNow(window.id)}
                     >
                       <Play className="w-3 h-3" />
-                    </NeuromorphicButton>
-                    <NeuromorphicButton
-                      variant="danger"
-                      size="sm"
+                    </NeuButton>
+                    <NeuButton
+                      variant="secondary"
+
                       onClick={() => cancelMaintenance(window.id)}
                     >
                       <Trash2 className="w-3 h-3" />
-                    </NeuromorphicButton>
+                    </NeuButton>
                   </>
                 )}
               </div>

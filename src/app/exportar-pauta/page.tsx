@@ -11,6 +11,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   FileDown, 
   Calendar, 
@@ -27,8 +28,10 @@ import {
   Clock,
   Music,
   Send,
-  Copy
+  Copy,
+  ArrowLeft
 } from 'lucide-react';
+import { ModuleNavMenu } from '@/components/module-nav-menu';
 
 // ═══════════════════════════════════════════════════════════════
 // TIPOS
@@ -107,6 +110,7 @@ const NeuromorphicButton = ({ children, onClick, variant = 'secondary', disabled
 // ═══════════════════════════════════════════════════════════════
 
 export default function ExportarPautaPage() {
+  const router = useRouter();
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
   const [emisora, setEmisora] = useState('COOP');
   const [formatoSeleccionado, setFormatoSeleccionado] = useState('csv');
@@ -175,12 +179,18 @@ export default function ExportarPautaPage() {
         
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-indigo-600 bg-clip-text text-transparent flex items-center gap-3">
-              <FileDown className="w-10 h-10 text-indigo-500" />
-              Exportar Pauta
-            </h1>
-            <p className="text-slate-500 mt-2">Generador de archivos para emisoras</p>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push('/dashboard')} className="p-2.5 rounded-xl transition-all bg-white shadow-md hover:bg-slate-100">
+              <ArrowLeft className="w-4 h-4 text-slate-600" />
+            </button>
+            <ModuleNavMenu />
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-indigo-600 bg-clip-text text-transparent flex items-center gap-3">
+                <FileDown className="w-10 h-10 text-indigo-500" />
+                Exportar Pauta
+              </h1>
+              <p className="text-slate-500 mt-2">Generador de archivos para emisoras</p>
+            </div>
           </div>
           
           {/* Selector de fecha */}

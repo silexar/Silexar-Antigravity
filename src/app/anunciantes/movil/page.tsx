@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📱 SILEXAR PULSE — Anunciantes Mobile App TIER 0
  * 
  * @description Interface móvil completa para gestión de anunciantes
@@ -113,20 +113,20 @@ export default function MobileAnunciantesApp() {
           setActiveTab(id);
         }}
         className={`flex flex-col items-center justify-center w-full relative ${
-          isActive ? 'text-blue-600' : 'text-slate-400'
+          isActive ? 'text-[#6888ff]' : 'text-[#9aa3b8]'
         }`}
       >
         <div className={`p-2 rounded-2xl transition-all ${
           isActive 
-            ? 'bg-blue-50/80 shadow-inner' 
+            ? 'bg-[#6888ff]/5/80 shadow-inner' 
             : ''
         }`}>
           <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
           {alert && (
-            <span className="absolute top-1 right-1/4 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse" />
+            <span className="absolute top-1 right-1/4 w-2.5 h-2.5 bg-[#dfeaff]0 rounded-full border-2 border-white animate-pulse" />
           )}
         </div>
-        <span className={`text-[10px] mt-1 font-bold ${isActive ? 'text-blue-600' : 'text-slate-500'}`}>
+        <span className={`text-[10px] mt-1 font-bold ${isActive ? 'text-[#6888ff]' : 'text-[#69738c]'}`}>
           {label}
         </span>
       </button>
@@ -149,25 +149,25 @@ export default function MobileAnunciantesApp() {
   }
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-slate-50 font-sans overflow-hidden">
+    <div className="flex flex-col h-[100dvh] bg-[#dfeaff] font-sans overflow-hidden">
       
       {/* HEADER SUPERIOR */}
       <header className="px-5 pt-10 pb-4 bg-white/80 backdrop-blur-xl shadow-sm z-20 flex justify-between items-center rounded-b-3xl border-b border-white/60">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-200/50">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center shadow-md shadow-blue-200/50">
             <Building2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-slate-800 leading-none">
-              Silexar <span className="text-blue-600">Pulse</span>
+            <h1 className="text-xl font-extrabold tracking-tight text-[#9aa3b8] leading-none">
+              Silexar <span className="text-[#6888ff]">Pulse</span>
             </h1>
-            <p className="text-[11px] font-bold text-slate-400 tracking-widest uppercase mt-0.5">
+            <p className="text-[11px] font-bold text-[#9aa3b8] tracking-widest uppercase mt-0.5">
               Anunciantes Mobile
             </p>
           </div>
         </div>
         
-        <button className="w-10 h-10 rounded-2xl bg-white/60 flex items-center justify-center shadow-sm border border-slate-100 active:scale-95 text-slate-500 transition-all">
+        <button className="w-10 h-10 rounded-2xl bg-white/60 flex items-center justify-center shadow-sm border border-[#bec8de] active:scale-95 text-[#69738c] transition-all">
           <Menu className="w-5 h-5" />
         </button>
       </header>
@@ -199,9 +199,9 @@ export default function MobileAnunciantesApp() {
         )}
         {activeTab === 'alertas' && (
           <div className="flex flex-col items-center justify-center py-20 opacity-60">
-            <Bell className="w-16 h-16 text-slate-300 mb-4" />
-            <p className="text-slate-500 font-bold">Centro de Alertas</p>
-            <p className="text-sm text-slate-400 mt-2">Próximamente disponible</p>
+            <Bell className="w-16 h-16 text-[#9aa3b8] mb-4" />
+            <p className="text-[#69738c] font-bold">Centro de Alertas</p>
+            <p className="text-sm text-[#9aa3b8] mt-2">Próximamente disponible</p>
           </div>
         )}
       </main>
@@ -209,7 +209,7 @@ export default function MobileAnunciantesApp() {
       {/* FLOATING ACTION BUTTON */}
         <button 
           onClick={openCrear}
-          className="absolute bottom-24 right-5 w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-200/50 z-30 transition-transform hover:scale-105 active:scale-95"
+          className="absolute bottom-24 right-5 w-14 h-14 bg-gradient-to-br from-[#6888ff] to-[#5572ee] rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-200/50 z-30 transition-transform hover:scale-105 active:scale-95"
         >
           <Plus className="w-6 h-6" />
         </button>

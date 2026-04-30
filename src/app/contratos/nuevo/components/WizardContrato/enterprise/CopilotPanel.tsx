@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🤖 SILEXAR PULSE - Panel Copilot TIER 0
  *
  * @description Interfaz conversacional con el asistente IA
@@ -50,7 +50,7 @@ const MensajeChat: React.FC<{
       <div
         className={`
         flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-        ${esUsuario ? "bg-indigo-500" : "bg-[#6888ff]"}
+        ${esUsuario ? "bg-[#6888ff]/50" : "bg-[#6888ff]"}
       `}
       >
         {esUsuario
@@ -65,7 +65,7 @@ const MensajeChat: React.FC<{
           px-4 py-3 rounded-2xl
           ${
             esUsuario
-              ? "bg-indigo-500 text-white rounded-tr-sm"
+              ? "bg-[#6888ff]/50 text-white rounded-tr-sm"
               : "bg-[#dfeaff] text-[#69738c] rounded-tl-sm"
           }
         `}
@@ -113,19 +113,19 @@ const SugerenciaChip: React.FC<{
 }> = ({ sugerencia, onAplicar }) => (
   <motion.button
     onClick={onAplicar}
-    className="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-left hover:bg-amber-100 transition-colors"
+    className="px-3 py-2 rounded-xl bg-[#6888ff]/5 border border-[#bec8de] text-left hover:bg-[#6888ff]/10 transition-colors"
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
   >
     <div className="flex items-start gap-2">
-      <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+      <Lightbulb className="w-4 h-4 text-[#6888ff] flex-shrink-0 mt-0.5" />
       <div>
-        <p className="text-sm font-medium text-amber-800">
+        <p className="text-sm font-medium text-[#6888ff]">
           {typeof sugerencia.valor === "object"
             ? JSON.stringify(sugerencia.valor)
             : String(sugerencia.valor)}
         </p>
-        <p className="text-xs text-amber-600 mt-0.5">
+        <p className="text-xs text-[#6888ff] mt-0.5">
           {sugerencia.razonamiento}
         </p>
       </div>
@@ -287,10 +287,10 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
 
       {/* Sugerencias contextuales */}
       {sugerencias.length > 0 && (
-        <div className="p-3 bg-amber-50 border-b border-amber-100">
+        <div className="p-3 bg-[#6888ff]/5 border-b border-[#bec8de]">
           <div className="flex items-center gap-2 mb-2">
-            <Zap className="w-4 h-4 text-amber-500" />
-            <span className="text-xs font-medium text-amber-700">
+            <Zap className="w-4 h-4 text-[#6888ff]" />
+            <span className="text-xs font-medium text-[#6888ff]">
               Sugerencias IA
             </span>
           </div>
@@ -331,17 +331,17 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
             <div className="px-4 py-3 rounded-2xl bg-[#dfeaff] rounded-tl-sm">
               <div className="flex items-center gap-1">
                 <motion.div
-                  className="w-2 h-2 rounded-full bg-indigo-400"
+                  className="w-2 h-2 rounded-full bg-[#6888ff]/40"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 0.6, repeat: Infinity }}
                 />
                 <motion.div
-                  className="w-2 h-2 rounded-full bg-indigo-400"
+                  className="w-2 h-2 rounded-full bg-[#6888ff]/40"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
                 />
                 <motion.div
-                  className="w-2 h-2 rounded-full bg-indigo-400"
+                  className="w-2 h-2 rounded-full bg-[#6888ff]/40"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
                 />
@@ -381,7 +381,7 @@ export const CopilotPanel: React.FC<CopilotPanelProps> = ({
                 p-2 rounded-lg transition-all
                 ${
                 inputValue.trim() && !isLoading
-                  ? "bg-indigo-500 text-white hover:bg-indigo-600"
+                  ? "bg-[#6888ff]/50 text-white hover:bg-[#6888ff]"
                   : "bg-[#dfeaff] text-[#9aa3b8] cursor-not-allowed"
               }
               `}
@@ -439,7 +439,7 @@ export const CopilotFAB: React.FC<CopilotFABProps> = (
     <MessageSquare className="w-6 h-6 text-white" />
 
     {hasUnread && (
-      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white" />
+      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#dfeaff]0 border-2 border-white" />
     )}
 
     {/* Efecto de brillo */}

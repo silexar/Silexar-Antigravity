@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 👥 SILEXAR PULSE - Team Management (Client)
+ * ðŸ‘¥ SILEXAR PULSE - Team Management (Client)
  * Gestión de equipos para clientes
  * 
  * @description Team Management:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Users,
   Plus,
@@ -117,18 +115,18 @@ export function TeamManagement() {
   }
 
   const removeMember = (teamId: string, memberId: string) => {
-    setTeams(prev => prev.map(t => 
+    setTeams(prev => prev.map(t =>
       t.id === teamId ? { ...t, members: t.members.filter(m => m.id !== memberId) } : t
     ))
   }
 
   const getColorClass = (color: string) => {
     switch (color) {
-      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/50'
-      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/50'
-      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/50'
-      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/50'
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/50'
+      case 'blue': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/50'
+      case 'green': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/50'
+      case 'purple': return 'bg-[#6888ff]/20 text-[#6888ff] border-[#6888ff]/50'
+      case 'orange': return 'bg-[#6888ff]/20 text-[#6888ff] border-orange-500/50'
+      default: return 'bg-slate-500/20 text-[#9aa3b8] border-slate-500/50'
     }
   }
 
@@ -138,8 +136,8 @@ export function TeamManagement() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Team Management...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Team Management...</p>
         </div>
       </div>
     )
@@ -149,118 +147,117 @@ export function TeamManagement() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Users className="w-5 h-5 text-blue-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <Users className="w-5 h-5 text-[#6888ff]" />
           Team Management
         </h3>
         <div className="flex items-center gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadTeams}>
+          <NeuButton variant="secondary" onClick={loadTeams}>
             <RefreshCw className="w-4 h-4 mr-1" />
             Refresh
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="primary" size="sm">
+          </NeuButton>
+          <NeuButton variant="primary">
             <Plus className="w-4 h-4 mr-1" />
             Nuevo Equipo
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{teams.length}</p>
-          <p className="text-xs text-slate-400">Equipos</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{teams.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Equipos</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">{totalMembers}</p>
-          <p className="text-xs text-slate-400">Miembros</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{totalMembers}</p>
+          <p className="text-xs text-[#9aa3b8]">Miembros</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{teams.length}</p>
-          <p className="text-xs text-slate-400">Líderes</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{teams.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Líderes</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         {/* Teams List */}
-        <NeuromorphicCard variant="embossed" className="p-4">
-          <h4 className="text-white font-medium mb-3">Equipos</h4>
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+          <h4 className="text-[#69738c] font-medium mb-3">Equipos</h4>
           <div className="space-y-2">
             {teams.map(team => (
-              <div 
+              <div
                 key={team.id}
                 onClick={() => setSelectedTeam(team)}
-                className={`p-3 rounded-lg cursor-pointer border transition-colors ${
-                  selectedTeam?.id === team.id 
-                    ? 'border-blue-500/50 bg-slate-800' 
-                    : 'border-transparent bg-slate-800/50 hover:bg-slate-800'
-                }`}
+                className={`p-3 rounded-lg cursor-pointer border transition-colors ${selectedTeam?.id === team.id
+                  ? 'border-[#6888ff]/50 bg-[#dfeaff]'
+                  : 'border-transparent bg-[#dfeaff]/50 hover:bg-[#dfeaff]'
+                  }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${getColorClass(team.color)}`} />
-                    <span className="text-white font-medium">{team.name}</span>
+                    <span className="text-[#69738c] font-medium">{team.name}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button className="p-1 hover:bg-slate-700 rounded" aria-label="Editar">
-                      <Edit className="w-3 h-3 text-blue-400" />
+                    <button className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Editar">
+                      <Edit className="w-3 h-3 text-[#6888ff]" />
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); deleteTeam(team.id); }} className="p-1 hover:bg-slate-700 rounded" aria-label="Eliminar">
-                      <Trash2 className="w-3 h-3 text-red-400" />
+                    <button onClick={(e) => { e.stopPropagation(); deleteTeam(team.id); }} className="p-1 hover:bg-[#dfeaff] rounded" aria-label="Eliminar">
+                      <Trash2 className="w-3 h-3 text-[#6888ff]" />
                     </button>
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 mb-2">{team.description}</p>
+                <p className="text-xs text-[#9aa3b8] mb-2">{team.description}</p>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 flex items-center gap-1">
-                    <Crown className="w-3 h-3 text-yellow-400" />
+                  <span className="text-[#9aa3b8] flex items-center gap-1">
+                    <Crown className="w-3 h-3 text-[#6888ff]" />
                     {team.leaderName}
                   </span>
-                  <span className="text-slate-400">{team.members.length} miembros</span>
+                  <span className="text-[#9aa3b8]">{team.members.length} miembros</span>
                 </div>
               </div>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
 
         {/* Team Details */}
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           {selectedTeam ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-white font-medium">{selectedTeam.name}</h4>
-                <NeuromorphicButton variant="secondary" size="sm">
+                <h4 className="text-[#69738c] font-medium">{selectedTeam.name}</h4>
+                <NeuButton variant="secondary">
                   <UserPlus className="w-4 h-4 mr-1" />
                   Agregar Miembro
-                </NeuromorphicButton>
+                </NeuButton>
               </div>
-              
-              <p className="text-slate-400 text-sm">{selectedTeam.description}</p>
-              
+
+              <p className="text-[#9aa3b8] text-sm">{selectedTeam.description}</p>
+
               <div className="space-y-2">
-                <h5 className="text-sm text-slate-400">Miembros ({selectedTeam.members.length})</h5>
+                <h5 className="text-sm text-[#9aa3b8]">Miembros ({selectedTeam.members.length})</h5>
                 {selectedTeam.members.map(member => (
-                  <div key={member.id} className="flex items-center justify-between p-2 bg-slate-800/50 rounded">
+                  <div key={member.id} className="flex items-center justify-between p-2 bg-[#dfeaff]/50 rounded">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
-                        <Users className="w-4 h-4 text-slate-400" />
+                      <div className="w-8 h-8 rounded-full bg-[#dfeaff] flex items-center justify-center">
+                        <Users className="w-4 h-4 text-[#9aa3b8]" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-white text-sm">{member.name}</span>
+                          <span className="text-[#69738c] text-sm">{member.name}</span>
                           {member.id === selectedTeam.leaderId && (
-                            <Crown className="w-3 h-3 text-yellow-400" />
+                            <Crown className="w-3 h-3 text-[#6888ff]" />
                           )}
                         </div>
-                        <p className="text-xs text-slate-500">{member.role}</p>
+                        <p className="text-xs text-[#9aa3b8]">{member.role}</p>
                       </div>
                     </div>
                     {member.id !== selectedTeam.leaderId && (
-                      <button 
+                      <button
                         onClick={() => removeMember(selectedTeam.id, member.id)}
-                        className="p-1 hover:bg-slate-700 rounded"
+                        className="p-1 hover:bg-[#dfeaff] rounded"
                       >
-                        <Trash2 className="w-3 h-3 text-red-400" />
+                        <Trash2 className="w-3 h-3 text-[#6888ff]" />
                       </button>
                     )}
                   </div>
@@ -268,14 +265,14 @@ export function TeamManagement() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-400">
+            <div className="flex items-center justify-center h-full text-[#9aa3b8]">
               <div className="text-center">
                 <ChevronRight className="w-8 h-8 mx-auto mb-2" />
                 <p>Selecciona un equipo</p>
               </div>
             </div>
           )}
-        </NeuromorphicCard>
+        </NeuCard>
       </div>
     </div>
   )

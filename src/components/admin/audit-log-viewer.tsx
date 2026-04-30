@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📜 SILEXAR PULSE - Audit Log Viewer
+ * ðŸ“œ SILEXAR PULSE - Audit Log Viewer
  * Visor de logs de auditoría enterprise
  * 
  * @description Audit Viewer Features:
@@ -16,10 +16,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Activity, Search, Filter, Download, RefreshCw, Calendar,
   User, Shield, CheckCircle, AlertTriangle, XCircle, Clock,
@@ -135,9 +133,9 @@ export function AuditLogViewer() {
 
   const getActionIcon = (action: string) => {
     if (action.includes('LOGIN')) return <Key className="w-4 h-4" />
-    if (action.includes('USER')) return <User className="w-4 h-4" />
-    if (action.includes('PERMISSION')) return <Shield className="w-4 h-4" />
-    if (action.includes('EXPORT')) return <Download className="w-4 h-4" />
+    if (action.includes('Usuario')) return <User className="w-4 h-4" />
+    if (action.includes('Permiso')) return <Shield className="w-4 h-4" />
+    if (action.includes('Exportar')) return <Download className="w-4 h-4" />
     if (action.includes('IMPERSONATION')) return <Eye className="w-4 h-4" />
     return <Activity className="w-4 h-4" />
   }
@@ -145,11 +143,11 @@ export function AuditLogViewer() {
   const getResultBadge = (result: AuditLogEntry['result']) => {
     switch (result) {
       case 'success':
-        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded"><CheckCircle className="w-3 h-3" />Éxito</span>
+        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded"><CheckCircle className="w-3 h-3" />Á‰xito</span>
       case 'warning':
-        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded"><AlertTriangle className="w-3 h-3" />Aviso</span>
+        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded"><AlertTriangle className="w-3 h-3" />Aviso</span>
       case 'error':
-        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded"><XCircle className="w-3 h-3" />Error</span>
+        return <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-[#6888ff]/20 text-[#6888ff] rounded"><XCircle className="w-3 h-3" />Error</span>
     }
   }
 
@@ -183,7 +181,7 @@ export function AuditLogViewer() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin" />
       </div>
     )
   }
@@ -192,49 +190,49 @@ export function AuditLogViewer() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Activity className="w-6 h-6 text-purple-400" />
+          <h2 className="text-xl font-bold text-[#69738c] flex items-center gap-2">
+            <Activity className="w-6 h-6 text-[#6888ff]" />
             Logs de Auditoría
           </h2>
-          <p className="text-slate-400 text-sm">{filteredLogs.length} registros encontrados</p>
+          <p className="text-[#9aa3b8] text-sm">{filteredLogs.length} registros encontrados</p>
         </div>
         <div className="flex gap-2">
-          <NeuromorphicButton variant="secondary" size="sm" onClick={() => setShowFilters(!showFilters)}>
+          <NeuButton variant="secondary" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="w-4 h-4 mr-1" />
             Filtros
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={exportLogs}>
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={exportLogs}>
             <Download className="w-4 h-4 mr-1" />
             Exportar
-          </NeuromorphicButton>
-          <NeuromorphicButton variant="secondary" size="sm" onClick={loadLogs} aria-label="Actualizar">
+          </NeuButton>
+          <NeuButton variant="secondary" onClick={loadLogs} aria-label="Actualizar">
             <RefreshCw className="w-4 h-4" />
-          </NeuromorphicButton>
+          </NeuButton>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9aa3b8]" />
         <input
           type="text"
           placeholder="Buscar en logs..."
           value={filters.search}
           onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:border-purple-500/50 focus:outline-none"
+          className="w-full pl-12 pr-4 py-3 bg-[#dfeaff] border border-slate-700 rounded-xl text-[#69738c] focus:border-[#6888ff]/50 focus:outline-none"
         />
       </div>
 
       {/* Filters Panel */}
       {showFilters && (
-        <NeuromorphicCard variant="embossed" className="p-4">
+        <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
           <div className="grid grid-cols-4 gap-4">
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Usuario</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Usuario</label>
               <select
                 value={filters.userId}
                 onChange={(e) => setFilters({ ...filters, userId: e.target.value })}
-                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-[#69738c]"
               >
                 <option value="">Todos</option>
                 {uniqueUsers.map(u => (
@@ -243,11 +241,11 @@ export function AuditLogViewer() {
               </select>
             </div>
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Acción</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Acción</label>
               <select
                 value={filters.action}
                 onChange={(e) => setFilters({ ...filters, action: e.target.value })}
-                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-[#69738c]"
               >
                 <option value="">Todas</option>
                 {uniqueActions.map(a => (
@@ -256,65 +254,62 @@ export function AuditLogViewer() {
               </select>
             </div>
             <div>
-              <label className="text-slate-400 text-xs block mb-1">Resultado</label>
+              <label className="text-[#9aa3b8] text-xs block mb-1">Resultado</label>
               <select
                 value={filters.result}
                 onChange={(e) => setFilters({ ...filters, result: e.target.value })}
-                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-[#F0EDE8] border border-slate-700 rounded-lg text-[#69738c]"
               >
                 <option value="">Todos</option>
-                <option value="success">Éxito</option>
+                <option value="success">Á‰xito</option>
                 <option value="warning">Aviso</option>
                 <option value="error">Error</option>
               </select>
             </div>
             <div className="flex items-end">
-              <button 
+              <button
                 onClick={() => setFilters({ search: '', userId: '', action: '', result: '', startDate: '', endDate: '' })}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-[#9aa3b8] hover:text-[#69738c] text-sm"
               >
                 Limpiar filtros
               </button>
             </div>
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Logs List */}
       <div className="space-y-2">
         {filteredLogs.map(log => (
-          <NeuromorphicCard 
-            key={log.id} 
-            variant="embossed" 
-            className={`p-4 cursor-pointer transition-all ${expandedLog === log.id ? 'ring-1 ring-purple-500/50' : ''}`}
-            onClick={() => setExpandedLog(expandedLog === log.id ? null : log.id)}
+          <NeuCard
+            key={log.id}
+            className={`p-4 ${expandedLog === log.id ? 'ring-1 ring-purple-500/50' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg ${
-                  log.result === 'success' ? 'bg-green-500/20 text-green-400' :
-                  log.result === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
+                <div className={`p-2 rounded-lg ${log.result === 'success' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                  log.result === 'warning' ? 'bg-[#6888ff]/20 text-[#6888ff]' :
+                    'bg-[#6888ff]/20 text-[#6888ff]'
+                  }`}>
                   {getActionIcon(log.action)}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{log.action.replace(/_/g, ' ')}</span>
+                    <span className="text-[#69738c] font-medium">{log.action.replace(/_/g, ' ')}</span>
                     {getResultBadge(log.result)}
                   </div>
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-[#9aa3b8] text-sm">
                     {log.userName} ({log.userEmail}) • {log.resource}
-                    {log.resourceId && ` → ${log.resourceId}`}
+                    {log.resourceId && ` †’ ${log.resourceId}`}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-4 text-sm">
                 <div className="text-right">
-                  <p className="text-slate-400">{log.timestamp.toLocaleTimeString()}</p>
-                  <p className="text-slate-600 text-xs">{log.timestamp.toLocaleDateString()}</p>
+                  <p className="text-[#9aa3b8]">{log.timestamp.toLocaleTimeString()}</p>
+                  <p className="text-[#69738c] text-xs">{log.timestamp.toLocaleDateString()}</p>
                 </div>
-                {expandedLog === log.id ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
+                {expandedLog === log.id ? <ChevronUp className="w-5 h-5 text-[#9aa3b8]" /> : <ChevronDown className="w-5 h-5 text-[#9aa3b8]" />}
               </div>
             </div>
 
@@ -322,30 +317,30 @@ export function AuditLogViewer() {
             {expandedLog === log.id && (
               <div className="mt-4 pt-4 border-t border-slate-700 grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-slate-500 text-xs mb-1">IP Address</p>
-                  <p className="text-white flex items-center gap-1"><Globe className="w-3 h-3" />{log.ipAddress}</p>
+                  <p className="text-[#9aa3b8] text-xs mb-1">IP Address</p>
+                  <p className="text-[#69738c] flex items-center gap-1"><Globe className="w-3 h-3" />{log.ipAddress}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500 text-xs mb-1">User Agent</p>
-                  <p className="text-white flex items-center gap-1"><Monitor className="w-3 h-3" />{log.userAgent}</p>
+                  <p className="text-[#9aa3b8] text-xs mb-1">User Agent</p>
+                  <p className="text-[#69738c] flex items-center gap-1"><Monitor className="w-3 h-3" />{log.userAgent}</p>
                 </div>
                 {log.location && (
                   <div>
-                    <p className="text-slate-500 text-xs mb-1">Ubicación</p>
-                    <p className="text-white">{log.location}</p>
+                    <p className="text-[#9aa3b8] text-xs mb-1">Ubicación</p>
+                    <p className="text-[#69738c]">{log.location}</p>
                   </div>
                 )}
                 {log.details && (
                   <div className="col-span-3">
-                    <p className="text-slate-500 text-xs mb-1">Detalles</p>
-                    <pre className="text-xs bg-[#F0EDE8] p-2 rounded overflow-x-auto text-slate-300">
+                    <p className="text-[#9aa3b8] text-xs mb-1">Detalles</p>
+                    <pre className="text-xs bg-[#F0EDE8] p-2 rounded overflow-x-auto text-[#69738c]">
                       {JSON.stringify(log.details, null, 2)}
                     </pre>
                   </div>
                 )}
               </div>
             )}
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
     </div>

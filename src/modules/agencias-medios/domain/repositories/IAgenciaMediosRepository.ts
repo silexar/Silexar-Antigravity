@@ -1,137 +1,126 @@
 /**
- * 🏢 Repository Interface: IAgenciaMediosRepository
+ * 🌐 SILEXAR PULSE - Repository Interface for Agencias de Medios
  * 
- * Define el contrato para la persistencia de agencias de medios
- * Incluye operaciones CRUD y consultas especializadas
+ * @description Interface defining the contract for AgenciaMedios data access
+ * Following DDD principles with repository pattern
  * 
  * @version 2025.1.0
- * @tier TIER_0_ENTERPRISE
+ * @tier TIER_0_FORTUNE_10
  */
 
-import { AgenciaMedios } from '../entities/AgenciaMedios'
+import { AgenciaMedios, CreateAgenciaMediosDTO, UpdateAgenciaMediosDTO } from '@/lib/db/agencias-medios-schema';
 
-export interface AgenciaMediosFilters {
-    tenantId?: string
-    activa?: boolean
-    tipoAgencia?: string
-    nivelColaboracion?: string
-    ciudad?: string
-    pais?: string
-    busqueda?: string
+// ═══════════════════════════════════════════════════════════════════════════════
+// INTERFACES AUXILIARES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export interface PaginationParams {
+    page: number;
+    limit: number;
 }
 
-export interface Ordenamiento {
-    campo: 'nombre' | 'fechaCreacion' | 'scorePartnership' | 'revenueAnual'
-    direccion: 'asc' | 'desc'
+export interface BuscarAgenciasFilters {
+    search?: string;
+    estado?: string;
+    tipoAgencia?: string;
+    ciudad?: string;
 }
 
-export interface AgenciaMediosSearchResult {
-    agencias: AgenciaMedios[]
-    total: number
-    metricas: {
-        totalAgencias: number
-        agenciasActivas: number
-        scorePromedio: number
-        revenueTotal: number
-    }
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// REPOSITORY INTERFACE
+// ═══════════════════════════════════════════════════════════════════════════════
 
 export interface IAgenciaMediosRepository {
     /**
-     * Guarda una agencia (create o update)
+     * Find a single agencia by ID
+     * @param id - The agencia UUID
+     * @param tenantId - Tenant context for RLS
      */
-    save(agencia: AgenciaMedios): Promise<void>
+    findById(id: string, tenantId: string): Promise<AgenciaMedios | null>;
 
     /**
-     * Busca agencia por ID
+     * Find an agencia by its unique code
+     * @param codigo - The agency code (e.g., "AGM-0001")
+     * @param tenantId - Tenant context for RLS
      */
-    findById(id: string): Promise<AgenciaMedios | null>
+    findByCodigo(codigo: string, tenantId: string): Promise<AgenciaMedios | null>;
 
     /**
-     * Busca agencia por RUT
-     */
-    findByRut(rut: string, tenantId: string): Promise<AgenciaMedios | null>
-
-    /**
-     * Busca agencia por código
-     */
-    findByCodigo(codigo: string, tenantId: string): Promise<AgenciaMedios | null>
-
-    /**
-     * Lista agencias con filtros y paginación
+     * Find all agencias with optional filters and pagination
+     * @param tenantId - Tenant context for RLS
+     * @param filters - Optional search and filter parameters
+     * @param pagination - Page number and limit
      */
     findAll(
-        filtros: AgenciaMediosFilters,
-        ordenamiento?: Ordenamiento,
-        limite?: number,
-        offset?: number
-    ): Promise<AgenciaMediosSearchResult>
+        tenantId: string,
+        filters?: BuscarAgenciasFilters,
+        pagination?: PaginationParams
+    ): Promise<AgenciaMedios[]>;
 
     /**
-     * Busca todas las agencias activas de un tenant
+     * Count total agencias matching filters
+     * @param tenantId - Tenant context for RLS
+     * @param filters - Optional search and filter parameters
      */
-    findAllActive(tenantId: string): Promise<AgenciaMedios[]>
+    count(tenantId: string, filters?: BuscarAgenciasFilters): Promise<number>;
 
     /**
-     * Busca agencias por tipo
+     * Create a new agencia
+     * @param data - Creation data
+     * @param tenantId - Tenant context for RLS
+     * @param userId - Creator user ID for audit
      */
-    findByTipo(tipo: string, tenantId: string): Promise<AgenciaMedios[]>
+    create(data: CreateAgenciaMediosDTO, tenantId: string, userId: string): Promise<AgenciaMedios>;
 
     /**
-     * Busca agencias por nivel de colaboración
+     * Update an existing agencia
+     * @param id - Agencia ID
+     * @param data - Update data
+     * @param tenantId - Tenant context for RLS
+     * @param userId - Modifier user ID for audit
      */
-    findByNivel(nivel: string, tenantId: string): Promise<AgenciaMedios[]>
+    update(id: string, data: UpdateAgenciaMediosDTO, tenantId: string, userId: string): Promise<AgenciaMedios>;
 
     /**
-     * Busca agencias premium (score alto)
+     * Soft delete an agencia (marks as eliminated)
+     * @param id - Agencia ID
+     * @param tenantId - Tenant context for RLS
+     * @param userId - Deleter user ID for audit
      */
-    findPremiumAgencies(tenantId: string, minScore?: number): Promise<AgenciaMedios[]>
+    softDelete(id: string, tenantId: string, userId: string): Promise<void>;
 
     /**
-     * Busca agencias que requieren atención
+     * Check if an agencia exists by RUT
+     * @param rut - RUT to check
+     * @param tenantId - Tenant context for RLS
+     * @param excludeId - Optional ID to exclude from check (for updates)
      */
-    findAgenciesNeedingAttention(tenantId: string): Promise<AgenciaMedios[]>
+    existsByRut(rut: string, tenantId: string, excludeId?: string): Promise<boolean>;
 
     /**
-     * Obtiene estadísticas del portfolio de agencias
+     * Check if an agencia exists by code
+     * @param codigo - Code to check
+     * @param tenantId - Tenant context for RLS
+     * @param excludeId - Optional ID to exclude from check (for updates)
      */
-    getPortfolioStats(tenantId: string): Promise<{
-        totalAgencias: number
-        agenciasActivas: number
-        scorePromedio: number
-        distribucionTipos: Record<string, number>
-        distribucionNiveles: Record<string, number>
-        revenueTotal: number
-        comisionPromedio: number
-    }>
+    existsByCodigo(codigo: string, tenantId: string, excludeId?: string): Promise<boolean>;
 
     /**
-     * Top agencias por performance
+     * Generate a unique code for new agencia
+     * @param tenantId - Tenant context for RLS
      */
-    getTopPerformers(limite: number, tenantId: string): Promise<AgenciaMedios[]>
+    generateCode(tenantId: string): Promise<string>;
 
     /**
-     * Buscar agencias similares (para recomendación)
+     * Find agencias by ciudad
+     * @param ciudad - City name
+     * @param tenantId - Tenant context for RLS
      */
-    findSimilar(agenciaId: string, limite: number, tenantId: string): Promise<AgenciaMedios[]>
+    findByCiudad(ciudad: string, tenantId: string): Promise<AgenciaMedios[]>;
 
     /**
-     * Buscar agencias por especialización vertical
+     * Find only active agencias
+     * @param tenantId - Tenant context for RLS
      */
-    findByVertical(vertical: string, tenantId: string): Promise<AgenciaMedios[]>
-
-    /**
-     * Buscar agencias con certificaciones específicas
-     */
-    findByCertificacion(certificacion: string, tenantId: string): Promise<AgenciaMedios[]>
-
-    /**
-     * Verifica si existe una agencia con el mismo RUT
-     */
-    existsByRut(rut: string, tenantId: string): Promise<boolean>
-
-    /**
-     * Elimina lógicamente una agencia
-     */
-    delete(id: string, tenantId: string): Promise<void>
+    findActive(tenantId: string): Promise<AgenciaMedios[]>;
 }

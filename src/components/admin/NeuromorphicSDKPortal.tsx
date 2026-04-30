@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @fileoverview Neuromorphic SDK Integration Portal
  * @module NeuromorphicSDKPortal
  * @description Portal para gestión de SDK móvil con diseño neuromórfico
@@ -170,8 +170,8 @@ const MetricDisplay: React.FC<{
   trend?: 'up' | 'down' | 'stable';
   color?: 'green' | 'blue' | 'purple' | 'yellow' | 'red' | 'emerald';
 }> = ({ label, value, icon, trend, color = 'blue' }) => {
-  const trendIcon = trend === 'up' ? '↗' : trend === 'down' ? '↘' : '→';
-  const trendColor = trend === 'up' ? 'text-green-400' : trend === 'down' ? 'text-red-400' : 'text-yellow-400';
+  const trendIcon = trend === 'up' ? '†—' : trend === 'down' ? '†˜' : '†’';
+  const trendColor = trend === 'up' ? 'text-[#6888ff]' : trend === 'down' ? 'text-[#6888ff]' : 'text-[#6888ff]';
 
   return (
     <div className="flex items-center justify-between p-4 rounded-xl bg-[#E8E5E0]/50 border border-[#D4D1CC]">
@@ -399,7 +399,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-900 via-cyan-900 to-emerald-900">
-              <Shield className="w-8 h-8 text-blue-400" />
+              <Shield className="w-8 h-8 text-[#6888ff]" />
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
@@ -429,42 +429,42 @@ const NeuromorphicSDKPortal: React.FC = () => {
         <MetricDisplay
           label="Total Installations"
           value={(mockMetrics.totalInstallations / 1000000).toFixed(1) + 'M'}
-          icon={<Download className="w-5 h-5 text-blue-400" />}
+          icon={<Download className="w-5 h-5 text-[#6888ff]" />}
           trend="up"
           color="blue"
         />
         <MetricDisplay
           label="Active Devices"
           value={(mockMetrics.activeDevices / 1000000).toFixed(1) + 'M'}
-          icon={<Smartphone className="w-5 h-5 text-green-400" />}
+          icon={<Smartphone className="w-5 h-5 text-[#6888ff]" />}
           trend="up"
           color="green"
         />
         <MetricDisplay
           label="Avg Session"
           value={mockMetrics.averageSessionTime + 'min'}
-          icon={<Clock className="w-5 h-5 text-purple-400" />}
+          icon={<Clock className="w-5 h-5 text-[#6888ff]" />}
           trend="stable"
           color="purple"
         />
         <MetricDisplay
           label="Data Points"
           value={(mockMetrics.dataPointsCollected / 1000000000).toFixed(1) + 'B'}
-          icon={<Activity className="w-5 h-5 text-yellow-400" />}
+          icon={<Activity className="w-5 h-5 text-[#6888ff]" />}
           trend="up"
           color="yellow"
         />
         <MetricDisplay
           label="Model Updates"
           value={(mockMetrics.modelUpdatesSent / 1000).toFixed(0) + 'K'}
-          icon={<RefreshCw className="w-5 h-5 text-emerald-400" />}
+          icon={<RefreshCw className="w-5 h-5 text-[#6888ff]" />}
           trend="up"
           color="emerald"
         />
         <MetricDisplay
           label="Privacy Score"
           value={mockMetrics.privacyScore + '%'}
-          icon={<Shield className="w-5 h-5 text-red-400" />}
+          icon={<Shield className="w-5 h-5 text-[#6888ff]" />}
           trend="up"
           color="red"
         />
@@ -526,7 +526,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
             <NeuromorphicCard glowColor="blue">
               <CardHeader>
                 <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <Smartphone className="w-5 h-5 text-blue-400" />
+                  <Smartphone className="w-5 h-5 text-[#6888ff]" />
                   iOS SDK
                 </CardTitle>
                 <CardDescription className="text-[#888780]">
@@ -539,7 +539,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
                     <p className="text-[#5F5E5A] font-semibold">Version 2.1.1</p>
                     <p className="text-[#888780] text-sm">Latest stable release</p>
                   </div>
-                  <Badge className="bg-blue-900/50 border-blue-500 text-blue-400">
+                  <Badge className="bg-[#6888ff]/20 border-[#6888ff] text-[#6888ff]">
                     Stable
                   </Badge>
                 </div>
@@ -571,7 +571,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
             <NeuromorphicCard glowColor="green">
               <CardHeader>
                 <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                  <Tablet className="w-5 h-5 text-green-400" />
+                  <Tablet className="w-5 h-5 text-[#6888ff]" />
                   Android SDK
                 </CardTitle>
                 <CardDescription className="text-[#888780]">
@@ -584,7 +584,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
                     <p className="text-[#5F5E5A] font-semibold">Version 2.1.1</p>
                     <p className="text-[#888780] text-sm">Latest stable release</p>
                   </div>
-                  <Badge className="bg-green-900/50 border-green-500 text-green-400">
+                  <Badge className="bg-[#6888ff]/20 border-[#6888ff] text-[#6888ff]">
                     Stable
                   </Badge>
                 </div>
@@ -626,13 +626,13 @@ const NeuromorphicSDKPortal: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-[#888780] text-sm">Installations</p>
-                      <p className="text-xl font-bold text-blue-400">
+                      <p className="text-xl font-bold text-[#6888ff]">
                         {(stat.installations / 1000000).toFixed(1)}M
                       </p>
                     </div>
                     <div>
                       <p className="text-[#888780] text-sm">Active Users</p>
-                      <p className="text-xl font-bold text-green-400">
+                      <p className="text-xl font-bold text-[#6888ff]">
                         {(stat.activeUsers / 1000000).toFixed(1)}M
                       </p>
                     </div>
@@ -641,13 +641,13 @@ const NeuromorphicSDKPortal: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-[#888780]">Data Quality</span>
-                      <span className="text-yellow-400 font-bold">{stat.dataQuality}%</span>
+                      <span className="text-[#6888ff] font-bold">{stat.dataQuality}%</span>
                     </div>
                     <Progress value={stat.dataQuality} className="h-2 bg-[#D4D1CC]" />
                     
                     <div className="flex justify-between items-center">
                       <span className="text-[#888780]">Model Accuracy</span>
-                      <span className="text-emerald-400 font-bold">{stat.modelAccuracy}%</span>
+                      <span className="text-[#6888ff] font-bold">{stat.modelAccuracy}%</span>
                     </div>
                     <Progress value={stat.modelAccuracy} className="h-2 bg-[#D4D1CC]" />
                   </div>
@@ -662,7 +662,7 @@ const NeuromorphicSDKPortal: React.FC = () => {
           <NeuromorphicCard glowColor="yellow">
             <CardHeader>
               <CardTitle className="text-[#2C2C2A] flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-yellow-400" />
+                <FileText className="w-5 h-5 text-[#6888ff]" />
                 Integration Documentation
               </CardTitle>
               <CardDescription className="text-[#888780]">
@@ -709,11 +709,11 @@ const NeuromorphicSDKPortal: React.FC = () => {
         className="mt-8 text-center"
       >
         <div className="flex items-center justify-center space-x-2 text-[#888780]">
-          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-[#6888ff] animate-pulse" />
           <span className="text-sm">SDK SYSTEM ACTIVE</span>
-          <span className="text-slate-600">•</span>
+          <span className="text-[#69738c]">•</span>
           <span className="text-sm">FEDERATED LEARNING ENABLED</span>
-          <span className="text-slate-600">•</span>
+          <span className="text-[#69738c]">•</span>
           <span className="text-sm">PRIVACY MAXIMUM</span>
         </div>
       </motion.div>

@@ -167,13 +167,13 @@ CREATE POLICY tenant_isolation_inventario_cupos ON inventario_cupos
   USING (tenant_id = current_tenant_id() OR current_setting('app.is_super_admin', true) = 'true')
   WITH CHECK (tenant_id = current_tenant_id());
 
-ALTER TABLE notificaciones_vencimiento ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_notificaciones_vencimiento ON notificaciones_vencimiento
+ALTER TABLE notificaciones_vencimientos ENABLE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation_notificaciones_vencimientos ON notificaciones_vencimientos
   USING (tenant_id = current_tenant_id() OR current_setting('app.is_super_admin', true) = 'true')
   WITH CHECK (tenant_id = current_tenant_id());
 
-ALTER TABLE acciones_vencimiento ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_acciones_vencimiento ON acciones_vencimiento
+ALTER TABLE acciones_vencimientos ENABLE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation_acciones_vencimientos ON acciones_vencimientos
   USING (tenant_id = current_tenant_id() OR current_setting('app.is_super_admin', true) = 'true')
   WITH CHECK (tenant_id = current_tenant_id());
 

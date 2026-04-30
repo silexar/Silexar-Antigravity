@@ -22,7 +22,7 @@ interface AlertasPanelProps {
 
 export function AlertasPanel({ alertas, onResolve, onRefresh, loading = false }: AlertasPanelProps) {
   const grupos: AlertaGrupo[] = [
-    { titulo: 'VENCEN HOY', emoji: '⏰', color: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200', alertas: alertas.filter(a => a.tipo === 'vencimiento') },
+    { titulo: 'VENCEN HOY', emoji: '⏰', color: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200', alertas: alertas.filter(a => a.tipo === 'vencimientos') },
     { titulo: 'SIN VALIDAR', emoji: '⚠️', color: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200', alertas: alertas.filter(a => a.tipo === 'validacion') },
     { titulo: 'PENDIENTES ENVÍO', emoji: '📤', color: 'text-blue-700', bgColor: 'bg-blue-50', borderColor: 'border-blue-200', alertas: alertas.filter(a => a.tipo === 'distribucion') },
     { titulo: 'EMISIÓN', emoji: '📻', color: 'text-purple-700', bgColor: 'bg-purple-50', borderColor: 'border-purple-200', alertas: alertas.filter(a => a.tipo === 'emision') },

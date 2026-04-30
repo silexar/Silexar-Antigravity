@@ -1,468 +1,397 @@
+/**
+ * CEO Command Center Page
+ * 
+ * Main dashboard for Silexar Pulse CEO with total control over the platform.
+ * Includes all management modules: Tenants, Services, Database, Feature Flags,
+ * Pricing, Users, Limits, Metrics, and Notifications.
+ * 
+ * Line Reference: command-center/page.tsx:1
+ */
+
 'use client';
-import React, { useState, useEffect } from 'react';
-import { 
-  Activity, 
-  Cpu, 
-  Shield, 
-  Zap, 
-  BarChart3, 
-  Settings,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  Users,
-  Target,
-  Brain,
-  Network,
-  Lock
-} from 'lucide-react';
-import { NeuromorphicCard, NeuromorphicButton, NeuromorphicStatus, NeuromorphicGrid } from '@/components/ui/neuromorphic';
-import { cn } from '@/lib/utils';
 
-// System Health Metrics
-interface SystemMetric {
-  name: string;
-  value: number;
-  unit: string;
-  status: 'optimal' | 'warning' | 'critical';
-  trend: 'up' | 'down' | 'stable';
-  icon: React.ReactNode;
-}
+import { useState, useEffect } from 'react';
 
-// Cortex Engine Status
-interface CortexEngine {
-  id: string;
-  name: string;
-  status: 'online' | 'offline' | 'maintenance';
-  load: number;
-  lastHeartbeat: Date;
-  version: string;
-}
+// Import all command center panels
+import TenantManagementPanel from '@/components/command-center/TenantManagementPanel';
+import ServiceControlPanel from '@/components/command-center/ServiceControlPanel';
+import DatabaseFailoverPanel from '@/components/command-center/DatabaseFailoverPanel';
+import FeatureFlagsPanel from '@/components/command-center/FeatureFlagsPanel';
+import PricingPlansPanel from '@/components/command-center/PricingPlansPanel';
+import UserManagementPanel from '@/components/command-center/UserManagementPanel';
+import SystemLimitsPanel from '@/components/command-center/SystemLimitsPanel';
+import MetricsGraphsPanel from '@/components/command-center/MetricsGraphsPanel';
+import NotificationsConfigPanel from '@/components/command-center/NotificationsConfigPanel';
+import OperationsPanel from '@/components/command-center/OperationsPanel';
+import WilAssistant from '@/components/command-center/WilAssistant';
+import FinanceCenter from '@/components/command-center/FinanceCenter';
+import SecurityCenter from '@/components/command-center/SecurityCenter';
+import SupportTickets from '@/components/command-center/SupportTickets';
+import AutomationRules from '@/components/command-center/AutomationRules';
+import ExternalIntegrations from '@/components/command-center/ExternalIntegrations';
+import ExecutiveDashboard from '@/components/command-center/ExecutiveDashboard';
 
-// Security Alert
-interface SecurityAlert {
-  id: string;
-  level: 'info' | 'warning' | 'critical';
-  message: string;
-  timestamp: Date;
-  source: string;
-}
+// Mock data for demonstration
+const mockHealthScore = 82;
+const mockAlerts = [
+  { id: '1', severity: 'warning', title: 'DB Pool 78%', message: 'Proyección: 90% en 4h', time: 'Hace 5 min' },
+  { id: '2', severity: 'info', title: 'Storage OK', message: 'Llenado en ~45 días', time: 'Hace 1h' },
+  { id: '3', severity: 'critical', title: 'Email Error Rate', message: '15/min, impactando 23 users', time: 'Hace 12 min' },
+];
 
-const CommandCenter: React.FC = () => {
-  const [metrics, setMetrics] = useState<SystemMetric[]>([
-    {
-      name: 'System Uptime',
-      value: 99.97,
-      unit: '%',
-      status: 'optimal',
-      trend: 'stable',
-      icon: <Clock className="w-5 h-5" />
-    },
-    {
-      name: 'Cortex Load',
-      value: 73.2,
-      unit: '%',
-      status: 'optimal',
-      trend: 'up',
-      icon: <Brain className="w-5 h-5" />
-    },
-    {
-      name: 'Revenue Today',
-      value: 284750,
-      unit: 'USD',
-      status: 'optimal',
-      trend: 'up',
-      icon: <DollarSign className="w-5 h-5" />
-    },
-    {
-      name: 'Active Users',
-      value: 15420,
-      unit: '',
-      status: 'optimal',
-      trend: 'up',
-      icon: <Users className="w-5 h-5" />
-    },
-    {
-      name: 'Campaign Performance',
-      value: 87.5,
-      unit: '%',
-      status: 'optimal',
-      trend: 'stable',
-      icon: <Target className="w-5 h-5" />
-    },
-    {
-      name: 'Security Score',
-      value: 98.5,
-      unit: '%',
-      status: 'optimal',
-      trend: 'stable',
-      icon: <Shield className="w-5 h-5" />
-    }
-  ]);
+const mockProviders = [
+  { id: '1', name: 'Supabase PostgreSQL', type: 'database', status: 'healthy', latency: 23 },
+  { id: '2', name: 'Cloudflare R2', type: 'storage', status: 'healthy', latency: 45 },
+  { id: '3', name: 'OpenAI Whisper', type: 'speech', status: 'healthy', latency: 234 },
+  { id: '4', name: 'Redis Cache', type: 'cache', status: 'healthy', latency: 2 },
+  { id: '5', name: 'Resend Email', type: 'email', status: 'degraded', latency: 890 },
+];
 
-  const [cortexEngines, setCortexEngines] = useState<CortexEngine[]>([
-    {
-      id: 'cortex-audience',
-      name: 'Cortex-Audience',
-      status: 'online',
-      load: 68,
-      lastHeartbeat: new Date(),
-      version: '2.0.1'
-    },
-    {
-      id: 'cortex-orchestrator',
-      name: 'Cortex-Orchestrator',
-      status: 'online',
-      load: 82,
-      lastHeartbeat: new Date(),
-      version: '2.0.3'
-    },
-    {
-      id: 'cortex-context',
-      name: 'Cortex-Context',
-      status: 'online',
-      load: 45,
-      lastHeartbeat: new Date(),
-      version: '2.0.2'
-    },
-    {
-      id: 'cortex-voice',
-      name: 'Cortex-Voice',
-      status: 'maintenance',
-      load: 0,
-      lastHeartbeat: new Date(Date.now() - 300000),
-      version: '2.0.1'
-    }
-  ]);
+const mockMetrics = {
+  clients: 47,
+  users: 2450,
+  requestsPerHour: 15674,
+  uptime: 99.9,
+  clientsTrend: '+3',
+  usersTrend: '+127',
+};
 
-  const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([
-    {
-      id: '1',
-      level: 'info',
-      message: 'Backup automático completado exitosamente',
-      timestamp: new Date(Date.now() - 3600000),
-      source: 'Backup System'
-    },
-    {
-      id: '2',
-      level: 'warning',
-      message: 'Intento de acceso no autorizado detectado',
-      timestamp: new Date(Date.now() - 1800000),
-      source: 'Security Gateway'
-    }
-  ]);
+const killSwitches = [
+  { id: 'emergency_stop', name: 'Emergency Stop', description: 'Para toda la plataforma', active: false },
+  { id: 'maintenance_mode', name: 'Maintenance Mode', description: 'Modo mantenimiento', active: false },
+  { id: 'security_lockdown', name: 'Security Lockdown', description: 'Bloqueo de seguridad', active: false },
+  { id: 'read_only', name: 'Read Only Mode', description: 'Solo lectura global', active: false },
+];
 
-  const [isEmergencyMode, setIsEmergencyMode] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'engines' | 'security' | 'billing'>('overview');
+type TabId = 'dashboard' | 'tenants' | 'services' | 'database' | 'features' | 'plans' | 'users' | 'limits' | 'metrics' | 'notifications' | 'operations' | 'wil' | 'finance' | 'security' | 'tickets' | 'automation' | 'integrations' | 'executive';
 
-  // Simulate real-time updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(prev => prev.map(metric => ({
-        ...metric,
-        value: metric.name === 'Cortex Load' 
-          ? Math.max(0, Math.min(100, metric.value + (Math.random() - 0.5) * 5))
-          : metric.value
-      })));
-    }, 5000);
+const tabs = [
+  { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+  { id: 'tenants', label: 'Clientes/Tenants', icon: '🏢' },
+  { id: 'services', label: 'Servicios', icon: '⚙️' },
+  { id: 'database', label: 'Database', icon: '🗄️' },
+  { id: 'features', label: 'Feature Flags', icon: '🚩' },
+  { id: 'plans', label: 'Planes', icon: '💰' },
+  { id: 'users', label: 'Usuarios', icon: '👥' },
+  { id: 'limits', label: 'Límites', icon: '📏' },
+  { id: 'metrics', label: 'Métricas', icon: '📈' },
+  { id: 'notifications', label: 'Notificaciones', icon: '🔔' },
+  { id: 'operations', label: 'Operaciones', icon: '📋' },
+  { id: 'wil', label: 'Wil IA', icon: '🤖' },
+  { id: 'finance', label: 'Finanzas', icon: '💹' },
+  { id: 'security', label: 'Seguridad', icon: '🔒' },
+  { id: 'tickets', label: 'Tickets', icon: '🎫' },
+  { id: 'automation', label: 'Automation', icon: '⚡' },
+  { id: 'integrations', label: 'Integraciones', icon: '🔗' },
+  { id: 'executive', label: 'Ejecutivo', icon: '👑' },
+];
 
-    return () => clearInterval(interval);
-  }, []);
+export default function CommandCenterPage() {
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
+  const [healthScore, setHealthScore] = useState(mockHealthScore);
+  const [alerts, setAlerts] = useState(mockAlerts);
+  const [switches, setSwitches] = useState(killSwitches);
+
+  const getHealthColor = (score: number) => {
+    if (score >= 80) return 'text-green-500';
+    if (score >= 50) return 'text-yellow-500';
+    return 'text-red-500';
+  };
+
+  const getHealthBg = (score: number) => {
+    if (score >= 80) return 'bg-green-100';
+    if (score >= 50) return 'bg-yellow-100';
+    return 'bg-red-100';
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'optimal': return 'text-green-400';
-      case 'warning': return 'text-yellow-400';
-      case 'critical': return 'text-red-400';
-      default: return 'text-slate-400';
+      case 'healthy': return 'bg-green-500';
+      case 'degraded': return 'bg-yellow-500';
+      case 'unhealthy': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   };
 
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case 'up': return <TrendingUp className="w-4 h-4 text-green-400" />;
-      case 'down': return <TrendingUp className="w-4 h-4 text-red-400 rotate-180" />;
-      default: return <div className="w-4 h-4 border-t border-slate-600" />;
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical': return 'border-red-500 bg-red-50';
+      case 'warning': return 'border-yellow-500 bg-yellow-50';
+      case 'info': return 'border-blue-500 bg-blue-50';
+      default: return 'border-gray-500 bg-gray-50';
     }
+  };
+
+  const toggleKillSwitch = (id: string) => {
+    if (id === 'emergency_stop') {
+      const confirmed = confirm('⚠️ CRÍTICO: Esta acción detendrá TODA la plataforma. ¿Está seguro?');
+      if (!confirmed) return;
+    }
+    setSwitches(prev => prev.map(s =>
+      s.id === id ? { ...s, active: !s.active } : s
+    ));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
-                <Cpu className="w-6 h-6 text-white" />
+      <header className="border-b border-slate-700 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-full mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                <span className="text-white text-xl">🛸</span>
               </div>
-              <div className="absolute -top-1 -right-1">
-                <NeuromorphicStatus status="online" size="sm" pulse />
+              <div>
+                <h1 className="text-xl font-bold text-white">Centro de Comando CEO</h1>
+                <p className="text-sm text-slate-400">Control total de Silexar Pulse</p>
               </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">SILEXAR PULSE</h1>
-              <p className="text-slate-400">Command Center - Neural Operations</p>
+            <div className="flex items-center gap-4">
+              <span className="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-sm font-medium">
+                👑 CEO Access
+              </span>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold">
+                A
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <NeuromorphicButton
-              variant={isEmergencyMode ? 'danger' : 'secondary'}
-              onClick={() => setIsEmergencyMode(!isEmergencyMode)}
-            >
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              {isEmergencyMode ? 'EMERGENCY ACTIVE' : 'EMERGENCY MODE'}
-            </NeuromorphicButton>
-            <NeuromorphicButton variant="secondary">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </NeuromorphicButton>
-          </div>
         </div>
+      </header>
 
-        {/* Navigation Tabs */}
-        <div className="flex space-x-2 border-b border-slate-800">
-          {[
-            { id: 'overview', label: 'System Overview', icon: <Activity className="w-4 h-4" /> },
-            { id: 'engines', label: 'Cortex Engines', icon: <Brain className="w-4 h-4" /> },
-            { id: 'security', label: 'Security', icon: <Lock className="w-4 h-4" /> },
-            { id: 'billing', label: 'Value Billing', icon: <DollarSign className="w-4 h-4" /> }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={cn(
-                'flex items-center space-x-2 px-4 py-3 font-medium transition-all duration-200',
-                'border-b-2',
-                activeTab === tab.id
-                  ? 'border-blue-500 text-blue-400 bg-blue-500/10'
-                  : 'border-transparent text-slate-400 hover:text-white hover:bg-slate-800/50'
-              )}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content */}
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          {/* Metrics Grid */}
-          <NeuromorphicGrid columns={3}>
-            {metrics.map((metric) => (
-              <NeuromorphicCard key={metric.name} variant="embossed" borderAccent="blue">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="text-blue-400">{metric.icon}</div>
-                      <h3 className="text-slate-300 font-medium">{metric.name}</h3>
-                    </div>
-                    {getTrendIcon(metric.trend)}
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-bold text-white">
-                      {metric.value.toLocaleString()}
-                    </span>
-                    <span className={cn("text-sm font-medium", getStatusColor(metric.status))}>
-                      {metric.unit}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex items-center space-x-2">
-                    <NeuromorphicStatus 
-                      status={metric.status === 'optimal' ? 'online' : metric.status === 'warning' ? 'warning' : 'error'} 
-                      size="sm" 
-                    />
-                    <span className={cn("text-sm capitalize", getStatusColor(metric.status))}>
-                      {metric.status}
-                    </span>
-                  </div>
-                </div>
-              </NeuromorphicCard>
-            ))}
-          </NeuromorphicGrid>
-
-          {/* Quick Actions */}
-          <NeuromorphicCard variant="debossed">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <NeuromorphicButton variant="primary" size="lg">
-                  <Zap className="w-5 h-5 mr-2" />
-                  Deploy Campaign
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="secondary" size="lg">
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  Generate Report
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="secondary" size="lg">
-                  <Network className="w-5 h-5 mr-2" />
-                  Monitor Network
-                </NeuromorphicButton>
-                <NeuromorphicButton variant="success" size="lg">
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                  System Check
-                </NeuromorphicButton>
-              </div>
-            </div>
-          </NeuromorphicCard>
-        </div>
-      )}
-
-      {activeTab === 'engines' && (
-        <div className="space-y-6">
-          <NeuromorphicCard variant="embossed">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Cortex Engine Status</h2>
-              <div className="space-y-4">
-                {cortexEngines.map((engine) => (
-                  <div key={engine.id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
-                    <div className="flex items-center space-x-4">
-                      <NeuromorphicStatus 
-                        status={engine.status === 'online' ? 'online' : engine.status === 'maintenance' ? 'warning' : 'error'} 
-                        size="md" 
-                        pulse={engine.status === 'online'}
-                      />
-                      <div>
-                        <h3 className="text-white font-medium">{engine.name}</h3>
-                        <p className="text-slate-400 text-sm">Version {engine.version}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-6">
-                      <div className="text-right">
-                        <p className="text-slate-300 text-sm">Load</p>
-                        <p className="text-white font-semibold">{engine.load}%</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-slate-300 text-sm">Status</p>
-                        <p className={cn("font-semibold capitalize", 
-                          engine.status === 'online' ? 'text-green-400' : 
-                          engine.status === 'maintenance' ? 'text-yellow-400' : 'text-red-400'
-                        )}>
-                          {engine.status}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </NeuromorphicCard>
-        </div>
-      )}
-
-      {activeTab === 'security' && (
-        <div className="space-y-6">
-          <NeuromorphicCard variant="embossed">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Security Alerts</h2>
-              <div className="space-y-3">
-                {securityAlerts.map((alert) => (
-                  <div key={alert.id} className={cn(
-                    "p-4 rounded-lg border",
-                    alert.level === 'critical' ? 'bg-red-900/20 border-red-500/30' :
-                    alert.level === 'warning' ? 'bg-yellow-900/20 border-yellow-500/30' :
-                    'bg-blue-900/20 border-blue-500/30'
-                  )}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-3">
-                        <div className={cn(
-                          "mt-1",
-                          alert.level === 'critical' ? 'text-red-400' :
-                          alert.level === 'warning' ? 'text-yellow-400' :
-                          'text-blue-400'
-                        )}>
-                          {alert.level === 'critical' ? <AlertTriangle className="w-5 h-5" /> :
-                           alert.level === 'warning' ? <AlertTriangle className="w-5 h-5" /> :
-                           <CheckCircle className="w-5 h-5" />}
-                        </div>
-                        <div>
-                          <p className="text-white font-medium">{alert.message}</p>
-                          <div className="flex items-center space-x-4 mt-2 text-sm text-slate-400">
-                            <span>Source: {alert.source}</span>
-                            <span>{alert.timestamp.toLocaleTimeString()}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </NeuromorphicCard>
-        </div>
-      )}
-
-      {activeTab === 'billing' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <NeuromorphicCard variant="embossed">
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Value-Based Billing</h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-300">CPVI Events Today</span>
-                    <span className="text-white font-semibold">1,247</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-300">CPCN Completions</span>
-                    <span className="text-white font-semibold">892</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-300">Revenue from Value Models</span>
-                    <span className="text-green-400 font-semibold">$45,230</span>
-                  </div>
-                </div>
-              </div>
-            </NeuromorphicCard>
-            
-            <NeuromorphicCard variant="embossed">
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Kafka Integration</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <NeuromorphicStatus status="online" size="sm" pulse />
-                    <span className="text-slate-300">user_interactions topic</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <NeuromorphicStatus status="online" size="sm" pulse />
-                    <span className="text-slate-300">narrative_progress topic</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <NeuromorphicStatus status="online" size="sm" pulse />
-                    <span className="text-slate-300">billing_events topic</span>
-                  </div>
-                </div>
-              </div>
-            </NeuromorphicCard>
-          </div>
-        </div>
-      )}
-
-      {/* Emergency Mode Overlay */}
-      {isEmergencyMode && (
-        <div className="fixed inset-0 bg-red-900/20 backdrop-blur-sm flex items-center justify-center z-50">
-          <NeuromorphicCard variant="embossed" borderAccent="red">
-            <div className="p-8 text-center">
-              <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-red-400 mb-2">EMERGENCY MODE ACTIVE</h2>
-              <p className="text-slate-300 mb-6">System is operating under emergency protocols</p>
-              <NeuromorphicButton 
-                variant="danger" 
-                size="lg"
-                onClick={() => setIsEmergencyMode(false)}
+      {/* Navigation Tabs - Horizontal Scroll */}
+      <nav className="border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
+        <div className="max-w-full mx-auto px-6">
+          <div className="flex gap-1 min-w-max">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as TabId)}
+                className={`px-4 py-3 text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
+                  ? 'text-indigo-400 border-b-2 border-indigo-400 bg-indigo-500/10'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
               >
-                Deactivate Emergency Mode
-              </NeuromorphicButton>
-            </div>
-          </NeuromorphicCard>
+                <span className="mr-1">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
-      )}
+      </nav>
+
+      {/* Main Content */}
+      <main className="max-w-full mx-auto px-6 py-8">
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-8">
+            {/* Health Score Section */}
+            <section className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-white">🏥 Salud del Sistema</h2>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getHealthBg(healthScore)} ${getHealthColor(healthScore)}`}>
+                  {healthScore}/100
+                </span>
+              </div>
+
+              {/* Health Bar */}
+              <div className="h-4 bg-slate-700 rounded-full overflow-hidden mb-4">
+                <div
+                  className={`h-full transition-all duration-500 ${healthScore >= 80 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                    healthScore >= 50 ? 'bg-gradient-to-r from-yellow-500 to-amber-500' :
+                      'bg-gradient-to-r from-red-500 to-rose-500'
+                    }`}
+                  style={{ width: `${healthScore}%` }}
+                />
+              </div>
+
+              {/* Predictions */}
+              <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700">
+                <h3 className="text-sm font-medium text-slate-300 mb-2">🤖 Predicciones IA (72h)</h3>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2 text-slate-400">
+                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                    87% probabilidad de alta carga en BD (estimado: mañana)
+                  </li>
+                  <li className="flex items-center gap-2 text-slate-400">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    45% probabilidad de rate limit en API
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            {/* Global Metrics */}
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { label: 'Clientes', value: mockMetrics.clients, trend: mockMetrics.clientsTrend, color: 'from-blue-500 to-cyan-500' },
+                { label: 'Usuarios', value: mockMetrics.users.toLocaleString(), trend: mockMetrics.usersTrend, color: 'from-purple-500 to-pink-500' },
+                { label: 'Requests/h', value: mockMetrics.requestsPerHour.toLocaleString(), trend: '+12%', color: 'from-amber-500 to-orange-500' },
+                { label: 'Uptime', value: `${mockMetrics.uptime}%`, trend: '45 días', color: 'from-green-500 to-emerald-500' },
+              ].map((metric, i) => (
+                <div key={i} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6">
+                  <p className="text-sm text-slate-400 mb-1">{metric.label}</p>
+                  <p className="text-3xl font-bold text-white mb-1">{metric.value}</p>
+                  <p className="text-xs text-green-400">{metric.trend}</p>
+                  <div className={`mt-4 h-1 rounded-full bg-gradient-to-r ${metric.color} opacity-50`} />
+                </div>
+              ))}
+            </section>
+
+            {/* Active Alerts */}
+            <section className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-white">🚨 Alertas Activas</h2>
+                <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">
+                  {alerts.length} alertas
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {alerts.map(alert => (
+                  <div
+                    key={alert.id}
+                    className={`p-4 rounded-xl border ${getSeverityColor(alert.severity)}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-medium text-slate-800">{alert.title}</h3>
+                        <p className="text-sm text-slate-600">{alert.message}</p>
+                      </div>
+                      <span className="text-xs text-slate-500">{alert.time}</span>
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <button className="px-3 py-1 bg-slate-800 text-white text-xs rounded-lg hover:bg-slate-700">
+                        Ver Detalles
+                      </button>
+                      <button className="px-3 py-1 bg-indigo-500 text-white text-xs rounded-lg hover:bg-indigo-600">
+                        Ejecutar Acción
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Kill Switches */}
+            <section className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-red-900/50 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-white">🚨 Kill Switches</h2>
+                  <p className="text-sm text-red-400">⚠️ CRÍTICO: Estas acciones afectan a TODOS los clientes</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {switches.map(sw => (
+                  <div
+                    key={sw.id}
+                    className={`p-4 rounded-xl border ${sw.active
+                      ? 'bg-red-500/20 border-red-500'
+                      : 'bg-slate-900/50 border-slate-700'
+                      }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className={`font-medium ${sw.active ? 'text-red-400' : 'text-white'}`}>
+                          {sw.name}
+                        </h3>
+                        <p className="text-xs text-slate-400">{sw.description}</p>
+                      </div>
+                      <button
+                        onClick={() => toggleKillSwitch(sw.id)}
+                        className={`relative w-14 h-7 rounded-full transition-colors ${sw.active ? 'bg-red-500' : 'bg-slate-600'
+                          }`}
+                      >
+                        <span
+                          className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${sw.active ? 'left-8' : 'left-1'
+                            }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Quick Actions */}
+            <section className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6">
+              <h2 className="text-lg font-semibold text-white mb-6">⚡ Acciones Rápidas</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: '🔄 Flush Cache', action: 'flush' },
+                  { label: '💾 Force Backup', action: 'backup' },
+                  { label: '🗄️ Failover DB', action: 'failover' },
+                  { label: '📧 Test Email', action: 'test' },
+                  { label: '📊 Regenerate Stats', action: 'stats' },
+                  { label: '🔐 Clear Sessions', action: 'sessions' },
+                  { label: '🧹 Clear Logs', action: 'logs' },
+                  { label: '📈 Health Check', action: 'health' },
+                ].map((action, i) => (
+                  <button
+                    key={i}
+                    className="p-4 bg-slate-900/50 rounded-xl border border-slate-700 text-white text-sm hover:bg-slate-700 hover:border-slate-600 transition-all"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* Tenants Tab */}
+        {activeTab === 'tenants' && <TenantManagementPanel />}
+
+        {/* Services Tab */}
+        {activeTab === 'services' && <ServiceControlPanel />}
+
+        {/* Database Tab */}
+        {activeTab === 'database' && <DatabaseFailoverPanel />}
+
+        {/* Feature Flags Tab */}
+        {activeTab === 'features' && <FeatureFlagsPanel />}
+
+        {/* Plans Tab */}
+        {activeTab === 'plans' && <PricingPlansPanel />}
+
+        {/* Users Tab */}
+        {activeTab === 'users' && <UserManagementPanel />}
+
+        {/* Limits Tab */}
+        {activeTab === 'limits' && <SystemLimitsPanel />}
+
+        {/* Metrics Tab */}
+        {activeTab === 'metrics' && <MetricsGraphsPanel />}
+
+        {/* Notifications Tab */}
+        {activeTab === 'notifications' && <NotificationsConfigPanel />}
+
+        {/* Operations Tab */}
+        {activeTab === 'operations' && <OperationsPanel />}
+
+        {/* Wil AI Tab */}
+        {activeTab === 'wil' && <WilAssistant />}
+
+        {/* Finance Tab */}
+        {activeTab === 'finance' && <FinanceCenter />}
+
+        {/* Security Tab */}
+        {activeTab === 'security' && <SecurityCenter />}
+
+        {/* Tickets Tab */}
+        {activeTab === 'tickets' && <SupportTickets />}
+
+        {/* Automation Tab */}
+        {activeTab === 'automation' && <AutomationRules />}
+
+        {/* Integrations Tab */}
+        {activeTab === 'integrations' && <ExternalIntegrations />}
+
+        {/* Executive Tab */}
+        {activeTab === 'executive' && <ExecutiveDashboard />}
+
+      </main>
     </div>
   );
-};
-
-export default CommandCenter;
+}

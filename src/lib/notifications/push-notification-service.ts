@@ -8,8 +8,6 @@
  * @platform MOBILE
  */
 
-'use server';
-
 import { logger } from '@/lib/observability';
 
 // ═══════════════════════════════════════════════════════════════
@@ -223,7 +221,7 @@ export async function sendPushByTipo(
         aprobacion: '✅ Aprobación Pendiente',
         rechazo: '❌ Contrato Rechazado',
         firma: '✍️ Firma Requerida',
-        vencimientos: '📅 Vencimiento Próximo',
+        vencimientos: '📅 Vencimientos Próximo',
         pago: '💰 Pago Recibido'
     };
 

@@ -29,7 +29,7 @@ export interface MaterialCreativo {
   formato: string;
   estado: EstadoMaterial;
   fechaCreacion: Date;
-  fechaVencimiento?: Date;
+  fechaVencimientos?: Date;
   anuncianteId: string;
   campanaId?: string;
   urlPreview?: string;
@@ -54,7 +54,7 @@ export interface ValidacionMaterial {
 }
 
 export interface ProblemaValidacion {
-  tipo: "DURACION" | "FORMATO" | "VENCIMIENTO" | "APROBACION" | "COHERENCIA";
+  tipo: "DURACION" | "FORMATO" | "VENCIMIENTOS" | "APROBACION" | "COHERENCIA";
   severidad: "BAJA" | "MEDIA" | "ALTA" | "CRITICA";
   descripcion: string;
   solucion?: string;
@@ -95,7 +95,7 @@ const mockMateriales: MaterialCreativo[] = [
     formato: "WAV",
     estado: "ACTIVO",
     fechaCreacion: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    fechaVencimiento: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
     anuncianteId: "anun-001",
     aprobadoLegal: true,
     aprobadoCliente: true,
@@ -226,11 +226,11 @@ class MaterialValidationServiceClass {
 
     // Validar vencimientos
     if (
-      material.fechaVencimiento &&
-      material.fechaVencimiento < params.fechaCampana
+      material.fechaVencimientos &&
+      material.fechaVencimientos < params.fechaCampana
     ) {
       problemas.push({
-        tipo: "VENCIMIENTO",
+        tipo: "VENCIMIENTOS",
         severidad: "ALTA",
         descripcion: "Material vencerá antes de finalizar la campaña",
         solucion: "Renovar vigencia del material",

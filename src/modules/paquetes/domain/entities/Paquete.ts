@@ -181,6 +181,7 @@ export class Paquete {
     get vigenciaDesde(): Date { return this.props.vigenciaDesde }
     get vigenciaHasta(): Date { return this.props.vigenciaHasta }
     get isActivo(): boolean { return this.props.estado === 'ACTIVO' }
+    get version(): number { return this.props.version }
     get domainEvents(): string[] { return [...this._domainEvents] }
 
     // Business methods
@@ -277,6 +278,14 @@ export class Paquete {
         this.props.updatedBy = responsable
         this.props.version++
         this.addDomainEvent(`PaqueteDesactivado: ${this.props.codigo.value} - ${motivo}`)
+    }
+
+    marcarComoBorrado(responsable: string): void {
+        this.props.estado = 'BORRADO'
+        this.props.updatedAt = new Date()
+        this.props.updatedBy = responsable
+        this.props.version++
+        this.addDomainEvent(`PaqueteBorrado: ${this.props.codigo.value}`)
     }
 
     establecerPrecioActual(precio: number, responsable: string): void {

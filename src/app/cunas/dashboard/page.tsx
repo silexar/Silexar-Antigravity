@@ -65,7 +65,7 @@ const kpisMock: KPI[] = [
 
 const alertasMock: AlertaGerencial[] = [
   { id: '1', tipo: 'critica', categoria: 'Material', mensaje: 'Falabella: Material vencido hace 4 días', accion: 'Contactar urgente', link: '/cunas/material-pendiente' },
-  { id: '2', tipo: 'critica', categoria: 'Vencimiento', mensaje: '3 cuñas vencen hoy sin renovación', accion: 'Revisar contratos', link: '/cunas' },
+  { id: '2', tipo: 'critica', categoria: 'Vencimientos', mensaje: '3 cuñas vencen hoy sin renovación', accion: 'Revisar contratos', link: '/cunas' },
   { id: '3', tipo: 'alta', categoria: 'Aprobación', mensaje: '5 cuñas pendientes de aprobación +24h', accion: 'Escalar', link: '/cunas' },
   { id: '4', tipo: 'media', categoria: 'Programación', mensaje: 'Prime Time solo 75% ocupación', accion: 'Optimizar', link: '/cunas/programacion' }
 ];

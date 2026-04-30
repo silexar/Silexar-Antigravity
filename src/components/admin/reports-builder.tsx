@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - Custom Reports Builder
+ * ðŸ“Š SILEXAR PULSE - Custom Reports Builder
  * Generador de reportes personalizados
  * 
  * @description Sistema de reportes avanzado:
@@ -15,10 +15,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton 
-} from '@/components/ui/neuromorphic'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   FileText,
   BarChart3,
@@ -145,26 +143,26 @@ export function ReportsBuilder() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'table': return <Table className="w-4 h-4 text-blue-400" />
-      case 'chart': return <BarChart3 className="w-4 h-4 text-green-400" />
-      case 'dashboard': return <PieChart className="w-4 h-4 text-purple-400" />
-      case 'pdf': return <FileText className="w-4 h-4 text-red-400" />
-      default: return <FileText className="w-4 h-4 text-slate-400" />
+      case 'table': return <Table className="w-4 h-4 text-[#6888ff]" />
+      case 'chart': return <BarChart3 className="w-4 h-4 text-[#6888ff]" />
+      case 'dashboard': return <PieChart className="w-4 h-4 text-[#6888ff]" />
+      case 'pdf': return <FileText className="w-4 h-4 text-[#6888ff]" />
+      default: return <FileText className="w-4 h-4 text-[#9aa3b8]" />
     }
   }
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-green-500/20 text-green-400'
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400'
-      case 'draft': return 'bg-slate-500/20 text-slate-400'
-      default: return 'bg-slate-500/20 text-slate-400'
+      case 'published': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'scheduled': return 'bg-[#6888ff]/20 text-[#6888ff]'
+      case 'draft': return 'bg-slate-500/20 text-[#9aa3b8]'
+      default: return 'bg-slate-500/20 text-[#9aa3b8]'
     }
   }
 
   const runReport = (report: ReportTemplate) => {
-    
-    setReports(prev => prev.map(r => 
+
+    setReports(prev => prev.map(r =>
       r.id === report.id ? { ...r, lastRun: new Date() } : r
     ))
   }
@@ -190,8 +188,8 @@ export function ReportsBuilder() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando Reports Builder...</p>
+          <div className="w-12 h-12 border-4 border-[#6888ff]/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#9aa3b8]">Cargando Reports Builder...</p>
         </div>
       </div>
     )
@@ -201,92 +199,89 @@ export function ReportsBuilder() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <FileText className="w-5 h-5 text-purple-400" />
+        <h3 className="text-lg font-bold text-[#69738c] flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#6888ff]" />
           Custom Reports Builder
         </h3>
-        <NeuromorphicButton variant="primary" size="sm">
+        <NeuButton variant="primary" >
           <Plus className="w-4 h-4 mr-1" />
           Nuevo Reporte
-        </NeuromorphicButton>
+        </NeuButton>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg text-center">
-          <p className="text-2xl font-bold text-white">{reports.length}</p>
-          <p className="text-xs text-slate-400">Total Reportes</p>
+        <div className="p-3 bg-[#dfeaff]/50 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#69738c]">{reports.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Total Reportes</p>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-blue-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {reports.filter(r => r.schedule).length}
           </p>
-          <p className="text-xs text-slate-400">Programados</p>
+          <p className="text-xs text-[#9aa3b8]">Programados</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-green-400">{dataSources.length}</p>
-          <p className="text-xs text-slate-400">Data Sources</p>
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">{dataSources.length}</p>
+          <p className="text-xs text-[#9aa3b8]">Data Sources</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg text-center">
-          <p className="text-2xl font-bold text-purple-400">
+        <div className="p-3 bg-[#6888ff]/10 rounded-lg text-center">
+          <p className="text-2xl font-bold text-[#6888ff]">
             {reports.filter(r => r.lastRun && (Date.now() - r.lastRun.getTime()) < 24 * 60 * 60 * 1000).length}
           </p>
-          <p className="text-xs text-slate-400">Ejecutados Hoy</p>
+          <p className="text-xs text-[#9aa3b8]">Ejecutados Hoy</p>
         </div>
       </div>
 
       {/* Data Sources */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-sm text-slate-400 mb-3 flex items-center gap-2">
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 className="text-sm text-[#9aa3b8] mb-3 flex items-center gap-2">
           <Database className="w-4 h-4" />
           Fuentes de Datos Disponibles
         </h4>
         <div className="flex flex-wrap gap-2">
           {dataSources.map(ds => (
-            <span key={ds.id} className="text-xs px-3 py-1.5 bg-slate-800 text-white rounded-lg flex items-center gap-1">
-              <Database className="w-3 h-3 text-cyan-400" />
+            <span key={ds.id} className="text-xs px-3 py-1.5 bg-[#dfeaff] text-[#69738c] rounded-lg flex items-center gap-1">
+              <Database className="w-3 h-3 text-[#6888ff]" />
               {ds.name}
-              <span className="text-slate-500">({ds.fields.length} campos)</span>
+              <span className="text-[#9aa3b8]">({ds.fields.length} campos)</span>
             </span>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Reports Grid */}
       <div className="grid grid-cols-2 gap-4">
         {reports.map(report => (
-          <NeuromorphicCard 
+          <NeuCard
             key={report.id}
-            variant="embossed" 
-            className={`p-4 cursor-pointer hover:border-purple-500/30 transition-all ${
-              selectedReport?.id === report.id ? 'ring-1 ring-purple-500/50' : ''
-            }`}
-            onClick={() => setSelectedReport(report)}
+            style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}
+            className={`cursor-pointer hover:border-[#6888ff]/30 transition-all ${selectedReport?.id === report.id ? 'ring-1 ring-purple-500/50' : ''}`}
           >
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-2">
                 {getTypeIcon(report.type)}
-                <span className="text-white font-medium">{report.name}</span>
+                <span className="text-[#69738c] font-medium">{report.name}</span>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded ${getStatusStyle(report.status)}`}>
                 {report.status}
               </span>
             </div>
 
-            <p className="text-sm text-slate-400 mb-3">{report.description}</p>
+            <p className="text-sm text-[#9aa3b8] mb-3">{report.description}</p>
 
             <div className="flex items-center gap-2 mb-3">
               {report.dataSources.map(ds => {
                 const source = dataSources.find(d => d.id === ds)
                 return source ? (
-                  <span key={ds} className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+                  <span key={ds} className="text-xs px-2 py-0.5 bg-[#dfeaff] text-[#69738c] rounded">
                     {source.name}
                   </span>
                 ) : null
               })}
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center justify-between text-xs text-[#9aa3b8]">
               <div className="flex items-center gap-2">
                 {report.schedule && (
                   <span className="flex items-center gap-1">
@@ -302,76 +297,76 @@ export function ReportsBuilder() {
                 )}
               </div>
               <div className="flex items-center gap-1">
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); runReport(report); }}
-                  className="p-1.5 text-slate-400 hover:text-green-400"
+                  className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                   title="Ejecutar"
                 >
                   <Play className="w-4 h-4" />
                 </button>
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); duplicateReport(report); }}
-                  className="p-1.5 text-slate-400 hover:text-blue-400"
+                  className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                   title="Duplicar"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); deleteReport(report.id); }}
-                  className="p-1.5 text-slate-400 hover:text-red-400"
+                  className="p-1.5 text-[#9aa3b8] hover:text-[#6888ff]"
                   title="Eliminar"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          </NeuromorphicCard>
+          </NeuCard>
         ))}
       </div>
 
       {/* Preview Panel */}
       {selectedReport && (
-        <NeuromorphicCard variant="glow" className="p-6">
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1.5rem', background: N.base }}>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white font-bold flex items-center gap-2">
-              <Eye className="w-4 h-4 text-purple-400" />
+            <h4 className="text-[#69738c] font-bold flex items-center gap-2">
+              <Eye className="w-4 h-4 text-[#6888ff]" />
               Preview: {selectedReport.name}
             </h4>
             <div className="flex items-center gap-2">
-              <NeuromorphicButton variant="secondary" size="sm">
+              <NeuButton variant="secondary" >
                 <Settings className="w-4 h-4 mr-1" />
                 Configurar
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="primary" size="sm" onClick={() => runReport(selectedReport)}>
+              </NeuButton>
+              <NeuButton variant="primary" onClick={() => runReport(selectedReport)}>
                 <Play className="w-4 h-4 mr-1" />
                 Ejecutar Ahora
-              </NeuromorphicButton>
-              <NeuromorphicButton variant="secondary" size="sm">
+              </NeuButton>
+              <NeuButton variant="secondary" >
                 <Download className="w-4 h-4 mr-1" />
                 Exportar
-              </NeuromorphicButton>
+              </NeuButton>
             </div>
           </div>
 
           {/* Preview Content */}
-          <div className="p-8 bg-slate-800/30 rounded-lg flex items-center justify-center">
+          <div className="p-8 bg-[#dfeaff]/30 rounded-lg flex items-center justify-center">
             <div className="text-center">
               {getTypeIcon(selectedReport.type)}
-              <p className="text-slate-400 mt-2">Vista previa de {selectedReport.type}</p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-[#9aa3b8] mt-2">Vista previa de {selectedReport.type}</p>
+              <p className="text-xs text-[#9aa3b8] mt-1">
                 Datos de: {selectedReport.dataSources.map(ds => dataSources.find(d => d.id === ds)?.name).join(', ')}
               </p>
             </div>
           </div>
 
           {selectedReport.schedule && (
-            <div className="mt-4 p-3 bg-blue-500/10 rounded-lg">
-              <p className="text-sm text-blue-400">
-                📧 Se envía {selectedReport.schedule.frequency} a: {selectedReport.schedule.recipients.join(', ')}
+            <div className="mt-4 p-3 bg-[#6888ff]/10 rounded-lg">
+              <p className="text-sm text-[#6888ff]">
+                ðŸ“§ Se envía {selectedReport.schedule.frequency} a: {selectedReport.schedule.recipients.join(', ')}
               </p>
             </div>
           )}
-        </NeuromorphicCard>
+        </NeuCard>
       )}
     </div>
   )

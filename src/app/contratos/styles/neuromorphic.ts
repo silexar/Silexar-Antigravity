@@ -33,11 +33,8 @@ export const neuroColors = {
   shadowDark: '#bec8de',
   shadowDarker: '#a8b4cc',
   
-  // Acentos
+  // Acentos - UNICAMENTE azul oficial #6888ff permitido
   accentPrimary: 'from-[#6888ff] to-[#5572ee]',
-  accentSuccess: 'from-emerald-400 to-teal-500',
-  accentWarning: 'from-amber-400 to-orange-500',
-  accentDanger: 'from-red-400 to-rose-500',
   
   // Texto
   textPrimary: 'text-[#69738c]',
@@ -131,21 +128,9 @@ export const neuro = {
     px-4 py-2
   `,
   
-  /** Botón success */
-  btnSuccess: `
-    bg-gradient-to-br from-emerald-400 to-teal-500
-    text-white font-semibold
-    rounded-xl
-    shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
-    hover:shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
-    active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]
-    transition-all duration-200
-    px-6 py-3
-  `,
-  
-  /** Botón danger */
-  btnDanger: `
-    bg-gradient-to-br from-red-400 to-rose-500
+  /** Botón primario (único estilo de acción permitido) */
+  btnPrimaryAlt: `
+    bg-[#6888ff]
     text-white font-semibold
     rounded-xl
     shadow-[4px_4px_8px_#bec8de,-4px_-4px_8px_#ffffff]
@@ -283,30 +268,13 @@ export const neuro = {
     text-sm font-medium
   `,
   
-  badgeSuccess: `
+  /** Badge de estado (único estilo permitido - monocromático azul) */
+  badgeStatus: `
     px-3 py-1
-    bg-emerald-100
-    text-emerald-700
+    bg-[#6888ff]/10
+    text-[#6888ff]
     rounded-lg
-    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
-    text-sm font-medium
-  `,
-  
-  badgeWarning: `
-    px-3 py-1
-    bg-amber-100
-    text-amber-700
-    rounded-lg
-    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
-    text-sm font-medium
-  `,
-  
-  badgeDanger: `
-    px-3 py-1
-    bg-red-100
-    text-red-700
-    rounded-lg
-    shadow-[2px_2px_4px_#bec8de,-2px_-2px_4px_#ffffff]
+    shadow-[inset_2px_2px_4px_#bec8de,inset_-2px_-2px_4px_#ffffff]
     text-sm font-medium
   `,
   
@@ -430,13 +398,10 @@ export function neuroShadow(
  * Genera gradiente según tipo
  */
 export function neuroGradient(
-  type: 'primary' | 'success' | 'warning' | 'danger' | 'neutral' = 'neutral'
+  type: 'primary' | 'neutral' = 'neutral'
 ): string {
   const gradients = {
     primary: 'from-[#6888ff] to-[#5572ee]',
-    success: 'from-emerald-400 to-teal-500',
-    warning: 'from-amber-400 to-orange-500',
-    danger: 'from-red-400 to-rose-500',
     neutral: 'from-[#dfeaff] to-[#e8f0ff]'
   };
   

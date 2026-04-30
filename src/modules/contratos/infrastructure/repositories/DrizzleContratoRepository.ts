@@ -39,10 +39,10 @@ export interface ContratoItemInput {
   orden?: number
 }
 
-export interface ContratoVencimientoInput {
+export interface ContratoVencimientosInput {
   id?: string
   numeroCuota: number
-  fechaVencimiento: string
+  fechaVencimientos: string
   monto: number
   notas?: string
 }
@@ -72,7 +72,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
   async saveWithRelations(
     contrato: Contrato,
     items: ContratoItemInput[],
-    vencimientosList: ContratoVencimientoInput[],
+    vencimientosList: ContratoVencimientosInput[],
   ): Promise<void> {
     const contratoData = this.mapToDatabase(contrato)
     const { id: _cid, ...contratoUpdateData } = contratoData
@@ -127,7 +127,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
             tenantId: this.tenantId,
             contratoId: contrato.id,
             numeroCuota: v.numeroCuota,
-            fechaVencimiento: v.fechaVencimiento,
+            fechaVencimientos: v.fechaVencimientos,
             monto: String(v.monto),
             notas: v.notas ?? null,
           })),
@@ -560,7 +560,7 @@ export class DrizzleContratoRepository implements IContratoRepository {
       // Alerta de vencimientos de pago pendientes
       if (item.vencimientos && item.vencimientos.length > 0) {
         for (const vto of item.vencimientos) {
-          const fechaVto = new Date(vto.fechaVencimiento)
+          const fechaVto = new Date(vto.fechaVencimientos)
           if (fechaVto < fechaHoy && Number(vto.monto) > 0) {
             const diasAtrasado = Math.ceil((fechaHoy.getTime() - fechaVto.getTime()) / (1000 * 60 * 60 * 24))
             alertas.push({

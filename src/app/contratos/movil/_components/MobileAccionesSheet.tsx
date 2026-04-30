@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ? MOBILE: Acciones Bottom Sheet
  * 
  * Bottom sheet para ejecutar acciones sobre contratos: aprobar, rechazar,
@@ -107,9 +107,9 @@ export function MobileAccionesSheet({
         <div className="flex items-center justify-between px-5 pb-3">
           <div>
             <h2 className="text-lg font-black text-[#69738c]">
-              {success ? 'Acción Completada' : accionActiva ? `${accionActiva.charAt(0).toUpperCase() + accionActiva.slice(1)} Contrato` : 'Acciones'}
+              {success ? 'Acciï¿½n Completada' : accionActiva ? `${accionActiva.charAt(0).toUpperCase() + accionActiva.slice(1)} Contrato` : 'Acciones'}
             </h2>
-            <p className="text-xs text-[#9aa3b8]">{contratoNumero} · {clienteNombre}</p>
+            <p className="text-xs text-[#9aa3b8]">{contratoNumero} ï¿½ {clienteNombre}</p>
           </div>
           <button onClick={handleClose} aria-label="Cerrar" className="p-2 rounded-full bg-[#dfeaff] active:scale-90">
             <X className="w-5 h-5 text-[#9aa3b8]" />
@@ -120,8 +120,8 @@ export function MobileAccionesSheet({
           {/* SUCCESS */}
           {success ? (
             <div className="flex flex-col items-center text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+              <div className="w-16 h-16 rounded-full bg-[#6888ff]/10 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-[#6888ff]" />
               </div>
               <p className="font-bold text-[#69738c]">{successMessage}</p>
               <button onClick={handleClose} className="w-full py-3.5 bg-[#6888ff] text-white font-bold rounded-xl active:scale-95">
@@ -133,14 +133,14 @@ export function MobileAccionesSheet({
             <div className="space-y-4">
               {accionActiva === 'aprobar' && (
                 <>
-                  <div className="p-4 rounded-xl bg-emerald-50 border border-[#bec8de30] flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
-                    <p className="text-xs text-emerald-700">Al aprobar, este contrato avanzará a la siguiente etapa del pipeline.</p>
+                  <div className="p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30] flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-[#6888ff] mt-0.5 shrink-0" />
+                    <p className="text-xs text-[#6888ff]">Al aprobar, este contrato avanzarï¿½ a la siguiente etapa del pipeline.</p>
                   </div>
                   <textarea
                     value={comentarioText}
                     onChange={(e) => setComentarioText(e.target.value)}
-                    placeholder="Comentario de aprobación (opcional)..."
+                    placeholder="Comentario de aprobaciï¿½n (opcional)..."
                     rows={3}
                     className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none"
                   />
@@ -149,9 +149,9 @@ export function MobileAccionesSheet({
 
               {accionActiva === 'rechazar' && (
                 <>
-                  <div className="p-4 rounded-xl bg-red-50 border border-[#bec8de30] flex items-start gap-3">
-                    <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
-                    <p className="text-xs text-red-700">El contrato será devuelto al ejecutivo con el motivo de rechazo.</p>
+                  <div className="p-4 rounded-xl bg-[#dfeaff] border border-[#bec8de30] flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-[#9aa3b8] mt-0.5 shrink-0" />
+                    <p className="text-xs text-[#9aa3b8]">El contrato serï¿½ devuelto al ejecutivo con el motivo de rechazo.</p>
                   </div>
                   <textarea
                     value={motivoText}
@@ -164,9 +164,9 @@ export function MobileAccionesSheet({
               )}
 
               {accionActiva === 'firmar' && (
-                <div className="p-4 rounded-xl bg-purple-50 border border-[#bec8de30] flex items-start gap-3">
-                  <Star className="w-5 h-5 text-purple-600 mt-0.5 shrink-0" />
-                  <p className="text-xs text-purple-700">Se aplicará tu firma digital certificada al contrato. Esta acción es irreversible.</p>
+                <div className="p-4 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30] flex items-start gap-3">
+                  <Star className="w-5 h-5 text-[#6888ff] mt-0.5 shrink-0" />
+                  <p className="text-xs text-[#6888ff]">Se aplicarï¿½ tu firma digital certificada al contrato. Esta acciï¿½n es irreversible.</p>
                 </div>
               )}
 
@@ -191,9 +191,9 @@ export function MobileAccionesSheet({
                   onClick={handleAccion}
                   disabled={processing || (accionActiva === 'rechazar' && !motivoText) || (accionActiva === 'comentar' && !comentarioText)}
                   className={`flex-1 py-3.5 rounded-xl font-bold text-white flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 ${
-                    accionActiva === 'rechazar' ? 'bg-red-600' :
-                    accionActiva === 'firmar' ? 'bg-purple-600' :
-                    'bg-emerald-600'
+                    accionActiva === 'rechazar' ? 'bg-[#6888ff]' :
+                    accionActiva === 'firmar' ? 'bg-[#6888ff]' :
+                    'bg-[#6888ff]'
                   }`}
                 >
                   {processing ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Confirmar'}
@@ -204,19 +204,19 @@ export function MobileAccionesSheet({
             /* ACTION LIST */
             <div className="space-y-2">
               {accionesDisponibles.includes('aprobar') && (
-                <ActionRow icon={<CheckCircle2 className="w-5 h-5" />} label="Aprobar Contrato" desc="Avanzar a siguiente etapa" color="bg-emerald-100 text-emerald-600" onClick={() => setAccionActiva('aprobar')} />
+                <ActionRow icon={<CheckCircle2 className="w-5 h-5" />} label="Aprobar Contrato" desc="Avanzar a siguiente etapa" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setAccionActiva('aprobar')} />
               )}
               {accionesDisponibles.includes('rechazar') && (
-                <ActionRow icon={<XCircle className="w-5 h-5" />} label="Rechazar" desc="Devolver con motivo" color="bg-red-100 text-red-600" onClick={() => setAccionActiva('rechazar')} />
+                <ActionRow icon={<XCircle className="w-5 h-5" />} label="Rechazar" desc="Devolver con motivo" color="bg-[#dfeaff] text-[#9aa3b8]" onClick={() => setAccionActiva('rechazar')} />
               )}
               {accionesDisponibles.includes('firmar') && (
-                <ActionRow icon={<Star className="w-5 h-5" />} label="Firmar Digital" desc="Aplicar firma certificada" color="bg-purple-100 text-purple-600" onClick={() => setAccionActiva('firmar')} />
+                <ActionRow icon={<Star className="w-5 h-5" />} label="Firmar Digital" desc="Aplicar firma certificada" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setAccionActiva('firmar')} />
               )}
               {accionesDisponibles.includes('comentar') && (
-                <ActionRow icon={<MessageSquare className="w-5 h-5" />} label="Comentar" desc="Agregar nota al contrato" color="bg-blue-100 text-blue-600" onClick={() => setAccionActiva('comentar')} />
+                <ActionRow icon={<MessageSquare className="w-5 h-5" />} label="Comentar" desc="Agregar nota al contrato" color="bg-[#6888ff]/10 text-[#6888ff]" onClick={() => setAccionActiva('comentar')} />
               )}
               <ActionRow icon={<Phone className="w-5 h-5" />} label="Llamar Cliente" desc="Contacto directo" color="bg-cyan-100 text-cyan-600" />
-              <ActionRow icon={<Mail className="w-5 h-5" />} label="Email" desc="Enviar comunicación" color="bg-amber-100 text-amber-600" />
+              <ActionRow icon={<Mail className="w-5 h-5" />} label="Email" desc="Enviar comunicaciï¿½n" color="bg-[#6888ff]/10 text-[#6888ff]" />
             </div>
           )}
         </div>

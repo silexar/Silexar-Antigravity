@@ -38,7 +38,7 @@ import {
 // ═══════════════════════════════════════════════════════════════
 
 type TipoEvento = 
-  | 'vencimiento'
+  | 'vencimientos'
   | 'renovacion'
   | 'obligacion'
   | 'reunion'
@@ -121,7 +121,7 @@ const generarEventosMock = (): EventoCalendario[] => {
     if (i === 5 || i === 12 || i === 18) {
       eventos.push({
         id: `ev-venc-${i}`,
-        tipo: 'vencimiento',
+        tipo: 'vencimientos',
         titulo: `Vence contrato ${i === 5 ? 'Banco Chile' : i === 12 ? 'Falabella' : 'Cencosud'}`,
         fecha,
         todoElDia: true,
@@ -218,13 +218,13 @@ const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', '
 
 const getTipoConfig = (tipo: TipoEvento) => {
   const configs: Record<TipoEvento, { icon: React.ReactNode; color: string; bgColor: string }> = {
-    vencimiento: { icon: <AlertTriangle className="w-3 h-3" />, color: 'text-red-600', bgColor: 'bg-red-100' },
-    renovacion: { icon: <RefreshCw className="w-3 h-3" />, color: 'text-blue-600', bgColor: 'bg-blue-100' },
-    obligacion: { icon: <FileText className="w-3 h-3" />, color: 'text-purple-600', bgColor: 'bg-purple-100' },
-    reunion: { icon: <Users className="w-3 h-3" />, color: 'text-green-600', bgColor: 'bg-green-100' },
-    recordatorio: { icon: <Bell className="w-3 h-3" />, color: 'text-amber-600', bgColor: 'bg-amber-100' },
-    pago: { icon: <DollarSign className="w-3 h-3" />, color: 'text-emerald-600', bgColor: 'bg-emerald-100' },
-    firma: { icon: <FileText className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-indigo-100' },
+    vencimientos: { icon: <AlertTriangle className="w-3 h-3" />, color: 'text-[#9aa3b8]', bgColor: 'bg-[#dfeaff]' },
+    renovacion: { icon: <RefreshCw className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    obligacion: { icon: <FileText className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    reunion: { icon: <Users className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    recordatorio: { icon: <Bell className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    pago: { icon: <DollarSign className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
+    firma: { icon: <FileText className="w-3 h-3" />, color: 'text-[#6888ff]', bgColor: 'bg-[#6888ff]/10' },
     entrega: { icon: <CheckCircle className="w-3 h-3" />, color: 'text-teal-600', bgColor: 'bg-teal-100' }
   };
   return configs[tipo];
@@ -313,7 +313,7 @@ export default function CalendarioContratosPage() {
         <div className={`${neuro.panel} p-6 mb-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6888ff] to-[#5572ee]">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -331,7 +331,7 @@ export default function CalendarioContratosPage() {
                 className={`${neuro.btnSecondary} px-4 py-2`}
               >
                 <option value="todos">Todos los eventos</option>
-                <option value="vencimiento">Vencimientos</option>
+                <option value="vencimientos">Vencimientos</option>
                 <option value="renovacion">Renovaciones</option>
                 <option value="reunion">Reuniones</option>
                 <option value="pago">Pagos</option>
@@ -402,7 +402,7 @@ export default function CalendarioContratosPage() {
                     `}
                   >
                     <span className={`text-sm font-semibold ${
-                      esHoy ? 'bg-blue-500 text-white px-2 py-0.5 rounded-full' : 'text-[#69738c]'
+                      esHoy ? 'bg-[#6888ff]/50 text-white px-2 py-0.5 rounded-full' : 'text-[#69738c]'
                     }`}>
                       {fecha.getDate()}
                     </span>
@@ -479,8 +479,8 @@ export default function CalendarioContratosPage() {
                         )}
                       </div>
                       <span className={`${neuro.badge} ${
-                        evento.prioridad === 'urgente' ? 'bg-red-100 text-red-700' :
-                        evento.prioridad === 'alta' ? 'bg-orange-100 text-orange-700' :
+                        evento.prioridad === 'urgente' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+                        evento.prioridad === 'alta' ? 'bg-[#6888ff]/10 text-[#6888ff]' :
                         'bg-[#dfeaff] text-[#69738c]'
                       }`}>
                         {evento.prioridad}
@@ -502,29 +502,29 @@ export default function CalendarioContratosPage() {
             <div className="mt-6 pt-4 border-t border-[#bec8de30]">
               <h4 className="text-sm font-semibold text-[#69738c] mb-3">Resumen del mes</h4>
               <div className="grid grid-cols-2 gap-2">
-                <div className="text-center p-2 bg-red-50 rounded-lg">
-                  <p className="text-lg font-bold text-red-600">
-                    {eventos.filter(e => e.tipo === 'vencimiento').length}
+                <div className="text-center p-2 bg-[#dfeaff] rounded-lg">
+                  <p className="text-lg font-bold text-[#9aa3b8]">
+                    {eventos.filter(e => e.tipo === 'vencimientos').length}
                   </p>
-                  <p className="text-xs text-red-500">Vencimientos</p>
+                  <p className="text-xs text-[#9aa3b8]">Vencimientos</p>
                 </div>
-                <div className="text-center p-2 bg-blue-50 rounded-lg">
-                  <p className="text-lg font-bold text-blue-600">
+                <div className="text-center p-2 bg-[#6888ff]/5 rounded-lg">
+                  <p className="text-lg font-bold text-[#6888ff]">
                     {eventos.filter(e => e.tipo === 'renovacion').length}
                   </p>
-                  <p className="text-xs text-blue-500">Renovaciones</p>
+                  <p className="text-xs text-[#6888ff]">Renovaciones</p>
                 </div>
-                <div className="text-center p-2 bg-green-50 rounded-lg">
-                  <p className="text-lg font-bold text-green-600">
+                <div className="text-center p-2 bg-[#6888ff]/5 rounded-lg">
+                  <p className="text-lg font-bold text-[#6888ff]">
                     {eventos.filter(e => e.tipo === 'reunion').length}
                   </p>
-                  <p className="text-xs text-green-500">Reuniones</p>
+                  <p className="text-xs text-[#6888ff]">Reuniones</p>
                 </div>
-                <div className="text-center p-2 bg-emerald-50 rounded-lg">
-                  <p className="text-lg font-bold text-emerald-600">
+                <div className="text-center p-2 bg-[#6888ff]/5 rounded-lg">
+                  <p className="text-lg font-bold text-[#6888ff]">
                     {eventos.filter(e => e.tipo === 'pago').length}
                   </p>
-                  <p className="text-xs text-emerald-500">Pagos</p>
+                  <p className="text-xs text-[#6888ff]">Pagos</p>
                 </div>
               </div>
             </div>

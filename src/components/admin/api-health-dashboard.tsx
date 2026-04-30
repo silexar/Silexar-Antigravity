@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 /**
- * 📊 SILEXAR PULSE - API Health & Rate Limiting
+ * ðŸ“Š SILEXAR PULSE - API Health & Rate Limiting
  * Monitoreo de APIs y control de uso
  * 
  * @description Dashboard de APIs con:
@@ -12,14 +12,12 @@
  * 
  * @version 2025.1.0
  * @tier TIER_0_FORTUNE_10
+ * @last_modified 2025-04-28 - Migrated to AdminDesignSystem pattern
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  NeuromorphicCard, 
-  NeuromorphicButton,
-  NeuromorphicStatus
-} from '@/components/ui/neuromorphic'
+import { NeuCard, NeuButton } from '@/components/admin/_sdk/AdminDesignSystem'
+import { N, getShadow, getSmallShadow, getFloatingShadow } from '@/components/admin/_sdk/AdminDesignSystem'
 import {
   Activity,
   Server,
@@ -35,7 +33,7 @@ import {
 interface ApiEndpoint {
   id: string
   path: string
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method: 'GET' | 'POST' | 'PUT' | 'Eliminar'
   requestsToday: number
   avgLatency: number
   errorRate: number
@@ -102,164 +100,184 @@ export function ApiHealthDashboard() {
       throttledRequests: 1250
     })
 
-    // AI Recommendations
     setAiRecommendations([
-      '📊 /api/analytics muestra latencia alta. Considerar caché adicional.',
-      '⚠️ Mega Media cerca del límite de rate. Sugerir upgrade a Enterprise.',
-      '🚀 /api/ai/predictions tiene 2.1% errores. Revisar logs de modelo ML.'
+      'ðŸ“Š /api/analytics muestra latencia alta. Considerar caché adicional.',
+      'š ï¸ Mega Media cerca del límite de rate. Sugerir upgrade a Enterprise.',
+      'ðŸš€ /api/ai/predictions tiene 2.1% errores. Revisar logs de modelo ML.'
     ])
 
     setIsLoading(false)
   }
 
   const adjustRateLimit = (tenantId: string, newLimit: number) => {
-    setTenantUsage(prev => prev.map(t => 
+    setTenantUsage(prev => prev.map(t =>
       t.tenantId === tenantId ? { ...t, rateLimit: newLimit, isThrottled: t.currentRate > (newLimit / 1000) } : t
     ))
-    
   }
 
   const toggleThrottle = (tenantId: string) => {
-    setTenantUsage(prev => prev.map(t => 
+    setTenantUsage(prev => prev.map(t =>
       t.tenantId === tenantId ? { ...t, isThrottled: !t.isThrottled } : t
     ))
   }
 
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case 'healthy': return { background: N.accent }
+      case 'degraded': return { background: N.accent }
+      case 'down': return { background: N.accent }
+      default: return { background: N.textSub }
+    }
+  }
+
+  const getMethodStyle = (method: string) => {
+    switch (method) {
+      case 'GET': return { background: `${N.accent}20`, color: N.accent }
+      case 'POST': return { background: `${N.accent}20`, color: N.accent }
+      case 'PUT': return { background: `${N.accent}20`, color: N.accent }
+      case 'Eliminar': return { background: `${N.accent}20`, color: N.accent }
+      default: return { background: `${N.dark}20`, color: N.textSub }
+    }
+  }
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Cargando API Health...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid ${N.dark}30',
+            borderTopColor: N.accent,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p style={{ color: N.textSub }}>Cargando API Health...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Activity className="w-5 h-5 text-cyan-400" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 style={{ color: N.text, fontSize: '1.125rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <Activity style={{ width: 20, height: 20, color: N.accent }} />
           API Health & Rate Limiting
         </h3>
-        <NeuromorphicButton variant="secondary" size="sm" onClick={loadApiData}>
-          <RefreshCw className="w-4 h-4" />
-        </NeuromorphicButton>
+        <NeuButton variant="secondary" onClick={loadApiData}>
+          <RefreshCw style={{ width: 16, height: 16 }} />
+        </NeuButton>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-5 gap-3">
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <Server className="w-4 h-4 text-blue-400" />
-            <span className="text-xs text-slate-400">Requests Hoy</span>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.75rem' }}>
+        <div style={{ padding: '12px', background: `${N.dark}30`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Server style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Requests Hoy</span>
           </div>
-          <p className="text-xl font-bold text-white">{(stats?.totalRequests || 0).toLocaleString()}</p>
+          <p style={{ color: N.text, fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{(stats?.totalRequests || 0).toLocaleString()}</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <Clock className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-slate-400">Latencia Prom</span>
+        <div style={{ padding: '12px', background: `${N.dark}30`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <Clock style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Latencia Prom</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.avgLatency}ms</p>
+          <p style={{ color: N.text, fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{stats?.avgLatency}ms</p>
         </div>
-        <div className="p-3 bg-slate-800/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <XCircle className="w-4 h-4 text-red-400" />
-            <span className="text-xs text-slate-400">Error Rate</span>
+        <div style={{ padding: '12px', background: `${N.dark}30`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <XCircle style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Error Rate</span>
           </div>
-          <p className="text-xl font-bold text-white">{stats?.errorRate}%</p>
+          <p style={{ color: N.text, fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{stats?.errorRate}%</p>
         </div>
-        <div className="p-3 bg-green-500/10 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <CheckCircle className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-slate-400">Uptime</span>
+        <div style={{ padding: '12px', background: `${N.accent}10`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <CheckCircle style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Uptime</span>
           </div>
-          <p className="text-xl font-bold text-green-400">{stats?.uptime}%</p>
+          <p style={{ color: N.accent, fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{stats?.uptime}%</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle className="w-4 h-4 text-yellow-400" />
-            <span className="text-xs text-slate-400">Throttled</span>
+        <div style={{ padding: '12px', background: `${N.accent}10`, borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <AlertTriangle style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.textSub, fontSize: '0.75rem' }}>Throttled</span>
           </div>
-          <p className="text-xl font-bold text-yellow-400">{stats?.throttledRequests}</p>
+          <p style={{ color: N.accent, fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{stats?.throttledRequests}</p>
         </div>
       </div>
 
       {/* AI Recommendations */}
       {aiRecommendations.length > 0 && (
-        <NeuromorphicCard variant="glow" className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Brain className="w-4 h-4 text-purple-400" />
-            <span className="text-sm font-medium text-white">Recomendaciones IA</span>
+        <NeuCard style={{ boxShadow: getFloatingShadow(), padding: '1rem', background: N.base }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <Brain style={{ width: 16, height: 16, color: N.accent }} />
+            <span style={{ color: N.text, fontSize: '0.875rem', fontWeight: 500 }}>Recomendaciones IA</span>
           </div>
-          <div className="space-y-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {aiRecommendations.map((rec, i) => (
-              <p key={rec} className="text-xs text-slate-300">{rec}</p>
+              <p key={i} style={{ color: N.textSub, fontSize: '0.75rem' }}>{rec}</p>
             ))}
           </div>
-        </NeuromorphicCard>
+        </NeuCard>
       )}
 
       {/* Endpoints Status */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Estado de Endpoints</h4>
-        <div className="space-y-2">
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 style={{ color: N.text, fontWeight: 600, marginBottom: '12px' }}>Estado de Endpoints</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {endpoints.map(ep => (
-            <div key={ep.id} className="flex items-center justify-between p-2 bg-slate-800/30 rounded">
-              <div className="flex items-center gap-3">
-                <NeuromorphicStatus 
-                  status={ep.status === 'healthy' ? 'online' : ep.status === 'degraded' ? 'warning' : 'error'}
-                  size="sm"
-                />
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  ep.method === 'GET' ? 'bg-green-500/20 text-green-400' :
-                  ep.method === 'POST' ? 'bg-blue-500/20 text-blue-400' :
-                  ep.method === 'PUT' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
+            <div key={ep.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', background: `${N.dark}15`, borderRadius: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', ...getStatusDot(ep.status) }} />
+                <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '4px', ...getMethodStyle(ep.method) }}>
                   {ep.method}
                 </span>
-                <code className="text-sm text-slate-300">{ep.path}</code>
+                <code style={{ color: N.text, fontSize: '0.875rem' }}>{ep.path}</code>
               </div>
-              <div className="flex items-center gap-6 text-xs text-slate-400">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', fontSize: '0.75rem', color: N.textSub }}>
                 <span>{ep.requestsToday.toLocaleString()} req</span>
                 <span>{ep.avgLatency}ms</span>
-                <span className={ep.errorRate > 1 ? 'text-red-400' : ''}>{ep.errorRate}% err</span>
+                <span style={{ color: ep.errorRate > 1 ? N.accent : N.textSub }}>{ep.errorRate}% err</span>
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
 
       {/* Tenant Usage */}
-      <NeuromorphicCard variant="embossed" className="p-4">
-        <h4 className="text-white font-medium mb-3">Uso de API por Tenant</h4>
-        <div className="space-y-3">
+      <NeuCard style={{ boxShadow: getSmallShadow(), padding: '1rem', background: N.base }}>
+        <h4 style={{ color: N.text, fontWeight: 600, marginBottom: '12px' }}>Uso de API por Tenant</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {tenantUsage.map(tenant => (
-            <div key={tenant.tenantId} className={`p-3 rounded-lg border ${
-              tenant.isThrottled ? 'bg-red-500/10 border-red-500/30' : 'bg-slate-800/30 border-slate-700/50'
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <Building2 className="w-4 h-4 text-slate-400" />
-                  <span className="text-white font-medium">{tenant.tenantName}</span>
-                  <span className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded">
+            <div key={tenant.tenantId} style={{
+              padding: '12px',
+              borderRadius: '8px',
+              border: `1px solid ${tenant.isThrottled ? N.accent : N.dark}30`,
+              background: tenant.isThrottled ? `${N.accent}10` : `${N.dark}15`
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Building2 style={{ width: 16, height: 16, color: N.textSub }} />
+                  <span style={{ color: N.text, fontWeight: 500 }}>{tenant.tenantName}</span>
+                  <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.dark}50`, color: N.textSub, borderRadius: '4px' }}>
                     {tenant.plan}
                   </span>
                   {tenant.isThrottled && (
-                    <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded animate-pulse">
-                      ⚠️ THROTTLED
+                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: `${N.accent}20`, color: N.accent, borderRadius: '4px', animation: 'pulse 2s infinite' }}>
+                      š ï¸ THROTTLED
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <select
                     value={tenant.rateLimit}
                     onChange={(e) => adjustRateLimit(tenant.tenantId, parseInt(e.target.value))}
-                    className="bg-slate-700 text-white text-xs rounded px-2 py-1"
+                    style={{ background: N.dark, color: N.text, fontSize: '0.75rem', borderRadius: '4px', padding: '4px 8px', border: `1px solid ${N.dark}50` }}
                   >
                     <option value="10000">10K/día</option>
                     <option value="50000">50K/día</option>
@@ -269,35 +287,43 @@ export function ApiHealthDashboard() {
                   </select>
                   <button
                     onClick={() => toggleThrottle(tenant.tenantId)}
-                    className={`px-2 py-1 text-xs rounded ${
-                      tenant.isThrottled ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                    }`}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '0.75rem',
+                      borderRadius: '4px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      background: tenant.isThrottled ? `${N.accent}20` : `${N.accent}20`,
+                      color: tenant.isThrottled ? N.accent : N.accent
+                    }}
                   >
                     {tenant.isThrottled ? 'Liberar' : 'Throttle'}
                   </button>
                 </div>
               </div>
-              
+
               {/* Usage Bar */}
-              <div className="mt-2">
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                  <span>{tenant.requestsToday.toLocaleString()} / {tenant.rateLimit.toLocaleString()}</span>
-                  <span>{((tenant.requestsToday / tenant.rateLimit) * 100).toFixed(0)}%</span>
+              <div style={{ marginTop: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '0.75rem', color: N.textSub }}>{tenant.requestsToday.toLocaleString()} / {tenant.rateLimit.toLocaleString()}</span>
+                  <span style={{ fontSize: '0.75rem', color: N.textSub }}>{((tenant.requestsToday / tenant.rateLimit) * 100).toFixed(0)}%</span>
                 </div>
-                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all ${
-                      (tenant.requestsToday / tenant.rateLimit) > 0.9 ? 'bg-red-500' :
-                      (tenant.requestsToday / tenant.rateLimit) > 0.7 ? 'bg-yellow-500' : 'bg-green-500'
-                    }`}
-                    style={{ width: `${Math.min((tenant.requestsToday / tenant.rateLimit) * 100, 100)}%` }}
+                <div style={{ width: '100%', height: '8px', background: N.dark, borderRadius: '999px', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      height: '100%',
+                      transition: 'all 0.3s',
+                      background: (tenant.requestsToday / tenant.rateLimit) > 0.9 ? N.accent :
+                        (tenant.requestsToday / tenant.rateLimit) > 0.7 ? N.accent : N.accent,
+                      width: `${Math.min((tenant.requestsToday / tenant.rateLimit) * 100, 100)}%`
+                    }}
                   />
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </NeuromorphicCard>
+      </NeuCard>
     </div>
   )
 }

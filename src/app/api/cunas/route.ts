@@ -10,6 +10,7 @@ import { NextResponse } from 'next/server'
 import { withApiRoute } from '@/lib/api/with-api-route'
 import { apiSuccess, apiError, apiServerError } from '@/lib/api/response'
 import { logger } from '@/lib/observability'
+import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/security/audit-logger'
 import { getDB } from '@/lib/db'
 import { cunas, anunciantes } from '@/lib/db/schema'
 import type { TipoCuna, EstadoCuna } from '@/lib/db/cunas-schema'
@@ -171,6 +172,20 @@ export const GET = withApiRoute(
       }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in cunas GET', error instanceof Error ? error : undefined, { module: 'cunas', action: 'GET' })
+
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al obtener cúñas',
+        userId: ctx.userId,
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          module: 'cunas',
+          resource: 'cunas',
+          action: 'read',
+          success: false
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -227,9 +242,37 @@ export const POST = withApiRoute(
         return apiError('CUNA_CREATE_FAILED', result.error, 422) as unknown as NextResponse
       }
 
+      auditLogger.log({
+        type: AuditEventType.DATA_CREATE,
+        message: 'Cúña creada exitosamente',
+        userId: ctx.userId,
+        metadata: {
+          cunaId: result.data.id,
+          codigo: result.data.codigo,
+          module: 'cunas',
+          resource: 'cunas',
+          action: 'create',
+          success: true
+        }
+      })
+
       return apiSuccess(result.data.toJSON(), 201, { message: 'Cuña creada exitosamente' }) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in cunas POST', error instanceof Error ? error : undefined, { module: 'cunas', action: 'POST' })
+
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al crear cúña',
+        userId: ctx.userId,
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          module: 'cunas',
+          resource: 'cunas',
+          action: 'create',
+          success: false
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }
@@ -280,6 +323,23 @@ export const PUT = withApiRoute(
       }
 
       const { exitosos, fallidos, errores } = result.data
+
+      auditLogger.log({
+        type: AuditEventType.DATA_UPDATE,
+        message: 'Cúñas actualizadas masivamente',
+        userId: ctx.userId,
+        metadata: {
+          exitosos,
+          fallidos,
+          accion: body.accion,
+          cunaIds: body.cunaIds,
+          module: 'cunas',
+          resource: 'cunas',
+          action: 'bulk_update',
+          success: true
+        }
+      })
+
       return apiSuccess(
         { exitosos, fallidos, errores },
         200,
@@ -287,6 +347,20 @@ export const PUT = withApiRoute(
       ) as unknown as NextResponse
     } catch (error) {
       logger.error('Error in cunas PUT', error instanceof Error ? error : undefined, { module: 'cunas', action: 'PUT' })
+
+      auditLogger.log({
+        type: AuditEventType.ACCESS_DENIED,
+        message: 'Error al actualizar cúñas',
+        userId: ctx.userId,
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          module: 'cunas',
+          resource: 'cunas',
+          action: 'update',
+          success: false
+        }
+      })
+
       return apiServerError() as unknown as NextResponse
     }
   }

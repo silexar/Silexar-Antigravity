@@ -1,8 +1,8 @@
-/**
+ï»¿/**
  * ?? MOBILE: Smart Capture View
  * 
  * Hub centralizado para captura inteligente de contratos.
- * 5 métodos de ingreso: voz, texto libre, WhatsApp, email, foto.
+ * 5 mï¿½todos de ingreso: voz, texto libre, WhatsApp, email, foto.
  * El ejecutivo habla o tipea ? IA genera el contrato.
  * 
  * @tier TIER_0_ENTERPRISE
@@ -63,7 +63,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
     setRecording(false);
     if (timerRef.current) clearInterval(timerRef.current);
     // Simulate transcription, in production: actual STT
-    const result = await captureVoice('Cerré con Banco Chile, campaña de radio y TV para marzo y abril, 85 millones, descuento del 15 por ciento, pago a 45 días');
+    const result = await captureVoice('Cerrï¿½ con Banco Chile, campaï¿½a de radio y TV para marzo y abril, 85 millones, descuento del 15 por ciento, pago a 45 dï¿½as');
     if (result) setMode('review');
   };
 
@@ -128,7 +128,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
     <div className="space-y-5">
       {/* HEADER */}
       <div className="flex items-center gap-3">
-        <button onClick={handleBack} aria-label="Atrás" className="p-2 rounded-xl bg-[#dfeaff] border border-[#bec8de30] active:scale-90">
+        <button onClick={handleBack} aria-label="Atrï¿½s" className="p-2 rounded-xl bg-[#dfeaff] border border-[#bec8de30] active:scale-90">
           <ArrowLeft className="w-5 h-5 text-[#69738c]" />
         </button>
         <div className="flex-1">
@@ -141,33 +141,33 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
 
       {/* ERROR */}
       {error && (
-        <div className="p-3 rounded-xl bg-red-50 border border-[#bec8de30] flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-red-500" />
-          <p className="text-xs text-red-600 font-medium">{error}</p>
-          <button onClick={reset} aria-label="Cerrar" className="ml-auto"><X className="w-4 h-4 text-red-400" /></button>
+        <div className="p-3 rounded-xl bg-[#dfeaff] border border-[#bec8de30] flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-[#9aa3b8]" />
+          <p className="text-xs text-[#9aa3b8] font-medium">{error}</p>
+          <button onClick={reset} aria-label="Cerrar" className="ml-auto"><X className="w-4 h-4 text-[#9aa3b8]" /></button>
         </div>
       )}
 
       {/* MENU */}
       {mode === 'menu' && (
         <div className="space-y-3">
-          <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest px-1">¿Cómo quieres ingresar la venta?</p>
+          <p className="text-xs font-bold text-[#9aa3b8] uppercase tracking-widest px-1">ï¿½Cï¿½mo quieres ingresar la venta?</p>
 
           <CaptureOption
             icon={<Mic className="w-6 h-6" />}
             title="Nota de Voz"
             desc="Graba 30 segundos, IA crea el contrato"
             time="~30 seg"
-            color="bg-gradient-to-r from-red-500 to-pink-500"
+            color="bg-gradient-to-r from-[#6888ff] to-pink-500"
             highlight
             onClick={() => setMode('voice')}
           />
           <CaptureOption
             icon={<Zap className="w-6 h-6" />}
             title="Quick Capture"
-            desc="5 campos mínimos, IA rellena el resto"
+            desc="5 campos mï¿½nimos, IA rellena el resto"
             time="~1 min"
-            color="bg-gradient-to-r from-amber-500 to-orange-500"
+            color="bg-gradient-to-r from-[#6888ff] to-[#5572ee]"
             onClick={() => setMode('quick')}
           />
           <CaptureOption
@@ -175,7 +175,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
             title="Pegar WhatsApp"
             desc="Copia el chat con el cliente"
             time="~5 seg"
-            color="bg-gradient-to-r from-green-500 to-emerald-500"
+            color="bg-gradient-to-r from-[#6888ff] to-[#5572ee]"
             onClick={() => { setTextInput(''); setMode('whatsapp'); }}
           />
           <CaptureOption
@@ -189,7 +189,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
           <CaptureOption
             icon={<Mail className="w-6 h-6" />}
             title="Pegar Email"
-            desc="Pega el email de confirmación del cliente"
+            desc="Pega el email de confirmaciï¿½n del cliente"
             time="~5 seg"
             color="bg-[#6888ff]"
             onClick={() => { setTextInput(''); setMode('email'); }}
@@ -197,7 +197,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
           <CaptureOption
             icon={<Camera className="w-6 h-6" />}
             title="Foto de Nota"
-            desc="Fotografía una propuesta o nota manuscrita"
+            desc="Fotografï¿½a una propuesta o nota manuscrita"
             time="~10 seg"
             color="bg-[#6888ff]"
             onClick={() => { /* In production: open camera */ }}
@@ -209,7 +209,7 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
       {mode === 'voice' && (
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           <div className={`w-32 h-32 rounded-full flex items-center justify-center transition-all ${
-            recording ? 'bg-red-500 scale-110 animate-pulse shadow-2xl shadow-red-200' : 'bg-[#6888ff] shadow-xl shadow-[#6888ff]/20'
+            recording ? 'bg-[#dfeaff]0 scale-110 animate-pulse shadow-2xl shadow-red-200' : 'bg-[#6888ff] shadow-xl shadow-[#6888ff]/20'
           }`}>
             {recording ? <MicOff className="w-12 h-12 text-white" /> : <Mic className="w-12 h-12 text-white" />}
           </div>
@@ -217,13 +217,13 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
           <div className="text-center">
             {recording ? (
               <>
-                <p className="text-3xl font-black text-red-600 font-mono">{String(Math.floor(recordingTime / 60)).padStart(2, '0')}:{String(recordingTime % 60).padStart(2, '0')}</p>
+                <p className="text-3xl font-black text-[#9aa3b8] font-mono">{String(Math.floor(recordingTime / 60)).padStart(2, '0')}:{String(recordingTime % 60).padStart(2, '0')}</p>
                 <p className="text-sm text-[#9aa3b8] mt-1">Grabando... Describe la venta</p>
               </>
             ) : (
               <>
                 <p className="font-bold text-[#69738c]">Presiona para grabar</p>
-                <p className="text-xs text-[#9aa3b8] mt-1">Ejemplo: &quot;Cerré con Banco Chile, radio y TV, 85 palos, marzo a abril&quot;</p>
+                <p className="text-xs text-[#9aa3b8] mt-1">Ejemplo: &quot;Cerrï¿½ con Banco Chile, radio y TV, 85 palos, marzo a abril&quot;</p>
               </>
             )}
           </div>
@@ -232,12 +232,12 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
             onClick={recording ? stopRecording : startRecording}
             disabled={processing}
             className={`w-full py-4 rounded-2xl font-bold text-white flex items-center justify-center gap-2 active:scale-95 transition-all ${
-              recording ? 'bg-red-500' : processing ? 'bg-[#9aa3b8]' : 'bg-[#6888ff]'
+              recording ? 'bg-[#dfeaff]0' : processing ? 'bg-[#9aa3b8]' : 'bg-[#6888ff]'
             }`}
           >
             {processing ? <Loader2 className="w-5 h-5 animate-spin" /> :
              recording ? <><MicOff className="w-5 h-5" /> Detener y Procesar</> :
-             <><Mic className="w-5 h-5" /> Iniciar Grabación</>}
+             <><Mic className="w-5 h-5" /> Iniciar Grabaciï¿½n</>}
           </button>
         </div>
       )}
@@ -248,8 +248,8 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
           <div className="p-3 rounded-xl bg-[#dfeaff] border border-[#bec8de30]">
             <p className="text-xs font-bold text-[#6888ff]">
               {mode === 'text' && '?? Escribe lo que vendiste en tus propias palabras'}
-              {mode === 'whatsapp' && '?? Pega la conversación de WhatsApp con el cliente'}
-              {mode === 'email' && '?? Pega el contenido del email de confirmación'}
+              {mode === 'whatsapp' && '?? Pega la conversaciï¿½n de WhatsApp con el cliente'}
+              {mode === 'email' && '?? Pega el contenido del email de confirmaciï¿½n'}
             </p>
           </div>
 
@@ -257,9 +257,9 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
             placeholder={
-              mode === 'text' ? 'Cerré con Banco Chile, radio y TV, 85 millones, marzo a abril, descuento 15%...'
+              mode === 'text' ? 'Cerrï¿½ con Banco Chile, radio y TV, 85 millones, marzo a abril, descuento 15%...'
               : mode === 'whatsapp' ? 'Cliente: OK, cerramos con $45M para radio, empezamos en marzo...'
-              : 'Asunto: Confirmación propuesta\n\nEstimado Juan, confirmamos la pauta de $85M...'
+              : 'Asunto: Confirmaciï¿½n propuesta\n\nEstimado Juan, confirmamos la pauta de $85M...'
             }
             rows={8}
             className="w-full px-4 py-3 rounded-xl border border-[#bec8de30] bg-[#dfeaff] text-sm focus:ring-2 focus:ring-[#6888ff]/50 outline-none resize-none"
@@ -279,13 +279,13 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
       {/* QUICK CAPTURE MODE */}
       {mode === 'quick' && (
         <div className="space-y-4">
-          <div className="p-3 rounded-xl bg-amber-50 border border-[#bec8de30]">
-            <p className="text-xs font-bold text-amber-700">? Solo los datos esenciales. La IA completa el resto con historial del cliente.</p>
+          <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30]">
+            <p className="text-xs font-bold text-[#6888ff]">? Solo los datos esenciales. La IA completa el resto con historial del cliente.</p>
           </div>
 
           <QuickInput label="Cliente *" placeholder="Banco Chile" value={quickFields.clienteNombre}
             onChange={(v) => setQuickFields(p => ({ ...p, clienteNombre: v }))} />
-          <QuickInput label="Producto / Campaña" placeholder="Campaña Radio Marzo" value={quickFields.producto}
+          <QuickInput label="Producto / Campaï¿½a" placeholder="Campaï¿½a Radio Marzo" value={quickFields.producto}
             onChange={(v) => setQuickFields(p => ({ ...p, producto: v }))} />
           <QuickInput label="Valor (millones)" placeholder="85" value={quickFields.valorEstimado} type="number"
             onChange={(v) => setQuickFields(p => ({ ...p, valorEstimado: v }))} />
@@ -297,13 +297,13 @@ export function SmartCaptureView({ onClose }: { onClose: () => void }) {
               onChange={(v) => setQuickFields(p => ({ ...p, periodoFin: v }))} />
           </div>
 
-          <QuickInput label="Notas" placeholder="Descuento 15%, pago a 45 días..." value={quickFields.notas}
+          <QuickInput label="Notas" placeholder="Descuento 15%, pago a 45 dï¿½as..." value={quickFields.notas}
             onChange={(v) => setQuickFields(p => ({ ...p, notas: v }))} />
 
           <button
             onClick={handleQuickSubmit}
             disabled={processing || !quickFields.clienteNombre}
-            className="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
+            className="w-full py-4 bg-[#6888ff]/50 text-white rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
           >
             {processing ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Zap className="w-5 h-5" /> Generar Contrato</>}
           </button>

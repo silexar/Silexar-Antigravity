@@ -73,7 +73,7 @@ export const CopyCunaModal = ({ isOpen, onClose, originalCuna, onConfirm }: Copy
                          <li>Datos de Cliente y Producto</li>
                          <li>Fechas de Vigencia</li>
                          <li>Configuración de Distribución</li>
-                         <li>Alertas de Vencimiento</li>
+                         <li>Alertas de Vencimientos</li>
                       </ul>
                    </div>
                 </div>

@@ -509,7 +509,7 @@ export function BillingMetrics() {
               Estado de Cobranza
             </CardTitle>
             <CardDescription>
-              Distribución por días de vencimiento
+              Distribución por días de vencimientos
             </CardDescription>
           </CardHeader>
           <CardContent>

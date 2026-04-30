@@ -37,7 +37,7 @@ export interface FiltrosPipelineProps {
   fechaHasta?: Date;
   filtroTiempo?: FiltroTiempo;
   soloVencimientosProximos?: boolean;
-  diasVencimiento?: number;
+  diasVencimientos?: number;
 }
 
 export interface MetricasEtapaProps {
@@ -290,7 +290,7 @@ export class ObtenerPipelineVentasQueryHandler {
       }
 
       if (filtros.soloVencimientosProximos) {
-        const diasLimite = filtros.diasVencimiento || 7;
+        const diasLimite = filtros.diasVencimientos || 7;
         const fechaLimite = new Date(Date.now() + diasLimite * 24 * 60 * 60 * 1000);
         contratos = contratos.filter(c => c.fechaEstimadaCierre <= fechaLimite);
       }

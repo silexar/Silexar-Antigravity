@@ -3,7 +3,7 @@
  * 
  * Auto-generado con: vencimientos, seguimientos,
  * propuestas sin respuesta, aprobaciones pendientes,
- * renovaciones próximas.
+ * renovaciones prï¿½ximas.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform DESKTOP
@@ -20,7 +20,7 @@ import {
 
 interface TareaChecklist {
   id: string;
-  tipo: 'vencimiento' | 'seguimiento' | 'propuesta' | 'aprobacion' | 'renovacion';
+  tipo: 'vencimientos' | 'seguimiento' | 'propuesta' | 'aprobacion' | 'renovacion';
   titulo: string;
   descripcion: string;
   prioridad: 'alta' | 'media' | 'baja';
@@ -29,12 +29,12 @@ interface TareaChecklist {
 }
 
 const HOY: TareaChecklist[] = [
-  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar contrato Banco Chile', descripcion: 'SP-2025-0012 — $85M, espera desde ayer', prioridad: 'alta', completada: false, accion: 'Aprobar' },
-  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar a Falabella', descripcion: 'Seguimiento propuesta #4521 enviada hace 3 días', prioridad: 'alta', completada: false, accion: 'Llamar' },
-  { id: 't3', tipo: 'vencimiento', titulo: 'Contrato LATAM vence viernes', descripcion: 'SP-2024-0088 — $200M, coordinar renovación', prioridad: 'alta', completada: false, accion: 'Renovar' },
-  { id: 't4', tipo: 'propuesta', titulo: 'Enviar propuesta a Ripley', descripcion: 'Campaña radio Q2, presupuesto $30M', prioridad: 'media', completada: false, accion: 'Crear' },
-  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', descripcion: 'Validar disponibilidad Radio Corazón 25 frases', prioridad: 'media', completada: true },
-  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovación Entel', descripcion: 'Vence en 30 días, revisar condiciones actuales', prioridad: 'baja', completada: false },
+  { id: 't1', tipo: 'aprobacion', titulo: 'Aprobar contrato Banco Chile', descripcion: 'SP-2025-0012 ï¿½ $85M, espera desde ayer', prioridad: 'alta', completada: false, accion: 'Aprobar' },
+  { id: 't2', tipo: 'seguimiento', titulo: 'Llamar a Falabella', descripcion: 'Seguimiento propuesta #4521 enviada hace 3 dï¿½as', prioridad: 'alta', completada: false, accion: 'Llamar' },
+  { id: 't3', tipo: 'vencimientos', titulo: 'Contrato LATAM vence viernes', descripcion: 'SP-2024-0088 ï¿½ $200M, coordinar renovaciï¿½n', prioridad: 'alta', completada: false, accion: 'Renovar' },
+  { id: 't4', tipo: 'propuesta', titulo: 'Enviar propuesta a Ripley', descripcion: 'Campaï¿½a radio Q2, presupuesto $30M', prioridad: 'media', completada: false, accion: 'Crear' },
+  { id: 't5', tipo: 'seguimiento', titulo: 'Confirmar pauta Cencosud', descripcion: 'Validar disponibilidad Radio Corazï¿½n 25 frases', prioridad: 'media', completada: true },
+  { id: 't6', tipo: 'renovacion', titulo: 'Preparar renovaciï¿½n Entel', descripcion: 'Vence en 30 dï¿½as, revisar condiciones actuales', prioridad: 'baja', completada: false },
 ];
 
 export function DailyChecklist() {
@@ -47,29 +47,29 @@ export function DailyChecklist() {
   const progreso = Math.round((completadas.length / tareas.length) * 100);
 
   const tipoIcon: Record<string, React.ReactNode> = {
-    vencimiento: <Clock className="w-4 h-4 text-orange-500" />,
-    seguimiento: <Phone className="w-4 h-4 text-blue-500" />,
+    vencimientos: <Clock className="w-4 h-4 text-[#6888ff]" />,
+    seguimiento: <Phone className="w-4 h-4 text-[#6888ff]" />,
     propuesta: <FileText className="w-4 h-4 text-[#6888ff]" />,
-    aprobacion: <AlertTriangle className="w-4 h-4 text-amber-500" />,
-    renovacion: <RefreshCw className="w-4 h-4 text-emerald-500" />,
+    aprobacion: <AlertTriangle className="w-4 h-4 text-[#6888ff]" />,
+    renovacion: <RefreshCw className="w-4 h-4 text-[#6888ff]" />,
   };
 
   return (
     <div className="neo-card rounded-2xl overflow-hidden">
       {/* HEADER */}
-      <div className="px-5 py-4 bg-[#dfeaff] border-b border-amber-100 flex items-center justify-between">
+      <div className="px-5 py-4 bg-[#dfeaff] border-b border-[#bec8de] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <ClipboardList className="w-5 h-5 text-amber-600" />
+          <ClipboardList className="w-5 h-5 text-[#6888ff]" />
           <div>
-            <h3 className="font-bold text-sm text-[#69738c]">Checklist del Día</h3>
-            <p className="text-[10px] text-[#9aa3b8]">{pendientes.length} pendientes · {completadas.length} completadas</p>
+            <h3 className="font-bold text-sm text-[#69738c]">Checklist del Dï¿½a</h3>
+            <p className="text-[10px] text-[#9aa3b8]">{pendientes.length} pendientes ï¿½ {completadas.length} completadas</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-20 h-2 bg-amber-200 rounded-full overflow-hidden">
-            <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${progreso}%` }} />
+          <div className="w-20 h-2 bg-[#6888ff]/20 rounded-full overflow-hidden">
+            <div className="h-full bg-[#6888ff]/50 rounded-full transition-all" style={{ width: `${progreso}%` }} />
           </div>
-          <span className="text-xs font-bold text-amber-600">{progreso}%</span>
+          <span className="text-xs font-bold text-[#6888ff]">{progreso}%</span>
         </div>
       </div>
 
@@ -85,8 +85,8 @@ export function DailyChecklist() {
               <p className="text-[10px] text-[#9aa3b8] truncate">{t.descripcion}</p>
             </div>
             <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${
-              t.prioridad === 'alta' ? 'bg-red-100 text-red-600' :
-              t.prioridad === 'media' ? 'bg-amber-100 text-amber-600' : 'bg-[#dfeaff] text-[#9aa3b8]'
+              t.prioridad === 'alta' ? 'bg-[#dfeaff] text-[#9aa3b8]' :
+              t.prioridad === 'media' ? 'bg-[#6888ff]/10 text-[#6888ff]' : 'bg-[#dfeaff] text-[#9aa3b8]'
             }`}>{t.prioridad}</span>
             {t.accion && (
               <button className="px-3 py-1 bg-[#6888ff] text-white text-[10px] font-bold rounded-lg hover:bg-[#6888ff]/80 transition">
@@ -108,7 +108,7 @@ export function DailyChecklist() {
           {showCompleted && completadas.map(t => (
             <div key={t.id} className="px-5 py-2 flex items-center gap-3 opacity-50">
               <button onClick={() => toggle(t.id)}
-                className="w-5 h-5 rounded-md bg-emerald-500 flex items-center justify-center shrink-0">
+                className="w-5 h-5 rounded-md bg-[#6888ff]/50 flex items-center justify-center shrink-0">
                 <Check className="w-3 h-3 text-white" />
               </button>
               <p className="text-sm text-[#9aa3b8] line-through">{t.titulo}</p>

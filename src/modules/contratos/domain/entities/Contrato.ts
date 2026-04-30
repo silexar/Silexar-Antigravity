@@ -275,12 +275,12 @@ export class Contrato {
         }
 
         // Alertas por fechas
-        const diasParaVencimiento = Math.ceil(
+        const diasParaVencimientos = Math.ceil(
             (this.props.fechaFin.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
         )
 
-        if (diasParaVencimiento <= 30 && diasParaVencimiento > 0) {
-            this.agregarAlerta(`Vence en ${diasParaVencimiento} días - Considerar renovación`)
+        if (diasParaVencimientos <= 30 && diasParaVencimientos > 0) {
+            this.agregarAlerta(`Vence en ${diasParaVencimientos} días - Considerar renovación`)
         }
     }
 
@@ -318,6 +318,72 @@ export class Contrato {
     // Serialización
     toSnapshot(): ContratoProps {
         return { ...this.props }
+    }
+
+    // ─── Métodos de actualización de campos ─────────────────────────────────
+
+    /**
+     * Actualiza el título/producto del contrato
+     */
+    actualizarTitulo(nuevoTitulo: string): void {
+        if (!nuevoTitulo?.trim()) {
+            throw new Error('El título no puede estar vacío')
+        }
+        this.props.producto = nuevoTitulo.trim()
+        this.props.fechaActualizacion = new Date()
+        this.props.version++
+    }
+
+    /**
+     * Actualiza las fechas del contrato
+     */
+    actualizarFechas(fechaInicio: Date, fechaFin: Date): void {
+        if (fechaFin <= fechaInicio) {
+            throw new Error('Fecha fin debe ser posterior a fecha inicio')
+        }
+        this.props.fechaInicio = fechaInicio
+        this.props.fechaFin = fechaFin
+        this.props.fechaActualizacion = new Date()
+        this.props.version++
+    }
+
+    /**
+     * Asigna un nuevo ejecutivo al contrato
+     */
+    asignarEjecutivo(ejecutivoId: string, ejecutivoNombre: string, responsable: string): void {
+        if (!ejecutivoId?.trim()) {
+            throw new Error('El ID del ejecutivo es requerido')
+        }
+        this.props.ejecutivoId = ejecutivoId
+        this.props.ejecutivo = ejecutivoNombre || ''
+        this.props.responsableActual = responsable
+        this.props.fechaActualizacion = new Date()
+        this.props.version++
+        this.agregarAlerta(`Ejecutivo asignado: ${ejecutivoNombre}`)
+    }
+
+    /**
+     * Actualiza el valor bruto y recalcula el neto
+     */
+    actualizarValorBruto(nuevoValorBruto: number, descuentoPorcentaje: number, responsable: string): void {
+        if (nuevoValorBruto < 0) {
+            throw new Error('El valor bruto no puede ser negativo')
+        }
+        if (descuentoPorcentaje < 0 || descuentoPorcentaje > 100) {
+            throw new Error('El porcentaje de descuento debe estar entre 0 y 100')
+        }
+        // Validar que no exceda el 150% del valor actual
+        const valorNetoActual = this.props.totales.valorNeto
+        const nuevoValorNeto = nuevoValorBruto * (1 - descuentoPorcentaje / 100)
+        if (nuevoValorNeto > valorNetoActual * 1.5) {
+            throw new Error('Incremento de valor superior al 50% requiere aprobación especial')
+        }
+
+        // Actualizar totales usando el value object
+        this.props.totales = TotalesContrato.create(nuevoValorBruto, nuevoValorNeto)
+        this.props.fechaActualizacion = new Date()
+        this.props.version++
+        this.recalcularMetricas()
     }
 
     // Métodos de workflow

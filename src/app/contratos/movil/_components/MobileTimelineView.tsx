@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * ?? MOBILE: Timeline de Comunicaciones
  * 
  * Historial mobile de: emails, llamadas, notas,
@@ -26,12 +26,12 @@ interface Evento {
 }
 
 const EVENTOS: Evento[] = [
-  { id: 'e1', tipo: 'estado', titulo: 'Enviado a aprobación', desc: 'Gerencia — monto >$80M', autor: 'Sistema', fecha: '01 Mar 14:30' },
-  { id: 'e2', tipo: 'email', titulo: 'Propuesta enviada', desc: 'PDF tarifas Q2 2025', autor: 'María G.', fecha: '01 Mar 11:15' },
-  { id: 'e3', tipo: 'llamada', titulo: 'Llamada Gte. Comercial', desc: '12 min — descuento 15%', autor: 'María G.', fecha: '28 Feb 16:00' },
-  { id: 'e4', tipo: 'nota', titulo: 'Prefiere radio AM', desc: 'Radio Corazón horario prime', autor: 'Carlos P.', fecha: '27 Feb 10:30' },
-  { id: 'e5', tipo: 'documento', titulo: 'Cotización adjunta', desc: 'Cotización_BancoChile.pdf', autor: 'María G.', fecha: '26 Feb 09:00' },
-  { id: 'e6', tipo: 'email', titulo: 'Solicitud del cliente', desc: 'Campaña radio 2 meses', autor: 'Cliente', fecha: '25 Feb 15:45' },
+  { id: 'e1', tipo: 'estado', titulo: 'Enviado a aprobaciï¿½n', desc: 'Gerencia ï¿½ monto >$80M', autor: 'Sistema', fecha: '01 Mar 14:30' },
+  { id: 'e2', tipo: 'email', titulo: 'Propuesta enviada', desc: 'PDF tarifas Q2 2025', autor: 'Marï¿½a G.', fecha: '01 Mar 11:15' },
+  { id: 'e3', tipo: 'llamada', titulo: 'Llamada Gte. Comercial', desc: '12 min ï¿½ descuento 15%', autor: 'Marï¿½a G.', fecha: '28 Feb 16:00' },
+  { id: 'e4', tipo: 'nota', titulo: 'Prefiere radio AM', desc: 'Radio Corazï¿½n horario prime', autor: 'Carlos P.', fecha: '27 Feb 10:30' },
+  { id: 'e5', tipo: 'documento', titulo: 'Cotizaciï¿½n adjunta', desc: 'Cotizaciï¿½n_BancoChile.pdf', autor: 'Marï¿½a G.', fecha: '26 Feb 09:00' },
+  { id: 'e6', tipo: 'email', titulo: 'Solicitud del cliente', desc: 'Campaï¿½a radio 2 meses', autor: 'Cliente', fecha: '25 Feb 15:45' },
 ];
 
 export function MobileTimelineView() {
@@ -39,11 +39,11 @@ export function MobileTimelineView() {
   const filtered = filtro === 'todos' ? EVENTOS : EVENTOS.filter(e => e.tipo === filtro);
 
   const cfg: Record<string, { icon: React.ReactNode; color: string }> = {
-    email: { icon: <Mail className="w-3.5 h-3.5" />, color: 'bg-blue-100 text-blue-500' },
-    llamada: { icon: <Phone className="w-3.5 h-3.5" />, color: 'bg-emerald-100 text-emerald-500' },
-    nota: { icon: <Edit3 className="w-3.5 h-3.5" />, color: 'bg-amber-100 text-amber-500' },
+    email: { icon: <Mail className="w-3.5 h-3.5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+    llamada: { icon: <Phone className="w-3.5 h-3.5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
+    nota: { icon: <Edit3 className="w-3.5 h-3.5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
     estado: { icon: <CheckCircle2 className="w-3.5 h-3.5" />, color: 'bg-[#dfeaff] text-[#6888ff]' },
-    documento: { icon: <Paperclip className="w-3.5 h-3.5" />, color: 'bg-purple-100 text-purple-500' },
+    documento: { icon: <Paperclip className="w-3.5 h-3.5" />, color: 'bg-[#6888ff]/10 text-[#6888ff]' },
   };
 
   return (

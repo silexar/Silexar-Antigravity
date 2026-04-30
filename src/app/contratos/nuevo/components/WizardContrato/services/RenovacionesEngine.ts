@@ -20,7 +20,7 @@ export interface ContratoRenovacion {
   numeroContrato: string;
   clienteId: string;
   clienteNombre: string;
-  fechaVencimiento: Date;
+  fechaVencimientos: Date;
   valorActual: number;
   ejecutivoId: string;
   ejecutivoNombre: string;
@@ -124,7 +124,7 @@ const mockContratosRenovacion: ContratoRenovacion[] = [
     numeroContrato: "CON-2024-00089",
     clienteId: "cli-001",
     clienteNombre: "SuperMax",
-    fechaVencimiento: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
     valorActual: 125000000,
     ejecutivoId: "ej-001",
     ejecutivoNombre: "Ana García",
@@ -181,7 +181,7 @@ const mockContratosRenovacion: ContratoRenovacion[] = [
     numeroContrato: "CON-2024-00102",
     clienteId: "cli-002",
     clienteNombre: "Banco XYZ",
-    fechaVencimiento: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
     valorActual: 85000000,
     ejecutivoId: "ej-002",
     ejecutivoNombre: "Carlos Mendoza",
@@ -238,7 +238,7 @@ const mockContratosRenovacion: ContratoRenovacion[] = [
     numeroContrato: "CON-2024-00115",
     clienteId: "cli-003",
     clienteNombre: "AutoMax",
-    fechaVencimiento: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
     valorActual: 45000000,
     ejecutivoId: "ej-001",
     ejecutivoNombre: "Ana García",
@@ -295,7 +295,7 @@ const mockContratosRenovacion: ContratoRenovacion[] = [
     numeroContrato: "CON-2024-00098",
     clienteId: "cli-004",
     clienteNombre: "TechCorp",
-    fechaVencimiento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    fechaVencimientos: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     valorActual: 95000000,
     ejecutivoId: "ej-002",
     ejecutivoNombre: "Carlos Mendoza",
@@ -416,11 +416,11 @@ class RenovacionesEngineClass {
 
     return Array.from(this.contratos.values())
       .filter((c) =>
-        c.fechaVencimiento <= fechaLimite && c.estadoWorkflow !== "RENOVADO" &&
+        c.fechaVencimientos <= fechaLimite && c.estadoWorkflow !== "RENOVADO" &&
         c.estadoWorkflow !== "PERDIDO"
       )
       .sort((a, b) =>
-        a.fechaVencimiento.getTime() - b.fechaVencimiento.getTime()
+        a.fechaVencimientos.getTime() - b.fechaVencimientos.getTime()
       );
   }
 
@@ -463,7 +463,7 @@ class RenovacionesEngineClass {
 
     for (const contrato of contratos) {
       const diasRestantes = this.calcularDiasRestantes(
-        contrato.fechaVencimiento,
+        contrato.fechaVencimientos,
       );
 
       // 30 días antes: Análisis y alerta inicial
@@ -507,9 +507,9 @@ class RenovacionesEngineClass {
     return { alertasEnviadas, escalados, propuestasGeneradas };
   }
 
-  private calcularDiasRestantes(fechaVencimiento: Date): number {
+  private calcularDiasRestantes(fechaVencimientos: Date): number {
     const hoy = new Date();
-    const diff = fechaVencimiento.getTime() - hoy.getTime();
+    const diff = fechaVencimientos.getTime() - hoy.getTime();
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   }
 

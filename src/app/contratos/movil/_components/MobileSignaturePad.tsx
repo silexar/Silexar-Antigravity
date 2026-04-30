@@ -1,9 +1,9 @@
-/**
- * ?? MOBILE: Captura de Firma Táctil
+ï»¿/**
+ * ?? MOBILE: Captura de Firma Tï¿½ctil
  * 
  * Pad de firma digital que permite al ejecutivo o cliente
- * firmar directamente en el dispositivo móvil.
- * Soporta: dibujo táctil, limpiar, confirmar.
+ * firmar directamente en el dispositivo mï¿½vil.
+ * Soporta: dibujo tï¿½ctil, limpiar, confirmar.
  * 
  * @tier TIER_0_ENTERPRISE
  * @platform MOBILE
@@ -117,19 +117,19 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
 
   const rolConfig = {
     ejecutivo: { color: 'bg-[#6888ff]', icon: <PenTool className="w-5 h-5 text-white" />, label: 'Ejecutivo Comercial' },
-    cliente: { color: 'from-emerald-500 to-green-600', icon: <User className="w-5 h-5 text-white" />, label: 'Cliente' },
-    aprobador: { color: 'from-purple-500 to-violet-600', icon: <Shield className="w-5 h-5 text-white" />, label: 'Aprobador' },
+    cliente: { color: 'from-[#6888ff] to-[#5572ee]', icon: <User className="w-5 h-5 text-white" />, label: 'Cliente' },
+    aprobador: { color: 'from-[#6888ff] to-violet-600', icon: <Shield className="w-5 h-5 text-white" />, label: 'Aprobador' },
   }[rol];
 
-  // Pantalla de confirmación
+  // Pantalla de confirmaciï¿½n
   if (confirmed) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl animate-bounce">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#6888ff] to-[#5572ee] flex items-center justify-center shadow-xl animate-bounce">
           <Check className="w-8 h-8 text-white" />
         </div>
         <p className="text-lg font-black text-[#69738c]">Firma Registrada</p>
-        <p className="text-sm text-[#9aa3b8]">{firmante} · {rolConfig.label}</p>
+        <p className="text-sm text-[#9aa3b8]">{firmante} ï¿½ {rolConfig.label}</p>
       </div>
     );
   }
@@ -143,7 +143,7 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
         </div>
         <div>
           <p className="text-sm font-bold text-[#69738c]">Firma Digital</p>
-          <p className="text-[10px] text-[#9aa3b8]">{firmante} · {rolConfig.label}</p>
+          <p className="text-[10px] text-[#9aa3b8]">{firmante} ï¿½ {rolConfig.label}</p>
         </div>
       </div>
 
@@ -161,10 +161,10 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
             onMouseUp={endDraw}
             onMouseLeave={endDraw}
           />
-          {/* Línea guía */}
+          {/* Lï¿½nea guï¿½a */}
           <div className="absolute bottom-12 left-8 right-8 border-b border-[#bec8de30]" />
           <div className="absolute bottom-8 left-8">
-            <p className="text-[9px] text-[#9aa3b8] uppercase tracking-widest">Firma aquí</p>
+            <p className="text-[9px] text-[#9aa3b8] uppercase tracking-widest">Firma aquï¿½</p>
           </div>
         </div>
 
@@ -179,9 +179,9 @@ export function MobileSignaturePad({ firmante, rol, onFirmar, onCancelar }: Mobi
       </div>
 
       {/* INFO LEGAL */}
-      <div className="p-3 rounded-xl bg-amber-50 border border-[#bec8de30]">
-        <p className="text-[10px] text-amber-700 font-medium">
-          Al firmar, acepta los términos y condiciones del contrato. Esta firma tiene validez legal equivalente a una firma manuscrita según la Ley 19.799.
+      <div className="p-3 rounded-xl bg-[#6888ff]/5 border border-[#bec8de30]">
+        <p className="text-[10px] text-[#6888ff] font-medium">
+          Al firmar, acepta los tï¿½rminos y condiciones del contrato. Esta firma tiene validez legal equivalente a una firma manuscrita segï¿½n la Ley 19.799.
         </p>
       </div>
 
