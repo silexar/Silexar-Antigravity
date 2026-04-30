@@ -2,6 +2,11 @@
 # 🔒 SILEXAR PULSE - PRE-COMMIT SECURITY HOOK
 # Version: 2.0.0 | Tier: TIER_0_PENTAGON++
 
+# Add Node.js to PATH (Windows local installation)
+if [ -d "$HOME/AppData/Local/nodejs" ]; then
+  export PATH="$HOME/AppData/Local/nodejs:$PATH"
+fi
+
 . "$(dirname "$0")/_/husky.sh"
 
 echo "🔒 Silexar Pulse Security Pre-Commit Hook"

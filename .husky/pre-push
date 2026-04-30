@@ -3,6 +3,11 @@
 # Ejecuta tests completos y verificaciones de seguridad antes de push
 # Bypass: git push --no-verify (solo para emergencias)
 
+# Add Node.js to PATH (Windows local installation)
+if [ -d "$HOME/AppData/Local/nodejs" ]; then
+  export PATH="$HOME/AppData/Local/nodejs:$PATH"
+fi
+
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Colores
